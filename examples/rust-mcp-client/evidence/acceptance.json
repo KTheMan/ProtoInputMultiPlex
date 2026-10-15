@@ -1,0 +1,168 @@
+{
+  "date_local": "2026-10-14",
+  "timezone": "America/Los_Angeles",
+  "scope": "One owned standalone x64 probe plus separate fresh owned GUI/x64 target, Rust virtual input, singleton explicit PID. Live GUI denials, policy-change revocation and approved reconnection. No hardware, physical pointer, successful capture or startup registration actions.",
+  "checks": {
+    "cargo_fmt_all_check": "PASS",
+    "cargo_clippy_workspace_all_targets_D_warnings": "PASS",
+    "cargo_test_workspace_locked": {
+      "result": "PASS",
+      "sdk_tests": 5,
+      "client_contract_tests": 26,
+      "real_gates_ignored_in_default_suite": 3
+    },
+    "real_nonrouting_dll_free": {
+      "result": "PASS",
+      "runtime": "nonexistent disposable path",
+      "preferences": "fresh absent disposable document remained absent",
+      "commands": [
+        "inspect",
+        "check"
+      ]
+    },
+    "coordinated_native": {
+      "result": "PASS",
+      "test_seconds": 3.83,
+      "attempts": [
+        {
+          "attempt": 1,
+          "result": "FAILED",
+          "reason": "Private test fixture omitted injection helper executables; workflow rejected unavailable routing state; no target click/key observed",
+          "final_probe_counters": {
+            "pid": 98856,
+            "mouse_moves": 0,
+            "mouse_clicks": 0,
+            "key_presses": 0,
+            "buttons": 0,
+            "test_keys": 0
+          },
+          "redacted_trace": null,
+          "client_release_stop": "Acknowledged (Verification rather than Cleanup on failed attempts)",
+          "probe_cleanup": "Owned probe killed and reaped; no reuse"
+        },
+        {
+          "attempt": 2,
+          "result": "FAILED",
+          "reason": "Private test fixture omitted injection helper executables; workflow rejected unavailable routing state; no target click/key observed",
+          "final_probe_counters": {
+            "pid": 76248,
+            "mouse_moves": 0,
+            "mouse_clicks": 0,
+            "key_presses": 0,
+            "buttons": 0,
+            "test_keys": 0
+          },
+          "redacted_trace": "native-attempt-2-redacted.json",
+          "client_release_stop": "Acknowledged (Verification rather than Cleanup on failed attempts)",
+          "probe_cleanup": "Owned probe killed and reaped; no reuse"
+        },
+        {
+          "attempt": 3,
+          "result": "PASS",
+          "reason": "Complete actual runtime; native click/key observed and released",
+          "final_probe_counters": {
+            "pid": 82540,
+            "mouse_moves": 1,
+            "mouse_clicks": 1,
+            "key_presses": 1,
+            "buttons": 0,
+            "test_keys": 0
+          },
+          "redacted_trace": "native-attempt-3-redacted.json",
+          "client_release_stop": "Acknowledged (Verification rather than Cleanup on failed attempts)",
+          "probe_cleanup": "Owned probe killed and reaped; no reuse"
+        }
+      ]
+    },
+    "coordinated_live_gui": {
+      "result": "PASS",
+      "actual_controls": 17,
+      "attempts": "gui-attempts.json",
+      "final_evidence": "gui-attempt-3.json",
+      "denials": [
+        "capture",
+        "session_control",
+        "app_preferences",
+        "unpermitted_user"
+      ],
+      "policy_delta": "Add second owned virtual user; singleton PID and three false extra grants unchanged",
+      "revocation": "Acknowledged policy cleared old clients and released native F9 before approved reconnect",
+      "reconnection": "Actual CLI shared helper, old client refused, new process rediscovered/reinspected policy, distinct ID, no input replay",
+      "cleanup": "Scoped disconnect preserved GUI, actual Disable removed descriptor, Stop/close, zero owned job members before final close",
+      "failed_prefix_remediation": "owned-descriptor-cleanup-audit.json"
+    }
+  },
+  "server_executable_sha256": "4480f1a6814f60b856cbe55766ae25d53e1c3e427d009a32d5ae0babdcd98287",
+  "runtime_files": [
+    {
+      "Name": "ProtoInputHooks32.dll",
+      "Hash": "5FAC477E9ED5B0901ECD947CF7B01B8A97EA117AFFB89E90CE36514496E57658"
+    },
+    {
+      "Name": "ProtoInputHooks64.dll",
+      "Hash": "E22087E79FB900FC61BCB6DC77D0686CE20F8DE286F02ACC99D6D03088B9E3F3"
+    },
+    {
+      "Name": "ProtoInputIJ32.exe",
+      "Hash": "73C10F7397D22ED9A9F9B1EE804F17853A2C9F96D495A83F9448201B97F27A86"
+    },
+    {
+      "Name": "ProtoInputIJ64.exe",
+      "Hash": "E11A9FD0F14902F0C749781A42A8F912FB3EB876A54454F4CB5EDDEA5FA5636D"
+    },
+    {
+      "Name": "ProtoInputIJP32.dll",
+      "Hash": "D593E4B4F304F55743C6BBB680CF3C81F2BE97392980C29367639859FFDCCC3E"
+    },
+    {
+      "Name": "ProtoInputIJP64.dll",
+      "Hash": "8DAF63D2C87A150E0928F0B6D359EA503B6180538FAF14BC3C66FA8228A49172"
+    },
+    {
+      "Name": "ProtoInputLoader32.dll",
+      "Hash": "18BBCC6E520023113B3F63142D3C8B7A0141215B7A3EF49D651E5E5971DF3372"
+    },
+    {
+      "Name": "ProtoInputLoader64.dll",
+      "Hash": "D5E55CFFCFE5B9B911609D40B39167556CAD38CFFDA42E34026AE87F081CA88E"
+    }
+  ],
+  "final_owned_controller_and_helper_process_count": 0,
+  "main_session_native_slot": "Explicitly acquired then released after cleanup",
+  "limitations": [
+    "State plus cooperative target counters do not establish arbitrary application compatibility, hardware behavior, desktop-wide or same-process multi-user isolation.",
+    "Capture is intentionally not implemented; state verification is used.",
+    "No claims about provider hangs, crashed/injected application recovery, or startup registration.",
+    "Live GUI acceptance is one owned x64 automatic session with input-user expansion only; separate permission grants stayed false. Enabling capture/session/app-preference grants and arbitrary policy combinations are not covered."
+  ],
+  "independent_acceptance": {
+    "result": "ACCEPTED for demonstrated scope",
+    "report": "independent-review.md",
+    "independent_checks": [
+      "cargo fmt --all --check",
+      "26 client contracts",
+      "5 SDK transport tests",
+      "66 source baseline hashes"
+    ],
+    "native_evidence": "Reviewed, not independently replayed"
+  },
+  "toolchain": {
+    "rustc": "1.98.0 (88d9e12ae 2026-08-18)",
+    "cargo": "1.98.0 (797e8a9bc 2026-08-05)",
+    "declared_minimum_rust": "1.92",
+    "minimum_toolchain_execution": "Not separately exercised"
+  },
+  "independent_gui_acceptance": {
+    "result": "ACCEPTED for demonstrated GUI extension",
+    "report": "independent-gui-review.md",
+    "independent_checks": [
+      "cargo fmt --all --check",
+      "cargo clippy --workspace --all-targets --locked -- -D warnings",
+      "cargo test --workspace --locked:31 PASS,3real gates ignored",
+      "Python coordinator AST parse",
+      "66 source baseline hashes,0mismatches"
+    ],
+    "native_evidence": "Reviewed, not independently replayed",
+    "final_cleanup_audit": "gui-process-audit.json"
+  }
+}

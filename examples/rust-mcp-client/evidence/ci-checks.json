@@ -1,0 +1,37 @@
+{
+  "result": "PASS",
+  "date_local": "2026-10-14",
+  "timezone": "America/Los_Angeles",
+  "workflow": ".github/workflows/rust-mcp-client.yml",
+  "workflow_sha256": "0320eefd258b0003dea55aedb52771f2162ddfb0942d97b751a1771aa1694f14",
+  "yaml_parse_and_semantics": "PASS (PyYAML BaseLoader; GitHub on key preserved)",
+  "local_workflow_commands": [
+    "cargo fmt --all --check",
+    "cargo clippy --workspace --all-targets --locked -- -D warnings",
+    "cargo test --workspace --locked --lib --test contracts"
+  ],
+  "working_directory": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\examples\\rust-mcp-client",
+  "local_build_directory": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux-client-build-20261014",
+  "ci_build_directory": "${{ runner.temp }}/protoinputmux-mcp-client-target",
+  "local_checks": {
+    "formatting": "PASS",
+    "clippy": "PASS",
+    "deterministic_tests": 31
+  },
+  "real_server_targets_excluded": [
+    "live_gui",
+    "live_virtual",
+    "nonrouting"
+  ],
+  "live_ignore_attributes_unchanged": true,
+  "preexisting_file_count": 103,
+  "allowed_existing_file_changes": [
+    "examples/rust-mcp-client/INTEGRATION.md",
+    "examples/rust-mcp-client/README.md"
+  ],
+  "existing_product_workflow_unchanged": true,
+  "rust_code_manifests_lockfiles_product_and_schemas_unchanged": true,
+  "hosted_github_run": "Not dispatched; requires committing/pushing new workflow and crate",
+  "native_or_gui_runs": false,
+  "independent_review": "ACCEPTED: evidence/ci-review.md"
+}

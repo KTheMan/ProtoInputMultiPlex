@@ -1,0 +1,58 @@
+{
+  "result": "FAILED",
+  "ui_observations": [
+    {
+      "id": "start",
+      "button": "Start routing",
+      "clicked": true
+    },
+    {
+      "id": "settings-input",
+      "button": "Settings",
+      "clicked": true
+    },
+    {
+      "id": "input",
+      "button": "Input lab",
+      "clicked": true
+    },
+    {
+      "id": "move",
+      "button": "1 Move to point",
+      "clicked": true
+    },
+    {
+      "id": "focus-down",
+      "button": "1 Hold click",
+      "clicked": true
+    },
+    {
+      "id": "focus-up",
+      "button": "1 Release click",
+      "clicked": true
+    },
+    {
+      "id": "home-policy",
+      "button": "Back to Home",
+      "clicked": true
+    },
+    {
+      "id": "settings-policy",
+      "button": "Settings",
+      "clicked": true
+    }
+  ],
+  "policy_change": {
+    "approved_source": "Explicit user request and coordinated main-session native slot",
+    "delta": "Add second owned virtual user; PID and capture/session-control/app-preference grants unchanged"
+  },
+  "server_sha256": "4480f1a6814f60b856cbe55766ae25d53e1c3e427d009a32d5ae0babdcd98287",
+  "pixels_saved": false,
+  "gui_pid": 108456,
+  "target_pid": 104332,
+  "expected_ui_controls": 17,
+  "failed_stage": "agent",
+  "failure_type": "FileNotFoundError",
+  "owned_direct_processes_reaped": true,
+  "descriptor_absent_after_cleanup": true
+}

@@ -1,0 +1,32 @@
+{
+  "result": "PASS on fresh final attempt; earlier failures retained",
+  "attempts": [
+    {
+      "attempt": 1,
+      "result": "FAILED",
+      "evidence": "gui-attempt-1.json",
+      "failed_stage": "agent",
+      "failure_type": "FileNotFoundError",
+      "original_descriptor_absent_after_cleanup": true
+    },
+    {
+      "attempt": 2,
+      "result": "FAILED",
+      "evidence": "gui-attempt-2.json",
+      "failed_stage": "apply",
+      "failure_type": "AssertionError",
+      "original_descriptor_absent_after_cleanup": false
+    },
+    {
+      "attempt": 3,
+      "result": "PASS",
+      "evidence": "gui-attempt-3.json",
+      "failed_stage": null,
+      "failure_type": null,
+      "original_descriptor_absent_after_cleanup": true
+    }
+  ],
+  "failed_descriptor_remediation": "owned-descriptor-cleanup-audit.json",
+  "owned_process_tree_cleanup_check": "owned-job-cleanup-check.json",
+  "no_pixels_or_descriptors_in_evidence": true
+}

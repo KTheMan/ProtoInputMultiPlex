@@ -1,0 +1,31 @@
+name: Rust MCP client
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Standalone client checks
+    runs-on: windows-latest
+    timeout-minutes: 20
+    env:
+      CARGO_TARGET_DIR: ${{ runner.temp }}/protoinputmux-mcp-client-target
+    defaults:
+      run:
+        shell: pwsh
+        working-directory: examples/rust-mcp-client
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - name: Check formatting
+        run: cargo fmt --all --check
+      - name: Clippy
+        run: cargo clippy --workspace --all-targets --locked -- -D warnings
+      - name: Deterministic tests
+        # Real-server tests stay outside CI; never add --ignored here.
+        run: cargo test --workspace --locked --lib --test contracts

@@ -1,0 +1,7 @@
+{
+  "result": "PASS",
+  "owned_controller_helper_test_processes_remaining": 0,
+  "native_slot_released_to_main_session": true,
+  "successful_run_job_members_before_final_close": 0,
+  "scope": "Only executable paths under this gate root and its exact Rust test binary were queried; no unrelated process action"
+}

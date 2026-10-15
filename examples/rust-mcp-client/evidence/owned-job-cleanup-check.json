@@ -1,0 +1,9 @@
+{
+  "result": "PASS",
+  "scope": "Disposable Python parent and descendant; no GUI/input/native-routing applications",
+  "observed_members": 2,
+  "earlier_assertion_expected_exactly_two_members": "FAILED; retained as diagnostic prefix",
+  "owned_job_members_before_final_close": 3,
+  "owned_job_descendants_terminated": true,
+  "diagnostic_prefix_note": "An earlier helper check asserted exactly two final members and failed without retaining its result. A diagnostic fresh helper observed two initially and three at finalization; all actual job members terminated. The coordinator never assumes a fixed descendant count."
+}

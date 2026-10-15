@@ -1,0 +1,17 @@
+{
+  "source_checkout": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux",
+  "snapshot": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux-client-snapshot-20261014",
+  "source_git_head": null,
+  "source_git_head_note": "Repository has an unborn HEAD; source was staged/untracked, with a dirty pinned vendor checkout.",
+  "vendor_pinned_revision": "dd29bf8d22349605d0e1950c1c5dc4893d72670e",
+  "preservation": "Copied source tree including staged/untracked source and vendor modifications; generated runtime/build/cache/logs/private connection artifacts excluded from baseline. An interrupted broad copy left generated runtime files in the snapshot; those are outside the baseline and deliverable.",
+  "hashed_scope": "Application Rust sources/manifests, root lockfile, AGENTS.md, .gitmodules and docs/agents.md. Full copied tree is preserved separately; hash is not a claim of atomic whole-tree copying.",
+  "source_file_count": 66,
+  "source_tree_sha256": "7b7a8d71f2c1f1233e46bdf99755a3e4e3a4fd9310a28b4733affcf4b8cc0f8a",
+  "file_manifest": "evidence/source-baseline-files.json",
+  "status_record": "evidence/source-baseline-status.txt",
+  "build_directory": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux-client-build-20261014",
+  "application_workspace_modified": false,
+  "standalone_workspace": true,
+  "own_lockfile": true
+}

@@ -1,0 +1,110 @@
+{
+  "result": "FAILED",
+  "ui_observations": [
+    {
+      "id": "start",
+      "button": "Start routing",
+      "clicked": true
+    },
+    {
+      "id": "settings-input",
+      "button": "Settings",
+      "clicked": true
+    },
+    {
+      "id": "input",
+      "button": "Input lab",
+      "clicked": true
+    },
+    {
+      "id": "move",
+      "button": "1 Move to point",
+      "clicked": true
+    },
+    {
+      "id": "focus-down",
+      "button": "1 Hold click",
+      "clicked": true
+    },
+    {
+      "id": "focus-up",
+      "button": "1 Release click",
+      "clicked": true
+    },
+    {
+      "id": "home-policy",
+      "button": "Back to Home",
+      "clicked": true
+    },
+    {
+      "id": "settings-policy",
+      "button": "Settings",
+      "clicked": true
+    },
+    {
+      "id": "agent",
+      "button": "Agent Access",
+      "clicked": true,
+      "default_policy": {
+        "selected_users": [],
+        "allowed_pids": [],
+        "capture": false,
+        "session_control": false,
+        "app_preferences": false,
+        "policy_enabled": false,
+        "clients": [],
+        "pending": false,
+        "has_error": false
+      }
+    },
+    {
+      "id": "user-a",
+      "button": "Agent user 1",
+      "clicked": true
+    },
+    {
+      "id": "target",
+      "button": "Agent target PID 106756",
+      "clicked": true
+    },
+    {
+      "id": "enable",
+      "button": "Enable agent access",
+      "clicked": true,
+      "rust_prefix": {
+        "denials": {
+          "app_preferences": true,
+          "capture": true,
+          "no_image": true,
+          "session_control": true,
+          "unchanged_native": true,
+          "unchanged_preferences": true,
+          "unpermitted_user": true
+        },
+        "hold_observed": true,
+        "key_event_count": 1,
+        "old_client_id": 1
+      }
+    },
+    {
+      "id": "user-b-draft",
+      "button": "Agent user 2",
+      "clicked": true,
+      "draft_only_preserved_old_client": true,
+      "draft_only_preserved_hold": true
+    }
+  ],
+  "policy_change": {
+    "approved_source": "Explicit user request and coordinated main-session native slot",
+    "delta": "Add second owned virtual user; PID and capture/session-control/app-preference grants unchanged"
+  },
+  "server_sha256": "4480f1a6814f60b856cbe55766ae25d53e1c3e427d009a32d5ae0babdcd98287",
+  "pixels_saved": false,
+  "gui_pid": 106876,
+  "target_pid": 106756,
+  "expected_ui_controls": 17,
+  "failed_stage": "apply",
+  "failure_type": "AssertionError",
+  "owned_direct_processes_reaped": true,
+  "descriptor_absent_after_cleanup": false
+}

@@ -1,0 +1,38 @@
+{
+  "preexisting_files_checked": 67,
+  "preexisting_file_differences": [],
+  "accepted_files_checked": 30,
+  "accepted_file_differences": [
+    "AGENT_WORKFLOW.md",
+    "README.md"
+  ],
+  "new_integration_files": [
+    "INTEGRATION.md",
+    "evidence/accepted-artifact-MANIFEST.sha256",
+    "evidence/integration-checks.json",
+    "evidence/integration-review.md"
+  ],
+  "standalone_workspace_retained": true,
+  "root_cargo_lock_sha256": "8cfc16312fcd88261cdb9b0d337f95a5a7e811ddc11767f033d39e464249a06b",
+  "existing_two_seats_sha256": "12784f629627ca4308c5e071802dfa89ce5374e7b3a71140419c003299f2f6af",
+  "build_directory": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux-client-build-20261014",
+  "native_or_realserver_gates_run": false,
+  "date_local": "2026-10-14",
+  "timezone": "America/Los_Angeles",
+  "accepted_archive_sha256": "736de1777c06428a9d26b156376034bab5ac677fd1f77f25e2463baee2c025f1",
+  "checks": {
+    "cargo_fmt_all_check": "PASS",
+    "cargo_clippy_workspace_all_targets_locked_D_warnings": "PASS",
+    "cargo_test_workspace_locked": {
+      "result": "PASS",
+      "deterministic_tests": 31,
+      "real_server_gates_ignored": 3
+    },
+    "python_coordinator_ast_parse": "PASS"
+  },
+  "check_working_directory": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\examples\\rust-mcp-client",
+  "compiler_cache_override": "RUSTC_WRAPPER empty for these processes only",
+  "root_workspace_modified": false,
+  "product_or_schema_code_modified": false,
+  "independent_integration_review": "ACCEPTED: evidence/integration-review.md"
+}

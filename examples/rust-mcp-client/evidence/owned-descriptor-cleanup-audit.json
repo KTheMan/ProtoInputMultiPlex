@@ -1,0 +1,30 @@
+{
+  "result": "PASS",
+  "records": [
+    {
+      "attempt": "gui-20261014-203155",
+      "original_descriptor_absent_after_cleanup": true,
+      "owned_stale_descriptors_found": 0,
+      "owned_dead_controller_and_pipe_checked": false,
+      "owned_stale_descriptors_removed": 0,
+      "owned_descriptor_files_remaining": 0
+    },
+    {
+      "attempt": "gui-20261014-203237",
+      "original_descriptor_absent_after_cleanup": false,
+      "owned_stale_descriptors_found": 1,
+      "owned_dead_controller_and_pipe_checked": true,
+      "owned_stale_descriptors_removed": 1,
+      "owned_descriptor_files_remaining": 0
+    },
+    {
+      "attempt": "gui-20261014-203606",
+      "original_descriptor_absent_after_cleanup": true,
+      "owned_stale_descriptors_found": 0,
+      "owned_dead_controller_and_pipe_checked": false,
+      "owned_stale_descriptors_removed": 0,
+      "owned_descriptor_files_remaining": 0
+    }
+  ],
+  "remediation_is_runner_cleanup_not_product_crash_cleanup": true
+}
