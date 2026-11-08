@@ -402,7 +402,9 @@ impl Dashboard {
         error: Option<String>,
         uncertain: bool,
     ) {
-        if error.is_none() && let Some(options) = self.profile.desktop.as_mut() {
+        if error.is_none()
+            && let Some(options) = self.profile.desktop.as_mut()
+        {
             options.mode = mode;
             options.multi_keyboard = multi_keyboard;
         }
