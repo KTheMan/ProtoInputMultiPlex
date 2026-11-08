@@ -987,7 +987,15 @@ mod fixture {
         }))?;
         ensure(
             unsafe {
-                SetWindowPos(hwnd, null_mut(), 150, 120, 400, 300, SWP_NOZORDER | SWP_NOACTIVATE)
+                SetWindowPos(
+                    hwnd,
+                    null_mut(),
+                    150,
+                    120,
+                    400,
+                    300,
+                    SWP_NOZORDER | SWP_NOACTIVATE,
+                )
             } != 0,
             "SetWindowPos failed",
         )?;
