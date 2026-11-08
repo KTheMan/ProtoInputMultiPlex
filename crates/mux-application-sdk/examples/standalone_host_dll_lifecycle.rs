@@ -13,8 +13,13 @@ fn main() {
 
 #[cfg(windows)]
 mod fixture {
+    use mux_application_sdk::{
+        ClientCommand, ClientRequest, ControlGrant, Grant, HostCommand, HostRequest, RecipientId,
+        SubscriptionId, UserScope, WindowId, PROTOCOL_VERSION,
+    };
     use serde_json::{Value, json};
     use std::{
+        ffi::OsStr,
         fs::{File, OpenOptions},
         io::{Read, Write},
         os::windows::{
@@ -30,13 +35,34 @@ mod fixture {
         time::{Duration, Instant},
     };
     use windows_sys::Win32::{
-        Foundation::{DuplicateHandle, FreeLibrary, HANDLE, HMODULE, WAIT_OBJECT_0, WAIT_TIMEOUT},
+        Foundation::{
+            DuplicateHandle, FreeLibrary, GetLastError, HANDLE, HMODULE, HWND, LPARAM, LRESULT,
+            POINT, RECT, SetLastError, WAIT_OBJECT_0, WAIT_TIMEOUT, WPARAM,
+        },
+        Graphics::Gdi::{
+            ClientToScreen, GetMonitorInfoW, MONITORINFO, MONITOR_DEFAULTTONEAREST,
+            MonitorFromWindow,
+        },
         System::{
             LibraryLoader::{
                 GetModuleFileNameW, GetModuleHandleW, GetProcAddress,
                 LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR, LOAD_LIBRARY_SEARCH_SYSTEM32, LoadLibraryExW,
             },
-            Threading::{GetCurrentProcess, THREAD_SYNCHRONIZE, WaitForSingleObject},
+            Threading::{
+                GetCurrentProcess, GetCurrentProcessId, GetCurrentThreadId, THREAD_SYNCHRONIZE,
+                WaitForSingleObject,
+            },
+        },
+        UI::{
+            HiDpi::{
+                DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE, GetDpiForWindow,
+                SetThreadDpiAwarenessContext,
+            },
+            WindowsAndMessaging::{
+                CallWindowProcW, CreateWindowExW, DefWindowProcW, DestroyWindow, GetClientRect,
+                GetWindowLongPtrW, GetWindowRect, MoveWindow, SetWindowLongPtrW, SetWindowTextW,
+                GWLP_USERDATA, GWLP_WNDPROC, WM_NCDESTROY, WS_POPUP,
+            },
         },
     };
 
@@ -95,13 +121,14 @@ mod fixture {
         file: File,
         cycle: u32,
         sequence: u32,
+        schema: &'static str,
     }
     impl Report {
         fn record(&mut self, stage: &str, detail: Value) -> Check {
             self.sequence += 1;
             serde_json::to_writer(
                 &mut self.file,
-                &json!({"schema": "pim.standalone_host_dll_lifecycle.v1", "cycle": self.cycle,
+                &json!({"schema": self.schema, "cycle": self.cycle,
                     "sequence": self.sequence, "stage": stage, "detail": detail}),
             )
             .map_err(|e| e.to_string())?;
@@ -132,13 +159,14 @@ mod fixture {
 
     pub fn main() {
         let args: Vec<_> = std::env::args_os().skip(1).collect();
-        if args.len() != 6
+        let window_metadata = args.len() == 7 && args[6] == "--window-metadata";
+        if !(args.len() == 6 || window_metadata)
             || args[0] != "--dll"
             || args[2] != "--dll-sha256"
             || args[4] != "--report"
         {
             eprintln!(
-                "usage: standalone_host_dll_lifecycle --dll ABSOLUTE_OWN_SDK_DLL --dll-sha256 64_HEX --report NEW_ABSOLUTE_JSONL"
+                "usage: standalone_host_dll_lifecycle --dll ABSOLUTE_OWN_SDK_DLL --dll-sha256 64_HEX --report NEW_ABSOLUTE_JSONL [--window-metadata]"
             );
             std::process::exit(10);
         }
@@ -156,7 +184,8 @@ mod fixture {
         // Parent never performs report I/O. It can retire the process if file I/O,
         // a DLL call, or owner TLS epilogue stalls. External supervisor also required.
         let deadline = Instant::now() + Duration::from_secs(90);
-        for cycle in 1..=CYCLES {
+        let cycles = if window_metadata { 1 } else { CYCLES };
+        for cycle in 1..=cycles {
             let dll = dll.clone();
             let expected = expected.clone();
             let report_path = report_path.clone();
@@ -178,15 +207,28 @@ mod fixture {
                     file,
                     cycle,
                     sequence: 0,
+                    schema: if window_metadata {
+                        "pim.standalone_host_window_metadata.v2"
+                    } else {
+                        "pim.standalone_host_dll_lifecycle.v1"
+                    },
                 };
                 let result = catch_unwind(AssertUnwindSafe(|| {
-                    report.record(
-                        "started",
-                        json!({"cycles": CYCLES, "expected_sha256": expected,
-                        "previous_owner_os_exit_and_join_confirmed": cycle > 1,
-                        "runtime_claim": "standalone Host DLL lifetime prerequisite only"}),
-                    )?;
-                    exercise_owner(&dll, &expected, cycle, &mut report)?;
+                    if window_metadata {
+                        report.record(
+                            "started",
+                            json!({"cycles": 1, "expected_sha256": expected,
+                            "runtime_claim": "opt-in owned-window metadata fixture only"}),
+                        )?;
+                    } else {
+                        report.record(
+                            "started",
+                            json!({"cycles": CYCLES, "expected_sha256": expected,
+                            "previous_owner_os_exit_and_join_confirmed": cycle > 1,
+                            "runtime_claim": "standalone Host DLL lifetime prerequisite only"}),
+                        )?;
+                    }
+                    exercise_owner(&dll, &expected, cycle, window_metadata, &mut report)?;
                     // Remain alive after unload until parent has observed the real
                     // owner thread object as nonsignaled and explicitly acknowledges.
                     unloaded_tx
@@ -290,7 +332,13 @@ mod fixture {
         // fixture passed both real owner OS waits and joins, not a universal proof.
     }
 
-    fn exercise_owner(dll: &Path, expected: &str, cycle: u32, report: &mut Report) -> Check {
+    fn exercise_owner(
+        dll: &Path,
+        expected: &str,
+        cycle: u32,
+        window_metadata: bool,
+        report: &mut Report,
+    ) -> Check {
         ensure(
             sha256(b"") == "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
                 && sha256(b"abc")
@@ -359,7 +407,11 @@ mod fixture {
                 json!({"base_exports": 8,
                 "calling_convention": "C", "base_abi_version": 1}),
             )?;
-            exercise_host(&api, cycle, report)?;
+            if window_metadata {
+                exercise_window_metadata(&api, cycle, report)?;
+            } else {
+                exercise_host(&api, cycle, report)?;
+            }
         } // All DLL function pointers leave scope before unloading; never re-enter.
         ensure(unsafe { FreeLibrary(module) } != 0, "FreeLibrary failed")?;
         ensure(
@@ -496,7 +548,525 @@ mod fixture {
         )
     }
 
+    fn host_command(api: &Api, host: u64, command: HostCommand) -> Check<Value> {
+        let bytes = serde_json::to_vec(&HostRequest {
+            version: PROTOCOL_VERSION,
+            command,
+        })
+        .map_err(|e| e.to_string())?;
+        status(
+            unsafe { (api.host_call)(host, bytes.as_ptr(), bytes.len()) },
+            OK,
+            "typed host command",
+        )?;
+        retained(api, host)
+    }
+
+    fn client_command(
+        api: &Api,
+        host: u64,
+        recipient: RecipientId,
+        command: ClientCommand,
+    ) -> Check<Value> {
+        let bytes = serde_json::to_vec(&ClientRequest {
+            version: PROTOCOL_VERSION,
+            command,
+        })
+        .map_err(|e| e.to_string())?;
+        status(
+            unsafe {
+                (api.client_call)(host, recipient_number(recipient)?, bytes.as_ptr(), bytes.len())
+            },
+            OK,
+            "typed client command",
+        )?;
+        retained(api, host)
+    }
+
+    fn client_command_any(
+        api: &Api,
+        host: u64,
+        recipient: RecipientId,
+        command: ClientCommand,
+    ) -> Check<Value> {
+        let bytes = serde_json::to_vec(&ClientRequest {
+            version: PROTOCOL_VERSION,
+            command,
+        })
+        .map_err(|e| e.to_string())?;
+        status(
+            unsafe {
+                (api.client_call)(host, recipient_number(recipient)?, bytes.as_ptr(), bytes.len())
+            },
+            OK,
+            "typed client command with expected denial",
+        )?;
+        retained_any(api, host)
+    }
+
+    fn recipient_number(recipient: RecipientId) -> Check<u64> {
+        serde_json::to_value(recipient)
+            .map_err(|e| e.to_string())?
+            .as_u64()
+            .ok_or_else(|| "recipient token was not a u64".into())
+    }
+
+    fn coordinates(value: &Value) -> Check<[i64; 4]> {
+        Ok([
+            value["left"].as_i64().ok_or("missing left")?,
+            value["top"].as_i64().ok_or("missing top")?,
+            value["right"].as_i64().ok_or("missing right")?,
+            value["bottom"].as_i64().ok_or("missing bottom")?,
+        ])
+    }
+
+    fn rect_coordinates(rect: RECT) -> [i64; 4] {
+        [
+            i64::from(rect.left),
+            i64::from(rect.top),
+            i64::from(rect.right),
+            i64::from(rect.bottom),
+        ]
+    }
+
+    struct NativeWindowFacts {
+        outer: [i64; 4],
+        client: [i64; 4],
+        dpi: u32,
+        monitor: [i64; 4],
+        work_area: [i64; 4],
+    }
+
+    /// Sample Win32 independently after each public ABI observation.
+    fn native_window_facts(hwnd: HWND) -> Check<NativeWindowFacts> {
+        let mut outer = RECT::default();
+        let mut client = RECT::default();
+        ensure(
+            unsafe { GetWindowRect(hwnd, &mut outer) } != 0,
+            "GetWindowRect fixture",
+        )?;
+        ensure(
+            unsafe { GetClientRect(hwnd, &mut client) } != 0,
+            "GetClientRect fixture",
+        )?;
+        let mut top_left = POINT {
+            x: client.left,
+            y: client.top,
+        };
+        let mut bottom_right = POINT {
+            x: client.right,
+            y: client.bottom,
+        };
+        ensure(
+            unsafe { ClientToScreen(hwnd, &mut top_left) } != 0
+                && unsafe { ClientToScreen(hwnd, &mut bottom_right) } != 0,
+            "ClientToScreen fixture",
+        )?;
+        let dpi = unsafe { GetDpiForWindow(hwnd) };
+        ensure(dpi != 0, "GetDpiForWindow fixture")?;
+        let monitor = unsafe { MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST) };
+        ensure(!monitor.is_null(), "MonitorFromWindow fixture")?;
+        let mut monitor_info = MONITORINFO {
+            cbSize: std::mem::size_of::<MONITORINFO>() as u32,
+            ..Default::default()
+        };
+        ensure(
+            unsafe { GetMonitorInfoW(monitor, &mut monitor_info) } != 0,
+            "GetMonitorInfoW fixture",
+        )?;
+        Ok(NativeWindowFacts {
+            outer: rect_coordinates(outer),
+            client: [
+                i64::from(top_left.x),
+                i64::from(top_left.y),
+                i64::from(bottom_right.x),
+                i64::from(bottom_right.y),
+            ],
+            dpi,
+            monitor: rect_coordinates(monitor_info.rcMonitor),
+            work_area: rect_coordinates(monitor_info.rcWork),
+        })
+    }
+
+    fn check_metadata(window: &Value, hwnd: HWND, title: &str, rectangle: [i64; 4]) -> Check {
+        let native = native_window_facts(hwnd)?;
+        let metadata = &window["metadata"];
+        ensure(
+            window.get("hwnd").is_none() && metadata.get("hwnd").is_none()
+                && metadata.get("hmonitor").is_none(),
+            "native handles absent from window wire metadata",
+        )?;
+        ensure(
+            native.outer == rectangle && native.client == rectangle,
+            "known borderless native client/outer geometry",
+        )?;
+        ensure(
+            coordinates(&window["bounds"])? == native.outer,
+            "outer window bounds equal Win32",
+        )?;
+        ensure(metadata["title"] == title, "observed owned-window title")?;
+        ensure(
+            metadata["process_id"].as_u64() == Some(u64::from(unsafe { GetCurrentProcessId() }))
+                && metadata["ui_thread_id"].as_u64()
+                    == Some(u64::from(unsafe { GetCurrentThreadId() })),
+            "observed owner PID/UI thread",
+        )?;
+        ensure(
+            coordinates(&metadata["client_bounds"])? == native.client,
+            "physical desktop client bounds equal ClientToScreen",
+        )?;
+        ensure(
+            metadata["dpi"].as_u64() == Some(u64::from(native.dpi)),
+            "observed window DPI equals GetDpiForWindow",
+        )?;
+        ensure(
+            coordinates(&metadata["monitor_bounds"])? == native.monitor
+                && coordinates(&metadata["monitor_work_area"])? == native.work_area,
+            "observed monitor bounds and work area equal GetMonitorInfoW",
+        )?;
+        ensure(
+            native.monitor[0] < native.monitor[2]
+                && native.monitor[1] < native.monitor[3]
+                && native.client[0] >= native.monitor[0]
+                && native.client[1] >= native.monitor[1]
+                && native.client[2] <= native.monitor[2]
+                && native.client[3] <= native.monitor[3]
+                && native.work_area[0] >= native.monitor[0]
+                && native.work_area[1] >= native.monitor[1]
+                && native.work_area[2] <= native.monitor[2]
+                && native.work_area[3] <= native.monitor[3]
+                && native.work_area[0] < native.work_area[2]
+                && native.work_area[1] < native.work_area[3],
+            "native monitor and work-area containment",
+        )
+    }
+
+    fn check_native_geometry(hwnd: HWND, rectangle: [i64; 4]) -> Check {
+        let native = native_window_facts(hwnd)?;
+        ensure(
+            native.outer == rectangle && native.client == rectangle,
+            "known borderless native client/outer geometry",
+        )
+    }
+
+    struct RetireOnDestroy {
+        api: *const Api,
+        host: u64,
+        window: WindowId,
+        previous_proc: isize,
+        result: Option<Check<Value>>,
+    }
+
+    unsafe extern "system" fn retire_on_nc_destroy(
+        hwnd: HWND,
+        message: u32,
+        wparam: WPARAM,
+        lparam: LPARAM,
+    ) -> LRESULT {
+        let context = unsafe { GetWindowLongPtrW(hwnd, GWLP_USERDATA) } as *mut RetireOnDestroy;
+        if context.is_null() {
+            return unsafe { DefWindowProcW(hwnd, message, wparam, lparam) };
+        }
+        // The stack context and DLL function pointers outlive synchronous DestroyWindow.
+        let context = unsafe { &mut *context };
+        if message == WM_NCDESTROY {
+            context.result = Some(
+                catch_unwind(AssertUnwindSafe(|| {
+                    host_command(
+                        unsafe { &*context.api },
+                        context.host,
+                        HostCommand::RetireOwnWindow { window: context.window },
+                    )
+                }))
+                .unwrap_or_else(|_| Err("retire callback panicked".into())),
+            );
+        }
+        let previous = unsafe {
+            std::mem::transmute::<
+                isize,
+                unsafe extern "system" fn(HWND, u32, WPARAM, LPARAM) -> LRESULT,
+            >(context.previous_proc)
+        };
+        let result = unsafe { CallWindowProcW(Some(previous), hwnd, message, wparam, lparam) };
+        if message == WM_NCDESTROY {
+            unsafe { SetWindowLongPtrW(hwnd, GWLP_USERDATA, 0) };
+        }
+        result
+    }
+
+    fn exercise_window_metadata(api: &Api, cycle: u32, report: &mut Report) -> Check {
+        ensure(
+            !unsafe { SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE) }
+                .is_null(),
+            "per-monitor DPI context required",
+        )?;
+        let screens = serde_json::to_vec(&json!({"revision": 1,
+            "desktop": {"left": 0, "top": 0, "right": 800, "bottom": 600},
+            "screens": [{"left": 0, "top": 0, "right": 800, "bottom": 600}]}))
+            .map_err(|e| e.to_string())?;
+        let mut host = 0;
+        status(
+            unsafe {
+                (api.create)(
+                    9000 + u64::from(cycle),
+                    screens.as_ptr(),
+                    screens.len(),
+                    &mut host,
+                )
+            },
+            OK,
+            "metadata host create",
+        )?;
+        ensure(host != 0, "metadata host token missing")?;
+        let registered = host_command(
+            api,
+            host,
+            HostCommand::RegisterRecipient {
+                local_identity: "standalone-owned-window-metadata-fixture".into(),
+            },
+        )?;
+        ensure(
+            registered["response"]["kind"] == "recipient_registered",
+            "recipient registration",
+        )?;
+        let recipient: RecipientId =
+            serde_json::from_value(registered["response"]["recipient"].clone())
+                .map_err(|e| e.to_string())?;
+        let grant = Grant {
+            users: UserScope::AllOwned,
+            pointer_events: false,
+            key_events: false,
+            owned_windows: true,
+        };
+        ensure(
+            host_command(api, host, HostCommand::ApproveEvents { recipient, grant })?["response"]
+                ["kind"]
+                == "acknowledged",
+            "window observation grant",
+        )?;
+        let controls = ControlGrant {
+            users: UserScope::AllOwned,
+            delegated_users: false,
+            user_lifecycle: false,
+            cursor: false,
+            pointer_input: false,
+            key_input: false,
+            window_tracking: true,
+            window_control: false,
+        };
+        ensure(
+            host_command(
+                api,
+                host,
+                HostCommand::ApproveControls {
+                    recipient,
+                    grant: controls,
+                },
+            )?["response"]["kind"]
+                == "acknowledged",
+            "window tracking grant",
+        )?;
+
+        let class = wide(OsStr::new("STATIC"))?;
+        let first_title = "PIM owned metadata A";
+        let second_title = "PIM owned metadata B";
+        let title = wide(OsStr::new(first_title))?;
+        let first = [64, 72, 344, 252];
+        let second = [96, 104, 416, 324];
+        let hwnd = unsafe {
+            CreateWindowExW(
+                0,
+                class.as_ptr(),
+                title.as_ptr(),
+                WS_POPUP,
+                64,
+                72,
+                280,
+                180,
+                null_mut(),
+                null_mut(),
+                null_mut(),
+                std::ptr::null(),
+            )
+        };
+        ensure(!hwnd.is_null(), "owned top-level fixture window creation")?;
+        check_native_geometry(hwnd, first)?;
+        let registered = host_command(
+            api,
+            host,
+            HostCommand::RegisterOwnWindow {
+                recipient,
+                native_window: hwnd as usize,
+            },
+        )?;
+        ensure(
+            registered["response"]["kind"] == "window_registered",
+            "window registration",
+        )?;
+        let window: WindowId = serde_json::from_value(registered["response"]["window"].clone())
+            .map_err(|e| e.to_string())?;
+        let query = client_command(api, host, recipient, ClientCommand::WindowQuery { window })?;
+        check_metadata(&query["response"]["window"], hwnd, first_title, first)?;
+        let subscribed = client_command(
+            api,
+            host,
+            recipient,
+            ClientCommand::Subscribe { capacity: 8 },
+        )?;
+        ensure(subscribed["response"]["kind"] == "subscribed", "window subscription")?;
+        let subscription: SubscriptionId =
+            serde_json::from_value(subscribed["response"]["subscription"].clone())
+                .map_err(|e| e.to_string())?;
+        let tracked = client_command(api, host, recipient, ClientCommand::WindowTrack { window })?;
+        check_metadata(&tracked["response"]["window"], hwnd, first_title, first)?;
+        let poll = client_command(
+            api,
+            host,
+            recipient,
+            ClientCommand::Poll {
+                subscription,
+                max_events: 8,
+            },
+        )?;
+        ensure(poll["response"]["poll"]["kind"] == "events", "tracked poll kind")?;
+        let tracked_events = poll["response"]["poll"]["events"]
+            .as_array()
+            .ok_or("tracked events missing")?;
+        ensure(
+            tracked_events.len() == 1
+                && tracked_events[0]["event"]["kind"] == "window"
+                && tracked_events[0]["event"]["update"]["kind"] == "tracked",
+            "tracked event",
+        )?;
+        check_metadata(
+            &tracked_events[0]["event"]["update"]["window"],
+            hwnd,
+            first_title,
+            first,
+        )?;
+
+        let changed_title = wide(OsStr::new(second_title))?;
+        ensure(
+            unsafe { SetWindowTextW(hwnd, changed_title.as_ptr()) } != 0,
+            "SetWindowTextW fixture",
+        )?;
+        ensure(unsafe { MoveWindow(hwnd, 96, 104, 320, 220, 0) } != 0, "MoveWindow fixture")?;
+        check_native_geometry(hwnd, second)?;
+        let refreshed = host_command(api, host, HostCommand::RefreshOwnWindow { window })?;
+        ensure(refreshed["response"]["kind"] == "window", "refresh reply kind")?;
+        check_metadata(&refreshed["response"]["window"], hwnd, second_title, second)?;
+        let poll = client_command(
+            api,
+            host,
+            recipient,
+            ClientCommand::Poll {
+                subscription,
+                max_events: 8,
+            },
+        )?;
+        ensure(poll["response"]["poll"]["kind"] == "events", "changed poll kind")?;
+        let changed_events = poll["response"]["poll"]["events"]
+            .as_array()
+            .ok_or("changed events missing")?;
+        ensure(
+            changed_events.len() == 1
+                && changed_events[0]["event"]["kind"] == "window"
+                && changed_events[0]["event"]["update"]["kind"] == "changed",
+            "changed event",
+        )?;
+        check_metadata(
+            &changed_events[0]["event"]["update"]["window"],
+            hwnd,
+            second_title,
+            second,
+        )?;
+        let query = client_command(api, host, recipient, ClientCommand::WindowQuery { window })?;
+        check_metadata(&query["response"]["window"], hwnd, second_title, second)?;
+        let snapshot = client_command(api, host, recipient, ClientCommand::Snapshot)?;
+        let windows = snapshot["response"]["snapshot"]["windows"]
+            .as_array()
+            .ok_or("window snapshot missing")?;
+        ensure(windows.len() == 1, "tracked window snapshot size")?;
+        check_metadata(&windows[0], hwnd, second_title, second)?;
+        report.record("owned_window_metadata_checked", json!({
+            "host_create": true, "registered_same_process_ui_thread": true,
+            "query_track_event_refresh_snapshot_checked": true,
+            "fixture_titles_and_exact_physical_clients_checked": true,
+            "exact_os_dpi_and_monitor_checked": true, "host_input_sent": false,
+        }))?;
+
+        let mut retirement = RetireOnDestroy {
+            api: api as *const Api,
+            host,
+            window,
+            previous_proc: 0,
+            result: None,
+        };
+        unsafe {
+            SetLastError(0);
+        }
+        let previous_data = unsafe {
+            SetWindowLongPtrW(
+                hwnd,
+                GWLP_USERDATA,
+                (&mut retirement as *mut RetireOnDestroy) as isize,
+            )
+        };
+        ensure(
+            previous_data == 0 && unsafe { GetLastError() } == 0,
+            "fixture user data slot",
+        )?;
+        unsafe {
+            SetLastError(0);
+        }
+        retirement.previous_proc =
+            unsafe { SetWindowLongPtrW(hwnd, GWLP_WNDPROC, retire_on_nc_destroy as isize) };
+        ensure(
+            retirement.previous_proc != 0 || unsafe { GetLastError() } == 0,
+            "install destruction observer",
+        )?;
+        ensure(retirement.previous_proc != 0, "previous fixture WndProc missing")?;
+        ensure(unsafe { DestroyWindow(hwnd) } != 0, "DestroyWindow fixture")?;
+        let retired = retirement.result.take().ok_or("WM_NCDESTROY callback absent")??;
+        ensure(retired["response"]["kind"] == "acknowledged", "WM_NCDESTROY retired token")?;
+        let stale = client_command_any(
+            api,
+            host,
+            recipient,
+            ClientCommand::WindowQuery { window },
+        )?;
+        ensure(
+            stale["status"] == "error" && stale["error"]["code"] == "missing",
+            "retired window query denied",
+        )?;
+        report.record("nc_destroy_retired_and_stale_denied", json!({
+            "wm_nc_destroy_retirement": true, "stale_query_code": "missing",
+            "owned_window_destroyed": true,
+        }))?;
+
+        status(unsafe { (api.destroy)(host) }, OK, "metadata host destroy")?;
+        let mut size = 0;
+        status(
+            unsafe { (api.size)(host, &mut size) },
+            INVALID_HANDLE,
+            "metadata host stale token",
+        )?;
+        report.record("host_destroyed_after_window_retirement", json!({
+            "destroy_status": OK, "stale_handle_status": INVALID_HANDLE,
+            "window_retired_before_destroy": true, "virtual_users_created": 0,
+        }))
+    }
+
     fn retained(api: &Api, host: u64) -> Check<Value> {
+        let value = retained_any(api, host)?;
+        ensure(
+            value["status"] == "ok" && value["version"] == 1,
+            "invalid successful reply envelope",
+        )?;
+        Ok(value)
+    }
+
+    fn retained_any(api: &Api, host: u64) -> Check<Value> {
         let mut needed = 0;
         status(
             unsafe { (api.size)(host, &mut needed) },
@@ -538,10 +1108,7 @@ mod fixture {
             "copy consumed reply",
         )?;
         let value: Value = serde_json::from_slice(&bytes).map_err(|e| e.to_string())?;
-        ensure(
-            value["status"] == "ok" && value["version"] == 1,
-            "invalid successful reply envelope",
-        )?;
+        ensure(value["version"] == 1, "invalid reply envelope version")?;
         Ok(value)
     }
     // Small dependency-free SHA-256 used only to bind this explicitly supplied file.

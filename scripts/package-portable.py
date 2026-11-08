@@ -171,12 +171,18 @@ def copy_ocr_assets(built_assets, source_assets, destination):
     return records
 
 
-def copy_ocrs_license(source_notice, destination):
-    """Supply the exact upstream MIT terms omitted from ocrs 0.12.2's crate."""
+def validate_ocrs_license(source_notice):
+    """Require the pinned upstream notice bytes before compilation or staging."""
     expected = (1070, "96b5371602fbd3cb11a680dade714465520c72b02397be5095a3c29b1a3fb30a")
     data = source_notice.read_bytes()
     if (len(data), hashlib.sha256(data).hexdigest()) != expected:
         raise ValueError("Unapproved ocrs 0.12.2 MIT notice")
+    return expected
+
+
+def copy_ocrs_license(source_notice, destination):
+    """Supply the exact upstream MIT terms omitted from ocrs 0.12.2's crate."""
+    expected = validate_ocrs_license(source_notice)
     destination.mkdir(parents=True, exist_ok=True)
     target = destination/"LICENSE-MIT.txt"
     shutil.copyfile(source_notice, target)
@@ -376,6 +382,7 @@ def main():
     parser.add_argument("--record-sdk-web", action="store_true")
     args = parser.parse_args()
     if args.record_inputs:
+        validate_ocrs_license(ROOT/"crates/protoinputmultiplex/notices/ocrs-MIT.txt")
         files = [{"path": p, "sha256": sha(ROOT/p)} for p in source_files()]
         record = {"schema_version": 1, "source_commit": source_commit(), "source_files": files,
                   "rustc": command("rustc", "-Vv"), "cargo": command("cargo", "-V"),

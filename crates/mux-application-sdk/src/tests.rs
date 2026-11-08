@@ -3,6 +3,49 @@ use mux_core::desktop::Bounds;
 use std::collections::BTreeSet;
 
 #[test]
+fn client_rejects_invalid_window_metadata_before_folding_snapshot() {
+    let mut engine = Engine::new(71, screens()).unwrap();
+    let owner = engine.register_recipient("owner").unwrap();
+    let mut grant = event_grant(UserScope::AllOwned, false);
+    grant.owned_windows = true;
+    engine.approve_grant(owner, grant).unwrap();
+    let id = engine
+        .register_owned_window(
+            owner,
+            WindowObservation {
+                bounds: screens().desktop,
+                metadata: WindowMetadata {
+                    title: Some("Owned window".into()),
+                    ..Default::default()
+                },
+                visible: true,
+                minimized: false,
+                maximized: false,
+                click_through: false,
+                enabled: true,
+                topmost: false,
+                opacity: 255,
+            },
+        )
+        .unwrap();
+    engine.track_window(owner, id).unwrap();
+    let valid = engine.snapshot(owner).unwrap();
+    let mut invalid = valid.clone();
+    invalid.windows[0].metadata.title = Some("x".repeat(513));
+    let mut client = ClientState::default();
+    assert_eq!(
+        client.install_snapshot(invalid, 71),
+        Err(FoldError::Invalid("window title"))
+    );
+    assert!(client.windows().is_empty());
+    client.install_snapshot(valid, 71).unwrap();
+    assert_eq!(
+        client.windows().get(&id).unwrap().metadata.title.as_deref(),
+        Some("Owned window")
+    );
+}
+
+#[test]
 fn real_engine_repeated_overflow_keeps_original_origin_and_latest_snapshot_floor() {
     let mut host = Host::new(71, screens()).unwrap();
     let app = host.register_recipient("shared state consumer").unwrap();

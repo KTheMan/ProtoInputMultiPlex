@@ -6,7 +6,7 @@
 //! stay in this adapter; wire snapshots contain session-local WindowIds only.
 use mux_core::application_event::{
     Engine, Error, OwnWindowAdapter, RecipientId, WindowAction, WindowControl, WindowId,
-    WindowInfo, WindowObservation,
+    WindowInfo, WindowMetadata, WindowObservation,
 };
 use mux_core::desktop::Bounds;
 use std::{
@@ -17,12 +17,15 @@ use std::{
     sync::atomic::{AtomicU64, Ordering},
 };
 use windows_sys::Win32::{
-    Foundation::{GetLastError, HWND, RECT, SetLastError},
+    Foundation::{GetLastError, HWND, POINT, RECT, SetLastError},
+    Graphics::Gdi::{
+        ClientToScreen, GetMonitorInfoW, MONITORINFO, MONITOR_DEFAULTTONEAREST, MonitorFromWindow,
+    },
     System::Threading::{GetCurrentProcessId, GetCurrentThreadId},
     UI::{
         HiDpi::{
             DPI_AWARENESS_PER_MONITOR_AWARE, GetAwarenessFromDpiAwarenessContext,
-            GetThreadDpiAwarenessContext,
+            GetDpiForWindow, GetThreadDpiAwarenessContext,
         },
         Input::KeyboardAndMouse::{EnableWindow, GetFocus, IsWindowEnabled, SetFocus},
         WindowsAndMessaging::*,
@@ -36,6 +39,57 @@ struct Binding {
     owner: RecipientId,
     cookie: Box<u8>,
     wake_pending: Cell<bool>,
+}
+
+/// Until Engine registration succeeds, keep the same private cookie on the HWND.
+/// Drop removes only our exact property, including every early-error path.
+struct PendingRegistration<'a> {
+    hwnd: HWND,
+    property: &'a [u16],
+    cookie: Option<Box<u8>>,
+}
+
+impl<'a> PendingRegistration<'a> {
+    fn install(hwnd: HWND, property: &'a [u16]) -> Result<Self, Error> {
+        if !unsafe { GetPropW(hwnd, property.as_ptr()) }.is_null() {
+            return Err(Error::Invalid("window property already set"));
+        }
+        let cookie = Box::new(1_u8);
+        let value = (&*cookie as *const u8).cast_mut().cast();
+        if unsafe { SetPropW(hwnd, property.as_ptr(), value) } == 0 {
+            return Err(api_error("SetPropW"));
+        }
+        Ok(Self {
+            hwnd,
+            property,
+            cookie: Some(cookie),
+        })
+    }
+
+    fn matches(&self) -> bool {
+        let cookie = self.cookie.as_ref().expect("pending cookie");
+        unsafe { GetPropW(self.hwnd, self.property.as_ptr()) }
+            == (&**cookie as *const u8).cast_mut().cast()
+    }
+
+    fn into_binding(mut self, owner: RecipientId) -> Binding {
+        Binding {
+            hwnd: self.hwnd,
+            owner,
+            cookie: self.cookie.take().expect("pending cookie"),
+            wake_pending: Cell::new(false),
+        }
+    }
+}
+
+impl Drop for PendingRegistration<'_> {
+    fn drop(&mut self) {
+        if self.cookie.is_some() && self.matches() {
+            unsafe {
+                RemovePropW(self.hwnd, self.property.as_ptr());
+            }
+        }
+    }
 }
 
 /// !Send/!Sync: window controls and lifetime notifications belong to their UI thread.
@@ -130,27 +184,22 @@ impl WindowAdapter {
         if self.windows.values().any(|entry| entry.hwnd == hwnd) {
             return Err(Error::Invalid("window already registered"));
         }
+        // Install before any observation that can reenter the owned WndProc.
+        let pending = PendingRegistration::install(hwnd, &self.property)?;
         let observed = observe(hwnd)?;
-        let id = engine.register_owned_window(owner, observed)?;
-        let binding = Binding {
-            hwnd,
-            owner,
-            cookie: Box::new(1),
-            wake_pending: Cell::new(false),
-        };
-        let value = (&*binding.cookie as *const u8).cast_mut().cast();
-        if unsafe { SetPropW(hwnd, self.property.as_ptr(), value) } == 0 {
-            let failure = api_error("SetPropW");
-            let _ = engine.destroy_window(id);
-            return Err(failure);
+        self.owned(hwnd)?;
+        if !pending.matches() {
+            return Err(Error::MissingWindow);
         }
-        self.windows.insert(id, binding);
+        let id = engine.register_owned_window(owner, observed)?;
+        self.windows.insert(id, pending.into_binding(owner));
         Ok(id)
     }
 
     pub fn refresh(&self, engine: &mut Engine, id: WindowId) -> Result<WindowInfo, Error> {
         let binding = self.binding(id)?;
         let observed = info(id, observe(binding.hwnd)?);
+        self.binding(id)?;
         engine.update_owned_window(binding.owner, observed.clone())?;
         Ok(observed)
     }
@@ -236,10 +285,63 @@ impl Drop for WindowAdapter {
 }
 
 fn observe(hwnd: HWND) -> Result<WindowObservation, Error> {
+    // Recheck ownership before reading details, even after the adapter's binding check.
+    let mut process = 0;
+    let thread = unsafe { GetWindowThreadProcessId(hwnd, &mut process) };
+    if hwnd.is_null()
+        || thread != unsafe { GetCurrentThreadId() }
+        || process != unsafe { GetCurrentProcessId() }
+        || unsafe { GetAncestor(hwnd, GA_ROOT) } != hwnd
+    {
+        return Err(Error::Denied);
+    }
     let mut rect = RECT::default();
     if unsafe { GetWindowRect(hwnd, &mut rect) } == 0 {
         return Err(api_error("GetWindowRect"));
     }
+    let mut client = RECT::default();
+    if unsafe { GetClientRect(hwnd, &mut client) } == 0 {
+        return Err(api_error("GetClientRect"));
+    }
+    let mut top_left = POINT {
+        x: client.left,
+        y: client.top,
+    };
+    let mut bottom_right = POINT {
+        x: client.right,
+        y: client.bottom,
+    };
+    if unsafe { ClientToScreen(hwnd, &mut top_left) } == 0
+        || unsafe { ClientToScreen(hwnd, &mut bottom_right) } == 0
+    {
+        return Err(api_error("ClientToScreen"));
+    }
+    let dpi = unsafe { GetDpiForWindow(hwnd) };
+    if dpi == 0 {
+        return Err(api_error("GetDpiForWindow"));
+    }
+    let monitor = unsafe { MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST) };
+    if monitor.is_null() {
+        return Err(api_error("MonitorFromWindow"));
+    }
+    let mut monitor_info = MONITORINFO {
+        cbSize: std::mem::size_of::<MONITORINFO>() as u32,
+        ..Default::default()
+    };
+    if unsafe { GetMonitorInfoW(monitor, &mut monitor_info) } == 0 {
+        return Err(api_error("GetMonitorInfoW"));
+    }
+    let mut title_buffer = [0_u16; 257];
+    unsafe {
+        SetLastError(0);
+    }
+    let title_len = unsafe {
+        GetWindowTextW(hwnd, title_buffer.as_mut_ptr(), title_buffer.len() as i32)
+    };
+    if title_len == 0 && unsafe { GetLastError() } != 0 {
+        return Err(api_error("GetWindowTextW"));
+    }
+    let title = bounded_title(&title_buffer, title_len)?;
     let style = unsafe { GetWindowLongPtrW(hwnd, GWL_EXSTYLE) } as u32;
     let mut opacity = 255;
     if style & WS_EX_LAYERED != 0 {
@@ -257,11 +359,20 @@ fn observe(hwnd: HWND) -> Result<WindowObservation, Error> {
         }
     }
     Ok(WindowObservation {
-        bounds: Bounds {
-            left: rect.left,
-            top: rect.top,
-            right: rect.right,
-            bottom: rect.bottom,
+        bounds: bounds(rect),
+        metadata: WindowMetadata {
+            title: Some(title),
+            process_id: Some(process),
+            ui_thread_id: Some(thread),
+            client_bounds: Some(Bounds {
+                left: top_left.x,
+                top: top_left.y,
+                right: bottom_right.x,
+                bottom: bottom_right.y,
+            }),
+            dpi: Some(dpi),
+            monitor_bounds: Some(bounds(monitor_info.rcMonitor)),
+            monitor_work_area: Some(bounds(monitor_info.rcWork)),
         },
         visible: unsafe { IsWindowVisible(hwnd) } != 0,
         enabled: unsafe { IsWindowEnabled(hwnd) } != 0,
@@ -274,10 +385,49 @@ fn observe(hwnd: HWND) -> Result<WindowObservation, Error> {
     })
 }
 
+fn bounded_title(buffer: &[u16], length: i32) -> Result<String, Error> {
+    let length = usize::try_from(length)
+        .ok()
+        .filter(|length| *length < buffer.len())
+        .ok_or_else(|| Error::Adapter("GetWindowTextW returned an invalid length".into()))?;
+    let mut title = String::from_utf16_lossy(&buffer[..length]);
+    while title.len() > 512 {
+        title.pop();
+    }
+    Ok(title)
+}
+
+#[cfg(test)]
+mod metadata_tests {
+    use super::bounded_title;
+
+    #[test]
+    fn title_decoder_bounds_native_length_and_utf8() {
+        let buffer = [0_u16; 257];
+        assert!(bounded_title(&buffer, -1).is_err());
+        assert!(bounded_title(&buffer, 257).is_err());
+        assert_eq!(bounded_title(&buffer, 0).unwrap(), "");
+        let long = [0x4e2d_u16; 257];
+        let title = bounded_title(&long, 256).unwrap();
+        assert!(title.len() <= 512);
+        assert_eq!(title.chars().count(), 170);
+    }
+}
+
+fn bounds(rect: RECT) -> Bounds {
+    Bounds {
+        left: rect.left,
+        top: rect.top,
+        right: rect.right,
+        bottom: rect.bottom,
+    }
+}
+
 fn info(id: WindowId, value: WindowObservation) -> WindowInfo {
     WindowInfo {
         id,
         bounds: value.bounds,
+        metadata: value.metadata,
         visible: value.visible,
         enabled: value.enabled,
         topmost: value.topmost,
@@ -448,6 +598,8 @@ impl OwnWindowAdapter for WindowAdapter {
         }
         // A callback can destroy a window during a synchronous window operation.
         self.binding(current.id)?;
-        Ok(info(current.id, observe(hwnd)?))
+        let observed = observe(hwnd)?;
+        self.binding(current.id)?;
+        Ok(info(current.id, observed))
     }
 }

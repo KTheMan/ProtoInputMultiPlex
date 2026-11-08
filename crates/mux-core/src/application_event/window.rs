@@ -10,6 +10,9 @@ pub struct WindowId(pub(crate) u64);
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct WindowObservation {
     pub bounds: Bounds,
+    /// Optional facts read by the trusted host. Missing facts remain unavailable.
+    #[serde(default)]
+    pub metadata: WindowMetadata,
     pub visible: bool,
     pub minimized: bool,
     pub maximized: bool,
@@ -22,6 +25,8 @@ pub struct WindowObservation {
 pub struct WindowInfo {
     pub id: WindowId,
     pub bounds: Bounds,
+    #[serde(default)]
+    pub metadata: WindowMetadata,
     pub visible: bool,
     pub minimized: bool,
     pub maximized: bool,
@@ -29,6 +34,73 @@ pub struct WindowInfo {
     pub enabled: bool,
     pub topmost: bool,
     pub opacity: u8,
+}
+
+/// Observed facts about a registered, owned window. Coordinates are physical
+/// desktop pixels; IDs are informational and never authorize registration.
+/// No native window or monitor handles cross this boundary.
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub struct WindowMetadata {
+    pub title: Option<String>,
+    pub process_id: Option<u32>,
+    pub ui_thread_id: Option<u32>,
+    pub client_bounds: Option<Bounds>,
+    pub dpi: Option<u32>,
+    pub monitor_bounds: Option<Bounds>,
+    pub monitor_work_area: Option<Bounds>,
+}
+
+impl WindowMetadata {
+    /// Validate facts supplied by a host or received in an SDK snapshot/event.
+    pub fn validate(&self) -> Result<(), &'static str> {
+        if self
+            .title
+            .as_ref()
+            .is_some_and(|title| title.len() > 512 || title.contains('\0'))
+        {
+            return Err("window title");
+        }
+        if self.process_id == Some(0) || self.ui_thread_id == Some(0) {
+            return Err("window owner identity");
+        }
+        if self
+            .client_bounds
+            .is_some_and(|bounds| {
+                let limit = -1_000_000..=1_000_000;
+                !limit.contains(&bounds.left)
+                    || !limit.contains(&bounds.top)
+                    || !limit.contains(&bounds.right)
+                    || !limit.contains(&bounds.bottom)
+                    || bounds.right < bounds.left
+                    || bounds.bottom < bounds.top
+            })
+        {
+            return Err("window client bounds");
+        }
+        if self.dpi.is_some_and(|dpi| !(1..=4096).contains(&dpi)) {
+            return Err("window dpi");
+        }
+        if self
+            .monitor_bounds
+            .is_some_and(|bounds| !bounds.valid_region())
+        {
+            return Err("window monitor bounds");
+        }
+        if let Some(work) = self.monitor_work_area {
+            let Some(monitor) = self.monitor_bounds else {
+                return Err("window monitor work area");
+            };
+            if !work.valid_region()
+                || work.left < monitor.left
+                || work.top < monitor.top
+                || work.right > monitor.right
+                || work.bottom > monitor.bottom
+            {
+                return Err("window monitor work area");
+            }
+        }
+        Ok(())
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]

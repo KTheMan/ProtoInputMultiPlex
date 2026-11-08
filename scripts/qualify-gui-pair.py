@@ -189,6 +189,11 @@ class Pair:
                        "hardware_qualified": False}
         self.gui = None
         self.live_read_retries = 0
+        self.native_milestone = "not_started"
+        self.overlap_samples = 0
+        self.expected_approvals = None
+        self.expected_connections = None
+        self.last_launch_modified = None
 
     def strict_observation(self, role, operation):
         require(role in READ_ROLES and role not in LIVE_READ_ROLES)
@@ -285,9 +290,12 @@ class Pair:
         value, modified = self.live_json("gui_launch", path)
         require(time.time() - modified < 2)
         require(all(value[k] is False for k in ("controller_present", "preflight_pending", "stopping")))
+        self.last_launch_modified = modified
         return value
 
     def event_status(self, phase=None, users=None, approved=None, connections=None):
+        self.expected_approvals = approved
+        self.expected_connections = connections
         value = self.launch_status()["setup"]["application_events"]
         require(value["sample_age_ms"] <= 2000)
         if phase is not None and value["phase"] != phase:
@@ -379,12 +387,14 @@ class Pair:
             data = self.strict_json("setup_descriptor", paths[0])
             require(data["controller_pid"] == self.gui.pid and data["kind"] == "stopped_setup")
             self.setup_descriptor = paths[0]
-            self.mcp_status(0)
+            self.mcp_status(0, 2)
             return True
         raise Rejected()
 
-    def mcp_status(self, connections):
-        self.stage = "read-only-stopped-setup"
+    def mcp_status(self, connections, approved):
+        self.check = "mcp_status_expected_phase"
+        self.expected_approvals = approved
+        self.expected_connections = connections
         # One authenticated MCP subprocess; the controller sends only initialize and status.
         if not hasattr(self, "mcp"):
             err = open(self.private / "mcp-stderr.log", "xb")
@@ -411,9 +421,11 @@ class Pair:
         # Stopped Setup's standalone status tool returns PublicStatus directly.
         # Only Script launch snapshots nest it under setup.application_events.
         s = value
-        require(s["phase"] == "active" and s["session_active"] and s["local_virtual_users"] == s["native_observed_users"] == 2 and s["approved_receivers"] == 2 and s["pointer_export"] and s["keyboard_export"])
+        require(s["phase"] == "active" and s["session_active"] and s["local_virtual_users"] == s["native_observed_users"] == 2 and s["approved_receivers"] == approved and s["pointer_export"] and s["keyboard_export"])
+        self.check = "mcp_status_fresh_transport_cleanup"
         require(s["sample_age_ms"] <= 2000 and s.get("transport_sample_age_ms", 99999) <= 2000 and s.get("connected_clients") == connections and s.get("cleanup_pending") == 0)
         self.launch_status()
+        self.check = "none"
 
     def rpc(self, method, params):
         self.rpc_id += 1
@@ -491,6 +503,13 @@ class Pair:
             codec = "other"
         result = {"schema": "pim.gui-pair.failure-observations.v1",
                   "checkpoint": count(self.checkpoint, 42), "check": self.check,
+                  "native_milestone": self.native_milestone,
+                  "native_exit_state": ("not_launched" if not hasattr(self, "native") else
+                                        "running" if self.native.poll() is None else
+                                        "zero" if self.native.poll() == 0 else "nonzero"),
+                  "overlap_samples": count(self.overlap_samples, 1000),
+                  "expected_approvals": count(self.expected_approvals, 8),
+                  "expected_connections": count(self.expected_connections, 8),
                   "receipt_reader_encoding": "utf-8-sig",
                   "python_major": int(sys.version_info.major), "python_minor": int(sys.version_info.minor),
                   "python_utf8_mode": bool(sys.flags.utf8_mode), "runtime_default_text_encoding": codec,
@@ -783,6 +802,7 @@ class Pair:
     def gap_cases(self, ids):
         # Separate bounded group: the original 17 InputAtRevision cases stay intact.
         self.stage = "web-real-core-gap-recovery"
+        self.check = "gap_local_click_gate"
         self.gap_acknowledgments = 0
         user = self.hook_ids[0]
         primary_down = {"kind": "button", "button": "primary", "transition": "down"}
@@ -793,6 +813,7 @@ class Pair:
         # Local default-off Click rejection must neither send nor allocate an ID.
         require(self.web("(()=>{const c=window.pimClient,s=c.state_json();let rejected=false;try{c.request(" + click + ");}catch(_){rejected=true;}return rejected && c.state_json()===s && !document.querySelector('[data-pointer]').checked;})()"))
         require(self.web("window.pimClient.enable_pointer(true);true"))
+        self.check = "gap_held_pair_and_capacity"
         self.hook_input(user, primary_down, gap=True)
         ready = [x["ready"] for x in self.hook_messages() if x.get("kind") == "ready"]
         require(len(ready) == 1 and 1 <= ready[0]["limits"]["max_queue"] <= 4096)
@@ -803,6 +824,7 @@ class Pair:
         release = self.hook_input(user, primary_up, gap=True)
         data = self.hook_counts(2, 1, 1, 2)
         require(json.loads(data["lateClicks"][-1])["event"] == release)
+        self.check = "gap_capacity_one_refresh"
         previous = [x["reply"]["response"]["subscription"] for x in self.hook_messages() if x.get("kind") == "response" and x["reply"].get("status") == "ok" and x["reply"]["response"]["kind"] == "subscribed"][-1]
         small = self.gap_refresh(1, ids)
         require(small["subscription"] != previous)
@@ -811,6 +833,7 @@ class Pair:
         require(self.web(r'''(()=>{const c=window.pimClient,h=window.pimHook;h.gaps=[];h.t.gap=c.add_event_listener('{"kind":"server"}',raw=>{const m=JSON.parse(raw);if(m.kind==='event_stream' && m.stream.kind==='gap'){if(h.gaps.length>=8)throw Error('gap budget');h.gaps.push({raw,state:c.state_json(),pointer:document.querySelector('[data-pointer]').checked,keys:document.querySelector('[data-keys]').checked,selected:document.querySelector('[data-users]').value});}});return true;})()'''))
         before = self.hook_request_id
         require(self.web("window.pimClient.request(" + click + ");true"))
+        self.check = "gap_atomic_click_cleanup_overflow"
         def overflowed():
             messages = self.hook_messages()
             replies = [x for x in messages if x.get("kind") == "response" and x["request_id"] > before]
@@ -842,12 +865,14 @@ class Pair:
         self.hook_request_id = before + 2
         self.hook_counts(2, 1, 1, 2)
         require(self.web("(()=>{const c=window.pimClient,s=c.state_json();let rejected=false;try{c.request(" + click + ");}catch(_){rejected=true;}return rejected && c.state_json()===s;})()"))
+        self.check = "gap_explicit_resubscribe"
         fresh = self.gap_refresh(None, ids)
         require(fresh["subscription"] != small["subscription"] and fresh["snapshot"]["through_sequence"] >= cleanup_sequence)
         require(all(u["held_keys"] == [] and u["pointer"]["held_buttons"] == [] for u in fresh["snapshot"]["users"]))
         require(self.web("window.pimClient.remove_listener(window.pimHook.t.gap)"))
         # Both same GUI-created users resume ordinary virtual motion/pairs, with
         # exact native source attribution and callback release envelopes.
+        self.check = "gap_two_user_resume"
         for index, current in enumerate(self.hook_ids):
             self.hook_select(current)
             position = next(u["pointer"]["position"] for u in self.state()["users"] if u["id"] == user)
@@ -865,6 +890,7 @@ class Pair:
             "explicit_resubscriptions": 2, "gap_callback_cleared_model": True,
             "pending_click_suppressed": True, "same_two_users_resume": True,
             "stale_token_runtime_qualified": False, "repeated_gap_family_qualified": False}
+        self.check = "none"
 
     def hook_cleanup(self):
         self.stage = "web-hooks-reentrant-dispose"
@@ -985,14 +1011,16 @@ class Pair:
         self.stage = "native-pulse-overlap"
         self.native_report = self.private / "native.jsonl"
         self.native = self.launch([native_exe, "--dll", dll, "--sha256", native_meta["dll"]["sha256"], "--descriptor", self.native_descriptor, "--report", self.native_report, "--virtual-key", "4", "--observe-seconds", "60"], "native")
+        self.native_milestone = "launched"
         snap = self.wait(lambda: self.native_detail("gui_snapshot"))
         require(self.identities(snap["users"]) == ids)
         require(self.native_detail("started")["observation_seconds"] == 60)
         ready = self.wait(lambda: self.native_detail("gui_ready"))
         require(ready["version"] == 1 and ready["epoch"] == self.epoch)
+        self.native_milestone = "subscribed"
         self.grants(ready["events"], ready["controls"], ids)
         self.wait(lambda: self.event_status("active", 2, 2, 2))
-        self.mcp_status(2)
+        self.mcp_status(2, 2)
         # Browser handler receives raw Rust-validated JSON as strings: no Number parse.
         def pulse():
             raw = self.web("JSON.stringify(window.pimEvents)")
@@ -1018,32 +1046,80 @@ class Pair:
             return True
         self.wait(pulse)
         require(self.wait(lambda: self.native_detail("default_off_checked"))["locally_rejected"])
+        # The fixture records both key acknowledgements before entering its
+        # 60-second observation loop, then overlap_snapshot before DestroyWindow.
+        # Sample distinct fresh GUI publications in that bounded interval.
+        self.stage = "native-live-overlap-samples"
+        live_publications = []
+        def live_sample():
+            self.check = "native_observation_before_sample"
+            require(self.native.poll() is None and self.native_detail("overlap_snapshot") is None)
+            self.check = "same_host_live_identity"
+            state = self.state()
+            require(state is not None and self.identities(state["users"]) == ids)
+            self.check = "fresh_live_gui_status"
+            if self.event_status("active", 2, 2, 2) is None:
+                return None
+            published = self.last_launch_modified
+            self.check = "native_observation_after_sample"
+            require(self.native.poll() is None and self.native_detail("overlap_snapshot") is None)
+            if live_publications and published <= live_publications[-1]:
+                return None
+            live_publications.append(published)
+            self.overlap_samples = len(live_publications)
+            return True
+        while len(live_publications) < 2:
+            self.wait(live_sample, 5)
+        self.native_milestone = "live_sampled"
+        self.check = "none"
         self.hook_cases(ids)
         self.gap_cases(ids)
-        # Preserve repeated fresh same-Host observations throughout the native window.
+        # Continue the full 2/2 check until the native pre-destruction marker.
+        # Reread that marker after a status read to resolve teardown races.
+        self.stage = "native-observation-until-marker"
         end = min(self.end, time.monotonic() + 70)
-        samples = 0
-        while self.native.poll() is None and time.monotonic() < end:
+        marker = self.native_detail("overlap_snapshot")
+        while marker is None and time.monotonic() < end:
             self.deadline()
+            self.check = "native_observation_until_marker"
+            require(self.native.poll() is None)
             value = self.state()
             require(value is not None and self.identities(value["users"]) == ids)
-            require(self.event_status("active", 2, 2) is not None)
-            samples += 1
+            status = self.event_status("active", 2, 2, 2)
+            marker = self.native_detail("overlap_snapshot")
+            if marker is not None:
+                break
+            self.check = "full_live_approval_and_connection"
+            require(status is not None)
             time.sleep(.2)
-        require(self.native.poll() == 0 and samples >= 2)
+        self.check = "native_final_marker_identity"
+        require(marker is not None and self.identities(marker["users"]) == ids)
+        self.native_milestone = "overlap_reported"
+        self.stage = "native-retirement"
+        self.check = "native_os_exit_zero"
+        self.wait(lambda: self.native.poll() == 0, 10)
+        require(self.native.poll() == 0)
+        self.check = "native_dll_unloaded_before_exit"
         require(self.native_detail("dll_unloaded_before_owner_exit") is not None and self.native_detail("owner_ready_to_exit_after_unload") is not None)
-        require(self.identities(self.native_detail("overlap_snapshot")["users"]) == ids)
+        self.native_milestone = "exited_unloaded"
         final_web = self.state()
+        self.check = "browser_same_host_identity_and_empty_holds"
         require(final_web is not None and self.identities(final_web["users"]) == ids)
         require(all(u["held_keys"] == [] and u["pointer"]["held_buttons"] == [] for u in final_web["users"]))
-        self.wait(lambda: self.event_status("active", 2, 2, 1))
-        self.mcp_status(1)
+        self.check = "authoritative_native_cleanup"
+        self.wait(lambda: self.event_status("active", 2, 1, 1))
+        self.mcp_status(1, 1)
         self.stage = "normal-cleanup"
+        self.check = "browser_reentrant_dispose"
         self.hook_cleanup()
-        self.wait(lambda: self.event_status("active", 2, 2, 0))
-        self.mcp_status(0)
+        self.native_milestone = "browser_disposed"
+        self.check = "authoritative_browser_cleanup"
+        self.wait(lambda: self.event_status("active", 2, 0, 0))
+        self.mcp_status(0, 0)
+        self.check = "mcp_normal_exit"
         self.mcp.stdin.close()
         require(self.mcp.wait(timeout=8) == 0)
+        self.check = "browser_normal_exit"
         self.cdp.call("Browser.close")
         require(self.browser.wait(timeout=8) == 0)
         self.http.shutdown()
@@ -1064,16 +1140,20 @@ class Pair:
             return True
         callback = callback_type(each)
         user32.EnumWindows.argtypes = [callback_type, wintypes.LPARAM]
+        self.check = "gui_owned_window_close"
         require(user32.EnumWindows(callback, 0) and len(windows) == 1 and self.gui.poll() is None)
         pid = wintypes.DWORD()
         require(user32.GetWindowThreadProcessId(windows[0], ctypes.byref(pid)) and pid.value == self.gui.pid)
         require(user32.PostMessageW(windows[0], 0x0010, 0, 0))
+        self.check = "gui_normal_exit"
         require(self.gui.wait(timeout=15) == 0)
+        self.check = "descriptor_and_renderer_cleanup"
         require(not self.descriptors() and not self.setup_descriptor.exists())
         require('GUI software adapter selected: backend=Dx12, device_type=Cpu,' in self.strict_observation("gui_stderr", lambda: (self.private / 'gui-stderr.log').read_text(encoding='utf-8', errors='replace')))
         # Names, IDs, payloads, endpoints, paths, credentials and raw logs stay private.
         # The final public PASS requires the separate group receipt. A missing
         # invocation or incomplete gap group can never qualify this controller.
+        self.check = "exact_hook_and_gap_receipts"
         require(self.result.get("web_event_hooks", {}).get("gap_runtime_qualified") is True)
         require(self.result["web_event_hooks"]["web_to_native_correlated_input_acks"] == 17)
         require(self.result.get("web_gap_recovery") == {
@@ -1083,11 +1163,12 @@ class Pair:
             "gap_callback_cleared_model": True, "pending_click_suppressed": True,
             "same_two_users_resume": True, "stale_token_runtime_qualified": False,
             "repeated_gap_family_qualified": False})
+        self.check = "none"
         self.result.update(status="PASS", same_two_gui_users_and_sources=True,
                            independent_gui_credentials=True, native_default_off=True,
                            wasm_default_off=True, native_key_down_up_observed_by_actual_wasm=True,
                            fresh_stopped_setup_status=True, native_exit_code=0, gui_exit_code=0,
-                           owned_descriptor_cleanup=True, overlap_samples=samples)
+                           owned_descriptor_cleanup=True, overlap_samples=self.overlap_samples)
 
 
 def main():

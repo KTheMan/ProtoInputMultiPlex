@@ -721,6 +721,7 @@ impl Engine {
         if !observed.bounds.valid_region() {
             return Err(Error::Invalid("window bounds"));
         }
+        observed.metadata.validate().map_err(Error::Invalid)?;
         if self.windows.len() >= 128 {
             return Err(Error::Limit);
         }
@@ -732,6 +733,7 @@ impl Engine {
                 info: WindowInfo {
                     id,
                     bounds: observed.bounds,
+                    metadata: observed.metadata,
                     visible: observed.visible,
                     minimized: observed.minimized,
                     maximized: observed.maximized,
@@ -838,6 +840,7 @@ impl Engine {
         if !observed.bounds.valid_region() {
             return Err(Error::Invalid("window bounds"));
         }
+        observed.metadata.validate().map_err(Error::Invalid)?;
         value.info = observed.clone();
         self.publish(Event::Window {
             update: WindowUpdate::Changed { window: observed },

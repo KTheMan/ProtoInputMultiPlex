@@ -410,11 +410,10 @@ fn validate_user(user: &UserView, epoch: u64, desktop: Bounds) -> Result<(), Fol
 }
 
 fn validate_window(window: &WindowInfo) -> Result<(), FoldError> {
-    if window.bounds.valid_region() {
-        Ok(())
-    } else {
-        Err(FoldError::Invalid("window bounds"))
+    if !window.bounds.valid_region() {
+        return Err(FoldError::Invalid("window bounds"));
     }
+    window.metadata.validate().map_err(FoldError::Invalid)
 }
 
 fn fold_input(

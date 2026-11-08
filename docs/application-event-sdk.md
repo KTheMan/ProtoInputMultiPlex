@@ -13,6 +13,41 @@ window operations are restricted to registered windows in the owning process
 and UI thread. The browser client uses the shared protocol, pushed events, a
 canvas, and revision-checked coordinates.
 
+## Owned-window metadata candidate (source only)
+
+The isolated metadata candidate extends the existing `WindowInfo` returned by
+owned-window queries, snapshots, tracking, change events, and control
+acknowledgements. `metadata` contains an optional title, owning process and UI
+thread IDs, client bounds, DPI, monitor bounds, and monitor work area. Older
+serialized observations and portable hosts that do not supply these facts
+deserialize with unavailable fields. These numeric IDs are informational; they
+do not authorize registration or accept a native handle from the wire.
+
+On Windows, the adapter observes only an explicitly submitted same-process
+top-level window on its creating thread. It installs a private per-window
+cookie before reading metadata, checks the same ownership and exact cookie
+after observation, and removes that cookie if registration fails. The
+title is read through `GetWindowTextW` with capacity for 256 UTF-16 units plus
+a terminator, then limited to 512 UTF-8 bytes. An empty title is a present
+empty string. Client bounds are physical desktop coordinates converted with
+`ClientToScreen`, and a
+zero-sized client is valid. DPI comes from `GetDpiForWindow`. Monitor bounds
+and work area come from `MonitorFromWindow` (nearest monitor) and
+`GetMonitorInfoW`. Failed native observation returns an error; it does not
+substitute guessed metadata. A native observation is followed by the
+ownership/cookie check before being committed; `GetWindowTextW` can reenter a
+custom window procedure, and the OS calls have no fixed wall-clock deadline.
+The engine and SDK client reject overlong or NUL-containing titles, zero owner
+IDs, inverted or out-of-range client bounds, DPI outside 1–4096, invalid
+monitor bounds, and a work area outside its monitor. No HWND or HMONITOR is
+serialized.
+
+This candidate has source review only under the workstation host freeze. It
+has not been formatted, compiled, unit tested, or run natively. The current
+remote GUI connection still lacks an owned-window registration route into the
+GUI Host, so this metadata does not fix remote native/Web window registration
+or establish full Windows/Web SDK parity.
+
 ## Local workflow
 
 1. Create a cooperative event session, then explicitly create virtual users.

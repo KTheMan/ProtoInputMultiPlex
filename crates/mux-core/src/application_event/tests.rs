@@ -642,6 +642,20 @@ fn windows_are_owned_tracked_and_backend_acknowledged_with_explicit_unavailabili
             app,
             WindowObservation {
                 bounds: screens().desktop,
+                metadata: WindowMetadata {
+                    title: Some("Owned window".into()),
+                    process_id: Some(42),
+                    ui_thread_id: Some(7),
+                    client_bounds: Some(Bounds {
+                        left: -390,
+                        top: 20,
+                        right: 390,
+                        bottom: 570,
+                    }),
+                    dpi: Some(144),
+                    monitor_bounds: Some(screens().desktop),
+                    monitor_work_area: Some(screens().desktop),
+                },
                 visible: true,
                 minimized: false,
                 maximized: false,
@@ -653,12 +667,18 @@ fn windows_are_owned_tracked_and_backend_acknowledged_with_explicit_unavailabili
         )
         .unwrap();
     let (sub, _) = engine.subscribe(app, 8).unwrap();
+    let (other_sub, _) = engine.subscribe(other, 8).unwrap();
     assert_eq!(
         engine.window_info(other, window).unwrap_err(),
         Error::Denied
     );
+    assert!(engine.snapshot(other).unwrap().windows.is_empty());
     engine.track_window(app, window).unwrap();
     assert_eq!(engine.snapshot(app).unwrap().windows.len(), 1);
+    assert_eq!(
+        engine.window_info(app, window).unwrap().metadata.title.as_deref(),
+        Some("Owned window")
+    );
     assert!(matches!(
         engine.control_window(
             app,
@@ -681,6 +701,13 @@ fn windows_are_owned_tracked_and_backend_acknowledged_with_explicit_unavailabili
     assert!(engine.snapshot(app).unwrap().windows.is_empty());
     let received = events(&mut engine, app, sub);
     assert_eq!(received.len(), 3);
+    assert!(events(&mut engine, other, other_sub).is_empty());
+    assert!(matches!(
+        &received[0].event,
+        Event::Window {
+            update: WindowUpdate::Tracked { window }
+        } if window.metadata.dpi == Some(144)
+    ));
     assert!(matches!(
         received[0].event,
         Event::Window {
@@ -711,6 +738,113 @@ fn windows_are_owned_tracked_and_backend_acknowledged_with_explicit_unavailabili
         engine.window_info(app, window).unwrap_err(),
         Error::MissingWindow
     );
+}
+
+#[test]
+fn window_metadata_defaults_on_old_wire_snapshots_and_bounds_native_facts() {
+    let base = WindowObservation {
+        bounds: screens().desktop,
+        metadata: WindowMetadata::default(),
+        visible: true,
+        minimized: false,
+        maximized: false,
+        click_through: false,
+        enabled: true,
+        topmost: false,
+        opacity: 255,
+    };
+    let mut old_observation = serde_json::to_value(&base).unwrap();
+    old_observation.as_object_mut().unwrap().remove("metadata");
+    assert_eq!(
+        serde_json::from_value::<WindowObservation>(old_observation)
+            .unwrap()
+            .metadata,
+        WindowMetadata::default()
+    );
+
+    let mut engine = engine();
+    let owner = engine.register_recipient("owner").unwrap();
+    let id = engine.register_owned_window(owner, base.clone()).unwrap();
+    let original = engine.window_info(owner, id).unwrap_err();
+    assert_eq!(original, Error::Denied);
+    let mut grant = all(false, false);
+    grant.owned_windows = true;
+    engine.approve_grant(owner, grant).unwrap();
+    let original = engine.window_info(owner, id).unwrap();
+    let mut old_info = serde_json::to_value(&original).unwrap();
+    old_info.as_object_mut().unwrap().remove("metadata");
+    assert_eq!(
+        serde_json::from_value::<WindowInfo>(old_info)
+            .unwrap()
+            .metadata,
+        WindowMetadata::default()
+    );
+
+    let mut cases = Vec::new();
+    let mut invalid = WindowMetadata::default();
+    invalid.title = Some("é".repeat(257));
+    cases.push((invalid, Error::Invalid("window title")));
+    let mut invalid = WindowMetadata::default();
+    invalid.title = Some("nul\0title".into());
+    cases.push((invalid, Error::Invalid("window title")));
+    let mut invalid = WindowMetadata::default();
+    invalid.process_id = Some(0);
+    cases.push((invalid, Error::Invalid("window owner identity")));
+    let mut invalid = WindowMetadata::default();
+    invalid.client_bounds = Some(Bounds {
+        left: 10,
+        top: 0,
+        right: 9,
+        bottom: 10,
+    });
+    cases.push((invalid, Error::Invalid("window client bounds")));
+    let mut invalid = WindowMetadata::default();
+    invalid.client_bounds = Some(Bounds {
+        left: 0,
+        top: 0,
+        right: 1_000_001,
+        bottom: 10,
+    });
+    cases.push((invalid, Error::Invalid("window client bounds")));
+    let mut invalid = WindowMetadata::default();
+    invalid.dpi = Some(0);
+    cases.push((invalid, Error::Invalid("window dpi")));
+    let mut invalid = WindowMetadata::default();
+    invalid.dpi = Some(4097);
+    cases.push((invalid, Error::Invalid("window dpi")));
+    let mut invalid = WindowMetadata::default();
+    invalid.monitor_work_area = Some(screens().desktop);
+    cases.push((invalid, Error::Invalid("window monitor work area")));
+    let mut invalid = WindowMetadata::default();
+    invalid.monitor_bounds = Some(screens().desktop);
+    invalid.monitor_work_area = Some(Bounds {
+        left: -101,
+        ..screens().desktop
+    });
+    cases.push((invalid, Error::Invalid("window monitor work area")));
+
+    for (metadata, error) in cases {
+        let mut observation = base.clone();
+        observation.metadata = metadata.clone();
+        assert_eq!(
+            engine.register_owned_window(owner, observation).unwrap_err(),
+            error
+        );
+        let mut changed = original.clone();
+        changed.metadata = metadata;
+        assert_eq!(engine.update_owned_window(owner, changed).unwrap_err(), error);
+        assert_eq!(engine.window_info(owner, id).unwrap(), original);
+    }
+
+    let mut zero_client = original.clone();
+    zero_client.metadata.client_bounds = Some(Bounds {
+        left: -10,
+        top: 20,
+        right: -10,
+        bottom: 20,
+    });
+    engine.update_owned_window(owner, zero_client.clone()).unwrap();
+    assert_eq!(engine.window_info(owner, id).unwrap(), zero_client);
 }
 
 #[test]
