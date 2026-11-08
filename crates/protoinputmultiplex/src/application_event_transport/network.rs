@@ -601,6 +601,7 @@ struct Pending {
     id: u64,
     deadline: Instant,
     admission: Arc<Admission>,
+    host_action: bool,
 }
 fn retire_pending(pending: &VecDeque<Pending>, shared: &Shared) {
     for pending in pending {
@@ -655,6 +656,7 @@ pub(super) async fn drive<S: AsyncRead + AsyncWrite + Unpin>(
 ) -> Result<()> {
     let mut pending: VecDeque<Pending> = VecDeque::new();
     let mut urgent: BTreeMap<u64, Pending> = BTreeMap::new();
+    let mut deferred_text: VecDeque<String> = VecDeque::new();
     let mut last_id = 0;
     let mut count = 0_u64;
     let result = loop {
@@ -672,6 +674,16 @@ pub(super) async fn drive<S: AsyncRead + AsyncWrite + Unpin>(
                 "event request deadline reached; do not retry an uncertain request"
             ));
         }
+        // Keep reading EOF, Close, Ping and urgent owner receipts while a GUI
+        // action is pending. Normal requests wait in a bounded local queue so
+        // their replies cannot overtake that action's response.
+        let replay = !pending.iter().any(|item| item.host_action)
+            && !deferred_text.is_empty();
+        let next_deferred = if replay {
+            deferred_text.front().cloned()
+        } else {
+            None
+        };
         tokio::select! {
             biased;
             _ = lease.changed.notified() => {},
@@ -696,11 +708,31 @@ pub(super) async fn drive<S: AsyncRead + AsyncWrite + Unpin>(
                     if request_id & (1_u64 << 63) != 0 { urgent.remove(&request_id); } else { pending.pop_front(); }
                 }
             }
-            incoming = socket.next() => {
+            incoming = async {
+                if let Some(text) = next_deferred {
+                    Some(Ok(Message::Text(text.into())))
+                } else {
+                    socket.next().await
+                }
+            } => {
+                if replay {
+                    deferred_text.pop_front();
+                }
                 let Some(incoming) = incoming else { break Ok(()); };
                 let frame = match incoming { Ok(frame) => frame, Err(error) => break Err(error.into()) };
                 match frame {
                     Message::Text(text) => {
+                        let urgent_owner_receipt = serde_json::from_slice::<OwnerFrame>(text.as_bytes())
+                            .ok()
+                            .is_some_and(|frame| matches!(frame.operation, OwnerOperation::ApplyResult { .. }));
+                        if pending.iter().any(|item| item.host_action) && !urgent_owner_receipt {
+                            if deferred_text.len() >= MAX_PENDING || text.len() > MAX_REQUEST_BYTES {
+                                shared.overflows.fetch_add(1, Ordering::Relaxed);
+                                break Err(anyhow::anyhow!("event deferred FIFO overflow; receiver fenced and hosted action outcome uncertain"));
+                            }
+                            deferred_text.push_back(text.to_string());
+                            continue;
+                        }
                         if pending.len() >= MAX_PENDING || urgent.len() >= MAX_PENDING {
                             shared.overflows.fetch_add(1, Ordering::Relaxed);
                             break Err(anyhow::anyhow!("event pending FIFO overflow; receiver fenced and accepted requests remain uncertain"));
@@ -718,7 +750,16 @@ pub(super) async fn drive<S: AsyncRead + AsyncWrite + Unpin>(
                         { break Err(anyhow::anyhow!("event request IDs must be unique within their channel")); }
                         if !owner_urgent { last_id = request_id; }
                         count += 1;
-                        let admission = Arc::new(Admission::new()); let deadline = Instant::now() + REQUEST_TIMEOUT;
+                        let host_action = client_message.as_ref().is_some_and(|message| {
+                            matches!(
+                                &message.request.command,
+                                ClientCommand::HostedSetMode { .. }
+                                    | ClientCommand::HostedViewport { .. }
+                            )
+                        });
+                        let admission = Arc::new(Admission::new());
+                        let deadline = Instant::now()
+                            + if host_action { HOST_ACTION_TIMEOUT } else { REQUEST_TIMEOUT };
                         if !lease.live(&shared, Instant::now()) { break Err(anyhow::anyhow!("event permit retired before admission")); }
                         let request = if let Some(message) = client_message {
                             UiRequest::Command { lease: Arc::clone(&lease), message, deadline, admission: Arc::clone(&admission) }
@@ -727,7 +768,7 @@ pub(super) async fn drive<S: AsyncRead + AsyncWrite + Unpin>(
                         } else { unreachable!() };
                         match requests.try_send(request) {
                             Ok(()) => {
-                                let value = Pending { id: request_id, deadline, admission };
+                                let value = Pending { id: request_id, deadline, admission, host_action };
                                 if owner_urgent { urgent.insert(request_id, value); } else { pending.push_back(value); }
                             }
                             Err(mpsc::error::TrySendError::Full(_)) => {

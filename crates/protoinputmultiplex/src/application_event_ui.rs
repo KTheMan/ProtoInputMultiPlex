@@ -514,6 +514,35 @@ pub(crate) fn show(
             result.push(Action::CopyWindowReference);
         }
     }
+    Divider::horizontal().show(ui);
+    Text::new("Host routing and this window need separate receiver approval. A mode change may start or stop routing; it does not save your profile.")
+        .caption()
+        .wrap()
+        .show(ui);
+    checkbox(
+        ui,
+        "Observe host routing and window state",
+        &mut controller.draft.host_state,
+        &mut script,
+        frame,
+        actions,
+    );
+    checkbox(
+        ui,
+        "Allow changing host routing mode",
+        &mut controller.draft.host_mode_control,
+        &mut script,
+        frame,
+        actions,
+    );
+    checkbox(
+        ui,
+        "Allow minimizing and restoring this window",
+        &mut controller.draft.host_viewport_control,
+        &mut script,
+        frame,
+        actions,
+    );
     Text::new("Draft checkboxes change no live authority. Apply replaces only the selected receiver and retires its previous connection. Other receiver approvals, master consent and local virtual user IDs remain stable.").caption().wrap().show(ui);
     if button(
         ui,

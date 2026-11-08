@@ -1,5 +1,5 @@
 use crate::event_hooks::{
-    ClickOptions, ClickPairs, EventFilter, Registry, validate_snapshot_query,
+    ClickOptions, ClickPairs, EventFilter, Registry, hosted_deadline_pending, validate_snapshot_query,
 };
 use crate::geometry::CanvasGeometry;
 use crate::local_input::{LocalInput, hid_key, mouse_button, selects};
@@ -93,6 +93,8 @@ struct Inner {
     socket: Option<WebSocket>,
     subscription: Option<SubscriptionId>,
     pending: BTreeSet<u64>,
+    pending_hosted: BTreeMap<u64, (u64, Option<(HostRevision, HostedAction)>)>,
+    hosted_receipt: mux_application_sdk::client::HostedReceipt,
     pending_windows: BTreeMap<u64, PendingWindow>,
     next_request: u64,
     authenticated: bool,
@@ -321,6 +323,28 @@ impl Inner {
             .next_request
             .checked_add(1)
             .ok_or("Request limit reached")?;
+        let hosted_pending = match &command {
+            ClientCommand::HostedStateQuery { epoch } => Some((*epoch, None)),
+            ClientCommand::HostedSetMode { reference, mode } => Some((reference.epoch, Some((*reference, HostedAction::SetMode(*mode))))),
+            ClientCommand::HostedViewport { reference, action } => Some((reference.epoch, Some((*reference, HostedAction::Viewport(*action))))),
+            _ => None,
+        };
+        if let Some((epoch, action)) = &hosted_pending {
+            let ready = self.ready.as_ref().ok_or("Missing host approval")?;
+            if !self.is_live() || !ready.events.host_state || *epoch != ready.epoch {
+                return Err("Hosted observation is unavailable or stale");
+            }
+            if let Some((reference, action)) = action {
+                let granted = match action {
+                    HostedAction::SetMode(_) => ready.controls.host_mode_control,
+                    HostedAction::Viewport(_) => ready.controls.host_viewport_control,
+                };
+                if !granted || !self.hosted_receipt.permits(&self.state, *reference)
+                    || self.pending_hosted.values().any(|(_, action)| action.is_some()) {
+                    return Err("Hosted action requires current observation and distinct approval");
+                }
+            }
+        }
         let window_pending = match &command {
             ClientCommand::WindowQuery { window } | ClientCommand::WindowTrack { window } => {
                 Some(PendingWindow::Query {
@@ -363,7 +387,7 @@ impl Inner {
             return Err("Request exceeds event protocol limit");
         }
         if socket.send_with_str(&json).is_err() {
-            if matches!(window_pending, Some(PendingWindow::Control { .. })) {
+            if hosted_pending.as_ref().is_some_and(|(_, action)| action.is_some()) || matches!(window_pending, Some(PendingWindow::Control { .. })) {
                 self.stop(
                     "Window action outcome unconfirmed after send failure; reconnect and inspect",
                     false,
@@ -371,6 +395,9 @@ impl Inner {
                 return Err("Window action outcome unconfirmed; connection fenced");
             }
             return Err("Event socket send failed");
+        }
+        if let Some(expected) = hosted_pending {
+            self.pending_hosted.insert(request_id, expected);
         }
         self.next_request = request_id;
         self.pending.insert(request_id);
@@ -479,6 +506,8 @@ impl Inner {
         self.credential.set_value("");
         self.ready = None;
         self.pending.clear();
+        self.pending_hosted.clear();
+        self.hosted_receipt.clear();
         self.pending_windows.clear();
         self.subscription = None;
         self.state.disconnect();
@@ -594,6 +623,7 @@ impl Inner {
         self.release(true);
         self.disable_inputs();
         self.state.disconnect();
+        self.hosted_receipt.clear();
         let command = match self.subscription {
             Some(subscription) => ClientCommand::Resubscribe {
                 subscription,
@@ -687,6 +717,7 @@ impl Inner {
                 if !self.authenticated || !self.pending.remove(&request_id) {
                     return Err("Unexpected response identifier");
                 }
+                let expected_hosted = self.pending_hosted.remove(&request_id);
                 let expected_window = self.pending_windows.remove(&request_id);
                 match reply {
                     Reply::Ok { version, response } => {
@@ -703,6 +734,19 @@ impl Inner {
                         {
                             return Err("Window observation was not received");
                         }
+                        match (&expected_hosted, &response) {
+                            (Some((epoch, None)), ClientResponse::HostedState { state })
+                                if self.ready.as_ref().is_some_and(|ready| ready.epoch == *epoch) && state.revision != 0 => {}
+                            (Some((epoch, Some((reference, expected)))), ClientResponse::HostedAction { action, state })
+                                if self.ready.as_ref().is_some_and(|ready| ready.epoch == *epoch)
+                                    && action == expected && state.revision >= reference.revision
+                                    && match action {
+                                        HostedAction::SetMode(mode) => state.mode == Some(*mode) && state.phase == if *mode == HostedMode::Native { HostedPhase::Native } else { HostedPhase::Ready },
+                                        HostedAction::Viewport(action) => state.minimized == Some(matches!(action, HostViewportAction::Minimize)),
+                                    } => {}
+                            (None, ClientResponse::HostedState { .. } | ClientResponse::HostedAction { .. }) | (Some(_), _) => return Err("Hosted receipt does not match pending request; outcome unconfirmed"),
+                            _ => {}
+                        }
                         match response {
                             ClientResponse::Subscribed {
                                 subscription,
@@ -715,6 +759,7 @@ impl Inner {
                                 self.state
                                     .install_snapshot(snapshot, epoch)
                                     .map_err(|_| "Fresh snapshot validation failed")?;
+                                self.hosted_receipt.clear();
                                 self.clear_clicks();
                                 self.subscription = Some(subscription);
                                 self.awaiting_subscription = false;
@@ -728,6 +773,19 @@ impl Inner {
                                 validate_snapshot_query(snapshot, epoch)
                                     .map_err(|_| "Snapshot query validation failed")?;
                                 self.notice("Snapshot query acknowledged; subscribe/refresh establishes the live stream");
+                            }
+                            ClientResponse::HostedState { state }
+                            | ClientResponse::HostedAction { state, .. } => {
+                                if self.is_live() {
+                                    let epoch = expected_hosted
+                                        .as_ref()
+                                        .map(|(epoch, _)| *epoch)
+                                        .ok_or("Hosted receipt lacked request ownership")?;
+                                    self.hosted_receipt
+                                        .observe(epoch, &state, &self.state)
+                                        .map_err(|_| "Hosted receipt conflicts with current stream")?;
+                                }
+                                self.notice("Hosted receipt validated; observe current state before another action");
                             }
                             ClientResponse::Polled { .. } => {
                                 return Err("Unexpected poll response on server-pushed stream");
@@ -795,6 +853,9 @@ impl Inner {
                         }
                     }
                     Reply::Error { version, error } => {
+                        if expected_hosted.as_ref().is_some_and(|(_, action)| action.is_some()) && error.code == FailureCode::Uncertain {
+                            return Err("Hosted action outcome uncertain; reconnect and inspect without replay");
+                        }
                         if version != PROTOCOL_VERSION {
                             return Err("Response version mismatch");
                         }
@@ -803,6 +864,7 @@ impl Inner {
                             self.release(true);
                             self.disable_inputs();
                             self.state.disconnect();
+                            self.hosted_receipt.clear();
                             self.notice("Window action outcome unconfirmed. Refresh the subscription after owner observation; do not retry automatically");
                             self.update_controls();
                         } else {
@@ -832,6 +894,7 @@ impl Inner {
                 if matches!(stream, Poll::Gap { .. }) {
                     self.fence_hooks();
                     self.release(true);
+                    self.hosted_receipt.clear();
                 }
                 match self
                     .state
@@ -839,14 +902,19 @@ impl Inner {
                     .map_err(|_| "Invalid ordered event stream; reconnect explicitly")?
                 {
                     FoldOutcome::Applied(_) => {
+                        self.hosted_receipt
+                            .reconcile(&self.state)
+                            .map_err(|_| "Hosted event conflicts with prior receipt")?;
                         self.rebuild_users()?;
                     }
                     FoldOutcome::NeedsSnapshot => {
+                        self.hosted_receipt.clear();
                         self.release(false);
                         self.disable_inputs();
                         self.notice("Sequence gap: state cleared. Use Refresh subscription for a fresh snapshot");
                     }
                     FoldOutcome::Ended(_) => {
+                        self.hosted_receipt.clear();
                         self.stop(
                             "Event authority ended; reconnect explicitly after host approval",
                             false,
@@ -1261,7 +1329,29 @@ impl WebClient {
             }
             Ok(())
         } else {
-            inner.send(command).map_err(JsValue::from_str)
+            let hosted = matches!(&command, ClientCommand::HostedStateQuery { .. } | ClientCommand::HostedSetMode { .. } | ClientCommand::HostedViewport { .. });
+            let mutation = matches!(&command, ClientCommand::HostedSetMode { .. } | ClientCommand::HostedViewport { .. });
+            inner.send(command).map_err(JsValue::from_str)?;
+            if hosted {
+                let id = inner.next_request;
+                // Request IDs never repeat across refresh, gaps, or reconnects.
+                // Dispatch generation only fences callbacks; it is not a request lifetime.
+                let weak = Rc::downgrade(&self.inner);
+                let callback = Closure::once_into_js(move || {
+                    if let Some(inner) = weak.upgrade() {
+                        let mut state = inner.borrow_mut();
+                        if hosted_deadline_pending(&state.pending_hosted, id) {
+                            state.stop("Hosted request deadline reached; action outcome unconfirmed; reconnect and inspect without replay", false);
+                        }
+                    }
+                });
+                let armed = web_sys::window().is_some_and(|window| window.set_timeout_with_callback_and_timeout_and_arguments_0(callback.unchecked_ref(), if mutation { 60_000 } else { 6_000 }).is_ok());
+                if !armed {
+                    inner.stop("Hosted deadline unavailable; action outcome unconfirmed; connection fenced", false);
+                    return Err(JsValue::from_str("Hosted deadline unavailable"));
+                }
+            }
+            Ok(())
         }
     }
 
@@ -1306,12 +1396,32 @@ impl WebClient {
         )
     }
 
+    /// Pass raw JSON text so epoch/revision u64 values never round through JS Number.
+    pub fn query_hosted(&self, epoch_json: &str) -> Result<(), JsValue> {
+        let epoch: u64 = serde_json::from_str(epoch_json).map_err(|_| JsValue::from_str("Invalid epoch JSON integer"))?;
+        self.request(&serde_json::to_string(&ClientCommand::HostedStateQuery { epoch }).map_err(|_| JsValue::from_str("Hosted encoding failed"))?)
+    }
+    pub fn set_hosted_mode(&self, reference_json: &str, mode_json: &str) -> Result<(), JsValue> {
+        let reference: HostRevision = serde_json::from_str(reference_json).map_err(|_| JsValue::from_str("Invalid HostRevision"))?;
+        let mode: HostedMode = serde_json::from_str(mode_json).map_err(|_| JsValue::from_str("Invalid HostedMode"))?;
+        self.request(&serde_json::to_string(&ClientCommand::HostedSetMode { reference, mode }).map_err(|_| JsValue::from_str("Hosted encoding failed"))?)
+    }
+    pub fn minimize_hosted(&self, reference_json: &str) -> Result<(), JsValue> {
+        self.hosted_viewport(reference_json, HostViewportAction::Minimize)
+    }
+    pub fn restore_hosted(&self, reference_json: &str) -> Result<(), JsValue> {
+        self.hosted_viewport(reference_json, HostViewportAction::Restore)
+    }
+    fn hosted_viewport(&self, reference_json: &str, action: HostViewportAction) -> Result<(), JsValue> {
+        let reference: HostRevision = serde_json::from_str(reference_json).map_err(|_| JsValue::from_str("Invalid HostRevision"))?;
+        self.request(&serde_json::to_string(&ClientCommand::HostedViewport { reference, action }).map_err(|_| JsValue::from_str("Hosted encoding failed"))?)
+    }
     pub fn state_json(&self) -> Result<String, JsValue> {
         let inner = self.inner.borrow();
         serde_json::to_string(&serde_json::json!({
             "epoch": inner.state.epoch(), "sequence": inner.state.last_sequence(),
             "users": inner.state.users().values().collect::<Vec<_>>(),
-            "screens": inner.state.screens(), "windows": inner.state.windows().values().collect::<Vec<_>>(),
+            "hosted": inner.state.hosted(), "screens": inner.state.screens(), "windows": inner.state.windows().values().collect::<Vec<_>>(),
             "capabilities": inner.state.capabilities(), "mode": inner.state.mode(),
             "event_grant": inner.ready.as_ref().map(|ready| &ready.events),
             "control_grant": inner.ready.as_ref().map(|ready| &ready.controls),
@@ -1679,6 +1789,8 @@ pub fn mount_demo(container_id: &str) -> Result<WebClient, JsValue> {
         socket: None,
         subscription: None,
         pending: BTreeSet::new(),
+        pending_hosted: BTreeMap::new(),
+        hosted_receipt: mux_application_sdk::client::HostedReceipt::default(),
         pending_windows: BTreeMap::new(),
         next_request: 0,
         authenticated: false,

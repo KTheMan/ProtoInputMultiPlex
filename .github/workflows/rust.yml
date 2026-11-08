@@ -66,6 +66,8 @@ jobs:
           if ($pimParseErrors.Count -ne 0) { throw 'Standalone controller PowerShell syntax rejected' }
       - run: cargo fmt --all --check
       - run: cargo clippy --workspace --all-targets --locked -- -D warnings
+      - name: Check Rust browser client
+        run: cargo clippy -p mux-application-web --locked --target wasm32-unknown-unknown -- -D warnings
       - run: cargo test --workspace --locked
       - name: Check native event client feature (Windows)
         run: cargo clippy -p mux-application-sdk --all-targets --features native-client --locked -- -D warnings
@@ -221,8 +223,6 @@ jobs:
             executable = @{ file = 'protoinputmultiplex.exe'; sha256 = (Get-FileHash -LiteralPath $exe -Algorithm SHA256).Hash.ToLowerInvariant() }
             qualification = 'compiled full GUI; initial paired hosted smoke is separate; no P1 or full SDK claim'
           } | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $root 'metadata.json') -Encoding utf8
-      - name: Check Rust browser client
-        run: cargo clippy -p mux-application-web --locked --target wasm32-unknown-unknown -- -D warnings
       - name: Build Rust browser client
         run: cargo build -p mux-application-web --locked --target wasm32-unknown-unknown
       - name: Generate matching browser bindings
@@ -611,6 +611,62 @@ jobs:
           path: |
             ${{ runner.temp }}/gui-window-public-${{ github.run_id }}-${{ github.run_attempt }}/public-result.json
             ${{ runner.temp }}/gui-window-public-${{ github.run_id }}-${{ github.run_attempt }}/external-deadline.json
+
+  qualify-gui-hosted-mode-and-window:
+    needs: [check, qualify-gui-owned-window-route]
+    runs-on: windows-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.92.0
+      - uses: actions/download-artifact@v4
+        with:
+          name: application-sdk-preview-${{ github.sha }}
+          path: ${{ runner.temp }}/gui-hosted-artifacts
+      - name: Parse hosted-mode controller on disposable hosted runner
+        shell: pwsh
+        run: python -c "import ast,pathlib; p=pathlib.Path('scripts/qualify-gui-hosted-mode.py'); ast.parse(p.read_text(encoding='utf-8'),filename=str(p))"
+      - name: Run GUI router modes and viewport through Web and event MCP receivers
+        env:
+          HOSTED_ROOT: ${{ runner.temp }}/gui-hosted-${{ github.run_id }}-${{ github.run_attempt }}
+          HOSTED_PUBLIC: ${{ runner.temp }}/gui-hosted-public-${{ github.run_id }}-${{ github.run_attempt }}
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:RUNNER_ENVIRONMENT -cne 'github-hosted') { throw 'Standard disposable hosted runner required' }
+          if ((Test-Path -LiteralPath $env:HOSTED_ROOT) -or (Test-Path -LiteralPath $env:HOSTED_PUBLIC)) { throw 'Fresh owned roots required' }
+          New-Item -ItemType Directory -Path $env:HOSTED_PUBLIC -ErrorAction Stop | Out-Null
+          $result = Join-Path $env:HOSTED_PUBLIC 'public-result.json'
+          $artifacts = Join-Path $env:RUNNER_TEMP 'gui-hosted-artifacts'
+          $controllerRoot = Join-Path $env:RUNNER_TEMP ('gui-hosted-controller-' + $env:GITHUB_RUN_ID + '-' + $env:GITHUB_RUN_ATTEMPT)
+          New-Item -ItemType Directory -Path $controllerRoot -ErrorAction Stop | Out-Null
+          $arguments = '"scripts/qualify-gui-hosted-mode.py" --artifacts "{0}" --source "{1}" --run "{2}" --public-result "{3}" --commit {4}' -f $artifacts, $env:GITHUB_WORKSPACE, $env:HOSTED_ROOT, $result, $env:GITHUB_SHA
+          # The independent process fence includes GUI, Rust-WASM, MCP and all
+          # child-side waits. Preserve partial evidence; never kill or replay.
+          $clock = [Diagnostics.Stopwatch]::StartNew()
+          $process = Start-Process -FilePath (Get-Command python).Source -ArgumentList $arguments -WorkingDirectory $env:GITHUB_WORKSPACE -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $controllerRoot 'stdout.log') -RedirectStandardError (Join-Path $controllerRoot 'stderr.log')
+          if (-not $process.WaitForExit(270000)) {
+            [ordered]@{ schema = 'pim.gui-hosted-mode.external-deadline.v1'; status = 'FAIL'; source_commit = $env:GITHUB_SHA; timed_out = $true; elapsed_ms = $clock.ElapsedMilliseconds; no_kill_restart_or_retry = $true; full_sdk_complete = $false; release_qualified = $false } | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $env:HOSTED_PUBLIC 'external-deadline.json') -Encoding utf8
+            throw 'External hosted-mode deadline exceeded; private partial evidence preserved'
+          }
+          $process.Refresh()
+          if ($process.ExitCode -ne 0 -or -not (Test-Path -LiteralPath $result -PathType Leaf)) { throw 'Hosted-mode route failed; private partial evidence preserved' }
+          $receipt = Get-Content -LiteralPath $result -Raw | ConvertFrom-Json
+          if ($receipt.status -cne 'PASS' -or $receipt.source_commit -cne $env:GITHUB_SHA -or $receipt.native_viewport_receipts -ne 2 -or -not $receipt.native_completed -or -not $receipt.native_retired -or $receipt.web_mode_worker_receipts -ne 2 -or $receipt.web_viewport_receipts -ne 2 -or $receipt.mcp_mode_worker_receipts -ne 2 -or -not $receipt.old_revision_rejected -or -not $receipt.old_epoch_rejected -or -not $receipt.event_epoch_retained -or -not $receipt.routing_generation_advanced -or -not $receipt.pending_refresh_correlated -or -not $receipt.lost_receipt_deadline -or -not $receipt.fixture_injected_gap -or -not $receipt.browser_no_replay -or -not $receipt.stale_timer_reconnect_isolated -or -not $receipt.ordinary_quit_clean -or -not $receipt.profile_file_unchanged -or -not $receipt.preferences_file_unchanged) { throw 'Hosted-mode receipt incomplete' }
+      - name: Upload only sanitized hosted-mode decisions
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gui-hosted-mode-${{ github.sha }}-${{ github.run_attempt }}
+          retention-days: 1
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/gui-hosted-public-${{ github.run_id }}-${{ github.run_attempt }}/public-result.json
+            ${{ runner.temp }}/gui-hosted-public-${{ github.run_id }}-${{ github.run_attempt }}/external-deadline.json
 
   qualify-standalone-host:
     needs: [check]

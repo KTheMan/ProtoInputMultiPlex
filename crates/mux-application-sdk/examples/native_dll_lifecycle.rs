@@ -811,10 +811,10 @@ mod fixture {
                 // Explicit owner/master consent on this SAME Host/Engine. Receiver
                 // grants and local input enables remain independent authorities.
                 host.approve_events(owner, Grant { users: UserScope::AllOwned,
-                    pointer_events: true, key_events: true, owned_windows: false })
+                    pointer_events: true, key_events: true, owned_windows: false, host_state: false })
                     .map_err(|e| e.to_string())?;
                 host.approve_events(native, Grant { users: scope.clone(), pointer_events: true,
-                    key_events: true, owned_windows: false }).map_err(|e| e.to_string())?;
+                    key_events: true, owned_windows: false, host_state: false }).map_err(|e| e.to_string())?;
                 host.approve_controls(native, ControlGrant { users: scope, delegated_users: true,
                     pointer_input: true, key_input: true, ..Default::default() }).map_err(|e| e.to_string())?;
                 setup.send(Ok((format!("ws://127.0.0.1:{port}/application-events/v1"), users)))

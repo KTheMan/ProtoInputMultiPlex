@@ -80,6 +80,7 @@ impl OwnedWindows {
                     pointer_events: false,
                     key_events: false,
                     owned_windows: true,
+                    host_state: false,
                 },
             )
             .map_err(native_error)?;

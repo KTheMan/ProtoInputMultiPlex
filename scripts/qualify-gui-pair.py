@@ -1141,10 +1141,28 @@ class Pair:
         callback = callback_type(each)
         user32.EnumWindows.argtypes = [callback_type, wintypes.LPARAM]
         self.check = "gui_owned_window_close"
-        require(user32.EnumWindows(callback, 0) and len(windows) == 1 and self.gui.poll() is None)
+        enumerated = user32.EnumWindows(callback, 0)
+        gui_exit = self.gui.poll()
+        close_probe = {
+            "schema": "pim.gui-pair.close-probe.v1",
+            "enumeration_succeeded": bool(enumerated),
+            "owned_visible_window_count": min(len(windows), 17),
+            "window_count_over_bound": len(windows) > 16,
+            "gui_alive": gui_exit is None,
+            "owner_thread_nonzero": None,
+            "owner_pid_matches": None,
+            "close_posted": None,
+        }
+        self.result["gui_close_probe"] = close_probe
+        require(enumerated and len(windows) == 1 and gui_exit is None)
         pid = wintypes.DWORD()
-        require(user32.GetWindowThreadProcessId(windows[0], ctypes.byref(pid)) and pid.value == self.gui.pid)
-        require(user32.PostMessageW(windows[0], 0x0010, 0, 0))
+        owner_thread = user32.GetWindowThreadProcessId(windows[0], ctypes.byref(pid))
+        close_probe["owner_thread_nonzero"] = bool(owner_thread)
+        close_probe["owner_pid_matches"] = pid.value == self.gui.pid
+        require(owner_thread and pid.value == self.gui.pid)
+        posted = user32.PostMessageW(windows[0], 0x0010, 0, 0)
+        close_probe["close_posted"] = bool(posted)
+        require(posted)
         self.check = "gui_normal_exit"
         require(self.gui.wait(timeout=15) == 0)
         self.check = "descriptor_and_renderer_cleanup"

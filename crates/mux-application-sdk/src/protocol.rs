@@ -27,6 +27,10 @@ pub struct ControlGrant {
     pub window_identity_metadata: bool,
     pub window_tracking: bool,
     pub window_control: bool,
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub host_mode_control: bool,
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub host_viewport_control: bool,
 }
 
 impl Default for ControlGrant {
@@ -42,6 +46,8 @@ impl Default for ControlGrant {
             window_identity_metadata: false,
             window_tracking: false,
             window_control: false,
+            host_mode_control: false,
+            host_viewport_control: false,
         }
     }
 }
@@ -77,6 +83,17 @@ pub struct RemoteWindowRef {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "kind", rename_all = "snake_case", deny_unknown_fields)]
 pub enum ClientCommand {
+    HostedStateQuery {
+        epoch: u64,
+    },
+    HostedSetMode {
+        reference: HostRevision,
+        mode: HostedMode,
+    },
+    HostedViewport {
+        reference: HostRevision,
+        action: HostViewportAction,
+    },
     Snapshot,
     Subscribe {
         capacity: usize,
@@ -155,6 +172,13 @@ pub enum ClientCommand {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum ClientResponse {
+    HostedState {
+        state: HostedState,
+    },
+    HostedAction {
+        action: HostedAction,
+        state: HostedState,
+    },
     Snapshot {
         snapshot: Snapshot,
     },
@@ -199,6 +223,9 @@ pub struct HostRequest {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "kind", rename_all = "snake_case", deny_unknown_fields)]
 pub enum HostCommand {
+    PublishHostedState {
+        state: HostedState,
+    },
     RegisterRecipient {
         local_identity: String,
     },

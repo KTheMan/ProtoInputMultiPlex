@@ -5,7 +5,7 @@ use futures_util::{SinkExt, StreamExt};
 use mux_application_sdk::{
     ClientCommand, ClientMessage, ClientRequest, ClientResponse, ClientState, EventHello,
     EventReady, FailureCode, FoldOutcome, MAX_REQUEST_BYTES, MAX_RESPONSE_BYTES, PROTOCOL_VERSION,
-    RemoteWindowRef, Reply, ServerMessage, UserScope, WindowControl, WindowId, WindowInfo,
+    HostRevision, HostedAction, HostedMode, HostedPhase, HostViewportAction, RemoteWindowRef, Reply, ServerMessage, UserScope, WindowControl, WindowId, WindowInfo,
     WindowObservationSource,
 };
 use rmcp::{
@@ -116,6 +116,7 @@ struct Peer {
     socket: WebSocketStream<TcpStream>,
     ready: EventReady,
     state: ClientState,
+    hosted_receipt: mux_application_sdk::client::HostedReceipt,
     subscription: Option<mux_application_sdk::SubscriptionId>,
     retired_subscription: Option<mux_application_sdk::SubscriptionId>,
     next_request: u64,
@@ -143,7 +144,7 @@ fn validate_reported_window(window: &WindowInfo) -> Result<()> {
 fn window_only_admission(ready: &EventReady) -> bool {
     ready.version == PROTOCOL_VERSION
         && ready.epoch != 0
-        && ready.events.owned_windows
+        && (ready.events.owned_windows || ready.events.host_state)
         && !ready.controls.window_publication
         && !ready.controls.window_identity_metadata
         && !ready.events.pointer_events
@@ -162,6 +163,7 @@ impl Peer {
         self.terminal = true;
         self.last_issue = Some("invalid window response");
         self.state.disconnect();
+        self.hosted_receipt.clear();
     }
 
     async fn connect(path: &PathBuf) -> Result<Self> {
@@ -201,6 +203,7 @@ impl Peer {
                 socket,
                 ready,
                 state: ClientState::default(),
+                hosted_receipt: mux_application_sdk::client::HostedReceipt::default(),
                 subscription: None,
                 retired_subscription: None,
                 next_request: 0,
@@ -218,6 +221,7 @@ impl Peer {
                 bail!("Window subscription was not acknowledged");
             };
             peer.state.install_snapshot(snapshot, peer.ready.epoch)?;
+            peer.hosted_receipt.clear();
             peer.subscription = Some(subscription);
             Ok(peer)
         })
@@ -253,6 +257,8 @@ impl Peer {
             .checked_add(1)
             .context("Request IDs exhausted")?;
         let request_id = self.next_request;
+        let hosted_action = matches!(&command, ClientCommand::HostedSetMode { .. } | ClientCommand::HostedViewport { .. });
+        let deadline = if hosted_action { Duration::from_secs(60) } else { CALL_TIMEOUT };
         let frame = serde_json::to_string(&ClientMessage {
             request_id,
             request: ClientRequest {
@@ -265,7 +271,7 @@ impl Peer {
             "Window request exceeds size bound"
         );
         let mut rejected = false;
-        let received = timeout(CALL_TIMEOUT, async {
+        let received = timeout(deadline, async {
             // This timeout covers the send as well as the receipt. If it fires,
             // the socket is fenced and never used again: bytes may have left.
             self.socket.send(Message::Text(frame.into())).await?;
@@ -277,9 +283,14 @@ impl Peer {
                             Reply::Error { version, error } if version == PROTOCOL_VERSION => {
                                 if error.code == FailureCode::Uncertain {
                                     self.state.disconnect();
+                                    self.hosted_receipt.clear();
                                     self.needs_refresh = true;
+                                    if hosted_action {
+                                        self.terminal = true;
+                                        self.last_issue = Some("hosted action outcome uncertain; do not replay");
+                                    }
                                     rejected = true;
-                                    bail!("Window action outcome uncertain; refresh after a new owner observation")
+                                    bail!("Action outcome uncertain; inspect fresh authority without replay")
                                 }
                                 rejected = true;
                                 bail!("Window request rejected ({:?})", error.code)
@@ -291,8 +302,11 @@ impl Peer {
                         if Some(subscription) == self.subscription =>
                     {
                         match self.state.fold_poll(stream)? {
-                            FoldOutcome::Applied(_) => {}
-                            FoldOutcome::NeedsSnapshot => self.needs_refresh = true,
+                            FoldOutcome::Applied(_) => self.hosted_receipt.reconcile(&self.state)?,
+                            FoldOutcome::NeedsSnapshot => {
+                                self.hosted_receipt.clear();
+                                self.needs_refresh = true;
+                            }
                             FoldOutcome::Ended(_) => bail!("Event authority ended"),
                         }
                     }
@@ -314,6 +328,7 @@ impl Peer {
                 self.terminal = true;
                 self.last_issue = Some("transport or protocol failure");
                 self.state.disconnect();
+                self.hosted_receipt.clear();
                 if action_sent {
                     bail!("Window action outcome uncertain; event connection fenced ({error})")
                 }
@@ -324,6 +339,7 @@ impl Peer {
                 self.terminal = true;
                 self.last_issue = Some("request deadline reached");
                 self.state.disconnect();
+                self.hosted_receipt.clear();
                 if action_sent {
                     bail!("Window action outcome uncertain; event connection fenced")
                 }
@@ -370,6 +386,7 @@ impl Peer {
         let subscription = self
             .subscription
             .context("Window subscription unavailable")?;
+        self.hosted_receipt.clear();
         let ClientResponse::Subscribed {
             subscription: fresh,
             snapshot,
@@ -394,6 +411,7 @@ impl Peer {
             self.fence_protocol();
             bail!("Invalid refreshed window snapshot");
         }
+        self.hosted_receipt.clear();
         self.retired_subscription = Some(subscription);
         self.subscription = Some(fresh);
         self.needs_refresh = false;
@@ -424,6 +442,17 @@ struct WindowRequest {
     control: Option<Value>,
 }
 
+#[derive(Deserialize, schemars::JsonSchema)]
+#[serde(deny_unknown_fields)]
+struct HostedRequest {
+    /// inspect, set_mode, minimize, or restore
+    operation: String,
+    epoch: u64,
+    revision: Option<u64>,
+    /// native, switched, or concurrent; accepted only for set_mode
+    mode: Option<String>,
+}
+
 #[derive(Clone)]
 struct WindowAgentServer {
     peer: Arc<Mutex<Peer>>,
@@ -432,6 +461,78 @@ struct WindowAgentServer {
 
 #[tool_router]
 impl WindowAgentServer {
+    #[tool(description = "Inspect the GUI hosted session or explicitly set native/switched/concurrent mode, minimize, or restore. Observation and each action require separate current GUI grants. Supply exact epoch and observed revision. Lost receipts are uncertain and never replayed. Setup is read-only.", annotations(open_world_hint = false))]
+    async fn hosted_session(&self, Parameters(args): Parameters<HostedRequest>) -> CallToolResult {
+        let result: Result<Value> = async {
+            let mut guard = self.peer.lock().await;
+            let peer = &mut *guard;
+            ensure!(!peer.terminal && !peer.needs_refresh && peer.state.state() == &mux_application_sdk::StreamState::Live, "Refresh the event subscription first");
+            ensure!(peer.ready.events.host_state && args.epoch == peer.ready.epoch, "Hosted observation unavailable or epoch stale");
+            if args.operation == "inspect" {
+                ensure!(args.revision.is_none() && args.mode.is_none(), "Inspect accepts no action");
+                let response = peer.command(ClientCommand::HostedStateQuery { epoch: args.epoch }, false).await?;
+                if let ClientResponse::HostedState { state } = response {
+                    ensure!(state.revision != 0, "Invalid hosted revision");
+                    ensure!(!peer.needs_refresh && peer.state.state() == &mux_application_sdk::StreamState::Live, "Refresh the event subscription first");
+                    if peer.hosted_receipt.observe(args.epoch, &state, &peer.state).is_err() {
+                        peer.fence_protocol();
+                        bail!("Hosted query conflicted with the current stream");
+                    }
+                    ensure!(peer.hosted_receipt.current(&peer.state, args.epoch)
+                        == Some(HostRevision { epoch: args.epoch, revision: state.revision }),
+                        "Hosted observation changed; inspect again");
+                    return Ok(json!({"epoch":args.epoch,"hosted":state}));
+                }
+                peer.fence_protocol();
+                bail!("Invalid hosted observation response");
+            }
+            let reference = HostRevision { epoch: args.epoch, revision: args.revision.context("Supply the observed hosted revision")? };
+            ensure!(peer.hosted_receipt.permits(&peer.state, reference), "Hosted revision stale; inspect current subscription");
+            let action = match args.operation.as_str() {
+                "set_mode" => {
+                    ensure!(peer.ready.controls.host_mode_control, "Hosted mode control was not approved");
+                    let mode = match args.mode.as_deref() {
+                        Some("native") => HostedMode::Native,
+                        Some("switched") => HostedMode::Switched,
+                        Some("concurrent") => HostedMode::Concurrent,
+                        _ => bail!("Choose native, switched, or concurrent"),
+                    };
+                    HostedAction::SetMode(mode)
+                }
+                "minimize" | "restore" => {
+                    ensure!(peer.ready.controls.host_viewport_control && args.mode.is_none(), "Hosted viewport control was not approved or mode supplied");
+                    HostedAction::Viewport(if args.operation == "minimize" { HostViewportAction::Minimize } else { HostViewportAction::Restore })
+                }
+                _ => bail!("Unknown hosted operation"),
+            };
+            let command = match action {
+                HostedAction::SetMode(mode) => ClientCommand::HostedSetMode { reference, mode },
+                HostedAction::Viewport(action) => ClientCommand::HostedViewport { reference, action },
+            };
+            let response = peer.command(command, true).await?;
+            if let ClientResponse::HostedAction { action: observed, state } = response {
+                let applied = match action {
+                    HostedAction::SetMode(mode) => state.mode == Some(mode) && state.phase == if mode == HostedMode::Native { HostedPhase::Native } else { HostedPhase::Ready },
+                    HostedAction::Viewport(action) => state.minimized == Some(matches!(action, HostViewportAction::Minimize)),
+                };
+                if observed == action && state.revision >= reference.revision && applied {
+                    if !peer.needs_refresh && peer.state.state() == &mux_application_sdk::StreamState::Live
+                        && peer.hosted_receipt.observe(args.epoch, &state, &peer.state).is_err()
+                    {
+                        peer.fence_protocol();
+                        bail!("Hosted action receipt conflicted with the current stream; outcome uncertain");
+                    }
+                    return Ok(json!({"epoch":args.epoch,"action":observed,"hosted":state}));
+                }
+            }
+            peer.fence_protocol();
+            bail!("Hosted action outcome uncertain; invalid receipt and connection fenced")
+        }.await;
+        match result {
+            Ok(value) => CallToolResult::structured(value),
+            Err(error) => CallToolResult::error(vec![rmcp::model::ContentBlock::text(error.to_string())]),
+        }
+    }
     #[tool(
         description = "Inspect GUI-approved native windows, explicitly refresh a subscription, or query, track, untrack, or control one exact window ID. Control requires a fresh native-client report and exact GUI approval. A lost action receipt is uncertain and never replayed. This tool cannot grant access, select a native handle, create virtual users, or change Setup.",
         annotations(open_world_hint = false)

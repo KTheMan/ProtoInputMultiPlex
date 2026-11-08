@@ -18,6 +18,7 @@ pub(super) const MAX_PENDING: usize = 16;
 pub(super) const OUT_CAPACITY: usize = MAX_PENDING + 2;
 pub(super) const MAX_TTL: Duration = Duration::from_secs(300);
 pub(super) const REQUEST_TIMEOUT: Duration = Duration::from_secs(2);
+pub(super) const HOST_ACTION_TIMEOUT: Duration = Duration::from_secs(55);
 pub(super) const AUTH_TIMEOUT: Duration = Duration::from_secs(5);
 pub(super) const NETWORK_POLL: Duration = Duration::from_millis(20);
 

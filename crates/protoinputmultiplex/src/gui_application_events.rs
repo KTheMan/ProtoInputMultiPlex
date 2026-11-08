@@ -1,6 +1,6 @@
 //! Explicit virtual-only application session, owned by the GUI event thread.
 mod actor;
-use crate::application_event_transport::{ClientPermit, HostBridge, NetworkEndpoint};
+use crate::application_event_transport::{ClientPermit, HostBridge, HostIntent, NetworkEndpoint};
 use anyhow::{Context, Result, ensure};
 use eframe::egui;
 use mux_application_sdk::*;
@@ -104,6 +104,9 @@ pub(crate) struct Draft {
     pub window_tracking: bool,
     pub window_control: bool,
     pub selected_window: Option<WindowId>,
+    pub host_state: bool,
+    pub host_mode_control: bool,
+    pub host_viewport_control: bool,
 }
 impl Draft {
     pub fn apply_script_fields(&mut self, fields: &BTreeMap<String, String>, editing_origin: bool) {
@@ -141,9 +144,14 @@ impl Draft {
             || self.window_observation
             || self.window_tracking
             || self.window_control;
+        let host_family = self.host_state || self.host_mode_control || self.host_viewport_control;
         ensure!(
-            input_family || window_family,
+            input_family || window_family || host_family,
             "Select a receiver capability first"
+        );
+        ensure!(
+            !(self.host_mode_control || self.host_viewport_control) || self.host_state,
+            "Approve host state observation before host controls"
         );
         ensure!(
             self.users.len() <= MAX_USERS,
@@ -186,6 +194,7 @@ impl Draft {
                 pointer_events: self.pointer_events,
                 key_events: self.key_events,
                 owned_windows: self.publish_windows || self.window_observation,
+                host_state: self.host_state,
             },
             ControlGrant {
                 users: scope,
@@ -198,6 +207,8 @@ impl Draft {
                 window_identity_metadata: self.window_identity_metadata,
                 window_tracking: self.window_tracking,
                 window_control: self.window_control,
+                host_mode_control: self.host_mode_control,
+                host_viewport_control: self.host_viewport_control,
             },
         ))
     }
@@ -274,6 +285,63 @@ impl Default for Controller {
 impl Controller {
     pub fn active(&self) -> bool {
         self.bridge.is_some() && !self.ended
+    }
+    pub fn epoch(&self) -> u64 {
+        self.epoch
+    }
+    pub fn take_host_intent(&mut self) -> Option<HostIntent> {
+        self.bridge.as_mut().and_then(HostBridge::take_host_intent)
+    }
+    pub fn host_action_pending(&self, ticket: u64) -> bool {
+        self.bridge
+            .as_ref()
+            .is_some_and(|bridge| bridge.host_action_pending(ticket))
+    }
+    /// A hosted Start/Native Stop retains only its approved requesting row.
+    /// All other event recipients, including approved rows without a live
+    /// descriptor, lose their grants before routing changes.
+    pub fn retain_only_host_action_receiver(&mut self, ticket: u64) -> Result<()> {
+        let recipient = self
+            .bridge
+            .as_ref()
+            .and_then(|bridge| bridge.host_action_recipient(ticket))
+            .context("Host action receiver is no longer current")?;
+        ensure!(
+            self.receivers
+                .iter()
+                .any(|receiver| receiver.recipient == Some(recipient)),
+            "Host action receiver is no longer approved"
+        );
+        self.cancel_copy();
+        for index in 0..self.receivers.len() {
+            if self.receivers[index].recipient != Some(recipient) {
+                self.revoke_index(index);
+            }
+        }
+        ensure!(
+            self.bridge
+                .as_ref()
+                .and_then(|bridge| bridge.host_action_recipient(ticket))
+                == Some(recipient),
+            "Host action receiver retired during cleanup"
+        );
+        Ok(())
+    }
+    pub fn publish_hosted_state(&mut self, state: HostedState) -> Result<()> {
+        self.bridge
+            .as_mut()
+            .context("Application event session unavailable")?
+            .publish_hosted_state(state)?;
+        Ok(())
+    }
+    pub fn complete_host_action(
+        &mut self,
+        ticket: u64,
+        result: std::result::Result<HostedState, Failure>,
+    ) {
+        if let Some(bridge) = &mut self.bridge {
+            bridge.complete_host_action(ticket, result);
+        }
     }
     pub fn listener_active(&self) -> bool {
         self.actor.as_ref().is_some_and(actor::Actor::active)
@@ -569,6 +637,7 @@ impl Controller {
                         pointer_events: self.owner_consent.pointer_events,
                         key_events: self.owner_consent.key_events,
                         owned_windows: false,
+                        host_state: false,
                     },
                 },
             })
@@ -589,6 +658,8 @@ impl Controller {
                         window_identity_metadata: false,
                         window_tracking: false,
                         window_control: false,
+                        host_mode_control: false,
+                        host_viewport_control: false,
                     },
                 },
             })
@@ -1294,6 +1365,41 @@ mod tests {
                 .ready_for(publisher)
                 .is_ok()
         );
+    }
+
+    #[test]
+    fn host_only_approval_does_not_create_input_master_authority() {
+        let mut controller = local();
+        controller.add_receiver().unwrap();
+        controller.draft.origin = ORIGIN.into();
+        controller.draft.host_state = true;
+        controller.draft.host_mode_control = true;
+        controller.draft.host_viewport_control = true;
+        controller.approve().unwrap();
+
+        let recipient = controller.selected_receiver().unwrap().recipient.unwrap();
+        let ready = controller
+            .bridge
+            .as_ref()
+            .unwrap()
+            .host()
+            .ready_for(recipient)
+            .unwrap();
+        assert!(ready.events.host_state);
+        assert!(ready.controls.host_mode_control);
+        assert!(ready.controls.host_viewport_control);
+        assert_eq!(ready.events.users, UserScope::Only(BTreeSet::new()));
+        assert!(!ready.events.pointer_events);
+        assert!(!ready.events.key_events);
+        assert!(matches!(
+            controller
+                .bridge
+                .as_ref()
+                .unwrap()
+                .host()
+                .ready_for(controller.owner.unwrap()),
+            Err(Error::Denied)
+        ));
     }
     #[test]
     fn select_visible_users_stages_exact_current_scope_until_explicit_apply() {

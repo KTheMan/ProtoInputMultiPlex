@@ -70,6 +70,12 @@ pub enum Request {
         mode: mux_core::routing::Mode,
         multi_keyboard: bool,
     },
+    /// GUI event-SDK mode request; the ticket never comes from a remote payload.
+    HostedMode {
+        ticket: u64,
+        mode: mux_core::routing::Mode,
+        multi_keyboard: bool,
+    },
     MoveTo {
         user: usize,
         x: i32,
@@ -168,6 +174,13 @@ pub enum Event {
         error: Option<String>,
     },
     ModeChanged(mux_core::routing::Mode, bool),
+    HostedModeCompleted {
+        ticket: u64,
+        mode: mux_core::routing::Mode,
+        multi_keyboard: bool,
+        error: Option<String>,
+        uncertain: bool,
+    },
     Paused,
     Resumed,
     Stopped,
@@ -243,6 +256,7 @@ impl EventBus {
                 | Event::UserPauseAcknowledged { .. }
                 | Event::MapperMonitors(_)
                 | Event::ScreenTargets(_)
+                | Event::HostedModeCompleted { .. }
         ) {
             return true;
         }
@@ -1831,6 +1845,44 @@ pub fn run(runtime: &Path, controller_pid: u32) -> Result<()> {
                             Ok(()) => emit(Event::ModeChanged(mode, multi_keyboard))?,
                             Err(error) => input_ack(Err(error), &automation)?,
                         }
+                    }
+                    Request::HostedMode {
+                        ticket,
+                        mode,
+                        multi_keyboard,
+                    } => {
+                        if let Err(error) = router.validate_mode_change(multi_keyboard) {
+                            emit(Event::HostedModeCompleted {
+                                ticket,
+                                mode,
+                                multi_keyboard,
+                                error: Some(format!("Mode change rejected: {error:#}")),
+                                uncertain: false,
+                            })?;
+                            return Ok(false);
+                        }
+                        let result = crate::window_selection::change_mode(
+                            router.as_mut(),
+                            mode,
+                            multi_keyboard,
+                            |router| {
+                                automation.cancel(router)?;
+                                automation.stop_recording();
+                                Ok(())
+                            },
+                        );
+                        if result.is_ok() {
+                            agents.note_mode(mode, multi_keyboard);
+                            releases.clear();
+                        }
+                        let uncertain = result.is_err();
+                        emit(Event::HostedModeCompleted {
+                            ticket,
+                            mode,
+                            multi_keyboard,
+                            error: result.err().map(|error| format!("{error:#}")),
+                            uncertain,
+                        })?;
                     }
                     Request::MoveTo { user, x, y } => {
                         let result = automation.action(

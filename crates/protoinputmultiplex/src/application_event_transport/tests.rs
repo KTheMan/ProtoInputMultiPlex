@@ -28,6 +28,8 @@ fn controls(users: UserScope, delegated_users: bool) -> ControlGrant {
         window_control: false,
         window_publication: false,
         window_identity_metadata: false,
+        host_mode_control: false,
+        host_viewport_control: false,
     }
 }
 fn events(users: UserScope) -> Grant {
@@ -36,6 +38,7 @@ fn events(users: UserScope) -> Grant {
         pointer_events: true,
         key_events: true,
         owned_windows: false,
+        host_state: false,
     }
 }
 fn setup() -> (
@@ -112,6 +115,133 @@ fn permit(bridge: &mut HostBridge, browser: RecipientId) -> ClientPermit {
     bridge
         .approve_client(browser, ORIGIN, Duration::from_secs(30))
         .unwrap()
+}
+
+#[test]
+fn hosted_mode_action_waits_for_gui_receipt_and_expires_without_replay() {
+    let bounds = Bounds {
+        left: 0,
+        top: 0,
+        right: 640,
+        bottom: 480,
+    };
+    let mut host = Host::<PlatformWindows>::new(
+        71,
+        ScreenState {
+            revision: 1,
+            desktop: bounds,
+            screens: vec![bounds],
+        },
+    )
+    .unwrap();
+    let recipient = host.register_recipient("hosted receiver").unwrap();
+    host.approve_events(
+        recipient,
+        Grant {
+            host_state: true,
+            ..Default::default()
+        },
+    )
+    .unwrap();
+    host.approve_controls(
+        recipient,
+        ControlGrant {
+            host_mode_control: true,
+            ..Default::default()
+        },
+    )
+    .unwrap();
+    let native = HostedState {
+        revision: 1,
+        routing_generation: 0,
+        phase: HostedPhase::Native,
+        mode: Some(HostedMode::Native),
+        multi_keyboard: None,
+        minimized: Some(false),
+    };
+    host.publish_hosted_state(native).unwrap();
+    let (mut bridge, endpoint) = HostBridge::new(host);
+    let approved = permit(&mut bridge, recipient);
+    let mut output = connect(&mut bridge, &endpoint, &approved);
+
+    command(
+        &endpoint,
+        &approved,
+        1,
+        ClientCommand::HostedSetMode {
+            reference: HostRevision {
+                epoch: 71,
+                revision: 1,
+            },
+            mode: HostedMode::Switched,
+        },
+    );
+    bridge.tick();
+    assert!(output.try_recv().is_err());
+    let intent = bridge.take_host_intent().unwrap();
+    assert_eq!(intent.action, HostedAction::SetMode(HostedMode::Switched));
+    let switched = HostedState {
+        revision: 2,
+        routing_generation: 1,
+        phase: HostedPhase::Ready,
+        mode: Some(HostedMode::Switched),
+        multi_keyboard: Some(false),
+        minimized: Some(false),
+    };
+    bridge.publish_hosted_state(switched.clone()).unwrap();
+    bridge.complete_host_action(intent.ticket, Ok(switched));
+    assert!(matches!(
+        output.try_recv().unwrap(),
+        ServerMessage::Response {
+            request_id: 1,
+            reply: Reply::Ok {
+                response: ClientResponse::HostedAction { .. },
+                ..
+            }
+        }
+    ));
+
+    command(
+        &endpoint,
+        &approved,
+        2,
+        ClientCommand::HostedSetMode {
+            reference: HostRevision {
+                epoch: 71,
+                revision: 2,
+            },
+            mode: HostedMode::Concurrent,
+        },
+    );
+    bridge.tick();
+    let late = bridge.take_host_intent().unwrap();
+    bridge.tick_at(Instant::now() + REQUEST_TIMEOUT);
+    assert!(matches!(
+        output.try_recv().unwrap(),
+        ServerMessage::Response {
+            request_id: 2,
+            reply: Reply::Error {
+                error: Failure {
+                    code: FailureCode::Uncertain,
+                    ..
+                },
+                ..
+            }
+        }
+    ));
+    bridge.complete_host_action(
+        late.ticket,
+        Ok(HostedState {
+            revision: 3,
+            routing_generation: 1,
+            phase: HostedPhase::Ready,
+            mode: Some(HostedMode::Concurrent),
+            multi_keyboard: Some(false),
+            minimized: Some(false),
+        }),
+    );
+    assert!(output.try_recv().is_err());
+    assert!(!bridge.host_action_pending(late.ticket));
 }
 fn connect(
     bridge: &mut HostBridge,
@@ -1420,6 +1550,113 @@ mod connection_path {
                 }
             }
         }).await.expect("connection response deadline")
+    }
+
+    #[tokio::test(flavor = "current_thread")]
+    async fn hosted_expiry_keeps_real_connection_fifo_and_later_snapshot_alive() {
+        let bounds = Bounds {
+            left: 0,
+            top: 0,
+            right: 640,
+            bottom: 480,
+        };
+        let mut host = Host::<PlatformWindows>::new(
+            71,
+            ScreenState {
+                revision: 1,
+                desktop: bounds,
+                screens: vec![bounds],
+            },
+        )
+        .unwrap();
+        let recipient = host.register_recipient("hosted pipeline receiver").unwrap();
+        host.approve_events(
+            recipient,
+            Grant {
+                host_state: true,
+                ..Default::default()
+            },
+        )
+        .unwrap();
+        host.approve_controls(
+            recipient,
+            ControlGrant {
+                host_mode_control: true,
+                ..Default::default()
+            },
+        )
+        .unwrap();
+        host.publish_hosted_state(HostedState {
+            revision: 1,
+            routing_generation: 0,
+            phase: HostedPhase::Native,
+            mode: Some(HostedMode::Native),
+            multi_keyboard: None,
+            minimized: Some(false),
+        })
+        .unwrap();
+        let (mut bridge, endpoint) = HostBridge::new(host);
+        let approved = bridge
+            .approve_client(recipient, ORIGIN, Duration::from_secs(120))
+            .unwrap();
+        let (mut client, driver, _gate) = start(&mut bridge, &endpoint, &approved).await;
+        client
+            .send(frame(
+                1,
+                ClientCommand::HostedSetMode {
+                    reference: HostRevision {
+                        epoch: 71,
+                        revision: 1,
+                    },
+                    mode: HostedMode::Switched,
+                },
+            ))
+            .await
+            .unwrap();
+        client.send(frame(2, ClientCommand::Snapshot)).await.unwrap();
+        let intent = timeout(Duration::from_secs(1), async {
+            loop {
+                bridge.tick();
+                if let Some(intent) = bridge.take_host_intent() {
+                    break intent;
+                }
+                sleep(Duration::from_millis(1)).await;
+            }
+        })
+        .await
+        .unwrap();
+        assert_eq!(intent.action, HostedAction::SetMode(HostedMode::Switched));
+        bridge.tick_at(Instant::now() + HOST_ACTION_TIMEOUT);
+        assert!(matches!(
+            next(&mut bridge, &mut client).await,
+            ServerMessage::Response {
+                request_id: 1,
+                reply: Reply::Error {
+                    error: Failure {
+                        code: FailureCode::Uncertain,
+                        ..
+                    },
+                    ..
+                }
+            }
+        ));
+        assert!(matches!(
+            next(&mut bridge, &mut client).await,
+            ServerMessage::Response {
+                request_id: 2,
+                reply: Reply::Ok {
+                    response: ClientResponse::Snapshot { .. },
+                    ..
+                }
+            }
+        ));
+        assert!(approved.live());
+        bridge.complete_host_action(intent.ticket, Err(Failure {
+            code: FailureCode::Uncertain,
+            message: "late worker receipt".into(),
+        }));
+        client.close(None).await.unwrap();
+        assert!(timeout(Duration::from_secs(1), driver).await.unwrap().unwrap().is_ok());
     }
 
     #[tokio::test(flavor = "current_thread")]

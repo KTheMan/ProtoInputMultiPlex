@@ -25,6 +25,7 @@ use tokio_tungstenite::{
 const PATH: &str = "/application-events/v1";
 const HANDSHAKE: Duration = Duration::from_secs(5);
 const REQUEST: Duration = Duration::from_secs(10);
+const HOST_ACTION: Duration = Duration::from_secs(60);
 
 pub(super) fn validate_config(config: &ConnectConfig) -> Result<SocketAddr, ClientError> {
     let port_text = config
@@ -249,7 +250,15 @@ pub(super) async fn drive<S: AsyncRead + AsyncWrite + Unpin>(
             return Err(StopReason::Protocol);
         }
         send(&mut socket, shared, text).await?;
-        let until = Instant::now() + REQUEST;
+        let response_limit = match &next {
+            Outgoing::Client(message)
+                if matches!(
+                    &message.request.command,
+                    ClientCommand::HostedSetMode { .. } | ClientCommand::HostedViewport { .. }
+                ) => HOST_ACTION,
+            _ => REQUEST,
+        };
+        let until = Instant::now() + response_limit;
         loop {
             let (message, bytes) = tokio::select! { biased;
                 _ = shared.requests_changed.notified() => {

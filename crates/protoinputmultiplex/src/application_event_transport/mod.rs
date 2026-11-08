@@ -4,7 +4,7 @@ mod authority;
 mod bridge;
 mod network;
 pub(crate) use authority::{ClientPermit, Config, IssuedClient, ServiceSnapshot};
-pub(crate) use bridge::{HostBridge, NetworkEndpoint, TickReport};
+pub(crate) use bridge::{HostBridge, HostIntent, NetworkEndpoint, TickReport};
 pub(crate) use network::Service;
 
 #[cfg(test)]

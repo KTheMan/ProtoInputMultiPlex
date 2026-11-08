@@ -850,6 +850,7 @@ mod fixture {
             pointer_events: false,
             key_events: false,
             owned_windows: true,
+            host_state: false,
         };
         ensure(
             host_command(api, host, HostCommand::ApproveEvents { recipient, grant })?["response"]["kind"]
@@ -867,6 +868,8 @@ mod fixture {
             window_identity_metadata: false,
             window_tracking: true,
             window_control: false,
+            host_mode_control: false,
+            host_viewport_control: false,
         };
         ensure(
             host_command(

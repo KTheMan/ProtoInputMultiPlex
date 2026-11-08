@@ -2457,6 +2457,9 @@ struct Dashboard {
     agent_broker: crate::gui_agent_broker::Service,
     sdk_service: Option<crate::gui_sdk::Service>,
     application_events: crate::gui_application_events::Controller,
+    hosted_state: Option<mux_application_sdk::HostedState>,
+    hosted_visible: Option<bool>,
+    hosted_pending: Option<application_event_dashboard::HostedPending>,
     application_event_tab: bool,
     sdk_origins: String,
     agent_sdk_tab: bool,
@@ -2761,6 +2764,9 @@ impl Dashboard {
             agent_broker,
             sdk_service: None,
             application_events: crate::gui_application_events::Controller::default(),
+            hosted_state: None,
+            hosted_visible: None,
+            hosted_pending: None,
             application_event_tab: false,
             sdk_origins: String::new(),
             agent_sdk_tab: false,
@@ -6870,6 +6876,12 @@ impl Dashboard {
     }
 
     fn start_routing(&mut self) {
+        self.start_routing_with_event(false);
+    }
+
+    /// A GUI-approved event host action may keep only its own event lease alive
+    /// while the ordinary routing Start continues to retire other SDK owners.
+    fn start_routing_with_event(&mut self, preserve_event: bool) {
         self.restart_requested = false;
         if self.preferences_worker.pending()
             || self.preferences_worker.retiring()
@@ -6918,8 +6930,16 @@ impl Dashboard {
                 "Start cancelled. Check targets and stop controls before starting again.".into();
             return;
         }
-        self.stop_all_sdks();
-        if !self.all_sdks_retired()
+        if preserve_event {
+            self.stop_sdk();
+        } else {
+            self.stop_all_sdks();
+        }
+        if !(if preserve_event {
+            self.sdk_retired()
+        } else {
+            self.all_sdks_retired()
+        })
             || !matches!(
                 self.agent_broker.status().phase,
                 crate::gui_agent_broker::Phase::Stopped
@@ -6996,6 +7016,11 @@ impl Dashboard {
                 self.recovery_dialog_open = false;
                 self.user_pause.reset();
                 self.session = Some(session);
+                if preserve_event {
+                    if let Some(pending) = &mut self.hosted_pending {
+                        pending.expected_generation = Some(self.agent_session_epoch);
+                    }
+                }
                 self.virtual_users_base_seat_count = Some(self.profile.seats.len());
                 self.virtual_users_page.reset_session();
                 self.session_ready = false;
@@ -7038,8 +7063,18 @@ impl Dashboard {
     }
 
     fn request_routing_stop(&mut self, quit_after: bool) {
+        self.request_routing_stop_with_event(quit_after, false);
+    }
+
+    /// Only an admitted hosted Native action uses this continuation. Ordinary
+    /// Stop and Quit keep the existing full SDK retirement ordering.
+    fn request_routing_stop_with_event(&mut self, quit_after: bool, preserve_event: bool) {
         self.user_pause.reset();
-        self.stop_all_sdks();
+        if preserve_event && !quit_after {
+            self.stop_sdk();
+        } else {
+            self.stop_all_sdks();
+        }
         self.restart_requested = false;
         if self.session.is_none() && self.setup_handle.enabled() {
             self.setup_retiring = true;
@@ -7646,6 +7681,21 @@ impl Dashboard {
                         options.multi_keyboard = multi_keyboard;
                     }
                     self.status = format!("{mode:?} routing · held input released");
+                }
+                SessionEvent::HostedModeCompleted {
+                    ticket,
+                    mode,
+                    multi_keyboard,
+                    error,
+                    uncertain,
+                } => {
+                    self.receive_hosted_mode_completion(
+                        ticket,
+                        mode,
+                        multi_keyboard,
+                        error,
+                        uncertain,
+                    );
                 }
                 SessionEvent::Configured(count) => {
                     if self.startup_window_selection_active {
@@ -11558,14 +11608,17 @@ impl eframe::App for Dashboard {
             self.initial_profile_size = None;
         }
     }
-    fn logic(&mut self, ctx: &egui::Context, _: &mut eframe::Frame) {
+    fn logic(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
         // eframe skips `ui` while hidden. Keep tray actions, connected requests,
         // target cleanup, and device-disconnect handling alive independently of painting.
         self.staged_window_locks.prune(&self.profile);
         self.poll_session(ctx);
         self.poll_agent_broker();
         self.poll_sdk(ctx);
-        self.poll_application_events(ctx);
+        self.poll_application_events(
+            ctx,
+            frame.winit_window().and_then(|window| window.is_visible()),
+        );
         if matches!(
             self.agent_broker.status().phase,
             crate::gui_agent_broker::Phase::Starting | crate::gui_agent_broker::Phase::Stopping
@@ -11607,10 +11660,11 @@ impl eframe::App for Dashboard {
             self.recovery_phase == crate::session_recovery::Phase::Stopped,
             &self.agent_broker.status().phase,
         ) && !self.quit_after_stop
-            && self.all_sdks_retired()
+            && (self.all_sdks_retired()
+                || (self.hosted_start_preserves_event() && self.sdk_retired()))
         {
             self.restart_requested = false;
-            self.start_routing();
+            self.start_routing_with_event(self.hosted_start_preserves_event());
         }
         self.poll_discovery();
         if !self.shortcut_status().active && self.session.is_some() && !self.session_stopping {

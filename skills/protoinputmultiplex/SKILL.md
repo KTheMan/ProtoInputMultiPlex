@@ -1,6 +1,6 @@
 ---
 name: protoinputmultiplex
-description: Operate ProtoInputMultiPlex MCP for scoped virtual Windows input, GUI setup, SDK status, and explicitly shared native windows.
+description: Operate ProtoInputMultiPlex MCP for scoped virtual Windows input, GUI setup, SDK status, shared native windows, and explicitly approved GUI host controls.
 ---
 
 # ProtoInputMultiPlex
@@ -18,8 +18,9 @@ containing the SDK-status addition. Check discovery before using a newer tool.
   descriptor supplied by the GUI operator. A live routing descriptor and a
   stopped Setup descriptor grant different authority; use the supplied mode.
 - `protoinputmultiplex.exe mcp --event-connection <descriptor.json>` uses a
-  separate GUI-issued window-only event descriptor in supporting development
-  builds. Its sole tool is `native_windows`; it has no routing or Setup tools.
+  separate GUI-issued event descriptor in supporting development builds.
+  Discover `native_windows` and `hosted_session`; each requires its own current
+  GUI grants. Setup and general routing commands remain unavailable.
 - For stopped SDK inspection, the operator explicitly enables Setup access.
   Routing and target PIDs are unnecessary. Do not start routing, enable access,
   switch authority, or create an event session merely to obtain status.
@@ -70,6 +71,35 @@ any newly authorized action; never replay the uncertain action automatically.
 `needs_refresh` requires explicit Refresh. A gap, old epoch, revoked grant or
 `available: false` is not authority to switch to a routing/Setup connection or
 issue new credentials. Ask the operator for fresh approval when needed.
+
+## Hosted GUI controls (development candidate)
+
+Discover `hosted_session` before use. Its separate GUI consents allow observing
+host state, changing routing mode, and minimizing/restoring the GUI. Observation
+alone does not authorize actions. Use mode control for the operator's requested
+routing change; never start or stop routing merely to obtain status.
+
+Obtain the current `epoch` from `native_windows` Inspect. If that live connection
+needs a subscription refresh, use its explicit Refresh first. Call
+`hosted_session` with `operation: inspect` and that `epoch`, omitting `revision`
+and `mode`. Mutations take the same exact epoch and the observed
+`hosted.revision`; keep both integers lossless. `operation: set_mode` also takes
+`mode: native`, `switched`, or `concurrent`. `minimize` and `restore` omit `mode`.
+Inspect again after an observed state change instead of guessing revisions.
+
+Native means a clean routing Stop. Switched/Concurrent require the configured
+automatic routing profile and actual worker readiness; assigned routing is not
+a substitute. A hosted Start or Native Stop preserves only its requesting event
+receiver and retires other receivers, including their issued descriptors. Other
+clients need explicit GUI reapproval; do not reuse their old credentials.
+
+A queued action is not a completion receipt. Lost or invalid receipts leave an
+uncertain outcome: never replay the action automatically. Read connection status
+through `native_windows` Inspect; Refresh applies only to a still-live
+subscription. An ended connection needs fresh operator-supplied approval, not an
+automatic reconnect. These controls neither load/save a profile nor change the
+independent startup-loading or save-on-Quit preferences. Source support does
+not establish runtime acceptance.
 
 ## Routing and other operations
 

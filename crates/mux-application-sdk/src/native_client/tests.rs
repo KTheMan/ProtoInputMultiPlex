@@ -169,6 +169,7 @@ pub(super) fn mock_client() -> (NativeClient, (), Arc<AtomicUsize>) {
             worker: None,
             binding,
             model: EventClientState::default(),
+            hosted_receipt: crate::client::HostedReceipt::default(),
             ready: None,
             subscription: None,
             pending: VecDeque::new(),
@@ -218,6 +219,7 @@ fn fixture() -> (Host, RecipientId, EventReady, Vec<UserId>) {
             pointer_events: true,
             key_events: true,
             owned_windows: false,
+            host_state: false,
         },
     )
     .unwrap();
@@ -239,6 +241,7 @@ fn fixture() -> (Host, RecipientId, EventReady, Vec<UserId>) {
             pointer_events: true,
             key_events: true,
             owned_windows: false,
+            host_state: false,
         },
     )
     .unwrap();

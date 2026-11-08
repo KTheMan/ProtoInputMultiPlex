@@ -1,7 +1,7 @@
 use super::authority::*;
 use mux_application_sdk::*;
 use std::{
-    collections::BTreeMap,
+    collections::{BTreeMap, VecDeque},
     sync::{
         Arc,
         atomic::{AtomicBool, AtomicU8, Ordering},
@@ -78,6 +78,21 @@ struct PendingControl {
     admission: Arc<Admission>,
 }
 
+#[derive(Debug, Clone)]
+pub(crate) struct HostIntent {
+    pub ticket: u64,
+    pub action: HostedAction,
+    pub reference: HostRevision,
+}
+
+struct PendingHost {
+    request_id: u64,
+    lease_id: u64,
+    action: HostedAction,
+    deadline: Instant,
+    admission: Arc<Admission>,
+}
+
 /// Send half only; it never contains the !Send Host or a native window adapter.
 pub(crate) struct NetworkEndpoint {
     pub(super) shared: Arc<Shared>,
@@ -121,6 +136,8 @@ pub(crate) struct HostBridge<A: WindowBackend = PlatformWindows> {
     remote: BTreeMap<WindowId, RemoteBinding>,
     retired_remote: BTreeMap<(u64, u64, u64), WindowId>,
     pending_controls: BTreeMap<u64, PendingControl>,
+    host_intents: VecDeque<HostIntent>,
+    pending_host: BTreeMap<u64, PendingHost>,
     next_operation: u64,
     uncertain_controls: usize,
 }
@@ -138,6 +155,8 @@ impl<A: WindowBackend> HostBridge<A> {
                 remote: BTreeMap::new(),
                 retired_remote: BTreeMap::new(),
                 pending_controls: BTreeMap::new(),
+                host_intents: VecDeque::new(),
+                pending_host: BTreeMap::new(),
                 next_operation: 1,
                 uncertain_controls: 0,
             },
@@ -149,6 +168,98 @@ impl<A: WindowBackend> HostBridge<A> {
     }
     pub fn host(&self) -> &Host<A> {
         &self.host
+    }
+
+    pub fn publish_hosted_state(&mut self, state: HostedState) -> Result<(), Error> {
+        self.host.publish_hosted_state(state)
+    }
+
+    /// GUI-thread only. A queued intent expires without executing when its lease ends.
+    pub fn take_host_intent(&mut self) -> Option<HostIntent> {
+        while let Some(intent) = self.host_intents.pop_front() {
+            let Some(pending) = self.pending_host.get(&intent.ticket) else {
+                continue;
+            };
+            if Instant::now() >= pending.deadline
+                || !self.clients.get(&pending.lease_id).is_some_and(|client| {
+                    client.lease.live(&self.shared, Instant::now())
+                })
+            {
+                continue;
+            }
+            return Some(intent);
+        }
+        None
+    }
+
+    pub fn host_action_pending(&self, ticket: u64) -> bool {
+        self.pending_host.get(&ticket).is_some_and(|pending| {
+            Instant::now() < pending.deadline
+                && self.clients.get(&pending.lease_id).is_some_and(|client| {
+                    client.lease.live(&self.shared, Instant::now())
+                })
+        })
+    }
+
+    pub fn host_action_recipient(&self, ticket: u64) -> Option<RecipientId> {
+        if !self.host_action_pending(ticket) {
+            return None;
+        }
+        let pending = self.pending_host.get(&ticket)?;
+        let client = self.clients.get(&pending.lease_id)?;
+        self.host
+            .ready_for(client.lease.recipient)
+            .ok()
+            .filter(|ready| client.lease.matches(ready))
+            .map(|ready| ready.recipient)
+    }
+
+    /// The GUI calls this after worker or later-frame viewport observation.
+    /// A late receipt can update observed state but cannot complete an expired action.
+    pub fn complete_host_action(&mut self, ticket: u64, result: Result<HostedState, Failure>) {
+        let Some(pending) = self.pending_host.remove(&ticket) else {
+            return;
+        };
+        let now = Instant::now();
+        let live = self.clients.get(&pending.lease_id).is_some_and(|client| {
+                client.lease.live(&self.shared, now)
+                    && self
+                        .host
+                        .ready_for(client.lease.recipient)
+                        .is_ok_and(|ready| client.lease.matches(&ready))
+            });
+        if !live {
+            pending.admission.uncertain(&self.shared);
+            return;
+        }
+        let result = if now >= pending.deadline {
+            Err(failure(
+                FailureCode::Uncertain,
+                "host action outcome unconfirmed; inspect fresh host state",
+            ))
+        } else {
+            result
+        };
+        let response = result.map(|state| ClientResponse::HostedAction {
+            action: pending.action,
+            state,
+        });
+        pending.admission.state.store(COMPLETED, Ordering::Release);
+        let Some(client) = self.clients.get(&pending.lease_id) else {
+            pending.admission.uncertain(&self.shared);
+            return;
+        };
+        if client
+            .output
+            .try_send(ServerMessage::Response {
+                request_id: pending.request_id,
+                reply: response.into(),
+            })
+            .is_err()
+        {
+            pending.admission.uncertain(&self.shared);
+            client.lease.revoke();
+        }
     }
 
     pub fn window_inventory(&self) -> Vec<(WindowInfo, RecipientId)> {
@@ -231,6 +342,7 @@ impl<A: WindowBackend> HostBridge<A> {
             HostCommand::Reset { .. } => {
                 self.fence_all();
                 self.expire_controls(Instant::now());
+                self.expire_host_actions(Instant::now());
                 self.remote.clear();
                 self.retired_remote.clear();
                 let result = self.host.host_dispatch(request);
@@ -370,6 +482,7 @@ impl<A: WindowBackend> HostBridge<A> {
     fn cleanup(&mut self, lease: &Arc<Lease>) -> bool {
         self.retire_remote_for_lease(lease.id);
         self.expire_controls(Instant::now());
+        self.expire_host_actions(Instant::now());
         if !self.retire_subscription(lease.id) {
             return false;
         }
@@ -404,6 +517,7 @@ impl<A: WindowBackend> HostBridge<A> {
     pub(super) fn tick_at(&mut self, now: Instant) -> TickReport {
         let mut report = TickReport::default();
         self.expire_controls(now);
+        self.expire_host_actions(now);
         for (window, binding) in &self.remote {
             if now.duration_since(binding.last_sample) >= Duration::from_secs(3) {
                 let _ = self.host.mark_remote_window_stale(*window);
@@ -442,7 +556,7 @@ impl<A: WindowBackend> HostBridge<A> {
                                 && lease.matches(&state)
                                 && !self.clients.contains_key(&lease.id) =>
                         {
-                            stamp_capabilities(&mut state.capabilities);
+                            stamp_capabilities(&mut state.capabilities, state.events.host_state);
                             self.clients.insert(
                                 lease.id,
                                 Client {
@@ -530,7 +644,7 @@ impl<A: WindowBackend> HostBridge<A> {
                 }
             }
         }
-        report.pending = self.requests.len() + self.pending_controls.len();
+        report.pending = self.requests.len() + self.pending_controls.len() + self.pending_host.len();
         report
     }
 
@@ -621,14 +735,37 @@ impl<A: WindowBackend> HostBridge<A> {
                     Arc::clone(&admission),
                 );
             }
+            match &message.request.command {
+                ClientCommand::HostedSetMode { reference, mode } => {
+                    return self.begin_host_action(
+                        &lease,
+                        message.request_id,
+                        *reference,
+                        HostedAction::SetMode(*mode),
+                        deadline,
+                        Arc::clone(&admission),
+                    );
+                }
+                ClientCommand::HostedViewport { reference, action } => {
+                    return self.begin_host_action(
+                        &lease,
+                        message.request_id,
+                        *reference,
+                        HostedAction::Viewport(*action),
+                        deadline,
+                        Arc::clone(&admission),
+                    );
+                }
+                _ => {}
+            }
             self.host.dispatch(lease.recipient, message.request.clone())
         });
-        if matches!(&result, Err(error) if error.code == FailureCode::Uncertain && error.message == "pending owner receipt")
+        if matches!(&result, Err(error) if error.code == FailureCode::Uncertain && matches!(error.message.as_str(), "pending owner receipt" | "pending host receipt"))
         {
             return;
         }
         if let Ok(response) = &mut result {
-            stamp_response(response);
+            stamp_response(response, lease.events.host_state);
             if let Some(client) = self.clients.get_mut(&lease.id) {
                 match response {
                     ClientResponse::Subscribed { subscription, .. } => {
@@ -664,6 +801,89 @@ impl<A: WindowBackend> HostBridge<A> {
             admission.uncertain(&self.shared);
             lease.revoke();
         }
+    }
+
+    fn begin_host_action(
+        &mut self,
+        lease: &Arc<Lease>,
+        request_id: u64,
+        reference: HostRevision,
+        action: HostedAction,
+        deadline: Instant,
+        admission: Arc<Admission>,
+    ) -> Result<ClientResponse, Failure> {
+        if reference.epoch != lease.epoch {
+            return Err(failure(FailureCode::StaleRevision, "host session changed"));
+        }
+        let ready = self.host.ready_for(lease.recipient)?;
+        if !ready.events.host_state
+            || !match action {
+                HostedAction::SetMode(_) => ready.controls.host_mode_control,
+                HostedAction::Viewport(_) => ready.controls.host_viewport_control,
+            }
+        {
+            return Err(failure(FailureCode::Denied, "host action is not approved"));
+        }
+        let state = self.host.hosted_state(lease.recipient, reference.epoch)?;
+        if state.revision != reference.revision {
+            return Err(failure(FailureCode::StaleRevision, "host state changed"));
+        }
+        if self.pending_host.len() >= 8
+            || self
+                .pending_host
+                .values()
+                .any(|pending| pending.lease_id == lease.id)
+        {
+            return Err(failure(FailureCode::Limit, "host action already pending"));
+        }
+        let ticket = self.next_operation;
+        self.next_operation = self
+            .next_operation
+            .checked_add(1)
+            .ok_or_else(|| failure(FailureCode::Limit, "host operation IDs exhausted"))?;
+        self.pending_host.insert(
+            ticket,
+            PendingHost {
+                request_id,
+                lease_id: lease.id,
+                action,
+                deadline: deadline
+                    .checked_sub(Duration::from_millis(250))
+                    .unwrap_or(deadline),
+                admission,
+            },
+        );
+        self.host_intents.push_back(HostIntent {
+            ticket,
+            action,
+            reference,
+        });
+        Err(failure(FailureCode::Uncertain, "pending host receipt"))
+    }
+
+    fn expire_host_actions(&mut self, now: Instant) {
+        let expired: Vec<_> = self
+            .pending_host
+            .iter()
+            .filter_map(|(ticket, pending)| {
+                (now >= pending.deadline
+                    || !self.clients.get(&pending.lease_id).is_some_and(|client| {
+                        client.lease.live(&self.shared, now)
+                    }))
+                .then_some(*ticket)
+            })
+            .collect();
+        for ticket in expired {
+            self.complete_host_action(
+                ticket,
+                Err(failure(
+                    FailureCode::Uncertain,
+                    "host action outcome unconfirmed; inspect fresh host state",
+                )),
+            );
+        }
+        self.host_intents
+            .retain(|intent| self.pending_host.contains_key(&intent.ticket));
     }
 
     fn begin_remote_control(
@@ -1091,6 +1311,7 @@ impl<A: WindowBackend> HostBridge<A> {
         self.shared.request_stop();
         self.requests.close();
         self.expire_controls(Instant::now());
+        self.expire_host_actions(Instant::now());
         self.remote.clear();
         self.retired_remote.clear();
         self.host.end();
@@ -1104,6 +1325,7 @@ impl<A: WindowBackend> HostBridge<A> {
             }
         }
         self.expire_controls(Instant::now());
+        self.expire_host_actions(Instant::now());
     }
 }
 impl<A: WindowBackend> Drop for HostBridge<A> {
@@ -1125,7 +1347,7 @@ pub(super) fn failure(code: FailureCode, message: &str) -> Failure {
         message: message.into(),
     }
 }
-fn stamp_capabilities(capabilities: &mut [CapabilityStatus]) {
+fn stamp_capabilities(capabilities: &mut Vec<CapabilityStatus>, host_state: bool) {
     if let Some(status) = capabilities
         .iter_mut()
         .find(|status| status.capability == Capability::BrowserTransport)
@@ -1134,11 +1356,30 @@ fn stamp_capabilities(capabilities: &mut [CapabilityStatus]) {
         status.detail =
             "Event-only loopback WebSocket transport for cooperative virtual users".into();
     }
+    if host_state {
+        if let Some(status) = capabilities
+            .iter_mut()
+            .find(|status| status.capability == Capability::HostVisibility)
+        {
+            status.available = true;
+            status.detail = "GUI-owned window minimize and restore observation".into();
+        }
+        if !capabilities
+            .iter()
+            .any(|status| status.capability == Capability::HostedRouting)
+        {
+            capabilities.push(CapabilityStatus {
+                capability: Capability::HostedRouting,
+                available: true,
+                detail: "GUI-owned routing mode observation and approved control".into(),
+            });
+        }
+    }
 }
-fn stamp_response(response: &mut ClientResponse) {
+fn stamp_response(response: &mut ClientResponse, host_state: bool) {
     match response {
         ClientResponse::Snapshot { snapshot } | ClientResponse::Subscribed { snapshot, .. } => {
-            stamp_capabilities(&mut snapshot.capabilities)
+            stamp_capabilities(&mut snapshot.capabilities, host_state)
         }
         _ => {}
     }

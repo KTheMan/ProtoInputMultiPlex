@@ -15,6 +15,13 @@ pub(crate) fn validate_snapshot_query(
     mux_application_sdk::ClientState::default().install_snapshot(snapshot, epoch)
 }
 
+/// Hosted request IDs are monotonic for the WebClient lifetime. Refresh and Gap
+/// only invalidate callback dispatch; neither retires a pending request deadline.
+#[cfg(any(target_arch = "wasm32", test))]
+pub(crate) fn hosted_deadline_pending<T>(pending: &BTreeMap<u64, T>, request_id: u64) -> bool {
+    pending.contains_key(&request_id)
+}
+
 pub const MAX_REGISTRATIONS: usize = 64;
 
 /// Parse this from JSON text, preserving u64 identities without a JavaScript Number.
@@ -37,6 +44,7 @@ pub enum EventKind {
     Users,
     Screens,
     Windows,
+    Hosted,
 }
 
 impl EventFilter {
@@ -62,6 +70,7 @@ impl EventFilter {
                 }
                 Event::UserDisposed { user } => (EventKind::Users, Some(*user)),
                 Event::ScreensChanged { .. } => (EventKind::Screens, None),
+                Event::HostedStateChanged { .. } => (EventKind::Hosted, None),
                 Event::Window { .. } => (EventKind::Windows, None),
             };
             let kind_matches = matches!(self.kind, EventKind::Any | EventKind::Server)
@@ -70,6 +79,7 @@ impl EventFilter {
                     (EventKind::Input, EventKind::Input)
                         | (EventKind::Users, EventKind::Users)
                         | (EventKind::Screens, EventKind::Screens)
+                        | (EventKind::Hosted, EventKind::Hosted)
                         | (EventKind::Windows, EventKind::Windows)
                 );
             kind_matches && self.user.is_none_or(|wanted| user == Some(wanted))
@@ -196,6 +206,7 @@ mod tests {
             bottom: 100,
         };
         let mut snapshot = Snapshot {
+            hosted: None,
             version: 1,
             epoch: u64::MAX,
             through_sequence: 20,
@@ -302,5 +313,51 @@ mod tests {
         pairs.clear(); // gap, refresh, epoch, disconnect and dispose share this reset.
         assert!(!pairs.transition(user(1), Transition::Up, Some(9)));
         assert!(!pairs.transition(UserId { epoch: 1, local: 1 }, Transition::Up, Some(9)));
+    }
+}
+
+#[cfg(test)]
+mod hosted_filter_tests {
+    use super::*;
+
+    #[test]
+    fn hosted_filter_matches_only_hosted_events_and_preserves_exact_u64() {
+        let filter: EventFilter = serde_json::from_str(r#"{"kind":"hosted"}"#).unwrap();
+        let message: ServerMessage = serde_json::from_str(r#"{"kind":"event_stream","subscription":1,"stream":{"kind":"events","events":[{"version":1,"epoch":18446744073709551615,"sequence":1,"event":{"kind":"hosted_state_changed","state":{"revision":18446744073709551615,"routing_generation":9007199254740993,"phase":"ready","mode":"concurrent","multi_keyboard":true,"minimized":false}}}]}}"#).unwrap();
+        assert!(filter.matches(Some(&message)));
+        assert!(!filter.matches(None));
+        let reference: mux_application_sdk::HostRevision = serde_json::from_str(r#"{"epoch":18446744073709551615,"revision":9007199254740993}"#).unwrap();
+        assert_eq!(reference.epoch, u64::MAX);
+        assert_eq!(reference.revision, 9_007_199_254_740_993);
+    }
+}
+
+#[cfg(test)]
+mod hosted_deadline_tests {
+    use super::*;
+
+    fn assert_dispatch_fence_preserves_request_deadline() {
+        let mut pending = BTreeMap::from([(9_u64, ())]);
+        let mut hooks = Registry::default();
+        hooks.insert(()).unwrap();
+        hooks.clear(); // Same registry fence used by Refresh and EventStream Gap.
+        assert!(hosted_deadline_pending(&pending, 9));
+        // A matched receipt or terminal stop retires this exact deadline.
+        pending.remove(&9);
+        assert!(!hosted_deadline_pending(&pending, 9));
+        // A later request never revives a stale timer from a retired connection.
+        pending.insert(10, ());
+        assert!(!hosted_deadline_pending(&pending, 9));
+        assert!(hosted_deadline_pending(&pending, 10));
+    }
+
+    #[test]
+    fn refresh_callback_fence_does_not_cancel_hosted_deadline() {
+        assert_dispatch_fence_preserves_request_deadline();
+    }
+
+    #[test]
+    fn event_stream_gap_callback_fence_does_not_cancel_hosted_deadline() {
+        assert_dispatch_fence_preserves_request_deadline();
     }
 }

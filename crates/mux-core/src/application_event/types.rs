@@ -151,6 +151,8 @@ pub enum UserScope {
 /// Host approval, independent of MCP access or command credentials. Default is off.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Grant {
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub host_state: bool,
     pub users: UserScope,
     pub pointer_events: bool,
     pub key_events: bool,
@@ -160,6 +162,7 @@ pub struct Grant {
 impl Default for Grant {
     fn default() -> Self {
         Self {
+            host_state: false,
             users: UserScope::Only(BTreeSet::new()),
             pointer_events: false,
             key_events: false,
@@ -170,7 +173,7 @@ impl Default for Grant {
 
 impl Grant {
     pub fn enabled(&self) -> bool {
-        self.pointer_events || self.key_events || self.owned_windows
+        self.pointer_events || self.key_events || self.owned_windows || self.host_state
     }
 }
 
@@ -186,6 +189,7 @@ pub enum Capability {
     CursorThemes,
     CursorFlags,
     HostVisibility,
+    HostedRouting,
     TargetInjection,
     PhysicalInput,
     Pen,
@@ -348,6 +352,9 @@ impl CanvasTransform {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum Event {
+    HostedStateChanged {
+        state: HostedState,
+    },
     UserCreated {
         user: UserView,
     },
@@ -382,6 +389,8 @@ pub struct Envelope {
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Snapshot {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub hosted: Option<HostedState>,
     pub version: u32,
     pub epoch: u64,
     /// All queued events in this subscription have a greater sequence.
@@ -464,4 +473,69 @@ pub enum ApplicationMode {
 pub enum HostControl {
     Show,
     Hide,
+}
+
+fn is_false(value: &bool) -> bool {
+    !*value
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum HostedMode {
+    Native,
+    Switched,
+    Concurrent,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum HostedPhase {
+    Native,
+    Starting,
+    Ready,
+    Assigned,
+    Stopping,
+    Quarantined,
+    Unavailable,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct HostedState {
+    pub revision: u64,
+    pub routing_generation: u64,
+    pub phase: HostedPhase,
+    pub mode: Option<HostedMode>,
+    pub multi_keyboard: Option<bool>,
+    pub minimized: Option<bool>,
+}
+
+impl HostedState {
+    pub fn validate(&self) -> Result<(), Error> {
+        if self.revision == 0 {
+            return Err(Error::Invalid("nonzero hosted revision required"));
+        }
+        Ok(())
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct HostRevision {
+    pub epoch: u64,
+    pub revision: u64,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum HostViewportAction {
+    Minimize,
+    Restore,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(tag = "kind", content = "value", rename_all = "snake_case")]
+pub enum HostedAction {
+    SetMode(HostedMode),
+    Viewport(HostViewportAction),
 }

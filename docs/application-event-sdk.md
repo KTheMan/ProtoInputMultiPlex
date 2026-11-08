@@ -98,6 +98,40 @@ lost, times out, or is revoked after dispatch, the outward result is
 run; reconnect, resubscribe, and retry never replay it automatically. An
 explicit fresh observation or registration is required before another action.
 
+## Hosted routing and window actions (source candidate)
+
+The GUI can separately approve observation of its current routing state, mode
+changes, and minimize/restore for an exact event receiver. These options start
+off. They need no virtual user, pointer, or keyboard grant. The existing
+`ApplicationMode` describes the cooperative event model and does not label the
+GUI's routing mode. The hosted observation instead reports Native (ordinary
+routing Stop), Switched, or Concurrent, plus a routing generation, revision,
+phase, and observed minimize state. A fixed assigned-application session is
+reported as Assigned; Switched/Concurrent selection is unavailable there.
+
+Native Rust callers use `query_hosted` and `hosted_action` with the observed
+`HostRevision`. Browser callers use `query_hosted(epoch_json)`,
+`set_hosted_mode(reference_json, mode_json)`, `minimize_hosted(reference_json)`,
+and `restore_hosted(reference_json)`. The epoch and revision are exact 64-bit
+integers: pass their JSON text directly to the browser methods, without a
+JavaScript Number parse and stringify round trip. An agent connected through
+its own approved event descriptor uses the `hosted_session` tool to inspect or
+request `set_mode`, `minimize`, or `restore`. Stopped Setup status remains
+read-only and supplies no event credential or mutation authority.
+
+The GUI dispatches an approved request on its own routing worker or viewport.
+It reports completion only after an observed routing phase or later viewport
+state matches the request. A stale epoch or revision, revocation, Stop, Quit,
+lost receipt, or deadline fences the pending request. An uncertain result can
+follow an action that ran; clients must inspect fresh state and choose any new
+request explicitly. A hosted Start or Native Stop retains the event SDK for
+that admitted transition and its result, while revoking all other event
+receiver approvals and connections. Those receivers need fresh, explicit GUI
+approval before later actions. Ordinary Stop and Quit retire
+the event and command SDKs as before. Profile startup loading and exit saving
+remain independent user settings. A standalone Host has no GUI/router adapter
+and reports these actions as unsupported.
+
 ## Local workflow
 
 1. Create a cooperative event session, then explicitly create virtual users.

@@ -15,9 +15,10 @@ fn main() {
 #[cfg(windows)]
 mod fixture {
     use mux_application_sdk::{
-        ClientCommand, ClientRequest, ClientResponse, Event, FailureCode, Input, KeyCode,
-        OwnerResponse, PROTOCOL_VERSION, PointerState, Poll, Reply, ServerMessage, SourceId,
-        Transition, UserId, UserView,
+        ClientCommand, ClientRequest, ClientResponse, Event, FailureCode, HostRevision,
+        HostViewportAction, HostedAction, HostedPhase, Input, KeyCode, OwnerResponse,
+        PROTOCOL_VERSION, PointerState, Poll, Reply, ServerMessage, SourceId, Transition, UserId,
+        UserView,
     };
     use serde::{Deserialize, Serialize};
     use serde_json::{Value, json};
@@ -224,17 +225,19 @@ mod fixture {
         let args: Vec<_> = std::env::args_os().skip(1).collect();
         let route_args = (args.len() == 9 && args[8] == "--window-route")
             || (args.len() == 11 && args[8] == "--window-route" && args[9] == "--observe-seconds");
+        let hosted_args = (args.len() == 9 && args[8] == "--hosted-route")
+            || (args.len() == 11 && args[8] == "--hosted-route" && args[9] == "--observe-seconds");
         let key_args = args.len() == 8
             || (args.len() == 10 && args[8] == "--virtual-key")
             || (args.len() == 12 && args[8] == "--virtual-key" && args[10] == "--observe-seconds");
-        if !(route_args || key_args)
+        if !(route_args || hosted_args || key_args)
             || args[0] != "--dll"
             || args[2] != "--sha256"
             || args[4] != "--descriptor"
             || args[6] != "--report"
         {
             eprintln!(
-                "usage: native_external_consumer --dll ABSOLUTE_DLL --sha256 64_HEX --descriptor PRIVATE_GUI_JSON --report NEW_PRIVATE_JSONL [--window-route [--observe-seconds 20..60] | --virtual-key HID_CODE [--observe-seconds 20..60]]"
+                "usage: native_external_consumer --dll ABSOLUTE_DLL --sha256 64_HEX --descriptor PRIVATE_GUI_JSON --report NEW_PRIVATE_JSONL [--window-route [--observe-seconds 20..60] | --hosted-route [--observe-seconds 20..60] | --virtual-key HID_CODE [--observe-seconds 20..60]]"
             );
             std::process::exit(10);
         }
@@ -243,7 +246,8 @@ mod fixture {
         let descriptor_path = PathBuf::from(&args[5]);
         let report_path = PathBuf::from(&args[7]);
         let window_route = route_args;
-        let key = if args.len() >= 10 && !window_route {
+        let hosted_route = hosted_args;
+        let key = if args.len() >= 10 && !window_route && !hosted_route {
             match args[9]
                 .to_str()
                 .and_then(|s| s.parse::<u16>().ok())
@@ -256,7 +260,7 @@ mod fixture {
             None
         };
         let observation_seconds = if args.len() == 12 || args.len() == 11 {
-            let seconds = if window_route { &args[10] } else { &args[11] };
+            let seconds = if window_route || hosted_route { &args[10] } else { &args[11] };
             match seconds.to_str().and_then(|value| value.parse::<u64>().ok()) {
                 Some(seconds) if (20..=60).contains(&seconds) => seconds,
                 _ => std::process::exit(10),
@@ -302,6 +306,7 @@ mod fixture {
                     &descriptor_path,
                     key,
                     window_route,
+                    hosted_route,
                     observation_seconds,
                     &report,
                 )?;
@@ -392,6 +397,7 @@ mod fixture {
         descriptor_path: &Path,
         key: Option<KeyCode>,
         window_route: bool,
+        hosted_route: bool,
         observation_seconds: u64,
         report: &Report,
     ) -> Check {
@@ -548,7 +554,9 @@ mod fixture {
         )?;
 
         await_ready(api, token, completion, report)?;
-        if window_route {
+        if hosted_route {
+            exercise_hosted_route(api, token, completion, observation_seconds, report)?;
+        } else if window_route {
             exercise_owned_window_route(api, token, completion, hwnd, observation_seconds, report)?;
         } else {
             let response = round_trip(
@@ -913,6 +921,110 @@ mod fixture {
                 pump_wait(completion, deadline)?;
             }
         }
+    }
+
+    fn exercise_hosted_route(
+        api: Api,
+        client: u64,
+        completion: HANDLE,
+        observation_seconds: u64,
+        report: &Report,
+    ) -> Check {
+        let ready = query(api, client, false)?;
+        ensure(
+            ready["ready"]["events"]["host_state"] == true
+                && ready["ready"]["controls"]["host_viewport_control"] == true
+                && ready["ready"]["events"]["pointer_events"] == false
+                && ready["ready"]["events"]["key_events"] == false,
+            "native receiver lacks exact GUI host-only approval",
+        )?;
+        let ClientResponse::Subscribed { snapshot, .. } = round_trip(
+            api,
+            client,
+            completion,
+            ClientCommand::Subscribe { capacity: 32 },
+            report,
+        )? else {
+            return Err("hosted subscription response mismatch".into());
+        };
+        ensure(snapshot.users.is_empty(), "host-only receiver unexpectedly has users")?;
+        let initial = snapshot
+            .hosted
+            .ok_or("GUI hosted observation unavailable")?;
+        ensure(
+            initial.phase == HostedPhase::Native && initial.minimized == Some(false),
+            "native fixture requires an observed unminimized Native phase",
+        )?;
+        let ClientResponse::HostedState { state: queried } = round_trip(
+            api,
+            client,
+            completion,
+            ClientCommand::HostedStateQuery {
+                epoch: snapshot.epoch,
+            },
+            report,
+        )? else {
+            return Err("hosted query response mismatch".into());
+        };
+        ensure(
+            queried.revision == initial.revision,
+            "hosted query revision did not match subscription",
+        )?;
+        let mut revision = queried.revision;
+        for (action, minimized) in [
+            (HostViewportAction::Minimize, true),
+            (HostViewportAction::Restore, false),
+        ] {
+            let ClientResponse::HostedAction {
+                action: observed,
+                state,
+            } = round_trip(
+                api,
+                client,
+                completion,
+                ClientCommand::HostedViewport {
+                    reference: HostRevision {
+                        epoch: snapshot.epoch,
+                        revision,
+                    },
+                    action,
+                },
+                report,
+            )? else {
+                return Err("hosted viewport response mismatch".into());
+            };
+            ensure(
+                observed == HostedAction::Viewport(action)
+                    && state.minimized == Some(minimized)
+                    && state.revision > revision,
+                "hosted viewport lacked later observed state",
+            )?;
+            revision = state.revision;
+            report.record(
+                "native_hosted_action",
+                json!({"action": action, "observed_phase": state.phase,
+                    "observed_minimized": state.minimized,
+                    "observed_revision": state.revision,
+                    "later_observed": true, "native_input_enabled": false}),
+            )?;
+        }
+        report.record(
+            "native_hosted_completed",
+            json!({"actions": 2, "event_epoch": snapshot.epoch,
+                "final_revision": revision, "no_virtual_users": true}),
+        )?;
+        let observation_end = Instant::now() + Duration::from_secs(observation_seconds);
+        while Instant::now() < observation_end {
+            let until = (Instant::now() + Duration::from_millis(250)).min(observation_end);
+            pump_wait(completion, until)?;
+            drain_events(api, client, report)?;
+            let model = query(api, client, false)?;
+            ensure(
+                model["status"]["live"] == true && model["status"]["terminal"].is_null(),
+                "native hosted receiver ended during overlap",
+            )?;
+        }
+        Ok(())
     }
 
     fn exercise_owned_window_route(

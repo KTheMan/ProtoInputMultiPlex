@@ -50,6 +50,111 @@ pub struct ClientState {
     screens: Option<ScreenState>,
     capabilities: Vec<CapabilityStatus>,
     mode: Option<ApplicationMode>,
+    hosted: Option<HostedState>,
+}
+
+/// A validated query or action receipt can arrive before its ordered stream
+/// event. Keep that observation separate so the later equal-revision event is
+/// still folded and checked against the same state.
+#[derive(Debug, Clone, Default)]
+pub struct HostedReceipt {
+    epoch: Option<u64>,
+    state: Option<HostedState>,
+}
+
+impl HostedReceipt {
+    fn consistent(first: &HostedState, second: &HostedState) -> bool {
+        if first.revision == second.revision {
+            first == second
+        } else if first.revision > second.revision {
+            first.routing_generation >= second.routing_generation
+        } else {
+            second.routing_generation >= first.routing_generation
+        }
+    }
+
+    pub fn clear(&mut self) {
+        self.epoch = None;
+        self.state = None;
+    }
+
+    pub fn observe(
+        &mut self,
+        epoch: u64,
+        observed: &HostedState,
+        model: &ClientState,
+    ) -> Result<(), FoldError> {
+        if model.state() != &StreamState::Live || model.epoch() != Some(epoch) {
+            return Err(FoldError::NotLive);
+        }
+        observed
+            .validate()
+            .map_err(|_| FoldError::Invalid("hosted receipt"))?;
+        if let Some(stream) = model.hosted() {
+            if !Self::consistent(stream, observed) {
+                return Err(FoldError::Invalid("hosted receipt conflicts with stream"));
+            }
+            if stream.revision > observed.revision {
+                return Ok(());
+            }
+        }
+        if self.epoch == Some(epoch)
+            && let Some(previous) = &self.state
+        {
+            if !Self::consistent(previous, observed) {
+                return Err(FoldError::Invalid("conflicting hosted receipts"));
+            }
+            if previous.revision > observed.revision {
+                return Ok(());
+            }
+        }
+        self.epoch = Some(epoch);
+        self.state = Some(observed.clone());
+        Ok(())
+    }
+
+    pub fn reconcile(&mut self, model: &ClientState) -> Result<(), FoldError> {
+        if model.state() != &StreamState::Live || self.epoch != model.epoch() {
+            self.clear();
+            return Ok(());
+        }
+        if let (Some(stream), Some(receipt)) = (model.hosted(), self.state.as_ref()) {
+            if !Self::consistent(stream, receipt) {
+                return Err(FoldError::Invalid("hosted event conflicts with receipt"));
+            }
+            if stream.revision >= receipt.revision {
+                self.clear();
+            }
+        }
+        Ok(())
+    }
+
+    pub fn current(&self, model: &ClientState, epoch: u64) -> Option<HostRevision> {
+        if model.state() != &StreamState::Live || model.epoch() != Some(epoch) {
+            return None;
+        }
+        let stream = model.hosted();
+        let receipt = if self.epoch == Some(epoch) {
+            self.state.as_ref()
+        } else {
+            None
+        };
+        if let (Some(stream), Some(receipt)) = (stream, receipt)
+            && !Self::consistent(stream, receipt)
+        {
+            return None;
+        }
+        let revision = stream
+            .map(|state| state.revision)
+            .into_iter()
+            .chain(receipt.map(|state| state.revision))
+            .max()?;
+        Some(HostRevision { epoch, revision })
+    }
+
+    pub fn permits(&self, model: &ClientState, reference: HostRevision) -> bool {
+        self.current(model, reference.epoch) == Some(reference)
+    }
 }
 
 impl Default for ClientState {
@@ -64,6 +169,7 @@ impl Default for ClientState {
             screens: None,
             capabilities: Vec::new(),
             mode: None,
+            hosted: None,
         }
     }
 }
@@ -89,6 +195,9 @@ impl ClientState {
     }
     pub fn capabilities(&self) -> &[CapabilityStatus] {
         &self.capabilities
+    }
+    pub fn hosted(&self) -> Option<&HostedState> {
+        self.hosted.as_ref()
     }
     pub fn mode(&self) -> Option<ApplicationMode> {
         self.mode
@@ -140,6 +249,18 @@ impl ClientState {
         if snapshot.mode != ApplicationMode::Cooperative {
             return Err(FoldError::Invalid("unsupported application mode"));
         }
+        if let Some(state) = &snapshot.hosted {
+            state.validate().map_err(|_| FoldError::Invalid("hosted state"))?;
+            if self.epoch == Some(expected_epoch)
+                && self.hosted.as_ref().is_some_and(|previous| {
+                    state.revision < previous.revision
+                        || state.routing_generation < previous.routing_generation
+                        || (state.revision == previous.revision && state != previous)
+                })
+            {
+                return Err(FoldError::Invalid("hosted state rollback"));
+            }
+        }
         let mut users = BTreeMap::new();
         for user in snapshot.users {
             validate_user(&user, expected_epoch, snapshot.screens.desktop)?;
@@ -177,6 +298,7 @@ impl ClientState {
             screens: Some(snapshot.screens),
             capabilities: snapshot.capabilities,
             mode: Some(snapshot.mode),
+            hosted: snapshot.hosted,
         })
     }
 
@@ -259,6 +381,7 @@ impl ClientState {
         self.screens = None;
         self.capabilities.clear();
         self.mode = None;
+        self.hosted = None;
         self.state = state;
     }
 
@@ -275,6 +398,16 @@ impl ClientState {
         let screens = self.screens.as_ref().ok_or(FoldError::NotLive)?;
         let epoch = self.epoch.ok_or(FoldError::Epoch)?;
         match envelope.event {
+            Event::HostedStateChanged { state } => {
+                state.validate().map_err(|_| FoldError::Invalid("hosted state"))?;
+                if self.hosted.as_ref().is_some_and(|previous| {
+                    state.revision <= previous.revision
+                        || state.routing_generation < previous.routing_generation
+                }) {
+                    return Err(FoldError::Invalid("hosted state rollback"));
+                }
+                self.hosted = Some(state);
+            }
             Event::UserCreated { user } => {
                 validate_user(&user, epoch, screens.desktop)?;
                 if self.users.len() >= MAX_USERS
@@ -499,3 +632,179 @@ fn fold_transition<T: PartialEq>(
 
 /// Explicit application-event name for the same transport-neutral state machine.
 pub type EventClientState = ClientState;
+
+#[cfg(test)]
+mod hosted_receipt_tests {
+    use super::*;
+
+    fn state(revision: u64, mode: HostedMode) -> HostedState {
+        HostedState {
+            revision,
+            routing_generation: 4,
+            phase: HostedPhase::Ready,
+            mode: Some(mode),
+            multi_keyboard: Some(false),
+            minimized: Some(false),
+        }
+    }
+
+    #[test]
+    fn reply_ahead_of_equal_stream_event_remains_exact_and_foldable() {
+        let bounds = Bounds {
+            left: 0,
+            top: 0,
+            right: 640,
+            bottom: 480,
+        };
+        let mut model = ClientState::default();
+        model
+            .install_snapshot(
+                Snapshot {
+                    hosted: Some(state(1, HostedMode::Switched)),
+                    version: 1,
+                    epoch: 71,
+                    through_sequence: 1,
+                    users: Vec::new(),
+                    screens: ScreenState {
+                        revision: 1,
+                        desktop: bounds,
+                        screens: vec![bounds],
+                    },
+                    windows: Vec::new(),
+                    capabilities: Vec::new(),
+                    mode: ApplicationMode::Cooperative,
+                },
+                71,
+            )
+            .unwrap();
+        let mut generation_receipt = HostedReceipt::default();
+        generation_receipt
+            .observe(71, &state(3, HostedMode::Concurrent), &model)
+            .unwrap();
+        let mut older_with_future_generation = state(2, HostedMode::Concurrent);
+        older_with_future_generation.routing_generation = 5;
+        assert!(generation_receipt
+            .observe(71, &older_with_future_generation, &model)
+            .is_err());
+        let mut newer_with_rolled_back_generation = state(4, HostedMode::Concurrent);
+        newer_with_rolled_back_generation.routing_generation = 3;
+        assert!(generation_receipt
+            .observe(71, &newer_with_rolled_back_generation, &model)
+            .is_err());
+        let mut contradictory_generation_stream = model.clone();
+        contradictory_generation_stream
+            .fold_poll(Poll::Events {
+                events: vec![Envelope {
+                    version: 1,
+                    epoch: 71,
+                    sequence: 2,
+                    event: Event::HostedStateChanged {
+                        state: older_with_future_generation,
+                    },
+                }],
+            })
+            .unwrap();
+        assert!(generation_receipt
+            .reconcile(&contradictory_generation_stream)
+            .is_err());
+        assert!(generation_receipt
+            .current(&contradictory_generation_stream, 71)
+            .is_none());
+        let mut receipt = HostedReceipt::default();
+        let updated = state(2, HostedMode::Concurrent);
+        receipt.observe(71, &updated, &model).unwrap();
+        assert!(receipt.permits(
+            &model,
+            HostRevision {
+                epoch: 71,
+                revision: 2
+            }
+        ));
+        for revision in [1, 3] {
+            assert!(!receipt.permits(
+                &model,
+                HostRevision {
+                    epoch: 71,
+                    revision
+                }
+            ));
+        }
+        assert!(!receipt.permits(
+            &model,
+            HostRevision {
+                epoch: 72,
+                revision: 2
+            }
+        ));
+        assert_eq!(model.hosted().unwrap().revision, 1);
+        model
+            .fold_poll(Poll::Events {
+                events: vec![Envelope {
+                    version: 1,
+                    epoch: 71,
+                    sequence: 2,
+                    event: Event::HostedStateChanged {
+                        state: updated.clone(),
+                    },
+                }],
+            })
+            .unwrap();
+        receipt.reconcile(&model).unwrap();
+        assert!(receipt.permits(
+            &model,
+            HostRevision {
+                epoch: 71,
+                revision: 2
+            }
+        ));
+        let mut conflicting = updated;
+        conflicting.mode = Some(HostedMode::Switched);
+        assert!(receipt.observe(71, &conflicting, &model).is_err());
+        let mut contradictory_stream = model.clone();
+        let third = state(3, HostedMode::Concurrent);
+        receipt.observe(71, &third, &model).unwrap();
+        contradictory_stream
+            .fold_poll(Poll::Events {
+                events: vec![Envelope {
+                    version: 1,
+                    epoch: 71,
+                    sequence: 3,
+                    event: Event::HostedStateChanged {
+                        state: state(3, HostedMode::Switched),
+                    },
+                }],
+            })
+            .unwrap();
+        assert!(receipt.reconcile(&contradictory_stream).is_err());
+        assert!(receipt.permits(
+            &model,
+            HostRevision {
+                epoch: 71,
+                revision: 3
+            }
+        ));
+        model
+            .fold_poll(Poll::Gap {
+                after_sequence: 2,
+                lost_through: 3,
+            })
+            .unwrap();
+        receipt.reconcile(&model).unwrap();
+        assert!(!receipt.permits(
+            &model,
+            HostRevision {
+                epoch: 71,
+                revision: 3
+            }
+        ));
+        model.disconnect();
+        receipt.reconcile(&model).unwrap();
+        assert!(!receipt.permits(
+            &model,
+            HostRevision {
+                epoch: 71,
+                revision: 2
+            }
+        ));
+    }
+}

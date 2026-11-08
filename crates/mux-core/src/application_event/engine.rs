@@ -39,6 +39,7 @@ pub struct Engine {
     next_id: u64,
     ended: bool,
     screens: ScreenState,
+    hosted: Option<HostedState>,
     users: BTreeMap<UserId, User>,
     recipients: BTreeMap<RecipientId, Recipient>,
     subscribers: BTreeMap<SubscriptionId, Subscriber>,
@@ -58,6 +59,7 @@ impl Engine {
             next_id: 0,
             ended: false,
             screens,
+            hosted: None,
             users: BTreeMap::new(),
             recipients: BTreeMap::new(),
             subscribers: BTreeMap::new(),
@@ -103,6 +105,45 @@ impl Engine {
             },
         );
         Ok(id)
+    }
+
+    /// Trusted GUI publication; update the model before emitting its event.
+    pub fn publish_hosted_state(&mut self, state: HostedState) -> Result<(), Error> {
+        self.reserve_events(1)?;
+        state.validate()?;
+        if self.hosted.as_ref().is_some_and(|previous| {
+            state.revision <= previous.revision
+                || state.routing_generation < previous.routing_generation
+        }) {
+            return Err(Error::StaleRevision);
+        }
+        self.hosted = Some(state.clone());
+        self.publish(Event::HostedStateChanged { state });
+        Ok(())
+    }
+
+    pub fn hosted_state(&self, recipient: RecipientId, epoch: u64) -> Result<HostedState, Error> {
+        self.active()?;
+        let recipient = self.recipients.get(&recipient).ok_or(Error::MissingRecipient)?;
+        if !recipient.grant.host_state {
+            return Err(Error::Denied);
+        }
+        if epoch != self.epoch {
+            return Err(Error::StaleRevision);
+        }
+        self.hosted.clone().ok_or(Error::Unsupported("GUI hosted state unavailable"))
+    }
+
+    pub fn validate_host_revision(
+        &self,
+        recipient: RecipientId,
+        reference: HostRevision,
+    ) -> Result<HostedState, Error> {
+        let state = self.hosted_state(recipient, reference.epoch)?;
+        if reference.revision != state.revision {
+            return Err(Error::StaleRevision);
+        }
+        Ok(state)
     }
 
     pub fn set_mode(&mut self, mode: ApplicationMode) -> Result<ApplicationMode, Error> {
@@ -481,6 +522,7 @@ impl Engine {
             Vec::new()
         };
         Ok(Snapshot {
+            hosted: if recipient.grant.host_state { self.hosted.clone() } else { None },
             version: PROTOCOL_VERSION,
             epoch: self.epoch,
             through_sequence: self.sequence,
@@ -705,6 +747,7 @@ impl Engine {
             subscriber.gap = None;
             subscriber.ended = Some(reason);
         }
+        self.hosted = None;
         self.users.clear();
         self.windows.clear();
         self.recipients.clear();
@@ -1106,6 +1149,7 @@ fn event_for(
             }
             Some(event)
         }
+        Event::HostedStateChanged { .. } if grant.host_state => Some(event.clone()),
         Event::ScreensChanged { .. } if grant.enabled() => Some(event.clone()),
         Event::Window { update } if grant.owned_windows => {
             let id = match update {

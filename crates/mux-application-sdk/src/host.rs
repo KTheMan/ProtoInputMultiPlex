@@ -439,6 +439,19 @@ impl<A: WindowBackend> Host<A> {
         let grant = self.controls.get(&recipient).cloned().unwrap_or_default();
         use ClientCommand::*;
         Ok(match request.command {
+            HostedStateQuery { epoch } => ClientResponse::HostedState {
+                state: self.engine.hosted_state(recipient, epoch)?,
+            },
+            HostedSetMode { reference, .. } => {
+                allowed(grant.host_mode_control)?;
+                self.engine.validate_host_revision(recipient, reference)?;
+                return Err(Error::Unsupported("standalone host has no GUI mode executor"));
+            }
+            HostedViewport { reference, .. } => {
+                allowed(grant.host_viewport_control)?;
+                self.engine.validate_host_revision(recipient, reference)?;
+                return Err(Error::Unsupported("standalone host has no GUI viewport executor"));
+            }
             Snapshot => ClientResponse::Snapshot {
                 snapshot: self.engine.snapshot(recipient)?,
             },
@@ -599,6 +612,10 @@ impl<A: WindowBackend> Host<A> {
         self.version(request.version)?;
         use HostCommand::*;
         Ok(match request.command {
+            PublishHostedState { state } => {
+                self.publish_hosted_state(state)?;
+                HostResponse::Acknowledged
+            }
             RegisterRecipient { local_identity } => HostResponse::RecipientRegistered {
                 recipient: self.register_recipient(&local_identity)?,
             },
@@ -749,6 +766,16 @@ impl<A: WindowBackend> Host<A> {
             return Err(error);
         }
         Ok(())
+    }
+
+    pub fn hosted_state(&self, recipient: RecipientId, epoch: u64) -> Result<HostedState, Error> {
+        self.version(PROTOCOL_VERSION)?;
+        self.engine.hosted_state(recipient, epoch)
+    }
+
+    pub fn publish_hosted_state(&mut self, state: HostedState) -> Result<(), Error> {
+        self.version(PROTOCOL_VERSION)?;
+        self.engine.publish_hosted_state(state)
     }
 
     pub fn reset(&mut self, epoch: u64, screens: ScreenState) -> Result<(), Error> {
