@@ -899,6 +899,7 @@ mod keyboard_tests {
         fixture.settle_events();
         fixture.script.input(&mut egui::RawInput::default());
         assert_eq!(fixture.script.completed, 1);
+        fixture.script.wait_for_io();
         let events = std::fs::read_to_string(fixture.directory.join("ui.events.jsonl")).unwrap();
         assert_eq!(events.lines().count(), 1);
         assert_eq!(
