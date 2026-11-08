@@ -3,6 +3,108 @@ use mux_core::desktop::Bounds;
 use std::collections::BTreeSet;
 
 #[test]
+fn remote_window_publication_and_exact_delegation_are_epoch_scoped() {
+    let mut host = Host::new(71, screens()).unwrap();
+    let publisher = host.register_recipient("native publisher").unwrap();
+    let browser = host.register_recipient("separate browser receiver").unwrap();
+    let window_only = Grant {
+        users: UserScope::Only(Default::default()),
+        pointer_events: false,
+        key_events: false,
+        owned_windows: true,
+    };
+    host.approve_events(publisher, window_only.clone()).unwrap();
+    host.approve_events(browser, window_only).unwrap();
+    host.approve_controls(
+        browser,
+        ControlGrant {
+            window_tracking: true,
+            window_control: true,
+            ..Default::default()
+        },
+    )
+    .unwrap();
+    let observed = WindowObservation {
+        bounds: screens().desktop,
+        metadata: WindowMetadata {
+            title: Some("Owned window".into()),
+            ..Default::default()
+        },
+        visible: true,
+        minimized: false,
+        maximized: false,
+        click_through: false,
+        enabled: true,
+        topmost: false,
+        opacity: 255,
+    };
+    assert_eq!(
+        host.register_remote_window(publisher, observed.clone()),
+        Err(Error::Denied)
+    );
+    host.approve_controls(
+        publisher,
+        ControlGrant {
+            window_publication: true,
+            ..Default::default()
+        },
+    )
+    .unwrap();
+    let window = host.register_remote_window(publisher, observed).unwrap();
+    let reference = RemoteWindowRef { epoch: 71, window };
+    assert_eq!(
+        host.dispatch(browser, request(ClientCommand::RemoteWindowQuery { reference })),
+        Err(Error::Denied)
+    );
+    host.delegate_window(window, browser, WindowAccess { observe: true, control: false })
+        .unwrap();
+    assert!(matches!(
+        host.dispatch(browser, request(ClientCommand::RemoteWindowQuery { reference })),
+        Ok(ClientResponse::Window { window: info }) if info.id == window
+    ));
+    assert!(matches!(
+        host.dispatch(browser, request(ClientCommand::RemoteWindowTrack { reference })),
+        Ok(ClientResponse::Window { window: info }) if info.id == window
+    ));
+    assert_eq!(
+        host.authorize_remote_window_control(browser, window, &WindowControl::Hide),
+        Err(Error::Denied)
+    );
+    host.delegate_window(window, browser, WindowAccess { observe: true, control: true })
+        .unwrap();
+    assert_eq!(
+        host.authorize_remote_window_control(browser, window, &WindowControl::Hide),
+        Ok(publisher)
+    );
+    host.approve_controls(
+        browser,
+        ControlGrant {
+            window_control: true,
+            ..Default::default()
+        },
+    )
+    .unwrap();
+    assert_eq!(
+        host.authorize_remote_window_control(browser, window, &WindowControl::Hide),
+        Err(Error::Denied)
+    );
+    assert_eq!(
+        host.dispatch(
+            browser,
+            request(ClientCommand::RemoteWindowQuery {
+                reference: RemoteWindowRef { epoch: 70, window },
+            }),
+        ),
+        Err(Error::StaleRevision)
+    );
+    host.delegate_window(window, browser, WindowAccess::default()).unwrap();
+    assert_eq!(
+        host.dispatch(browser, request(ClientCommand::RemoteWindowQuery { reference })),
+        Err(Error::Denied)
+    );
+}
+
+#[test]
 fn client_rejects_invalid_window_metadata_before_folding_snapshot() {
     let mut engine = Engine::new(71, screens()).unwrap();
     let owner = engine.register_recipient("owner").unwrap();
@@ -206,6 +308,8 @@ fn controls(scope: UserScope, delegated: bool) -> ControlGrant {
         cursor: true,
         pointer_input: true,
         key_input: true,
+        window_publication: false,
+        window_identity_metadata: false,
         window_tracking: false,
         window_control: false,
     }
@@ -950,7 +1054,7 @@ mod abi {
         let native = cfg!(all(windows, feature = "native-client"));
         assert_eq!(C_HEADER, crate::abi_contract::render_header_for(native));
         assert_eq!(
-            C_HEADER.contains("PIM_APP_NATIVE_CLIENT_ABI_VERSION 2u"),
+            C_HEADER.contains("PIM_APP_NATIVE_CLIENT_ABI_VERSION 3u"),
             native
         );
         for function in crate::abi_contract::NATIVE_FUNCTIONS {

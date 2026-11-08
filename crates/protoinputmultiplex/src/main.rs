@@ -97,6 +97,8 @@ mod mapper_ui;
 #[cfg(windows)]
 mod mcp;
 #[cfg(windows)]
+mod mcp_event_windows;
+#[cfg(windows)]
 mod output_runtime;
 #[cfg(windows)]
 mod output_ui;
@@ -176,6 +178,9 @@ enum Command {
         /// Connect to an enabled GUI-owned session using its private descriptor file.
         #[arg(long)]
         gui_connection: Option<PathBuf>,
+        /// Use a GUI-issued application-event descriptor for exact native windows only.
+        #[arg(long, conflicts_with_all = ["runtime", "gui_connection", "allow_mapper_library", "allow_app_preferences", "preferences", "data_dir"])]
+        event_connection: Option<PathBuf>,
         /// Application-preferences document (separate from seat profiles).
         #[arg(long)]
         preferences: Option<PathBuf>,
@@ -413,11 +418,15 @@ fn windows_main(command: Command) -> Result<()> {
         Command::Mcp {
             runtime,
             gui_connection,
+            event_connection,
             preferences,
             allow_app_preferences,
             allow_mapper_library,
             data_dir,
         } => {
+            if let Some(path) = event_connection {
+                return mcp_event_windows::run(path);
+            }
             let runtime = runtime.unwrap_or_else(app_paths::runtime_dir);
             let custom_document = preferences.is_some();
             let preferences = app_paths::preferences_path(data_dir, preferences)?;

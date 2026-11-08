@@ -764,7 +764,7 @@ mod fixture {
         api: *const Api,
         host: u64,
         window: WindowId,
-        previous_proc: isize,
+        previous_proc: usize,
         result: Option<Check<Value>>,
     }
 
@@ -796,7 +796,7 @@ mod fixture {
         }
         let previous = unsafe {
             std::mem::transmute::<
-                isize,
+                usize,
                 unsafe extern "system" fn(HWND, u32, WPARAM, LPARAM) -> LRESULT,
             >(context.previous_proc)
         };
@@ -863,6 +863,8 @@ mod fixture {
             cursor: false,
             pointer_input: false,
             key_input: false,
+            window_publication: false,
+            window_identity_metadata: false,
             window_tracking: true,
             window_control: false,
         };
@@ -1039,7 +1041,7 @@ mod fixture {
             SetWindowLongPtrW(
                 hwnd,
                 GWLP_USERDATA,
-                (&mut retirement as *mut RetireOnDestroy) as isize,
+                (&mut retirement as *mut RetireOnDestroy) as _,
             )
         };
         ensure(
@@ -1053,8 +1055,8 @@ mod fixture {
             SetWindowLongPtrW(
                 hwnd,
                 GWLP_WNDPROC,
-                retire_on_nc_destroy as *const () as isize,
-            )
+                retire_on_nc_destroy as *const () as _,
+            ) as usize
         };
         ensure(
             retirement.previous_proc != 0 || unsafe { GetLastError() } == 0,

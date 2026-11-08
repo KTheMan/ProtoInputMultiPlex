@@ -7,7 +7,7 @@ use futures_util::{SinkExt, StreamExt};
 use mux_application_sdk::*;
 use serde::Serialize;
 use std::{
-    collections::VecDeque,
+    collections::{BTreeMap, VecDeque},
     io,
     net::{Ipv4Addr, TcpListener as StdListener},
     path::Path,
@@ -256,7 +256,9 @@ impl Service {
     }
 
     /// Only an explicit local Copy action should call this. Never put its result in
-    /// Snapshot/status/logs, a URL/query, browser storage, MCP or automatic telemetry.
+    /// Snapshot/status/logs, a URL/query, browser storage, ordinary routing or
+    /// stopped-Setup MCP, or automatic telemetry. The separate window-only MCP
+    /// mode may read the private descriptor file after exact GUI approval.
     pub fn private_connection_for_copy(&self, permit: &ClientPermit) -> Option<String> {
         if !Arc::ptr_eq(&self.shared, &permit.shared)
             || !permit.lease.live(&self.shared, Instant::now())
@@ -652,6 +654,7 @@ pub(super) async fn drive<S: AsyncRead + AsyncWrite + Unpin>(
     mut events: mpsc::Receiver<ServerMessage>,
 ) -> Result<()> {
     let mut pending: VecDeque<Pending> = VecDeque::new();
+    let mut urgent: BTreeMap<u64, Pending> = BTreeMap::new();
     let mut last_id = 0;
     let mut count = 0_u64;
     let result = loop {
@@ -661,6 +664,7 @@ pub(super) async fn drive<S: AsyncRead + AsyncWrite + Unpin>(
         if pending
             .front()
             .is_some_and(|pending| Instant::now() >= pending.deadline)
+            || urgent.values().any(|pending| Instant::now() >= pending.deadline)
         {
             break Err(anyhow::anyhow!(
                 "event request deadline reached; do not retry an uncertain request"
@@ -673,31 +677,57 @@ pub(super) async fn drive<S: AsyncRead + AsyncWrite + Unpin>(
             _ = sleep(NETWORK_POLL) => {},
             frame = events.recv() => {
                 let Some(frame) = frame else { break Ok(()); };
-                if let ServerMessage::Response { request_id, .. } = &frame
-                    && pending.front().map(|pending| pending.id) != Some(*request_id)
-                { break Err(anyhow::anyhow!("event reply ownership mismatch")); }
-                let response = matches!(&frame, ServerMessage::Response { .. });
+                let response_id = match &frame {
+                    ServerMessage::Response { request_id, .. } | ServerMessage::OwnerResponse { request_id, .. } => Some(*request_id),
+                    _ => None,
+                };
+                if let Some(request_id) = response_id {
+                    let matched = if request_id & (1_u64 << 63) != 0 {
+                        urgent.contains_key(&request_id)
+                    } else {
+                        pending.front().map(|pending| pending.id) == Some(request_id)
+                    };
+                    if !matched { break Err(anyhow::anyhow!("event reply ownership mismatch")); }
+                }
                 if let Err(error) = send(&mut socket, &shared, &lease, frame).await { break Err(error); }
-                if response { pending.pop_front(); }
+                if let Some(request_id) = response_id {
+                    if request_id & (1_u64 << 63) != 0 { urgent.remove(&request_id); } else { pending.pop_front(); }
+                }
             }
             incoming = socket.next() => {
                 let Some(incoming) = incoming else { break Ok(()); };
                 let frame = match incoming { Ok(frame) => frame, Err(error) => break Err(error.into()) };
                 match frame {
                     Message::Text(text) => {
-                        if pending.len() >= MAX_PENDING {
+                        if pending.len() >= MAX_PENDING || urgent.len() >= MAX_PENDING {
                             shared.overflows.fetch_add(1, Ordering::Relaxed);
                             break Err(anyhow::anyhow!("event pending FIFO overflow; receiver fenced and accepted requests remain uncertain"));
                         }
                         if text.len() > MAX_REQUEST_BYTES || count >= MAX_REQUESTS { break Err(anyhow::anyhow!("event request admission denied")); }
-                        let message: ClientMessage = match serde_json::from_slice(text.as_bytes()) { Ok(message) => message, Err(_) => break Err(anyhow::anyhow!("invalid event client frame")) };
-                        if message.request_id == 0 || message.request_id <= last_id { break Err(anyhow::anyhow!("event request IDs must strictly increase")); }
-                        last_id = message.request_id; count += 1;
+                        let client_message: Option<ClientMessage> = serde_json::from_slice(text.as_bytes()).ok();
+                        let owner_frame: Option<OwnerFrame> = if client_message.is_none() { serde_json::from_slice(text.as_bytes()).ok() } else { None };
+                        let (request_id, owner_urgent) = if let Some(message) = &client_message {
+                            (message.request_id, false)
+                        } else if let Some(frame) = &owner_frame {
+                            (frame.request_id, matches!(&frame.operation, OwnerOperation::ApplyResult { .. }))
+                        } else { break Err(anyhow::anyhow!("invalid event client frame")); };
+                        if request_id == 0 || (!owner_urgent && (request_id & (1_u64 << 63) != 0 || request_id <= last_id))
+                            || (owner_urgent && (request_id & (1_u64 << 63) == 0 || urgent.contains_key(&request_id)))
+                        { break Err(anyhow::anyhow!("event request IDs must be unique within their channel")); }
+                        if !owner_urgent { last_id = request_id; }
+                        count += 1;
                         let admission = Arc::new(Admission::new()); let deadline = Instant::now() + REQUEST_TIMEOUT;
                         if !lease.live(&shared, Instant::now()) { break Err(anyhow::anyhow!("event permit retired before admission")); }
-                        let request_id = message.request_id;
-                        match requests.try_send(UiRequest::Command { lease: Arc::clone(&lease), message, deadline, admission: Arc::clone(&admission) }) {
-                            Ok(()) => pending.push_back(Pending { id: request_id, deadline, admission }),
+                        let request = if let Some(message) = client_message {
+                            UiRequest::Command { lease: Arc::clone(&lease), message, deadline, admission: Arc::clone(&admission) }
+                        } else if let Some(frame) = owner_frame {
+                            UiRequest::Owner { lease: Arc::clone(&lease), frame, deadline, admission: Arc::clone(&admission) }
+                        } else { unreachable!() };
+                        match requests.try_send(request) {
+                            Ok(()) => {
+                                let value = Pending { id: request_id, deadline, admission };
+                                if owner_urgent { urgent.insert(request_id, value); } else { pending.push_back(value); }
+                            }
                             Err(mpsc::error::TrySendError::Full(_)) => {
                                 shared.overflows.fetch_add(1, Ordering::Relaxed);
                                 break Err(anyhow::anyhow!("event UI request FIFO overflow; current request not admitted and receiver fenced"));
@@ -719,6 +749,13 @@ pub(super) async fn drive<S: AsyncRead + AsyncWrite + Unpin>(
     };
     lease.revoke();
     retire_pending(&pending, &shared);
+    for pending in urgent.values() {
+        if !pending.admission.cancel_queued()
+            && matches!(pending.admission.state.load(Ordering::Acquire), APPLYING | COMPLETED)
+        {
+            pending.admission.uncertain(&shared);
+        }
+    }
     // A cancelled/failed SinkExt::send may leave application bytes buffered in
     // tungstenite. Never write Close, terminal, Pong or any other frame here: the
     // socket must be dropped without another flush on every exit path.

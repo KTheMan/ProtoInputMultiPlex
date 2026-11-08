@@ -84,8 +84,16 @@ def validate_sdk_content(root, architecture):
         if pe_imports(root/SDK_NATIVE_FILES[0])["machine"] != architecture:
             raise ValueError("SDK DLL architecture mismatch")
         header = (root/SDK_NATIVE_FILES[1]).read_text(encoding="utf-8")
-        if "pim_app_native_completion_handle" not in header or "PIM_APP_NATIVE_CLIENT_ABI_VERSION 2u" not in header:
-            raise ValueError("SDK header lacks native-client ABI v2")
+        required = (
+            "PIM_APP_NATIVE_CLIENT_ABI_VERSION 3u",
+            "pim_app_native_completion_handle",
+            "pim_app_native_window_register",
+            "pim_app_native_window_refresh",
+            "pim_app_native_window_notify",
+            "pim_app_native_window_retire",
+        )
+        if any(symbol not in header for symbol in required):
+            raise ValueError("SDK header lacks native-client ABI v3 window exports")
 
 
 def record_sdk(args, build_inputs):

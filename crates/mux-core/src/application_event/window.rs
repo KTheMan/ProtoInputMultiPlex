@@ -27,6 +27,8 @@ pub struct WindowInfo {
     pub bounds: Bounds,
     #[serde(default)]
     pub metadata: WindowMetadata,
+    #[serde(default)]
+    pub observation: WindowObservationState,
     pub visible: bool,
     pub minimized: bool,
     pub maximized: bool,
@@ -34,6 +36,31 @@ pub struct WindowInfo {
     pub enabled: bool,
     pub topmost: bool,
     pub opacity: u8,
+}
+
+/// An exact-window grant, issued by the host UI to one recipient.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct WindowAccess {
+    pub observe: bool,
+    pub control: bool,
+}
+
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum WindowObservationSource {
+    #[default]
+    HostLocal,
+    NativeClientReported,
+}
+
+/// Receipt time is assigned by the host; it is not a remote OS attestation.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct WindowObservationState {
+    pub source: WindowObservationSource,
+    pub sampled_at_ms: Option<u64>,
+    pub stale: bool,
 }
 
 /// Observed facts about a registered, owned window. Coordinates are physical

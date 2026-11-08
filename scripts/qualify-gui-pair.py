@@ -934,7 +934,7 @@ class Pair:
         gui_meta, native_meta = self.strict_json("artifact_json", gui_root / "metadata.json"), self.strict_json("artifact_json", native_root / "metadata.json")
         require(gui_meta["source_commit"] == native_meta["source_commit"] == a.commit)
         require(gui_meta["features"] == ["software-renderer"] and gui_meta["default_features"] is True and gui_meta["target"] == "x86_64-pc-windows-msvc")
-        require(native_meta["features"] == ["native-ffi", "native-windows", "native-client"] and native_meta["default_features"] is True and native_meta["native_client_abi_version"] == 2)
+        require(native_meta["features"] == ["native-ffi", "native-windows", "native-client"] and native_meta["default_features"] is True and native_meta["native_client_abi_version"] == 3)
         self.exe = self.checked(gui_root, gui_meta["executable"], "protoinputmultiplex.exe")
         native_exe = self.checked(native_root, native_meta["external_fixture"], "native_external_consumer.exe")
         dll = self.checked(native_root, native_meta["dll"], "mux_application_sdk.dll")

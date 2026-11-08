@@ -58,6 +58,8 @@ jobs:
           $ErrorActionPreference = 'Stop'
           python -c "import ast,pathlib; p=pathlib.Path('scripts/qualify-gui-pair.py'); ast.parse(p.read_text(encoding='utf-8'),filename=str(p))"
           if ($LASTEXITCODE -ne 0) { throw 'Paired controller Python syntax rejected' }
+          python -c "import ast,pathlib; p=pathlib.Path('scripts/qualify-gui-owned-window.py'); ast.parse(p.read_text(encoding='utf-8'),filename=str(p))"
+          if ($LASTEXITCODE -ne 0) { throw 'Owned-window controller Python syntax rejected' }
           $pimParseTokens = $null
           $pimParseErrors = $null
           [System.Management.Automation.Language.Parser]::ParseFile((Join-Path $env:GITHUB_WORKSPACE 'scripts/qualify-standalone-host.ps1'), [ref]$pimParseTokens, [ref]$pimParseErrors) | Out-Null
@@ -86,10 +88,10 @@ jobs:
       - uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: x86
-      - name: Build native workspace (x86)
-        run: cargo build --workspace --locked --features mux-application-sdk/native-client --target i686-pc-windows-msvc
       - name: Build x86 native lifecycle DLL and example with full default SDK features
         run: cargo build -p mux-application-sdk --lib --example native_dll_lifecycle --example native_external_consumer --example standalone_host_dll_lifecycle --features native-client --locked --target-dir target/sdk-native-build --target i686-pc-windows-msvc
+      - name: Build native workspace (x86)
+        run: cargo build --workspace --locked --features mux-application-sdk/native-client --target i686-pc-windows-msvc
       - name: Package and compile-check native lifecycle artifacts
         shell: pwsh
         run: |
@@ -98,7 +100,9 @@ jobs:
             'pim_app_native_request', 'pim_app_native_drain', 'pim_app_native_query',
             'pim_app_native_response_size', 'pim_app_native_response_read',
             'pim_app_native_response_discard', 'pim_app_native_stop',
-            'pim_app_native_completion_handle', 'pim_app_native_destroy')
+            'pim_app_native_completion_handle', 'pim_app_native_destroy',
+            'pim_app_native_window_register', 'pim_app_native_window_refresh',
+            'pim_app_native_window_notify', 'pim_app_native_window_retire')
           foreach ($architecture in @(
             @{ Name = 'x64'; Triple = 'x86_64-pc-windows-msvc' },
             @{ Name = 'x86'; Triple = 'i686-pc-windows-msvc' }
@@ -141,7 +145,7 @@ jobs:
             $smoke = Join-Path $compileRoot 'header-smoke.c'
             @'
             #include "protoinputmultiplex_application_sdk.h"
-            _Static_assert(PIM_APP_NATIVE_CLIENT_ABI_VERSION == 2u, "native ABI");
+            _Static_assert(PIM_APP_NATIVE_CLIENT_ABI_VERSION == 3u, "native ABI");
             _Static_assert(sizeof(size_t) == sizeof(void *) && sizeof(void *) == PIM_APP_EXPECTED_POINTER_SIZE, "pointer width");
             _Static_assert(sizeof(uint64_t) == 8 && sizeof(uint32_t) == 4 && sizeof(int32_t) == 4, "ABI widths");
             int32_t (PIM_APP_CALL *check_connect)(size_t,const uint8_t *,size_t,uint64_t *,uint32_t *) = pim_app_native_connect;
@@ -155,6 +159,10 @@ jobs:
             int32_t (PIM_APP_CALL *check_stop)(uint64_t) = pim_app_native_stop;
             int32_t (PIM_APP_CALL *check_completion)(uint64_t,size_t *) = pim_app_native_completion_handle;
             int32_t (PIM_APP_CALL *check_destroy)(uint64_t) = pim_app_native_destroy;
+            int32_t (PIM_APP_CALL *check_window_register)(uint64_t,size_t,uint32_t,uint64_t *) = pim_app_native_window_register;
+            int32_t (PIM_APP_CALL *check_window_refresh)(uint64_t,uint64_t,uint32_t,uint64_t *) = pim_app_native_window_refresh;
+            int32_t (PIM_APP_CALL *check_window_notify)(uint64_t,uint64_t,uint32_t,uint64_t *) = pim_app_native_window_notify;
+            int32_t (PIM_APP_CALL *check_window_retire)(uint64_t,uint64_t,uint64_t *) = pim_app_native_window_retire;
           '@ | Set-Content -LiteralPath $smoke -Encoding utf8
             $object = Join-Path $compileRoot 'header-smoke.obj'
             $pointerSize = if ($architecture.Name -ceq 'x64') { 8 } else { 4 }
@@ -171,7 +179,7 @@ jobs:
               default_features = $true
               isolated_sdk_build = $true
               header_compile_and_native_exports_checked = $true
-              native_client_abi_version = 2
+              native_client_abi_version = 3
               dll = @{ file = 'mux_application_sdk.dll'; sha256 = $dllHash }
               header = @{ file = 'protoinputmultiplex_application_sdk.h'; sha256 = $headerHash }
               fixture = @{ file = 'native_dll_lifecycle.exe'; sha256 = (Get-FileHash -LiteralPath $fixture -Algorithm SHA256).Hash.ToLowerInvariant() }
@@ -301,7 +309,7 @@ jobs:
               $root = Join-Path $env:RUNNER_TEMP ('qualification-artifacts/sdk-preview/' + $name)
               $metadata = Get-Content -LiteralPath (Join-Path $root 'metadata.json') -Raw | ConvertFrom-Json
               if ($metadata.source_commit -cne $env:GITHUB_SHA -or $metadata.target -cne $architecture.Triple -or
-                  $metadata.profile -cne 'debug' -or $metadata.native_client_abi_version -ne 2 -or
+                  $metadata.profile -cne 'debug' -or $metadata.native_client_abi_version -ne 3 -or
                   $metadata.default_features -ne $true -or $metadata.header_compile_and_native_exports_checked -ne $true -or
                   (@($metadata.features) -join ',') -cne 'native-ffi,native-windows,native-client') { throw 'Metadata identity mismatch' }
               foreach ($entry in @(
@@ -538,6 +546,71 @@ jobs:
           path: |
             ${{ runner.temp }}/gui-pair-public-${{ github.run_id }}-${{ github.run_attempt }}/public-result.json
             ${{ runner.temp }}/gui-pair-public-${{ github.run_id }}-${{ github.run_attempt }}/external-deadline.json
+
+  qualify-gui-owned-window-route:
+    needs: [check, qualify-native-lifecycle, qualify-software-readback, qualify-standalone-host, qualify-gui-native-wasm-initial-pair]
+    runs-on: windows-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.92.0
+      - uses: actions/download-artifact@v4
+        with:
+          name: application-sdk-preview-${{ github.sha }}
+          path: ${{ runner.temp }}/gui-window-artifacts
+      - name: Compile the separate opt-in Rust MCP window consumer
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          cargo test --manifest-path examples/rust-mcp-client/Cargo.toml --test live_event_window --no-run --locked
+          if ($LASTEXITCODE -ne 0) { throw 'Rust MCP window fixture did not compile' }
+          $fixtures = @(Get-ChildItem -LiteralPath examples/rust-mcp-client/target/debug/deps -File -Filter 'live_event_window-*.exe' | Where-Object { $_.Name -cmatch '^live_event_window-[0-9a-f]+\.exe$' })
+          if ($fixtures.Count -ne 1) { throw 'Expected one exact Rust MCP window fixture' }
+          "PIM_MCP_WINDOW_FIXTURE=$($fixtures[0].FullName)" | Out-File -LiteralPath $env:GITHUB_ENV -Encoding utf8 -Append
+      - name: Parse owned-window controller on disposable hosted runner
+        shell: pwsh
+        run: python -c "import ast,pathlib; p=pathlib.Path('scripts/qualify-gui-owned-window.py'); ast.parse(p.read_text(encoding='utf-8'),filename=str(p))"
+      - name: Run single GUI-published native window through Web and agent consumers
+        env:
+          WINDOW_ROOT: ${{ runner.temp }}/gui-window-${{ github.run_id }}-${{ github.run_attempt }}
+          WINDOW_PUBLIC: ${{ runner.temp }}/gui-window-public-${{ github.run_id }}-${{ github.run_attempt }}
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:RUNNER_ENVIRONMENT -cne 'github-hosted') { throw 'Standard disposable hosted runner required' }
+          if ((Test-Path -LiteralPath $env:WINDOW_ROOT) -or (Test-Path -LiteralPath $env:WINDOW_PUBLIC)) { throw 'Fresh owned roots required' }
+          New-Item -ItemType Directory -Path $env:WINDOW_PUBLIC -ErrorAction Stop | Out-Null
+          $result = Join-Path $env:WINDOW_PUBLIC 'public-result.json'
+          $artifacts = Join-Path $env:RUNNER_TEMP 'gui-window-artifacts'
+          $controllerRoot = Join-Path $env:RUNNER_TEMP ('gui-window-controller-' + $env:GITHUB_RUN_ID + '-' + $env:GITHUB_RUN_ATTEMPT)
+          New-Item -ItemType Directory -Path $controllerRoot -ErrorAction Stop | Out-Null
+          $arguments = '"scripts/qualify-gui-owned-window.py" --artifacts "{0}" --source "{1}" --mcp-fixture "{2}" --run "{3}" --public-result "{4}" --commit {5}' -f $artifacts, $env:GITHUB_WORKSPACE, $env:PIM_MCP_WINDOW_FIXTURE, $env:WINDOW_ROOT, $result, $env:GITHUB_SHA
+          # Independent process fence includes GUI, native owner, browser, MCP,
+          # private evidence I/O and all child-side waits. Never terminate/retry.
+          $clock = [Diagnostics.Stopwatch]::StartNew()
+          $process = Start-Process -FilePath (Get-Command python).Source -ArgumentList $arguments -WorkingDirectory $env:GITHUB_WORKSPACE -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $controllerRoot 'stdout.log') -RedirectStandardError (Join-Path $controllerRoot 'stderr.log')
+          if (-not $process.WaitForExit(280000)) {
+            [ordered]@{ schema = 'pim.gui-owned-window.external-deadline.v1'; status = 'FAIL'; source_commit = $env:GITHUB_SHA; timed_out = $true; elapsed_ms = $clock.ElapsedMilliseconds; no_kill_restart_or_retry = $true; full_sdk_complete = $false; release_qualified = $false } | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $env:WINDOW_PUBLIC 'external-deadline.json') -Encoding utf8
+            throw 'External owned-window deadline exceeded; private partial evidence preserved'
+          }
+          $process.Refresh()
+          if ($process.ExitCode -ne 0 -or -not (Test-Path -LiteralPath $result -PathType Leaf)) { throw 'Owned-window route failed; private partial evidence preserved' }
+          $receipt = Get-Content -LiteralPath $result -Raw | ConvertFrom-Json
+          if ($receipt.status -cne 'PASS' -or $receipt.source_commit -cne $env:GITHUB_SHA -or $receipt.native_exit_code -ne 0 -or $receipt.gui_exit_code -ne 0 -or $receipt.positive_owner_actions -ne 3 -or -not $receipt.host_pending_expired -or -not $receipt.uncertain_late_action -or -not $receipt.old_epoch_rejected -or -not $receipt.post_revoke_rejected -or -not $receipt.rust_mcp_fixture_invoked -or -not $receipt.web_query_track_control_untrack) { throw 'Owned-window route receipt incomplete' }
+      - name: Upload only sanitized owned-window decisions
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gui-owned-window-route-${{ github.sha }}-${{ github.run_attempt }}
+          retention-days: 1
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/gui-window-public-${{ github.run_id }}-${{ github.run_attempt }}/public-result.json
+            ${{ runner.temp }}/gui-window-public-${{ github.run_id }}-${{ github.run_attempt }}/external-deadline.json
 
   qualify-standalone-host:
     needs: [check]

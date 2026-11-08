@@ -42,11 +42,61 @@ IDs, inverted or out-of-range client bounds, DPI outside 1–4096, invalid
 monitor bounds, and a work area outside its monitor. No HWND or HMONITOR is
 serialized.
 
-This candidate has source review only under the workstation host freeze. It
-has not been formatted, compiled, unit tested, or run natively. The current
-remote GUI connection still lacks an owned-window registration route into the
-GUI Host, so this metadata does not fix remote native/Web window registration
-or establish full Windows/Web SDK parity.
+This metadata has source review only under the workstation host freeze. The
+new remote owned-window route below is a separate source candidate; it has
+not been formatted, compiled, tested, or run natively. Its Windows, Web, and
+agent workflows need hosted acceptance before any parity claim.
+
+## Shared native windows (source candidate)
+
+A GUI-approved native publisher may register up to 16 of its own top-level
+windows through the live event connection. Registration binds an owner-local
+token to a GUI-issued `WindowId` only after the current lease, publication
+approval, epoch, and token uniqueness pass. A window-only publisher needs no
+virtual user or pointer/keyboard grant. The DLL checks the window's process,
+creating UI thread, per-monitor DPI awareness, and private lifetime cookie
+before and after local observation and control. The GUI never receives an
+HWND, HMONITOR, cookie, or pointer and never invokes window APIs for a
+consumer's window.
+
+Each separate Web or agent receiver starts with no access to those windows.
+The GUI can approve observation and control for an exact window and receiver;
+tracking and control each need their separate receiver permission, and tracking
+remains an explicit receiver action. A current-epoch remote window
+reference is required for each query, track, untrack, or control operation.
+Revocation, Stop, destruction, lease loss, and a new epoch fence old IDs.
+Snapshots and events include only that receiver's approved, tracked windows.
+The browser and agent workflows use those same GUI-issued references and
+approvals; neither can publish a native handle or grant itself access.
+Epochs and window IDs are exact 64-bit values. Web callers should pass the
+GUI-copied reference JSON unchanged to `query_window`, `track_window`,
+`untrack_window`, and `control_window`. Parsing it through a JavaScript Number
+and serializing it again can round a valid reference into a different ID.
+
+Remote observations and optional PID/thread metadata are **native-client
+reported**. PID/thread values are sent only when both the GUI publication
+setting and the publisher's per-report consent are enabled. A report carries
+host receipt freshness and can become stale. Neither the event credential
+nor the reported PID/thread values attest the publisher's OS identity to the
+GUI. The native DLL's local HWND checks protect its own actions.
+
+The owner's WndProc should call `pim_app_native_window_notify` after ordinary
+position, visibility, title, style, enabled-state, and DPI messages; the SDK
+reads the actual state on that UI thread and emits only changed observations.
+`pim_app_native_window_refresh` requests an explicit observation even if it
+is unchanged. Call `pim_app_native_window_retire` from `WM_NCDESTROY` before
+the HWND can be reused. Neither a requested control nor a timer manufactures
+a new observed state.
+
+A control is sent asynchronously to the native owner. The network worker
+posts only the existing wake hint. The owner's `pim_app_native_drain` validates
+its local binding, executes the supported control, observes the result, and
+queues a typed receipt. A successful Close receipt means the close message
+was posted, while actual destruction requires retirement. If a receipt is
+lost, times out, or is revoked after dispatch, the outward result is
+**uncertain** and the last observation is stale. The action may already have
+run; reconnect, resubscribe, and retry never replay it automatically. An
+explicit fresh observation or registration is required before another action.
 
 ## Local workflow
 

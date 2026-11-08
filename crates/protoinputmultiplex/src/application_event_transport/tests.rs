@@ -26,6 +26,8 @@ fn controls(users: UserScope, delegated_users: bool) -> ControlGrant {
         key_input: true,
         window_tracking: false,
         window_control: false,
+        window_publication: false,
+        window_identity_metadata: false,
     }
 }
 fn events(users: UserScope) -> Grant {
@@ -166,6 +168,67 @@ fn install_test_credential(permit: &ClientPermit, byte: char) -> String {
     permit.lease.issued.store(true, Ordering::Release);
     *permit.lease.credential.lock().unwrap() = Some(credential.clone());
     credential
+}
+
+#[test]
+fn gui_remote_window_requires_exact_delegation_and_reports_lost_control_receipt_as_uncertain() {
+    let bounds = Bounds { left: 0, top: 0, right: 640, bottom: 480 };
+    let mut host = Host::<PlatformWindows>::new(71, ScreenState { revision: 1, desktop: bounds, screens: vec![bounds] }).unwrap();
+    let publisher = host.register_recipient("native publisher").unwrap();
+    let browser = host.register_recipient("browser window receiver").unwrap();
+    let grant = Grant {
+        owned_windows: true,
+        ..Default::default()
+    };
+    host.approve_events(publisher, grant.clone()).unwrap();
+    host.approve_events(browser, grant).unwrap();
+    host.approve_controls(publisher, ControlGrant { window_publication: true, window_tracking: true, ..Default::default() }).unwrap();
+    host.approve_controls(browser, ControlGrant { window_tracking: true, window_control: true, ..Default::default() }).unwrap();
+    let (mut bridge, endpoint) = HostBridge::new(host);
+    let owner_permit = permit(&mut bridge, publisher);
+    let mut owner_output = connect(&mut bridge, &endpoint, &owner_permit);
+    let observed = WindowObservation {
+        bounds,
+        metadata: WindowMetadata { process_id: Some(42), ui_thread_id: Some(7), ..Default::default() },
+        visible: true,
+        minimized: false,
+        maximized: false,
+        click_through: false,
+        enabled: true,
+        topmost: false,
+        opacity: 255,
+    };
+    let admission = Arc::new(Admission::new());
+    endpoint.requests.try_send(UiRequest::Owner {
+        lease: Arc::clone(&owner_permit.lease),
+        frame: OwnerFrame { request_id: 1, operation: OwnerOperation::Register { token: 9, generation: 1, observed: observed.clone(), identity_metadata_consent: true } },
+        deadline: Instant::now() + REQUEST_TIMEOUT,
+        admission,
+    }).unwrap();
+    bridge.tick();
+    let ServerMessage::OwnerResponse { reply: Reply::Ok { response: OwnerResponse::Registered { window }, .. }, .. } = owner_output.try_recv().unwrap() else {
+        panic!("registered owner window");
+    };
+    assert_eq!(bridge.window_inventory().len(), 1);
+    assert_eq!(bridge.window_inventory()[0].0.metadata.process_id, None);
+    assert_eq!(bridge.dispatch_local(browser, ClientRequest { version: PROTOCOL_VERSION, command: ClientCommand::RemoteWindowQuery { reference: RemoteWindowRef { epoch: 71, window } } }).unwrap_err().code, FailureCode::Denied);
+    bridge.host_command(HostRequest { version: PROTOCOL_VERSION, command: HostCommand::DelegateWindow { window, recipient: browser, access: WindowAccess { observe: true, control: true } } }).unwrap();
+    let browser_permit = permit(&mut bridge, browser);
+    let mut browser_output = connect(&mut bridge, &endpoint, &browser_permit);
+    command(&endpoint, &browser_permit, 1, ClientCommand::RemoteWindowQuery { reference: RemoteWindowRef { epoch: 70, window } });
+    bridge.tick();
+    assert!(matches!(browser_output.try_recv().unwrap(), ServerMessage::Response { reply: Reply::Error { error: Failure { code: FailureCode::StaleRevision, .. }, .. }, .. }));
+    command(&endpoint, &browser_permit, 2, ClientCommand::RemoteWindowTrack { reference: RemoteWindowRef { epoch: 71, window } });
+    bridge.tick();
+    assert!(matches!(browser_output.try_recv().unwrap(), ServerMessage::Response { reply: Reply::Ok { response: ClientResponse::Window { .. }, .. }, .. }));
+    command(&endpoint, &browser_permit, 3, ClientCommand::RemoteWindowControl { reference: RemoteWindowRef { epoch: 71, window }, control: WindowControl::Hide });
+    bridge.tick();
+    assert!(matches!(owner_output.try_recv().unwrap(), ServerMessage::WindowApply { window: applied, .. } if applied == window));
+    assert!(browser_output.try_recv().is_err());
+    bridge.tick_at(Instant::now() + REQUEST_TIMEOUT);
+    assert!(matches!(browser_output.try_recv().unwrap(), ServerMessage::Response { reply: Reply::Error { error: Failure { code: FailureCode::Uncertain, .. }, .. }, .. }));
+    assert!(bridge.window_inventory()[0].0.observation.stale);
+    assert_eq!(bridge.window_status().pending, 0);
 }
 
 #[test]

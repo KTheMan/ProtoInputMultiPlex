@@ -15,8 +15,9 @@ fn main() {
 #[cfg(windows)]
 mod fixture {
     use mux_application_sdk::{
-        ClientCommand, ClientRequest, ClientResponse, Event, Input, KeyCode, PROTOCOL_VERSION,
-        PointerState, Poll, Reply, ServerMessage, SourceId, Transition, UserId, UserView,
+        ClientCommand, ClientRequest, ClientResponse, Event, FailureCode, Input, KeyCode, PROTOCOL_VERSION,
+        OwnerResponse, PointerState, Poll, Reply, ServerMessage, SourceId, Transition, UserId,
+        UserView,
     };
     use serde::{Deserialize, Serialize};
     use serde_json::{Value, json};
@@ -65,6 +66,9 @@ mod fixture {
     type Connect = unsafe extern "C" fn(usize, *const u8, usize, *mut u64, *mut u32) -> i32;
     type Enable = unsafe extern "C" fn(u64, u32, u32) -> i32;
     type RequestFn = unsafe extern "C" fn(u64, *const u8, usize, *mut u64) -> i32;
+    type WindowRegister = unsafe extern "C" fn(u64, usize, u32, *mut u64) -> i32;
+    type WindowObserve = unsafe extern "C" fn(u64, u64, u32, *mut u64) -> i32;
+    type WindowRetire = unsafe extern "C" fn(u64, u64, *mut u64) -> i32;
     type Unary = unsafe extern "C" fn(u64) -> i32;
     type Size = unsafe extern "C" fn(u64, *mut usize) -> i32;
     type ReadFn = unsafe extern "C" fn(u64, *mut u8, usize, *mut usize) -> i32;
@@ -75,6 +79,10 @@ mod fixture {
         connect: Connect,
         enable: Enable,
         request: RequestFn,
+        window_register: WindowRegister,
+        window_refresh: WindowObserve,
+        window_notify: WindowObserve,
+        window_retire: WindowRetire,
         drain: Unary,
         query: Unary,
         size: Size,
@@ -90,7 +98,7 @@ mod fixture {
                 ($name:literal, $ty:ty) => {{
                     let raw = unsafe { GetProcAddress(module, concat!($name, "\0").as_ptr()) }
                         .ok_or_else(|| concat!("missing export ", $name).to_owned())?;
-                    // Exact C calling convention and widths from the generated ABI v2 header.
+                    // Exact C calling convention and widths from the generated ABI v3 header.
                     unsafe { std::mem::transmute::<unsafe extern "system" fn() -> isize, $ty>(raw) }
                 }};
             }
@@ -98,6 +106,10 @@ mod fixture {
                 connect: symbol!("pim_app_native_connect", Connect),
                 enable: symbol!("pim_app_native_enable_input", Enable),
                 request: symbol!("pim_app_native_request", RequestFn),
+                window_register: symbol!("pim_app_native_window_register", WindowRegister),
+                window_refresh: symbol!("pim_app_native_window_refresh", WindowObserve),
+                window_notify: symbol!("pim_app_native_window_notify", WindowObserve),
+                window_retire: symbol!("pim_app_native_window_retire", WindowRetire),
                 drain: symbol!("pim_app_native_drain", Unary),
                 query: symbol!("pim_app_native_query", Unary),
                 size: symbol!("pim_app_native_response_size", Size),
@@ -114,6 +126,8 @@ mod fixture {
         static MESSAGES: Cell<usize> = const { Cell::new(0) };
         static WINDOW_API: Cell<Option<Api>> = const { Cell::new(None) };
         static TOKEN: Cell<u64> = const { Cell::new(0) };
+        static WINDOW_TOKEN: Cell<u64> = const { Cell::new(0) };
+        static WINDOW_CHANGED: Cell<bool> = const { Cell::new(false) };
         static WAKE: Cell<u32> = const { Cell::new(0) };
         static WAKES: Cell<u32> = const { Cell::new(0) };
         static BAD_WAKE: Cell<bool> = const { Cell::new(false) };
@@ -134,11 +148,23 @@ mod fixture {
             // Data is drained immediately after DispatchMessage on this same UI thread.
             return 0;
         }
+        if WINDOW_TOKEN.get() != 0 && matches!(message,
+            WM_WINDOWPOSCHANGED | WM_SHOWWINDOW | WM_SETTEXT | WM_STYLECHANGED | WM_ENABLE | WM_DPICHANGED)
+        {
+            // Win32 callbacks can reenter during an SDK action. Defer observation
+            // until the next owner-loop turn, outside the SDK TLS borrow.
+            WINDOW_CHANGED.set(true);
+        }
         if message == WM_NCDESTROY
             && let Some(api) = WINDOW_API.get()
         {
             let token = TOKEN.get();
             if token != 0 {
+                let window = WINDOW_TOKEN.replace(0);
+                if window != 0 {
+                    let mut request_id = 0;
+                    let _ = unsafe { (api.window_retire)(token, window, &mut request_id) };
+                }
                 STOP_STATUS.set(Some(unsafe { (api.stop)(token) }));
             }
         }
@@ -188,16 +214,19 @@ mod fixture {
         // Suppress arbitrary panic payloads: neither secrets nor server text belong in diagnostics.
         std::panic::set_hook(Box::new(|_| eprintln!("external native fixture panic")));
         let args: Vec<_> = std::env::args_os().skip(1).collect();
-        if !(args.len() == 8 || args.len() == 10 || args.len() == 12)
+        let route_args = (args.len() == 9 && args[8] == "--window-route")
+            || (args.len() == 11 && args[8] == "--window-route" && args[9] == "--observe-seconds");
+        let key_args = args.len() == 8
+            || (args.len() == 10 && args[8] == "--virtual-key")
+            || (args.len() == 12 && args[8] == "--virtual-key" && args[10] == "--observe-seconds");
+        if !(route_args || key_args)
             || args[0] != "--dll"
             || args[2] != "--sha256"
             || args[4] != "--descriptor"
             || args[6] != "--report"
-            || (args.len() >= 10 && args[8] != "--virtual-key")
-            || (args.len() == 12 && args[10] != "--observe-seconds")
         {
             eprintln!(
-                "usage: native_external_consumer --dll ABSOLUTE_DLL --sha256 64_HEX --descriptor PRIVATE_GUI_JSON --report NEW_PRIVATE_JSONL [--virtual-key HID_CODE [--observe-seconds 20..60]]"
+                "usage: native_external_consumer --dll ABSOLUTE_DLL --sha256 64_HEX --descriptor PRIVATE_GUI_JSON --report NEW_PRIVATE_JSONL [--window-route [--observe-seconds 20..60] | --virtual-key HID_CODE [--observe-seconds 20..60]]"
             );
             std::process::exit(10);
         }
@@ -205,7 +234,8 @@ mod fixture {
         let expected = args[3].to_string_lossy().to_ascii_lowercase();
         let descriptor_path = PathBuf::from(&args[5]);
         let report_path = PathBuf::from(&args[7]);
-        let key = if args.len() >= 10 {
+        let window_route = route_args;
+        let key = if args.len() >= 10 && !window_route {
             match args[9]
                 .to_str()
                 .and_then(|s| s.parse::<u16>().ok())
@@ -217,8 +247,9 @@ mod fixture {
         } else {
             None
         };
-        let observation_seconds = if args.len() == 12 {
-            match args[11]
+        let observation_seconds = if args.len() == 12 || args.len() == 11 {
+            let seconds = if window_route { &args[10] } else { &args[11] };
+            match seconds
                 .to_str()
                 .and_then(|value| value.parse::<u64>().ok())
             {
@@ -265,6 +296,7 @@ mod fixture {
                     &expected,
                     &descriptor_path,
                     key,
+                    window_route,
                     observation_seconds,
                     &report,
                 )?;
@@ -354,6 +386,7 @@ mod fixture {
         expected: &str,
         descriptor_path: &Path,
         key: Option<KeyCode>,
+        window_route: bool,
         observation_seconds: u64,
         report: &Report,
     ) -> Check {
@@ -425,7 +458,7 @@ mod fixture {
             "loader resolved another DLL",
         )?;
         let api = unsafe { Api::load(module)? };
-        report.record("dll_exports_resolved", json!({"native_exports": 11, "calling_convention": "C", "native_abi_header_version": 2}))?;
+        report.record("dll_exports_resolved", json!({"native_exports": 15, "calling_convention": "C", "native_abi_header_version": 3}))?;
 
         let previous_dpi =
             unsafe { SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2) };
@@ -510,6 +543,9 @@ mod fixture {
         )?;
 
         await_ready(api, token, completion, report)?;
+        if window_route {
+            exercise_owned_window_route(api, token, completion, hwnd, observation_seconds, report)?;
+        } else {
         let response = round_trip(
             api,
             token,
@@ -639,6 +675,7 @@ mod fixture {
             "sequence": final_model["sequence"].as_u64(),
             "paired_wasm_verified": false, "remote_cleanup_confirmed": false}),
         )?;
+        }
         status(unsafe { (api.query)(token) }, OK, "query for discard")?;
         status(unsafe { (api.discard)(token) }, OK, "response discard")?;
         let mut ignored = 0;
@@ -836,6 +873,204 @@ mod fixture {
                 held_keys: u.held_keys.as_ref(),
             })
             .collect()
+    }
+    fn await_owner_response(
+        api: Api,
+        client: u64,
+        completion: HANDLE,
+        expected_id: Option<u64>,
+    ) -> Check<OwnerResponse> {
+        let deadline = Instant::now() + BOUND;
+        loop {
+            ensure(Instant::now() < deadline, "owner report deadline exceeded; no replay")?;
+            if let Some(message) = next_message(api, client)? {
+                match message {
+                    ServerMessage::OwnerResponse { request_id, reply } => {
+                        if let Some(expected) = expected_id {
+                            ensure(request_id == expected, "owner response ID mismatch")?;
+                        }
+                        return match reply {
+                            Reply::Ok { version, response } if version == PROTOCOL_VERSION => Ok(response),
+                            Reply::Error { .. } => Err("GUI rejected native owner report".into()),
+                            _ => Err("owner response version mismatch".into()),
+                        };
+                    }
+                    ServerMessage::EventStream { .. } => (),
+                    _ => return Err("unexpected owner response frame".into()),
+                }
+            } else {
+                pump_wait(completion, deadline)?;
+            }
+        }
+    }
+
+    fn exercise_owned_window_route(
+        api: Api,
+        client: u64,
+        completion: HANDLE,
+        hwnd: HWND,
+        observation_seconds: u64,
+        report: &Report,
+    ) -> Check {
+        let ready = query(api, client, false)?;
+        ensure(
+            ready["ready"]["events"]["owned_windows"] == true
+                && ready["ready"]["controls"]["window_publication"] == true,
+            "native publisher lacks GUI window approval",
+        )?;
+        ensure(
+            ready["users"].as_array().is_some_and(|users| users.is_empty()),
+            "window-only route unexpectedly has virtual users",
+        )?;
+        let mut local = 0;
+        status(
+            unsafe { (api.window_register)(client, hwnd as usize, 0, &mut local) },
+            OK,
+            "own window register",
+        )?;
+        ensure(local != 0, "missing local window token")?;
+        WINDOW_TOKEN.set(local);
+        let OwnerResponse::Registered { window } =
+            await_owner_response(api, client, completion, None)?
+        else {
+            return Err("native registration response kind mismatch".into());
+        };
+        report.record("native_window_published", json!({
+            "identity_metadata_consent": false,
+            "source": "native_client_reported", "users_required": false,
+        }))?;
+        let title: Vec<u16> = "Owned SDK fixture window\0".encode_utf16().collect();
+        ensure(unsafe { SetWindowTextW(hwnd, title.as_ptr()) } != 0, "SetWindowTextW failed")?;
+        ensure(WINDOW_CHANGED.replace(false), "owner WndProc missed title change")?;
+        let mut notify_id = 0;
+        status(
+            unsafe { (api.window_notify)(client, local, 0, &mut notify_id) },
+            OK,
+            "owner change notify",
+        )?;
+        ensure(notify_id != 0, "changed owner observation was suppressed")?;
+        let OwnerResponse::Window { window: changed } =
+            await_owner_response(api, client, completion, Some(notify_id))?
+        else {
+            return Err("owner change response kind mismatch".into());
+        };
+        ensure(changed.id == window && changed.metadata.title.as_deref() == Some("Owned SDK fixture window"),
+            "GUI did not acknowledge the observed title")?;
+        report.record("native_window_changed", json!({
+            "actual_title_change": true,
+            "metadata_identity_absent": changed.metadata.process_id.is_none() && changed.metadata.ui_thread_id.is_none(),
+        }))?;
+        ensure(unsafe { SetWindowPos(hwnd, 0, 150, 120, 400, 300, SWP_NOZORDER | SWP_NOACTIVATE) } != 0,
+            "SetWindowPos failed")?;
+        ensure(WINDOW_CHANGED.replace(false), "owner WndProc missed external window move")?;
+        let mut move_id = 0;
+        status(unsafe { (api.window_notify)(client, local, 0, &mut move_id) }, OK, "owner move notify")?;
+        ensure(move_id != 0, "owner move observation was suppressed")?;
+        let OwnerResponse::Window { window: moved } =
+            await_owner_response(api, client, completion, Some(move_id))?
+        else {
+            return Err("owner move response kind mismatch".into());
+        };
+        let mut os_rect = unsafe { std::mem::zeroed() };
+        ensure(unsafe { GetWindowRect(hwnd, &mut os_rect) } != 0, "owner OS read after move failed")?;
+        let os_bounds = [os_rect.left, os_rect.top, os_rect.right, os_rect.bottom];
+        ensure(moved.id == window && [moved.bounds.left, moved.bounds.top, moved.bounds.right, moved.bounds.bottom] == os_bounds,
+            "GUI owner observation disagrees with OS move")?;
+        report.record("native_window_moved", json!({
+            "actual_os_move": true,
+            "os_bounds": os_bounds,
+        }))?;
+        let mut refresh_id = 0;
+        status(
+            unsafe { (api.window_refresh)(client, local, 0, &mut refresh_id) },
+            OK,
+            "explicit window refresh",
+        )?;
+        ensure(refresh_id != 0, "missing refresh request")?;
+        let OwnerResponse::Window { window: refreshed } =
+            await_owner_response(api, client, completion, Some(refresh_id))?
+        else {
+            return Err("owner refresh response kind mismatch".into());
+        };
+        ensure(refreshed.id == window, "refresh changed GUI WindowId")?;
+        let end = Instant::now() + Duration::from_secs(observation_seconds);
+        let mut applies = 0;
+        let mut receipts = 0;
+        let mut late_rejections = 0;
+        let mut timeout_pause = false;
+        let mut last_refresh = Instant::now();
+        while Instant::now() < end {
+            pump_wait(completion, (Instant::now() + Duration::from_millis(250)).min(end))?;
+            for _ in 0..64 {
+                match next_message(api, client)? {
+                    None => break,
+                    Some(ServerMessage::WindowApply { window: selected, control, .. }) => {
+                        ensure(selected == window, "action targeted another window")?;
+                        let mut rect = unsafe { std::mem::zeroed() };
+                        ensure(unsafe { GetWindowRect(hwnd, &mut rect) } != 0, "owner OS read after action failed")?;
+                        applies += 1;
+                        report.record("native_window_action_executed", json!({
+                            "control": control,
+                            "os_bounds": [rect.left, rect.top, rect.right, rect.bottom],
+                            "os_visible": unsafe { IsWindowVisible(hwnd) } != 0,
+                        }))?;
+                    }
+                    Some(ServerMessage::OwnerResponse { reply: Reply::Ok { response: OwnerResponse::Acknowledged, .. }, .. }) => {
+                        receipts += 1;
+                    }
+                    Some(ServerMessage::OwnerResponse { reply: Reply::Error { error, .. }, .. })
+                        if timeout_pause && error.code == FailureCode::Missing => {
+                            late_rejections += 1;
+                    }
+                    Some(ServerMessage::OwnerResponse { reply: Reply::Ok { response: OwnerResponse::Window { .. }, .. }, .. }) => (),
+                    Some(ServerMessage::Disconnected { .. }) => return Err("GUI disconnected during window route".into()),
+                    _ => return Err("unexpected shared window frame".into()),
+                }
+            }
+            if WINDOW_CHANGED.replace(false) {
+                let mut id = 0;
+                status(unsafe { (api.window_notify)(client, local, 0, &mut id) }, OK, "owner state notify")?;
+            }
+            if last_refresh.elapsed() >= Duration::from_secs(1) {
+                let mut id = 0;
+                status(unsafe { (api.window_refresh)(client, local, 0, &mut id) }, OK, "owner observation refresh")?;
+                ensure(id != 0, "missing periodic owner observation")?;
+                last_refresh = Instant::now();
+            }
+            if applies >= 3 && receipts >= 3 && !timeout_pause {
+                report.record("native_window_timeout_ready", json!({"first_three_actions_executed": true}))?;
+                // The owner message loop deliberately pauses after three real controls.
+                // A fourth request can time out at the GUI while its queued owner
+                // dispatch may still run later. The consumer must never replay it.
+                thread::sleep(Duration::from_secs(8));
+                timeout_pause = true;
+            }
+            if applies >= 4 && receipts >= 3 && late_rejections >= 1 {
+                break;
+            }
+        }
+        ensure(applies >= 4 && receipts >= 3 && late_rejections >= 1 && timeout_pause,
+            "distinct approved actions and late owner dispatch were not observed")?;
+        report.record("native_window_timeout_late_action", json!({
+            "fourth_action_executed_after_owner_pause": true,
+            "actions": applies,
+            "late_receipt_rejected": late_rejections == 1,
+        }))?;
+        // Keep the owned window live briefly so the GUI can revoke one exact
+        // observer and the browser can demonstrate its post-revoke fence.
+        thread::sleep(Duration::from_secs(5));
+        let mut retire_id = 0;
+        status(unsafe { (api.window_retire)(client, local, &mut retire_id) }, OK, "owner window retire")?;
+        WINDOW_TOKEN.set(0);
+        ensure(retire_id != 0, "missing remote retire report")?;
+        ensure(matches!(await_owner_response(api, client, completion, Some(retire_id))?, OwnerResponse::Acknowledged),
+            "GUI did not acknowledge window retirement")?;
+        report.record("native_window_retired", json!({
+            "actions": applies, "owner_receipts": receipts,
+            "late_rejections": late_rejections,
+            "retired_before_hwnd_destroy": true,
+        }))?;
+        Ok(())
     }
     fn query(api: Api, token: u64, short: bool) -> Check<Value> {
         status(unsafe { (api.query)(token) }, OK, "query")?;

@@ -6,7 +6,7 @@ use crate::local_input::{LocalInput, hid_key, mouse_button, selects};
 use mux_application_sdk::*;
 use mux_core::application_event::Event as ApplicationEvent;
 use std::cell::RefCell;
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 use std::rc::{Rc, Weak};
 use wasm_bindgen::JsCast;
 use wasm_bindgen::prelude::*;
@@ -93,6 +93,7 @@ struct Inner {
     socket: Option<WebSocket>,
     subscription: Option<SubscriptionId>,
     pending: BTreeSet<u64>,
+    pending_windows: BTreeMap<u64, PendingWindow>,
     next_request: u64,
     authenticated: bool,
     awaiting_subscription: bool,
@@ -112,6 +113,12 @@ struct Inner {
     disposed: bool,
     layout_revision: u64,
     demo_callbacks: Vec<Closure<dyn FnMut(String)>>,
+}
+
+#[derive(Clone, Copy)]
+enum PendingWindow {
+    Query { window: WindowId, remote: bool },
+    Control { window: WindowId, action: WindowAction, remote: bool },
 }
 
 impl Inner {
@@ -307,6 +314,32 @@ impl Inner {
             .next_request
             .checked_add(1)
             .ok_or("Request limit reached")?;
+        let window_pending = match &command {
+            ClientCommand::WindowQuery { window } | ClientCommand::WindowTrack { window } => {
+                Some(PendingWindow::Query {
+                    window: *window,
+                    remote: false,
+                })
+            }
+            ClientCommand::RemoteWindowQuery { reference }
+            | ClientCommand::RemoteWindowTrack { reference } => Some(PendingWindow::Query {
+                window: reference.window,
+                remote: true,
+            }),
+            ClientCommand::WindowControl { window, control } => Some(PendingWindow::Control {
+                window: *window,
+                action: control.action(),
+                remote: false,
+            }),
+            ClientCommand::RemoteWindowControl { reference, control } => {
+                Some(PendingWindow::Control {
+                    window: reference.window,
+                    action: control.action(),
+                    remote: true,
+                })
+            }
+            _ => None,
+        };
         let message = ClientMessage {
             request_id,
             request: ClientRequest {
@@ -322,11 +355,21 @@ impl Inner {
         if json.len() > limit.min(MAX_REQUEST_BYTES) {
             return Err("Request exceeds event protocol limit");
         }
-        socket
-            .send_with_str(&json)
-            .map_err(|_| "Event socket send failed")?;
+        if socket.send_with_str(&json).is_err() {
+            if matches!(window_pending, Some(PendingWindow::Control { .. })) {
+                self.stop(
+                    "Window action outcome unconfirmed after send failure; reconnect and inspect",
+                    false,
+                );
+                return Err("Window action outcome unconfirmed; connection fenced");
+            }
+            return Err("Event socket send failed");
+        }
         self.next_request = request_id;
         self.pending.insert(request_id);
+        if let Some(window_pending) = window_pending {
+            self.pending_windows.insert(request_id, window_pending);
+        }
         Ok(())
     }
 
@@ -406,6 +449,15 @@ impl Inner {
     }
 
     fn stop(&mut self, message: &str, graceful: bool) {
+        let message = if !self
+            .pending_windows
+            .values()
+            .any(|pending| matches!(pending, PendingWindow::Control { .. }))
+        {
+            message.to_owned()
+        } else {
+            format!("Window action outcome unconfirmed; inspect before retrying. {message}")
+        };
         self.fence_hooks();
         self.release(graceful);
         if graceful && self.authenticated {
@@ -420,6 +472,7 @@ impl Inner {
         self.credential.set_value("");
         self.ready = None;
         self.pending.clear();
+        self.pending_windows.clear();
         self.subscription = None;
         self.state.disconnect();
         self.disable_inputs();
@@ -435,7 +488,7 @@ impl Inner {
         self.connect_button.set_disabled(false);
         self.refresh_button.set_disabled(true);
         self.users.set_inner_html("");
-        self.notice(message);
+        self.notice(&message);
         self.notification =
             Some(serde_json::json!({"kind": "local_disconnected", "message": message}).to_string());
         let _ = self.draw();
@@ -627,10 +680,21 @@ impl Inner {
                 if !self.authenticated || !self.pending.remove(&request_id) {
                     return Err("Unexpected response identifier");
                 }
+                let expected_window = self.pending_windows.remove(&request_id);
                 match reply {
                     Reply::Ok { version, response } => {
                         if version != PROTOCOL_VERSION {
                             return Err("Response version mismatch");
+                        }
+                        if matches!(expected_window, Some(PendingWindow::Control { .. }))
+                            && !matches!(&response, ClientResponse::WindowControlled { .. })
+                        {
+                            return Err("Window action receipt was not observed");
+                        }
+                        if matches!(expected_window, Some(PendingWindow::Query { .. }))
+                            && !matches!(&response, ClientResponse::Window { .. })
+                        {
+                            return Err("Window observation was not received");
                         }
                         match response {
                             ClientResponse::Subscribed {
@@ -661,6 +725,62 @@ impl Inner {
                             ClientResponse::Polled { .. } => {
                                 return Err("Unexpected poll response on server-pushed stream");
                             }
+                            ClientResponse::Window { window } => {
+                                let Some(PendingWindow::Query {
+                                    window: expected,
+                                    remote,
+                                }) = expected_window
+                                else {
+                                    return Err("Window observation had no matching request");
+                                };
+                                if !window.bounds.valid_region()
+                                    || window.metadata.validate().is_err()
+                                    || window.id != expected
+                                    || remote
+                                        != matches!(
+                                            window.observation.source,
+                                            WindowObservationSource::NativeClientReported
+                                        )
+                                {
+                                    return Err("Invalid window observation");
+                                }
+                                self.notice(if window.observation.stale {
+                                    "Window observation is stale; refresh with its native owner"
+                                } else if remote {
+                                    "Native-window observation received"
+                                } else {
+                                    "Owned-window observation received"
+                                });
+                            }
+                            ClientResponse::WindowControlled { acknowledgement } => {
+                                let Some(PendingWindow::Control {
+                                    window: expected,
+                                    action,
+                                    remote,
+                                }) = expected_window
+                                else {
+                                    return Err("Window action had no matching request");
+                                };
+                                if acknowledgement.window != acknowledgement.observed.id
+                                    || acknowledgement.window != expected
+                                    || acknowledgement.action != action
+                                    || !acknowledgement.observed.bounds.valid_region()
+                                    || acknowledgement.observed.metadata.validate().is_err()
+                                    || (remote && acknowledgement.observed.observation.stale)
+                                    || remote
+                                        != matches!(
+                                            acknowledgement.observed.observation.source,
+                                            WindowObservationSource::NativeClientReported
+                                        )
+                                {
+                                    return Err("Invalid window action receipt");
+                                }
+                                self.notice(if remote {
+                                    "Native-window action observed by its owner"
+                                } else {
+                                    "Owned-window action observed"
+                                });
+                            }
                             ClientResponse::Disconnected => {
                                 self.stop("Server disconnected; reconnect explicitly", false);
                             }
@@ -671,11 +791,22 @@ impl Inner {
                         if version != PROTOCOL_VERSION {
                             return Err("Response version mismatch");
                         }
-                        // Any rejected input can invalidate locally predicted holds.
-                        // Close and let the server retire this controller's holds.
-                        let notice =
-                            format!("Request rejected ({:?}); reconnect explicitly", error.code);
-                        self.stop(&notice, false);
+                        if error.code == FailureCode::Uncertain {
+                            self.fence_hooks();
+                            self.release(true);
+                            self.disable_inputs();
+                            self.state.disconnect();
+                            self.notice("Window action outcome unconfirmed. Refresh the subscription after owner observation; do not retry automatically");
+                            self.update_controls();
+                        } else {
+                            // Any rejected input can invalidate locally predicted holds.
+                            // Close and let the server retire this controller's holds.
+                            let notice = format!(
+                                "Request rejected ({:?}); reconnect explicitly",
+                                error.code
+                            );
+                            self.stop(&notice, false);
+                        }
                     }
                 }
             }
@@ -721,6 +852,9 @@ impl Inner {
                     "Event authority ended; reconnect explicitly after host approval",
                     false,
                 );
+            }
+            ServerMessage::WindowApply { .. } | ServerMessage::OwnerResponse { .. } => {
+                return Err("Native-owner frame sent to browser receiver");
             }
         }
         self.collect_clicks(&accepted);
@@ -1025,6 +1159,45 @@ impl WebClient {
             ));
         }
         let mut inner = self.inner.borrow_mut();
+        match &command {
+            ClientCommand::RemoteWindowQuery { reference } => {
+                if !inner.is_live()
+                    || !inner.ready.as_ref().is_some_and(|ready| ready.events.owned_windows)
+                    || inner.ready.as_ref().is_none_or(|ready| ready.epoch != reference.epoch)
+                {
+                    return Err(JsValue::from_str("Window observation is unavailable"));
+                }
+            }
+            ClientCommand::RemoteWindowTrack { reference }
+            | ClientCommand::RemoteWindowUntrack { reference } => {
+                if !inner.is_live()
+                    || !inner.ready.as_ref().is_some_and(|ready| {
+                        ready.events.owned_windows && ready.controls.window_tracking
+                    })
+                    || inner.ready.as_ref().is_none_or(|ready| ready.epoch != reference.epoch)
+                {
+                    return Err(JsValue::from_str("Window tracking is unavailable"));
+                }
+            }
+            ClientCommand::RemoteWindowControl { reference, .. } => {
+                if !inner.is_live()
+                    || !inner.ready.as_ref().is_some_and(|ready| {
+                        ready.events.owned_windows
+                            && ready.controls.window_tracking
+                            && ready.controls.window_control
+                            && ready.epoch == reference.epoch
+                    })
+                    || !inner
+                        .state
+                        .windows()
+                        .get(&reference.window)
+                        .is_some_and(|info| !info.observation.stale)
+                {
+                    return Err(JsValue::from_str("Track and refresh this approved window first"));
+                }
+            }
+            _ => {}
+        }
         let input = match &command {
             ClientCommand::Input { user, input }
             | ClientCommand::InputAtRevision { user, input, .. } => Some((*user, *input)),
@@ -1072,6 +1245,47 @@ impl WebClient {
         } else {
             inner.send(command).map_err(JsValue::from_str)
         }
+    }
+
+    /// Query one GUI-approved native window. Its numeric ID comes from the GUI
+    /// approval, never from a native handle. The validated response is delivered
+    /// to the event handler with its request ID.
+    pub fn query_window(&self, reference_json: &str) -> Result<(), JsValue> {
+        let reference = serde_json::from_str::<RemoteWindowRef>(reference_json)
+            .map_err(|_| JsValue::from_str("Invalid window reference"))?;
+        self.request(
+            &serde_json::to_string(&ClientCommand::RemoteWindowQuery { reference })
+                .map_err(|_| JsValue::from_str("Could not encode window query"))?,
+        )
+    }
+
+    pub fn track_window(&self, reference_json: &str) -> Result<(), JsValue> {
+        let reference = serde_json::from_str::<RemoteWindowRef>(reference_json)
+            .map_err(|_| JsValue::from_str("Invalid window reference"))?;
+        self.request(
+            &serde_json::to_string(&ClientCommand::RemoteWindowTrack { reference })
+                .map_err(|_| JsValue::from_str("Could not encode window tracking"))?,
+        )
+    }
+
+    pub fn untrack_window(&self, reference_json: &str) -> Result<(), JsValue> {
+        let reference = serde_json::from_str::<RemoteWindowRef>(reference_json)
+            .map_err(|_| JsValue::from_str("Invalid window reference"))?;
+        self.request(
+            &serde_json::to_string(&ClientCommand::RemoteWindowUntrack { reference })
+                .map_err(|_| JsValue::from_str("Could not encode window tracking"))?,
+        )
+    }
+
+    pub fn control_window(&self, reference_json: &str, control_json: &str) -> Result<(), JsValue> {
+        let reference = serde_json::from_str::<RemoteWindowRef>(reference_json)
+            .map_err(|_| JsValue::from_str("Invalid window reference"))?;
+        let control = serde_json::from_str::<WindowControl>(control_json)
+            .map_err(|_| JsValue::from_str("Invalid window action"))?;
+        self.request(
+            &serde_json::to_string(&ClientCommand::RemoteWindowControl { reference, control })
+                .map_err(|_| JsValue::from_str("Could not encode window action"))?,
+        )
     }
 
     pub fn state_json(&self) -> Result<String, JsValue> {
@@ -1447,6 +1661,7 @@ pub fn mount_demo(container_id: &str) -> Result<WebClient, JsValue> {
         socket: None,
         subscription: None,
         pending: BTreeSet::new(),
+        pending_windows: BTreeMap::new(),
         next_request: 0,
         authenticated: false,
         awaiting_subscription: false,

@@ -31,6 +31,39 @@ fallback between authorities. Standalone routing does not own a GUI event host.
 These new paths still require current-source checks and actual GUI/MCP acceptance.
 See [the event SDK guide](application-event-sdk.md).
 
+### GUI-approved native window agent mode (source candidate)
+
+For a live cooperative event session, create a window-only receiver row in the
+GUI with no virtual users or input permissions. The native application first
+receives separate publication approval and reports one of its own windows.
+Select that current window in the GUI, approve observation and optional tracking
+or control
+for a **different** receiver row, Apply, then issue its private event descriptor.
+Launch `protoinputmultiplex mcp --event-connection <descriptor.json>` using that
+grantee descriptor. This separate MCP router exposes only `native_windows`:
+`inspect`, `refresh`, `query`, `track`, `untrack` and `control` according to
+the current GUI grant. It neither uses the stopped
+Setup descriptor nor accepts a routing Agent Access descriptor. It cannot create
+permissions, virtual users, target PIDs or a native handle.
+
+Call `native_windows {"operation":"inspect"}` to read the current event epoch
+and tracked window state. Pass that exact `epoch` and the GUI-copied opaque
+`window_id` for query and track. After Track, explicitly call
+`native_windows {"operation":"refresh"}` to install a new subscription
+snapshot. A stream gap also requires this explicit refresh. Control requires
+its separate GUI approval and a nonstale owner report,
+for example `{"operation":"control","epoch":123,"window_id":456,
+"control":{"kind":"restore"}}`. IDs are JSON integers; retain them as exact
+text in clients that cannot represent all 64-bit integers. The GUI and event
+host recheck the exact window grant, lease, epoch and owner for every action.
+No HWND or other native handle is accepted. A control receipt reports the owner
+thread's observation; a close receipt does not prove destruction. Timeout,
+revocation or lost receipt yields an uncertain result and never triggers replay.
+Refresh/inspect the native owner's later observation before another action.
+Window titles and optional process/thread details are client-reported data, not
+GUI or OS peer attestation. Existing read-only `application_event_status` exposes
+only bounded registered/pending/stale/uncertain counts and sample age.
+
 Stopped `profile_setup` also supports `configure_persistence` for the two
 startup-load/save-on-Quit preferences. It requires opt-in Setup authority, the
 current revision, and both booleans in `persistence`; it cannot choose paths or

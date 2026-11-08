@@ -6,6 +6,8 @@ on:
       - Cargo.toml
       - crates/**/Cargo.toml
       - crates/**/*.rs
+      - examples/rust-mcp-client/Cargo.toml
+      - examples/rust-mcp-client/**/*.rs
       - .github/workflows/renderer-lock.yml
 permissions:
   contents: read
@@ -26,10 +28,14 @@ jobs:
         run: cargo update --workspace
       - name: Format source candidate for review
         run: cargo fmt --all
+      - name: Format standalone MCP client candidate for review
+        run: cargo fmt --all --manifest-path examples/rust-mcp-client/Cargo.toml
       - name: Verify source candidate formatting
         run: cargo fmt --all --check
+      - name: Verify standalone MCP client candidate formatting
+        run: cargo fmt --all --manifest-path examples/rust-mcp-client/Cargo.toml --check
       - name: Record source and lock candidate patch
-        run: git diff --binary --output=source-candidate.patch -- Cargo.lock crates
+        run: git diff --binary --output=source-candidate.patch -- Cargo.lock crates examples/rust-mcp-client
       - name: Record generated lock digest
         shell: pwsh
         run: |

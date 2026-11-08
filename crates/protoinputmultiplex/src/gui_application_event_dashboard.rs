@@ -60,6 +60,10 @@ impl Dashboard {
                     }),
                 Action::Issue => self.application_events.issue(),
                 Action::Copy => self.application_events.request_copy(),
+                Action::CopyWindowReference => self
+                    .application_events
+                    .selected_window_reference()
+                    .map(|reference| ui.ctx().copy_text(reference)),
                 Action::Revoke => {
                     self.application_events.revoke();
                     Ok(())

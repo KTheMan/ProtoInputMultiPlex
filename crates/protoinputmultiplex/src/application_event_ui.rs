@@ -21,6 +21,7 @@ pub(crate) enum Action {
     StartListener,
     Issue,
     Copy,
+    CopyWindowReference,
     Revoke,
     Stop,
     Local(ClientCommand),
@@ -130,7 +131,7 @@ pub(crate) fn show(
     let mut result = Vec::new();
     let status = controller.status();
     Heading::new("Application event SDK").show(ui);
-    Text::new("A separate virtual-only cooperative session. Event export, keyboard observation and every remote control start off. Command SDK permissions do not grant these approvals.").caption().wrap().show(ui);
+    Text::new("A cooperative session for virtual input and approved native windows. Each receiver starts without window or input access.").caption().wrap().show(ui);
     let network = match (status.connected_clients, status.cleanup_pending) {
         (Some(connected), Some(pending)) => {
             format!("{connected} event receiver connections · {pending} pending cleanup")
@@ -138,10 +139,11 @@ pub(crate) fn show(
         _ => "Listener metrics unavailable".into(),
     };
     let summary = Text::new(format!(
-        "{} · {} local users · {} native observed users · sequence {} · {}",
+        "{} · {} local users · {} native observed users · {} published windows · sequence {} · {}",
         status.phase,
         status.local_virtual_users,
         status.native_observed_users,
+        status.published_windows.unwrap_or(0),
         status.native_sequence,
         network
     ))
@@ -150,6 +152,18 @@ pub(crate) fn show(
     .show(ui);
     if let Some(script) = script.as_deref_mut() {
         script.observe("Application event SDK status", &summary);
+    }
+    if let (Some(pending), Some(stale), Some(uncertain)) = (
+        status.window_pending,
+        status.window_stale,
+        status.window_uncertain,
+    ) {
+        Text::new(format!(
+            "Native windows: {pending} actions pending · {stale} stale · {uncertain} outcomes unconfirmed"
+        ))
+        .caption()
+        .wrap()
+        .show(ui);
     }
     if let Some(error) = &controller.error {
         Text::new(error)
@@ -402,6 +416,94 @@ pub(crate) fn show(
         frame,
         actions,
     );
+    Divider::horizontal().show(ui);
+    Text::new("Native windows are published by their owning application. Approve each other receiver and window separately.")
+        .caption().wrap().show(ui);
+    checkbox(
+        ui,
+        "Allow this native receiver to publish its own windows",
+        &mut controller.draft.publish_windows,
+        &mut script,
+        frame,
+        actions,
+    );
+    checkbox(
+        ui,
+        "Include client-reported process and thread details",
+        &mut controller.draft.window_identity_metadata,
+        &mut script,
+        frame,
+        actions,
+    );
+    checkbox(
+        ui,
+        "Allow observation of an approved native window",
+        &mut controller.draft.window_observation,
+        &mut script,
+        frame,
+        actions,
+    );
+    checkbox(
+        ui,
+        "Allow tracking of an approved native window",
+        &mut controller.draft.window_tracking,
+        &mut script,
+        frame,
+        actions,
+    );
+    checkbox(
+        ui,
+        "Allow control of an approved native window",
+        &mut controller.draft.window_control,
+        &mut script,
+        frame,
+        actions,
+    );
+    Text::new("Choose one currently published window for this receiver. Its state is reported by the native client; it may be stale.")
+        .caption().wrap().show(ui);
+    for window in controller.published_windows() {
+        let label = format!(
+            "Native window {:?}{}{}",
+            window.id,
+            window.metadata.title.as_deref().map_or(String::new(), |title| format!(" · {title}")),
+            if window.observation.stale { " · stale" } else { "" }
+        );
+        Text::new(label).caption().wrap().show(ui);
+        if button(
+            ui,
+            "Select native window",
+            allowed && controller.active() && controller.selected_row().is_some(),
+            &mut script,
+            frame,
+            actions,
+        ) {
+            controller.draft.selected_window = Some(window.id);
+        }
+    }
+    if button(
+        ui,
+        "Clear selected native window",
+        allowed && controller.active() && controller.draft.selected_window.is_some(),
+        &mut script,
+        frame,
+        actions,
+    ) {
+        controller.draft.selected_window = None;
+    }
+    if let Some(window) = controller.draft.selected_window {
+        Text::new(format!("Selected native window: {window:?}"))
+            .caption().wrap().show(ui);
+        if button(
+            ui,
+            "Copy selected native window reference",
+            allowed && controller.active(),
+            &mut script,
+            frame,
+            actions,
+        ) {
+            result.push(Action::CopyWindowReference);
+        }
+    }
     Text::new("Draft checkboxes change no live authority. Apply replaces only the selected receiver and retires its previous connection. Other receiver approvals, master consent and local virtual user IDs remain stable.").caption().wrap().show(ui);
     if button(
         ui,
@@ -551,7 +653,7 @@ pub(crate) fn show(
         .show(ui);
     }
     ui.add_enabled_ui(false, |ui| {
-        let _ = Button::new("Event receiver control of GUI native windows unavailable")
+        let _ = Button::new("Desktop-wide window control unavailable")
             .sm()
             .enabled(false)
             .show(ui);

@@ -5,6 +5,9 @@ use serde::{Deserialize, Serialize};
 pub const MAX_REQUEST_BYTES: usize = 64 * 1024;
 pub const MAX_RESPONSE_BYTES: usize = 4 * 1024 * 1024;
 pub const MAX_POLL_EVENTS: usize = 128;
+fn is_false(value: &bool) -> bool {
+    !*value
+}
 
 /// A second, independently approved authority. Export grants alone never enable
 /// mutation. Engine ownership checks still apply to every user/window operation.
@@ -18,6 +21,10 @@ pub struct ControlGrant {
     pub cursor: bool,
     pub pointer_input: bool,
     pub key_input: bool,
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub window_publication: bool,
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub window_identity_metadata: bool,
     pub window_tracking: bool,
     pub window_control: bool,
 }
@@ -31,6 +38,8 @@ impl Default for ControlGrant {
             cursor: false,
             pointer_input: false,
             key_input: false,
+            window_publication: false,
+            window_identity_metadata: false,
             window_tracking: false,
             window_control: false,
         }
@@ -53,6 +62,14 @@ impl ControlGrant {
 pub struct ClientRequest {
     pub version: u32,
     pub command: ClientCommand,
+}
+
+/// A GUI-owned window reference is valid only in its issuing event epoch.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct RemoteWindowRef {
+    pub epoch: u64,
+    pub window: WindowId,
 }
 
 /// Recipient identity is deliberately absent. The transport supplies it out of band.
@@ -117,6 +134,19 @@ pub enum ClientCommand {
     },
     WindowControl {
         window: WindowId,
+        control: WindowControl,
+    },
+    RemoteWindowQuery {
+        reference: RemoteWindowRef,
+    },
+    RemoteWindowTrack {
+        reference: RemoteWindowRef,
+    },
+    RemoteWindowUntrack {
+        reference: RemoteWindowRef,
+    },
+    RemoteWindowControl {
+        reference: RemoteWindowRef,
         control: WindowControl,
     },
     Disconnect,
@@ -184,6 +214,11 @@ pub enum HostCommand {
         recipient: RecipientId,
         grant: ControlGrant,
     },
+    DelegateWindow {
+        window: WindowId,
+        recipient: RecipientId,
+        access: WindowAccess,
+    },
     RegisterOwnWindow {
         recipient: RecipientId,
         native_window: usize,
@@ -233,6 +268,8 @@ pub enum FailureCode {
     StaleRevision,
     Unsupported,
     Backend,
+    /// The owner may have applied an action whose receipt was lost.
+    Uncertain,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -289,7 +326,9 @@ impl<T> From<Result<T, Failure>> for Reply<T> {
 
 /// First event-transport frame. Origin is verified from the HTTP upgrade by the
 /// server, never asserted here. Hold this event-only credential in transient
-/// memory only; it must never be an MCP command bearer or browser storage value.
+/// memory only. A GUI-approved, window-only MCP event client may use its own
+/// issued descriptor; stopped Setup and routing MCP tokens cannot substitute.
+/// Never put the credential in browser storage, status, or logs.
 #[derive(Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct EventHello {
@@ -343,6 +382,53 @@ pub struct ClientMessage {
     pub request: ClientRequest,
 }
 
+/// A report from the authenticated native publisher. Tokens identify only
+/// bindings within its current lease; they are never Windows handles.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct OwnerFrame {
+    pub request_id: u64,
+    pub operation: OwnerOperation,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(tag = "kind", rename_all = "snake_case", deny_unknown_fields)]
+pub enum OwnerOperation {
+    Register {
+        token: u64,
+        generation: u64,
+        observed: WindowObservation,
+        identity_metadata_consent: bool,
+    },
+    Refresh {
+        window: WindowId,
+        token: u64,
+        generation: u64,
+        observed: WindowObservation,
+        identity_metadata_consent: bool,
+    },
+    Retire {
+        window: WindowId,
+        token: u64,
+        generation: u64,
+    },
+    ApplyResult {
+        operation_id: u64,
+        window: WindowId,
+        token: u64,
+        generation: u64,
+        result: Reply<WindowObservation>,
+    },
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(tag = "kind", rename_all = "snake_case")]
+pub enum OwnerResponse {
+    Registered { window: WindowId },
+    Window { window: WindowInfo },
+    Acknowledged,
+}
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum ServerMessage {
@@ -352,6 +438,19 @@ pub enum ServerMessage {
     Response {
         request_id: u64,
         reply: Reply<ClientResponse>,
+    },
+    OwnerResponse {
+        request_id: u64,
+        reply: Reply<OwnerResponse>,
+    },
+    /// Dispatched to the native publisher's creating UI thread. The worker
+    /// queues this frame and never executes the control.
+    WindowApply {
+        operation_id: u64,
+        window: WindowId,
+        token: u64,
+        generation: u64,
+        control: WindowControl,
     },
     /// Pushed only on activity, gap or terminal state. No browser polling loop.
     EventStream {

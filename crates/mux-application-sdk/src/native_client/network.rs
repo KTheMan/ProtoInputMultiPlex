@@ -3,6 +3,7 @@
 use super::*;
 use futures_util::{SinkExt, StreamExt};
 use std::{
+    collections::BTreeSet,
     future::Future,
     net::{Ipv4Addr, SocketAddr},
     time::Duration,
@@ -199,6 +200,7 @@ pub(super) async fn drive<S: AsyncRead + AsyncWrite + Unpin>(
         return Err(StopReason::QueueOverflow);
     }
     let mut expected_id = 1_u64;
+    let mut urgent_inflight = BTreeSet::new();
     let mut subscription = None;
     loop {
         if shared.stop.load(Ordering::Acquire) {
@@ -212,6 +214,17 @@ pub(super) async fn drive<S: AsyncRead + AsyncWrite + Unpin>(
             frame = socket.next() => {
                 let frame = frame.ok_or(StopReason::RemoteEnd)?.map_err(|_| StopReason::Transport)?;
                 if let Some((message, bytes)) = parse(frame)? {
+                    if let ServerMessage::OwnerResponse { request_id, reply } = &message
+                        && urgent_inflight.remove(request_id)
+                    {
+                        if !matches!(reply, Reply::Ok { version, response: OwnerResponse::Acknowledged } if *version == PROTOCOL_VERSION)
+                            && !matches!(reply, Reply::Error { version, .. } if *version == PROTOCOL_VERSION)
+                        {
+                            return Err(StopReason::Protocol);
+                        }
+                        if !shared.enqueue(message, bytes) { return Err(StopReason::QueueOverflow); }
+                        continue;
+                    }
                     if !valid_push(&message, subscription) { return Err(StopReason::Protocol); }
                     let terminal = is_terminal(&message);
                     if !shared.enqueue(message, bytes) { return Err(StopReason::QueueOverflow); }
@@ -220,30 +233,44 @@ pub(super) async fn drive<S: AsyncRead + AsyncWrite + Unpin>(
                 continue;
             }
         };
-        if next.request_id != expected_id || expected_id > 65_536 {
-            return Err(StopReason::Protocol);
+        let id = next.request_id();
+        if id & (1_u64 << 63) == 0 {
+            if id != expected_id || expected_id > 65_536 {
+                return Err(StopReason::Protocol);
+            }
+            expected_id += 1;
         }
-        expected_id += 1;
-        let text = serde_json::to_string(&next).map_err(|_| StopReason::Protocol)?;
+        let text = match &next {
+            Outgoing::Client(value) => serde_json::to_string(value),
+            Outgoing::Owner(value) => serde_json::to_string(value),
+        }.map_err(|_| StopReason::Protocol)?;
         if text.len() > MAX_REQUEST_BYTES {
             return Err(StopReason::Protocol);
         }
         send(&mut socket, shared, text).await?;
         let until = Instant::now() + REQUEST;
         loop {
-            let (message, bytes) = receive(&mut socket, shared, Some(until)).await?;
+            let (message, bytes) = tokio::select! { biased;
+                _ = shared.requests_changed.notified() => {
+                    if let Some(frame) = take_urgent(shared)? {
+                        let text = serde_json::to_string(&frame).map_err(|_| StopReason::Protocol)?;
+                        if text.len() > MAX_REQUEST_BYTES { return Err(StopReason::Protocol); }
+                        send(&mut socket, shared, text).await?;
+                        urgent_inflight.insert(frame.request_id);
+                    }
+                    continue;
+                }
+                received = receive(&mut socket, shared, Some(until)) => received?,
+            };
             match &message {
-                ServerMessage::Response { request_id, reply } if *request_id == next.request_id => {
+                ServerMessage::Response { request_id, reply }
+                    if *request_id == id && matches!(&next, Outgoing::Client(_)) => {
+                    let Outgoing::Client(value) = &next else { unreachable!() };
                     match reply {
                         Reply::Ok { version, response }
                             if *version == PROTOCOL_VERSION
-                                && response_matches(&next.request.command, response) =>
-                        {
-                            if let ClientResponse::Subscribed {
-                                subscription: token,
-                                ..
-                            } = response
-                            {
+                                && response_matches(&value.request.command, response) => {
+                            if let ClientResponse::Subscribed { subscription: token, .. } = response {
                                 subscription = Some(*token);
                             }
                         }
@@ -254,6 +281,23 @@ pub(super) async fn drive<S: AsyncRead + AsyncWrite + Unpin>(
                         return Err(StopReason::QueueOverflow);
                     }
                     break;
+                }
+                ServerMessage::OwnerResponse { request_id, reply }
+                    if *request_id == id && matches!(&next, Outgoing::Owner(_)) => {
+                    let Outgoing::Owner(value) = &next else { unreachable!() };
+                    if !owner_response_matches(&value.operation, reply) {
+                        return Err(StopReason::Protocol);
+                    }
+                    if !shared.enqueue(message, bytes) { return Err(StopReason::QueueOverflow); }
+                    break;
+                }
+                ServerMessage::OwnerResponse { request_id, reply }
+                    if urgent_inflight.remove(request_id) => {
+                    if !matches!(reply, Reply::Ok { version, response: OwnerResponse::Acknowledged } if *version == PROTOCOL_VERSION)
+                        && !matches!(reply, Reply::Error { version, .. } if *version == PROTOCOL_VERSION) {
+                        return Err(StopReason::Protocol);
+                    }
+                    if !shared.enqueue(message, bytes) { return Err(StopReason::QueueOverflow); }
                 }
                 message if valid_push(message, subscription) => {
                     let terminal = is_terminal(message);
@@ -271,7 +315,20 @@ pub(super) async fn drive<S: AsyncRead + AsyncWrite + Unpin>(
 }
 fn valid_push(message: &ServerMessage, subscription: Option<SubscriptionId>) -> bool {
     matches!(message, ServerMessage::EventStream { subscription: token, .. } if subscription == Some(*token))
+        || matches!(message, ServerMessage::WindowApply { .. })
         || matches!(message, ServerMessage::Disconnected { .. })
+}
+fn owner_response_matches(operation: &OwnerOperation, reply: &Reply<OwnerResponse>) -> bool {
+    match reply {
+        Reply::Error { version, .. } => *version == PROTOCOL_VERSION,
+        Reply::Ok { version, response } if *version == PROTOCOL_VERSION => matches!(
+            (operation, response),
+            (OwnerOperation::Register { .. }, OwnerResponse::Registered { .. })
+                | (OwnerOperation::Refresh { .. }, OwnerResponse::Window { .. })
+                | (OwnerOperation::Retire { .. } | OwnerOperation::ApplyResult { .. }, OwnerResponse::Acknowledged)
+        ),
+        _ => false,
+    }
 }
 fn is_terminal(message: &ServerMessage) -> bool {
     matches!(
@@ -283,7 +340,14 @@ fn is_terminal(message: &ServerMessage) -> bool {
             }
     )
 }
-async fn next_request(shared: &Shared) -> Result<ClientMessage, StopReason> {
+fn take_urgent(shared: &Shared) -> Result<Option<OwnerFrame>, StopReason> {
+    let mut q = shared.mailbox.lock().unwrap_or_else(std::sync::PoisonError::into_inner);
+    if shared.stop.load(Ordering::Acquire) {
+        return Err(StopReason::LocalStop);
+    }
+    Ok(q.urgent.pop_front())
+}
+async fn next_request(shared: &Shared) -> Result<Outgoing, StopReason> {
     loop {
         // Register before checking the queue. Cancellation by the idle socket
         // select cannot pop a request unless this future is itself Ready.
@@ -295,6 +359,9 @@ async fn next_request(shared: &Shared) -> Result<ClientMessage, StopReason> {
                 .unwrap_or_else(std::sync::PoisonError::into_inner);
             if shared.stop.load(Ordering::Acquire) {
                 return Err(StopReason::LocalStop);
+            }
+            if let Some(request) = q.urgent.pop_front() {
+                return Ok(Outgoing::Owner(request));
             }
             if let Some(request) = q.outgoing.pop_front() {
                 return Ok(request);

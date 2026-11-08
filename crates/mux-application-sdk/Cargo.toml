@@ -12,7 +12,7 @@ crate-type = ["rlib", "cdylib", "staticlib"]
 [features]
 default = ["native-ffi", "native-windows"]
 native-ffi = []
-native-client = ["native-ffi", "dep:tokio", "dep:tokio-tungstenite", "dep:futures-util", "dep:windows-sys"]
+native-client = ["native-ffi", "native-windows", "dep:tokio", "dep:tokio-tungstenite", "dep:futures-util", "dep:windows-sys"]
 native-windows = ["dep:mux-windows"]
 
 [dependencies]

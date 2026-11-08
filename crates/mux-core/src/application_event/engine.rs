@@ -12,6 +12,7 @@ struct Recipient {
     identity: String,
     grant: Grant,
     tracked: BTreeSet<WindowId>,
+    window_access: BTreeMap<WindowId, WindowAccess>,
 }
 
 struct Subscriber {
@@ -98,6 +99,7 @@ impl Engine {
                 identity: local_identity.into(),
                 grant: Grant::default(),
                 tracked: BTreeSet::new(),
+                window_access: BTreeMap::new(),
             },
         );
         Ok(id)
@@ -177,6 +179,7 @@ impl Engine {
             current.grant = grant.clone();
             if !current.grant.owned_windows {
                 current.tracked.clear();
+                current.window_access.clear();
             }
             self.end_recipient_subscriptions(recipient, reason);
             for id in affected {
@@ -714,6 +717,15 @@ impl Engine {
         owner: RecipientId,
         observed: WindowObservation,
     ) -> Result<WindowId, Error> {
+        self.register_owned_window_with_state(owner, observed, WindowObservationState::default())
+    }
+
+    pub fn register_owned_window_with_state(
+        &mut self,
+        owner: RecipientId,
+        observed: WindowObservation,
+        observation: WindowObservationState,
+    ) -> Result<WindowId, Error> {
         self.active()?;
         if !self.recipients.contains_key(&owner) {
             return Err(Error::MissingRecipient);
@@ -734,6 +746,7 @@ impl Engine {
                     id,
                     bounds: observed.bounds,
                     metadata: observed.metadata,
+                    observation,
                     visible: observed.visible,
                     minimized: observed.minimized,
                     maximized: observed.maximized,
@@ -751,10 +764,98 @@ impl Engine {
         self.active()?;
         let recipient = self.recipients.get(&owner).ok_or(Error::MissingRecipient)?;
         let value = self.windows.get(&window).ok_or(Error::MissingWindow)?;
-        if value.owner != owner || !recipient.grant.owned_windows {
+        if !recipient.grant.owned_windows
+            || (value.owner != owner
+                && !recipient
+                    .window_access
+                    .get(&window)
+                    .is_some_and(|access| access.observe))
+        {
             return Err(Error::Denied);
         }
         Ok(value.info.clone())
+    }
+
+    /// Host UI only: grant or revoke one recipient's view of one existing window.
+    /// The owner's publication grant is a separate prerequisite.
+    pub fn delegate_window(
+        &mut self,
+        window: WindowId,
+        recipient: RecipientId,
+        access: WindowAccess,
+    ) -> Result<(), Error> {
+        self.reserve_events(1)?;
+        if access.control && !access.observe {
+            return Err(Error::Invalid("window control needs observation"));
+        }
+        let owner = self.windows.get(&window).ok_or(Error::MissingWindow)?.owner;
+        if owner == recipient {
+            return Err(Error::Invalid("owner does not need delegation"));
+        }
+        if !self
+            .recipients
+            .get(&owner)
+            .is_some_and(|value| value.grant.owned_windows)
+        {
+            return Err(Error::Denied);
+        }
+        let grantee = self
+            .recipients
+            .get_mut(&recipient)
+            .ok_or(Error::MissingRecipient)?;
+        if !grantee.grant.owned_windows && (access.observe || access.control) {
+            return Err(Error::Denied);
+        }
+        if !access.observe {
+            grantee.window_access.remove(&window);
+            grantee.tracked.remove(&window);
+        } else {
+            grantee.window_access.insert(window, access);
+        }
+        self.end_recipient_subscriptions(recipient, EndReason::GrantChanged);
+        Ok(())
+    }
+
+    pub fn window_owner(&self, window: WindowId) -> Result<RecipientId, Error> {
+        self.active()?;
+        self.windows.get(&window).map(|value| value.owner).ok_or(Error::MissingWindow)
+    }
+
+    pub fn window_inventory(&self) -> Vec<(WindowInfo, RecipientId)> {
+        self.windows.values().map(|value| (value.info.clone(), value.owner)).collect()
+    }
+
+    pub fn authorize_window_control(
+        &self,
+        recipient: RecipientId,
+        window: WindowId,
+        control: &WindowControl,
+    ) -> Result<RecipientId, Error> {
+        self.window_info(recipient, window)?;
+        if let WindowControl::MoveResize(bounds) = control
+            && !bounds.valid_region()
+        {
+            return Err(Error::Invalid("window bounds"));
+        }
+        let owner = self.window_owner(window)?;
+        if owner != recipient
+            && !self.recipients.get(&recipient).and_then(|value| value.window_access.get(&window)).is_some_and(|access| access.control)
+        {
+            return Err(Error::Denied);
+        }
+        Ok(owner)
+    }
+
+    pub fn mark_window_stale(&mut self, window: WindowId) -> Result<(), Error> {
+        if self.windows.get(&window).ok_or(Error::MissingWindow)?.info.observation.stale {
+            return Ok(());
+        }
+        self.reserve_events(1)?;
+        let value = self.windows.get_mut(&window).ok_or(Error::MissingWindow)?;
+        value.info.observation.stale = true;
+        let info = value.info.clone();
+        self.publish(Event::Window { update: WindowUpdate::Changed { window: info } });
+        Ok(())
     }
 
     pub fn track_window(
@@ -801,6 +902,9 @@ impl Engine {
     ) -> Result<WindowAcknowledgement, Error> {
         self.reserve_events(1)?;
         let current = self.window_info(owner, window)?;
+        if self.window_owner(window)? != owner {
+            return Err(Error::Denied);
+        }
         if let WindowControl::MoveResize(bounds) = &control
             && !bounds.valid_region()
         {
@@ -848,6 +952,31 @@ impl Engine {
         Ok(())
     }
 
+    /// Native-client refresh updates receipt freshness without flooding tracked
+    /// streams when the only difference is the host receipt timestamp.
+    pub fn refresh_reported_window(
+        &mut self,
+        owner: RecipientId,
+        observed: WindowInfo,
+    ) -> Result<(), Error> {
+        if !observed.bounds.valid_region() {
+            return Err(Error::Invalid("window bounds"));
+        }
+        observed.metadata.validate().map_err(Error::Invalid)?;
+        let current = self.windows.get(&observed.id).ok_or(Error::MissingWindow)?;
+        if current.owner != owner {
+            return Err(Error::Denied);
+        }
+        let mut comparison = observed.clone();
+        comparison.observation.sampled_at_ms = current.info.observation.sampled_at_ms;
+        if comparison == current.info {
+            self.windows.get_mut(&observed.id).ok_or(Error::MissingWindow)?.info = observed;
+            Ok(())
+        } else {
+            self.update_owned_window(owner, observed)
+        }
+    }
+
     /// Host-only destruction notification. Dropping a track is not destruction.
     pub fn destroy_window(&mut self, window: WindowId) -> Result<(), Error> {
         self.reserve_events(1)?;
@@ -860,6 +989,7 @@ impl Engine {
         self.windows.remove(&window);
         for recipient in self.recipients.values_mut() {
             recipient.tracked.remove(&window);
+            recipient.window_access.remove(&window);
         }
         Ok(())
     }

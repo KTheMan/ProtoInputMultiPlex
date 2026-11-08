@@ -50,6 +50,7 @@ pub struct Host<A: WindowBackend = crate::PlatformWindows> {
     user_owners: BTreeMap<UserId, RecipientId>,
     held: Vec<Held>,
     windows: BTreeMap<WindowId, RecipientId>,
+    remote_windows: BTreeMap<WindowId, RecipientId>,
     _thread_only: PhantomData<Rc<()>>,
 }
 
@@ -65,6 +66,7 @@ impl<A: WindowBackend> Host<A> {
             user_owners: BTreeMap::new(),
             held: Vec::new(),
             windows: BTreeMap::new(),
+            remote_windows: BTreeMap::new(),
             _thread_only: PhantomData,
         })
     }
@@ -168,6 +170,91 @@ impl<A: WindowBackend> Host<A> {
             capabilities: snapshot.capabilities,
             limits: EventLimits::default(),
         })
+    }
+
+    /// GUI-hosted remote publication. The bridge validates the current lease and
+    /// owner-local token before calling this method. No native handle is accepted.
+    pub fn register_remote_window(
+        &mut self,
+        owner: RecipientId,
+        observed: WindowObservation,
+    ) -> Result<WindowId, Error> {
+        self.version(PROTOCOL_VERSION)?;
+        let grant = self.event_grants.get(&owner).ok_or(Error::MissingRecipient)?;
+        let controls = self.controls.get(&owner).ok_or(Error::MissingRecipient)?;
+        allowed(grant.owned_windows && controls.window_publication)?;
+        let id = self.engine.register_owned_window_with_state(
+            owner,
+            observed,
+            remote_observation_state(),
+        )?;
+        self.remote_windows.insert(id, owner);
+        Ok(id)
+    }
+
+    pub fn remote_window_owner(&self, window: WindowId) -> Result<RecipientId, Error> {
+        self.remote_windows.get(&window).copied().ok_or(Error::MissingWindow)
+    }
+
+    pub fn window_inventory(&self) -> Vec<(WindowInfo, RecipientId)> {
+        self.engine
+            .window_inventory()
+            .into_iter()
+            .filter(|(window, _)| self.remote_windows.contains_key(&window.id))
+            .collect()
+    }
+
+    pub fn delegate_window(
+        &mut self,
+        window: WindowId,
+        recipient: RecipientId,
+        access: WindowAccess,
+    ) -> Result<(), Error> {
+        self.remote_window_active_owner(window)?;
+        self.engine.delegate_window(window, recipient, access)
+    }
+
+    pub fn refresh_remote_window(
+        &mut self,
+        owner: RecipientId,
+        window: WindowId,
+        observed: WindowObservation,
+    ) -> Result<WindowInfo, Error> {
+        allowed(self.remote_window_owner(window)? == owner)?;
+        let info = remote_info(window, observed);
+        self.engine.refresh_reported_window(owner, info.clone())?;
+        Ok(info)
+    }
+
+    pub fn retire_remote_window(
+        &mut self,
+        owner: RecipientId,
+        window: WindowId,
+    ) -> Result<(), Error> {
+        allowed(self.remote_window_owner(window)? == owner)?;
+        self.engine.destroy_window(window)?;
+        self.remote_windows.remove(&window);
+        Ok(())
+    }
+
+    pub fn mark_remote_window_stale(&mut self, window: WindowId) -> Result<(), Error> {
+        self.remote_window_owner(window)?;
+        self.engine.mark_window_stale(window)
+    }
+
+    pub fn authorize_remote_window_control(
+        &self,
+        recipient: RecipientId,
+        window: WindowId,
+        control: &WindowControl,
+    ) -> Result<RecipientId, Error> {
+        let owner = self.remote_window_active_owner(window)?;
+        let controls = self.controls.get(&recipient).ok_or(Error::MissingRecipient)?;
+        allowed(controls.window_tracking)?;
+        allowed(controls.window_control)?;
+        allowed(self.engine.authorize_window_control(recipient, window, control)? == owner)?;
+        allowed(!self.engine.window_info(recipient, window)?.observation.stale)?;
+        Ok(owner)
     }
 
     /// Trusted topology observation; no client command can set screen state.
@@ -417,22 +504,30 @@ impl<A: WindowBackend> Host<A> {
                     sequences: self.engine.click(owner, user, button)?.to_vec(),
                 }
             }
-            WindowQuery { window } => ClientResponse::Window {
-                window: self.engine.window_info(recipient, window)?,
-            },
+            WindowQuery { window } => {
+                allowed(!self.remote_windows.contains_key(&window))?;
+                ClientResponse::Window {
+                    window: self.engine.window_info(recipient, window)?,
+                }
+            }
             WindowTrack { window } => {
+                allowed(!self.remote_windows.contains_key(&window))?;
                 allowed(grant.window_tracking)?;
                 ClientResponse::Window {
                     window: self.engine.track_window(recipient, window)?,
                 }
             }
             WindowUntrack { window } => {
+                allowed(!self.remote_windows.contains_key(&window))?;
                 allowed(grant.window_tracking)?;
                 self.engine.untrack_window(recipient, window)?;
                 ClientResponse::Acknowledged
             }
             WindowControl { window, control } => {
                 allowed(grant.window_control)?;
+                if self.remote_windows.contains_key(&window) {
+                    return Err(Error::Unsupported("remote window control requires asynchronous owner receipt"));
+                }
                 ClientResponse::WindowControlled {
                     acknowledgement: self.engine.control_window(
                         recipient,
@@ -441,6 +536,25 @@ impl<A: WindowBackend> Host<A> {
                         &mut self.adapter,
                     )?,
                 }
+            }
+            RemoteWindowQuery { reference } => {
+                self.validate_remote_reference(reference)?;
+                ClientResponse::Window { window: self.engine.window_info(recipient, reference.window)? }
+            }
+            RemoteWindowTrack { reference } => {
+                self.validate_remote_reference(reference)?;
+                allowed(grant.window_tracking)?;
+                ClientResponse::Window { window: self.engine.track_window(recipient, reference.window)? }
+            }
+            RemoteWindowUntrack { reference } => {
+                self.validate_remote_reference(reference)?;
+                allowed(grant.window_tracking)?;
+                self.engine.untrack_window(recipient, reference.window)?;
+                ClientResponse::Acknowledged
+            }
+            RemoteWindowControl { reference, .. } => {
+                self.validate_remote_reference(reference)?;
+                return Err(Error::Unsupported("remote window control requires asynchronous owner receipt"));
             }
             Disconnect => {
                 self.disconnect(recipient)?;
@@ -470,6 +584,10 @@ impl<A: WindowBackend> Host<A> {
             }
             ApproveControls { recipient, grant } => {
                 self.approve_controls(recipient, grant)?;
+                HostResponse::Acknowledged
+            }
+            DelegateWindow { window, recipient, access } => {
+                self.delegate_window(window, recipient, access)?;
                 HostResponse::Acknowledged
             }
             RegisterOwnWindow {
@@ -541,6 +659,22 @@ impl<A: WindowBackend> Host<A> {
         }
     }
 
+    fn validate_remote_reference(&self, reference: RemoteWindowRef) -> Result<(), Error> {
+        if reference.epoch != self.epoch {
+            return Err(Error::StaleRevision);
+        }
+        self.remote_window_active_owner(reference.window)?;
+        Ok(())
+    }
+
+    fn remote_window_active_owner(&self, window: WindowId) -> Result<RecipientId, Error> {
+        let owner = self.remote_window_owner(window)?;
+        let events = self.event_grants.get(&owner).ok_or(Error::MissingRecipient)?;
+        let controls = self.controls.get(&owner).ok_or(Error::MissingRecipient)?;
+        allowed(events.owned_windows && controls.window_publication)?;
+        Ok(owner)
+    }
+
     fn disconnect(&mut self, recipient: RecipientId) -> Result<(), Error> {
         let retiring: Vec<_> = self
             .held
@@ -560,6 +694,11 @@ impl<A: WindowBackend> Host<A> {
                 cleanup_error = Some(error);
             }
             self.windows.remove(&window);
+        }
+        let remote: Vec<_> = self.remote_windows.iter().filter_map(|(window, owner)| (*owner == recipient).then_some(*window)).collect();
+        for window in remote {
+            self.engine.destroy_window(window)?;
+            self.remote_windows.remove(&window);
         }
         self.engine.disconnect_recipient(recipient)?;
         self.controls.remove(&recipient);
@@ -583,6 +722,7 @@ impl<A: WindowBackend> Host<A> {
         self.engine.reset(epoch, screens)?;
         self.adapter = A::default();
         self.windows.clear();
+        self.remote_windows.clear();
         self.controls.clear();
         self.event_grants.clear();
         self.user_owners.clear();
@@ -595,11 +735,40 @@ impl<A: WindowBackend> Host<A> {
         self.engine.end();
         self.adapter = A::default();
         self.windows.clear();
+        self.remote_windows.clear();
         self.controls.clear();
         self.event_grants.clear();
         self.user_owners.clear();
         self.held.clear();
         self.ended = true;
+    }
+}
+
+fn remote_observation_state() -> WindowObservationState {
+    let sampled_at_ms = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .ok()
+        .and_then(|duration| u64::try_from(duration.as_millis()).ok());
+    WindowObservationState {
+        source: WindowObservationSource::NativeClientReported,
+        sampled_at_ms,
+        stale: false,
+    }
+}
+
+fn remote_info(id: WindowId, observed: WindowObservation) -> WindowInfo {
+    WindowInfo {
+        id,
+        bounds: observed.bounds,
+        metadata: observed.metadata,
+        observation: remote_observation_state(),
+        visible: observed.visible,
+        minimized: observed.minimized,
+        maximized: observed.maximized,
+        click_through: observed.click_through,
+        enabled: observed.enabled,
+        topmost: observed.topmost,
+        opacity: observed.opacity,
     }
 }
 

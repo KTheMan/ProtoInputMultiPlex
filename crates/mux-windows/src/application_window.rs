@@ -6,7 +6,7 @@
 //! stay in this adapter; wire snapshots contain session-local WindowIds only.
 use mux_core::application_event::{
     Engine, Error, OwnWindowAdapter, RecipientId, WindowAction, WindowControl, WindowId,
-    WindowInfo, WindowMetadata, WindowObservation,
+    WindowInfo, WindowMetadata, WindowObservation, WindowObservationState,
 };
 use mux_core::desktop::Bounds;
 use std::{
@@ -410,6 +410,7 @@ fn info(id: WindowId, value: WindowObservation) -> WindowInfo {
         id,
         bounds: value.bounds,
         metadata: value.metadata,
+        observation: WindowObservationState::default(),
         visible: value.visible,
         enabled: value.enabled,
         topmost: value.topmost,

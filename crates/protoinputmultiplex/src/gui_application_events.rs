@@ -34,6 +34,16 @@ pub struct PublicStatus {
     #[serde(default)]
     pub approved_receivers: usize,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub published_windows: Option<usize>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub window_pending: Option<usize>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub window_stale: Option<usize>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub window_uncertain: Option<usize>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub window_oldest_sample_age_ms: Option<u64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub connected_clients: Option<usize>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cleanup_pending: Option<usize>,
@@ -55,6 +65,16 @@ impl PublicStatus {
         self.transport_sample_age_ms = self
             .transport_sample_age_ms
             .map(|age| age.saturating_add(elapsed));
+        self.window_oldest_sample_age_ms = self
+            .window_oldest_sample_age_ms
+            .map(|age| age.saturating_add(elapsed));
+        if self.sample_age_ms > 2_000 {
+            self.published_windows = None;
+            self.window_pending = None;
+            self.window_stale = None;
+            self.window_uncertain = None;
+            self.window_oldest_sample_age_ms = None;
+        }
         if self.transport_sample_age_ms.is_none_or(|age| age > 2_000) {
             self.connected_clients = None;
             self.cleanup_pending = None;
@@ -78,6 +98,12 @@ pub(crate) struct Draft {
     pub cursor: bool,
     pub pointer_control: bool,
     pub key_control: bool,
+    pub publish_windows: bool,
+    pub window_identity_metadata: bool,
+    pub window_observation: bool,
+    pub window_tracking: bool,
+    pub window_control: bool,
+    pub selected_window: Option<WindowId>,
 }
 impl Draft {
     pub fn apply_script_fields(&mut self, fields: &BTreeMap<String, String>, editing_origin: bool) {
@@ -103,13 +129,41 @@ impl Draft {
         // Consent and user scope change only through separately observed controls.
     }
     fn approvals(&self) -> Result<(Grant, ControlGrant)> {
+        let input_family = self.pointer_events
+            || self.key_events
+            || self.delegated
+            || self.lifecycle
+            || self.cursor
+            || self.pointer_control
+            || self.key_control;
+        let window_family = self.publish_windows
+            || self.window_identity_metadata
+            || self.window_observation
+            || self.window_tracking
+            || self.window_control;
+        ensure!(input_family || window_family, "Select a receiver capability first");
+        ensure!(self.users.len() <= MAX_USERS, "Too many selected cooperative users");
         ensure!(
-            !self.users.is_empty() && self.users.len() <= MAX_USERS,
+            !input_family || !self.users.is_empty(),
             "Select the exact cooperative users first"
         );
         ensure!(
-            self.pointer_events || self.key_events,
+            !input_family || self.pointer_events || self.key_events,
             "Explicitly approve pointer or keyboard observation first"
+        );
+        ensure!(
+            !(self.window_tracking || self.window_control)
+                || self.publish_windows
+                || self.window_observation,
+            "Approve window observation or publication first"
+        );
+        ensure!(
+            !self.window_control || self.window_tracking,
+            "Window control requires window tracking"
+        );
+        ensure!(
+            !self.window_identity_metadata || self.publish_windows,
+            "Window identity details require publication approval"
         );
         ensure!(
             !self.key_control || self.key_events,
@@ -125,7 +179,7 @@ impl Draft {
                 users: scope.clone(),
                 pointer_events: self.pointer_events,
                 key_events: self.key_events,
-                owned_windows: false,
+                owned_windows: self.publish_windows || self.window_observation,
             },
             ControlGrant {
                 users: scope,
@@ -134,8 +188,10 @@ impl Draft {
                 cursor: self.cursor,
                 pointer_input: self.pointer_control,
                 key_input: self.key_control,
-                window_tracking: false,
-                window_control: false,
+                window_publication: self.publish_windows,
+                window_identity_metadata: self.window_identity_metadata,
+                window_tracking: self.window_tracking,
+                window_control: self.window_control,
             },
         ))
     }
@@ -241,6 +297,32 @@ impl Controller {
         self.selected_receiver()
             .is_some_and(|receiver| receiver.recipient.is_some())
     }
+    pub fn published_windows(&self) -> Vec<WindowInfo> {
+        self.bridge
+            .as_ref()
+            .map(|bridge| {
+                bridge
+                    .window_inventory()
+                    .into_iter()
+                    .map(|(info, _)| info)
+                    .collect()
+            })
+            .unwrap_or_default()
+    }
+    pub fn selected_window_reference(&self) -> Result<String> {
+        let window = self
+            .draft
+            .selected_window
+            .context("Select a current native window first")?;
+        ensure!(
+            self.published_windows().iter().any(|info| info.id == window),
+            "Selected native window is no longer published"
+        );
+        Ok(serde_json::to_string(&RemoteWindowRef {
+            epoch: self.epoch,
+            window,
+        })?)
+    }
     pub fn can_issue(&self) -> bool {
         self.listener_active()
             && self
@@ -314,6 +396,7 @@ impl Controller {
     pub fn status(&self) -> PublicStatus {
         let actor = self.actor.as_ref().map(actor::Actor::snapshot);
         let network = actor.as_ref().and_then(|state| state.service.as_ref());
+        let windows = self.bridge.as_ref().map(HostBridge::window_status);
         let owner = self.bridge.as_ref().and_then(|bridge| {
             self.owner
                 .and_then(|owner| bridge.host().ready_for(owner).ok())
@@ -346,6 +429,13 @@ impl Controller {
                 .iter()
                 .filter(|receiver| receiver.recipient.is_some())
                 .count(),
+            published_windows: windows.as_ref().map(|status| status.registered),
+            window_pending: windows.as_ref().map(|status| status.pending),
+            window_stale: windows.as_ref().map(|status| status.stale),
+            window_uncertain: windows.as_ref().map(|status| status.uncertain),
+            window_oldest_sample_age_ms: windows
+                .as_ref()
+                .and_then(|status| status.oldest_sample_age_ms),
             connected_clients: network.map(|state| state.connected_clients),
             cleanup_pending: network.map(|state| state.cleanup_pending),
             uncertain_admissions: network.map(|state| state.uncertain_admissions),
@@ -395,6 +485,7 @@ impl Controller {
         self.users.clear();
         self.draft.users.clear();
         self.draft.focus = None;
+        self.draft.selected_window = None;
         self.error = None;
         Ok(())
     }
@@ -486,6 +577,8 @@ impl Controller {
                         cursor: self.owner_consent.cursor,
                         pointer_input: self.owner_consent.pointer_control,
                         key_input: self.owner_consent.key_control,
+                        window_publication: false,
+                        window_identity_metadata: false,
                         window_tracking: false,
                         window_control: false,
                     },
@@ -520,6 +613,10 @@ impl Controller {
             .selected
             .context("Add and select an event receiver first")?;
         let (events, controls) = self.draft.approvals()?;
+        ensure!(
+            self.draft.selected_window.is_none() || self.draft.window_observation,
+            "Approve observation of the selected window first"
+        );
         crate::sdk_listener::validate_origins(std::slice::from_ref(&self.draft.origin))?;
         ensure!(
             !self.draft.origin.is_empty(),
@@ -567,6 +664,26 @@ impl Controller {
             !controls.user_lifecycle || ready.controls.user_lifecycle,
             "Apply master lifecycle consent first"
         );
+        let delegated_window = self.draft.selected_window;
+        let delegated_access = WindowAccess {
+            observe: self.draft.window_observation,
+            control: self.draft.window_control,
+        };
+        if let Some(window) = delegated_window {
+            ensure!(
+                self.bridge.as_ref().is_some_and(|bridge| {
+                    bridge.window_inventory().iter().any(|(info, publisher)| {
+                        info.id == window
+                            && self.receivers[index].recipient != Some(*publisher)
+                            && self.receivers.iter().any(|receiver| {
+                                receiver.recipient == Some(*publisher)
+                                    && receiver.draft.publish_windows
+                            })
+                    })
+                }),
+                "Selected native window is no longer published"
+            );
+        }
         self.revoke();
         let bridge = self
             .bridge
@@ -604,6 +721,18 @@ impl Controller {
                     },
                 })
                 .sdk()?;
+            if let Some(window) = delegated_window {
+                bridge
+                    .host_command(HostRequest {
+                        version: PROTOCOL_VERSION,
+                        command: HostCommand::DelegateWindow {
+                            window,
+                            recipient,
+                            access: delegated_access,
+                        },
+                    })
+                    .sdk()?;
+            }
             Ok(())
         })();
         if let Err(error) = approved {
@@ -1063,6 +1192,38 @@ mod tests {
                 },
             },
         )
+    }
+    #[test]
+    fn window_only_approvals_keep_publication_separate_from_observation() {
+        let mut controller = local();
+        controller.add_receiver().unwrap();
+        controller.draft.origin = ORIGIN.into();
+        controller.draft.publish_windows = true;
+        controller.draft.window_tracking = true;
+        controller.approve().unwrap();
+        let publisher = controller.selected_receiver().unwrap().recipient.unwrap();
+        let publisher_ready = controller.bridge.as_ref().unwrap().host().ready_for(publisher).unwrap();
+        assert!(publisher_ready.events.owned_windows);
+        assert!(publisher_ready.controls.window_publication);
+        assert!(!publisher_ready.events.pointer_events);
+        assert!(!publisher_ready.events.key_events);
+        assert_eq!(publisher_ready.events.users, UserScope::Only(BTreeSet::new()));
+
+        controller.add_receiver().unwrap();
+        controller.draft.origin = ORIGIN.into();
+        controller.draft.window_observation = true;
+        controller.draft.window_tracking = true;
+        controller.draft.window_control = true;
+        controller.approve().unwrap();
+        let observer = controller.selected_receiver().unwrap().recipient.unwrap();
+        let observer_ready = controller.bridge.as_ref().unwrap().host().ready_for(observer).unwrap();
+        assert!(observer_ready.events.owned_windows);
+        assert!(!observer_ready.controls.window_publication);
+        assert!(!observer_ready.controls.window_identity_metadata);
+        assert!(observer_ready.controls.window_tracking);
+        assert!(observer_ready.controls.window_control);
+        assert_eq!(observer_ready.events.users, UserScope::Only(BTreeSet::new()));
+        assert!(controller.published_windows().is_empty());
     }
     #[test]
     fn select_visible_users_stages_exact_current_scope_until_explicit_apply() {

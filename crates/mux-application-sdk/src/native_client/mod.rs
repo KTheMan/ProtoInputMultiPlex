@@ -3,13 +3,14 @@
 mod completion;
 mod ffi;
 mod network;
+mod owned_windows;
 #[cfg(test)]
 mod tests;
 mod wake;
 use crate::*;
 use serde::{Deserialize, Serialize};
 use std::{
-    collections::VecDeque,
+    collections::{BTreeMap, BTreeSet, VecDeque},
     marker::PhantomData,
     rc::Rc,
     sync::{
@@ -85,11 +86,38 @@ impl std::fmt::Display for ClientError {
 impl std::error::Error for ClientError {}
 
 struct Mailbox {
-    outgoing: VecDeque<ClientMessage>,
+    outgoing: VecDeque<Outgoing>,
+    urgent: VecDeque<OwnerFrame>,
     incoming: VecDeque<(usize, ServerMessage)>,
     bytes: usize,
     signalled: bool,
     terminal: Option<StopReason>,
+}
+#[derive(Clone)]
+enum Outgoing {
+    Client(ClientMessage),
+    Owner(OwnerFrame),
+}
+impl Outgoing {
+    fn request_id(&self) -> u64 {
+        match self {
+            Self::Client(value) => value.request_id,
+            Self::Owner(value) => value.request_id,
+        }
+    }
+}
+
+enum OwnerPending {
+    Register(u64),
+    Refresh(u64),
+    Retire,
+    ApplyResult,
+}
+fn redact_owner_identity(observed: &mut WindowObservation, allowed: bool) {
+    if !allowed {
+        observed.metadata.process_id = None;
+        observed.metadata.ui_thread_id = None;
+    }
 }
 struct Shared {
     mailbox: Mutex<Mailbox>,
@@ -132,6 +160,7 @@ impl Shared {
         self.stop.store(true, Ordering::Release);
         q.incoming.clear();
         q.outgoing.clear();
+        q.urgent.clear();
         q.bytes = 0;
         if q.terminal.is_none() {
             q.terminal = Some(reason);
@@ -151,6 +180,8 @@ pub struct NativeStatus {
     pub pointer_enabled: bool,
     pub key_enabled: bool,
     pub pending_requests: usize,
+    pub owned_windows: usize,
+    pub pending_owner_operations: usize,
     pub local_worker_retired: bool,
     /// EOF/retirement is not evidence that the GUI owner has reconciled producer holds.
     pub remote_cleanup_unconfirmed: bool,
@@ -178,7 +209,11 @@ pub struct NativeClient {
     ready: Option<EventReady>,
     subscription: Option<SubscriptionId>,
     pending: VecDeque<(u64, ClientCommand)>,
+    owner_pending: BTreeMap<u64, OwnerPending>,
+    seen_apply: BTreeSet<u64>,
+    owned: Option<owned_windows::OwnedWindows>,
     next_id: u64,
+    next_ack_id: u64,
     pointer: bool,
     keys: bool,
     terminal: Option<StopReason>,
@@ -194,6 +229,7 @@ impl NativeClient {
         let shared = Arc::new(Shared {
             mailbox: Mutex::new(Mailbox {
                 outgoing: VecDeque::new(),
+                urgent: VecDeque::new(),
                 incoming: VecDeque::new(),
                 bytes: 0,
                 signalled: false,
@@ -236,7 +272,11 @@ impl NativeClient {
             ready: None,
             subscription: None,
             pending: VecDeque::new(),
+            owner_pending: BTreeMap::new(),
+            seen_apply: BTreeSet::new(),
+            owned: None,
             next_id: 1,
+            next_ack_id: 1,
             pointer: false,
             keys: false,
             terminal: None,
@@ -257,9 +297,24 @@ impl NativeClient {
     }
     fn clear(&mut self, reason: StopReason) {
         if self.terminal.is_none() {
-            self.uncertain = self.pending.iter().map(|(id, _)| *id).collect();
+            for id in self
+                .pending
+                .iter()
+                .map(|(id, _)| *id)
+                .chain(self.owner_pending.keys().copied())
+            {
+                if self.uncertain.len() < 64 && !self.uncertain.contains(&id) {
+                    self.uncertain.push(id);
+                }
+            }
         }
         self.pending.clear();
+        self.owner_pending.clear();
+        self.seen_apply.clear();
+        if let Some(owned) = &mut self.owned {
+            owned.clear();
+        }
+        self.owned = None;
         self.subscription = None;
         self.ready = None;
         self.pointer = false;
@@ -350,12 +405,257 @@ impl NativeClient {
             if q.outgoing.len() >= MAX_PENDING {
                 return Err(ClientError::Busy);
             }
-            q.outgoing.push_back(message);
+            q.outgoing.push_back(Outgoing::Client(message));
         }
         self.shared.requests_changed.notify_one();
         self.pending.push_back((id, command));
         self.next_id += 1;
         Ok(id)
+    }
+    fn queue_owner(
+        &mut self,
+        operation: OwnerOperation,
+        pending: OwnerPending,
+    ) -> Result<u64, ClientError> {
+        self.observe_terminal();
+        if self.terminal.is_some() {
+            return Err(ClientError::Closed);
+        }
+        if self.owner_pending.len() >= MAX_PENDING || self.next_id > 65_536 {
+            return Err(ClientError::Limit);
+        }
+        let request_id = self.next_id;
+        let frame = OwnerFrame {
+            request_id,
+            operation,
+        };
+        if serde_json::to_vec(&frame)
+            .map_err(|_| ClientError::Invalid)?
+            .len()
+            > MAX_REQUEST_BYTES
+        {
+            return Err(ClientError::Limit);
+        }
+        {
+            let mut q = self
+                .shared
+                .mailbox
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner);
+            if q.outgoing.len() >= MAX_PENDING || self.shared.stop.load(Ordering::Acquire) {
+                return Err(ClientError::Busy);
+            }
+            q.outgoing.push_back(Outgoing::Owner(frame));
+        }
+        self.owner_pending.insert(request_id, pending);
+        self.next_id += 1;
+        self.shared.requests_changed.notify_one();
+        Ok(request_id)
+    }
+
+    /// Locally bind a same-process, creating-thread top-level HWND. The returned
+    /// token is owner-local; GUI registration completes only on OwnerResponse.
+    pub fn register_own_window(
+        &mut self,
+        hwnd: usize,
+        identity_metadata_consent: bool,
+    ) -> Result<u64, ClientError> {
+        self.observe_terminal();
+        let ready = self.ready.as_ref().ok_or(ClientError::Busy)?;
+        if !ready.events.owned_windows || !ready.controls.window_publication {
+            return Err(ClientError::Denied);
+        }
+        let identity_allowed = ready.controls.window_identity_metadata;
+        if self.owned.is_none() {
+            self.owned = Some(owned_windows::OwnedWindows::new()?);
+        }
+        let (token, generation, mut observed) = self
+            .owned
+            .as_mut()
+            .ok_or(ClientError::Closed)?
+            .register(hwnd)?;
+        let consent = identity_metadata_consent && identity_allowed;
+        redact_owner_identity(&mut observed, consent);
+        let operation = OwnerOperation::Register {
+            token,
+            generation,
+            observed,
+            identity_metadata_consent: consent,
+        };
+        if let Err(error) = self.queue_owner(operation, OwnerPending::Register(token)) {
+            if let Some(owned) = &mut self.owned {
+                let _ = owned.retire(token);
+            }
+            return Err(error);
+        }
+        Ok(token)
+    }
+
+    pub fn refresh_own_window(
+        &mut self,
+        token: u64,
+        identity_metadata_consent: bool,
+    ) -> Result<u64, ClientError> {
+        self.observe_terminal();
+        let (window, generation, mut observed) = self
+            .owned
+            .as_mut()
+            .ok_or(ClientError::Window)?
+            .refresh(token)?;
+        let consent = identity_metadata_consent
+            && self.ready.as_ref().is_some_and(|ready| ready.controls.window_identity_metadata);
+        redact_owner_identity(&mut observed, consent);
+        let result = self.queue_owner(
+            OwnerOperation::Refresh {
+                window,
+                token,
+                generation,
+                observed,
+                identity_metadata_consent: consent,
+            },
+            OwnerPending::Refresh(token),
+        );
+        if result.is_err() && let Some(owned) = &mut self.owned {
+            owned.invalidate_report(token);
+        }
+        result
+    }
+
+    /// Call from the owner's WndProc after a state-changing message. Unchanged
+    /// observations emit no frame; the owner retains responsibility for notices.
+    pub fn notify_own_window_changed(
+        &mut self,
+        token: u64,
+        identity_metadata_consent: bool,
+    ) -> Result<Option<u64>, ClientError> {
+        self.observe_terminal();
+        let change = self
+            .owned
+            .as_mut()
+            .ok_or(ClientError::Window)?
+            .notify_changed(token)?;
+        change
+            .map(|(window, generation, mut observed)| {
+                let raw_observation = observed.clone();
+                let consent = identity_metadata_consent
+                    && self.ready.as_ref().is_some_and(|ready| ready.controls.window_identity_metadata);
+                redact_owner_identity(&mut observed, consent);
+                let result = self.queue_owner(
+                    OwnerOperation::Refresh {
+                        window,
+                        token,
+                        generation,
+                        observed: observed.clone(),
+                        identity_metadata_consent: consent,
+                    },
+                    OwnerPending::Refresh(token),
+                );
+                if let Some(owned) = &mut self.owned {
+                    if result.is_ok() { owned.mark_reported(token, raw_observation); }
+                    else { owned.invalidate_report(token); }
+                }
+                result
+            })
+            .transpose()
+    }
+
+    /// Call from WM_NCDESTROY before the HWND can be recycled. Local binding is
+    /// retired immediately; the remote acknowledgement is separate and fallible.
+    pub fn retire_own_window(&mut self, token: u64) -> Result<Option<u64>, ClientError> {
+        self.observe_terminal();
+        let (remote, generation, local_result) = self
+            .owned
+            .as_mut()
+            .ok_or(ClientError::Window)?
+            .retire(token)?;
+        let remote_result = remote
+            .map(|window| {
+                self.queue_owner(
+                    OwnerOperation::Retire {
+                        window,
+                        token,
+                        generation,
+                    },
+                    OwnerPending::Retire,
+                )
+            })
+            .transpose();
+        local_result?;
+        remote_result
+    }
+
+    fn queue_apply_result(&mut self, operation: OwnerOperation) -> Result<(), ClientError> {
+        if self.owner_pending.len() >= MAX_PENDING || self.next_ack_id > 65_536 {
+            return Err(ClientError::Limit);
+        }
+        let request_id = (1_u64 << 63) | self.next_ack_id;
+        let frame = OwnerFrame {
+            request_id,
+            operation,
+        };
+        if serde_json::to_vec(&frame)
+            .map_err(|_| ClientError::Invalid)?
+            .len()
+            > MAX_REQUEST_BYTES
+        {
+            return Err(ClientError::Limit);
+        }
+        {
+            let mut q = self
+                .shared
+                .mailbox
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner);
+            if q.urgent.len() >= owned_windows::MAX_OWNED_WINDOWS {
+                return Err(ClientError::Limit);
+            }
+            q.urgent.push_back(frame);
+        }
+        self.owner_pending.insert(request_id, OwnerPending::ApplyResult);
+        self.next_ack_id += 1;
+        self.shared.requests_changed.notify_one();
+        Ok(())
+    }
+
+    fn apply_on_owner_thread(
+        &mut self,
+        operation_id: u64,
+        window: WindowId,
+        token: u64,
+        generation: u64,
+        control: WindowControl,
+    ) -> Result<(), ClientError> {
+        if operation_id == 0 || self.seen_apply.len() >= 65_536 || !self.seen_apply.insert(operation_id) {
+            return Err(ClientError::Protocol);
+        }
+        let result = self
+            .owned
+            .as_mut()
+            .ok_or(Error::MissingWindow)
+            .and_then(|owned| owned.apply(window, token, generation, control));
+        let result = match result {
+            Ok(mut response) => {
+                redact_owner_identity(&mut response, false);
+                Reply::Ok {
+                version: PROTOCOL_VERSION,
+                response,
+                }
+            },
+            Err(error) => Reply::Error {
+                version: PROTOCOL_VERSION,
+                error: Failure {
+                    code: FailureCode::Uncertain,
+                    message: error.to_string(),
+                },
+            },
+        };
+        self.queue_apply_result(OwnerOperation::ApplyResult {
+            operation_id,
+            window,
+            token,
+            generation,
+            result,
+        })
     }
     /// Acknowledge every wake by draining until None. Each pop re-arms while data
     /// remains under the same queue mutex, so arrival vs acknowledge cannot lose a wake.
@@ -445,6 +745,43 @@ impl NativeClient {
                 }
                 self.pending.pop_front();
             }
+            ServerMessage::OwnerResponse { request_id, reply } => {
+                let pending = self.owner_pending.remove(request_id).ok_or(ClientError::Protocol)?;
+                match (pending, reply) {
+                    (OwnerPending::Register(token), Reply::Ok { version, response: OwnerResponse::Registered { window } })
+                        if *version == PROTOCOL_VERSION => {
+                            self.owned.as_mut().ok_or(ClientError::Protocol)?.bind_remote(token, *window)?;
+                        }
+                    (OwnerPending::Register(token), Reply::Error { version, .. })
+                        if *version == PROTOCOL_VERSION => {
+                            if let Some(owned) = &mut self.owned {
+                                let _ = owned.retire(token);
+                            }
+                        }
+                    (OwnerPending::Refresh(_), Reply::Ok { version, response: OwnerResponse::Window { .. } })
+                    | (OwnerPending::Retire | OwnerPending::ApplyResult, Reply::Ok { version, response: OwnerResponse::Acknowledged })
+                        if *version == PROTOCOL_VERSION => {}
+                    (OwnerPending::Refresh(token), Reply::Error { version, .. })
+                        if *version == PROTOCOL_VERSION => {
+                            if let Some(owned) = &mut self.owned { owned.invalidate_report(token); }
+                        }
+                    (OwnerPending::Retire | OwnerPending::ApplyResult, Reply::Error { version, .. })
+                        if *version == PROTOCOL_VERSION => {
+                            if self.uncertain.len() < 64 { self.uncertain.push(*request_id); }
+                        }
+                    _ => return Err(ClientError::Protocol),
+                }
+            }
+            ServerMessage::WindowApply { operation_id, window, token, generation, control } => {
+                if self.ready.is_none() {
+                    return Err(ClientError::Protocol);
+                }
+                if self.apply_on_owner_thread(*operation_id, *window, *token, *generation, control.clone()).is_err() {
+                    self.shared.finish(StopReason::DeadlineUncertain);
+                    self.observe_terminal();
+                    return Err(ClientError::Protocol);
+                }
+            }
             ServerMessage::EventStream {
                 subscription,
                 stream,
@@ -486,6 +823,8 @@ impl NativeClient {
             pointer_enabled: self.pointer,
             key_enabled: self.keys,
             pending_requests: self.pending.len(),
+            owned_windows: self.owned.as_ref().map_or(0, owned_windows::OwnedWindows::len),
+            pending_owner_operations: self.owner_pending.len(),
             local_worker_retired: self.retired(),
             remote_cleanup_unconfirmed: self.terminal.is_some(),
             uncertain_request_ids: self.uncertain.clone(),
@@ -560,6 +899,14 @@ fn authorize(
         return Err(ClientError::Busy);
     }
     let control = &ready.controls;
+    if let ClientCommand::RemoteWindowQuery { reference }
+    | ClientCommand::RemoteWindowTrack { reference }
+    | ClientCommand::RemoteWindowUntrack { reference }
+    | ClientCommand::RemoteWindowControl { reference, .. } = command
+        && reference.epoch != ready.epoch
+    {
+        return Err(ClientError::Denied);
+    }
     let require_user = |id: &UserId| -> Result<(), ClientError> {
         let view = model.users().get(id).ok_or(ClientError::Denied)?;
         if !selects(&control.users, view) || (!view.owned_by_recipient && !control.delegated_users)
@@ -600,10 +947,13 @@ fn authorize(
             require_user(user)?
         }
         ClientCommand::Cursor { user, .. } if control.cursor => require_user(user)?,
-        ClientCommand::WindowQuery { .. } if ready.events.owned_windows => {}
+        ClientCommand::WindowQuery { .. } | ClientCommand::RemoteWindowQuery { .. }
+            if ready.events.owned_windows => {}
         ClientCommand::WindowTrack { .. } | ClientCommand::WindowUntrack { .. }
+        | ClientCommand::RemoteWindowTrack { .. } | ClientCommand::RemoteWindowUntrack { .. }
             if control.window_tracking => {}
-        ClientCommand::WindowControl { .. } if control.window_control => {}
+        ClientCommand::WindowControl { .. } | ClientCommand::RemoteWindowControl { .. }
+            if control.window_control => {}
         _ => return Err(ClientError::Denied),
     }
     Ok(())
@@ -625,17 +975,19 @@ fn response_matches(command: &ClientCommand, response: &ClientResponse) -> bool 
                 ClientResponse::InputAccepted { .. }
             )
             | (
-                ClientCommand::WindowQuery { .. } | ClientCommand::WindowTrack { .. },
+                ClientCommand::WindowQuery { .. } | ClientCommand::WindowTrack { .. }
+                    | ClientCommand::RemoteWindowQuery { .. } | ClientCommand::RemoteWindowTrack { .. },
                 ClientResponse::Window { .. }
             )
             | (
-                ClientCommand::WindowControl { .. },
+                ClientCommand::WindowControl { .. } | ClientCommand::RemoteWindowControl { .. },
                 ClientResponse::WindowControlled { .. }
             )
             | (
                 ClientCommand::RenameUser { .. }
                     | ClientCommand::DisposeUser { .. }
-                    | ClientCommand::WindowUntrack { .. },
+                    | ClientCommand::WindowUntrack { .. }
+                    | ClientCommand::RemoteWindowUntrack { .. },
                 ClientResponse::Acknowledged
             )
     )

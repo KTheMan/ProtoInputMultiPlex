@@ -99,7 +99,7 @@ mod fixture {
                 ($name:literal, $ty:ty) => {{
                     let raw = unsafe { GetProcAddress(module, concat!($name, "\0").as_ptr()) }
                         .ok_or_else(|| concat!("missing export ", $name).to_owned())?;
-                    // Exact C calling convention and widths from the generated ABI v2 header.
+                    // Exact C calling convention and widths from the generated ABI v3 header.
                     unsafe { std::mem::transmute::<unsafe extern "system" fn() -> isize, $ty>(raw) }
                 }};
             }
@@ -374,7 +374,7 @@ mod fixture {
             "loader resolved another DLL",
         )?;
         let api = unsafe { Api::load(module)? };
-        report.record("dll_exports_resolved", json!({"native_exports": 11, "calling_convention": "C", "native_abi_header_version": 2}))?;
+        report.record("dll_exports_resolved", json!({"native_exports": 11, "calling_convention": "C", "native_abi_header_version": 3}))?;
 
         let previous_dpi =
             unsafe { SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2) };

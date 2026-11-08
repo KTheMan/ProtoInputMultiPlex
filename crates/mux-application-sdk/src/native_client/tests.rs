@@ -152,6 +152,7 @@ pub(super) fn mock_client() -> (NativeClient, (), Arc<AtomicUsize>) {
     let shared = Arc::new(Shared {
         mailbox: Mutex::new(Mailbox {
             outgoing: VecDeque::new(),
+            urgent: VecDeque::new(),
             incoming: VecDeque::new(),
             bytes: 0,
             signalled: false,
@@ -171,7 +172,11 @@ pub(super) fn mock_client() -> (NativeClient, (), Arc<AtomicUsize>) {
             ready: None,
             subscription: None,
             pending: VecDeque::new(),
+            owner_pending: BTreeMap::new(),
+            seen_apply: BTreeSet::new(),
+            owned: None,
             next_id: 1,
+            next_ack_id: 1,
             pointer: false,
             keys: false,
             terminal: None,
@@ -655,6 +660,14 @@ fn generated_header_native_exports_are_feature_selected_and_host_abi_stays_stabl
     let _: unsafe extern "C" fn(u64, *const u8, usize, *mut u64) -> i32 =
         ffi::pim_app_native_request;
     let _: extern "C" fn(u64, u32, u32) -> i32 = ffi::pim_app_native_enable_input;
+    let _: unsafe extern "C" fn(u64, usize, u32, *mut u64) -> i32 =
+        ffi::pim_app_native_window_register;
+    let _: unsafe extern "C" fn(u64, u64, u32, *mut u64) -> i32 =
+        ffi::pim_app_native_window_refresh;
+    let _: unsafe extern "C" fn(u64, u64, u32, *mut u64) -> i32 =
+        ffi::pim_app_native_window_notify;
+    let _: unsafe extern "C" fn(u64, u64, *mut u64) -> i32 =
+        ffi::pim_app_native_window_retire;
     let _: extern "C" fn(u64) -> i32 = ffi::pim_app_native_drain;
     let _: extern "C" fn(u64) -> i32 = ffi::pim_app_native_query;
     let _: unsafe extern "C" fn(u64, *mut usize) -> i32 = ffi::pim_app_native_response_size;
@@ -664,7 +677,41 @@ fn generated_header_native_exports_are_feature_selected_and_host_abi_stays_stabl
     let _: extern "C" fn(u64) -> i32 = ffi::pim_app_native_stop;
     let _: extern "C" fn(u64) -> i32 = ffi::pim_app_native_destroy;
     let _: unsafe extern "C" fn(u64, *mut usize) -> i32 = ffi::pim_app_native_completion_handle;
-    assert!(native.contains("PIM_APP_NATIVE_CLIENT_ABI_VERSION 2u"));
+    assert!(native.contains("PIM_APP_NATIVE_CLIENT_ABI_VERSION 3u"));
+}
+
+#[test]
+fn owner_apply_is_queued_only_by_ui_drain_and_duplicate_is_fenced() {
+    let (mut client, _, _) = mock_client();
+    let (_, _, ready, _) = fixture();
+    client.fold(&ServerMessage::Ready { ready }).unwrap();
+    let window: WindowId = serde_json::from_str("1").unwrap();
+    let apply = ServerMessage::WindowApply {
+        operation_id: 7,
+        window,
+        token: 11,
+        generation: 1,
+        control: WindowControl::Hide,
+    };
+    client.fold(&apply).unwrap();
+    let queued = client
+        .shared
+        .mailbox
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner)
+        .urgent
+        .front()
+        .cloned()
+        .unwrap();
+    assert_eq!(queued.request_id, (1_u64 << 63) | 1);
+    assert!(matches!(queued.operation, OwnerOperation::ApplyResult {
+        operation_id: 7,
+        result: Reply::Error { error: Failure { code: FailureCode::Uncertain, .. }, .. },
+        ..
+    }));
+    assert_eq!(client.fold(&apply), Err(ClientError::Protocol));
+    client.stop();
+    assert!(client.uncertain.contains(&((1_u64 << 63) | 1)));
 }
 
 #[test]

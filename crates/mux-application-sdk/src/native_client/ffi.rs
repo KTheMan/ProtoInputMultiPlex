@@ -195,6 +195,104 @@ pub unsafe extern "C" fn pim_app_native_request(
         })
     })
 }
+
+/// Register one of this UI thread's own top-level windows. The returned token
+/// is local; a GUI WindowId arrives only in a later OwnerResponse.
+/// # Safety
+/// token_out is aligned, writable and disjoint from SDK/caller buffers.
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn pim_app_native_window_register(
+    handle: u64,
+    own_hwnd: usize,
+    identity_metadata_consent: u32,
+    token_out: *mut u64,
+) -> i32 {
+    boundary(Some(handle), || {
+        if token_out.is_null() || !token_out.is_aligned() || identity_metadata_consent > 1 {
+            return Status::InvalidArgument as i32;
+        }
+        with(handle, |entry| match entry.client.register_own_window(own_hwnd, identity_metadata_consent != 0) {
+            Ok(token) => {
+                unsafe { token_out.write(token); }
+                Status::Ok as i32
+            }
+            Err(error) => status(error),
+        })
+    })
+}
+
+/// Explicit owner-thread observation. OK means only that a report was queued.
+/// # Safety
+/// request_id_out is aligned, writable and disjoint from SDK/caller buffers.
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn pim_app_native_window_refresh(
+    handle: u64,
+    token: u64,
+    identity_metadata_consent: u32,
+    request_id_out: *mut u64,
+) -> i32 {
+    boundary(Some(handle), || {
+        if request_id_out.is_null() || !request_id_out.is_aligned() || identity_metadata_consent > 1 {
+            return Status::InvalidArgument as i32;
+        }
+        with(handle, |entry| match entry.client.refresh_own_window(token, identity_metadata_consent != 0) {
+            Ok(id) => {
+                unsafe { request_id_out.write(id); }
+                Status::Ok as i32
+            }
+            Err(error) => status(error),
+        })
+    })
+}
+
+/// Call after an owner WndProc state change. Returns request_id 0 if the actual
+/// observed state is unchanged; no synthetic timestamp-only update is sent.
+/// # Safety
+/// request_id_out is aligned, writable and disjoint from SDK/caller buffers.
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn pim_app_native_window_notify(
+    handle: u64,
+    token: u64,
+    identity_metadata_consent: u32,
+    request_id_out: *mut u64,
+) -> i32 {
+    boundary(Some(handle), || {
+        if request_id_out.is_null() || !request_id_out.is_aligned() || identity_metadata_consent > 1 {
+            return Status::InvalidArgument as i32;
+        }
+        with(handle, |entry| match entry.client.notify_own_window_changed(token, identity_metadata_consent != 0) {
+            Ok(id) => {
+                unsafe { request_id_out.write(id.unwrap_or(0)); }
+                Status::Ok as i32
+            }
+            Err(error) => status(error),
+        })
+    })
+}
+
+/// Retire locally from WM_NCDESTROY before HWND reuse. Remote completion is
+/// separate; a lost receipt remains uncertain and is never replayed.
+/// # Safety
+/// request_id_out is aligned, writable and disjoint from SDK/caller buffers.
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn pim_app_native_window_retire(
+    handle: u64,
+    token: u64,
+    request_id_out: *mut u64,
+) -> i32 {
+    boundary(Some(handle), || {
+        if request_id_out.is_null() || !request_id_out.is_aligned() {
+            return Status::InvalidArgument as i32;
+        }
+        with(handle, |entry| match entry.client.retire_own_window(token) {
+            Ok(id) => {
+                unsafe { request_id_out.write(id.unwrap_or(0)); }
+                Status::Ok as i32
+            }
+            Err(error) => status(error),
+        })
+    })
+}
 /// Drain one validated ServerMessage (JSON null when empty). Retains the output;
 /// size/read/discard it before another drain/query. On a wake drain until null.
 #[unsafe(no_mangle)]

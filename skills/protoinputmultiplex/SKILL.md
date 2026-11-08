@@ -1,6 +1,6 @@
 ---
 name: protoinputmultiplex
-description: Operate ProtoInputMultiPlex MCP for explicitly scoped virtual Windows input, stopped GUI setup, and read-only application-event SDK status.
+description: Operate ProtoInputMultiPlex MCP for scoped virtual Windows input, GUI setup, SDK status, and explicitly shared native windows.
 ---
 
 # ProtoInputMultiPlex
@@ -17,6 +17,9 @@ containing the SDK-status addition. Check discovery before using a newer tool.
 - `protoinputmultiplex.exe mcp --gui-connection <descriptor.json>` uses the private
   descriptor supplied by the GUI operator. A live routing descriptor and a
   stopped Setup descriptor grant different authority; use the supplied mode.
+- `protoinputmultiplex.exe mcp --event-connection <descriptor.json>` uses a
+  separate GUI-issued window-only event descriptor in supporting development
+  builds. Its sole tool is `native_windows`; it has no routing or Setup tools.
 - For stopped SDK inspection, the operator explicitly enables Setup access.
   Routing and target PIDs are unnecessary. Do not start routing, enable access,
   switch authority, or create an event session merely to obtain status.
@@ -42,6 +45,31 @@ workflows. **Select all visible users** changes only a receiver draft's exact
 current IDs. Apply and observation/control consent remain separate; later users
 are not implicitly shared. Application-event IDs are not `routing_input` user
 indices. MCP status grants neither event production nor routing/capture access.
+
+## Shared native windows (development candidate)
+
+Use this mode only with the operator's supplied event descriptor and current
+GUI approval for the exact shared window. Discover `native_windows` first;
+source support does not establish runtime qualification. The native publisher
+and receiver have separate GUI grants. Window operations cannot supply an HWND,
+create users, change permissions, start routing, or obtain capture authority.
+
+Call `native_windows` with `operation: inspect` for the current epoch and
+connection state. Query the GUI-selected `window_id` with that exact `epoch`.
+Keep both integers lossless; do not round-trip them through JavaScript Number.
+Observation, tracking and control permissions are distinct. To act, explicitly
+Track, then Refresh to install the subscription snapshot. Control also requires
+its separate grant and a fresh owner report. Query/Track/Untrack/Control take
+`epoch` and `window_id`; only Control takes the typed `control` action.
+Inspect/Refresh take neither a window reference nor an action.
+
+A control receipt describes the native owner's observation; Close admission is
+not proof of destruction. Metadata is client-reported, not OS identity proof.
+On an uncertain outcome, inspect and obtain a fresh owner observation before
+any newly authorized action; never replay the uncertain action automatically.
+`needs_refresh` requires explicit Refresh. A gap, old epoch, revoked grant or
+`available: false` is not authority to switch to a routing/Setup connection or
+issue new credentials. Ask the operator for fresh approval when needed.
 
 ## Routing and other operations
 

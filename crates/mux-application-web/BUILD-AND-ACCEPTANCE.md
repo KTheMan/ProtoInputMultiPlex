@@ -71,6 +71,28 @@ capabilities. `request` accepts only the typed ClientCommand control surface;
 wire subscription/poll/disconnect operations use the explicit lifecycle UI.
 Rendering changes only from validated snapshots/events, never acknowledgements.
 
+## GUI-shared native windows
+
+The GUI can approve a separate browser receiver for one current window published
+by a native receiver. Publication, observation, tracking and control are separate
+checkboxes; the browser cannot publish a window or choose a native handle. The
+browser must use the `RemoteWindowRef` object returned by the current GUI epoch,
+`{"epoch":<exact u64>,"window":<exact WindowId>}`, through `query_window`,
+`track_window`, `untrack_window` and `control_window`. Keep large IDs as JSON text
+through JavaScript; do not round-trip them through Number. The final method
+accepts a typed `WindowControl` JSON value as its second argument. All four
+methods send actual event SDK commands, and their validated responses reach
+`set_event_handler` with request IDs. `state_json.windows` contains only tracked
+windows currently delegated to this receiver.
+
+An old epoch is rejected locally and by the host. Control also requires a live
+tracked observation whose `observation.stale` is false; the owner revalidates the
+native window and reports observed state after applying. A returned receipt is
+an owner report, not GUI or OS peer attestation. Process and thread details, if
+present, are explicitly consented client-reported metadata. A lost control
+receipt is reported as uncertain, clears the browser's local state, and requires
+explicit refresh after a new owner observation. It is never replayed.
+
 Authoritative screen desktop bounds and revision are mapped to the CSS canvas
 rectangle; DOM client coordinates use the inverse transform. The renderer scales
 CSS drawing coordinates to actual rounded backing dimensions independently of
@@ -140,3 +162,13 @@ checks plus actual generated-WASM and simultaneous native/Web consumers:
 These checks extend only the browser toolkit group. They cannot substitute for
 full Windows SDK, GUI/native integration, actual device/target, security or full
 functional parity acceptance, all of which remain open under their own gates.
+
+# Hosted shared-window call gate
+
+After a distinct GUI-approved Web receiver connects beside the disposable native
+`--window-route` fixture, call `runWindowRouteAcceptance(client, referenceJson)`
+from `example/window_route_acceptance.js`. The function makes real generated
+binding calls for query, track, owner action and untrack and returns `PASS` only
+after typed responses and validated native-client provenance. The native fixture
+must independently observe the action and receipt. This source gate has not been
+run in the isolated overlay.
