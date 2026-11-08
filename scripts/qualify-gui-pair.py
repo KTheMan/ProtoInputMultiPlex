@@ -11,6 +11,8 @@ from ctypes import wintypes
 import hashlib
 import http.server
 import json
+import locale
+import sys
 import os
 from pathlib import Path
 import queue
@@ -132,6 +134,7 @@ class Pair:
         self.end = self.start + 180
         self.stage = "preflight"
         self.checkpoint = 0
+        self.check = "none"
         self.result = {"schema": "pim.gui-pair.initial.v1", "status": "FAIL",
                        "source_commit": args.commit, "scope": "initial actual GUI/native/Rust-WASM pair",
                        "full_sdk_complete": False, "P1_qualified": False, "release_qualified": False,
@@ -203,7 +206,7 @@ class Pair:
         if not path.exists():
             return []
         require(path.stat().st_size <= 1024 * 1024)
-        return [json.loads(line) for line in path.read_text().splitlines()]
+        return [json.loads(line) for line in path.read_text(encoding="utf-8-sig").splitlines()]
 
     def acknowledge(self, step):
         temp = self.ui / "prepare.sampled.tmp"
@@ -361,6 +364,306 @@ class Pair:
         require(len(matches) <= 1)
         return matches[0] if matches else None
 
+    def failure_observations(self):
+        # Fixed scalars only. Never serialize a label, fault string, path or raw file.
+        def boolean(value):
+            return value if type(value) is bool else None
+        def count(value, maximum):
+            return value if type(value) is int and 0 <= value <= maximum else None
+        def age(path):
+            value = int((time.time() - path.stat().st_mtime) * 1000)
+            return count(value, 3600000)
+        codec = locale.getpreferredencoding(False).lower()
+        if re.fullmatch(r"utf-?8|cp[0-9]{1,5}|ascii|ansi_x3\.4-1968", codec) is None:
+            codec = "other"
+        result = {"schema": "pim.gui-pair.failure-observations.v1",
+                  "checkpoint": count(self.checkpoint, 42), "check": self.check,
+                  "receipt_reader_encoding": "utf-8-sig",
+                  "python_major": int(sys.version_info.major), "python_minor": int(sys.version_info.minor),
+                  "python_utf8_mode": bool(sys.flags.utf8_mode), "runtime_default_text_encoding": codec,
+                  "receipt_count": None, "receipt_count_out_of_bounds": None,
+                  "receipt_prefix_matches": None, "progress_next_matches_expected": None,
+                  "progress_label_matches_expected": None, "response_enabled": None,
+                  "response_visible": None, "awaiting_click": None, "progress_age_ms": None,
+                  "io_fault_present": None, "io_active": None, "io_submitted_sequence": None,
+                  "io_acked_sequence": None, "io_sampled": None, "io_pending_snapshots": None,
+                  "io_pending_critical": None, "launch_age_ms": None, "event_phase": None,
+                  "event_sample_age_ms": None, "transport_sample_age_ms": None,
+                  "local_virtual_users": None, "native_observed_users": None,
+                  "approved_receivers": None, "connected_clients": None, "cleanup_pending": None,
+                  "diagnostic_read_failed": False}
+        try:
+            rows = self.receipts()
+            result["receipt_count"] = count(len(rows), 42)
+            result["receipt_count_out_of_bounds"] = len(rows) > 42
+            result["receipt_prefix_matches"] = len(rows) <= len(self.steps) and all(
+                row.get("button") == self.steps[index]["button"] and row.get("clicked") is True
+                for index, row in enumerate(rows))
+        except BaseException:
+            result["diagnostic_read_failed"] = True
+        try:
+            path = self.ui / "prepare.progress.json"
+            progress = read(path)
+            result["progress_age_ms"] = age(path)
+            if 1 <= self.checkpoint <= 42 and len(self.steps) == 42:
+                expected = self.steps[self.checkpoint - 1]["button"]
+                result["progress_next_matches_expected"] = progress.get("next") == expected
+                result["progress_label_matches_expected"] = progress.get("response_label") == expected
+            for key in ("response_enabled", "response_visible", "awaiting_click"):
+                result[key] = boolean(progress.get(key))
+            io = progress["io"]
+            result["io_fault_present"] = io.get("fault") is not None
+            result["io_active"] = boolean(io.get("active"))
+            for key in ("submitted_sequence", "acked_sequence"):
+                result["io_" + key] = count(io.get(key), 10000000)
+            result["io_sampled"] = count(io.get("sampled"), 42)
+            result["io_pending_snapshots"] = count(io.get("pending_snapshots"), 1000)
+            result["io_pending_critical"] = count(io.get("pending_critical"), 1000)
+        except BaseException:
+            result["diagnostic_read_failed"] = True
+        try:
+            path = self.ui / "prepare.launch.json"
+            launch = read(path)
+            result["launch_age_ms"] = age(path)
+            status = launch["setup"]["application_events"]
+            phase = status.get("phase")
+            result["event_phase"] = phase if phase in ("off", "local", "starting", "active", "stopping", "stopped", "retired", "failed") else "other"
+            result["event_sample_age_ms"] = count(status.get("sample_age_ms"), 3600000)
+            result["transport_sample_age_ms"] = count(status.get("transport_sample_age_ms"), 3600000)
+            for key in ("local_virtual_users", "native_observed_users"):
+                result[key] = count(status.get(key), 64)
+            for key in ("approved_receivers", "connected_clients", "cleanup_pending"):
+                result[key] = count(status.get(key), 8)
+        except BaseException:
+            result["diagnostic_read_failed"] = True
+        return result
+
+    def hook_messages(self):
+        raw = self.web("JSON.stringify(window.pimEvents)")
+        return [json.loads(value) for value in json.loads(raw)]
+
+    def hook_data(self):
+        # All identities/envelopes remain private JSON strings across JS/CDP.
+        raw = self.web("JSON.stringify(window.pimHook.data())")
+        return json.loads(raw)
+
+    def hook_prepare(self, ids):
+        self.stage = "web-hooks-register"
+        self.hook_ids = [{"epoch": value[0], "local": value[1]} for value in ids]
+        source = r"""(() => {
+          const c=window.pimClient;
+          const h=window.pimHook={a:[],b:[],ua:[],ub:[],screens:[],once:[],late:[],victim:[],
+            clicks:[],ca:[],cb:[],lateClicks:[],throws:0,domClicks:0,removed:false,cleanup:0,afterDispose:0,t:{}};
+          const save=k=>x=>{if(h[k].length>=512)throw Error('hook budget');h[k].push(x);};
+          h.t.a=c.add_event_listener('{"kind":"input"}',save('a'));
+          h.t.throw=c.add_event_listener('{"kind":"input"}',()=>{h.throws++;throw Error('consumer probe');});
+          h.t.b=c.add_event_listener('{"kind":"input"}',save('b'));
+          h.t.ua=c.add_event_listener(FILTER_A,save('ua'));
+          h.t.ub=c.add_event_listener(FILTER_B,save('ub'));
+          h.t.screens=c.add_event_listener('{"kind":"screens"}',save('screens'));
+          h.t.once=c.add_event_listener('{"kind":"input"}',x=>{
+            h.once.push(x);h.read=c.state_json();h.selfRemoved=c.remove_listener(h.t.once);c.invalidate_virtual_clicks();
+          });
+          h.t.remover=c.add_event_listener('{"kind":"input"}',()=>{
+            h.removed=c.remove_listener(h.t.victim);h.t.late=c.add_event_listener('{"kind":"input"}',save('late'));
+            c.remove_listener(h.t.remover);
+          });
+          h.t.victim=c.add_event_listener('{"kind":"input"}',save('victim'));
+          const root=document.getElementById('application-demo'),canvas=root.querySelector('[data-canvas]');
+          const r=canvas.getBoundingClientRect(),target=document.createElement('div');
+          target.dataset.hookTarget='yes';target.textContent='Virtual callback acceptance target';
+          target.style.cssText=`position:fixed;left:${r.left+r.width*.25}px;top:${r.top+r.height*.2}px;width:${r.width*.5}px;height:${r.height*.25}px;z-index:1000;background:#305070`;
+          root.appendChild(target);h.target=target;h.originalLeft=target.style.left;h.focus=document.activeElement;
+          target.addEventListener('click',()=>{h.domClicks++;});c.invalidate_virtual_clicks();
+          h.t.click=c.bind_virtual_click('{"selector":"[data-hook-target]","button":"primary"}',save('clicks'));
+          h.t.ca=c.bind_virtual_click(CLICK_A,save('ca'));
+          h.t.cb=c.bind_virtual_click(CLICK_B,save('cb'));
+          h.data=()=>({a:h.a,b:h.b,ua:h.ua,ub:h.ub,screens:h.screens,once:h.once,late:h.late,victim:h.victim,
+            clicks:h.clicks,ca:h.ca,cb:h.cb,lateClicks:h.lateClicks,throws:h.throws,domClicks:h.domClicks,
+            removed:h.removed,selfRemoved:h.selfRemoved,cleanup:h.cleanup,afterDispose:h.afterDispose,
+            focusUnchanged:document.activeElement===h.focus});
+          return Object.values(h.t).every(x=>typeof x==='string' && x.length>0);
+        })()"""
+        for label, value in (("FILTER_A", {"kind": "input", "user": self.hook_ids[0]}),
+                             ("FILTER_B", {"kind": "input", "user": self.hook_ids[1]}),
+                             ("CLICK_A", {"selector": "[data-hook-target]", "button": "primary", "user": self.hook_ids[0]}),
+                             ("CLICK_B", {"selector": "[data-hook-target]", "button": "primary", "user": self.hook_ids[1]})):
+            source = source.replace(label, json.dumps(json.dumps(value, separators=(",", ":"))))
+        require(self.web(source))
+        # Registration alone preserves the existing disconnected-production gates.
+        require(self.web("!document.querySelector('[data-pointer]').checked && !document.querySelector('[data-keys]').checked && document.querySelector('[data-users]').value===''") )
+
+    def hook_select(self, user):
+        encoded = json.dumps(json.dumps(user, separators=(",", ":")))
+        require(self.web("window.pimClient.select_user(" + encoded + ");window.pimClient.enable_pointer(true);document.querySelector('[data-pointer]').checked && !document.querySelector('[data-keys]').checked"))
+
+    def hook_native_input(self, sequence, user, value):
+        rows = [row["detail"] for row in self.native_rows() if row["stage"] == "input_observed" and row["detail"]["sequence"] == sequence]
+        require(len(rows) <= 1)
+        if not rows:
+            return None
+        row = rows[0]
+        require(row["epoch"] == self.epoch and row["user"] == user and row["input"] == value)
+        require((user["epoch"], user["local"], row["source"]) in self.hook_exact_ids)
+        return row
+
+    def hook_input(self, user, value):
+        require(self.native.poll() is None)
+        command = {"kind": "input_at_revision", "user": user, "input": value,
+                   "transform_revision": self.hook_revision}
+        encoded = json.dumps(json.dumps(command, separators=(",", ":")))
+        expected = self.hook_request_id + 1
+        require(self.web("window.pimClient.request(" + encoded + ");true"))
+        def observed():
+            messages = self.hook_messages()
+            replies = [x for x in messages if x.get("kind") == "response" and x["request_id"] > self.hook_request_id]
+            if not replies:
+                return None
+            require(len(replies) == 1 and replies[0]["request_id"] == expected)
+            reply = replies[0]["reply"]
+            require(reply["status"] == "ok" and reply["version"] == 1 and reply["response"]["kind"] == "input_accepted")
+            sequences = reply["response"]["sequences"]
+            require(len(sequences) == 1)
+            sequence = sequences[0]
+            events = [e for x in messages if x.get("kind") == "event_stream" and x["stream"]["kind"] == "events" for e in x["stream"]["events"] if e["sequence"] == sequence]
+            if not events:
+                return None
+            require(len(events) == 1)
+            envelope = events[0]
+            event = envelope["event"]
+            require(envelope["version"] == 1 and envelope["epoch"] == self.epoch and event["kind"] == "input"
+                    and event["user"] == user and event["input"] == value and event["transform_revision"] == self.hook_revision)
+            native = self.hook_native_input(sequence, user, value)
+            if not native:
+                return None
+            require(all(native[key] == event[key] for key in ("user", "source", "input", "position", "transform_revision")))
+            return envelope
+        envelope = self.wait(observed, 5)
+        self.hook_request_id = expected
+        self.hook_acknowledgments += 1
+        return envelope
+
+    @staticmethod
+    def hook_frame_has(raw, user):
+        message = json.loads(raw)
+        return message.get("kind") == "event_stream" and message["stream"]["kind"] == "events" and any(
+            e["event"]["kind"] == "input" and e["event"]["user"] == user for e in message["stream"]["events"])
+
+    def hook_counts(self, any_count, a_count, b_count, late_count=0):
+        data = self.hook_data()
+        require([len(data[key]) for key in ("clicks", "ca", "cb", "lateClicks")] == [any_count, a_count, b_count, late_count])
+        require(data["domClicks"] == 0 and data["focusUnchanged"])
+        return data
+
+    def hook_cases(self, ids):
+        self.stage = "web-hooks-actual-virtual-input"
+        self.hook_exact_ids = ids
+        self.hook_acknowledgments = 0
+        state = self.state()
+        require(state is not None)
+        self.hook_revision = state["screens"]["revision"]
+        self.hook_request_id = max(x["request_id"] for x in self.hook_messages() if x.get("kind") == "response")
+        # Only geometry is converted to floating point. Identities stay exact text.
+        rect = self.web("JSON.stringify((()=>{const c=document.querySelector('[data-canvas]').getBoundingClientRect(),t=window.pimHook.target.getBoundingClientRect();return {canvas:[c.left,c.top,c.width,c.height],point:[t.left+t.width/2,t.top+t.height/2],visible:document.elementFromPoint(t.left+t.width/2,t.top+t.height/2)===window.pimHook.target};})())")
+        geometry = json.loads(rect)
+        require(geometry["visible"])
+        canvas, point = geometry["canvas"], geometry["point"]
+        bounds = state["screens"]["desktop"]
+        position = {"x": round(bounds["left"] + (point[0] - canvas[0]) / canvas[2] * (bounds["right"] - bounds["left"])),
+                    "y": round(bounds["top"] + (point[1] - canvas[1]) / canvas[3] * (bounds["bottom"] - bounds["top"]))}
+        down = {"kind": "button", "button": "primary", "transition": "down"}
+        up = {"kind": "button", "button": "primary", "transition": "up"}
+        releases = []
+        for index, user in enumerate(self.hook_ids):
+            self.hook_select(user)
+            self.hook_input(user, {"kind": "motion", "position": position})
+            self.hook_input(user, down)
+            releases.append(self.hook_input(user, up))
+            data = self.hook_counts(index + 1, 1, index)
+            click = json.loads(data["clicks"][-1])
+            require(click["kind"] == "virtual_click" and click["source"] == "authorized_virtual_stream"
+                    and click["selector"] == "[data-hook-target]" and click["event"] == releases[-1])
+        data = self.hook_counts(2, 1, 1)
+        require(json.loads(data["ca"][0])["event"] == releases[0] and json.loads(data["cb"][0])["event"] == releases[1])
+        user = self.hook_ids[0]
+        self.hook_select(user)
+        self.hook_input(user, {"kind": "motion", "position": position})
+        self.hook_input(user, down)
+        require(self.web("window.pimClient.invalidate_virtual_clicks();true"))
+        self.hook_input(user, up)
+        self.hook_counts(2, 1, 1)
+        self.hook_input(user, down)
+        require(self.web("window.pimHook.target.style.left=(parseFloat(window.pimHook.originalLeft)+3)+'px';true"))
+        self.hook_input(user, up)
+        self.hook_counts(2, 1, 1)
+        require(self.web("window.pimHook.target.style.left=window.pimHook.originalLeft;window.pimClient.invalidate_virtual_clicks();true"))
+        # A fresh binding registered while the Host reports held Down has no press.
+        require(self.web("['click','ca','cb'].every(k=>window.pimClient.remove_listener(window.pimHook.t[k]) && !window.pimClient.remove_listener(window.pimHook.t[k]))"))
+        self.hook_input(user, down)
+        require(self.web("window.pimHook.t.lateClick=window.pimClient.bind_virtual_click('{\"selector\":\"[data-hook-target]\",\"button\":\"primary\"}',x=>window.pimHook.lateClicks.push(x));typeof window.pimHook.t.lateClick==='string' && window.pimHook.t.lateClick!==window.pimHook.t.click"))
+        self.hook_input(user, up)
+        self.hook_counts(2, 1, 1)
+        # Legitimate refresh releases this producer's hold and fences pending pair.
+        self.hook_input(user, down)
+        before = self.hook_request_id
+        require(self.web("window.pimClient.refresh_subscription();true"))
+        def refreshed():
+            replies = [x for x in self.hook_messages() if x.get("kind") == "response" and x["request_id"] > before]
+            if len(replies) < 2 or self.state() is None:
+                return None
+            require(len(replies) == 2 and [x["request_id"] for x in replies] == [before + 1, before + 2])
+            first, second = [x["reply"] for x in replies]
+            require(first["status"] == second["status"] == "ok" and first["response"]["kind"] == "input_accepted" and second["response"]["kind"] == "subscribed")
+            sequences = first["response"]["sequences"]
+            require(len(sequences) == 1)
+            return self.hook_native_input(sequences[0], user, up)
+        self.wait(refreshed, 5)
+        self.hook_request_id = before + 2
+        self.hook_counts(2, 1, 1)
+        require(self.web("!document.querySelector('[data-pointer]').checked && !document.querySelector('[data-keys]').checked && document.querySelector('[data-users]').value===''") )
+        self.hook_select(user)
+        self.hook_input(user, down)
+        final_release = self.hook_input(user, up)
+        data = self.hook_counts(2, 1, 1, 1)
+        require(json.loads(data["lateClicks"][0])["event"] == final_release)
+        require(data["a"] == data["b"] and len(data["a"]) >= 2 and len(set(data["a"])) == len(data["a"]))
+        require(data["throws"] == len(data["b"]) and len(data["once"]) == 1 and data["selfRemoved"] and data["removed"] and not data["victim"])
+        require(data["late"] and data["once"][0] not in data["late"])
+        require(data["ua"] and data["ub"] and all(self.hook_frame_has(raw, self.hook_ids[0]) for raw in data["ua"])
+                and all(self.hook_frame_has(raw, self.hook_ids[1]) for raw in data["ub"]) and not data["screens"])
+        a_count, b_count = len(data["a"]), len(data["b"])
+        require(self.web("window.pimClient.remove_listener(window.pimHook.t.a) && !window.pimClient.remove_listener(window.pimHook.t.a)"))
+        position["x"] += 1
+        self.hook_input(user, {"kind": "motion", "position": position})
+        data = self.hook_counts(2, 1, 1, 1)
+        require(len(data["a"]) == a_count and len(data["b"]) == b_count + 1)
+        require(self.state() is not None and self.identities(self.state()["users"]) == ids)
+        require(all(u["held_keys"] == [] and u["pointer"]["held_buttons"] == [] for u in self.state()["users"]))
+        require(self.hook_acknowledgments == 17)
+        self.result["web_event_hooks"] = {"actual_wasm": True, "fanout_filters_remove_throw": True,
+            "two_user_virtual_clicks": 2, "invalidation_geometry_unpaired_up": True,
+            "refresh_pair_cleanup": True, "web_to_native_correlated_input_acks": self.hook_acknowledgments,
+            "legacy_preserved": True, "gap_runtime_qualified": False}
+
+    def hook_cleanup(self):
+        self.stage = "web-hooks-reentrant-dispose"
+        source = r"""(()=>{const c=window.pimClient,h=window.pimHook;
+          h.t.cleanup=c.add_event_listener('{"kind":"local"}',()=>{
+            h.cleanup++;h.cleanupState=c.state_json();c.remove_listener(h.t.cleanup);c.dispose();
+          });
+          h.t.after=c.add_event_listener('{"kind":"local"}',()=>{h.afterDispose++;});
+          c.disconnect();c.dispose();
+          let rejected=0;
+          try{c.add_event_listener('{}',()=>{});}catch(_){rejected++;}
+          try{c.bind_virtual_click('{"selector":"[data-hook-target]"}',()=>{});}catch(_){rejected++;}
+          try{c.connect('','');}catch(_){rejected++;}
+          return h.cleanup===1 && h.afterDispose===0 && rejected===3 && !c.remove_listener(h.t.b);
+        })()"""
+        require(self.web(source))
+        data = self.hook_data()
+        require(data["cleanup"] == 1 and data["afterDispose"] == 0 and data["domClicks"] == 0)
+        self.result["web_event_hooks"]["reentrant_dispose_cleanup"] = True
+
     def run(self):
         a = self.args
         require(os.name == "nt" and os.environ.get("GITHUB_ACTIONS") == "true" and os.environ.get("RUNNER_ENVIRONMENT") == "github-hosted")
@@ -414,24 +717,32 @@ class Pair:
         self.issued = set()
         for index, step in enumerate(self.steps, 1):
             self.checkpoint = index
+            self.check = "receipt_count"
             self.wait(lambda: len(self.receipts()) >= index)
             rows = self.receipts()
+            self.check = "receipt_count_or_order"
             require(len(rows) == index or not step.get("wait_for_sample"))
-            require(rows[index - 1]["button"] == step["button"] and rows[index - 1]["clicked"] is True)
+            self.check = "receipt_label"
+            require(rows[index - 1]["button"] == step["button"] )
+            self.check = "receipt_clicked"
+            require(rows[index - 1]["clicked"] is True)
             if step.get("wait_for_sample"):
+                self.check = "sample"
                 self.wait(lambda: self.sample(index))
+                self.check = "sample_ack"
                 self.acknowledge(index)
+            self.check = "none"
         # Start an isolated software browser once; DevTools is loopback and ephemeral.
         self.stage = "actual-rust-wasm-connect"
         edge = Path(os.environ["ProgramFiles(x86)"]) / "Microsoft/Edge/Application/msedge.exe"
         require(edge.is_file())
         profile = self.private / "edge-profile"
-        self.browser = self.launch([edge, "--headless=new", "--disable-gpu", "--disable-extensions", "--no-first-run", "--no-default-browser-check", "--remote-debugging-address=127.0.0.1", "--remote-debugging-port=0", "--user-data-dir=" + str(profile), "about:blank"], "edge")
+        self.browser = self.launch([edge, "--headless=new", "--window-size=1280,1000", "--disable-gpu", "--disable-extensions", "--no-first-run", "--no-default-browser-check", "--remote-debugging-address=127.0.0.1", "--remote-debugging-port=0", "--user-data-dir=" + str(profile), "about:blank"], "edge")
         def devtools():
             p = profile / "DevToolsActivePort"
             if not p.exists():
                 return None
-            lines = p.read_text().splitlines()
+            lines = p.read_text(encoding="utf-8-sig").splitlines()
             return lines if len(lines) == 2 and lines[0].isdigit() else None
         lines = self.wait(devtools)
         self.cdp = CDP("ws://127.0.0.1:" + lines[0] + lines[1])
@@ -450,11 +761,13 @@ class Pair:
         self.grants(baseline["event_grant"], baseline["control_grant"], ids)
         require(self.web("!document.querySelector('[data-pointer]').checked && !document.querySelector('[data-keys]').checked && document.querySelector('[data-users]').value===''"))
         self.wait(lambda: self.event_status("active", 2, 2, 1))
+        self.hook_prepare(ids)
         self.stage = "native-pulse-overlap"
         self.native_report = self.private / "native.jsonl"
-        self.native = self.launch([native_exe, "--dll", dll, "--sha256", native_meta["dll"]["sha256"], "--descriptor", self.native_descriptor, "--report", self.native_report, "--virtual-key", "4"], "native")
+        self.native = self.launch([native_exe, "--dll", dll, "--sha256", native_meta["dll"]["sha256"], "--descriptor", self.native_descriptor, "--report", self.native_report, "--virtual-key", "4", "--observe-seconds", "60"], "native")
         snap = self.wait(lambda: self.native_detail("gui_snapshot"))
         require(self.identities(snap["users"]) == ids)
+        require(self.native_detail("started")["observation_seconds"] == 60)
         ready = self.wait(lambda: self.native_detail("gui_ready"))
         require(ready["version"] == 1 and ready["epoch"] == self.epoch)
         self.grants(ready["events"], ready["controls"], ids)
@@ -485,8 +798,9 @@ class Pair:
             return True
         self.wait(pulse)
         require(self.wait(lambda: self.native_detail("default_off_checked"))["locally_rejected"])
+        self.hook_cases(ids)
         # Preserve repeated fresh same-Host observations throughout the native window.
-        end = min(self.end, time.monotonic() + 35)
+        end = min(self.end, time.monotonic() + 70)
         samples = 0
         while self.native.poll() is None and time.monotonic() < end:
             self.deadline()
@@ -504,7 +818,7 @@ class Pair:
         self.wait(lambda: self.event_status("active", 2, 2, 1))
         self.mcp_status(1)
         self.stage = "normal-cleanup"
-        self.web("window.pimClient.disconnect(); window.pimClient.dispose(); true")
+        self.hook_cleanup()
         self.wait(lambda: self.event_status("active", 2, 2, 0))
         self.mcp_status(0)
         self.mcp.stdin.close()
@@ -558,6 +872,10 @@ def main():
     except BaseException as error:
         # No exception text, traceback, peer data, secret-bearing expressions or logs.
         pair.result["failure_stage"] = pair.stage
+        try:
+            pair.result["failure_observations"] = pair.failure_observations()
+        except BaseException:
+            pair.result["failure_observations"] = {"schema": "pim.gui-pair.failure-observations.v1", "diagnostic_read_failed": True}
         pair.result["checkpoint"] = pair.checkpoint
         name = type(error).__name__
         allowed = {"Rejected", "KeyError", "TypeError", "ValueError", "JSONDecodeError",

@@ -17,4 +17,4 @@ serde_json.workspace = true
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 wasm-bindgen = "=0.2.129"
 js-sys = "=0.3.106"
-web-sys = { version = "=0.3.106", features = ["Window", "Document", "Element", "Node", "Event", "EventTarget", "HtmlElement", "HtmlCanvasElement", "HtmlInputElement", "HtmlSelectElement", "HtmlButtonElement", "CanvasRenderingContext2d", "DomRect", "PointerEvent", "MouseEvent", "WheelEvent", "KeyboardEvent", "WebSocket", "MessageEvent", "CloseEvent", "ErrorEvent", "Url", "ResizeObserver"] }
+web-sys = { version = "=0.3.106", features = ["Window", "Document", "Element", "Node", "Event", "EventTarget", "HtmlElement", "HtmlCanvasElement", "HtmlInputElement", "HtmlSelectElement", "HtmlButtonElement", "CanvasRenderingContext2d", "DomRect", "CssStyleDeclaration", "PointerEvent", "MouseEvent", "WheelEvent", "KeyboardEvent", "WebSocket", "MessageEvent", "CloseEvent", "ErrorEvent", "Url", "ResizeObserver"] }

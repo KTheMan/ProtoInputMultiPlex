@@ -188,15 +188,16 @@ mod fixture {
         // Suppress arbitrary panic payloads: neither secrets nor server text belong in diagnostics.
         std::panic::set_hook(Box::new(|_| eprintln!("external native fixture panic")));
         let args: Vec<_> = std::env::args_os().skip(1).collect();
-        if !(args.len() == 8 || args.len() == 10)
+        if !(args.len() == 8 || args.len() == 10 || args.len() == 12)
             || args[0] != "--dll"
             || args[2] != "--sha256"
             || args[4] != "--descriptor"
             || args[6] != "--report"
-            || (args.len() == 10 && args[8] != "--virtual-key")
+            || (args.len() >= 10 && args[8] != "--virtual-key")
+            || (args.len() == 12 && args[10] != "--observe-seconds")
         {
             eprintln!(
-                "usage: native_external_consumer --dll ABSOLUTE_DLL --sha256 64_HEX --descriptor PRIVATE_GUI_JSON --report NEW_PRIVATE_JSONL [--virtual-key HID_CODE]"
+                "usage: native_external_consumer --dll ABSOLUTE_DLL --sha256 64_HEX --descriptor PRIVATE_GUI_JSON --report NEW_PRIVATE_JSONL [--virtual-key HID_CODE [--observe-seconds 20..60]]"
             );
             std::process::exit(10);
         }
@@ -204,7 +205,7 @@ mod fixture {
         let expected = args[3].to_string_lossy().to_ascii_lowercase();
         let descriptor_path = PathBuf::from(&args[5]);
         let report_path = PathBuf::from(&args[7]);
-        let key = if args.len() == 10 {
+        let key = if args.len() >= 10 {
             match args[9]
                 .to_str()
                 .and_then(|s| s.parse::<u16>().ok())
@@ -215,6 +216,14 @@ mod fixture {
             }
         } else {
             None
+        };
+        let observation_seconds = if args.len() == 12 {
+            match args[11].to_str().and_then(|value| value.parse::<u64>().ok()) {
+                Some(seconds) if (20..=60).contains(&seconds) => seconds,
+                _ => std::process::exit(10),
+            }
+        } else {
+            20
         };
         if !dll.is_absolute()
             || !descriptor_path.is_absolute()
@@ -246,9 +255,9 @@ mod fixture {
                 report.record(
                         "started",
                         json!({"runtime_claim": "external GUI Service consumer; paired acceptance pending",
-                    "expected_sha256": expected}),
+                    "expected_sha256": expected, "observation_seconds": observation_seconds}),
                     )?;
-                owner(&dll, &expected, &descriptor_path, key, &report)?;
+                owner(&dll, &expected, &descriptor_path, key, observation_seconds, &report)?;
                 // This is an honest pre-exit milestone. Only external exit 0 can
                 // prove the parent's actual OS termination fence and completed join.
                 report.record("owner_ready_to_exit_after_unload", json!({
@@ -335,6 +344,7 @@ mod fixture {
         expected: &str,
         descriptor_path: &Path,
         key: Option<KeyCode>,
+        observation_seconds: u64,
         report: &Report,
     ) -> Check {
         ensure(
@@ -592,8 +602,8 @@ mod fixture {
             // connection. Preserve keys enabled throughout overlap; WM_NCDESTROY's
             // final Stop fences the producer and begins remote cleanup instead.
         }
-        // Fixed 20-second overlap window for a separately orchestrated WASM consumer.
-        let observation_end = Instant::now() + Duration::from_secs(20);
+        // Default 20-second overlap; the explicitly opted-in hook fixture may use up to 60 seconds.
+        let observation_end = Instant::now() + Duration::from_secs(observation_seconds);
         while Instant::now() < observation_end {
             let until = (Instant::now() + Duration::from_millis(250)).min(observation_end);
             pump_wait(completion, until)?;

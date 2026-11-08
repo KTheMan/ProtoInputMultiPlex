@@ -1,6 +1,8 @@
+use crate::event_hooks::{ClickOptions, ClickPairs, EventFilter, Registry, validate_snapshot_query};
 use crate::geometry::CanvasGeometry;
 use crate::local_input::{LocalInput, hid_key, mouse_button, selects};
 use mux_application_sdk::*;
+use mux_core::application_event::Event as ApplicationEvent;
 use std::cell::RefCell;
 use std::collections::BTreeSet;
 use std::rc::{Rc, Weak};
@@ -43,6 +45,35 @@ impl Drop for Listener {
     }
 }
 
+// No DOM events are dispatched. These registrations only invoke the supplied
+// consumer callback after the authoritative consumer validates the entire frame.
+struct EventHook {
+    filter: EventFilter,
+    callback: js_sys::Function,
+}
+struct ClickBinding {
+    options: ClickOptions,
+    callback: js_sys::Function,
+    pairs: ClickPairs<HitStamp>,
+}
+enum Hook {
+    Event(EventHook),
+    Click(ClickBinding),
+}
+#[derive(Clone, PartialEq)]
+struct HitStamp {
+    target: Element,
+    target_rect: [f64; 4],
+    canvas: CanvasGeometry,
+    revision: u64,
+}
+struct ClickDelivery {
+    token: String,
+    stamp: HitStamp,
+    point: [f64; 2],
+    payload: String,
+}
+
 struct Inner {
     canvas: HtmlCanvasElement,
     context: CanvasRenderingContext2d,
@@ -71,9 +102,147 @@ struct Inner {
     resize_callback: Option<Closure<dyn FnMut(js_sys::Array, ResizeObserver)>>,
     event_handler: Option<js_sys::Function>,
     notification: Option<String>,
+    binding_root: Element,
+    hooks: Registry<Hook>,
+    click_deliveries: Vec<ClickDelivery>,
+    dispatching: bool,
+    generation: u64,
+    disposed: bool,
+    layout_revision: u64,
+    demo_callbacks: Vec<Closure<dyn FnMut(String)>>,
 }
 
 impl Inner {
+    fn clear_clicks(&mut self) {
+        self.layout_revision = self.layout_revision.saturating_add(1);
+        self.click_deliveries.clear();
+        for hook in self.hooks.values_mut() {
+            if let Hook::Click(binding) = hook {
+                binding.pairs.clear();
+            }
+        }
+    }
+
+    fn fence_hooks(&mut self) {
+        // Saturation permanently fences new registration/connection, rather than
+        // ever reusing a dispatch generation.
+        self.generation = self.generation.saturating_add(1);
+        self.clear_clicks();
+    }
+
+    fn click_geometry(&self) -> Result<CanvasGeometry, &'static str> {
+        let window = web_sys::window().ok_or("Browser window unavailable")?;
+        let mut element: Option<Element> = Some(self.canvas.clone().into());
+        let mut depth = 0;
+        while let Some(current) = element {
+            depth += 1;
+            if depth > 128 {
+                return Err("Canvas ancestry exceeds the virtual hit-test bound");
+            }
+            let style = window.get_computed_style(&current)
+                .map_err(|_| "Canvas computed geometry unavailable")?
+                .ok_or("Canvas computed geometry unavailable")?;
+            for property in ["transform", "perspective", "translate", "rotate", "scale", "offset-path"] {
+                let value = style.get_property_value(property)
+                    .map_err(|_| "Canvas computed geometry unavailable")?;
+                if !value.is_empty() && value != "none" {
+                    return Err("Virtual bindings require an untransformed canvas ancestry");
+                }
+            }
+            let zoom = style.get_property_value("zoom")
+                .map_err(|_| "Canvas computed geometry unavailable")?;
+            if !matches!(zoom.as_str(), "" | "1" | "normal") {
+                return Err("CSS zoom is unavailable for virtual bindings; browser DPR zoom is supported");
+            }
+            if depth == 1 {
+                for property in ["padding-left", "padding-right", "padding-top", "padding-bottom",
+                    "border-left-width", "border-right-width", "border-top-width", "border-bottom-width"]
+                {
+                    let value = style.get_property_value(property)
+                        .map_err(|_| "Canvas computed geometry unavailable")?;
+                    if value != "0px" {
+                        return Err("Virtual bindings require zero canvas border and padding");
+                    }
+                }
+            }
+            element = current.parent_element();
+        }
+        self.geometry()
+    }
+
+    fn collect_clicks(&mut self, message: &ServerMessage) {
+        let ServerMessage::EventStream { stream: Poll::Events { events }, .. } = message else {
+            return;
+        };
+        for envelope in events {
+            match &envelope.event {
+                ApplicationEvent::ScreensChanged { .. } => self.clear_clicks(),
+                ApplicationEvent::UserDisposed { user }
+                | ApplicationEvent::UserUpdated { user: UserView { id: user, .. } } => {
+                    // A replaced view may remove pointer consent or reset holds.
+                    for hook in self.hooks.values_mut() {
+                        if let Hook::Click(binding) = hook {
+                            binding.pairs.retire(*user);
+                        }
+                    }
+                    self.click_deliveries.clear();
+                }
+                ApplicationEvent::Input {
+                    user, input: Input::Button { button, transition },
+                    position: Some(position), transform_revision, ..
+                } => {
+                    if !self.is_live() || self.layout_revision == u64::MAX
+                        || !self.state.users().contains_key(user) {
+                        continue;
+                    }
+                    let (Ok(geometry), Some(screens)) = (self.click_geometry(), self.state.screens()) else {
+                        self.clear_clicks();
+                        continue;
+                    };
+                    if screens.revision != *transform_revision {
+                        self.clear_clicks();
+                        continue;
+                    }
+                    let Ok(local) = geometry.transform(screens).and_then(|transform| {
+                        transform.to_canvas(*position, *transform_revision)
+                            .map_err(|_| "Invalid virtual pointer transform")
+                    }) else {
+                        self.clear_clicks();
+                        continue;
+                    };
+                    let point = [local[0] + geometry.left, local[1] + geometry.top];
+                    let root = self.binding_root.clone();
+                    for token in self.hooks.ids() {
+                        let Some(Hook::Click(binding)) = self.hooks.entries_mut(&token) else {
+                            continue;
+                        };
+                        if binding.options.button != *button
+                            || binding.options.user.is_some_and(|wanted| wanted != *user)
+                        {
+                            continue;
+                        }
+                        let stamp = hit_stamp(&root, &binding.options.selector, geometry, *transform_revision, point);
+                        let clicked = binding.pairs.transition(*user, *transition, stamp.clone());
+                        if clicked && let Some(stamp) = stamp {
+                            if self.click_deliveries.len() >= 256 {
+                                self.clear_clicks();
+                                return;
+                            }
+                            self.click_deliveries.push(ClickDelivery {
+                                token, stamp, point,
+                                payload: serde_json::json!({
+                                    "kind": "virtual_click", "source": "authorized_virtual_stream",
+                                    "selector": binding.options.selector, "event": envelope,
+                                }).to_string(),
+                            });
+                        }
+                    }
+                }
+                _ => {}
+            }
+        }
+    }
+
     fn notice(&mut self, text: &str) {
         self.status.set_text_content(Some(text));
     }
@@ -192,6 +361,7 @@ impl Inner {
     }
 
     fn stop(&mut self, message: &str, graceful: bool) {
+        self.fence_hooks();
         self.release(graceful);
         if graceful && self.authenticated {
             if let Some(subscription) = self.subscription.take() {
@@ -301,6 +471,7 @@ impl Inner {
         if self.awaiting_subscription {
             return Err("A fresh subscription snapshot is already pending");
         }
+        self.fence_hooks();
         self.release(true);
         self.disable_inputs();
         self.state.disconnect();
@@ -370,6 +541,7 @@ impl Inner {
         }
         let message: ServerMessage =
             serde_json::from_str(data).map_err(|_| "Invalid typed event frame")?;
+        let accepted = message.clone();
         match message {
             ServerMessage::Ready { ready } => {
                 if self.authenticated
@@ -416,12 +588,18 @@ impl Inner {
                                 self.state
                                     .install_snapshot(snapshot, epoch)
                                     .map_err(|_| "Fresh snapshot validation failed")?;
+                                self.clear_clicks();
                                 self.subscription = Some(subscription);
                                 self.awaiting_subscription = false;
                                 self.notice("Live virtual events. Select a user and explicitly enable controls");
                                 self.rebuild_users()?;
                             }
-                            ClientResponse::Snapshot { .. } => {
+                            ClientResponse::Snapshot { snapshot } => {
+                                // Queries do not establish the stream, but their
+                                // payload still must validate before notification.
+                                let epoch = self.ready.as_ref().ok_or("Missing handshake")?.epoch;
+                                validate_snapshot_query(snapshot, epoch)
+                                    .map_err(|_| "Snapshot query validation failed")?;
                                 self.notice("Snapshot query acknowledged; subscribe/refresh establishes the live stream");
                             }
                             ClientResponse::Polled { .. } => {
@@ -458,6 +636,7 @@ impl Inner {
                     return Err("Stream subscription mismatch");
                 }
                 if matches!(stream, Poll::Gap { .. }) {
+                    self.fence_hooks();
                     self.release(true);
                 }
                 match self
@@ -488,6 +667,7 @@ impl Inner {
                 );
             }
         }
+        self.collect_clicks(&accepted);
         self.draw()?;
         // The public handler receives only successfully validated frames. It is
         // invoked after dropping RefCell borrows so it may call SDK methods.
@@ -622,7 +802,70 @@ impl WebClient {
     /// Receives validated typed ServerMessage JSON plus local_disconnected.
     /// Passing undefined unregisters it. No credentials occur in these frames.
     pub fn set_event_handler(&self, handler: Option<js_sys::Function>) {
-        self.inner.borrow_mut().event_handler = handler;
+        let mut inner = self.inner.borrow_mut();
+        if !inner.disposed {
+            inner.event_handler = handler;
+        }
+    }
+
+    /// Register a consumer callback with a JSON EventFilter. The callback receives
+    /// the original validated JSON frame, once per matching frame (not per event).
+    /// It grants no input authority. Returned opaque text is never a JS Number.
+    pub fn add_event_listener(
+        &self,
+        filter_json: &str,
+        callback: js_sys::Function,
+    ) -> Result<String, JsValue> {
+        if filter_json.len() > 512 {
+            return Err(JsValue::from_str("Event filter exceeds its bound"));
+        }
+        let filter: EventFilter = serde_json::from_str(filter_json)
+            .map_err(|_| JsValue::from_str("Invalid event filter"))?;
+        let mut inner = self.inner.borrow_mut();
+        if inner.disposed || inner.generation == u64::MAX {
+            return Err(JsValue::from_str("Client is disposed or dispatch identities exhausted"));
+        }
+        inner.hooks.insert(Hook::Event(EventHook { filter, callback }))
+            .map_err(JsValue::from_str)
+    }
+
+    /// Register explicit virtual activation observation for one selector's first
+    /// match inside this client's mounted root. No HTMLElement.click is called.
+    pub fn bind_virtual_click(
+        &self,
+        options_json: &str,
+        callback: js_sys::Function,
+    ) -> Result<String, JsValue> {
+        if options_json.len() > 1024 {
+            return Err(JsValue::from_str("Virtual binding exceeds its bound"));
+        }
+        let options: ClickOptions = serde_json::from_str(options_json)
+            .map_err(|_| JsValue::from_str("Invalid virtual click options"))?;
+        if options.selector.is_empty() || options.selector.len() > 512 {
+            return Err(JsValue::from_str("Selector must contain 1 to 512 bytes"));
+        }
+        let mut inner = self.inner.borrow_mut();
+        if inner.disposed || inner.generation == u64::MAX {
+            return Err(JsValue::from_str("Client is disposed or dispatch identities exhausted"));
+        }
+        inner.binding_root.query_selector(&options.selector)?;
+        inner.click_geometry().map_err(JsValue::from_str)?;
+        inner.hooks.insert(Hook::Click(ClickBinding {
+            options, callback, pairs: ClickPairs::default(),
+        })).map_err(JsValue::from_str)
+    }
+
+    /// Clear all pending virtual presses after application-owned layout changes.
+    /// Use this for target mutations that occur and revert between stream frames.
+    pub fn invalidate_virtual_clicks(&self) {
+        self.inner.borrow_mut().clear_clicks();
+    }
+
+    /// Idempotent removal for either registration type. Removes pending callbacks.
+    pub fn remove_listener(&self, token: &str) -> bool {
+        let mut inner = self.inner.borrow_mut();
+        inner.click_deliveries.retain(|delivery| delivery.token != token);
+        inner.hooks.remove(token)
     }
 
     pub fn refresh_subscription(&self) -> Result<(), JsValue> {
@@ -748,7 +991,13 @@ impl WebClient {
 
     pub fn dispose(&self) {
         let mut inner = self.inner.borrow_mut();
+        if inner.disposed {
+            return;
+        }
+        inner.disposed = true;
         inner.stop("Client disposed", true);
+        inner.hooks.clear();
+        inner.demo_callbacks.clear();
         inner.listeners.clear();
         if let Some(observer) = inner.resize_observer.take() {
             observer.disconnect();
@@ -788,19 +1037,112 @@ fn listen(
     Ok(())
 }
 
-fn notify(inner: &Rc<RefCell<Inner>>) {
-    let (handler, notification) = {
-        let mut inner = inner.borrow_mut();
-        (inner.event_handler.clone(), inner.notification.take())
-    };
-    if let (Some(handler), Some(notification)) = (handler, notification)
-        && handler
-            .call1(&JsValue::NULL, &JsValue::from_str(&notification))
-            .is_err()
+/// Bounding rectangle and topmost DOM hit both have to agree. Rectangles and
+/// DPR are captured for pairing; targets are never retained after cleanup.
+fn hit_stamp(
+    root: &Element,
+    selector: &str,
+    canvas: CanvasGeometry,
+    revision: u64,
+    point: [f64; 2],
+) -> Option<HitStamp> {
+    canvas.backing_size().ok()?;
+    if !point.iter().all(|value| value.is_finite())
+        || point[0] < canvas.left || point[0] >= canvas.left + canvas.width
+        || point[1] < canvas.top || point[1] >= canvas.top + canvas.height
     {
-        inner
-            .borrow_mut()
-            .notice("Application event handler raised an error");
+        return None;
+    }
+    let target = root.query_selector(selector).ok()??;
+    if target.closest("[disabled], [aria-disabled='true'], [inert]").ok()?.is_some() {
+        return None;
+    }
+    let rect = target.get_bounding_client_rect();
+    let target_rect = [rect.left(), rect.top(), rect.width(), rect.height()];
+    if !target_rect.iter().all(|value| value.is_finite())
+        || rect.width() <= 0.0 || rect.height() <= 0.0
+        || point[0] < rect.left() || point[0] >= rect.right()
+        || point[1] < rect.top() || point[1] >= rect.bottom()
+    {
+        return None;
+    }
+    let top = root.owner_document()?.element_from_point(point[0] as f32, point[1] as f32)?;
+    if !target.contains(Some(top.as_ref())) {
+        return None;
+    }
+    Some(HitStamp { target, target_rect, canvas, revision })
+}
+
+fn notify(inner: &Rc<RefCell<Inner>>) {
+    {
+        let mut state = inner.borrow_mut();
+        if state.dispatching || state.disposed {
+            return;
+        }
+        state.dispatching = true;
+    }
+    // Reentrant disconnect may enqueue one local notification. A finite budget
+    // also bounds a handler that repeatedly disconnects itself.
+    for _ in 0..64 {
+        let (handler, notification, clicks, ids, generation, layout_revision) = {
+            let mut state = inner.borrow_mut();
+            (state.event_handler.clone(), state.notification.take(),
+                std::mem::take(&mut state.click_deliveries), state.hooks.ids(), state.generation, state.layout_revision)
+        };
+        if notification.is_none() && clicks.is_empty() {
+            break;
+        }
+        let parsed = notification.as_ref().and_then(|data| serde_json::from_str::<ServerMessage>(data).ok());
+        if let (Some(handler), Some(data)) = (handler, &notification) {
+            invoke(inner, &handler, data);
+        }
+        for token in ids {
+            let callback = {
+                let state = inner.borrow();
+                if state.disposed || state.generation != generation {
+                    None
+                } else if let Some(Hook::Event(hook)) = state.hooks.get(&token) {
+                    notification.as_ref().filter(|_| hook.filter.matches(parsed.as_ref()))
+                        .map(|data| (hook.callback.clone(), data.clone()))
+                } else {
+                    None
+                }
+            };
+            if let Some((callback, payload)) = callback {
+                invoke(inner, &callback, &payload);
+            }
+            for delivery in clicks.iter().filter(|delivery| delivery.token == token) {
+                let callback = {
+                    let state = inner.borrow();
+                    if state.disposed || state.generation != generation
+                        || state.layout_revision != layout_revision || !state.is_live() {
+                        None
+                    } else if let Some(Hook::Click(binding)) = state.hooks.get(&token) {
+                        state.click_geometry().ok().and_then(|geometry| {
+                            let screens = state.state.screens()?;
+                            let stamp = hit_stamp(&state.binding_root, &binding.options.selector,
+                                geometry, screens.revision, delivery.point)?;
+                            (stamp == delivery.stamp).then(|| binding.callback.clone())
+                        })
+                    } else {
+                        None
+                    }
+                };
+                if let Some(callback) = callback {
+                    invoke(inner, &callback, &delivery.payload);
+                }
+            }
+        }
+    }
+    let mut state = inner.borrow_mut();
+    state.dispatching = false;
+    state.notification = None;
+    state.click_deliveries.clear();
+}
+
+fn invoke(inner: &Rc<RefCell<Inner>>, callback: &js_sys::Function, payload: &str) {
+    if callback.call1(&JsValue::NULL, &JsValue::from_str(payload)).is_err() {
+        inner.borrow_mut().notice("Application callback raised an error");
     }
 }
 
@@ -810,6 +1152,9 @@ fn open_connection(
     credential: String,
 ) -> Result<(), &'static str> {
     let mut inner = inner_rc.borrow_mut();
+    if inner.disposed || inner.generation == u64::MAX {
+        return Err("Client is disposed or dispatch identities exhausted");
+    }
     if inner.socket.is_some() {
         return Err("Disconnect the current event connection first");
     }
@@ -939,6 +1284,8 @@ pub fn mount_demo(container_id: &str) -> Result<WebClient, JsValue> {
       <label><input data-keys type="checkbox" disabled>Enable focused canvas keyboard</label>
       <p data-status role="status" aria-live="polite">Disconnected. Event export and all input are off.</p>
       <canvas data-canvas tabindex="0" aria-label="Cooperative user canvas" style="display:block;width:100%;height:480px;border:0;padding:0;touch-action:auto;background:#111b2b"></canvas>
+      <p data-event-observation>Reusable event listener: awaiting a validated frame.</p>
+      <p data-click-observation>Virtual canvas binding: awaiting an authorized press/release pair.</p>
       <p>Choose a user, enable an approved control, then focus the canvas. Tab leaves the canvas. Blur releases this client's held keys and buttons. Refresh and reconnect never replay local input.</p>
     "#);
     let canvas: HtmlCanvasElement = element(&root, "[data-canvas]")?;
@@ -973,6 +1320,14 @@ pub fn mount_demo(container_id: &str) -> Result<WebClient, JsValue> {
         resize_callback: None,
         event_handler: None,
         notification: None,
+        binding_root: root.clone(),
+        hooks: Registry::default(),
+        click_deliveries: Vec::new(),
+        dispatching: false,
+        generation: 0,
+        disposed: false,
+        layout_revision: 0,
+        demo_callbacks: Vec::new(),
     }));
     let connect_button: HtmlButtonElement = element(&root, "[data-connect]")?;
     let weak = Rc::downgrade(&inner);
@@ -1154,6 +1509,13 @@ pub fn mount_demo(container_id: &str) -> Result<WebClient, JsValue> {
             event.prevent_default();
         })?;
     }
+    // Layout invalidation only clears virtual pairing. These listeners never
+    // produce input or alter grants.
+    if let Some(window) = web_sys::window() {
+        for name in ["resize", "scroll"] {
+            listen(&inner, window.as_ref(), name, |inner, _| inner.clear_clicks())?;
+        }
+    }
     // Window blur only performs cleanup; no global input production is captured.
     if let Some(window) = web_sys::window() {
         listen(&inner, window.as_ref(), "blur", |inner, _| {
@@ -1167,6 +1529,7 @@ pub fn mount_demo(container_id: &str) -> Result<WebClient, JsValue> {
     let callback = Closure::wrap(Box::new(move |_: js_sys::Array, _: ResizeObserver| {
         if let Some(inner) = weak.upgrade() {
             let mut inner = inner.borrow_mut();
+            inner.clear_clicks();
             if let Err(error) = inner.draw() {
                 inner.notice(error);
             }
@@ -1177,5 +1540,20 @@ pub fn mount_demo(container_id: &str) -> Result<WebClient, JsValue> {
     inner.borrow_mut().resize_observer = Some(observer);
     inner.borrow_mut().resize_callback = Some(callback);
     inner.borrow().draw().map_err(JsValue::from_str)?;
-    Ok(WebClient { inner })
+    let client = WebClient { inner };
+    // Original Rust examples of the same public reusable API. They only update
+    // informational text; neither callback activates a DOM control or sends input.
+    let event_output: HtmlElement = element(&root, "[data-event-observation]")?;
+    let events = Closure::wrap(Box::new(move |_: String| {
+        event_output.set_text_content(Some("Reusable event listener: validated notification received."));
+    }) as Box<dyn FnMut(String)>);
+    client.add_event_listener(r#"{"kind":"any"}"#, events.as_ref().unchecked_ref::<js_sys::Function>().clone())?;
+    let click_output: HtmlElement = element(&root, "[data-click-observation]")?;
+    let clicks = Closure::wrap(Box::new(move |_: String| {
+        click_output.set_text_content(Some("Virtual canvas binding: authorized press/release pair observed."));
+    }) as Box<dyn FnMut(String)>);
+    client.bind_virtual_click(r#"{"selector":"[data-canvas]","button":"primary"}"#,
+        clicks.as_ref().unchecked_ref::<js_sys::Function>().clone())?;
+    client.inner.borrow_mut().demo_callbacks.extend([events, clicks]);
+    Ok(client)
 }

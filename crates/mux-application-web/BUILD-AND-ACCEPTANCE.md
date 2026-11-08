@@ -90,3 +90,53 @@ execution result. Browser success alone cannot satisfy the named SDK group:
 retain independent concurrent native+Web, Ouroboros GUI/MCP authority integration,
 server authentication, lifecycle and zero-injection evidence. Physical input,
 pen, touch and desktop-wide isolation remain unavailable.
+
+
+## Event-hook extension acceptance (source only)
+
+See EVENT-HOOKS.md for the exact original API and geometry limitations. The
+following remain unexecuted, and require the root launcher's approved hosted
+checks plus actual generated-WASM and simultaneous native/Web consumers:
+
+1. Run the required workspace fmt, Clippy and tests, native/default/non-Windows
+   checks and WASM check/Clippy/build/binding generation. Exercise the authored
+   pure tests for exact u64 filters, same-event matching, bounded/nonreused IDs,
+   registration removal/addition during a snapshot dispatch, per-user pairing,
+   user/epoch/geometry reset and delayed nonauthoritative Snapshot replies.
+2. Against the actual GUI Host authority, create exactly two approved virtual
+   users. Connect actual native and generated-WASM consumers with distinct
+   event credentials to that same Host. Prove their UserIDs/sources agree and
+   the Web's default input gates remain off after registration, refresh and
+   reconnect. Registration never creates users or changes grants.
+3. Observe down/up from the actual authorized virtual producer on the browser
+   canvas. A callback receives exactly one original release envelope with
+   virtual source labeling; compare epoch/sequence/user/source/revision to the
+   native consumer. Held-in-snapshot up, cross-user pairing, release outside the
+   selected target, occlusion, target replacement and wrong-button pairs must
+   produce no click callback. Verify no native DOM click, synthetic trusted
+   event, focus transfer or OS input is caused by a binding.
+4. Add/remove hooks in callbacks, including removing a later hook, self-removal,
+   registering a new hook, setting/unsetting the legacy handler, throwing an
+   exception and disconnect/refresh/dispose/free. Verify no RefCell or closure
+   panic, no post-removal callback, addition only on a later notification,
+   bounded reentrant disconnect handling, and release of retained references.
+5. Exercise actual batch prefix+invalid suffix, old epoch, duplicate/reordered
+   sequence, subscription fencing, repeated gaps, revocation/EOF and new fresh
+   snapshots. No invalid/old stream reaches any callback and no press bridges
+   these boundaries. A legitimate Snapshot query delayed behind pushed events
+   validates without rolling back or closing the live stream.
+6. Exercise negative desktop origin, fractional CSS extents and browser DPR
+   zoom; change screens/revision, move/resize canvas/target, nested scrolling,
+   disabled/inert states, occlusion and invalid geometry. Call explicit
+   invalidate_virtual_clicks for application-owned transient layout changes.
+   Unsupported CSS transforms/zoom, border/padding and missing computed data
+   must fail closed. Clear pairing between each case; no inferred monitor/DPI,
+   physical-device, transformed-canvas or historical-layout support is accepted.
+7. Fill registrations and per-frame click staging to bounds; remove and
+   re-register to prove tokens do not repeat; dispose twice and reject later
+   registration/connection. Verify ordinary legacy callback traffic remains
+   unchanged and credentials never enter callbacks or state.
+
+These checks extend only the browser toolkit group. They cannot substitute for
+full Windows SDK, GUI/native integration, actual device/target, security or full
+functional parity acceptance, all of which remain open under their own gates.

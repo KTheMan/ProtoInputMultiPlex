@@ -85,7 +85,7 @@ The pull-request merge commit `1652cbf980b5b23dfe649024fa043f76c10e8e11`
 has the identical Git tree. Ignored tests were not executed. The
 [independent bounded assessment](hosted-sdk-prerequisites-assessment-2026-11-08.json)
 binds the source, artifacts and limits. These results apply only to this tree;
-later standalone Host registry changes require new build and lifecycle checks.
+later source changes require their own build and lifecycle checks.
 
 That same run separately exercised the actual native-client DLL on hosted x64
 and x86 Windows: explicit connection to a controlled peer, a data-free window
@@ -102,6 +102,30 @@ region, closed once and exited normally with code 0. This validates that bounded
 hosted renderer readback, not the full GUI, physical presentation, workstation
 safety or a fix for the reported freeze. Independent acceptance and the exact
 source/artifact evidence must remain attached to these bounded results.
+
+For the later source at `6d7567446f0d754700972f1036df17f7d93b76a3`,
+[run 42471108593](https://github.com/KTheMan/ProtoInputMultiPlex/actions/runs/42471108593)
+passed the full compilation/test job and the bounded native-client, standalone
+Host and renderer jobs. Its actual merge checkout `86128559200e014bad5cd724b8d56062bf5bf143`
+has the same Git tree. The standalone Host fixture exercised all eight base ABI
+exports, retained responses and explicit destruction through the actual DLL,
+then unloaded it before each owner thread exited. Two sequential cycles passed
+on each of x64 and x86; actual OS-thread completion/join and external exit 0
+were required. It created no users or native windows. This qualifies that
+positive lifetime case, not every Host/window operation or transitive TLS case.
+
+**The overall run and actual GUI/native/WASM pair failed.** The pair was rejected
+at GUI preparation checkpoint 37, before private connection issue checkpoint 38
+and before either consumer launched. Source review found that the controller
+read UTF-8 receipt text with Python's default encoding; checkpoint 37 is the
+first expected label containing a middle dot. This is a portability bug, but
+the historical encoding and rejected predicate were not recorded, so the cause
+of that run remains unproven. A reviewed UTF-8 correction and sanitized failure
+observations are required before another specimen. At this assessment, later
+Web acceptance extensions were unpublished, uncompiled and unrun. The
+[new bounded assessment](hosted-sdk-prerequisites-assessment-2026-11-08-v2.json)
+records the accepted prerequisites, failed pair, exact artifacts and exclusions;
+it preserves the earlier assessment above.
 
 Generated source-formatting and dependency-lock artifacts are candidates for
 review and commit. Checks on a runner's modified tree do not qualify the
