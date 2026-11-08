@@ -1082,7 +1082,14 @@ class Pair:
         while marker is None and time.monotonic() < end:
             self.deadline()
             self.check = "native_observation_until_marker"
-            require(self.native.poll() is None)
+            native_exit = self.native.poll()
+            # Completion may occur after the preceding marker read. Reread after
+            # polling so a normal exit cannot mask its synced pre-teardown row.
+            marker = self.native_detail("overlap_snapshot")
+            if marker is not None:
+                break
+            require(native_exit is None)
+            self.check = "same_host_identity_until_marker"
             value = self.state()
             require(value is not None and self.identities(value["users"]) == ids)
             status = self.event_status("active", 2, 2, 2)
