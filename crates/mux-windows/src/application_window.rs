@@ -396,23 +396,6 @@ fn bounded_title(buffer: &[u16], length: i32) -> Result<String, Error> {
     Ok(title)
 }
 
-#[cfg(test)]
-mod metadata_tests {
-    use super::bounded_title;
-
-    #[test]
-    fn title_decoder_bounds_native_length_and_utf8() {
-        let buffer = [0_u16; 257];
-        assert!(bounded_title(&buffer, -1).is_err());
-        assert!(bounded_title(&buffer, 257).is_err());
-        assert_eq!(bounded_title(&buffer, 0).unwrap(), "");
-        let long = [0x4e2d_u16; 257];
-        let title = bounded_title(&long, 256).unwrap();
-        assert!(title.len() <= 512);
-        assert_eq!(title.chars().count(), 170);
-    }
-}
-
 fn bounds(rect: RECT) -> Bounds {
     Bounds {
         left: rect.left,
@@ -600,5 +583,22 @@ impl OwnWindowAdapter for WindowAdapter {
         let observed = observe(hwnd)?;
         self.binding(current.id)?;
         Ok(info(current.id, observed))
+    }
+}
+
+#[cfg(test)]
+mod metadata_tests {
+    use super::bounded_title;
+
+    #[test]
+    fn title_decoder_bounds_native_length_and_utf8() {
+        let buffer = [0_u16; 257];
+        assert!(bounded_title(&buffer, -1).is_err());
+        assert!(bounded_title(&buffer, 257).is_err());
+        assert_eq!(bounded_title(&buffer, 0).unwrap(), "");
+        let long = [0x4e2d_u16; 257];
+        let title = bounded_title(&long, 256).unwrap();
+        assert!(title.len() <= 512);
+        assert_eq!(title.chars().count(), 170);
     }
 }
