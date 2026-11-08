@@ -12963,7 +12963,9 @@ fn renderer_options(renderer: crate::GuiRenderer) -> Result<eframe::NativeOption
             }
             #[cfg(not(feature = "software-renderer"))]
             {
-                bail!("Software DX12 renderer unavailable: build with the software-renderer feature; hardware fallback disabled")
+                bail!(
+                    "Software DX12 renderer unavailable: build with the software-renderer feature; hardware fallback disabled"
+                )
             }
         }
     }
@@ -13004,16 +13006,11 @@ fn software_renderer_options() -> eframe::NativeOptions {
     setup.power_preference = wgpu::PowerPreference::None;
     setup.native_adapter_selector = Some(Arc::new(|adapters, surface| {
         let surface = surface.ok_or_else(|| SOFTWARE_UNAVAILABLE.to_owned())?;
-        let index = software_adapter_index(
-            adapters
-                .iter()
-                .map(|adapter| {
-                    let info = adapter.get_info();
-                    let supported =
-                        software_adapter_info(&info) && adapter.is_surface_supported(surface);
-                    (info, supported)
-                }),
-        )
+        let index = software_adapter_index(adapters.iter().map(|adapter| {
+            let info = adapter.get_info();
+            let supported = software_adapter_info(&info) && adapter.is_surface_supported(surface);
+            (info, supported)
+        }))
         .ok_or_else(|| SOFTWARE_UNAVAILABLE.to_owned())?;
         Ok(adapters[index].clone())
     }));
@@ -13033,7 +13030,10 @@ fn verify_renderer(renderer: crate::GuiRenderer, cc: &eframe::CreationContext<'_
     }
     #[cfg(feature = "software-renderer")]
     {
-        let state = cc.wgpu_render_state.as_ref().context(SOFTWARE_UNAVAILABLE)?;
+        let state = cc
+            .wgpu_render_state
+            .as_ref()
+            .context(SOFTWARE_UNAVAILABLE)?;
         let info = state.adapter.get_info();
         ensure!(
             software_adapter_info(&info),
@@ -13056,7 +13056,9 @@ fn verify_renderer(renderer: crate::GuiRenderer, cc: &eframe::CreationContext<'_
     #[cfg(not(feature = "software-renderer"))]
     {
         let _ = cc;
-        bail!("Software DX12 renderer unavailable: build with the software-renderer feature; hardware fallback disabled")
+        bail!(
+            "Software DX12 renderer unavailable: build with the software-renderer feature; hardware fallback disabled"
+        )
     }
 }
 

@@ -47,7 +47,12 @@ impl ClientPermit {
             && self.lease.issued.load(Ordering::Acquire)
             && !self.lease.issuing.load(Ordering::Acquire)
             && !self.lease.connected.load(Ordering::Acquire)
-            && self.lease.credential.lock().unwrap_or_else(std::sync::PoisonError::into_inner).is_some()
+            && self
+                .lease
+                .credential
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner)
+                .is_some()
     }
 }
 

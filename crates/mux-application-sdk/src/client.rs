@@ -186,10 +186,12 @@ impl ClientState {
     pub fn fold_poll(&mut self, poll: Poll) -> Result<FoldOutcome, FoldError> {
         if self.state == StreamState::NeedsSnapshot {
             return match poll {
-                Poll::Gap { after_sequence, lost_through }
-                    if self.gap_origin == Some(after_sequence)
-                        && lost_through > after_sequence
-                        && lost_through >= self.last_sequence =>
+                Poll::Gap {
+                    after_sequence,
+                    lost_through,
+                } if self.gap_origin == Some(after_sequence)
+                    && lost_through > after_sequence
+                    && lost_through >= self.last_sequence =>
                 {
                     self.last_sequence = lost_through;
                     Ok(FoldOutcome::NeedsSnapshot)

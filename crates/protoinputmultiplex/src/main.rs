@@ -553,13 +553,9 @@ mod renderer_cli_tests {
                 ..
             })
         ));
-        let parsed = Args::try_parse_from([
-            "protoinputmultiplex",
-            "gui",
-            "--renderer",
-            "software-dx12",
-        ])
-        .unwrap();
+        let parsed =
+            Args::try_parse_from(["protoinputmultiplex", "gui", "--renderer", "software-dx12"])
+                .unwrap();
         assert!(matches!(
             parsed.command,
             Some(Command::Gui {

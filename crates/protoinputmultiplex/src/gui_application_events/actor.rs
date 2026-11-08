@@ -36,7 +36,10 @@ struct Shared {
 }
 impl Shared {
     fn store_copy(&self, generation: u64, permit: u64, connection: Option<String>) {
-        let mut copied = self.copied.lock().unwrap_or_else(std::sync::PoisonError::into_inner);
+        let mut copied = self
+            .copied
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
         if self.copy_generation.load(Ordering::Acquire) == generation {
             *copied = connection.map(|value| (permit, value));
         }
@@ -178,7 +181,10 @@ impl Actor {
     pub fn copy(&self, permit: ClientPermit) -> Result<()> {
         ensure!(self.active(), "event listener is not active");
         self.commands
-            .try_send(Command::Copy(permit, self.shared.copy_generation.load(Ordering::Acquire)))
+            .try_send(Command::Copy(
+                permit,
+                self.shared.copy_generation.load(Ordering::Acquire),
+            ))
             .map_err(|_| anyhow::anyhow!("event lifecycle queue is busy"))
     }
     pub fn take_copy(&self, permit: u64) -> Option<String> {
@@ -212,13 +218,21 @@ mod tests {
             copied: Mutex::new(None),
         };
         let (sender, _receiver) = mpsc::sync_channel(8);
-        let actor = Actor { shared: Arc::new(shared), commands: sender, worker: None };
+        let actor = Actor {
+            shared: Arc::new(shared),
+            commands: sender,
+            worker: None,
+        };
         let old = actor.shared.copy_generation.load(Ordering::Acquire);
         actor.clear_copy();
-        actor.shared.store_copy(old, 1, Some("synthetic private result".into()));
+        actor
+            .shared
+            .store_copy(old, 1, Some("synthetic private result".into()));
         assert!(actor.shared.copied.lock().unwrap().is_none());
         let current = actor.shared.copy_generation.load(Ordering::Acquire);
-        actor.shared.store_copy(current, 2, Some("new synthetic private result".into()));
+        actor
+            .shared
+            .store_copy(current, 2, Some("new synthetic private result".into()));
         assert_eq!(actor.shared.copied.lock().unwrap().as_ref().unwrap().0, 2);
         actor.request_stop();
         assert!(actor.shared.copied.lock().unwrap().is_none());

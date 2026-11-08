@@ -198,22 +198,49 @@ pub(crate) fn show(
     }
     Divider::horizontal().show(ui);
     Text::new("Master local-owner consent · applies to all locally owned users")
-        .caption().wrap().show(ui);
+        .caption()
+        .wrap()
+        .show(ui);
     ui.add_enabled_ui(allowed && controller.active(), |ui| {
         for (label, value) in [
-            ("Master pointer observation", &mut controller.owner_consent.pointer_events),
-            ("Master keyboard observation separately", &mut controller.owner_consent.key_events),
-            ("Master lifecycle controls", &mut controller.owner_consent.lifecycle),
-            ("Master cursor controls", &mut controller.owner_consent.cursor),
-            ("Master pointer input", &mut controller.owner_consent.pointer_control),
-            ("Master keyboard input separately", &mut controller.owner_consent.key_control),
+            (
+                "Master pointer observation",
+                &mut controller.owner_consent.pointer_events,
+            ),
+            (
+                "Master keyboard observation separately",
+                &mut controller.owner_consent.key_events,
+            ),
+            (
+                "Master lifecycle controls",
+                &mut controller.owner_consent.lifecycle,
+            ),
+            (
+                "Master cursor controls",
+                &mut controller.owner_consent.cursor,
+            ),
+            (
+                "Master pointer input",
+                &mut controller.owner_consent.pointer_control,
+            ),
+            (
+                "Master keyboard input separately",
+                &mut controller.owner_consent.key_control,
+            ),
         ] {
             checkbox(ui, label, value, &mut script, frame, actions);
         }
     });
     Text::new("Applying master consent revokes every event receiver before changing owner authority. Reapprove receivers explicitly afterward.")
         .caption().wrap().show(ui);
-    if button(ui, "Apply master event consent", allowed && controller.active(), &mut script, frame, actions) {
+    if button(
+        ui,
+        "Apply master event consent",
+        allowed && controller.active(),
+        &mut script,
+        frame,
+        actions,
+    ) {
         result.push(Action::ApplyOwner);
     }
     if button(
@@ -227,27 +254,57 @@ pub(crate) fn show(
         result.push(Action::DisablePublication);
     }
     Divider::horizontal().show(ui);
-    Text::new(format!("Event receivers (native/browser) · {} approved · up to 8 rows", status.approved_receivers))
-        .caption().wrap().show(ui);
-    if button(ui, "Add event receiver", allowed && controller.active() && controller.origin_editable()
-        && controller.receiver_rows().len() < 8, &mut script, frame, actions) {
+    Text::new(format!(
+        "Event receivers (native/browser) · {} approved · up to 8 rows",
+        status.approved_receivers
+    ))
+    .caption()
+    .wrap()
+    .show(ui);
+    if button(
+        ui,
+        "Add event receiver",
+        allowed
+            && controller.active()
+            && controller.origin_editable()
+            && controller.receiver_rows().len() < 8,
+        &mut script,
+        frame,
+        actions,
+    ) {
         result.push(Action::AddReceiver);
     }
     let selected_row = controller.selected_row();
     ui.horizontal_wrapped(|ui| {
         for (row, approved) in controller.receiver_rows() {
-            let label = format!("Event receiver {row} · {}{}",
+            let label = format!(
+                "Event receiver {row} · {}{}",
                 if approved { "approved" } else { "draft" },
-                if selected_row == Some(row) { " · selected" } else { "" });
-            if button(ui, &label, allowed && controller.active(), &mut script, frame, actions)
-                && let Err(error) = controller.select_receiver(row) {
+                if selected_row == Some(row) {
+                    " · selected"
+                } else {
+                    ""
+                }
+            );
+            if button(
+                ui,
+                &label,
+                allowed && controller.active(),
+                &mut script,
+                frame,
+                actions,
+            ) && let Err(error) = controller.select_receiver(row)
+            {
                 controller.error = Some(error.to_string());
             }
         }
     });
     Text::new("Selected receiver details. Each row has independent origin, exact user scope, observation, delegation and control approvals. Configure all receiver rows and origins before starting the listener; adding origins or rows then requires a new session.")
         .caption().wrap().show(ui);
-    let editable = allowed && controller.active() && controller.selected_row().is_some() && controller.origin_editable();
+    let editable = allowed
+        && controller.active()
+        && controller.selected_row().is_some()
+        && controller.origin_editable();
     input(
         ui,
         "Exact application event receiver origin",
