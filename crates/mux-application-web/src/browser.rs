@@ -1,4 +1,6 @@
-use crate::event_hooks::{ClickOptions, ClickPairs, EventFilter, Registry, validate_snapshot_query};
+use crate::event_hooks::{
+    ClickOptions, ClickPairs, EventFilter, Registry, validate_snapshot_query,
+};
 use crate::geometry::CanvasGeometry;
 use crate::local_input::{LocalInput, hid_key, mouse_button, selects};
 use mux_application_sdk::*;
@@ -139,26 +141,46 @@ impl Inner {
             if depth > 128 {
                 return Err("Canvas ancestry exceeds the virtual hit-test bound");
             }
-            let style = window.get_computed_style(&current)
+            let style = window
+                .get_computed_style(&current)
                 .map_err(|_| "Canvas computed geometry unavailable")?
                 .ok_or("Canvas computed geometry unavailable")?;
-            for property in ["transform", "perspective", "translate", "rotate", "scale", "offset-path"] {
-                let value = style.get_property_value(property)
+            for property in [
+                "transform",
+                "perspective",
+                "translate",
+                "rotate",
+                "scale",
+                "offset-path",
+            ] {
+                let value = style
+                    .get_property_value(property)
                     .map_err(|_| "Canvas computed geometry unavailable")?;
                 if !value.is_empty() && value != "none" {
                     return Err("Virtual bindings require an untransformed canvas ancestry");
                 }
             }
-            let zoom = style.get_property_value("zoom")
+            let zoom = style
+                .get_property_value("zoom")
                 .map_err(|_| "Canvas computed geometry unavailable")?;
             if !matches!(zoom.as_str(), "" | "1" | "normal") {
-                return Err("CSS zoom is unavailable for virtual bindings; browser DPR zoom is supported");
+                return Err(
+                    "CSS zoom is unavailable for virtual bindings; browser DPR zoom is supported",
+                );
             }
             if depth == 1 {
-                for property in ["padding-left", "padding-right", "padding-top", "padding-bottom",
-                    "border-left-width", "border-right-width", "border-top-width", "border-bottom-width"]
-                {
-                    let value = style.get_property_value(property)
+                for property in [
+                    "padding-left",
+                    "padding-right",
+                    "padding-top",
+                    "padding-bottom",
+                    "border-left-width",
+                    "border-right-width",
+                    "border-top-width",
+                    "border-bottom-width",
+                ] {
+                    let value = style
+                        .get_property_value(property)
                         .map_err(|_| "Canvas computed geometry unavailable")?;
                     if value != "0px" {
                         return Err("Virtual bindings require zero canvas border and padding");
@@ -171,14 +193,20 @@ impl Inner {
     }
 
     fn collect_clicks(&mut self, message: &ServerMessage) {
-        let ServerMessage::EventStream { stream: Poll::Events { events }, .. } = message else {
+        let ServerMessage::EventStream {
+            stream: Poll::Events { events },
+            ..
+        } = message
+        else {
             return;
         };
         for envelope in events {
             match &envelope.event {
                 ApplicationEvent::ScreensChanged { .. } => self.clear_clicks(),
                 ApplicationEvent::UserDisposed { user }
-                | ApplicationEvent::UserUpdated { user: UserView { id: user, .. } } => {
+                | ApplicationEvent::UserUpdated {
+                    user: UserView { id: user, .. },
+                } => {
                     // A replaced view may remove pointer consent or reset holds.
                     for hook in self.hooks.values_mut() {
                         if let Hook::Click(binding) = hook {
@@ -188,14 +216,21 @@ impl Inner {
                     self.click_deliveries.clear();
                 }
                 ApplicationEvent::Input {
-                    user, input: Input::Button { button, transition },
-                    position: Some(position), transform_revision, ..
+                    user,
+                    input: Input::Button { button, transition },
+                    position: Some(position),
+                    transform_revision,
+                    ..
                 } => {
-                    if !self.is_live() || self.layout_revision == u64::MAX
-                        || !self.state.users().contains_key(user) {
+                    if !self.is_live()
+                        || self.layout_revision == u64::MAX
+                        || !self.state.users().contains_key(user)
+                    {
                         continue;
                     }
-                    let (Ok(geometry), Some(screens)) = (self.click_geometry(), self.state.screens()) else {
+                    let (Ok(geometry), Some(screens)) =
+                        (self.click_geometry(), self.state.screens())
+                    else {
                         self.clear_clicks();
                         continue;
                     };
@@ -204,7 +239,8 @@ impl Inner {
                         continue;
                     }
                     let Ok(local) = geometry.transform(screens).and_then(|transform| {
-                        transform.to_canvas(*position, *transform_revision)
+                        transform
+                            .to_canvas(*position, *transform_revision)
                             .map_err(|_| "Invalid virtual pointer transform")
                     }) else {
                         self.clear_clicks();
@@ -221,7 +257,13 @@ impl Inner {
                         {
                             continue;
                         }
-                        let stamp = hit_stamp(&root, &binding.options.selector, geometry, *transform_revision, point);
+                        let stamp = hit_stamp(
+                            &root,
+                            &binding.options.selector,
+                            geometry,
+                            *transform_revision,
+                            point,
+                        );
                         let clicked = binding.pairs.transition(*user, *transition, stamp.clone());
                         if clicked && let Some(stamp) = stamp {
                             if self.click_deliveries.len() >= 256 {
@@ -229,11 +271,14 @@ impl Inner {
                                 return;
                             }
                             self.click_deliveries.push(ClickDelivery {
-                                token, stamp, point,
+                                token,
+                                stamp,
+                                point,
                                 payload: serde_json::json!({
                                     "kind": "virtual_click", "source": "authorized_virtual_stream",
                                     "selector": binding.options.selector, "event": envelope,
-                                }).to_string(),
+                                })
+                                .to_string(),
                             });
                         }
                     }
@@ -823,9 +868,13 @@ impl WebClient {
             .map_err(|_| JsValue::from_str("Invalid event filter"))?;
         let mut inner = self.inner.borrow_mut();
         if inner.disposed || inner.generation == u64::MAX {
-            return Err(JsValue::from_str("Client is disposed or dispatch identities exhausted"));
+            return Err(JsValue::from_str(
+                "Client is disposed or dispatch identities exhausted",
+            ));
         }
-        inner.hooks.insert(Hook::Event(EventHook { filter, callback }))
+        inner
+            .hooks
+            .insert(Hook::Event(EventHook { filter, callback }))
             .map_err(JsValue::from_str)
     }
 
@@ -846,13 +895,20 @@ impl WebClient {
         }
         let mut inner = self.inner.borrow_mut();
         if inner.disposed || inner.generation == u64::MAX {
-            return Err(JsValue::from_str("Client is disposed or dispatch identities exhausted"));
+            return Err(JsValue::from_str(
+                "Client is disposed or dispatch identities exhausted",
+            ));
         }
         inner.binding_root.query_selector(&options.selector)?;
         inner.click_geometry().map_err(JsValue::from_str)?;
-        inner.hooks.insert(Hook::Click(ClickBinding {
-            options, callback, pairs: ClickPairs::default(),
-        })).map_err(JsValue::from_str)
+        inner
+            .hooks
+            .insert(Hook::Click(ClickBinding {
+                options,
+                callback,
+                pairs: ClickPairs::default(),
+            }))
+            .map_err(JsValue::from_str)
     }
 
     /// Clear all pending virtual presses after application-owned layout changes.
@@ -864,7 +920,9 @@ impl WebClient {
     /// Idempotent removal for either registration type. Removes pending callbacks.
     pub fn remove_listener(&self, token: &str) -> bool {
         let mut inner = self.inner.borrow_mut();
-        inner.click_deliveries.retain(|delivery| delivery.token != token);
+        inner
+            .click_deliveries
+            .retain(|delivery| delivery.token != token);
         inner.hooks.remove(token)
     }
 
@@ -1048,29 +1106,45 @@ fn hit_stamp(
 ) -> Option<HitStamp> {
     canvas.backing_size().ok()?;
     if !point.iter().all(|value| value.is_finite())
-        || point[0] < canvas.left || point[0] >= canvas.left + canvas.width
-        || point[1] < canvas.top || point[1] >= canvas.top + canvas.height
+        || point[0] < canvas.left
+        || point[0] >= canvas.left + canvas.width
+        || point[1] < canvas.top
+        || point[1] >= canvas.top + canvas.height
     {
         return None;
     }
     let target = root.query_selector(selector).ok()??;
-    if target.closest("[disabled], [aria-disabled='true'], [inert]").ok()?.is_some() {
+    if target
+        .closest("[disabled], [aria-disabled='true'], [inert]")
+        .ok()?
+        .is_some()
+    {
         return None;
     }
     let rect = target.get_bounding_client_rect();
     let target_rect = [rect.left(), rect.top(), rect.width(), rect.height()];
     if !target_rect.iter().all(|value| value.is_finite())
-        || rect.width() <= 0.0 || rect.height() <= 0.0
-        || point[0] < rect.left() || point[0] >= rect.right()
-        || point[1] < rect.top() || point[1] >= rect.bottom()
+        || rect.width() <= 0.0
+        || rect.height() <= 0.0
+        || point[0] < rect.left()
+        || point[0] >= rect.right()
+        || point[1] < rect.top()
+        || point[1] >= rect.bottom()
     {
         return None;
     }
-    let top = root.owner_document()?.element_from_point(point[0] as f32, point[1] as f32)?;
+    let top = root
+        .owner_document()?
+        .element_from_point(point[0] as f32, point[1] as f32)?;
     if !target.contains(Some(top.as_ref())) {
         return None;
     }
-    Some(HitStamp { target, target_rect, canvas, revision })
+    Some(HitStamp {
+        target,
+        target_rect,
+        canvas,
+        revision,
+    })
 }
 
 fn notify(inner: &Rc<RefCell<Inner>>) {
@@ -1086,13 +1160,21 @@ fn notify(inner: &Rc<RefCell<Inner>>) {
     for _ in 0..64 {
         let (handler, notification, clicks, ids, generation, layout_revision) = {
             let mut state = inner.borrow_mut();
-            (state.event_handler.clone(), state.notification.take(),
-                std::mem::take(&mut state.click_deliveries), state.hooks.ids(), state.generation, state.layout_revision)
+            (
+                state.event_handler.clone(),
+                state.notification.take(),
+                std::mem::take(&mut state.click_deliveries),
+                state.hooks.ids(),
+                state.generation,
+                state.layout_revision,
+            )
         };
         if notification.is_none() && clicks.is_empty() {
             break;
         }
-        let parsed = notification.as_ref().and_then(|data| serde_json::from_str::<ServerMessage>(data).ok());
+        let parsed = notification
+            .as_ref()
+            .and_then(|data| serde_json::from_str::<ServerMessage>(data).ok());
         if let (Some(handler), Some(data)) = (handler, &notification) {
             invoke(inner, &handler, data);
         }
@@ -1102,7 +1184,9 @@ fn notify(inner: &Rc<RefCell<Inner>>) {
                 if state.disposed || state.generation != generation {
                     None
                 } else if let Some(Hook::Event(hook)) = state.hooks.get(&token) {
-                    notification.as_ref().filter(|_| hook.filter.matches(parsed.as_ref()))
+                    notification
+                        .as_ref()
+                        .filter(|_| hook.filter.matches(parsed.as_ref()))
                         .map(|data| (hook.callback.clone(), data.clone()))
                 } else {
                     None
@@ -1114,14 +1198,22 @@ fn notify(inner: &Rc<RefCell<Inner>>) {
             for delivery in clicks.iter().filter(|delivery| delivery.token == token) {
                 let callback = {
                     let state = inner.borrow();
-                    if state.disposed || state.generation != generation
-                        || state.layout_revision != layout_revision || !state.is_live() {
+                    if state.disposed
+                        || state.generation != generation
+                        || state.layout_revision != layout_revision
+                        || !state.is_live()
+                    {
                         None
                     } else if let Some(Hook::Click(binding)) = state.hooks.get(&token) {
                         state.click_geometry().ok().and_then(|geometry| {
                             let screens = state.state.screens()?;
-                            let stamp = hit_stamp(&state.binding_root, &binding.options.selector,
-                                geometry, screens.revision, delivery.point)?;
+                            let stamp = hit_stamp(
+                                &state.binding_root,
+                                &binding.options.selector,
+                                geometry,
+                                screens.revision,
+                                delivery.point,
+                            )?;
                             (stamp == delivery.stamp).then(|| binding.callback.clone())
                         })
                     } else {
@@ -1141,8 +1233,13 @@ fn notify(inner: &Rc<RefCell<Inner>>) {
 }
 
 fn invoke(inner: &Rc<RefCell<Inner>>, callback: &js_sys::Function, payload: &str) {
-    if callback.call1(&JsValue::NULL, &JsValue::from_str(payload)).is_err() {
-        inner.borrow_mut().notice("Application callback raised an error");
+    if callback
+        .call1(&JsValue::NULL, &JsValue::from_str(payload))
+        .is_err()
+    {
+        inner
+            .borrow_mut()
+            .notice("Application callback raised an error");
     }
 }
 
@@ -1513,7 +1610,9 @@ pub fn mount_demo(container_id: &str) -> Result<WebClient, JsValue> {
     // produce input or alter grants.
     if let Some(window) = web_sys::window() {
         for name in ["resize", "scroll"] {
-            listen(&inner, window.as_ref(), name, |inner, _| inner.clear_clicks())?;
+            listen(&inner, window.as_ref(), name, |inner, _| {
+                inner.clear_clicks()
+            })?;
         }
     }
     // Window blur only performs cleanup; no global input production is captured.
@@ -1545,15 +1644,28 @@ pub fn mount_demo(container_id: &str) -> Result<WebClient, JsValue> {
     // informational text; neither callback activates a DOM control or sends input.
     let event_output: HtmlElement = element(&root, "[data-event-observation]")?;
     let events = Closure::wrap(Box::new(move |_: String| {
-        event_output.set_text_content(Some("Reusable event listener: validated notification received."));
+        event_output.set_text_content(Some(
+            "Reusable event listener: validated notification received.",
+        ));
     }) as Box<dyn FnMut(String)>);
-    client.add_event_listener(r#"{"kind":"any"}"#, events.as_ref().unchecked_ref::<js_sys::Function>().clone())?;
+    client.add_event_listener(
+        r#"{"kind":"any"}"#,
+        events.as_ref().unchecked_ref::<js_sys::Function>().clone(),
+    )?;
     let click_output: HtmlElement = element(&root, "[data-click-observation]")?;
     let clicks = Closure::wrap(Box::new(move |_: String| {
-        click_output.set_text_content(Some("Virtual canvas binding: authorized press/release pair observed."));
+        click_output.set_text_content(Some(
+            "Virtual canvas binding: authorized press/release pair observed.",
+        ));
     }) as Box<dyn FnMut(String)>);
-    client.bind_virtual_click(r#"{"selector":"[data-canvas]","button":"primary"}"#,
-        clicks.as_ref().unchecked_ref::<js_sys::Function>().clone())?;
-    client.inner.borrow_mut().demo_callbacks.extend([events, clicks]);
+    client.bind_virtual_click(
+        r#"{"selector":"[data-canvas]","button":"primary"}"#,
+        clicks.as_ref().unchecked_ref::<js_sys::Function>().clone(),
+    )?;
+    client
+        .inner
+        .borrow_mut()
+        .demo_callbacks
+        .extend([events, clicks]);
     Ok(client)
 }

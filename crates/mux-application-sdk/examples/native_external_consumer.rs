@@ -218,7 +218,10 @@ mod fixture {
             None
         };
         let observation_seconds = if args.len() == 12 {
-            match args[11].to_str().and_then(|value| value.parse::<u64>().ok()) {
+            match args[11]
+                .to_str()
+                .and_then(|value| value.parse::<u64>().ok())
+            {
                 Some(seconds) if (20..=60).contains(&seconds) => seconds,
                 _ => std::process::exit(10),
             }
@@ -257,7 +260,14 @@ mod fixture {
                         json!({"runtime_claim": "external GUI Service consumer; paired acceptance pending",
                     "expected_sha256": expected, "observation_seconds": observation_seconds}),
                     )?;
-                owner(&dll, &expected, &descriptor_path, key, observation_seconds, &report)?;
+                owner(
+                    &dll,
+                    &expected,
+                    &descriptor_path,
+                    key,
+                    observation_seconds,
+                    &report,
+                )?;
                 // This is an honest pre-exit milestone. Only external exit 0 can
                 // prove the parent's actual OS termination fence and completed join.
                 report.record("owner_ready_to_exit_after_unload", json!({

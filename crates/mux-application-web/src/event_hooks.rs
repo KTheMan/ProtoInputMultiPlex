@@ -47,7 +47,11 @@ impl EventFilter {
         if self.user.is_none() && matches!(self.kind, EventKind::Any | EventKind::Server) {
             return true;
         }
-        let ServerMessage::EventStream { stream: Poll::Events { events }, .. } = message else {
+        let ServerMessage::EventStream {
+            stream: Poll::Events { events },
+            ..
+        } = message
+        else {
             return false;
         };
         events.iter().any(|envelope| {
@@ -61,11 +65,13 @@ impl EventFilter {
                 Event::Window { .. } => (EventKind::Windows, None),
             };
             let kind_matches = matches!(self.kind, EventKind::Any | EventKind::Server)
-                || matches!((self.kind, kind),
+                || matches!(
+                    (self.kind, kind),
                     (EventKind::Input, EventKind::Input)
-                    | (EventKind::Users, EventKind::Users)
-                    | (EventKind::Screens, EventKind::Screens)
-                    | (EventKind::Windows, EventKind::Windows));
+                        | (EventKind::Users, EventKind::Users)
+                        | (EventKind::Screens, EventKind::Screens)
+                        | (EventKind::Windows, EventKind::Windows)
+                );
             kind_matches && self.user.is_none_or(|wanted| user == Some(wanted))
         })
     }
@@ -79,7 +85,10 @@ pub struct Registry<T> {
 }
 impl<T> Default for Registry<T> {
     fn default() -> Self {
-        Self { next: 0, entries: BTreeMap::new() }
+        Self {
+            next: 0,
+            entries: BTreeMap::new(),
+        }
     }
 }
 impl<T> Registry<T> {
@@ -87,7 +96,10 @@ impl<T> Registry<T> {
         if self.entries.len() >= MAX_REGISTRATIONS {
             return Err("Consumer registration limit reached");
         }
-        let next = self.next.checked_add(1).ok_or("Registration identities exhausted")?;
+        let next = self
+            .next
+            .checked_add(1)
+            .ok_or("Registration identities exhausted")?;
         let token = format!("web-hook:{next:016x}");
         self.next = next;
         self.entries.insert(token.clone(), entry);
@@ -120,7 +132,9 @@ pub struct ClickPairs<T> {
 }
 impl<T> Default for ClickPairs<T> {
     fn default() -> Self {
-        Self { presses: BTreeMap::new() }
+        Self {
+            presses: BTreeMap::new(),
+        }
     }
 }
 impl<T: PartialEq> ClickPairs<T> {
@@ -157,23 +171,43 @@ pub struct ClickOptions {
     #[serde(default = "primary")]
     pub button: MouseButton,
 }
-fn primary() -> MouseButton { MouseButton::Primary }
+fn primary() -> MouseButton {
+    MouseButton::Primary
+}
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    fn user(local: u64) -> UserId { UserId { epoch: u64::MAX, local } }
+    fn user(local: u64) -> UserId {
+        UserId {
+            epoch: u64::MAX,
+            local,
+        }
+    }
 
     #[test]
     fn delayed_snapshot_query_validates_without_rolling_back_the_live_stream() {
         use mux_core::application_event::{ApplicationMode, ScreenState, Snapshot};
         use mux_core::desktop::Bounds;
-        let bounds = Bounds { left: -100, top: -100, right: 100, bottom: 100 };
+        let bounds = Bounds {
+            left: -100,
+            top: -100,
+            right: 100,
+            bottom: 100,
+        };
         let mut snapshot = Snapshot {
-            version: 1, epoch: u64::MAX, through_sequence: 20,
-            users: Vec::new(), screens: ScreenState {
-                revision: 1, desktop: bounds, screens: vec![bounds],
-            }, windows: Vec::new(), capabilities: Vec::new(), mode: ApplicationMode::Cooperative,
+            version: 1,
+            epoch: u64::MAX,
+            through_sequence: 20,
+            users: Vec::new(),
+            screens: ScreenState {
+                revision: 1,
+                desktop: bounds,
+                screens: vec![bounds],
+            },
+            windows: Vec::new(),
+            capabilities: Vec::new(),
+            mode: ApplicationMode::Cooperative,
         };
         let mut actual = mux_application_sdk::ClientState::default();
         actual.install_snapshot(snapshot.clone(), u64::MAX).unwrap();
@@ -191,7 +225,8 @@ mod tests {
     fn exact_identity_and_local_filter() {
         let filter: EventFilter = serde_json::from_str(
             r#"{"kind":"input","user":{"epoch":18446744073709551615,"local":9007199254740993}}"#,
-        ).unwrap();
+        )
+        .unwrap();
         assert_eq!(filter.user, Some(user(9_007_199_254_740_993)));
         assert!(!filter.matches(None));
         assert!(EventFilter::default().matches(None));
@@ -210,8 +245,12 @@ mod tests {
                     "input": {"kind": "button", "button": "primary", "transition": "down"},
                     "position": {"x": 0, "y": 0}, "transform_revision": 1}}
             ]}
-        })).unwrap();
-        let mut filter = EventFilter { kind: EventKind::Input, user: Some(user(1)) };
+        }))
+        .unwrap();
+        let mut filter = EventFilter {
+            kind: EventKind::Input,
+            user: Some(user(1)),
+        };
         assert!(!filter.matches(Some(&message)));
         filter.user = Some(user(2));
         assert!(filter.matches(Some(&message)));
@@ -230,11 +269,20 @@ mod tests {
         let snapshot = registry.ids();
         registry.remove(&second);
         let third = registry.insert(3).unwrap();
-        assert_eq!(snapshot.iter().filter_map(|id| registry.get(id)).copied().collect::<Vec<_>>(), vec![1]);
+        assert_eq!(
+            snapshot
+                .iter()
+                .filter_map(|id| registry.get(id))
+                .copied()
+                .collect::<Vec<_>>(),
+            vec![1]
+        );
         assert!(!snapshot.contains(&third));
         registry.clear();
         assert_ne!(first, registry.insert(4).unwrap());
-        for _ in 1..MAX_REGISTRATIONS { registry.insert(0).unwrap(); }
+        for _ in 1..MAX_REGISTRATIONS {
+            registry.insert(0).unwrap();
+        }
         assert!(registry.insert(0).is_err());
     }
 

@@ -1,0 +1,151 @@
+name: Unsigned unreleased build candidate
+
+on:
+  push:
+    branches: [sdk/application-events-20261108]
+    paths: [.github/workflows/release-candidate.yml]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: unsigned-candidate-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  CARGO_BUILD_JOBS: '2'
+  CARGO_INCREMENTAL: '0'
+  RUSTC_WRAPPER: ''
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONUTF8: '1'
+  GIT_TERMINAL_PROMPT: '0'
+
+jobs:
+  source-checks:
+    runs-on: windows-2022
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          submodules: recursive
+          persist-credentials: false
+      - name: Check packaging without compiling or starting the product
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -c "import ast,pathlib; names=['package-portable.py','test-package-sdk.py','test-package-sdk-source.py']; [ast.parse((pathlib.Path('scripts')/name).read_text(encoding='utf-8-sig'),filename=name) for name in names]"
+          if ($LASTEXITCODE -ne 0) { throw 'Packaging Python syntax rejected.' }
+          foreach ($name in @('package-portable.ps1','build-backend.ps1','package-installer.ps1')) {
+            $tokens = $null
+            $errors = $null
+            [System.Management.Automation.Language.Parser]::ParseFile((Join-Path $env:GITHUB_WORKSPACE "scripts/$name"), [ref]$tokens, [ref]$errors) | Out-Null
+            if (@($errors).Count -ne 0) { throw "PowerShell syntax rejected: $name" }
+          }
+          python scripts/test-package-sdk.py
+          if ($LASTEXITCODE -ne 0) { throw 'Packaging rejection checks failed.' }
+          # This check intentionally leaves a rejection probe and prepared vendor
+          # files behind. The build job below uses a separate clean checkout.
+          python scripts/test-package-sdk-source.py
+          if ($LASTEXITCODE -ne 0) { throw 'Pinned source/header inventory checks failed.' }
+
+  candidate:
+    needs: source-checks
+    runs-on: windows-2022
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          submodules: recursive
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.92.0
+          targets: i686-pc-windows-msvc, wasm32-unknown-unknown
+      - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+      - name: Check installed build prerequisites and allocate fresh owned output
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $actual = & git rev-parse HEAD
+          if ($LASTEXITCODE -ne 0 -or $actual -cne $env:GITHUB_SHA) { throw 'Checkout commit mismatch.' }
+          $native = & git -C vendor/ProtoInput rev-parse HEAD
+          if ($LASTEXITCODE -ne 0 -or $native -cne 'dd29bf8d22349605d0e1950c1c5dc4893d72670e') { throw 'Backend pin mismatch.' }
+          if ((& git status --porcelain --untracked-files=all)) { throw 'Build requires a clean root checkout.' }
+          if ($LASTEXITCODE -ne 0) { throw 'Cannot inspect root checkout.' }
+          if ((& git -C vendor/ProtoInput status --porcelain --untracked-files=all)) { throw 'Build requires a clean pinned backend.' }
+          if ($LASTEXITCODE -ne 0) { throw 'Cannot inspect backend checkout.' }
+          if (Test-Path -LiteralPath 'runtime') { throw 'Prebuilt runtime is not permitted.' }
+          $release = 'vendor/ProtoInput/src/ProtoInput/Release'
+          if (Test-Path -LiteralPath $release) {
+            if (@(Get-ChildItem -LiteralPath $release -File -Recurse | Where-Object { $_.Extension -in '.dll','.exe','.obj','.lib' }).Count) { throw 'Backend build outputs must be absent.' }
+          }
+          $vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio/Installer/vswhere.exe'
+          $vsRoot = & $vswhere -latest -products '*' -requires Microsoft.Component.MSBuild -property installationPath
+          if ($LASTEXITCODE -ne 0 -or -not $vsRoot) { throw 'VS 2022/v143 is required.' }
+          $atl = @(Get-ChildItem -Path (Join-Path $vsRoot 'VC/Tools/MSVC/*/atlmfc/include/atlbase.h'))
+          if (-not $atl.Count) { throw 'Installed C++ ATL is required; no tool download fallback.' }
+          $atlRoot = Split-Path -Parent (Split-Path -Parent $atl[0].FullName)
+          foreach ($arch in @('x64','x86')) {
+            if (-not (Test-Path -LiteralPath (Join-Path $atlRoot "lib/$arch"))) { throw "Missing installed ATL libraries: $arch" }
+          }
+          $nsisCandidates = @((Join-Path ${env:ProgramFiles(x86)} 'NSIS/Bin/makensis.exe'), (Join-Path ${env:ProgramFiles(x86)} 'NSIS/makensis.exe'))
+          $nsis = @($nsisCandidates | Where-Object { Test-Path -LiteralPath $_ -PathType Leaf } | Select-Object -First 1)
+          if ($nsis.Count -ne 1) { throw 'Installed NSIS 3 is required.' }
+          $root = Join-Path $env:RUNNER_TEMP "pim-unsigned-candidate-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+          if (Test-Path -LiteralPath $root) { throw 'Candidate root must be fresh.' }
+          New-Item -ItemType Directory -Path $root,(Join-Path $root 'review') | Out-Null
+          "PIM_CANDIDATE_ROOT=$root" | Out-File -LiteralPath $env:GITHUB_ENV -Encoding utf8 -Append
+          "PIM_MAKENSIS=$($nsis[0])" | Out-File -LiteralPath $env:GITHUB_ENV -Encoding utf8 -Append
+          $nsisVersion = & $nsis[0] /VERSION
+          if ($LASTEXITCODE -ne 0 -or $nsisVersion -notmatch '^v3\.') { throw 'NSIS 3 version required.' }
+          $msbuildVersion = & msbuild -version -nologo
+          if ($LASTEXITCODE -ne 0) { throw 'MSBuild version unavailable.' }
+          $tools = [ordered]@{ image_os=$env:ImageOS; image_version=$env:ImageVersion; visual_studio=(Split-Path -Leaf $vsRoot); msvc=$env:VCToolsVersion; windows_sdk=$env:WindowsSDKVersion; msbuild=@($msbuildVersion); nsis=$nsisVersion; rust='1.92.0'; backend_toolset='v143'; backend_sdk='10.0' }
+          $tools | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $root 'review/build-tools.json') -Encoding utf8
+      - name: Fetch only the official pinned browser binding archive
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $archive = Join-Path $env:PIM_CANDIDATE_ROOT 'wasm-bindgen.tar.gz'
+          & curl.exe --fail --location --silent --show-error --retry 2 --retry-delay 2 --retry-max-time 120 --connect-timeout 15 --max-time 60 --output $archive --header 'Accept: application/octet-stream' --header 'X-GitHub-Api-Version: 2026-03-10' 'https://api.github.com/repos/wasm-bindgen/wasm-bindgen/releases/assets/587769522'
+          if ($LASTEXITCODE -ne 0) { throw 'Pinned binding archive download failed.' }
+          if ((Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash.ToLowerInvariant() -cne '79e348c169d0c10c0b287647f1e753d0985353ca96800bc29be8f4261baf13e6') { throw 'Pinned binding archive digest mismatch.' }
+      - name: Build and stage the full unsigned candidate using accepted packaging scripts
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $root = $env:PIM_CANDIDATE_ROOT
+          & ./scripts/package-portable.ps1 -CargoTargetDir (Join-Path $root 'cargo-target') -OutputDir (Join-Path $root 'portable') -WasmBindgenArchive (Join-Path $root 'wasm-bindgen.tar.gz')
+          if (-not $?) { throw 'Full release candidate packaging failed.' }
+          & ./scripts/package-installer.ps1 -BundleDir (Join-Path $root 'portable') -OutputFile (Join-Path $root 'review/ProtoInputMultiPlex-unsigned-unreleased-setup.exe') -MakeNsis $env:PIM_MAKENSIS
+          if (-not $?) { throw 'Unsigned installer packaging failed.' }
+      - name: Retain only completed deliverables and sanitized build provenance
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $root = $env:PIM_CANDIDATE_ROOT
+          $review = Join-Path $root 'review'
+          $manifest = Get-Content -LiteralPath (Join-Path $root 'portable/bundle-manifest.json') -Raw | ConvertFrom-Json
+          if ($manifest.source_commit -cne $env:GITHUB_SHA -or -not $manifest.build_inputs_verified) { throw 'Frozen build identity mismatch.' }
+          # Preserve the exact workflow separately: the accepted source ZIP's
+          # fixed workflow allowlist is intentionally unchanged.
+          Copy-Item -LiteralPath '.github/workflows/release-candidate.yml' -Destination (Join-Path $review 'build-recipe.yml')
+          Copy-Item -LiteralPath (Join-Path $root 'portable/bundle-manifest.json') -Destination (Join-Path $review 'bundle-manifest.json')
+          Compress-Archive -LiteralPath (Join-Path $root 'portable') -DestinationPath (Join-Path $review 'ProtoInputMultiPlex-unsigned-unreleased-portable.zip') -CompressionLevel Optimal
+          $record = [ordered]@{ schema='pim.unsigned-candidate-build.v1'; status='UNSIGNED_UNRELEASED_BUILD_ONLY'; source_commit=$env:GITHUB_SHA; run_id=$env:GITHUB_RUN_ID; run_attempt=$env:GITHUB_RUN_ATTEMPT; repository=$env:GITHUB_REPOSITORY; wasm_bindgen_asset_api='https://api.github.com/repos/wasm-bindgen/wasm-bindgen/releases/assets/587769522'; wasm_bindgen_archive_sha256='79e348c169d0c10c0b287647f1e753d0985353ca96800bc29be8f4261baf13e6'; qualification='Build/staging/import inventory only. No product launch, installer execution, GUI/native/browser SDK runtime, real devices, real reboot, signing, release publication, legal redistribution clearance or Ultra parity approval.' }
+          $record | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $review 'candidate-status.json') -Encoding utf8
+          $hashes = @(Get-ChildItem -LiteralPath $review -File | Sort-Object Name | ForEach-Object { [ordered]@{ file=$_.Name; bytes=$_.Length; sha256=(Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant() } })
+          ConvertTo-Json -InputObject $hashes -Depth 5 | Set-Content -LiteralPath (Join-Path $review 'SHA256.json') -Encoding utf8
+      - name: Upload unsigned unreleased artifacts for CI review
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsigned-unreleased-candidate-${{ github.sha }}-${{ github.run_attempt }}
+          path: ${{ env.PIM_CANDIDATE_ROOT }}/review/*
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 0
