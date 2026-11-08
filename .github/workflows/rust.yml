@@ -38,7 +38,7 @@ jobs:
           New-Item -ItemType Directory -Path $bindgenRoot -Force | Out-Null
           $bindgenArchive = Join-Path $bindgenRoot 'upstream.tar.gz'
           if ($env:PIM_WASM_BINDGEN_CACHE_HIT -cne 'true') {
-            & curl.exe --fail --location --silent --show-error --retry 2 --retry-delay 2 --retry-max-time 120 --connect-timeout 15 --max-time 60 --output $bindgenArchive 'https://github.com/wasm-bindgen/wasm-bindgen/releases/download/0.2.129/wasm-bindgen-0.2.129-x86_64-pc-windows-msvc.tar.gz'
+            & curl.exe --fail --location --silent --show-error --retry 2 --retry-delay 2 --retry-max-time 120 --connect-timeout 15 --max-time 60 --output $bindgenArchive --header 'Accept: application/octet-stream' --header 'X-GitHub-Api-Version: 2026-03-10' 'https://api.github.com/repos/wasm-bindgen/wasm-bindgen/releases/assets/587769522'
             if ($LASTEXITCODE -ne 0) { throw "Pinned binding tool download failed (curl exit $LASTEXITCODE)" }
           }
           if (-not (Test-Path -LiteralPath $bindgenArchive -PathType Leaf)) { throw 'Pinned binding tool archive missing' }
