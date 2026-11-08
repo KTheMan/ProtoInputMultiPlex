@@ -361,6 +361,86 @@ class WindowPair(base.Pair):
         require(self.fixture.poll() == 0)
         self.wait(lambda: len([x for x in self.native_rows() if x["stage"] == "native_window_action_executed"]) >= 2)
 
+    def native_exit_diagnostic(self):
+        # Existing private report only; reconstruct fixed enums, never raw rows.
+        diagnostic = {"last_stage": "none", "last_progress_stage": "none",
+                      "failure_reason": "none", "failed_record_observed": False,
+                      "diagnostic_read_failed": False}
+        self.result["window_native_exit_diagnostic"] = diagnostic
+        stages = {
+            "started", "dll_hash_verified", "dll_exports_resolved", "owner_hidden_window_created",
+            "client_connected_completion_retained", "gui_ready", "native_window_published",
+            "native_window_changed", "native_window_moved", "native_window_action_executed",
+            "native_window_timeout_ready", "native_window_timeout_late_action", "native_window_retired",
+            "hwnd_destroyed_stop_returned", "initial_destroy_schedule",
+            "actual_worker_os_thread_signaled_after_hwnd_death", "client_destroyed_completion_closed",
+            "dll_unloaded_before_owner_exit", "owner_ready_to_exit_after_unload", "failed",
+        }
+        reasons = {
+            "owner response ID mismatch": "owner_response_id_mismatch",
+            "owner report deadline exceeded; no replay": "owner_response_deadline",
+            "GUI rejected native owner report": "owner_response_rejected",
+            "owner response version mismatch": "owner_response_version",
+            "unexpected owner response frame": "owner_response_frame",
+            "missing remote retire report": "retire_request_missing",
+            "GUI did not acknowledge window retirement": "retire_not_acknowledged",
+            "DestroyWindow failed": "destroy_window_failed",
+            "Stop was not successful in WM_NCDESTROY": "stop_not_successful",
+            "Stop must report local termination with remote cleanup unconfirmed": "stop_terminal_state",
+            "Stop must clear local model": "stop_model_not_empty",
+            "Destroy returned neither BUSY nor OK": "destroy_status",
+            "CloseHandle failed": "completion_close_failed",
+            "DPI restore failed": "dpi_restore_failed",
+            "FreeLibrary failed": "free_library_failed",
+            "DLL still loaded after FreeLibrary": "dll_still_loaded",
+            "wake contains payload": "wake_payload",
+            "fixture incoming message budget exceeded": "message_budget",
+            "invalid server message": "server_message_invalid",
+            "invalid retained length": "retained_length_invalid",
+            "response length mismatch": "response_length_mismatch",
+            "invalid retained JSON": "retained_json_invalid",
+            "fixture I/O or encoding failure": "fixture_io_encoding",
+            "report lock poisoned": "report_lock_poisoned",
+            "bounded owner wait timed out": "owner_wait_deadline",
+            "message/completion wait failed": "owner_wait_failed",
+            "unexpected owner quit before cleanup": "owner_quit_before_cleanup",
+            "owner panic; no unload safety established": "owner_panic",
+        }
+        status_actions = {
+            "owner window retire": "abi_window_retire", "query for discard": "abi_query_for_discard",
+            "response discard": "abi_response_discard", "discard consumes response": "abi_discard_fence",
+            "retain before window death": "abi_retain_before_destroy",
+            "Stop retained-output fence": "abi_stop_output_fence",
+            "terminal query after Stop": "abi_terminal_query", "final destroy": "abi_final_destroy",
+            "destroy consumes token": "abi_destroy_token_fence", "second destroy invalid": "abi_second_destroy",
+            "drain": "abi_drain", "response_size": "abi_response_size",
+            "response_read": "abi_response_read", "full read consumes output": "abi_full_read_fence",
+        }
+        try:
+            for row in self.native_rows():
+                if not isinstance(row, dict):
+                    diagnostic["diagnostic_read_failed"] = True
+                    continue
+                stage = row.get("stage")
+                safe_stage = stage if isinstance(stage, str) and stage in stages else "unrecognized"
+                diagnostic["last_stage"] = safe_stage
+                if stage != "failed":
+                    diagnostic["last_progress_stage"] = safe_stage
+                    continue
+                diagnostic["failed_record_observed"] = True
+                detail = row.get("detail")
+                reason = detail.get("reason") if isinstance(detail, dict) else None
+                diagnostic["failure_reason"] = "unrecognized"
+                if isinstance(reason, str):
+                    diagnostic["failure_reason"] = reasons.get(reason, "unrecognized")
+                    for action, fixed_reason in status_actions.items():
+                        if re.fullmatch(re.escape(action) + r": expected -?[0-9]{1,10}, got -?[0-9]{1,10}", reason):
+                            diagnostic["failure_reason"] = fixed_reason
+                            break
+        except BaseException:
+            # Diagnostic failure must not replace the original exit assertion.
+            diagnostic["diagnostic_read_failed"] = True
+
     def run(self):
         a = self.args
         require(os.name == "nt" and os.environ.get("GITHUB_ACTIONS") == "true" and os.environ.get("RUNNER_ENVIRONMENT") == "github-hosted")
@@ -431,6 +511,10 @@ class WindowPair(base.Pair):
         self.wait(lambda: self.native.poll() is not None, 15)
         self.result["window_retirement_probe"]["native_exit_observed"] = True
         self.result["window_retirement_phase"] = "native_exit_zero"
+        native_exit = self.native.returncode
+        self.result["window_native_exit_code"] = native_exit if type(native_exit) is int and -2147483648 <= native_exit <= 4294967295 else None
+        if native_exit != 0:
+            self.native_exit_diagnostic()
         require(self.native.poll() == 0)
         self.result["window_retirement_probe"]["native_exit_zero"] = True
         self.result["window_retirement_phase"] = "native_retired_read"
