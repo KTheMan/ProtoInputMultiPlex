@@ -1285,13 +1285,15 @@ mod tests {
         controller.select_all_visible_users().unwrap();
         assert_eq!(controller.approve().unwrap_err().to_string(), "Denied");
         assert_eq!(controller.status().approved_receivers, 2);
-        assert!(controller
-            .bridge
-            .as_ref()
-            .unwrap()
-            .host()
-            .ready_for(publisher)
-            .is_ok());
+        assert!(
+            controller
+                .bridge
+                .as_ref()
+                .unwrap()
+                .host()
+                .ready_for(publisher)
+                .is_ok()
+        );
     }
     #[test]
     fn select_visible_users_stages_exact_current_scope_until_explicit_apply() {
