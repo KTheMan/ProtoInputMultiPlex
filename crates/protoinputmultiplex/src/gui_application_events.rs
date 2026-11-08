@@ -642,36 +642,45 @@ impl Controller {
             "User selection is stale"
         );
         let owner = self.owner.context("Native consumer unavailable")?;
-        let ready = self
+        let bridge = self
             .bridge
             .as_ref()
-            .context("Cooperative session unavailable")?
-            .host()
-            .ready_for(owner)?;
-        ensure!(
-            !events.pointer_events || ready.events.pointer_events,
-            "Apply master pointer observation consent first"
-        );
-        ensure!(
-            !events.key_events || ready.events.key_events,
-            "Apply master keyboard observation consent first"
-        );
-        ensure!(
-            !controls.pointer_input || ready.controls.pointer_input,
-            "Apply master pointer control consent first"
-        );
-        ensure!(
-            !controls.key_input || ready.controls.key_input,
-            "Apply master keyboard control consent first"
-        );
-        ensure!(
-            !controls.cursor || ready.controls.cursor,
-            "Apply master cursor consent first"
-        );
-        ensure!(
-            !controls.user_lifecycle || ready.controls.user_lifecycle,
-            "Apply master lifecycle consent first"
-        );
+            .context("Cooperative session unavailable")?;
+        let needs_master = !self.draft.users.is_empty()
+            || events.pointer_events
+            || events.key_events
+            || controls.delegated_users
+            || controls.user_lifecycle
+            || controls.cursor
+            || controls.pointer_input
+            || controls.key_input;
+        if needs_master {
+            let ready = bridge.host().ready_for(owner)?;
+            ensure!(
+                !events.pointer_events || ready.events.pointer_events,
+                "Apply master pointer observation consent first"
+            );
+            ensure!(
+                !events.key_events || ready.events.key_events,
+                "Apply master keyboard observation consent first"
+            );
+            ensure!(
+                !controls.pointer_input || ready.controls.pointer_input,
+                "Apply master pointer control consent first"
+            );
+            ensure!(
+                !controls.key_input || ready.controls.key_input,
+                "Apply master keyboard control consent first"
+            );
+            ensure!(
+                !controls.cursor || ready.controls.cursor,
+                "Apply master cursor consent first"
+            );
+            ensure!(
+                !controls.user_lifecycle || ready.controls.user_lifecycle,
+                "Apply master lifecycle consent first"
+            );
+        }
         let delegated_window = self.draft.selected_window;
         let delegated_access = WindowAccess {
             observe: self.draft.window_observation,
@@ -1225,6 +1234,15 @@ mod tests {
             publisher_ready.events.users,
             UserScope::Only(BTreeSet::new())
         );
+        assert!(matches!(
+            controller
+                .bridge
+                .as_ref()
+                .unwrap()
+                .host()
+                .ready_for(controller.owner.unwrap()),
+            Err(Error::Denied)
+        ));
 
         controller.add_receiver().unwrap();
         controller.draft.origin = ORIGIN.into();
@@ -1249,7 +1267,31 @@ mod tests {
             observer_ready.events.users,
             UserScope::Only(BTreeSet::new())
         );
+        assert!(matches!(
+            controller
+                .bridge
+                .as_ref()
+                .unwrap()
+                .host()
+                .ready_for(controller.owner.unwrap()),
+            Err(Error::Denied)
+        ));
         assert!(controller.published_windows().is_empty());
+
+        controller.create_user().unwrap();
+        controller.add_receiver().unwrap();
+        controller.draft.origin = ORIGIN.into();
+        controller.draft.window_observation = true;
+        controller.select_all_visible_users().unwrap();
+        assert_eq!(controller.approve().unwrap_err().to_string(), "Denied");
+        assert_eq!(controller.status().approved_receivers, 2);
+        assert!(controller
+            .bridge
+            .as_ref()
+            .unwrap()
+            .host()
+            .ready_for(publisher)
+            .is_ok());
     }
     #[test]
     fn select_visible_users_stages_exact_current_scope_until_explicit_apply() {
