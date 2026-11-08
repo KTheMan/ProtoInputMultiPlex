@@ -4,7 +4,7 @@ use std::collections::BTreeSet;
 
 #[test]
 fn remote_window_publication_and_exact_delegation_are_epoch_scoped() {
-    let mut host = Host::new(71, screens()).unwrap();
+    let mut host: Host = Host::new(71, screens()).unwrap();
     let publisher = host.register_recipient("native publisher").unwrap();
     let browser = host
         .register_recipient("separate browser receiver")
