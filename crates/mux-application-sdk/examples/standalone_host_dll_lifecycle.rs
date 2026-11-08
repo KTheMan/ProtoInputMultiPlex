@@ -1049,8 +1049,9 @@ mod fixture {
         unsafe {
             SetLastError(0);
         }
-        retirement.previous_proc =
-            unsafe { SetWindowLongPtrW(hwnd, GWLP_WNDPROC, retire_on_nc_destroy as isize) };
+        retirement.previous_proc = unsafe {
+            SetWindowLongPtrW(hwnd, GWLP_WNDPROC, retire_on_nc_destroy as *const () as isize)
+        };
         ensure(
             retirement.previous_proc != 0 || unsafe { GetLastError() } == 0,
             "install destruction observer",
