@@ -15,8 +15,8 @@ fn main() {
 #[cfg(windows)]
 mod fixture {
     use mux_application_sdk::{
-        ClientCommand, ClientRequest, ClientResponse, Input, KeyCode, PROTOCOL_VERSION,
-        Event, PointerState, Poll, Reply, ServerMessage, SourceId, Transition, UserId, UserView,
+        ClientCommand, ClientRequest, ClientResponse, Event, Input, KeyCode, PROTOCOL_VERSION,
+        PointerState, Poll, Reply, ServerMessage, SourceId, Transition, UserId, UserView,
     };
     use serde::{Deserialize, Serialize};
     use serde_json::{Value, json};
@@ -156,9 +156,12 @@ mod fixture {
                 }),
             )
             .map_err(|_| "fixture I/O or encoding failure")?;
-            file.write_all(b"\n").map_err(|_| "fixture I/O or encoding failure")?;
-            file.flush().map_err(|_| "fixture I/O or encoding failure")?;
-            file.sync_data().map_err(|_| "invalid retained JSON".to_owned())
+            file.write_all(b"\n")
+                .map_err(|_| "fixture I/O or encoding failure")?;
+            file.flush()
+                .map_err(|_| "fixture I/O or encoding failure")?;
+            file.sync_data()
+                .map_err(|_| "invalid retained JSON".to_owned())
         }
     }
     fn ensure(condition: bool, message: &str) -> Check {
@@ -186,11 +189,15 @@ mod fixture {
         std::panic::set_hook(Box::new(|_| eprintln!("external native fixture panic")));
         let args: Vec<_> = std::env::args_os().skip(1).collect();
         if !(args.len() == 8 || args.len() == 10)
-            || args[0] != "--dll" || args[2] != "--sha256"
-            || args[4] != "--descriptor" || args[6] != "--report"
+            || args[0] != "--dll"
+            || args[2] != "--sha256"
+            || args[4] != "--descriptor"
+            || args[6] != "--report"
             || (args.len() == 10 && args[8] != "--virtual-key")
         {
-            eprintln!("usage: native_external_consumer --dll ABSOLUTE_DLL --sha256 64_HEX --descriptor PRIVATE_GUI_JSON --report NEW_PRIVATE_JSONL [--virtual-key HID_CODE]");
+            eprintln!(
+                "usage: native_external_consumer --dll ABSOLUTE_DLL --sha256 64_HEX --descriptor PRIVATE_GUI_JSON --report NEW_PRIVATE_JSONL [--virtual-key HID_CODE]"
+            );
             std::process::exit(10);
         }
         let dll = PathBuf::from(&args[1]);
@@ -198,16 +205,24 @@ mod fixture {
         let descriptor_path = PathBuf::from(&args[5]);
         let report_path = PathBuf::from(&args[7]);
         let key = if args.len() == 10 {
-            match args[9].to_str().and_then(|s| s.parse::<u16>().ok()).map(KeyCode) {
+            match args[9]
+                .to_str()
+                .and_then(|s| s.parse::<u16>().ok())
+                .map(KeyCode)
+            {
                 Some(key) if key.valid() => Some(key),
                 _ => std::process::exit(10),
             }
         } else {
             None
         };
-        if !dll.is_absolute() || !descriptor_path.is_absolute() || !report_path.is_absolute()
-            || descriptor_path == report_path || dll == report_path
-            || expected.len() != 64 || !expected.bytes().all(|b| b.is_ascii_hexdigit())
+        if !dll.is_absolute()
+            || !descriptor_path.is_absolute()
+            || !report_path.is_absolute()
+            || descriptor_path == report_path
+            || dll == report_path
+            || expected.len() != 64
+            || !expected.bytes().all(|b| b.is_ascii_hexdigit())
         {
             eprintln!("distinct absolute paths and an exact SHA-256 are required");
             std::process::exit(10);
@@ -227,22 +242,21 @@ mod fixture {
             let report = Report(Mutex::new(file));
             // Catch on the owner BEFORE thread return/TLS teardown. Any contract
             // failure retains the raw module until process retirement.
-            let result =
-                catch_unwind(AssertUnwindSafe(|| {
-                    report.record(
+            let result = catch_unwind(AssertUnwindSafe(|| {
+                report.record(
                         "started",
                         json!({"runtime_claim": "external GUI Service consumer; paired acceptance pending",
                     "expected_sha256": expected}),
                     )?;
-                    owner(&dll, &expected, &descriptor_path, key, &report)?;
-                    // This is an honest pre-exit milestone. Only external exit 0 can
-                    // prove the parent's actual OS termination fence and completed join.
-                    report.record("owner_ready_to_exit_after_unload", json!({
+                owner(&dll, &expected, &descriptor_path, key, &report)?;
+                // This is an honest pre-exit milestone. Only external exit 0 can
+                // prove the parent's actual OS termination fence and completed join.
+                report.record("owner_ready_to_exit_after_unload", json!({
                     "result": "OWNER_READY_REQUIRES_PARENT_EXIT_0",
                     "gui_service_descriptor_consumed": true, "native_web_same_users_qualified": false,
                     "hardware_qualified": false, "full_sdk_complete": false,
                 }))
-                }));
+            }));
             match result {
                 Ok(Ok(())) => (),
                 failure => {
@@ -316,7 +330,13 @@ mod fixture {
         // the synced owner_ready_to_exit_after_unload marker qualifies this run.
     }
 
-    fn owner(dll: &Path, expected: &str, descriptor_path: &Path, key: Option<KeyCode>, report: &Report) -> Check {
+    fn owner(
+        dll: &Path,
+        expected: &str,
+        descriptor_path: &Path,
+        key: Option<KeyCode>,
+        report: &Report,
+    ) -> Check {
         ensure(
             sha256(b"") == "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
                 && sha256(b"abc")
@@ -330,7 +350,9 @@ mod fixture {
             .share_mode(1)
             .open(dll)
             .map_err(|_| "open exact DLL failed")?;
-        let path = dll.canonicalize().map_err(|_| "fixture I/O or encoding failure")?;
+        let path = dll
+            .canonicalize()
+            .map_err(|_| "fixture I/O or encoding failure")?;
         ensure(
             path.extension()
                 .and_then(|e| e.to_str())
@@ -372,10 +394,14 @@ mod fixture {
             length != 0 && length < loaded.len(),
             "loaded module path unavailable",
         )?;
-        let loaded_path =
-            PathBuf::from(String::from_utf16(&loaded[..length]).map_err(|_| "fixture I/O or encoding failure")?);
+        let loaded_path = PathBuf::from(
+            String::from_utf16(&loaded[..length]).map_err(|_| "fixture I/O or encoding failure")?,
+        );
         ensure(
-            loaded_path.canonicalize().map_err(|_| "fixture I/O or encoding failure")? == path,
+            loaded_path
+                .canonicalize()
+                .map_err(|_| "fixture I/O or encoding failure")?
+                == path,
             "loader resolved another DLL",
         )?;
         let api = unsafe { Api::load(module)? };
@@ -464,48 +490,103 @@ mod fixture {
         )?;
 
         await_ready(api, token, completion)?;
-        let response = round_trip(api, token, completion, ClientCommand::Subscribe { capacity: 256 }, report)?;
+        let response = round_trip(
+            api,
+            token,
+            completion,
+            ClientCommand::Subscribe { capacity: 256 },
+            report,
+        )?;
         let ClientResponse::Subscribed { snapshot, .. } = response else {
             return Err("Subscribe returned unexpected response".into());
         };
-        ensure(snapshot.users.len() == 2, "require exactly two GUI-approved users")?;
+        ensure(
+            snapshot.users.len() == 2,
+            "require exactly two GUI-approved users",
+        )?;
         let baseline = identities(&snapshot.users);
-        ensure(baseline[0].id != baseline[1].id
-            && baseline[0].source != baseline[1].source, "duplicate GUI identity/source")?;
+        ensure(
+            baseline[0].id != baseline[1].id && baseline[0].source != baseline[1].source,
+            "duplicate GUI identity/source",
+        )?;
         report.record("gui_snapshot", json!({"epoch": snapshot.epoch, "sequence": snapshot.through_sequence,
             "users": evidence(&snapshot.users), "provenance": "authenticated descriptor-selected subscription; GUI provenance requires paired harness",
             "paired_wasm_verified": false}))?;
         let model = query(api, token, true)?;
-        ensure(model["status"]["pointer_enabled"] == false
-            && model["status"]["key_enabled"] == false, "input must default off")?;
-        ensure(model["status"]["live"] == true
-            && model["status"]["terminal"].is_null()
-            && model["status"]["remote_cleanup_unconfirmed"] == false, "expected live native model")?;
+        ensure(
+            model["status"]["pointer_enabled"] == false && model["status"]["key_enabled"] == false,
+            "input must default off",
+        )?;
+        ensure(
+            model["status"]["live"] == true
+                && model["status"]["terminal"].is_null()
+                && model["status"]["remote_cleanup_unconfirmed"] == false,
+            "expected live native model",
+        )?;
         let user = snapshot.users[0].id;
         let probe_key = key.unwrap_or(KeyCode(4));
-        request(api, token, ClientCommand::Input {
-            user, input: Input::Key { key: probe_key, transition: Transition::Down },
-        }, INVALID)?;
-        ensure(query(api, token, false)?["status"]["pending_requests"] == 0,
-            "default-off probe was queued")?;
-        status(unsafe { (api.enable)(token, 2, 0) }, INVALID, "invalid enable flag")?;
-        status(unsafe { (api.enable)(token, 0, 0) }, OK, "explicit disabled flags")?;
-        report.record("default_off_checked", json!({"locally_rejected": true,
-            "virtual_input_requested": key.is_some(), "physical_input": false}))?;
+        request(
+            api,
+            token,
+            ClientCommand::Input {
+                user,
+                input: Input::Key {
+                    key: probe_key,
+                    transition: Transition::Down,
+                },
+            },
+            INVALID,
+        )?;
+        ensure(
+            query(api, token, false)?["status"]["pending_requests"] == 0,
+            "default-off probe was queued",
+        )?;
+        status(
+            unsafe { (api.enable)(token, 2, 0) },
+            INVALID,
+            "invalid enable flag",
+        )?;
+        status(
+            unsafe { (api.enable)(token, 0, 0) },
+            OK,
+            "explicit disabled flags",
+        )?;
+        report.record(
+            "default_off_checked",
+            json!({"locally_rejected": true,
+            "virtual_input_requested": key.is_some(), "physical_input": false}),
+        )?;
         if let Some(key) = key {
             // Explicit opt-in is independent of GUI control/delegation/input consent.
-            status(unsafe { (api.enable)(token, 0, 1) }, OK, "explicit key enable")?;
+            status(
+                unsafe { (api.enable)(token, 0, 1) },
+                OK,
+                "explicit key enable",
+            )?;
             for transition in [Transition::Down, Transition::Up] {
-                let reply = round_trip(api, token, completion, ClientCommand::Input {
-                    user, input: Input::Key { key, transition },
-                }, report)?;
+                let reply = round_trip(
+                    api,
+                    token,
+                    completion,
+                    ClientCommand::Input {
+                        user,
+                        input: Input::Key { key, transition },
+                    },
+                    report,
+                )?;
                 let ClientResponse::InputAccepted { sequences } = reply else {
                     return Err("virtual input returned unexpected response".into());
                 };
-                ensure(!sequences.is_empty(), "input acknowledgement lacks sequence")?;
-                report.record("virtual_key_acknowledged", json!({"user": user, "key": key,
+                ensure(
+                    !sequences.is_empty(),
+                    "input acknowledgement lacks sequence",
+                )?;
+                report.record(
+                    "virtual_key_acknowledged",
+                    json!({"user": user, "key": key,
                     "transition": transition, "sequences": sequences,
-                    "acknowledged_by_remote_response": true}))?;
+                    "acknowledged_by_remote_response": true}),
+                )?;
             }
             // Disabling an enabled input family intentionally retires the production
             // connection. Preserve keys enabled throughout overlap; WM_NCDESTROY's
@@ -518,22 +599,34 @@ mod fixture {
             pump_wait(completion, until)?;
             drain_events(api, token, report)?;
             let model = query(api, token, false)?;
-            ensure(model["status"]["live"] == true && model["status"]["terminal"].is_null(),
-                "native consumer ended during overlap")?;
+            ensure(
+                model["status"]["live"] == true && model["status"]["terminal"].is_null(),
+                "native consumer ended during overlap",
+            )?;
             let current: Vec<UserView> = serde_json::from_value(model["users"].clone())
                 .map_err(|_| "invalid model users")?;
-            ensure(identities(&current) == baseline, "GUI user/source identities changed")?;
+            ensure(
+                identities(&current) == baseline,
+                "GUI user/source identities changed",
+            )?;
         }
         let final_model = query(api, token, false)?;
         let final_users: Vec<UserView> = serde_json::from_value(final_model["users"].clone())
             .map_err(|_| "invalid final users")?;
-        report.record("overlap_snapshot", json!({"users": evidence(&final_users),
+        report.record(
+            "overlap_snapshot",
+            json!({"users": evidence(&final_users),
             "sequence": final_model["sequence"].as_u64(),
-            "paired_wasm_verified": false, "remote_cleanup_confirmed": false}))?;
+            "paired_wasm_verified": false, "remote_cleanup_confirmed": false}),
+        )?;
         status(unsafe { (api.query)(token) }, OK, "query for discard")?;
         status(unsafe { (api.discard)(token) }, OK, "response discard")?;
         let mut ignored = 0;
-        status(unsafe { (api.size)(token, &mut ignored) }, NO_RESPONSE, "discard consumes response")?;
+        status(
+            unsafe { (api.size)(token, &mut ignored) },
+            NO_RESPONSE,
+            "discard consumes response",
+        )?;
         // Retain a real pre-stop query so WM_NCDESTROY must fence that payload.
         status(
             unsafe { (api.query)(token) },
@@ -650,29 +743,44 @@ mod fixture {
     }
     fn descriptor_config(path: &Path) -> Check<Vec<u8>> {
         let mut bytes = Vec::new();
-        File::open(path).map_err(|_| "private descriptor open failed")?
-            .take(65537).read_to_end(&mut bytes).map_err(|_| "private descriptor read failed")?;
+        File::open(path)
+            .map_err(|_| "private descriptor open failed")?
+            .take(65537)
+            .read_to_end(&mut bytes)
+            .map_err(|_| "private descriptor read failed")?;
         let result = convert_descriptor(&bytes);
         bytes.fill(0);
         result
     }
     fn convert_descriptor(bytes: &[u8]) -> Check<Vec<u8>> {
-        ensure(!bytes.is_empty() && bytes.len() <= 65536, "private descriptor size invalid")?;
-        let descriptor: GuiDescriptor = serde_json::from_slice(bytes)
-            .map_err(|_| "private descriptor schema invalid")?;
-        ensure(descriptor.protoinputmultiplex_application_events == PROTOCOL_VERSION,
-            "private descriptor version invalid")?;
-        let now = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH)
-            .map_err(|_| "system clock invalid")?.as_millis();
-        ensure(u128::from(descriptor.expires_unix_ms) > now, "private descriptor expired")?;
-        ensure(descriptor.credential.len() == 64
-            && descriptor.credential.bytes().all(|b| b.is_ascii_hexdigit()),
-            "private descriptor credential invalid")?;
+        ensure(
+            !bytes.is_empty() && bytes.len() <= 65536,
+            "private descriptor size invalid",
+        )?;
+        let descriptor: GuiDescriptor =
+            serde_json::from_slice(bytes).map_err(|_| "private descriptor schema invalid")?;
+        ensure(
+            descriptor.protoinputmultiplex_application_events == PROTOCOL_VERSION,
+            "private descriptor version invalid",
+        )?;
+        let now = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .map_err(|_| "system clock invalid")?
+            .as_millis();
+        ensure(
+            u128::from(descriptor.expires_unix_ms) > now,
+            "private descriptor expired",
+        )?;
+        ensure(
+            descriptor.credential.len() == 64
+                && descriptor.credential.bytes().all(|b| b.is_ascii_hexdigit()),
+            "private descriptor credential invalid",
+        )?;
         // Native connect performs the exact loopback endpoint/origin validation.
         // This transient JSON value is never returned through report/log/query.
         serde_json::to_vec(&json!({"endpoint": descriptor.endpoint,
             "exact_origin": descriptor.exact_origin, "event_credential": descriptor.credential}))
-            .map_err(|_| "private descriptor conversion failed".to_owned())
+        .map_err(|_| "private descriptor conversion failed".to_owned())
     }
 
     #[derive(Serialize, PartialEq, Eq)]
@@ -681,7 +789,13 @@ mod fixture {
         source: SourceId,
     }
     fn identities(users: &[UserView]) -> Vec<IdentityEvidence> {
-        let mut result: Vec<_> = users.iter().map(|u| IdentityEvidence { id: u.id, source: u.source }).collect();
+        let mut result: Vec<_> = users
+            .iter()
+            .map(|u| IdentityEvidence {
+                id: u.id,
+                source: u.source,
+            })
+            .collect();
         result.sort_by_key(|u| u.id);
         result
     }
@@ -693,9 +807,15 @@ mod fixture {
         held_keys: Option<&'a Vec<KeyCode>>,
     }
     fn evidence(users: &[UserView]) -> Vec<UserEvidence<'_>> {
-        users.iter().map(|u| UserEvidence {
-            id: u.id, source: u.source, pointer: u.pointer.as_ref(), held_keys: u.held_keys.as_ref(),
-        }).collect()
+        users
+            .iter()
+            .map(|u| UserEvidence {
+                id: u.id,
+                source: u.source,
+                pointer: u.pointer.as_ref(),
+                held_keys: u.held_keys.as_ref(),
+            })
+            .collect()
     }
     fn query(api: Api, token: u64, short: bool) -> Check<Value> {
         status(unsafe { (api.query)(token) }, OK, "query")?;
@@ -711,7 +831,9 @@ mod fixture {
         let count = MESSAGES.get().saturating_add(1);
         MESSAGES.set(count);
         ensure(count <= 4096, "fixture incoming message budget exceeded")?;
-        serde_json::from_value(value).map(Some).map_err(|_| "invalid server message".to_owned())
+        serde_json::from_value(value)
+            .map(Some)
+            .map_err(|_| "invalid server message".to_owned())
     }
     fn await_ready(api: Api, token: u64, completion: HANDLE) -> Check {
         let deadline = Instant::now() + BOUND;
@@ -727,15 +849,25 @@ mod fixture {
             }
         }
     }
-    fn round_trip(api: Api, token: u64, completion: HANDLE,
-        command: ClientCommand, report: &Report) -> Check<ClientResponse>
-    {
+    fn round_trip(
+        api: Api,
+        token: u64,
+        completion: HANDLE,
+        command: ClientCommand,
+        report: &Report,
+    ) -> Check<ClientResponse> {
         let id = request(api, token, command, OK)?;
         // Admission and completion are separately recorded; no retry/replay.
-        report.record("command_locally_admitted", json!({"request_id": id, "remote_success": false}))?;
+        report.record(
+            "command_locally_admitted",
+            json!({"request_id": id, "remote_success": false}),
+        )?;
         let deadline = Instant::now() + BOUND;
         loop {
-            ensure(Instant::now() < deadline, "command response deadline exceeded; no replay")?;
+            ensure(
+                Instant::now() < deadline,
+                "command response deadline exceeded; no replay",
+            )?;
             if let Some(message) = next_message(api, token)? {
                 match message {
                     ServerMessage::Response { request_id, reply } => {
@@ -743,12 +875,18 @@ mod fixture {
                         match reply {
                             Reply::Ok { version, response } => {
                                 ensure(version == PROTOCOL_VERSION, "response version mismatch")?;
-                                report.record("command_remotely_completed", json!({"request_id": id}))?;
+                                report.record(
+                                    "command_remotely_completed",
+                                    json!({"request_id": id}),
+                                )?;
                                 return Ok(response);
                             }
                             Reply::Error { error, .. } => {
                                 // Failure.message is peer supplied: emit only its bounded typed code.
-                                report.record("command_remotely_rejected", json!({"request_id": id, "code": error.code}))?;
+                                report.record(
+                                    "command_remotely_rejected",
+                                    json!({"request_id": id, "code": error.code}),
+                                )?;
                                 return Err("remote command rejected".into());
                             }
                         }
@@ -769,7 +907,13 @@ mod fixture {
                     EVENTS.set(count);
                     ensure(count <= 4096, "fixture event budget exceeded")?;
                     match envelope.event {
-                        Event::Input { user, source, input, position, transform_revision } => {
+                        Event::Input {
+                            user,
+                            source,
+                            input,
+                            position,
+                            transform_revision,
+                        } => {
                             report.record("input_observed", json!({"epoch": envelope.epoch,
                                 "sequence": envelope.sequence, "user": user, "source": source,
                                 "input": input, "position": position, "transform_revision": transform_revision}))?;
@@ -783,13 +927,22 @@ mod fixture {
                 }
                 Ok(())
             }
-            Poll::Gap { after_sequence, lost_through } => {
-                report.record("stream_gap", json!({"after_sequence": after_sequence,
-                    "lost_through": lost_through, "gap_recovery_qualified": false}))?;
+            Poll::Gap {
+                after_sequence,
+                lost_through,
+            } => {
+                report.record(
+                    "stream_gap",
+                    json!({"after_sequence": after_sequence,
+                    "lost_through": lost_through, "gap_recovery_qualified": false}),
+                )?;
                 Err("unexpected stream gap; recovery outside fixture scope".into())
             }
             Poll::Ended { reason } => {
-                report.record("stream_ended", json!({"reason": reason, "remote_cleanup_confirmed": false}))?;
+                report.record(
+                    "stream_ended",
+                    json!({"reason": reason, "remote_cleanup_confirmed": false}),
+                )?;
                 Err("GUI stream ended during overlap".into())
             }
         }
@@ -811,17 +964,27 @@ mod fixture {
         use super::*;
         #[test]
         fn malformed_private_descriptor_has_constant_error() {
-            let error = convert_descriptor(br#"{"credential":"PRIVATE_MARKER","unknown":"PRIVATE_MARKER"}"#)
-                .err().expect("reject malformed descriptor");
+            let error = convert_descriptor(
+                br#"{"credential":"PRIVATE_MARKER","unknown":"PRIVATE_MARKER"}"#,
+            )
+            .err()
+            .expect("reject malformed descriptor");
             assert_eq!(error, "private descriptor schema invalid");
             assert!(!error.contains("PRIVATE_MARKER"));
         }
         #[test]
         fn evidence_excludes_names_and_preserves_exact_identity() {
             let user = UserView {
-                id: UserId { epoch: 91, local: 17 }, owned_by_recipient: false,
-                name: "PRIVATE_MARKER".into(), source: SourceId(44),
-                pointer: None, cursor: None, held_keys: Some(vec![KeyCode(4)]),
+                id: UserId {
+                    epoch: 91,
+                    local: 17,
+                },
+                owned_by_recipient: false,
+                name: "PRIVATE_MARKER".into(),
+                source: SourceId(44),
+                pointer: None,
+                cursor: None,
+                held_keys: Some(vec![KeyCode(4)]),
             };
             let users = [user];
             let value = serde_json::to_value(evidence(&users)).expect("typed evidence");

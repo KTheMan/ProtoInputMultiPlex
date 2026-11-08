@@ -29,6 +29,8 @@ jobs:
         run: cargo clippy -p mux-application-sdk --all-targets --features native-client --locked -- -D warnings
       - name: Test native event client feature (no ignored own-window qualification)
         run: cargo test -p mux-application-sdk --all-targets --features native-client --locked
+      - name: Test external native consumer parsing and evidence helpers
+        run: cargo test -p mux-application-sdk --example native_external_consumer --features native-client --locked
       - name: Check software renderer feature
         run: cargo clippy -p protoinputmultiplex --all-targets --features software-renderer --locked -- -D warnings
       - name: Test software renderer feature (no adapter initialization)
@@ -38,7 +40,7 @@ jobs:
       - name: Build native workspace (x64)
         run: cargo build --workspace --locked --features mux-application-sdk/native-client --target x86_64-pc-windows-msvc
       - name: Build x64 native lifecycle DLL and example with full default SDK features
-        run: cargo build -p mux-application-sdk --lib --example native_dll_lifecycle --features native-client --locked --target x86_64-pc-windows-msvc
+        run: cargo build -p mux-application-sdk --lib --example native_dll_lifecycle --example native_external_consumer --features native-client --locked --target x86_64-pc-windows-msvc
       - name: Build x64 renderer-only example
         run: cargo build -p protoinputmultiplex --example software_renderer_smoke --features software-renderer --locked --target x86_64-pc-windows-msvc
       - uses: ilammy/msvc-dev-cmd@v1
@@ -47,7 +49,7 @@ jobs:
       - name: Build native workspace (x86)
         run: cargo build --workspace --locked --features mux-application-sdk/native-client --target i686-pc-windows-msvc
       - name: Build x86 native lifecycle DLL and example with full default SDK features
-        run: cargo build -p mux-application-sdk --lib --example native_dll_lifecycle --features native-client --locked --target i686-pc-windows-msvc
+        run: cargo build -p mux-application-sdk --lib --example native_dll_lifecycle --example native_external_consumer --features native-client --locked --target i686-pc-windows-msvc
       - name: Package and compile-check native lifecycle artifacts
         shell: pwsh
         run: |
@@ -76,9 +78,11 @@ jobs:
             $dll = Join-Path $packageRoot 'mux_application_sdk.dll'
             $header = Join-Path $packageRoot 'protoinputmultiplex_application_sdk.h'
             $fixture = Join-Path $packageRoot 'native_dll_lifecycle.exe'
+            $externalFixture = Join-Path $packageRoot 'native_external_consumer.exe'
             Copy-Item -LiteralPath (Join-Path $debugRoot 'mux_application_sdk.dll') -Destination $dll
             Copy-Item -LiteralPath $headers[0] -Destination $header
             Copy-Item -LiteralPath (Join-Path $debugRoot 'examples/native_dll_lifecycle.exe') -Destination $fixture
+            Copy-Item -LiteralPath (Join-Path $debugRoot 'examples/native_external_consumer.exe') -Destination $externalFixture
             $toolsRoot = Join-Path $env:VCToolsInstallDir 'bin/Hostx64'
             $cl = Join-Path $toolsRoot ($architecture.Name + '/cl.exe')
             $dumpbin = Join-Path $toolsRoot 'x64/dumpbin.exe'
@@ -126,6 +130,7 @@ jobs:
               dll = @{ file = 'mux_application_sdk.dll'; sha256 = $dllHash }
               header = @{ file = 'protoinputmultiplex_application_sdk.h'; sha256 = $headerHash }
               fixture = @{ file = 'native_dll_lifecycle.exe'; sha256 = (Get-FileHash -LiteralPath $fixture -Algorithm SHA256).Hash.ToLowerInvariant() }
+              external_fixture = @{ file = 'native_external_consumer.exe'; sha256 = (Get-FileHash -LiteralPath $externalFixture -Algorithm SHA256).Hash.ToLowerInvariant() }
               qualification = 'compile-and-unit-tests-only; runtime qualification separate'
             } | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $packageRoot 'metadata.json') -Encoding utf8
           }
