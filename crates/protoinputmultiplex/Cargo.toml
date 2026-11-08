@@ -9,6 +9,11 @@ rust-version.workspace = true
 name = "protoinputmultiplex"
 path = "src/main.rs"
 
+[[example]]
+name = "software_renderer_smoke"
+path = "examples/software_renderer_smoke.rs"
+required-features = ["software-renderer"]
+
 [features]
 software-renderer = ["eframe/wgpu_no_default_features", "dep:wgpu"]
 cursor-presentation-evidence = ["mux-windows/cursor-presentation-evidence"]

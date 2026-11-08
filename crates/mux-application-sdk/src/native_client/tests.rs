@@ -204,6 +204,28 @@ fn fixture() -> (Host, RecipientId, EventReady, Vec<UserId>) {
         host.create_owned_user(owner, "One").unwrap(),
         host.create_owned_user(owner, "Two").unwrap(),
     ];
+    // Delegated input still requires the owning recipient's master consent.
+    // Remote Only(users) grants below remain separate from that owner consent.
+    host.approve_events(
+        owner,
+        Grant {
+            users: UserScope::AllOwned,
+            pointer_events: true,
+            key_events: true,
+            owned_windows: false,
+        },
+    )
+    .unwrap();
+    host.approve_controls(
+        owner,
+        ControlGrant {
+            users: UserScope::AllOwned,
+            pointer_input: true,
+            key_input: true,
+            ..Default::default()
+        },
+    )
+    .unwrap();
     let scope = UserScope::Only(users.iter().copied().collect());
     host.approve_events(
         native,
@@ -623,16 +645,24 @@ async fn interrupted_dirty_send_drops_without_close_or_later_payload_flush() {
 fn generated_header_native_exports_are_feature_selected_and_host_abi_stays_stable() {
     let plain = crate::abi_contract::render_header_for(false);
     let native = crate::abi_contract::render_header_for(true);
-    assert!(!plain.contains("pim_app_native_connect"));
     assert!(plain.contains("pim_app_host_create"));
     for function in crate::abi_contract::NATIVE_FUNCTIONS {
-        assert!(native.contains(function.name));
+        assert_eq!(plain.matches(function.name).count(), 0);
+        assert_eq!(native.matches(function.name).count(), 1);
     }
     let _: unsafe extern "C" fn(usize, *const u8, usize, *mut u64, *mut u32) -> i32 =
         ffi::pim_app_native_connect;
     let _: unsafe extern "C" fn(u64, *const u8, usize, *mut u64) -> i32 =
         ffi::pim_app_native_request;
+    let _: extern "C" fn(u64, u32, u32) -> i32 = ffi::pim_app_native_enable_input;
+    let _: extern "C" fn(u64) -> i32 = ffi::pim_app_native_drain;
+    let _: extern "C" fn(u64) -> i32 = ffi::pim_app_native_query;
+    let _: unsafe extern "C" fn(u64, *mut usize) -> i32 = ffi::pim_app_native_response_size;
+    let _: unsafe extern "C" fn(u64, *mut u8, usize, *mut usize) -> i32 =
+        ffi::pim_app_native_response_read;
+    let _: extern "C" fn(u64) -> i32 = ffi::pim_app_native_response_discard;
     let _: extern "C" fn(u64) -> i32 = ffi::pim_app_native_stop;
+    let _: extern "C" fn(u64) -> i32 = ffi::pim_app_native_destroy;
     let _: unsafe extern "C" fn(u64, *mut usize) -> i32 = ffi::pim_app_native_completion_handle;
     assert!(native.contains("PIM_APP_NATIVE_CLIENT_ABI_VERSION 2u"));
 }

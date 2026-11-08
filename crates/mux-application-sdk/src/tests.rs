@@ -904,7 +904,15 @@ mod abi {
         let _: unsafe extern "C" fn(u64, *mut usize) -> i32 = pim_app_response_size;
         let _: unsafe extern "C" fn(u64, *mut u8, usize, *mut usize) -> i32 = pim_app_response_read;
         let _: extern "C" fn(u64) -> i32 = pim_app_response_discard;
-        assert_eq!(C_HEADER, crate::abi_contract::render_header());
+        let native = cfg!(all(windows, feature = "native-client"));
+        assert_eq!(C_HEADER, crate::abi_contract::render_header_for(native));
+        assert_eq!(
+            C_HEADER.contains("PIM_APP_NATIVE_CLIENT_ABI_VERSION 2u"),
+            native
+        );
+        for function in crate::abi_contract::NATIVE_FUNCTIONS {
+            assert_eq!(C_HEADER.matches(function.name).count(), usize::from(native));
+        }
         for function in crate::abi_contract::FUNCTIONS {
             assert_eq!(C_HEADER.matches(function.name).count(), 1);
         }

@@ -37,15 +37,26 @@ jobs:
         run: cargo build -p protoinputmultiplex --features software-renderer --locked
       - name: Build native workspace (x64)
         run: cargo build --workspace --locked --features mux-application-sdk/native-client --target x86_64-pc-windows-msvc
+      - name: Build x64 native lifecycle DLL and example with full default SDK features
+        run: cargo build -p mux-application-sdk --lib --example native_dll_lifecycle --features native-client --locked --target x86_64-pc-windows-msvc
+      - name: Build x64 renderer-only example
+        run: cargo build -p protoinputmultiplex --example software_renderer_smoke --features software-renderer --locked --target x86_64-pc-windows-msvc
       - uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: x86
       - name: Build native workspace (x86)
         run: cargo build --workspace --locked --features mux-application-sdk/native-client --target i686-pc-windows-msvc
-      - name: Package each native-client DLL with its matching generated header
+      - name: Build x86 native lifecycle DLL and example with full default SDK features
+        run: cargo build -p mux-application-sdk --lib --example native_dll_lifecycle --features native-client --locked --target i686-pc-windows-msvc
+      - name: Package and compile-check native lifecycle artifacts
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
+          $nativeExports = @('pim_app_native_connect', 'pim_app_native_enable_input',
+            'pim_app_native_request', 'pim_app_native_drain', 'pim_app_native_query',
+            'pim_app_native_response_size', 'pim_app_native_response_read',
+            'pim_app_native_response_discard', 'pim_app_native_stop',
+            'pim_app_native_completion_handle', 'pim_app_native_destroy')
           foreach ($architecture in @(
             @{ Name = 'x64'; Triple = 'x86_64-pc-windows-msvc' },
             @{ Name = 'x86'; Triple = 'i686-pc-windows-msvc' }
@@ -64,8 +75,43 @@ jobs:
             New-Item -ItemType Directory -Path $packageRoot -ErrorAction Stop | Out-Null
             $dll = Join-Path $packageRoot 'mux_application_sdk.dll'
             $header = Join-Path $packageRoot 'protoinputmultiplex_application_sdk.h'
+            $fixture = Join-Path $packageRoot 'native_dll_lifecycle.exe'
             Copy-Item -LiteralPath (Join-Path $debugRoot 'mux_application_sdk.dll') -Destination $dll
             Copy-Item -LiteralPath $headers[0] -Destination $header
+            Copy-Item -LiteralPath (Join-Path $debugRoot 'examples/native_dll_lifecycle.exe') -Destination $fixture
+            $toolsRoot = Join-Path $env:VCToolsInstallDir 'bin/Hostx64'
+            $cl = Join-Path $toolsRoot ($architecture.Name + '/cl.exe')
+            $dumpbin = Join-Path $toolsRoot 'x64/dumpbin.exe'
+            $exports = & $dumpbin /nologo /exports $dll
+            if ($LASTEXITCODE -ne 0) { throw 'DLL export inspection failed' }
+            foreach ($symbol in $nativeExports) {
+              $found = @($exports | Where-Object { $_ -match ('^\s+\d+\s+[0-9A-Fa-f]+\s+[0-9A-Fa-f]+\s+' + [regex]::Escape($symbol) + '\s*$') })
+              if ($found.Count -ne 1) { throw "Missing or ambiguous native export: $symbol" }
+            }
+            $compileRoot = Join-Path $env:RUNNER_TEMP ('sdk-header-' + $architecture.Name)
+            New-Item -ItemType Directory -Path $compileRoot | Out-Null
+            $smoke = Join-Path $compileRoot 'header-smoke.c'
+            @'
+            #include "protoinputmultiplex_application_sdk.h"
+            _Static_assert(PIM_APP_NATIVE_CLIENT_ABI_VERSION == 2u, "native ABI");
+            _Static_assert(sizeof(size_t) == sizeof(void *) && sizeof(void *) == PIM_APP_EXPECTED_POINTER_SIZE, "pointer width");
+            _Static_assert(sizeof(uint64_t) == 8 && sizeof(uint32_t) == 4 && sizeof(int32_t) == 4, "ABI widths");
+            int32_t (PIM_APP_CALL *check_connect)(size_t,const uint8_t *,size_t,uint64_t *,uint32_t *) = pim_app_native_connect;
+            int32_t (PIM_APP_CALL *check_enable)(uint64_t,uint32_t,uint32_t) = pim_app_native_enable_input;
+            int32_t (PIM_APP_CALL *check_request)(uint64_t,const uint8_t *,size_t,uint64_t *) = pim_app_native_request;
+            int32_t (PIM_APP_CALL *check_drain)(uint64_t) = pim_app_native_drain;
+            int32_t (PIM_APP_CALL *check_query)(uint64_t) = pim_app_native_query;
+            int32_t (PIM_APP_CALL *check_size)(uint64_t,size_t *) = pim_app_native_response_size;
+            int32_t (PIM_APP_CALL *check_read)(uint64_t,uint8_t *,size_t,size_t *) = pim_app_native_response_read;
+            int32_t (PIM_APP_CALL *check_discard)(uint64_t) = pim_app_native_response_discard;
+            int32_t (PIM_APP_CALL *check_stop)(uint64_t) = pim_app_native_stop;
+            int32_t (PIM_APP_CALL *check_completion)(uint64_t,size_t *) = pim_app_native_completion_handle;
+            int32_t (PIM_APP_CALL *check_destroy)(uint64_t) = pim_app_native_destroy;
+          '@ | Set-Content -LiteralPath $smoke -Encoding utf8
+            $object = Join-Path $compileRoot 'header-smoke.obj'
+            $pointerSize = if ($architecture.Name -ceq 'x64') { 8 } else { 4 }
+            & $cl /nologo /std:c11 /W4 /WX /c "/DPIM_APP_EXPECTED_POINTER_SIZE=$pointerSize" "/I$packageRoot" "/Fo$object" $smoke
+            if ($LASTEXITCODE -ne 0) { throw "Header compilation failed for $($architecture.Name)" }
             $dllHash = (Get-FileHash -LiteralPath $dll -Algorithm SHA256).Hash.ToLowerInvariant()
             $headerHash = (Get-FileHash -LiteralPath $header -Algorithm SHA256).Hash.ToLowerInvariant()
             if ($headerHash -ne $headerHashes[0]) { throw 'Packaged header digest mismatch' }
@@ -73,13 +119,32 @@ jobs:
               source_commit = $env:GITHUB_SHA
               target = $architecture.Triple
               profile = 'debug'
-              features = @('mux-application-sdk/native-client')
+              features = @('native-ffi', 'native-windows', 'native-client')
+              default_features = $true
+              header_compile_and_native_exports_checked = $true
               native_client_abi_version = 2
               dll = @{ file = 'mux_application_sdk.dll'; sha256 = $dllHash }
               header = @{ file = 'protoinputmultiplex_application_sdk.h'; sha256 = $headerHash }
+              fixture = @{ file = 'native_dll_lifecycle.exe'; sha256 = (Get-FileHash -LiteralPath $fixture -Algorithm SHA256).Hash.ToLowerInvariant() }
               qualification = 'compile-and-unit-tests-only; runtime qualification separate'
             } | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $packageRoot 'metadata.json') -Encoding utf8
           }
+      - name: Package renderer-only example
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $root = 'target/sdk-preview/renderer'
+          New-Item -ItemType Directory -Path $root | Out-Null
+          $exe = Join-Path $root 'software_renderer_smoke.exe'
+          Copy-Item -LiteralPath 'target/x86_64-pc-windows-msvc/debug/examples/software_renderer_smoke.exe' -Destination $exe
+          [ordered]@{
+            source_commit = $env:GITHUB_SHA
+            target = 'x86_64-pc-windows-msvc'
+            profile = 'debug'
+            features = @('software-renderer')
+            fixture = @{ file = 'software_renderer_smoke.exe'; sha256 = (Get-FileHash -LiteralPath $exe -Algorithm SHA256).Hash.ToLowerInvariant() }
+            qualification = 'renderer readback only; no physical presentation or P1 fix claim'
+          } | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $root 'metadata.json') -Encoding utf8
       - name: Check Rust browser client
         run: cargo clippy -p mux-application-web --locked --target wasm32-unknown-unknown -- -D warnings
       - name: Build Rust browser client
@@ -108,3 +173,220 @@ jobs:
           path: |
             target/sdk-preview/
             target/application-web/
+
+  qualify-native-lifecycle:
+    needs: [check]
+    runs-on: windows-latest
+    timeout-minutes: 5
+    env:
+      QUALIFICATION_ROOT: ${{ runner.temp }}/native-lifecycle-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - name: Create fresh qualification evidence directory
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if (Test-Path -LiteralPath $env:QUALIFICATION_ROOT) { throw 'Evidence directory already exists' }
+          New-Item -ItemType Directory -Path $env:QUALIFICATION_ROOT | Out-Null
+      - uses: actions/download-artifact@v4
+        with:
+          name: application-sdk-preview-${{ github.sha }}
+          path: ${{ runner.temp }}/qualification-artifacts
+      - name: Qualify each exact native lifecycle specimen once
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          foreach ($architecture in @(
+            @{ Name = 'x64'; Triple = 'x86_64-pc-windows-msvc' },
+            @{ Name = 'x86'; Triple = 'i686-pc-windows-msvc' }
+          )) {
+            $name = $architecture.Name
+            $controller = [ordered]@{ status = 'FAIL'; reason = 'validation incomplete'; source_commit = $env:GITHUB_SHA;
+              architecture = $name; deadline_ms = 110000; exit_code = $null; timed_out = $false;
+              scope = 'controlled Host/Engine peer DLL lifecycle; no GUI Service/Web acceptance'; normal_unload_qualified = $false }
+            $timer = [Diagnostics.Stopwatch]::StartNew()
+            try {
+              $root = Join-Path $env:RUNNER_TEMP ('qualification-artifacts/sdk-preview/' + $name)
+              $metadata = Get-Content -LiteralPath (Join-Path $root 'metadata.json') -Raw | ConvertFrom-Json
+              if ($metadata.source_commit -cne $env:GITHUB_SHA -or $metadata.target -cne $architecture.Triple -or
+                  $metadata.profile -cne 'debug' -or $metadata.native_client_abi_version -ne 2 -or
+                  $metadata.default_features -ne $true -or $metadata.header_compile_and_native_exports_checked -ne $true -or
+                  (@($metadata.features) -join ',') -cne 'native-ffi,native-windows,native-client') { throw 'Metadata identity mismatch' }
+              foreach ($entry in @(
+                @{ Value = $metadata.dll; File = 'mux_application_sdk.dll' },
+                @{ Value = $metadata.header; File = 'protoinputmultiplex_application_sdk.h' },
+                @{ Value = $metadata.fixture; File = 'native_dll_lifecycle.exe' }
+              )) {
+                if ($entry.Value.file -cne $entry.File -or $entry.Value.sha256 -cnotmatch '^[0-9a-f]{64}$') { throw 'Invalid artifact metadata' }
+                $actual = (Get-FileHash -LiteralPath (Join-Path $root $entry.File) -Algorithm SHA256).Hash.ToLowerInvariant()
+                if ($actual -cne $entry.Value.sha256) { throw "Artifact digest mismatch: $($entry.File)" }
+              }
+              $controller.artifacts = $metadata
+              $exe = Join-Path $root 'native_dll_lifecycle.exe'
+              $dll = Join-Path $root 'mux_application_sdk.dll'
+              $report = Join-Path $env:QUALIFICATION_ROOT ($name + '-lifecycle.jsonl')
+              if (Test-Path -LiteralPath $report) { throw 'Report path already exists' }
+              $arguments = '--dll "{0}" --sha256 {1} --report "{2}"' -f $dll, $metadata.dll.sha256, $report
+              $process = Start-Process -FilePath $exe -ArgumentList $arguments -WorkingDirectory $root -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $env:QUALIFICATION_ROOT ($name + '-stdout.log')) -RedirectStandardError (Join-Path $env:QUALIFICATION_ROOT ($name + '-stderr.log'))
+              $controller.pid = $process.Id
+              if (-not $process.WaitForExit(110000)) {
+                $controller.timed_out = $true
+                throw 'External process deadline exceeded; partial evidence retained; no cleanup/unload claim'
+              }
+              $process.Refresh()
+              $controller.exit_code = $process.ExitCode
+              if ($process.ExitCode -ne 0) { throw "Fixture exited $($process.ExitCode); cleanup/unload not qualified" }
+              $records = @(Get-Content -LiteralPath $report | ForEach-Object { $_ | ConvertFrom-Json })
+              $expected = @('started', 'dll_hash_verified', 'dll_exports_resolved', 'owner_hidden_window_created',
+                'client_connected_completion_retained', 'ready_via_data_free_window_wake', 'subscribed_snapshot_folded',
+                'retained_short_buffer_and_default_off_checked', 'hwnd_destroyed_stop_returned', 'initial_destroy_schedule',
+                'actual_worker_os_thread_signaled_after_hwnd_death', 'client_destroyed_completion_closed',
+                'bounded_peer_joined', 'dll_unloaded_before_owner_exit', 'owner_ready_to_exit_after_unload')
+              if ($records.Count -ne $expected.Count) { throw 'Missing or extra lifecycle milestones' }
+              for ($i = 0; $i -lt $expected.Count; $i++) {
+                if ($records[$i].schema -cne 'pim.native-dll-lifecycle.v2' -or $records[$i].stage -cne $expected[$i]) { throw 'Lifecycle milestone order/schema mismatch' }
+              }
+              if ($records[1].detail.sha256 -cne $metadata.dll.sha256 -or $records[2].detail.native_exports -ne 11) { throw 'Lifecycle artifact identity mismatch' }
+              $controller.status = 'PASS'
+              $controller.reason = 'All lifecycle milestones and actual external exit 0 observed'
+              $controller.normal_unload_qualified = $true
+            } catch {
+              $controller.reason = $_.Exception.Message
+              throw
+            } finally {
+              $controller.elapsed_ms = $timer.ElapsedMilliseconds
+              $controller | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $env:QUALIFICATION_ROOT ($name + '-controller.json')) -Encoding utf8
+            }
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-lifecycle-qualification-${{ github.sha }}-${{ github.run_attempt }}
+          retention-days: 1
+          if-no-files-found: warn
+          path: |
+            ${{ env.QUALIFICATION_ROOT }}/*.json
+            ${{ env.QUALIFICATION_ROOT }}/*.jsonl
+            ${{ env.QUALIFICATION_ROOT }}/*.log
+
+  qualify-software-readback:
+    needs: [check]
+    runs-on: windows-latest
+    timeout-minutes: 5
+    env:
+      QUALIFICATION_ROOT: ${{ runner.temp }}/software-readback-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - name: Create fresh renderer evidence directory
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if (Test-Path -LiteralPath $env:QUALIFICATION_ROOT) { throw 'Evidence directory already exists' }
+          New-Item -ItemType Directory -Path $env:QUALIFICATION_ROOT | Out-Null
+      - uses: actions/download-artifact@v4
+        with:
+          name: application-sdk-preview-${{ github.sha }}
+          path: ${{ runner.temp }}/qualification-artifacts
+      - name: Qualify only the explicit Cpu DX12 renderer readback fixture once
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $controller = [ordered]@{ status = 'FAIL'; reason = 'validation incomplete'; source_commit = $env:GITHUB_SHA;
+            deadline_ms = 30000; exit_code = $null; timed_out = $false;
+            scope = 'own renderer readback; no physical presentation, full GUI, or P1 fix claim' }
+          $timer = [Diagnostics.Stopwatch]::StartNew()
+          try {
+            $root = Join-Path $env:RUNNER_TEMP 'qualification-artifacts/sdk-preview/renderer'
+            $metadata = Get-Content -LiteralPath (Join-Path $root 'metadata.json') -Raw | ConvertFrom-Json
+            if ($metadata.source_commit -cne $env:GITHUB_SHA -or $metadata.target -cne 'x86_64-pc-windows-msvc' -or
+                $metadata.profile -cne 'debug' -or @($metadata.features).Count -ne 1 -or
+                $metadata.features[0] -cne 'software-renderer' -or $metadata.fixture.file -cne 'software_renderer_smoke.exe' -or
+                $metadata.fixture.sha256 -cnotmatch '^[0-9a-f]{64}$') { throw 'Renderer metadata identity mismatch' }
+            $exe = Join-Path $root 'software_renderer_smoke.exe'
+            $hash = (Get-FileHash -LiteralPath $exe -Algorithm SHA256).Hash.ToLowerInvariant()
+            if ($hash -cne $metadata.fixture.sha256) { throw 'Renderer fixture digest mismatch' }
+            $controller.artifacts = $metadata
+            $report = Join-Path $env:QUALIFICATION_ROOT 'renderer-readback.jsonl'
+            if (Test-Path -LiteralPath $report) { throw 'Report path already exists' }
+            $arguments = '--renderer software-dx12 --report "{0}"' -f $report
+            $process = Start-Process -FilePath $exe -ArgumentList $arguments -WorkingDirectory $root -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $env:QUALIFICATION_ROOT 'renderer-stdout.log') -RedirectStandardError (Join-Path $env:QUALIFICATION_ROOT 'renderer-stderr.log')
+            $controller.pid = $process.Id
+            if (-not $process.WaitForExit(30000)) {
+              $controller.timed_out = $true
+              throw 'External renderer deadline exceeded; partial evidence retained'
+            }
+            $process.Refresh()
+            $controller.exit_code = $process.ExitCode
+            if ($process.ExitCode -ne 0) {
+              $controller.fixture_failure_classifications = @('unexpected_nonzero_exit')
+              if (Test-Path -LiteralPath $report -PathType Leaf) {
+                $partial = @(Get-Content -LiteralPath $report | ForEach-Object { $_ | ConvertFrom-Json })
+                $classified = @($partial | Where-Object { $_.milestone -cin @('unsupported', 'initialization_or_native_error', 'readback_error', 'timeout', 'incomplete', 'evidence_or_ui_error') } | ForEach-Object { $_.milestone })
+                if ($classified.Count -gt 0) { $controller.fixture_failure_classifications = $classified }
+              }
+              throw "Renderer fixture exited $($process.ExitCode)"
+            }
+            $records = @(Get-Content -LiteralPath $report | ForEach-Object { $_ | ConvertFrom-Json })
+            $allowed = @('requested_mode', 'actual_adapter_verified', 'ui_frame_progress', 'screenshot_requested',
+              'screenshot_readback_received', 'known_pattern_pixels_verified', 'close_requested', 'run_native_returned', 'clean_exit_ready')
+            $lastElapsed = -1
+            for ($i = 0; $i -lt $records.Count; $i++) {
+              $record = $records[$i]
+              if ($record.schema -cne 'software-renderer-smoke-v1' -or $record.sequence -ne ($i + 1) -or
+                  $null -eq $record.elapsed_ms -or $record.elapsed_ms -lt $lastElapsed -or
+                  $record.milestone -cnotin $allowed) { throw 'Invalid/error renderer evidence' }
+              $lastElapsed = $record.elapsed_ms
+            }
+            $single = @{}
+            foreach ($milestone in @($allowed | Where-Object { $_ -cne 'ui_frame_progress' })) {
+              $matches = @($records | Where-Object { $_.milestone -ceq $milestone })
+              if ($matches.Count -ne 1) { throw "Missing or duplicate renderer milestone: $milestone" }
+              $single[$milestone] = $matches[0]
+            }
+            $order = @('requested_mode', 'actual_adapter_verified', 'screenshot_requested', 'screenshot_readback_received',
+              'known_pattern_pixels_verified', 'close_requested', 'run_native_returned', 'clean_exit_ready')
+            for ($i = 1; $i -lt $order.Count; $i++) {
+              if ($single[$order[$i]].sequence -le $single[$order[$i - 1]].sequence) { throw 'Renderer milestone order mismatch' }
+            }
+            $frames = @($records | Where-Object { $_.milestone -ceq 'ui_frame_progress' })
+            if ($frames.Count -ne 6) { throw 'Six UI frame milestones required' }
+            for ($i = 0; $i -lt 6; $i++) {
+              if ($frames[$i].details.frame -ne ($i + 1) -or $frames[$i].sequence -le $single.actual_adapter_verified.sequence -or
+                  $frames[$i].sequence -ge $single.close_requested.sequence) { throw 'UI frame progression mismatch' }
+            }
+            $adapter = $single.actual_adapter_verified.details
+            $pixels = $single.known_pattern_pixels_verified.details
+            if ($single.requested_mode.details.mode -cne 'software-dx12' -or $single.requested_mode.details.hardware_fallback -ne $false -or
+                $adapter.backend -cne 'Dx12' -or $adapter.device_type -cne 'Cpu' -or $adapter.cpu_and_dx12 -ne $true -or
+                $pixels.verified_nonuniform -ne $true -or $pixels.physical_display_or_presentation_proof -ne $false -or
+                $single.close_requested.details.count -ne 1 -or $single.run_native_returned.details.normal -ne $true -or
+                $single.clean_exit_ready.details.intended_exit_code -ne 0) { throw 'Renderer success conditions absent' }
+            if (@($pixels.size_px).Count -ne 2 -or $pixels.size_px[0] -le 0 -or $pixels.size_px[1] -le 0 -or
+                @($pixels.regions).Count -ne 4) { throw 'Invalid renderer dimensions or regions' }
+            $colors = @('255,0,0,255', '0,255,0,255', '0,0,255,255', '255,255,0,255')
+            for ($i = 0; $i -lt 4; $i++) {
+              $region = $pixels.regions[$i]
+              if ($region.matching_pixels -ne 25 -or ($region.expected_rgba -join ',') -cne $colors[$i] -or
+                  @($region.actual_rgba).Count -ne 4) { throw 'Known color region evidence absent' }
+              for ($channel = 0; $channel -lt 4; $channel++) {
+                if ([Math]::Abs($region.actual_rgba[$channel] - $region.expected_rgba[$channel]) -gt 12) { throw 'Color sample mismatch' }
+              }
+            }
+            $controller.status = 'PASS'
+            $controller.reason = 'Cpu DX12 own-pattern readback milestones and actual external exit 0 observed'
+          } catch {
+            $controller.reason = $_.Exception.Message
+            throw
+          } finally {
+            $controller.elapsed_ms = $timer.ElapsedMilliseconds
+            $controller | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $env:QUALIFICATION_ROOT 'renderer-controller.json') -Encoding utf8
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: software-readback-qualification-${{ github.sha }}-${{ github.run_attempt }}
+          retention-days: 1
+          if-no-files-found: warn
+          path: |
+            ${{ env.QUALIFICATION_ROOT }}/*.json
+            ${{ env.QUALIFICATION_ROOT }}/*.jsonl
+            ${{ env.QUALIFICATION_ROOT }}/*.log
+            ${{ env.QUALIFICATION_ROOT }}/own-viewport-pattern*.png
