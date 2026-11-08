@@ -11,7 +11,15 @@ matching `.github/workflows/rust.yml` and the pinned Rust dependency. Acquire th
 archive before invoking packaging. The builder verifies the copied archive and
 tool version, uses this tool directly, and never installs a replacement CLI.
 Cargo builds retain `--locked`; dependency downloads use the existing build
-semantics. Metadata/notice collection uses the resulting offline Cargo cache.
+semantics. Before source-input freezing or compilation, the builder runs online
+`cargo metadata --locked --features mux-application-sdk/native-client
+--format-version 1 --filter-platform <target>` for each of the same x64, i686 and
+wasm32 platforms used by the final notice inventory. This warms the full
+workspace metadata graphs, including dependencies of packages that are not built
+for that platform, such as the i686 GUI graph. A failed prefetch stops before
+expensive builds. Final staging still requires `--locked --offline` metadata for
+all three platforms; the notice dependency union and offline rejection remain
+mandatory. This does not change features, the lockfile or compiler targets.
 
 Use a target directory without `sdk-release-build` or `sdk-release` children.
 Each native SDK builds in its own fresh Cargo target directory with full default

@@ -29,6 +29,13 @@ try {
     # A local sccache service is not a distribution prerequisite.
     $env:RUSTC_WRAPPER = ''
     $env:RUSTFLAGS = '-C target-feature=+crt-static'
+    # Notice inventory covers the entire workspace on every SDK platform,
+    # including dependencies of packages not compiled for that platform. Warm
+    # the exact final metadata graphs online before source freeze/build work.
+    foreach ($triple in @('x86_64-pc-windows-msvc', 'i686-pc-windows-msvc', 'wasm32-unknown-unknown')) {
+        & cargo --config 'build.rustc-wrapper=""' metadata --locked --features mux-application-sdk/native-client --format-version 1 --filter-platform $triple | Out-Null
+        if ($LASTEXITCODE -ne 0) { throw "Release metadata prefetch failed: $triple" }
+    }
     # Prepare existing compatibility patches before freezing compilation inputs.
     & (Join-Path $PSScriptRoot 'build-backend.ps1') -PrepareOnly
     if (!$?) { throw 'ProtoInput source preparation failed.' }

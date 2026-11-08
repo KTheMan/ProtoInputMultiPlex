@@ -513,6 +513,20 @@ impl Inner {
     }
 
     fn refresh(&mut self) -> Result<(), &'static str> {
+        let capacity = self
+            .ready
+            .as_ref()
+            .map_or(256, |ready| ready.limits.max_queue.min(256));
+        self.refresh_with_capacity(capacity)
+    }
+
+    fn refresh_with_capacity(&mut self, capacity: usize) -> Result<(), &'static str> {
+        // Validate app-selected backpressure before releasing input, fencing
+        // callbacks, clearing state, or admitting any network request.
+        let ready = self.ready.as_ref().ok_or("Missing event authority")?;
+        if capacity == 0 || capacity > ready.limits.max_queue || capacity > MAX_QUEUE {
+            return Err("Subscription capacity exceeds the current event authority bound");
+        }
         if self.awaiting_subscription {
             return Err("A fresh subscription snapshot is already pending");
         }
@@ -520,10 +534,6 @@ impl Inner {
         self.release(true);
         self.disable_inputs();
         self.state.disconnect();
-        let capacity = self
-            .ready
-            .as_ref()
-            .map_or(256, |ready| ready.limits.max_queue.min(256));
         let command = match self.subscription {
             Some(subscription) => ClientCommand::Resubscribe {
                 subscription,
@@ -596,6 +606,7 @@ impl Inner {
                     || ready.limits.max_poll_events == 0
                     || ready.limits.max_poll_events > MAX_POLL_EVENTS
                     || ready.limits.max_queue == 0
+                    || ready.limits.max_queue > MAX_QUEUE
                 {
                     return Err("Invalid or duplicate event handshake");
                 }
@@ -930,6 +941,18 @@ impl WebClient {
         self.inner.borrow_mut().refresh().map_err(JsValue::from_str)
     }
 
+    /// Explicitly select this subscription's bounded event queue capacity.
+    /// Valid values are 1 through the authenticated Ready max_queue and Core's
+    /// MAX_QUEUE. Invalid capacities leave input, callbacks and requests intact.
+    /// Success releases held input and requires a fresh snapshot and explicit
+    /// user/input selection, like refresh_subscription(). No automatic recovery.
+    pub fn refresh_subscription_with_capacity(&self, capacity: u32) -> Result<(), JsValue> {
+        self.inner
+            .borrow_mut()
+            .refresh_with_capacity(capacity as usize)
+            .map_err(JsValue::from_str)
+    }
+
     /// Explicit user selection. Selection always disables both production gates.
     pub fn select_user(&self, user_json: &str) -> Result<(), JsValue> {
         if user_json.len() > 128 {
@@ -1007,7 +1030,20 @@ impl WebClient {
             | ClientCommand::InputAtRevision { user, input, .. } => Some((*user, *input)),
             _ => None,
         };
-        if let Some((user, input)) = input {
+        // Atomic click uses the explicit local pointer selection/enable gate as
+        // well as the server-enforced per-user control grant. It has no local
+        // held transition to record after its atomic down/up.
+        if let ClientCommand::Click { user, .. } = &command
+            && inner.current_user(false).map_err(JsValue::from_str)? != *user
+        {
+            return Err(JsValue::from_str("Click user is not the selected pointer user"));
+        }
+        let production = match (&command, input) {
+            (_, Some((user, input))) => Some((user, input.is_key())),
+            (ClientCommand::Click { user, .. }, None) => Some((*user, false)),
+            _ => None,
+        };
+        if let Some((user, keys)) = production {
             let ready = inner
                 .ready
                 .as_ref()
@@ -1018,7 +1054,7 @@ impl WebClient {
                     .users()
                     .get(&user)
                     .is_some_and(|view| selects(&ready.controls, view))
-                || if input.is_key() {
+                || if keys {
                     !ready.controls.key_input
                 } else {
                     !ready.controls.pointer_input
@@ -1027,7 +1063,9 @@ impl WebClient {
                 return Err(JsValue::from_str("Input is outside the current grant"));
             }
             inner.send(command).map_err(JsValue::from_str)?;
-            inner.local.record(user, input);
+            if let Some((user, input)) = input {
+                inner.local.record(user, input);
+            }
             Ok(())
         } else {
             inner.send(command).map_err(JsValue::from_str)
