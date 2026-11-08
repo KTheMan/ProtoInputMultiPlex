@@ -58,8 +58,10 @@ fn remote_window_publication_and_exact_delegation_are_epoch_scoped() {
         host.dispatch(
             browser,
             request(ClientCommand::RemoteWindowQuery { reference })
-        ),
-        Err(Error::Denied)
+        )
+        .unwrap_err()
+        .code,
+        FailureCode::Denied
     );
     host.delegate_window(
         window,
@@ -113,8 +115,10 @@ fn remote_window_publication_and_exact_delegation_are_epoch_scoped() {
             request(ClientCommand::RemoteWindowQuery {
                 reference: RemoteWindowRef { epoch: 70, window },
             }),
-        ),
-        Err(Error::StaleRevision)
+        )
+        .unwrap_err()
+        .code,
+        FailureCode::StaleRevision
     );
     host.delegate_window(window, browser, WindowAccess::default())
         .unwrap();
@@ -122,8 +126,10 @@ fn remote_window_publication_and_exact_delegation_are_epoch_scoped() {
         host.dispatch(
             browser,
             request(ClientCommand::RemoteWindowQuery { reference })
-        ),
-        Err(Error::Denied)
+        )
+        .unwrap_err()
+        .code,
+        FailureCode::Denied
     );
 }
 
