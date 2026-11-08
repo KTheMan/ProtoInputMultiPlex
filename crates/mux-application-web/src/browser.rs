@@ -1203,11 +1203,11 @@ impl WebClient {
                             && ready.controls.window_control
                             && ready.epoch == reference.epoch
                     })
-                    || !inner
+                    || inner
                         .state
                         .windows()
                         .get(&reference.window)
-                        .is_some_and(|info| !info.observation.stale)
+                        .is_none_or(|info| info.observation.stale)
                 {
                     return Err(JsValue::from_str(
                         "Track and refresh this approved window first",
