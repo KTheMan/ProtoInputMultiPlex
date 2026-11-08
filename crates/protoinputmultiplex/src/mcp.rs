@@ -4445,7 +4445,11 @@ mod tests {
         assert!(tools.iter().any(|tool| tool.name == "profile_document"));
         assert!(tools.iter().any(|tool| tool.name == "app_preferences"));
         assert!(tools.iter().any(|tool| tool.name == "mapper_library"));
-        assert!(tools.iter().any(|tool| tool.name == "application_event_status"));
+        assert!(
+            tools
+                .iter()
+                .any(|tool| tool.name == "application_event_status")
+        );
         assert_eq!(tools.len(), 25, "unexpected MCP tool discovery set");
         for tool in tools {
             assert_eq!(
