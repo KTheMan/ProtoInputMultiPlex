@@ -1,0 +1,71 @@
+name: Native SDK export diagnostic
+on:
+  push:
+    branches: [diagnostics/native-sdk-exports-20261108]
+permissions:
+  contents: read
+env:
+  CARGO_BUILD_JOBS: '2'
+  CARGO_INCREMENTAL: '0'
+  CARGO_PROFILE_DEV_DEBUG: '0'
+jobs:
+  inspect:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x64
+            triple: x86_64-pc-windows-msvc
+          - arch: x86
+            triple: i686-pc-windows-msvc
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.92.0
+          targets: ${{ matrix.triple }}
+      - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: ${{ matrix.arch }}
+      - name: Build exact full-default native SDK library
+        run: cargo build -p mux-application-sdk --lib --features native-client --locked --target ${{ matrix.triple }}
+      - name: Preserve exact DLL and raw export table
+        shell: pwsh
+        env:
+          DIAGNOSTIC_ARCH: ${{ matrix.arch }}
+          DIAGNOSTIC_TRIPLE: ${{ matrix.triple }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $root = Join-Path $env:RUNNER_TEMP ('native-sdk-exports-' + $env:DIAGNOSTIC_ARCH)
+          if (Test-Path -LiteralPath $root) { throw 'Diagnostic directory already exists' }
+          New-Item -ItemType Directory -Path $root | Out-Null
+          $dll = Join-Path $root 'mux_application_sdk.dll'
+          Copy-Item -LiteralPath ('target/' + $env:DIAGNOSTIC_TRIPLE + '/debug/mux_application_sdk.dll') -Destination $dll
+          $exports = & dumpbin /nologo /exports $dll
+          $dumpExit = $LASTEXITCODE
+          $exports | Set-Content -LiteralPath (Join-Path $root 'exports.txt') -Encoding utf8
+          $exports | Write-Output
+          [ordered]@{
+            diagnostic_commit = $env:GITHUB_SHA
+            sdk_source_base = 'c9d093e8fc637ed49261c23c4dd78bb7996f9e76'
+            target = $env:DIAGNOSTIC_TRIPLE
+            profile = 'debug'
+            default_features = $true
+            features = @('native-ffi', 'native-windows', 'native-client')
+            dll_sha256 = (Get-FileHash -LiteralPath $dll -Algorithm SHA256).Hash.ToLowerInvariant()
+            export_text_sha256 = (Get-FileHash -LiteralPath (Join-Path $root 'exports.txt') -Algorithm SHA256).Hash.ToLowerInvariant()
+            dumpbin_exit = $dumpExit
+            scope = 'Static diagnostic only; no DLL loading or runtime qualification'
+          } | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $root 'metadata.json') -Encoding utf8
+          if ($dumpExit -ne 0) { throw 'Export table inspection failed' }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-sdk-export-${{ matrix.arch }}-${{ github.sha }}
+          retention-days: 1
+          if-no-files-found: warn
+          path: ${{ runner.temp }}/native-sdk-exports-${{ matrix.arch }}/
