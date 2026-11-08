@@ -3209,7 +3209,7 @@ mod tests {
             serde_json::from_value::<super::CaptureRequest>(serde_json::json!({"user":0,"pid":42}))
                 .is_err()
         );
-        assert_eq!(super::AgentServer::tool_router().list_all().len(), 24);
+        assert_eq!(super::AgentServer::tool_router().list_all().len(), 25);
     }
 
     #[test]
@@ -3240,7 +3240,7 @@ mod tests {
             );
         }
         let tools = super::AgentServer::tool_router().list_all();
-        assert_eq!(tools.len(), 24);
+        assert_eq!(tools.len(), 25);
         let capture = tools
             .iter()
             .find(|tool| tool.name == "routing_capture")
@@ -4445,7 +4445,8 @@ mod tests {
         assert!(tools.iter().any(|tool| tool.name == "profile_document"));
         assert!(tools.iter().any(|tool| tool.name == "app_preferences"));
         assert!(tools.iter().any(|tool| tool.name == "mapper_library"));
-        assert_eq!(tools.len(), 24, "unexpected MCP tool discovery set");
+        assert!(tools.iter().any(|tool| tool.name == "application_event_status"));
+        assert_eq!(tools.len(), 25, "unexpected MCP tool discovery set");
         for tool in tools {
             assert_eq!(
                 tool.input_schema
