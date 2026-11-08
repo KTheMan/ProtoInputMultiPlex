@@ -10,6 +10,8 @@ use std::collections::BTreeMap;
 
 pub(super) const MAX_OWNED_WINDOWS: usize = 16;
 
+pub(super) type Retirement = (Option<WindowId>, u64, Result<(), ClientError>);
+
 pub(super) struct OwnedWindows {
     engine: Engine,
     adapter: WindowAdapter,
@@ -196,10 +198,7 @@ impl OwnedWindows {
         }
     }
 
-    pub(super) fn retire(
-        &mut self,
-        token: u64,
-    ) -> Result<(Option<WindowId>, u64, Result<(), ClientError>), ClientError> {
+    pub(super) fn retire(&mut self, token: u64) -> Result<Retirement, ClientError> {
         let entry = self.entries.remove(&token).ok_or(ClientError::Window)?;
         let local_result = self
             .adapter
