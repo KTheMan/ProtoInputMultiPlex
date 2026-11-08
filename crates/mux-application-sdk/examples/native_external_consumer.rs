@@ -64,6 +64,13 @@ mod fixture {
     const NO_RESPONSE: i32 = 5;
     const BOUND: Duration = Duration::from_secs(15);
     type Check<T = ()> = Result<T, String>;
+
+    #[derive(Clone, Copy)]
+    enum RouteMode {
+        Input,
+        Window,
+        Hosted,
+    }
     type Connect = unsafe extern "C" fn(usize, *const u8, usize, *mut u64, *mut u32) -> i32;
     type Enable = unsafe extern "C" fn(u64, u32, u32) -> i32;
     type RequestFn = unsafe extern "C" fn(u64, *const u8, usize, *mut u64) -> i32;
@@ -247,6 +254,13 @@ mod fixture {
         let report_path = PathBuf::from(&args[7]);
         let window_route = route_args;
         let hosted_route = hosted_args;
+        let route = if hosted_route {
+            RouteMode::Hosted
+        } else if window_route {
+            RouteMode::Window
+        } else {
+            RouteMode::Input
+        };
         let key = if args.len() >= 10 && !window_route && !hosted_route {
             match args[9]
                 .to_str()
@@ -309,8 +323,7 @@ mod fixture {
                     &expected,
                     &descriptor_path,
                     key,
-                    window_route,
-                    hosted_route,
+                    route,
                     observation_seconds,
                     &report,
                 )?;
@@ -400,8 +413,7 @@ mod fixture {
         expected: &str,
         descriptor_path: &Path,
         key: Option<KeyCode>,
-        window_route: bool,
-        hosted_route: bool,
+        route: RouteMode,
         observation_seconds: u64,
         report: &Report,
     ) -> Check {
@@ -558,9 +570,9 @@ mod fixture {
         )?;
 
         await_ready(api, token, completion, report)?;
-        if hosted_route {
+        if matches!(route, RouteMode::Hosted) {
             exercise_hosted_route(api, token, completion, observation_seconds, report)?;
-        } else if window_route {
+        } else if matches!(route, RouteMode::Window) {
             exercise_owned_window_route(api, token, completion, hwnd, observation_seconds, report)?;
         } else {
             let response = round_trip(
