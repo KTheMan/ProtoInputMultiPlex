@@ -22,6 +22,36 @@ jobs:
           components: rustfmt, clippy
           targets: i686-pc-windows-msvc, wasm32-unknown-unknown
       - uses: ilammy/msvc-dev-cmd@v1
+      - name: Cache pinned browser binding tool archive
+        id: pim-wasm-bindgen-cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/wasm-bindgen-0.2.129/upstream.tar.gz
+          key: wasm-bindgen-0.2.129-x86_64-pc-windows-msvc-79e348c169d0c10c0b287647f1e753d0985353ca96800bc29be8f4261baf13e6
+      - name: Prepare verified browser binding tool before Cargo checks
+        env:
+          PIM_WASM_BINDGEN_CACHE_HIT: ${{ steps.pim-wasm-bindgen-cache.outputs.cache-hit }}
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $bindgenRoot = Join-Path $env:RUNNER_TEMP 'wasm-bindgen-0.2.129'
+          New-Item -ItemType Directory -Path $bindgenRoot -Force | Out-Null
+          $bindgenArchive = Join-Path $bindgenRoot 'upstream.tar.gz'
+          if ($env:PIM_WASM_BINDGEN_CACHE_HIT -cne 'true') {
+            & curl.exe --fail --location --silent --show-error --retry 2 --retry-delay 2 --retry-max-time 120 --connect-timeout 15 --max-time 60 --output $bindgenArchive 'https://github.com/wasm-bindgen/wasm-bindgen/releases/download/0.2.129/wasm-bindgen-0.2.129-x86_64-pc-windows-msvc.tar.gz'
+            if ($LASTEXITCODE -ne 0) { throw "Pinned binding tool download failed (curl exit $LASTEXITCODE)" }
+          }
+          if (-not (Test-Path -LiteralPath $bindgenArchive -PathType Leaf)) { throw 'Pinned binding tool archive missing' }
+          if ((Get-FileHash -LiteralPath $bindgenArchive -Algorithm SHA256).Hash.ToLowerInvariant() -cne '79e348c169d0c10c0b287647f1e753d0985353ca96800bc29be8f4261baf13e6') { throw 'Upstream binding tool digest mismatch' }
+          & tar -xzf $bindgenArchive -C $bindgenRoot
+          if ($LASTEXITCODE -ne 0) { throw 'Binding tool extraction failed' }
+          $bindgenExe = Join-Path $bindgenRoot 'wasm-bindgen-0.2.129-x86_64-pc-windows-msvc/wasm-bindgen.exe'
+          if (-not (Test-Path -LiteralPath $bindgenExe -PathType Leaf)) { throw 'Binding tool executable missing' }
+          $bindgenVersion = & $bindgenExe --version
+          if ($LASTEXITCODE -ne 0 -or $bindgenVersion -cne 'wasm-bindgen 0.2.129') { throw 'Binding tool version mismatch' }
+          $bindgenHash = (Get-FileHash -LiteralPath $bindgenExe -Algorithm SHA256).Hash.ToLowerInvariant()
+          "PIM_WASM_BINDGEN_EXE=$bindgenExe" | Out-File -LiteralPath $env:GITHUB_ENV -Encoding utf8 -Append
+          "PIM_WASM_BINDGEN_SHA256=$bindgenHash" | Out-File -LiteralPath $env:GITHUB_ENV -Encoding utf8 -Append
       - run: cargo fmt --all --check
       - run: cargo clippy --workspace --all-targets --locked -- -D warnings
       - run: cargo test --workspace --locked
@@ -160,16 +190,16 @@ jobs:
       - name: Generate matching browser bindings
         shell: pwsh
         run: |
+          $ErrorActionPreference = 'Stop'
           $bindgenRoot = Join-Path $env:RUNNER_TEMP 'wasm-bindgen-0.2.129'
-          New-Item -ItemType Directory -Path $bindgenRoot | Out-Null
-          $bindgenArchive = Join-Path $bindgenRoot 'upstream.tar.gz'
-          Invoke-WebRequest 'https://github.com/wasm-bindgen/wasm-bindgen/releases/download/0.2.129/wasm-bindgen-0.2.129-x86_64-pc-windows-msvc.tar.gz' -OutFile $bindgenArchive
-          if ((Get-FileHash -LiteralPath $bindgenArchive -Algorithm SHA256).Hash.ToLowerInvariant() -ne '79e348c169d0c10c0b287647f1e753d0985353ca96800bc29be8f4261baf13e6') { throw 'Upstream binding tool digest mismatch' }
-          tar -xzf $bindgenArchive -C $bindgenRoot
-          if ($LASTEXITCODE -ne 0) { throw 'Binding tool extraction failed' }
-          $bindgenExe = Join-Path $bindgenRoot 'wasm-bindgen-0.2.129-x86_64-pc-windows-msvc/wasm-bindgen.exe'
+          $expectedBindgenExe = Join-Path $bindgenRoot 'wasm-bindgen-0.2.129-x86_64-pc-windows-msvc/wasm-bindgen.exe'
+          if ([string]::IsNullOrWhiteSpace($env:PIM_WASM_BINDGEN_EXE) -or $env:PIM_WASM_BINDGEN_EXE -cne $expectedBindgenExe) { throw 'Verified binding tool path mismatch' }
+          $bindgenExe = $env:PIM_WASM_BINDGEN_EXE
+          if (-not (Test-Path -LiteralPath $bindgenExe -PathType Leaf)) { throw 'Verified binding tool executable missing' }
+          if ($env:PIM_WASM_BINDGEN_SHA256 -cnotmatch '^[0-9a-f]{64}$' -or
+              (Get-FileHash -LiteralPath $bindgenExe -Algorithm SHA256).Hash.ToLowerInvariant() -cne $env:PIM_WASM_BINDGEN_SHA256) { throw 'Verified binding tool executable digest mismatch' }
           $bindgenVersion = & $bindgenExe --version
-          if ($LASTEXITCODE -ne 0 -or $bindgenVersion -ne 'wasm-bindgen 0.2.129') { throw 'Binding tool version mismatch' }
+          if ($LASTEXITCODE -ne 0 -or $bindgenVersion -cne 'wasm-bindgen 0.2.129') { throw 'Binding tool version mismatch' }
           & $bindgenExe --target web --out-dir target/application-web/pkg --out-name mux_application_web target/wasm32-unknown-unknown/debug/mux_application_web.wasm
           if ($LASTEXITCODE -ne 0) { throw 'Browser binding generation failed' }
           Copy-Item crates/mux-application-web/example/index.html,crates/mux-application-web/example/bootstrap.js target/application-web/
