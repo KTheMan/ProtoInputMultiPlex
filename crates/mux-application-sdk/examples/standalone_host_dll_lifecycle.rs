@@ -132,8 +132,14 @@ mod fixture {
 
     pub fn main() {
         let args: Vec<_> = std::env::args_os().skip(1).collect();
-        if args.len() != 6 || args[0] != "--dll" || args[2] != "--dll-sha256" || args[4] != "--report" {
-            eprintln!("usage: standalone_host_dll_lifecycle --dll ABSOLUTE_OWN_SDK_DLL --dll-sha256 64_HEX --report NEW_ABSOLUTE_JSONL");
+        if args.len() != 6
+            || args[0] != "--dll"
+            || args[2] != "--dll-sha256"
+            || args[4] != "--report"
+        {
+            eprintln!(
+                "usage: standalone_host_dll_lifecycle --dll ABSOLUTE_OWN_SDK_DLL --dll-sha256 64_HEX --report NEW_ABSOLUTE_JSONL"
+            );
             std::process::exit(10);
         }
         let dll = PathBuf::from(&args[1]);
@@ -174,21 +180,33 @@ mod fixture {
                     sequence: 0,
                 };
                 let result = catch_unwind(AssertUnwindSafe(|| {
-                    report.record("started", json!({"cycles": CYCLES, "expected_sha256": expected,
+                    report.record(
+                        "started",
+                        json!({"cycles": CYCLES, "expected_sha256": expected,
                         "previous_owner_os_exit_and_join_confirmed": cycle > 1,
-                        "runtime_claim": "standalone Host DLL lifetime prerequisite only"}))?;
+                        "runtime_claim": "standalone Host DLL lifetime prerequisite only"}),
+                    )?;
                     exercise_owner(&dll, &expected, cycle, &mut report)?;
                     // Remain alive after unload until parent has observed the real
                     // owner thread object as nonsignaled and explicitly acknowledges.
-                    unloaded_tx.send(()).map_err(|_| "parent unload receiver gone")?;
-                    ack_rx.recv_timeout(Duration::from_secs(10))
+                    unloaded_tx
+                        .send(())
+                        .map_err(|_| "parent unload receiver gone")?;
+                    ack_rx
+                        .recv_timeout(Duration::from_secs(10))
                         .map_err(|_| "post-unload acknowledgment timeout")?;
-                    report.record("post_unload_barrier_acknowledged", json!({
-                        "parent_observed_owner_os_thread_alive": true}))?;
-                    report.record("owner_ready_to_exit_after_unload", json!({
+                    report.record(
+                        "post_unload_barrier_acknowledged",
+                        json!({
+                        "parent_observed_owner_os_thread_alive": true}),
+                    )?;
+                    report.record(
+                        "owner_ready_to_exit_after_unload",
+                        json!({
                         "result": "REQUIRES_PARENT_OS_WAIT_JOIN_AND_EXTERNAL_EXIT_0",
                         "gui_service_qualified": false, "native_web_same_users_qualified": false,
-                        "hardware_qualified": false, "full_sdk_complete": false}))
+                        "hardware_qualified": false, "full_sdk_complete": false}),
+                    )
                 }));
                 match result {
                     Ok(Ok(())) => (),
@@ -215,7 +233,8 @@ mod fixture {
                     0,
                     0,
                 )
-            } == 0 || raw.is_null()
+            } == 0
+                || raw.is_null()
             {
                 std::process::exit(60);
             }
@@ -232,7 +251,8 @@ mod fixture {
                     Err(mpsc::RecvTimeoutError::Disconnected) => std::process::exit(60),
                 }
             }
-            if unsafe { WaitForSingleObject(completion.as_raw_handle() as HANDLE, 0) } != WAIT_TIMEOUT
+            if unsafe { WaitForSingleObject(completion.as_raw_handle() as HANDLE, 0) }
+                != WAIT_TIMEOUT
                 || ack_tx.send(()).is_err()
             {
                 std::process::exit(60);
@@ -278,43 +298,79 @@ mod fixture {
             "SHA-256 known-answer self-check failed",
         )?;
         // Deny ordinary write/delete sharing and hold this exact file through unload.
-        let locked = OpenOptions::new().read(true).share_mode(1).open(dll)
+        let locked = OpenOptions::new()
+            .read(true)
+            .share_mode(1)
+            .open(dll)
             .map_err(|e| format!("open exact DLL: {e}"))?;
         let path = dll.canonicalize().map_err(|e| e.to_string())?;
-        ensure(path.extension().and_then(|e| e.to_str())
-            .is_some_and(|e| e.eq_ignore_ascii_case("dll")), "DLL extension required")?;
+        ensure(
+            path.extension()
+                .and_then(|e| e.to_str())
+                .is_some_and(|e| e.eq_ignore_ascii_case("dll")),
+            "DLL extension required",
+        )?;
         let mut bytes = Vec::new();
-        (&locked).take(256 * 1024 * 1024 + 1).read_to_end(&mut bytes)
+        (&locked)
+            .take(256 * 1024 * 1024 + 1)
+            .read_to_end(&mut bytes)
             .map_err(|e| e.to_string())?;
-        ensure(bytes.len() <= 256 * 1024 * 1024, "DLL exceeds fixture bound")?;
+        ensure(
+            bytes.len() <= 256 * 1024 * 1024,
+            "DLL exceeds fixture bound",
+        )?;
         ensure(sha256(&bytes) == expected, "DLL SHA-256 mismatch")?;
         drop(bytes);
-        report.record("dll_hash_verified", json!({"path": path, "sha256": expected}))?;
+        report.record(
+            "dll_hash_verified",
+            json!({"path": path, "sha256": expected}),
+        )?;
         let name = wide(path.as_os_str())?;
-        ensure(unsafe { GetModuleHandleW(name.as_ptr()) }.is_null(), "DLL already loaded")?;
+        ensure(
+            unsafe { GetModuleHandleW(name.as_ptr()) }.is_null(),
+            "DLL already loaded",
+        )?;
         let module = unsafe {
-            LoadLibraryExW(name.as_ptr(), null_mut(),
-                LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR | LOAD_LIBRARY_SEARCH_SYSTEM32)
+            LoadLibraryExW(
+                name.as_ptr(),
+                null_mut(),
+                LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR | LOAD_LIBRARY_SEARCH_SYSTEM32,
+            )
         };
         ensure(!module.is_null(), "LoadLibraryExW failed")?;
         let mut loaded = vec![0u16; 32768];
         let length = unsafe { GetModuleFileNameW(module, loaded.as_mut_ptr(), loaded.len() as u32) }
             as usize;
-        ensure(length != 0 && length < loaded.len(), "loaded module path unavailable")?;
-        let loaded_path = PathBuf::from(String::from_utf16(&loaded[..length]).map_err(|e| e.to_string())?);
-        ensure(loaded_path.canonicalize().map_err(|e| e.to_string())? == path,
-            "loader resolved another DLL")?;
+        ensure(
+            length != 0 && length < loaded.len(),
+            "loaded module path unavailable",
+        )?;
+        let loaded_path =
+            PathBuf::from(String::from_utf16(&loaded[..length]).map_err(|e| e.to_string())?);
+        ensure(
+            loaded_path.canonicalize().map_err(|e| e.to_string())? == path,
+            "loader resolved another DLL",
+        )?;
         {
             let api = unsafe { Api::load(module)? };
             ensure(unsafe { (api.version)() } == 1, "base ABI version mismatch")?;
-            report.record("base_exports_resolved", json!({"base_exports": 8,
-                "calling_convention": "C", "base_abi_version": 1}))?;
+            report.record(
+                "base_exports_resolved",
+                json!({"base_exports": 8,
+                "calling_convention": "C", "base_abi_version": 1}),
+            )?;
             exercise_host(&api, cycle, report)?;
         } // All DLL function pointers leave scope before unloading; never re-enter.
         ensure(unsafe { FreeLibrary(module) } != 0, "FreeLibrary failed")?;
-        ensure(unsafe { GetModuleHandleW(name.as_ptr()) }.is_null(), "DLL still loaded after release")?;
-        report.record("dll_unloaded_owner_still_alive", json!({"live_host_handles": 0,
-            "outstanding_sdk_calls": 0, "future_sdk_entry_fenced": true}))?;
+        ensure(
+            unsafe { GetModuleHandleW(name.as_ptr()) }.is_null(),
+            "DLL still loaded after release",
+        )?;
+        report.record(
+            "dll_unloaded_owner_still_alive",
+            json!({"live_host_handles": 0,
+            "outstanding_sdk_calls": 0, "future_sdk_entry_fenced": true}),
+        )?;
         drop(locked);
         Ok(())
     }
@@ -322,21 +378,48 @@ mod fixture {
     fn exercise_host(api: &Api, cycle: u32, report: &mut Report) -> Check {
         let bounds = json!({"left": 0, "top": 0, "right": 800, "bottom": 600});
         let screens = serde_json::to_vec(&json!({"revision": 1, "desktop": bounds,
-            "screens": [bounds]})).map_err(|e| e.to_string())?;
+            "screens": [bounds]}))
+        .map_err(|e| e.to_string())?;
         let mut host = 0;
-        status(unsafe { (api.create)(7000 + u64::from(cycle), screens.as_ptr(), screens.len(), &mut host) },
-            OK, "host create")?;
+        status(
+            unsafe {
+                (api.create)(
+                    7000 + u64::from(cycle),
+                    screens.as_ptr(),
+                    screens.len(),
+                    &mut host,
+                )
+            },
+            OK,
+            "host create",
+        )?;
         ensure(host != 0, "host token missing")?;
-        report.record("host_created", json!({"export": "pim_app_host_create", "workers": 0}))?;
+        report.record(
+            "host_created",
+            json!({"export": "pim_app_host_create", "workers": 0}),
+        )?;
         let register = serde_json::to_vec(&json!({"version": 1, "command": {
             "kind": "register_recipient", "local_identity": "standalone-dll-fixture"}}))
-            .map_err(|e| e.to_string())?;
-        status(unsafe { (api.host_call)(host, register.as_ptr(), register.len()) }, OK, "trusted setup")?;
-        status(unsafe { (api.host_call)(host, register.as_ptr(), register.len()) }, BUSY, "pending reply busy")?;
+        .map_err(|e| e.to_string())?;
+        status(
+            unsafe { (api.host_call)(host, register.as_ptr(), register.len()) },
+            OK,
+            "trusted setup",
+        )?;
+        status(
+            unsafe { (api.host_call)(host, register.as_ptr(), register.len()) },
+            BUSY,
+            "pending reply busy",
+        )?;
         let registered = retained(api, host)?;
-        ensure(registered["response"]["kind"] == "recipient_registered", "recipient reply kind")?;
-        let recipient = registered["response"]["recipient"].as_u64()
-            .filter(|id| *id != 0).ok_or("missing bound recipient")?;
+        ensure(
+            registered["response"]["kind"] == "recipient_registered",
+            "recipient reply kind",
+        )?;
+        let recipient = registered["response"]["recipient"]
+            .as_u64()
+            .filter(|id| *id != 0)
+            .ok_or("missing bound recipient")?;
         // Registration defaults export consent off. Snapshot requires an enabled
         // event grant even with zero users; approve observation of Only(empty),
         // without control authority, and consume the host acknowledgment first.
@@ -344,53 +427,121 @@ mod fixture {
             "kind": "approve_events", "recipient": recipient, "grant": {
                 "users": {"kind": "only", "users": []}, "pointer_events": true,
                 "key_events": false, "owned_windows": false}}}))
-            .map_err(|e| e.to_string())?;
-        status(unsafe { (api.host_call)(host, approve.as_ptr(), approve.len()) }, OK, "explicit event approval")?;
+        .map_err(|e| e.to_string())?;
+        status(
+            unsafe { (api.host_call)(host, approve.as_ptr(), approve.len()) },
+            OK,
+            "explicit event approval",
+        )?;
         let approved = retained(api, host)?;
-        ensure(approved["response"]["kind"] == "acknowledged", "event approval reply kind")?;
-        report.record("trusted_setup_retained_reply_checked", json!({"short_copy_retained": true,
-            "pending_call_busy": true, "bound_identity_from_host_reply": true}))?;
+        ensure(
+            approved["response"]["kind"] == "acknowledged",
+            "event approval reply kind",
+        )?;
+        report.record(
+            "trusted_setup_retained_reply_checked",
+            json!({"short_copy_retained": true,
+            "pending_call_busy": true, "bound_identity_from_host_reply": true}),
+        )?;
         let snapshot = serde_json::to_vec(&json!({"version": 1, "command": {"kind": "snapshot"}}))
             .map_err(|e| e.to_string())?;
-        status(unsafe { (api.client_call)(host, recipient, snapshot.as_ptr(), snapshot.len()) }, OK, "client snapshot")?;
+        status(
+            unsafe { (api.client_call)(host, recipient, snapshot.as_ptr(), snapshot.len()) },
+            OK,
+            "client snapshot",
+        )?;
         let value = retained(api, host)?;
-        ensure(value["response"]["kind"] == "snapshot"
-            && value["response"]["snapshot"]["users"].as_array().is_some_and(|users| users.is_empty()),
-            "expected empty standalone snapshot")?;
-        status(unsafe { (api.client_call)(host, recipient, snapshot.as_ptr(), snapshot.len()) }, OK, "queue discard reply")?;
+        ensure(
+            value["response"]["kind"] == "snapshot"
+                && value["response"]["snapshot"]["users"]
+                    .as_array()
+                    .is_some_and(|users| users.is_empty()),
+            "expected empty standalone snapshot",
+        )?;
+        status(
+            unsafe { (api.client_call)(host, recipient, snapshot.as_ptr(), snapshot.len()) },
+            OK,
+            "queue discard reply",
+        )?;
         status(unsafe { (api.discard)(host) }, OK, "response discard")?;
         let mut size = 0;
-        status(unsafe { (api.size)(host, &mut size) }, NO_RESPONSE, "discard consumed reply")?;
+        status(
+            unsafe { (api.size)(host, &mut size) },
+            NO_RESPONSE,
+            "discard consumed reply",
+        )?;
         // Destroy must also consume a retained reply; no explicit End call masks
         // the actual exported host_destroy cleanup path under qualification.
-        status(unsafe { (api.client_call)(host, recipient, snapshot.as_ptr(), snapshot.len()) }, OK, "queue before destroy")?;
+        status(
+            unsafe { (api.client_call)(host, recipient, snapshot.as_ptr(), snapshot.len()) },
+            OK,
+            "queue before destroy",
+        )?;
         status(unsafe { (api.destroy)(host) }, OK, "host destroy")?;
-        status(unsafe { (api.size)(host, &mut size) }, INVALID_HANDLE, "destroy invalidated response token")?;
-        status(unsafe { (api.destroy)(host) }, INVALID_HANDLE, "destroy stale token")?;
-        report.record("host_destroyed_retained_reply_retired", json!({"destroy_status": OK,
+        status(
+            unsafe { (api.size)(host, &mut size) },
+            INVALID_HANDLE,
+            "destroy invalidated response token",
+        )?;
+        status(
+            unsafe { (api.destroy)(host) },
+            INVALID_HANDLE,
+            "destroy stale token",
+        )?;
+        report.record(
+            "host_destroyed_retained_reply_retired",
+            json!({"destroy_status": OK,
             "stale_handle_status": INVALID_HANDLE, "client_call_exercised": true,
-            "response_discard_exercised": true, "virtual_users_created": 0}))
+            "response_discard_exercised": true, "virtual_users_created": 0}),
+        )
     }
 
     fn retained(api: &Api, host: u64) -> Check<Value> {
         let mut needed = 0;
-        status(unsafe { (api.size)(host, &mut needed) }, OK, "response size")?;
+        status(
+            unsafe { (api.size)(host, &mut needed) },
+            OK,
+            "response size",
+        )?;
         ensure((2..=MAX_RESPONSE).contains(&needed), "response bound")?;
         let original = needed;
         let mut tiny = [0u8; 1];
-        status(unsafe { (api.read)(host, tiny.as_mut_ptr(), tiny.len(), &mut needed) }, SHORT, "short copy")?;
+        status(
+            unsafe { (api.read)(host, tiny.as_mut_ptr(), tiny.len(), &mut needed) },
+            SHORT,
+            "short copy",
+        )?;
         ensure(needed == original, "short copy changed size")?;
-        status(unsafe { (api.read)(host, null_mut(), 0, &mut needed) }, SHORT, "zero capacity retry")?;
+        status(
+            unsafe { (api.read)(host, null_mut(), 0, &mut needed) },
+            SHORT,
+            "zero capacity retry",
+        )?;
         ensure(needed == original, "retry changed size")?;
         let mut queried = 0;
-        status(unsafe { (api.size)(host, &mut queried) }, OK, "retained size")?;
+        status(
+            unsafe { (api.size)(host, &mut queried) },
+            OK,
+            "retained size",
+        )?;
         ensure(queried == original, "reply not retained")?;
         let mut bytes = vec![0u8; needed];
-        status(unsafe { (api.read)(host, bytes.as_mut_ptr(), bytes.len(), &mut needed) }, OK, "full copy")?;
+        status(
+            unsafe { (api.read)(host, bytes.as_mut_ptr(), bytes.len(), &mut needed) },
+            OK,
+            "full copy",
+        )?;
         ensure(needed == original, "full copy changed size")?;
-        status(unsafe { (api.size)(host, &mut queried) }, NO_RESPONSE, "copy consumed reply")?;
+        status(
+            unsafe { (api.size)(host, &mut queried) },
+            NO_RESPONSE,
+            "copy consumed reply",
+        )?;
         let value: Value = serde_json::from_slice(&bytes).map_err(|e| e.to_string())?;
-        ensure(value["status"] == "ok" && value["version"] == 1, "invalid successful reply envelope")?;
+        ensure(
+            value["status"] == "ok" && value["version"] == 1,
+            "invalid successful reply envelope",
+        )?;
         Ok(value)
     }
     // Small dependency-free SHA-256 used only to bind this explicitly supplied file.
