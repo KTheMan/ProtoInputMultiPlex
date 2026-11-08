@@ -1036,7 +1036,9 @@ impl WebClient {
         if let ClientCommand::Click { user, .. } = &command
             && inner.current_user(false).map_err(JsValue::from_str)? != *user
         {
-            return Err(JsValue::from_str("Click user is not the selected pointer user"));
+            return Err(JsValue::from_str(
+                "Click user is not the selected pointer user",
+            ));
         }
         let production = match (&command, input) {
             (_, Some((user, input))) => Some((user, input.is_key())),
