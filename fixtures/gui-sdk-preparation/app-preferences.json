@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "launch_minimized": false,
+  "minimize_to_tray": false,
+  "close_to_tray": false,
+  "launch_at_login": false,
+  "load_profile_at_startup": false,
+  "save_profile_on_exit": false,
+  "shortcuts": []
+}

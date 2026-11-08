@@ -71,16 +71,37 @@ every SDK call must have returned, and no later call may enter it. Never wait
 or clean up under `DllMain`. Exiting an owner thread with outstanding clients
 abandons state and forbids DLL unload for the remaining process lifetime.
 Local completion or TCP EOF does not establish remote producer-hold cleanup;
-that needs authoritative host evidence. Actual DLL load/stop/destroy/unload
-qualification is still pending.
+that needs authoritative host evidence. The bounded native-client DLL lifecycle
+case passed on hosted x64/x86 Windows runners as described below; it does not
+qualify every native window operation or the standalone Host C ABI lifetime.
 
 ## Builds and qualification
 
-The baseline at `0a82187085aced04eed723d7d03ccfc586a02073` passed independently
-reviewed hosted formatting, strict workspace Clippy, workspace tests, x64/x86
-builds, WebAssembly checks, and matching browser binding generation. Its 19
-ignored tests were not executed. The receiver roster, native push client and
-software renderer require their own current-source checks and runtime gates.
+The source at `da98ada7ad454a254fc578e7d2f0016c14679106` passed hosted
+formatting, strict workspace Clippy, workspace tests, x64/x86 builds, native-client
+feature checks, software-renderer feature checks, WebAssembly checks and matching
+browser binding generation in [run 42467047475](https://github.com/KTheMan/ProtoInputMultiPlex/actions/runs/42467047475).
+The pull-request merge commit `1652cbf980b5b23dfe649024fa043f76c10e8e11`
+has the identical Git tree. Ignored tests were not executed. The
+[independent bounded assessment](hosted-sdk-prerequisites-assessment-2026-11-08.json)
+binds the source, artifacts and limits. These results apply only to this tree;
+later standalone Host registry changes require new build and lifecycle checks.
+
+That same run separately exercised the actual native-client DLL on hosted x64
+and x86 Windows: explicit connection to a controlled peer, a data-free window
+wake, snapshot folding, retained short-buffer reads, default-off local input,
+Stop on owned-window destruction, actual worker-thread completion, successful
+Destroy and DLL unload before the owner thread exited. Both external processes
+exited normally with code 0. The peer was a fixture Host, not the GUI Service;
+this does not establish native/Web use of the same GUI-created users or the
+separate standalone Host C ABI lifetime.
+
+The renderer-only fixture separately selected a CPU/DX12 adapter, advanced six
+UI frames, read back its own four-color pattern, verified 25 pixels in each
+region, closed once and exited normally with code 0. This validates that bounded
+hosted renderer readback, not the full GUI, physical presentation, workstation
+safety or a fix for the reported freeze. Independent acceptance and the exact
+source/artifact evidence must remain attached to these bounded results.
 
 Generated source-formatting and dependency-lock artifacts are candidates for
 review and commit. Checks on a runner's modified tree do not qualify the

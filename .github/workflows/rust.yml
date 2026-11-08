@@ -52,6 +52,16 @@ jobs:
           $bindgenHash = (Get-FileHash -LiteralPath $bindgenExe -Algorithm SHA256).Hash.ToLowerInvariant()
           "PIM_WASM_BINDGEN_EXE=$bindgenExe" | Out-File -LiteralPath $env:GITHUB_ENV -Encoding utf8 -Append
           "PIM_WASM_BINDGEN_SHA256=$bindgenHash" | Out-File -LiteralPath $env:GITHUB_ENV -Encoding utf8 -Append
+      - name: Validate qualification controller syntax before compilation
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -c "import ast,pathlib; p=pathlib.Path('scripts/qualify-gui-pair.py'); ast.parse(p.read_text(encoding='utf-8'),filename=str(p))"
+          if ($LASTEXITCODE -ne 0) { throw 'Paired controller Python syntax rejected' }
+          $pimParseTokens = $null
+          $pimParseErrors = $null
+          [System.Management.Automation.Language.Parser]::ParseFile((Join-Path $env:GITHUB_WORKSPACE 'scripts/qualify-standalone-host.ps1'), [ref]$pimParseTokens, [ref]$pimParseErrors) | Out-Null
+          if ($pimParseErrors.Count -ne 0) { throw 'Standalone controller PowerShell syntax rejected' }
       - run: cargo fmt --all --check
       - run: cargo clippy --workspace --all-targets --locked -- -D warnings
       - run: cargo test --workspace --locked
@@ -70,7 +80,7 @@ jobs:
       - name: Build native workspace (x64)
         run: cargo build --workspace --locked --features mux-application-sdk/native-client --target x86_64-pc-windows-msvc
       - name: Build x64 native lifecycle DLL and example with full default SDK features
-        run: cargo build -p mux-application-sdk --lib --example native_dll_lifecycle --example native_external_consumer --features native-client --locked --target-dir target/sdk-native-build --target x86_64-pc-windows-msvc
+        run: cargo build -p mux-application-sdk --lib --example native_dll_lifecycle --example native_external_consumer --example standalone_host_dll_lifecycle --features native-client --locked --target-dir target/sdk-native-build --target x86_64-pc-windows-msvc
       - name: Build x64 renderer-only example
         run: cargo build -p protoinputmultiplex --example software_renderer_smoke --features software-renderer --locked --target x86_64-pc-windows-msvc
       - uses: ilammy/msvc-dev-cmd@v1
@@ -79,7 +89,7 @@ jobs:
       - name: Build native workspace (x86)
         run: cargo build --workspace --locked --features mux-application-sdk/native-client --target i686-pc-windows-msvc
       - name: Build x86 native lifecycle DLL and example with full default SDK features
-        run: cargo build -p mux-application-sdk --lib --example native_dll_lifecycle --example native_external_consumer --features native-client --locked --target-dir target/sdk-native-build --target i686-pc-windows-msvc
+        run: cargo build -p mux-application-sdk --lib --example native_dll_lifecycle --example native_external_consumer --example standalone_host_dll_lifecycle --features native-client --locked --target-dir target/sdk-native-build --target i686-pc-windows-msvc
       - name: Package and compile-check native lifecycle artifacts
         shell: pwsh
         run: |
@@ -109,10 +119,12 @@ jobs:
             $header = Join-Path $packageRoot 'protoinputmultiplex_application_sdk.h'
             $fixture = Join-Path $packageRoot 'native_dll_lifecycle.exe'
             $externalFixture = Join-Path $packageRoot 'native_external_consumer.exe'
+            $standaloneHostFixture = Join-Path $packageRoot 'standalone_host_dll_lifecycle.exe'
             Copy-Item -LiteralPath (Join-Path $debugRoot 'mux_application_sdk.dll') -Destination $dll
             Copy-Item -LiteralPath $headers[0] -Destination $header
             Copy-Item -LiteralPath (Join-Path $debugRoot 'examples/native_dll_lifecycle.exe') -Destination $fixture
             Copy-Item -LiteralPath (Join-Path $debugRoot 'examples/native_external_consumer.exe') -Destination $externalFixture
+            Copy-Item -LiteralPath (Join-Path $debugRoot 'examples/standalone_host_dll_lifecycle.exe') -Destination $standaloneHostFixture
             $toolsRoot = Join-Path $env:VCToolsInstallDir 'bin/Hostx64'
             $cl = Join-Path $toolsRoot ($architecture.Name + '/cl.exe')
             $dumpbin = Join-Path $toolsRoot 'x64/dumpbin.exe'
@@ -164,6 +176,7 @@ jobs:
               header = @{ file = 'protoinputmultiplex_application_sdk.h'; sha256 = $headerHash }
               fixture = @{ file = 'native_dll_lifecycle.exe'; sha256 = (Get-FileHash -LiteralPath $fixture -Algorithm SHA256).Hash.ToLowerInvariant() }
               external_fixture = @{ file = 'native_external_consumer.exe'; sha256 = (Get-FileHash -LiteralPath $externalFixture -Algorithm SHA256).Hash.ToLowerInvariant() }
+              standalone_host_fixture = @{ file = 'standalone_host_dll_lifecycle.exe'; sha256 = (Get-FileHash -LiteralPath $standaloneHostFixture -Algorithm SHA256).Hash.ToLowerInvariant() }
               qualification = 'compile-and-unit-tests-only; runtime qualification separate'
             } | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $packageRoot 'metadata.json') -Encoding utf8
           }
@@ -182,6 +195,23 @@ jobs:
             features = @('software-renderer')
             fixture = @{ file = 'software_renderer_smoke.exe'; sha256 = (Get-FileHash -LiteralPath $exe -Algorithm SHA256).Hash.ToLowerInvariant() }
             qualification = 'renderer readback only; no physical presentation or P1 fix claim'
+          } | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $root 'metadata.json') -Encoding utf8
+      - name: Package exact full GUI software executable
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $root = 'target/sdk-preview/gui'
+          New-Item -ItemType Directory -Path $root -ErrorAction Stop | Out-Null
+          $exe = Join-Path $root 'protoinputmultiplex.exe'
+          Copy-Item -LiteralPath 'target/debug/protoinputmultiplex.exe' -Destination $exe
+          [ordered]@{
+            source_commit = $env:GITHUB_SHA
+            target = 'x86_64-pc-windows-msvc'
+            profile = 'debug'
+            features = @('software-renderer')
+            default_features = $true
+            executable = @{ file = 'protoinputmultiplex.exe'; sha256 = (Get-FileHash -LiteralPath $exe -Algorithm SHA256).Hash.ToLowerInvariant() }
+            qualification = 'compiled full GUI; initial paired hosted smoke is separate; no P1 or full SDK claim'
           } | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $root 'metadata.json') -Encoding utf8
       - name: Check Rust browser client
         run: cargo clippy -p mux-application-web --locked --target wasm32-unknown-unknown -- -D warnings
@@ -203,6 +233,20 @@ jobs:
           & $bindgenExe --target web --out-dir target/application-web/pkg --out-name mux_application_web target/wasm32-unknown-unknown/debug/mux_application_web.wasm
           if ($LASTEXITCODE -ne 0) { throw 'Browser binding generation failed' }
           Copy-Item crates/mux-application-web/example/index.html,crates/mux-application-web/example/bootstrap.js target/application-web/
+      - name: Bind exact Rust WASM distribution hashes
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $root = 'target/application-web'
+          $files = @('index.html', 'bootstrap.js', 'pkg/mux_application_web.js', 'pkg/mux_application_web_bg.wasm')
+          [ordered]@{
+            source_commit = $env:GITHUB_SHA
+            rust_wasm = $true
+            target = 'wasm32-unknown-unknown'
+            profile = 'debug'
+            wasm_bindgen_version = '0.2.129'
+            files = @($files | ForEach-Object { @{ file = $_; sha256 = (Get-FileHash -LiteralPath (Join-Path $root $_) -Algorithm SHA256).Hash.ToLowerInvariant() } })
+          } | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $root 'metadata.json') -Encoding utf8
       - uses: actions/upload-artifact@v4
         with:
           name: application-sdk-preview-${{ github.sha }}
@@ -441,3 +485,86 @@ jobs:
             ${{ runner.temp }}/software-readback-${{ github.run_id }}-${{ github.run_attempt }}/*.jsonl
             ${{ runner.temp }}/software-readback-${{ github.run_id }}-${{ github.run_attempt }}/*.log
             ${{ runner.temp }}/software-readback-${{ github.run_id }}-${{ github.run_attempt }}/own-viewport-pattern*.png
+
+  qualify-gui-native-wasm-initial-pair:
+    needs: [check, qualify-native-lifecycle, qualify-software-readback, qualify-standalone-host]
+    runs-on: windows-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: application-sdk-preview-${{ github.sha }}
+          path: ${{ runner.temp }}/gui-pair-artifacts
+      - name: Parse exact controller source on disposable hosted runner
+        shell: pwsh
+        run: python -c "import ast,pathlib; p=pathlib.Path('scripts/qualify-gui-pair.py'); ast.parse(p.read_text(encoding='utf-8'),filename=str(p))"
+      - name: Run single owned GUI native and actual Rust WASM initial pair
+        env:
+          PAIR_ROOT: ${{ runner.temp }}/gui-pair-${{ github.run_id }}-${{ github.run_attempt }}
+          PAIR_PUBLIC: ${{ runner.temp }}/gui-pair-public-${{ github.run_id }}-${{ github.run_attempt }}
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:RUNNER_ENVIRONMENT -cne 'github-hosted') { throw 'Standard disposable hosted runner required' }
+          if ((Test-Path -LiteralPath $env:PAIR_ROOT) -or (Test-Path -LiteralPath $env:PAIR_PUBLIC)) { throw 'Fresh owned roots required' }
+          New-Item -ItemType Directory -Path $env:PAIR_PUBLIC -ErrorAction Stop | Out-Null
+          $result = Join-Path $env:PAIR_PUBLIC 'public-result.json'
+          $artifacts = Join-Path $env:RUNNER_TEMP 'gui-pair-artifacts'
+          $controllerRoot = Join-Path $env:RUNNER_TEMP ('gui-pair-controller-' + $env:GITHUB_RUN_ID + '-' + $env:GITHUB_RUN_ATTEMPT)
+          New-Item -ItemType Directory -Path $controllerRoot -ErrorAction Stop | Out-Null
+          $arguments = '"scripts/qualify-gui-pair.py" --artifacts "{0}" --source "{1}" --run "{2}" --public-result "{3}" --commit {4}' -f $artifacts, $env:GITHUB_WORKSPACE, $env:PAIR_ROOT, $result, $env:GITHUB_SHA
+          # This stopwatch/process fence is independent of Python, GUI, native owner,
+          # browser, report locks, fsync and every child-side timeout. No termination.
+          $clock = [Diagnostics.Stopwatch]::StartNew()
+          $process = Start-Process -FilePath (Get-Command python).Source -ArgumentList $arguments -WorkingDirectory $env:GITHUB_WORKSPACE -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $controllerRoot 'stdout.log') -RedirectStandardError (Join-Path $controllerRoot 'stderr.log')
+          if (-not $process.WaitForExit(240000)) {
+            [ordered]@{ schema = 'pim.gui-pair.external-deadline.v1'; status = 'FAIL'; source_commit = $env:GITHUB_SHA; timed_out = $true; elapsed_ms = $clock.ElapsedMilliseconds; no_kill_restart_or_retry = $true; full_sdk_complete = $false; release_qualified = $false } | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $env:PAIR_PUBLIC 'external-deadline.json') -Encoding utf8
+            throw 'External initial pair deadline exceeded; private partial evidence preserved; no kill/restart/retry'
+          }
+          $process.Refresh()
+          if ($process.ExitCode -ne 0 -or -not (Test-Path -LiteralPath $result -PathType Leaf)) { throw 'Initial pair failed; private partial evidence preserved' }
+          $receipt = Get-Content -LiteralPath $result -Raw | ConvertFrom-Json
+          if ($receipt.status -cne 'PASS' -or $receipt.source_commit -cne $env:GITHUB_SHA -or $receipt.gui_exit_code -ne 0 -or $receipt.native_exit_code -ne 0) { throw 'Initial pair receipt incomplete' }
+      - name: Upload only sanitized initial pair decisions
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gui-native-wasm-initial-pair-${{ github.sha }}-${{ github.run_attempt }}
+          retention-days: 1
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/gui-pair-public-${{ github.run_id }}-${{ github.run_attempt }}/public-result.json
+            ${{ runner.temp }}/gui-pair-public-${{ github.run_id }}-${{ github.run_attempt }}/external-deadline.json
+
+  qualify-standalone-host:
+    needs: [check]
+    runs-on: windows-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: application-sdk-preview-${{ github.sha }}
+          path: ${{ runner.temp }}/standalone-host-artifacts
+      - name: Qualify each standalone Host DLL specimen once
+        shell: pwsh
+        run: >-
+          ./scripts/qualify-standalone-host.ps1
+          -ArtifactsRoot "${{ runner.temp }}/standalone-host-artifacts"
+          -EvidenceRoot "${{ runner.temp }}/standalone-host-${{ github.run_id }}-${{ github.run_attempt }}"
+          -SourceCommit "${{ github.sha }}"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-lifecycle-qualification-${{ github.sha }}-${{ github.run_attempt }}-standalone-host
+          retention-days: 1
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/standalone-host-${{ github.run_id }}-${{ github.run_attempt }}/*.json
+            ${{ runner.temp }}/standalone-host-${{ github.run_id }}-${{ github.run_attempt }}/*.jsonl
+            ${{ runner.temp }}/standalone-host-${{ github.run_id }}-${{ github.run_attempt }}/*.log

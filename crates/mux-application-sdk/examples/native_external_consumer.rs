@@ -489,7 +489,7 @@ mod fixture {
             json!({"registered_wake": wake}),
         )?;
 
-        await_ready(api, token, completion)?;
+        await_ready(api, token, completion, report)?;
         let response = round_trip(
             api,
             token,
@@ -835,7 +835,7 @@ mod fixture {
             .map(Some)
             .map_err(|_| "invalid server message".to_owned())
     }
-    fn await_ready(api: Api, token: u64, completion: HANDLE) -> Check {
+    fn await_ready(api: Api, token: u64, completion: HANDLE, report: &Report) -> Check {
         let deadline = Instant::now() + BOUND;
         loop {
             ensure(Instant::now() < deadline, "Ready deadline exceeded")?;
@@ -843,7 +843,11 @@ mod fixture {
             if let Some(message) = next_message(api, token)? {
                 ensure(WAKES.get() > 0, "Ready arrived without data-free wake")?;
                 return match message {
-                    ServerMessage::Ready { .. } => Ok(()),
+                    ServerMessage::Ready { ready } => report.record(
+                        "gui_ready",
+                        json!({"version": ready.version, "epoch": ready.epoch,
+                            "events": ready.events, "controls": ready.controls}),
+                    ),
                     _ => Err("expected Ready".into()),
                 };
             }

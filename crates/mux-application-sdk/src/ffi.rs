@@ -8,6 +8,7 @@ use serde::{Serialize, de::DeserializeOwned};
 use std::{
     cell::RefCell,
     collections::BTreeMap,
+    mem::ManuallyDrop,
     panic::{AssertUnwindSafe, catch_unwind},
     sync::atomic::{AtomicU64, Ordering},
 };
@@ -26,7 +27,13 @@ struct Entry {
 struct Registry {
     hosts: BTreeMap<u64, Entry>,
 }
-thread_local! { static REGISTRY: RefCell<Registry> = const { RefCell::new(Registry { hosts: BTreeMap::new() }) }; }
+// Explicit owner-thread destruction is required before thread exit or DLL unload.
+// Never run Host/WindowAdapter cleanup from an implicit DLL TLS detach callback.
+// An orphaned entry intentionally leaks; it cannot be recovered by another thread
+// and forfeits unload permission for this loaded SDK instance's process lifetime.
+type HostRegistry = RefCell<ManuallyDrop<Registry>>;
+const _: () = assert!(!std::mem::needs_drop::<HostRegistry>());
+thread_local! { static REGISTRY: HostRegistry = const { RefCell::new(ManuallyDrop::new(Registry { hosts: BTreeMap::new() })) }; }
 
 fn boundary(handle: Option<u64>, operation: impl FnOnce() -> i32) -> i32 {
     match catch_unwind(AssertUnwindSafe(operation)) {
@@ -161,6 +168,7 @@ pub extern "C" fn pim_app_host_destroy(host: u64) -> i32 {
             let Ok(mut registry) = registry.try_borrow_mut() else {
                 return Status::Busy as i32;
             };
+            // Removal synchronously drops Host: Engine::end, then native bindings.
             if registry.hosts.remove(&host).is_some() {
                 Status::Ok as i32
             } else {

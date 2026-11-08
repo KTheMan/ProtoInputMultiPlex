@@ -34,3 +34,7 @@ required-features = ["native-client"]
 [[example]]
 name = "native_external_consumer"
 required-features = ["native-client"]
+
+[[example]]
+name = "standalone_host_dll_lifecycle"
+required-features = ["native-client"]
