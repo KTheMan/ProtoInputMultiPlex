@@ -71,6 +71,7 @@ class WindowPair(base.Pair):
             "uncertain_late_action": False, "old_epoch_rejected": False,
             "host_pending_expired": False,
             "post_revoke_rejected": False, "rust_mcp_fixture_invoked": False,
+            "window_timeout_phase": "not_started", "window_timeout_probe": {},
         }
         self.expected_timeout = False
 
@@ -210,22 +211,50 @@ class WindowPair(base.Pair):
         require(len(actions) == 3 and actions[0]["control"] == {"kind": "restore"} and actions[1]["control"] == {"kind": "restore"} and actions[2]["control"] == {"kind": "move_resize", "value": bounds})
         require(actions[2]["os_bounds"] == [bounds["left"], bounds["top"], bounds["right"], bounds["bottom"]] and actions[2]["os_visible"])
         self.result["positive_owner_actions"] = 3
+        self.result["window_timeout_phase"] = "await_owner_pause"
         self.wait(lambda: self.native_detail("native_window_timeout_ready"))
+        self.result["window_timeout_phase"] = "control_pending"
         sent_at = time.monotonic()
         reply, _ = self.tool("control", epoch=self.epoch, window_id=self.reference["window"], control={"kind": "restore"})
         elapsed = time.monotonic() - sent_at
+        content = reply.get("content")
+        first = content[0] if isinstance(content, list) and content else None
+        text = first.get("text") if isinstance(first, dict) else None
+        self.result["window_timeout_phase"] = "control_receipt"
+        self.result["window_timeout_probe"] = {
+            "control_error": reply.get("isError") is True,
+            "window_uncertain_text": isinstance(text, str) and "window action outcome uncertain" in text.lower(),
+            "control_elapsed_ms": min(60000, max(0, int(elapsed * 1000))),
+            "control_within_deadline": elapsed < 5.5,
+        }
         require(reply.get("isError") is True and "window action outcome uncertain" in reply["content"][0]["text"].lower() and elapsed < 5.5)
+        self.result["window_timeout_phase"] = "inspect_pending"
         reply, value = self.tool("inspect")
+        self.result["window_timeout_phase"] = "inspect_receipt"
+        self.result["window_timeout_probe"].update({
+            "inspect_error": reply.get("isError") is True,
+            "inspect_available": isinstance(value, dict) and value.get("available") is True,
+            "inspect_needs_refresh": isinstance(value, dict) and value.get("needs_refresh") is True,
+            "inspect_empty_windows": isinstance(value, dict) and value.get("windows") == [],
+        })
         require(not reply.get("isError") and value["available"] is True and value["needs_refresh"] is True and value["windows"] == [])
         self.result["host_pending_expired"] = True
         # An outward uncertain result alone is insufficient: the native owner
         # must record the late fourth OS action after the paused message loop.
+        self.result["window_timeout_phase"] = "await_late_owner_action"
         late = self.wait(lambda: self.native_detail("native_window_timeout_late_action"), 15)
+        self.result["window_timeout_phase"] = "late_owner_receipt"
+        self.result["window_timeout_probe"].update({
+            "late_fourth_action": late.get("fourth_action_executed_after_owner_pause") is True,
+            "late_action_count_four": late.get("actions") == 4,
+            "late_receipt_rejected": late.get("late_receipt_rejected") is True,
+        })
         require(late["fourth_action_executed_after_owner_pause"] and late["actions"] == 4 and late["late_receipt_rejected"])
         actions = [x["detail"] for x in self.native_rows() if x["stage"] == "native_window_action_executed"]
         require(len(actions) == 4 and actions[3]["control"] == {"kind": "restore"})
         self.expected_timeout = True
         self.result["uncertain_late_action"] = True
+        self.result["window_timeout_phase"] = "complete"
 
     def sample(self, step):
         if step == 6:

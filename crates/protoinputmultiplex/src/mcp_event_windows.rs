@@ -296,9 +296,11 @@ impl Peer {
                                     if hosted_action {
                                         self.terminal = true;
                                         self.last_issue = Some("hosted action outcome uncertain; do not replay");
+                                        rejected = true;
+                                        bail!("Action outcome uncertain; inspect fresh authority without replay")
                                     }
                                     rejected = true;
-                                    bail!("Action outcome uncertain; inspect fresh authority without replay")
+                                    bail!("Window action outcome uncertain; refresh after a new owner observation without replay")
                                 }
                                 rejected = true;
                                 bail!("Window request rejected ({:?})", error.code)
@@ -309,6 +311,17 @@ impl Peer {
                     ServerMessage::EventStream { subscription, stream }
                         if Some(subscription) == self.subscription =>
                     {
+                        if self.needs_refresh
+                            && self.state.state() == &mux_application_sdk::StreamState::Disconnected
+                        {
+                            // An uncertain window action cleared tracked authority.
+                            // Drain this superseded stream until explicit Resubscribe;
+                            // it must neither restore state nor fence diagnostic Inspect.
+                            if matches!(stream, mux_application_sdk::Poll::Ended { .. }) {
+                                bail!("Event authority ended");
+                            }
+                            continue;
+                        }
                         match self.state.fold_poll(stream)? {
                             FoldOutcome::Applied(_) => self.hosted_receipt.reconcile(&self.state)?,
                             FoldOutcome::NeedsSnapshot => {
@@ -730,6 +743,203 @@ pub(crate) fn run(path: PathBuf) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    fn recovery_snapshot(revision: u64) -> mux_application_sdk::Snapshot {
+        let bounds = mux_core::desktop::Bounds {
+            left: 0,
+            top: 0,
+            right: 640,
+            bottom: 480,
+        };
+        mux_application_sdk::Snapshot {
+            version: PROTOCOL_VERSION,
+            epoch: 71,
+            through_sequence: revision,
+            users: Vec::new(),
+            screens: mux_application_sdk::ScreenState {
+                revision,
+                desktop: bounds,
+                screens: vec![bounds],
+            },
+            windows: Vec::new(),
+            capabilities: Vec::new(),
+            mode: mux_application_sdk::ApplicationMode::Cooperative,
+            hosted: None,
+        }
+    }
+
+    #[tokio::test]
+    async fn uncertain_window_drains_old_stream_until_explicit_refresh_but_hosted_is_terminal() {
+        timeout(Duration::from_secs(5), async {
+            for hosted in [false, true] {
+                let listener = tokio::net::TcpListener::bind((Ipv4Addr::LOCALHOST, 0))
+                    .await
+                    .unwrap();
+                let address = listener.local_addr().unwrap();
+                let subscription = serde_json::from_value(json!(1)).unwrap();
+                let fresh = serde_json::from_value(json!(2)).unwrap();
+                let server = tokio::spawn(async move {
+                    let (stream, _) = listener.accept().await.unwrap();
+                    let mut socket = tokio_tungstenite::accept_async(stream).await.unwrap();
+                    for step in 1..=if hosted { 1 } else { 5 } {
+                        let Message::Text(text) = socket.next().await.unwrap().unwrap() else {
+                            panic!("Expected one request without action replay");
+                        };
+                        let message: ClientMessage = serde_json::from_str(text.as_str()).unwrap();
+                        assert_eq!(message.request_id, step);
+                        let reply = if step == 1 {
+                            assert!(matches!(
+                                message.request.command,
+                                ClientCommand::RemoteWindowControl { .. }
+                                    | ClientCommand::HostedViewport { .. }
+                            ));
+                            Reply::Error {
+                                version: PROTOCOL_VERSION,
+                                error: mux_application_sdk::Failure {
+                                    code: FailureCode::Uncertain,
+                                    message: "owner receipt deadline".into(),
+                                },
+                            }
+                        } else {
+                            let stream = match step {
+                                2 => mux_application_sdk::Poll::Events {
+                                    events: vec![mux_application_sdk::Envelope {
+                                        version: PROTOCOL_VERSION,
+                                        epoch: 71,
+                                        sequence: 2,
+                                        event: mux_application_sdk::Event::ScreensChanged {
+                                            screens: recovery_snapshot(2).screens,
+                                        },
+                                    }],
+                                },
+                                3 | 4 => mux_application_sdk::Poll::Gap {
+                                    after_sequence: 2,
+                                    lost_through: 3,
+                                },
+                                _ => mux_application_sdk::Poll::Ended {
+                                    reason: mux_application_sdk::EndReason::Revoked,
+                                },
+                            };
+                            socket
+                                .send(Message::Text(
+                                    serde_json::to_string(&ServerMessage::EventStream {
+                                        subscription: if step == 5 { fresh } else { subscription },
+                                        stream,
+                                    })
+                                    .unwrap()
+                                    .into(),
+                                ))
+                                .await
+                                .unwrap();
+                            let response = if step == 3 {
+                                assert!(matches!(
+                                    message.request.command,
+                                    ClientCommand::Resubscribe { subscription: old, .. } if old == subscription
+                                ));
+                                ClientResponse::Subscribed {
+                                    subscription: fresh,
+                                    snapshot: recovery_snapshot(3),
+                                }
+                            } else {
+                                assert_eq!(message.request.command, ClientCommand::Snapshot);
+                                ClientResponse::Snapshot {
+                                    snapshot: recovery_snapshot(4),
+                                }
+                            };
+                            if step == 5 {
+                                break;
+                            }
+                            Reply::Ok {
+                                version: PROTOCOL_VERSION,
+                                response,
+                            }
+                        };
+                        socket
+                            .send(Message::Text(
+                                serde_json::to_string(&ServerMessage::Response {
+                                    request_id: message.request_id,
+                                    reply,
+                                })
+                                .unwrap()
+                                .into(),
+                            ))
+                            .await
+                            .unwrap();
+                    }
+                });
+                let stream = TcpStream::connect(address).await.unwrap();
+                let (socket, _) =
+                    tokio_tungstenite::client_async(format!("ws://{address}"), stream)
+                        .await
+                        .unwrap();
+                let mut state = ClientState::default();
+                state.install_snapshot(recovery_snapshot(1), 71).unwrap();
+                let mut peer = Peer {
+                    socket,
+                    ready: EventReady {
+                        version: PROTOCOL_VERSION,
+                        epoch: 71,
+                        recipient: serde_json::from_value(json!(1)).unwrap(),
+                        events: mux_application_sdk::Grant::default(),
+                        controls: mux_application_sdk::ControlGrant::default(),
+                        capabilities: Vec::new(),
+                        limits: mux_application_sdk::EventLimits::default(),
+                    },
+                    state,
+                    hosted_receipt: Default::default(),
+                    subscription: Some(subscription),
+                    retired_subscription: None,
+                    next_request: 0,
+                    terminal: false,
+                    needs_refresh: false,
+                    last_issue: None,
+                };
+                let command = if hosted {
+                    ClientCommand::HostedViewport {
+                        reference: HostRevision {
+                            epoch: 71,
+                            revision: 1,
+                        },
+                        action: HostViewportAction::Restore,
+                    }
+                } else {
+                    ClientCommand::RemoteWindowControl {
+                        reference: RemoteWindowRef {
+                            epoch: 71,
+                            window: serde_json::from_value(json!(9)).unwrap(),
+                        },
+                        control: WindowControl::Restore,
+                    }
+                };
+                assert!(peer.command(command, true).await.is_err());
+                assert!(peer.needs_refresh && peer.state.windows().is_empty());
+                let inspected = peer.snapshot().await.unwrap();
+                assert_eq!(inspected["available"], !hosted);
+                assert_eq!(inspected["needs_refresh"], true);
+                assert_eq!(inspected["windows"], json!([]));
+                assert!(peer.state.screens().is_none());
+                if hosted {
+                    assert!(peer.terminal);
+                    assert!(peer.refresh_subscription().await.is_err());
+                    assert_eq!(peer.next_request, 1);
+                } else {
+                    let refreshed = peer.refresh_subscription().await.unwrap();
+                    assert_eq!(refreshed["available"], true);
+                    assert_eq!(refreshed["needs_refresh"], false);
+                    assert_eq!(peer.state.screens().unwrap().revision, 3);
+                    assert_eq!(peer.state.last_sequence(), 3);
+                    assert_eq!(peer.state.state(), &mux_application_sdk::StreamState::Live);
+                    assert_eq!(peer.retired_subscription, Some(subscription));
+                    assert!(peer.snapshot().await.is_err());
+                    assert!(peer.terminal && peer.state.screens().is_none());
+                    assert_eq!(peer.next_request, 5);
+                }
+                server.await.unwrap();
+            }
+        })
+        .await
+        .unwrap();
+    }
 
     #[test]
     fn event_router_exposes_only_window_and_hosted_session_tools() {
