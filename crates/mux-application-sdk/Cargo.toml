@@ -30,3 +30,7 @@ windows-sys = { version = "0.61", optional = true, features = ["Win32_Foundation
 [[example]]
 name = "native_dll_lifecycle"
 required-features = ["native-client"]
+
+[[example]]
+name = "native_external_consumer"
+required-features = ["native-client"]

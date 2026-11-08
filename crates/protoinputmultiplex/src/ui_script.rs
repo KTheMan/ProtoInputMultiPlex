@@ -61,12 +61,7 @@ mod keyboard_tests {
         }
         fn with_screenshots(steps: serde_json::Value, screenshots: bool) -> Self {
             static NEXT: AtomicU64 = AtomicU64::new(1);
-            let directory = std::env::temp_dir().join(format!(
-                "protoinputmultiplex-keyboard-script-{}-{}",
-                std::process::id(),
-                NEXT.fetch_add(1, Ordering::Relaxed)
-            ));
-            std::fs::create_dir(&directory).unwrap();
+            let directory = fresh_fixture_directory(&std::env::temp_dir(), &NEXT);
             let path = directory.join("ui.json");
             std::fs::write(&path, steps.to_string()).unwrap();
             let script = Script::load_with_guards(path, None, screenshots).unwrap();
@@ -79,6 +74,41 @@ mod keyboard_tests {
             assert!(self.script.io_fault().is_none());
         }
     }
+    // Earlier test binaries may leave evidence behind and Windows can reuse
+    // their process ID. Never reopen or remove an existing fixture directory.
+    fn fresh_fixture_directory(parent: &std::path::Path, next: &AtomicU64) -> PathBuf {
+        for _ in 0..1024 {
+            let directory = parent.join(format!(
+                "protoinputmultiplex-keyboard-script-{}-{}",
+                std::process::id(),
+                next.fetch_add(1, Ordering::Relaxed)
+            ));
+            match std::fs::create_dir(&directory) {
+                Ok(()) => return directory,
+                Err(error) if error.kind() == std::io::ErrorKind::AlreadyExists => continue,
+                Err(error) => panic!("Could not create script fixture: {error}"),
+            }
+        }
+        panic!("Script fixture directory names exhausted");
+    }
+
+    #[test]
+    fn fixture_directory_collision_preserves_previous_evidence() {
+        let fixture = Fixture::new(serde_json::json!([]));
+        let previous = fixture.directory.join(format!(
+            "protoinputmultiplex-keyboard-script-{}-1",
+            std::process::id()
+        ));
+        std::fs::create_dir(&previous).unwrap();
+        let sentinel = previous.join("previous-evidence.txt");
+        std::fs::write(&sentinel, b"preserved").unwrap();
+        let next = AtomicU64::new(1);
+        let fresh = fresh_fixture_directory(&fixture.directory, &next);
+        assert_ne!(fresh, previous);
+        assert!(fresh.is_dir());
+        assert_eq!(std::fs::read(&sentinel).unwrap(), b"preserved");
+    }
+
     impl Drop for Fixture {
         fn drop(&mut self) {
             if !std::thread::panicking() {
