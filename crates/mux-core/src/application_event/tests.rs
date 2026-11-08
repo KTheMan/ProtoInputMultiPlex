@@ -676,7 +676,12 @@ fn windows_are_owned_tracked_and_backend_acknowledged_with_explicit_unavailabili
     engine.track_window(app, window).unwrap();
     assert_eq!(engine.snapshot(app).unwrap().windows.len(), 1);
     assert_eq!(
-        engine.window_info(app, window).unwrap().metadata.title.as_deref(),
+        engine
+            .window_info(app, window)
+            .unwrap()
+            .metadata
+            .title
+            .as_deref(),
         Some("Owned window")
     );
     assert!(matches!(
@@ -827,12 +832,17 @@ fn window_metadata_defaults_on_old_wire_snapshots_and_bounds_native_facts() {
         let mut observation = base.clone();
         observation.metadata = metadata.clone();
         assert_eq!(
-            engine.register_owned_window(owner, observation).unwrap_err(),
+            engine
+                .register_owned_window(owner, observation)
+                .unwrap_err(),
             error
         );
         let mut changed = original.clone();
         changed.metadata = metadata;
-        assert_eq!(engine.update_owned_window(owner, changed).unwrap_err(), error);
+        assert_eq!(
+            engine.update_owned_window(owner, changed).unwrap_err(),
+            error
+        );
         assert_eq!(engine.window_info(owner, id).unwrap(), original);
     }
 
@@ -843,7 +853,9 @@ fn window_metadata_defaults_on_old_wire_snapshots_and_bounds_native_facts() {
         right: -10,
         bottom: 20,
     });
-    engine.update_owned_window(owner, zero_client.clone()).unwrap();
+    engine
+        .update_owned_window(owner, zero_client.clone())
+        .unwrap();
     assert_eq!(engine.window_info(owner, id).unwrap(), zero_client);
 }
 

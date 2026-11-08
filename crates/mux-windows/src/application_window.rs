@@ -19,13 +19,13 @@ use std::{
 use windows_sys::Win32::{
     Foundation::{GetLastError, HWND, POINT, RECT, SetLastError},
     Graphics::Gdi::{
-        ClientToScreen, GetMonitorInfoW, MONITORINFO, MONITOR_DEFAULTTONEAREST, MonitorFromWindow,
+        ClientToScreen, GetMonitorInfoW, MONITOR_DEFAULTTONEAREST, MONITORINFO, MonitorFromWindow,
     },
     System::Threading::{GetCurrentProcessId, GetCurrentThreadId},
     UI::{
         HiDpi::{
-            DPI_AWARENESS_PER_MONITOR_AWARE, GetAwarenessFromDpiAwarenessContext,
-            GetDpiForWindow, GetThreadDpiAwarenessContext,
+            DPI_AWARENESS_PER_MONITOR_AWARE, GetAwarenessFromDpiAwarenessContext, GetDpiForWindow,
+            GetThreadDpiAwarenessContext,
         },
         Input::KeyboardAndMouse::{EnableWindow, GetFocus, IsWindowEnabled, SetFocus},
         WindowsAndMessaging::*,
@@ -335,9 +335,8 @@ fn observe(hwnd: HWND) -> Result<WindowObservation, Error> {
     unsafe {
         SetLastError(0);
     }
-    let title_len = unsafe {
-        GetWindowTextW(hwnd, title_buffer.as_mut_ptr(), title_buffer.len() as i32)
-    };
+    let title_len =
+        unsafe { GetWindowTextW(hwnd, title_buffer.as_mut_ptr(), title_buffer.len() as i32) };
     if title_len == 0 && unsafe { GetLastError() } != 0 {
         return Err(api_error("GetWindowTextW"));
     }

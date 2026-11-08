@@ -63,18 +63,15 @@ impl WindowMetadata {
         if self.process_id == Some(0) || self.ui_thread_id == Some(0) {
             return Err("window owner identity");
         }
-        if self
-            .client_bounds
-            .is_some_and(|bounds| {
-                let limit = -1_000_000..=1_000_000;
-                !limit.contains(&bounds.left)
-                    || !limit.contains(&bounds.top)
-                    || !limit.contains(&bounds.right)
-                    || !limit.contains(&bounds.bottom)
-                    || bounds.right < bounds.left
-                    || bounds.bottom < bounds.top
-            })
-        {
+        if self.client_bounds.is_some_and(|bounds| {
+            let limit = -1_000_000..=1_000_000;
+            !limit.contains(&bounds.left)
+                || !limit.contains(&bounds.top)
+                || !limit.contains(&bounds.right)
+                || !limit.contains(&bounds.bottom)
+                || bounds.right < bounds.left
+                || bounds.bottom < bounds.top
+        }) {
             return Err("window client bounds");
         }
         if self.dpi.is_some_and(|dpi| !(1..=4096).contains(&dpi)) {

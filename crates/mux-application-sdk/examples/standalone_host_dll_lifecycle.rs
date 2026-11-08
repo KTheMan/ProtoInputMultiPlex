@@ -14,8 +14,8 @@ fn main() {
 #[cfg(windows)]
 mod fixture {
     use mux_application_sdk::{
-        ClientCommand, ClientRequest, ControlGrant, Grant, HostCommand, HostRequest, RecipientId,
-        SubscriptionId, UserScope, WindowId, PROTOCOL_VERSION,
+        ClientCommand, ClientRequest, ControlGrant, Grant, HostCommand, HostRequest,
+        PROTOCOL_VERSION, RecipientId, SubscriptionId, UserScope, WindowId,
     };
     use serde_json::{Value, json};
     use std::{
@@ -40,7 +40,7 @@ mod fixture {
             POINT, RECT, SetLastError, WAIT_OBJECT_0, WAIT_TIMEOUT, WPARAM,
         },
         Graphics::Gdi::{
-            ClientToScreen, GetMonitorInfoW, MONITORINFO, MONITOR_DEFAULTTONEAREST,
+            ClientToScreen, GetMonitorInfoW, MONITOR_DEFAULTTONEAREST, MONITORINFO,
             MonitorFromWindow,
         },
         System::{
@@ -59,9 +59,9 @@ mod fixture {
                 SetThreadDpiAwarenessContext,
             },
             WindowsAndMessaging::{
-                CallWindowProcW, CreateWindowExW, DefWindowProcW, DestroyWindow, GetClientRect,
-                GetWindowLongPtrW, GetWindowRect, MoveWindow, SetWindowLongPtrW, SetWindowTextW,
-                GWLP_USERDATA, GWLP_WNDPROC, WM_NCDESTROY, WS_POPUP,
+                CallWindowProcW, CreateWindowExW, DefWindowProcW, DestroyWindow, GWLP_USERDATA,
+                GWLP_WNDPROC, GetClientRect, GetWindowLongPtrW, GetWindowRect, MoveWindow,
+                SetWindowLongPtrW, SetWindowTextW, WM_NCDESTROY, WS_POPUP,
             },
         },
     };
@@ -575,7 +575,12 @@ mod fixture {
         .map_err(|e| e.to_string())?;
         status(
             unsafe {
-                (api.client_call)(host, recipient_number(recipient)?, bytes.as_ptr(), bytes.len())
+                (api.client_call)(
+                    host,
+                    recipient_number(recipient)?,
+                    bytes.as_ptr(),
+                    bytes.len(),
+                )
             },
             OK,
             "typed client command",
@@ -596,7 +601,12 @@ mod fixture {
         .map_err(|e| e.to_string())?;
         status(
             unsafe {
-                (api.client_call)(host, recipient_number(recipient)?, bytes.as_ptr(), bytes.len())
+                (api.client_call)(
+                    host,
+                    recipient_number(recipient)?,
+                    bytes.as_ptr(),
+                    bytes.len(),
+                )
             },
             OK,
             "typed client command with expected denial",
@@ -692,7 +702,8 @@ mod fixture {
         let native = native_window_facts(hwnd)?;
         let metadata = &window["metadata"];
         ensure(
-            window.get("hwnd").is_none() && metadata.get("hwnd").is_none()
+            window.get("hwnd").is_none()
+                && metadata.get("hwnd").is_none()
                 && metadata.get("hmonitor").is_none(),
             "native handles absent from window wire metadata",
         )?;
@@ -775,7 +786,9 @@ mod fixture {
                     host_command(
                         unsafe { &*context.api },
                         context.host,
-                        HostCommand::RetireOwnWindow { window: context.window },
+                        HostCommand::RetireOwnWindow {
+                            window: context.window,
+                        },
                     )
                 }))
                 .unwrap_or_else(|_| Err("retire callback panicked".into())),
@@ -803,7 +816,7 @@ mod fixture {
         let screens = serde_json::to_vec(&json!({"revision": 1,
             "desktop": {"left": 0, "top": 0, "right": 800, "bottom": 600},
             "screens": [{"left": 0, "top": 0, "right": 800, "bottom": 600}]}))
-            .map_err(|e| e.to_string())?;
+        .map_err(|e| e.to_string())?;
         let mut host = 0;
         status(
             unsafe {
@@ -839,8 +852,7 @@ mod fixture {
             owned_windows: true,
         };
         ensure(
-            host_command(api, host, HostCommand::ApproveEvents { recipient, grant })?["response"]
-                ["kind"]
+            host_command(api, host, HostCommand::ApproveEvents { recipient, grant })?["response"]["kind"]
                 == "acknowledged",
             "window observation grant",
         )?;
@@ -913,7 +925,10 @@ mod fixture {
             recipient,
             ClientCommand::Subscribe { capacity: 8 },
         )?;
-        ensure(subscribed["response"]["kind"] == "subscribed", "window subscription")?;
+        ensure(
+            subscribed["response"]["kind"] == "subscribed",
+            "window subscription",
+        )?;
         let subscription: SubscriptionId =
             serde_json::from_value(subscribed["response"]["subscription"].clone())
                 .map_err(|e| e.to_string())?;
@@ -928,7 +943,10 @@ mod fixture {
                 max_events: 8,
             },
         )?;
-        ensure(poll["response"]["poll"]["kind"] == "events", "tracked poll kind")?;
+        ensure(
+            poll["response"]["poll"]["kind"] == "events",
+            "tracked poll kind",
+        )?;
         let tracked_events = poll["response"]["poll"]["events"]
             .as_array()
             .ok_or("tracked events missing")?;
@@ -950,10 +968,16 @@ mod fixture {
             unsafe { SetWindowTextW(hwnd, changed_title.as_ptr()) } != 0,
             "SetWindowTextW fixture",
         )?;
-        ensure(unsafe { MoveWindow(hwnd, 96, 104, 320, 220, 0) } != 0, "MoveWindow fixture")?;
+        ensure(
+            unsafe { MoveWindow(hwnd, 96, 104, 320, 220, 0) } != 0,
+            "MoveWindow fixture",
+        )?;
         check_native_geometry(hwnd, second)?;
         let refreshed = host_command(api, host, HostCommand::RefreshOwnWindow { window })?;
-        ensure(refreshed["response"]["kind"] == "window", "refresh reply kind")?;
+        ensure(
+            refreshed["response"]["kind"] == "window",
+            "refresh reply kind",
+        )?;
         check_metadata(&refreshed["response"]["window"], hwnd, second_title, second)?;
         let poll = client_command(
             api,
@@ -964,7 +988,10 @@ mod fixture {
                 max_events: 8,
             },
         )?;
-        ensure(poll["response"]["poll"]["kind"] == "events", "changed poll kind")?;
+        ensure(
+            poll["response"]["poll"]["kind"] == "events",
+            "changed poll kind",
+        )?;
         let changed_events = poll["response"]["poll"]["events"]
             .as_array()
             .ok_or("changed events missing")?;
@@ -988,12 +1015,15 @@ mod fixture {
             .ok_or("window snapshot missing")?;
         ensure(windows.len() == 1, "tracked window snapshot size")?;
         check_metadata(&windows[0], hwnd, second_title, second)?;
-        report.record("owned_window_metadata_checked", json!({
-            "host_create": true, "registered_same_process_ui_thread": true,
-            "query_track_event_refresh_snapshot_checked": true,
-            "fixture_titles_and_exact_physical_clients_checked": true,
-            "exact_os_dpi_and_monitor_checked": true, "host_input_sent": false,
-        }))?;
+        report.record(
+            "owned_window_metadata_checked",
+            json!({
+                "host_create": true, "registered_same_process_ui_thread": true,
+                "query_track_event_refresh_snapshot_checked": true,
+                "fixture_titles_and_exact_physical_clients_checked": true,
+                "exact_os_dpi_and_monitor_checked": true, "host_input_sent": false,
+            }),
+        )?;
 
         let mut retirement = RetireOnDestroy {
             api: api as *const Api,
@@ -1025,24 +1055,32 @@ mod fixture {
             retirement.previous_proc != 0 || unsafe { GetLastError() } == 0,
             "install destruction observer",
         )?;
-        ensure(retirement.previous_proc != 0, "previous fixture WndProc missing")?;
-        ensure(unsafe { DestroyWindow(hwnd) } != 0, "DestroyWindow fixture")?;
-        let retired = retirement.result.take().ok_or("WM_NCDESTROY callback absent")??;
-        ensure(retired["response"]["kind"] == "acknowledged", "WM_NCDESTROY retired token")?;
-        let stale = client_command_any(
-            api,
-            host,
-            recipient,
-            ClientCommand::WindowQuery { window },
+        ensure(
+            retirement.previous_proc != 0,
+            "previous fixture WndProc missing",
         )?;
+        ensure(unsafe { DestroyWindow(hwnd) } != 0, "DestroyWindow fixture")?;
+        let retired = retirement
+            .result
+            .take()
+            .ok_or("WM_NCDESTROY callback absent")??;
+        ensure(
+            retired["response"]["kind"] == "acknowledged",
+            "WM_NCDESTROY retired token",
+        )?;
+        let stale =
+            client_command_any(api, host, recipient, ClientCommand::WindowQuery { window })?;
         ensure(
             stale["status"] == "error" && stale["error"]["code"] == "missing",
             "retired window query denied",
         )?;
-        report.record("nc_destroy_retired_and_stale_denied", json!({
-            "wm_nc_destroy_retirement": true, "stale_query_code": "missing",
-            "owned_window_destroyed": true,
-        }))?;
+        report.record(
+            "nc_destroy_retired_and_stale_denied",
+            json!({
+                "wm_nc_destroy_retirement": true, "stale_query_code": "missing",
+                "owned_window_destroyed": true,
+            }),
+        )?;
 
         status(unsafe { (api.destroy)(host) }, OK, "metadata host destroy")?;
         let mut size = 0;
@@ -1051,10 +1089,13 @@ mod fixture {
             INVALID_HANDLE,
             "metadata host stale token",
         )?;
-        report.record("host_destroyed_after_window_retirement", json!({
-            "destroy_status": OK, "stale_handle_status": INVALID_HANDLE,
-            "window_retired_before_destroy": true, "virtual_users_created": 0,
-        }))
+        report.record(
+            "host_destroyed_after_window_retirement",
+            json!({
+                "destroy_status": OK, "stale_handle_status": INVALID_HANDLE,
+                "window_retired_before_destroy": true, "virtual_users_created": 0,
+            }),
+        )
     }
 
     fn retained(api: &Api, host: u64) -> Check<Value> {
