@@ -1798,7 +1798,9 @@ impl SetupServer {
     ) -> CallToolResult {
         match crate::gui_setup::Command::try_from(args) {
             Ok(command) => self.execute_setup(command).await,
-            Err(error) => CallToolResult::error(vec![rmcp::model::ContentBlock::text(format!("{error:#}"))]),
+            Err(error) => {
+                CallToolResult::error(vec![rmcp::model::ContentBlock::text(format!("{error:#}"))])
+            }
         }
     }
 
@@ -1810,7 +1812,8 @@ impl SetupServer {
         &self,
         Parameters(_args): Parameters<ApplicationEventStatusRequest>,
     ) -> CallToolResult {
-        self.execute_setup(crate::gui_setup::Command::ApplicationEventStatus).await
+        self.execute_setup(crate::gui_setup::Command::ApplicationEventStatus)
+            .await
     }
 }
 
@@ -4631,7 +4634,11 @@ mod tests {
         let tools = super::SetupServer::tool_router().list_all();
         assert_eq!(tools.len(), 2);
         assert!(tools.iter().any(|tool| tool.name == "profile_setup"));
-        assert!(tools.iter().any(|tool| tool.name == "application_event_status"));
+        assert!(
+            tools
+                .iter()
+                .any(|tool| tool.name == "application_event_status")
+        );
         assert_eq!(
             tools[0]
                 .input_schema
@@ -4643,11 +4650,14 @@ mod tests {
 
     #[tokio::test(flavor = "current_thread")]
     async fn direct_setup_status_router_rejects_arguments_before_queueing() {
-        use std::sync::{Arc, Mutex, atomic::{AtomicBool, AtomicU64, Ordering}};
-        use std::time::Duration;
         use rmcp::handler::server::tool::ToolCallContext;
         use rmcp::model::{CallToolRequestParams, CallToolResponse, NumberOrString};
         use rmcp::service::RequestContext;
+        use std::sync::{
+            Arc, Mutex,
+            atomic::{AtomicBool, AtomicU64, Ordering},
+        };
+        use std::time::Duration;
 
         struct ContextService;
         impl rmcp::ServerHandler for ContextService {}
@@ -4655,10 +4665,13 @@ mod tests {
         // A public rmcp API supplies the real request peer; no fabricated context
         // or unsafe initialization is used. No messages use this duplex endpoint.
         let context_service = rmcp::service::serve_directly::<rmcp::RoleServer, _, _, _, _>(
-            ContextService, transport, None,
+            ContextService,
+            transport,
+            None,
         );
         let directory = std::env::temp_dir().join(format!(
-            "protoinputmultiplex-status-router-{}-{}", std::process::id(),
+            "protoinputmultiplex-status-router-{}-{}",
+            std::process::id(),
             crate::gui_bridge::random_token().unwrap(),
         ));
         std::fs::create_dir(&directory).unwrap();
@@ -4666,63 +4679,108 @@ mod tests {
         let (setup, requests) = crate::gui_setup::channel();
         setup.enable();
         let broker = crate::gui_bridge::Broker::start_setup_cancellable(
-            setup.clone(), descriptor.clone(), Arc::new(AtomicU64::new(1)), 1,
+            setup.clone(),
+            descriptor.clone(),
+            Arc::new(AtomicU64::new(1)),
+            1,
             Arc::new(AtomicBool::new(false)),
-        ).unwrap();
+        )
+        .unwrap();
         let server = super::SetupServer {
-            client: Arc::new(Mutex::new(crate::gui_bridge::Client::connect_setup(descriptor).unwrap())),
+            client: Arc::new(Mutex::new(
+                crate::gui_bridge::Client::connect_setup(descriptor).unwrap(),
+            )),
             active: Default::default(),
             tool_router: super::SetupServer::tool_router(),
         };
         let router = super::SetupServer::tool_router();
         let bound = Duration::from_secs(2);
         let mut malformed_rejected = true;
-        for field in ["document", "expected_revision", "persistence", "users", "credential",
-            "pointer_input", "key_input", "capture", "consent", "receiver", "operation"] {
+        for field in [
+            "document",
+            "expected_revision",
+            "persistence",
+            "users",
+            "credential",
+            "pointer_input",
+            "key_input",
+            "capture",
+            "consent",
+            "receiver",
+            "operation",
+        ] {
             let mut arguments = serde_json::Map::new();
             arguments.insert(field.into(), serde_json::json!(true));
-            let request = CallToolRequestParams::new("application_event_status")
-                .with_arguments(arguments);
-            let context = ToolCallContext::new(&server, request,
-                RequestContext::new(NumberOrString::Number(1), context_service.peer().clone()));
+            let request =
+                CallToolRequestParams::new("application_event_status").with_arguments(arguments);
+            let context = ToolCallContext::new(
+                &server,
+                request,
+                RequestContext::new(NumberOrString::Number(1), context_service.peer().clone()),
+            );
             let result = tokio::time::timeout(bound, router.call(context)).await;
             let argument_error = match result {
                 Ok(Ok(CallToolResponse::Complete(result))) => {
-                    result.is_error == Some(true) && result.content.iter()
-                        .filter_map(|content| content.as_text())
-                        .any(|text| text.text.contains("failed to deserialize parameters")
-                            && text.text.contains("unknown field"))
+                    result.is_error == Some(true)
+                        && result
+                            .content
+                            .iter()
+                            .filter_map(|content| content.as_text())
+                            .any(|text| {
+                                text.text.contains("failed to deserialize parameters")
+                                    && text.text.contains("unknown field")
+                            })
                 }
                 _ => false,
             };
-            let queue_empty = matches!(requests.try_recv(), Err(std::sync::mpsc::TryRecvError::Empty));
-            malformed_rejected &= argument_error && queue_empty
-                && server.active.count.load(Ordering::Acquire) == 0;
-            if !malformed_rejected { break; }
+            let queue_empty = matches!(
+                requests.try_recv(),
+                Err(std::sync::mpsc::TryRecvError::Empty)
+            );
+            malformed_rejected &=
+                argument_error && queue_empty && server.active.count.load(Ordering::Acquire) == 0;
+            if !malformed_rejected {
+                break;
+            }
         }
         let mut legitimate_accepted = false;
         if malformed_rejected {
             let responder = std::thread::spawn(move || {
                 for _ in 0..2 {
-                    let Ok(request) = requests.recv_timeout(Duration::from_secs(2)) else { return false; };
+                    let Ok(request) = requests.recv_timeout(Duration::from_secs(2)) else {
+                        return false;
+                    };
                     if !setup.permits(request.client, request.epoch)
-                        || !matches!(&request.command, crate::gui_setup::PreparedCommand::ApplicationEventStatus) {
+                        || !matches!(
+                            &request.command,
+                            crate::gui_setup::PreparedCommand::ApplicationEventStatus
+                        )
+                    {
                         return false;
                     }
-                    request.reply(serde_json::to_value(
-                        crate::gui_application_events::Controller::default().status()
-                    ).unwrap(), None, None);
+                    request.reply(
+                        serde_json::to_value(
+                            crate::gui_application_events::Controller::default().status(),
+                        )
+                        .unwrap(),
+                        None,
+                        None,
+                    );
                 }
                 true
             });
             legitimate_accepted = true;
             for arguments in [Some(serde_json::Map::new()), None] {
                 let request = match arguments {
-                    Some(arguments) => CallToolRequestParams::new("application_event_status").with_arguments(arguments),
+                    Some(arguments) => CallToolRequestParams::new("application_event_status")
+                        .with_arguments(arguments),
                     None => CallToolRequestParams::new("application_event_status"),
                 };
-                let context = ToolCallContext::new(&server, request,
-                    RequestContext::new(NumberOrString::Number(1), context_service.peer().clone()));
+                let context = ToolCallContext::new(
+                    &server,
+                    request,
+                    RequestContext::new(NumberOrString::Number(1), context_service.peer().clone()),
+                );
                 legitimate_accepted &= matches!(
                     tokio::time::timeout(bound, router.call(context)).await,
                     Ok(Ok(CallToolResponse::Complete(result))) if result.is_error != Some(true)
@@ -4732,13 +4790,22 @@ mod tests {
         }
         // Cleanup precedes assertions so a regression cannot strand a broker wait.
         broker.shutdown().unwrap();
-        let drained = tokio::time::timeout(bound, server.active.idle()).await.is_ok();
+        let drained = tokio::time::timeout(bound, server.active.idle())
+            .await
+            .is_ok();
         drop(server);
-        let context_retired = tokio::time::timeout(bound, context_service.cancel()).await
+        let context_retired = tokio::time::timeout(bound, context_service.cancel())
+            .await
             .is_ok_and(|result| result.is_ok());
         std::fs::remove_dir(directory).unwrap();
-        assert!(malformed_rejected, "Malformed direct calls must fail before Setup queue dispatch");
-        assert!(legitimate_accepted, "Empty and omitted arguments must reach the admitted read path");
+        assert!(
+            malformed_rejected,
+            "Malformed direct calls must fail before Setup queue dispatch"
+        );
+        assert!(
+            legitimate_accepted,
+            "Empty and omitted arguments must reach the admitted read path"
+        );
         assert!(drained && context_retired);
     }
 
@@ -4746,18 +4813,30 @@ mod tests {
     fn setup_event_status_has_no_mutation_or_authority_arguments() {
         let parse = |value| serde_json::from_value::<super::ProfileSetupRequest>(value);
         let request = parse(serde_json::json!({"operation":"application_event_status"})).unwrap();
-        assert!(matches!(crate::gui_setup::Command::try_from(request).unwrap(),
-            crate::gui_setup::Command::ApplicationEventStatus));
+        assert!(matches!(
+            crate::gui_setup::Command::try_from(request).unwrap(),
+            crate::gui_setup::Command::ApplicationEventStatus
+        ));
         for (field, value) in [
             ("expected_revision", serde_json::json!(1)),
             ("document", serde_json::json!("{}")),
-            ("persistence", serde_json::json!({"load_profile_at_startup":false,"save_profile_on_exit":false})),
+            (
+                "persistence",
+                serde_json::json!({"load_profile_at_startup":false,"save_profile_on_exit":false}),
+            ),
         ] {
             let mut request = serde_json::json!({"operation":"application_event_status"});
             request[field] = value;
             assert!(crate::gui_setup::Command::try_from(parse(request).unwrap()).is_err());
         }
-        for field in ["credential", "users", "pointer_input", "key_input", "capture", "consent"] {
+        for field in [
+            "credential",
+            "users",
+            "pointer_input",
+            "key_input",
+            "capture",
+            "consent",
+        ] {
             let mut request = serde_json::json!({"operation":"application_event_status"});
             request[field] = serde_json::json!(true);
             assert!(parse(request).is_err());

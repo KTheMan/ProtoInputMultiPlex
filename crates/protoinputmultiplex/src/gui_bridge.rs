@@ -2377,16 +2377,22 @@ mod tests {
     #[test]
     fn stopped_event_status_traverses_real_broker_and_returns_only_safe_aged_summary() {
         let directory = std::env::temp_dir().join(format!(
-            "protoinputmultiplex-event-status-{}-{}", std::process::id(), random_token().unwrap()
+            "protoinputmultiplex-event-status-{}-{}",
+            std::process::id(),
+            random_token().unwrap()
         ));
         fs::create_dir(&directory).unwrap();
         let descriptor = directory.join("connection.json");
         let (setup, requests) = crate::gui_setup::channel();
         setup.enable();
         let broker = Broker::start_setup_cancellable(
-            setup.clone(), descriptor.clone(), Arc::new(AtomicU64::new(1)), 1,
+            setup.clone(),
+            descriptor.clone(),
+            Arc::new(AtomicU64::new(1)),
+            1,
             Arc::new(AtomicBool::new(false)),
-        ).unwrap();
+        )
+        .unwrap();
         let (sent, received) = mpsc::sync_channel(1);
         let worker = thread::spawn(move || {
             let result = (|| -> Result<crate::gui_setup::Reply> {
@@ -2399,8 +2405,10 @@ mod tests {
         // Exercise the actual authenticated Setup request/reply transport. This
         // responder stands in for the GUI event loop; it does not launch a GUI.
         let admitted = queued.as_ref().is_ok_and(|request| {
-            matches!(&request.command, crate::gui_setup::PreparedCommand::ApplicationEventStatus)
-                && setup.permits(request.client, request.epoch)
+            matches!(
+                &request.command,
+                crate::gui_setup::PreparedCommand::ApplicationEventStatus
+            ) && setup.permits(request.client, request.epoch)
         });
         if let Ok(request) = queued {
             let mut status = crate::gui_application_events::Controller::default().status();
@@ -2415,16 +2423,40 @@ mod tests {
         let result = received.recv_timeout(Duration::from_secs(2));
         broker.shutdown().unwrap();
         worker.join().unwrap();
-        assert!(admitted, "Event status did not use the admitted setup queue");
-        let reply = result.expect("Setup status did not complete its queued reply").unwrap();
+        assert!(
+            admitted,
+            "Event status did not use the admitted setup queue"
+        );
+        let reply = result
+            .expect("Setup status did not complete its queued reply")
+            .unwrap();
         assert!(reply.error.is_none() && reply.profile.is_none());
-        let keys: BTreeSet<_> = reply.value.as_object().unwrap().keys().map(String::as_str).collect();
-        assert_eq!(keys, BTreeSet::from([
-            "phase", "session_active", "local_virtual_users", "native_observed_users",
-            "native_sequence", "pointer_export", "keyboard_export", "browser_approved",
-            "approved_receivers", "transport_sample_age_ms", "retired", "sample_age_ms",
-        ]));
-        let status: crate::gui_application_events::PublicStatus = serde_json::from_value(reply.value).unwrap();
+        let keys: BTreeSet<_> = reply
+            .value
+            .as_object()
+            .unwrap()
+            .keys()
+            .map(String::as_str)
+            .collect();
+        assert_eq!(
+            keys,
+            BTreeSet::from([
+                "phase",
+                "session_active",
+                "local_virtual_users",
+                "native_observed_users",
+                "native_sequence",
+                "pointer_export",
+                "keyboard_export",
+                "browser_approved",
+                "approved_receivers",
+                "transport_sample_age_ms",
+                "retired",
+                "sample_age_ms",
+            ])
+        );
+        let status: crate::gui_application_events::PublicStatus =
+            serde_json::from_value(reply.value).unwrap();
         assert!(status.transport_sample_age_ms.unwrap() >= 3_000);
         assert!(status.connected_clients.is_none() && status.cleanup_pending.is_none());
         assert!(status.uncertain_admissions.is_none() && status.queue_overflows.is_none());

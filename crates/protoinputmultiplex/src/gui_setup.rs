@@ -574,7 +574,10 @@ mod tests {
         assert!(handle.submit(7, 1, epoch + 1, prepared()).is_err());
         let waiting = handle.submit(7, 1, epoch, prepared()).unwrap();
         let request = requests.try_recv().unwrap();
-        assert!(matches!(&request.command, PreparedCommand::ApplicationEventStatus));
+        assert!(matches!(
+            &request.command,
+            PreparedCommand::ApplicationEventStatus
+        ));
         assert!(!request.decision.cancelled());
         handle.revoke();
         assert!(!handle.permits(request.client, request.epoch));

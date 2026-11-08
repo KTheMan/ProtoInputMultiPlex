@@ -424,7 +424,10 @@ impl Controller {
     }
     pub fn select_all_visible_users(&mut self) -> Result<()> {
         ensure!(self.active(), "Create a cooperative session first");
-        ensure!(self.selected_row().is_some(), "Select an event receiver first");
+        ensure!(
+            self.selected_row().is_some(),
+            "Select an event receiver first"
+        );
         self.draft.users = self.users.iter().map(|user| user.id).collect();
         Ok(())
     }
@@ -1074,7 +1077,11 @@ mod tests {
         assert_eq!(controller.status().approved_receivers, 0);
         assert!(!controller.status().pointer_export && !controller.status().keyboard_export);
         assert!(!controller.draft.pointer_events && !controller.draft.key_events);
-        assert!(!controller.draft.delegated && !controller.draft.pointer_control && !controller.draft.key_control);
+        assert!(
+            !controller.draft.delegated
+                && !controller.draft.pointer_control
+                && !controller.draft.key_control
+        );
         assert!(controller.approve().is_err());
         assert!(controller.actor.is_none());
         master(&mut controller);
@@ -1085,21 +1092,51 @@ mod tests {
         let first_permit = permit(&mut controller);
         controller.create_user().unwrap();
         assert_eq!(controller.draft.users, original);
-        assert_eq!(controller.bridge.as_ref().unwrap().host().ready_for(first).unwrap().events.users,
-            UserScope::Only(original.clone()));
+        assert_eq!(
+            controller
+                .bridge
+                .as_ref()
+                .unwrap()
+                .host()
+                .ready_for(first)
+                .unwrap()
+                .events
+                .users,
+            UserScope::Only(original.clone())
+        );
         controller.select_all_visible_users().unwrap();
         let expanded: BTreeSet<_> = controller.users.iter().map(|user| user.id).collect();
         assert_eq!(expanded.len(), 3);
         assert_eq!(controller.draft.users, expanded);
         assert!(first_permit.live());
-        assert_eq!(controller.bridge.as_ref().unwrap().host().ready_for(first).unwrap().events.users,
-            UserScope::Only(original));
+        assert_eq!(
+            controller
+                .bridge
+                .as_ref()
+                .unwrap()
+                .host()
+                .ready_for(first)
+                .unwrap()
+                .events
+                .users,
+            UserScope::Only(original)
+        );
         controller.approve().unwrap();
         assert!(!first_permit.live());
         let second = controller.selected_receiver().unwrap().recipient.unwrap();
         assert_ne!(first, second);
-        assert_eq!(controller.bridge.as_ref().unwrap().host().ready_for(second).unwrap().events.users,
-            UserScope::Only(expanded));
+        assert_eq!(
+            controller
+                .bridge
+                .as_ref()
+                .unwrap()
+                .host()
+                .ready_for(second)
+                .unwrap()
+                .events
+                .users,
+            UserScope::Only(expanded)
+        );
         controller.stop();
         assert!(controller.select_all_visible_users().is_err());
     }
