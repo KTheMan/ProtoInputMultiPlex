@@ -17,7 +17,7 @@ mod fixture {
     use futures_util::{SinkExt, StreamExt};
     use mux_application_sdk::{
         ClientCommand, ClientMessage, ClientRequest, ClientResponse, ControlGrant, EventHello,
-        Grant, Host, Input, KeyCode, Point, PROTOCOL_VERSION, Reply, ScreenState, ServerMessage,
+        Grant, Host, Input, KeyCode, PROTOCOL_VERSION, Point, Reply, ScreenState, ServerMessage,
         Transition, UserId, UserScope,
     };
     use serde_json::{Value, json};
@@ -25,7 +25,11 @@ mod fixture {
         cell::Cell,
         fs::{File, OpenOptions},
         io::{Read, Write},
-        os::windows::{ffi::OsStrExt, fs::OpenOptionsExt, io::{AsRawHandle, FromRawHandle, OwnedHandle}},
+        os::windows::{
+            ffi::OsStrExt,
+            fs::OpenOptionsExt,
+            io::{AsRawHandle, FromRawHandle, OwnedHandle},
+        },
         panic::{AssertUnwindSafe, catch_unwind},
         path::{Path, PathBuf},
         ptr::{null, null_mut},
@@ -36,14 +40,21 @@ mod fixture {
     use tokio::net::TcpListener;
     use tokio_tungstenite::{
         accept_hdr_async,
-        tungstenite::{Message, handshake::server::{Request, Response}},
+        tungstenite::{
+            Message,
+            handshake::server::{Request, Response},
+        },
     };
     use windows_sys::Win32::{
-        Foundation::{CloseHandle, DuplicateHandle, FreeLibrary, HANDLE, HMODULE, HWND, LPARAM, LRESULT,
-            WAIT_OBJECT_0, WAIT_TIMEOUT, WPARAM},
+        Foundation::{
+            CloseHandle, DuplicateHandle, FreeLibrary, HANDLE, HMODULE, HWND, LPARAM, LRESULT,
+            WAIT_OBJECT_0, WAIT_TIMEOUT, WPARAM,
+        },
         System::{
-            LibraryLoader::{GetModuleFileNameW, GetModuleHandleW, GetProcAddress, LoadLibraryExW,
-                LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR, LOAD_LIBRARY_SEARCH_SYSTEM32},
+            LibraryLoader::{
+                GetModuleFileNameW, GetModuleHandleW, GetProcAddress,
+                LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR, LOAD_LIBRARY_SEARCH_SYSTEM32, LoadLibraryExW,
+            },
             Threading::{GetCurrentProcess, THREAD_SYNCHRONIZE, WaitForSingleObject},
         },
         UI::{
@@ -117,7 +128,10 @@ mod fixture {
         static OLD_PROC: Cell<WNDPROC> = const { Cell::new(None) };
     }
     unsafe extern "system" fn wndproc(
-        hwnd: HWND, message: u32, wparam: WPARAM, lparam: LPARAM,
+        hwnd: HWND,
+        message: u32,
+        wparam: WPARAM,
+        lparam: LPARAM,
     ) -> LRESULT {
         if message == WAKE.get() && message != 0 {
             WAKES.set(WAKES.get().saturating_add(1));
@@ -142,19 +156,30 @@ mod fixture {
     impl Report {
         fn record(&self, stage: &str, detail: Value) -> Check {
             let mut file = self.0.lock().map_err(|_| "report lock poisoned")?;
-            serde_json::to_writer(&mut *file, &json!({
-                "schema": "pim.native-dll-lifecycle.v2", "stage": stage, "detail": detail,
-            })).map_err(|e| e.to_string())?;
+            serde_json::to_writer(
+                &mut *file,
+                &json!({
+                    "schema": "pim.native-dll-lifecycle.v2", "stage": stage, "detail": detail,
+                }),
+            )
+            .map_err(|e| e.to_string())?;
             file.write_all(b"\n").map_err(|e| e.to_string())?;
             file.flush().map_err(|e| e.to_string())?;
             file.sync_data().map_err(|e| e.to_string())
         }
     }
     fn ensure(condition: bool, message: &str) -> Check {
-        if condition { Ok(()) } else { Err(message.into()) }
+        if condition {
+            Ok(())
+        } else {
+            Err(message.into())
+        }
     }
     fn status(actual: i32, expected: i32, action: &str) -> Check {
-        ensure(actual == expected, &format!("{action}: expected {expected}, got {actual}"))
+        ensure(
+            actual == expected,
+            &format!("{action}: expected {expected}, got {actual}"),
+        )
     }
     fn wide(value: &std::ffi::OsStr) -> Check<Vec<u16>> {
         let mut result: Vec<u16> = value.encode_wide().collect();
@@ -166,14 +191,18 @@ mod fixture {
     pub fn main() {
         let args: Vec<_> = std::env::args_os().skip(1).collect();
         if args.len() != 6 || args[0] != "--dll" || args[2] != "--sha256" || args[4] != "--report" {
-            eprintln!("usage: native_dll_lifecycle --dll ABSOLUTE_OWN_SDK_DLL --sha256 64_HEX --report NEW_ABSOLUTE_JSONL");
+            eprintln!(
+                "usage: native_dll_lifecycle --dll ABSOLUTE_OWN_SDK_DLL --sha256 64_HEX --report NEW_ABSOLUTE_JSONL"
+            );
             std::process::exit(10);
         }
         let dll = PathBuf::from(&args[1]);
         let expected = args[3].to_string_lossy().to_ascii_lowercase();
         let report_path = PathBuf::from(&args[5]);
-        if !dll.is_absolute() || !report_path.is_absolute()
-            || expected.len() != 64 || !expected.bytes().all(|b| b.is_ascii_hexdigit())
+        if !dll.is_absolute()
+            || !report_path.is_absolute()
+            || expected.len() != 64
+            || !expected.bytes().all(|b| b.is_ascii_hexdigit())
         {
             eprintln!("absolute paths and an exact SHA-256 are required");
             std::process::exit(10);
@@ -182,25 +211,33 @@ mod fixture {
         // The parent deadline must never depend on report I/O or its mutex.
         let watchdog = Instant::now() + Duration::from_secs(90);
         let owner = thread::spawn(move || {
-            let file = match OpenOptions::new().write(true).create_new(true).open(report_path) {
+            let file = match OpenOptions::new()
+                .write(true)
+                .create_new(true)
+                .open(report_path)
+            {
                 Ok(file) => file,
                 Err(_) => std::process::exit(10),
             };
             let report = Report(Mutex::new(file));
             // Catch on the owner BEFORE thread return/TLS teardown. Any contract
             // failure retains the raw module until process retirement.
-            let result = catch_unwind(AssertUnwindSafe(|| {
-                report.record("started", json!({"runtime_claim": "DLL lifecycle only",
-                    "expected_sha256": expected}))?;
-                owner(&dll, &expected, &report)?;
-                // This is an honest pre-exit milestone. Only external exit 0 can
-                // prove the parent's actual OS termination fence and completed join.
-                report.record("owner_ready_to_exit_after_unload", json!({
+            let result =
+                catch_unwind(AssertUnwindSafe(|| {
+                    report.record(
+                        "started",
+                        json!({"runtime_claim": "DLL lifecycle only",
+                    "expected_sha256": expected}),
+                    )?;
+                    owner(&dll, &expected, &report)?;
+                    // This is an honest pre-exit milestone. Only external exit 0 can
+                    // prove the parent's actual OS termination fence and completed join.
+                    report.record("owner_ready_to_exit_after_unload", json!({
                     "result": "OWNER_READY_REQUIRES_PARENT_EXIT_0",
                     "gui_service_qualified": false, "native_web_same_users_qualified": false,
                     "hardware_qualified": false, "full_sdk_complete": false,
                 }))
-            }));
+                }));
             match result {
                 Ok(Ok(())) => (),
                 failure => {
@@ -222,8 +259,18 @@ mod fixture {
         let mut raw_owner_completion = null_mut();
         // Duplicate the actual owner thread object with SYNCHRONIZE only. No
         // inheritance, SAME_ACCESS, pre-exit event or extra reaper/watchdog thread.
-        if unsafe { DuplicateHandle(process, owner.as_raw_handle() as HANDLE, process,
-            &mut raw_owner_completion, THREAD_SYNCHRONIZE, 0, 0) } == 0 || raw_owner_completion.is_null()
+        if unsafe {
+            DuplicateHandle(
+                process,
+                owner.as_raw_handle() as HANDLE,
+                process,
+                &mut raw_owner_completion,
+                THREAD_SYNCHRONIZE,
+                0,
+                0,
+            )
+        } == 0
+            || raw_owner_completion.is_null()
         {
             std::process::exit(60);
         }
@@ -236,8 +283,12 @@ mod fixture {
                 // The external controller classifies nonzero exit + partial JSONL.
                 std::process::exit(50);
             }
-            let outcome = unsafe { WaitForSingleObject(owner_completion.as_raw_handle() as HANDLE,
-                remaining.as_millis().min(1000) as u32) };
+            let outcome = unsafe {
+                WaitForSingleObject(
+                    owner_completion.as_raw_handle() as HANDLE,
+                    remaining.as_millis().min(1000) as u32,
+                )
+            };
             match outcome {
                 WAIT_OBJECT_0 => break,
                 WAIT_TIMEOUT => (),
@@ -261,49 +312,112 @@ mod fixture {
     }
 
     fn owner(dll: &Path, expected: &str, report: &Report) -> Check {
-        ensure(sha256(b"") == "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-            && sha256(b"abc") == "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
-            "SHA-256 known-answer self-check failed")?;
+        ensure(
+            sha256(b"") == "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+                && sha256(b"abc")
+                    == "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+            "SHA-256 known-answer self-check failed",
+        )?;
         // Open without write/delete sharing and hold this file through unload to
         // fence ordinary path replacement between SHA verification and loading.
-        let locked = OpenOptions::new().read(true).share_mode(1).open(dll)
+        let locked = OpenOptions::new()
+            .read(true)
+            .share_mode(1)
+            .open(dll)
             .map_err(|e| format!("open exact DLL: {e}"))?;
         let path = dll.canonicalize().map_err(|e| e.to_string())?;
-        ensure(path.extension().and_then(|e| e.to_str()).is_some_and(|e| e.eq_ignore_ascii_case("dll")), "DLL extension required")?;
+        ensure(
+            path.extension()
+                .and_then(|e| e.to_str())
+                .is_some_and(|e| e.eq_ignore_ascii_case("dll")),
+            "DLL extension required",
+        )?;
         let mut bytes = Vec::new();
-        (&locked).take(256 * 1024 * 1024 + 1).read_to_end(&mut bytes).map_err(|e| e.to_string())?;
-        ensure(bytes.len() <= 256 * 1024 * 1024, "DLL exceeds fixture bound")?;
+        (&locked)
+            .take(256 * 1024 * 1024 + 1)
+            .read_to_end(&mut bytes)
+            .map_err(|e| e.to_string())?;
+        ensure(
+            bytes.len() <= 256 * 1024 * 1024,
+            "DLL exceeds fixture bound",
+        )?;
         ensure(sha256(&bytes) == expected, "DLL SHA-256 mismatch")?;
         drop(bytes);
-        report.record("dll_hash_verified", json!({"path": path, "sha256": expected}))?;
+        report.record(
+            "dll_hash_verified",
+            json!({"path": path, "sha256": expected}),
+        )?;
         let name = wide(path.as_os_str())?;
-        ensure(unsafe { GetModuleHandleW(name.as_ptr()) }.is_null(), "DLL was already loaded")?;
-        let module = unsafe { LoadLibraryExW(name.as_ptr(), null_mut(),
-            LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR | LOAD_LIBRARY_SEARCH_SYSTEM32) };
+        ensure(
+            unsafe { GetModuleHandleW(name.as_ptr()) }.is_null(),
+            "DLL was already loaded",
+        )?;
+        let module = unsafe {
+            LoadLibraryExW(
+                name.as_ptr(),
+                null_mut(),
+                LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR | LOAD_LIBRARY_SEARCH_SYSTEM32,
+            )
+        };
         ensure(!module.is_null(), "LoadLibraryExW failed")?;
         let mut loaded = vec![0u16; 32768];
-        let length = unsafe { GetModuleFileNameW(module, loaded.as_mut_ptr(), loaded.len() as u32) } as usize;
-        ensure(length != 0 && length < loaded.len(), "loaded module path unavailable")?;
-        let loaded_path = PathBuf::from(String::from_utf16(&loaded[..length]).map_err(|e| e.to_string())?);
-        ensure(loaded_path.canonicalize().map_err(|e| e.to_string())? == path, "loader resolved another DLL")?;
+        let length = unsafe { GetModuleFileNameW(module, loaded.as_mut_ptr(), loaded.len() as u32) }
+            as usize;
+        ensure(
+            length != 0 && length < loaded.len(),
+            "loaded module path unavailable",
+        )?;
+        let loaded_path =
+            PathBuf::from(String::from_utf16(&loaded[..length]).map_err(|e| e.to_string())?);
+        ensure(
+            loaded_path.canonicalize().map_err(|e| e.to_string())? == path,
+            "loader resolved another DLL",
+        )?;
         let api = unsafe { Api::load(module)? };
         report.record("dll_exports_resolved", json!({"native_exports": 11, "calling_convention": "C", "native_abi_header_version": 2}))?;
 
-        let previous_dpi = unsafe { SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2) };
-        ensure(!previous_dpi.is_null(), "per-monitor V2 owner DPI setup failed")?;
+        let previous_dpi =
+            unsafe { SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2) };
+        ensure(
+            !previous_dpi.is_null(),
+            "per-monitor V2 owner DPI setup failed",
+        )?;
         let class: Vec<u16> = "STATIC\0".encode_utf16().collect();
-        let hwnd = unsafe { CreateWindowExW(0, class.as_ptr(), class.as_ptr(), WS_OVERLAPPED,
-            0, 0, 32, 32, null_mut(), null_mut(), null_mut(), null()) };
+        let hwnd = unsafe {
+            CreateWindowExW(
+                0,
+                class.as_ptr(),
+                class.as_ptr(),
+                WS_OVERLAPPED,
+                0,
+                0,
+                32,
+                32,
+                null_mut(),
+                null_mut(),
+                null_mut(),
+                null(),
+            )
+        };
         ensure(!hwnd.is_null(), "hidden top-level window creation failed")?;
         #[cfg(target_pointer_width = "64")]
-        let previous = unsafe { SetWindowLongPtrW(hwnd, GWLP_WNDPROC, wndproc as *const () as isize) };
+        let previous =
+            unsafe { SetWindowLongPtrW(hwnd, GWLP_WNDPROC, wndproc as *const () as isize) };
         #[cfg(target_pointer_width = "32")]
-        let previous = unsafe { SetWindowLongPtrW(hwnd, GWLP_WNDPROC, wndproc as *const () as i32) };
+        let previous =
+            unsafe { SetWindowLongPtrW(hwnd, GWLP_WNDPROC, wndproc as *const () as i32) };
         ensure(previous != 0, "window subclass failed")?;
-        OLD_PROC.set(Some(unsafe { std::mem::transmute::<usize,
-            unsafe extern "system" fn(HWND, u32, WPARAM, LPARAM) -> LRESULT>(previous as usize) }));
+        OLD_PROC.set(Some(unsafe {
+            std::mem::transmute::<
+                usize,
+                unsafe extern "system" fn(HWND, u32, WPARAM, LPARAM) -> LRESULT,
+            >(previous as usize)
+        }));
         WINDOW_API.set(Some(api));
-        report.record("owner_hidden_window_created", json!({"visible": false, "per_monitor_v2": true}))?;
+        report.record(
+            "owner_hidden_window_created",
+            json!({"visible": false, "per_monitor_v2": true}),
+        )?;
 
         let (setup_tx, setup_rx) = mpsc::channel();
         let (peer_tx, peer_rx) = mpsc::channel();
@@ -311,22 +425,46 @@ mod fixture {
             let result = peer(setup_tx);
             let _ = peer_tx.send(result);
         });
-        let (endpoint, users) = setup_rx.recv_timeout(BOUND).map_err(|_| "peer setup timeout")??;
+        let (endpoint, users) = setup_rx
+            .recv_timeout(BOUND)
+            .map_err(|_| "peer setup timeout")??;
         let config = serde_json::to_vec(&json!({"endpoint": endpoint,
             "exact_origin": "http://localhost:41739", "event_credential": "a".repeat(64)}))
-            .map_err(|e| e.to_string())?;
+        .map_err(|e| e.to_string())?;
         let mut token = 0;
         let mut wake = 0;
-        status(unsafe { (api.connect)(hwnd as usize, config.as_ptr(), config.len(), &mut token, &mut wake) }, OK, "connect")?;
+        status(
+            unsafe {
+                (api.connect)(
+                    hwnd as usize,
+                    config.as_ptr(),
+                    config.len(),
+                    &mut token,
+                    &mut wake,
+                )
+            },
+            OK,
+            "connect",
+        )?;
         TOKEN.set(token);
         WAKE.set(wake);
-        ensure(token != 0 && (0xc000..=0xffff).contains(&wake), "invalid token/registered wake")?;
+        ensure(
+            token != 0 && (0xc000..=0xffff).contains(&wake),
+            "invalid token/registered wake",
+        )?;
         let mut completion_raw = 0;
         // No message pumping/yield to UI between connect and completion duplication.
-        status(unsafe { (api.completion)(token, &mut completion_raw) }, OK, "completion_handle")?;
+        status(
+            unsafe { (api.completion)(token, &mut completion_raw) },
+            OK,
+            "completion_handle",
+        )?;
         ensure(completion_raw != 0, "completion handle missing")?;
         let completion = completion_raw as HANDLE;
-        report.record("client_connected_completion_retained", json!({"registered_wake": wake}))?;
+        report.record(
+            "client_connected_completion_retained",
+            json!({"registered_wake": wake}),
+        )?;
 
         let deadline = Instant::now() + BOUND;
         let mut subscribed = false;
@@ -334,151 +472,329 @@ mod fixture {
         while !subscribed {
             pump_wait(completion, deadline)?;
             ensure(!BAD_WAKE.get(), "wake contains payload")?;
-            if WAKES.get() == 0 { continue; }
+            if WAKES.get() == 0 {
+                continue;
+            }
             loop {
                 status(unsafe { (api.drain)(token) }, OK, "drain")?;
                 let value = retained(api, token, false)?;
-                if value.is_null() { break; }
-                let message: ServerMessage = serde_json::from_value(value).map_err(|e| e.to_string())?;
+                if value.is_null() {
+                    break;
+                }
+                let message: ServerMessage =
+                    serde_json::from_value(value).map_err(|e| e.to_string())?;
                 match message {
                     ServerMessage::Ready { .. } => {
                         ensure(request_id.is_none(), "duplicate Ready")?;
-                        report.record("ready_via_data_free_window_wake", json!({"wake_count": WAKES.get()}))?;
-                        request_id = Some(request(api, token, ClientCommand::Subscribe { capacity: 8 }, OK)?);
+                        report.record(
+                            "ready_via_data_free_window_wake",
+                            json!({"wake_count": WAKES.get()}),
+                        )?;
+                        request_id = Some(request(
+                            api,
+                            token,
+                            ClientCommand::Subscribe { capacity: 8 },
+                            OK,
+                        )?);
                     }
-                    ServerMessage::Response { request_id: received, reply: Reply::Ok {
-                        response: ClientResponse::Subscribed { snapshot, .. }, ..
-                    }} => {
+                    ServerMessage::Response {
+                        request_id: received,
+                        reply:
+                            Reply::Ok {
+                                response: ClientResponse::Subscribed { snapshot, .. },
+                                ..
+                            },
+                    } => {
                         ensure(Some(received) == request_id, "response request id mismatch")?;
-                        ensure(snapshot.users.iter().map(|u| u.id).collect::<Vec<_>>() == users,
-                            "snapshot must contain the peer's same two users")?;
+                        ensure(
+                            snapshot.users.iter().map(|u| u.id).collect::<Vec<_>>() == users,
+                            "snapshot must contain the peer's same two users",
+                        )?;
                         subscribed = true;
                     }
                     _ => return Err("unexpected peer response".into()),
                 }
             }
         }
-        report.record("subscribed_snapshot_folded", json!({"users": users, "local_admission_is_not_remote_result": true}))?;
+        report.record(
+            "subscribed_snapshot_folded",
+            json!({"users": users, "local_admission_is_not_remote_result": true}),
+        )?;
         status(unsafe { (api.query)(token) }, OK, "query")?;
         let model = retained(api, token, true)?;
-        ensure(model["users"].as_array().is_some_and(|u| u.len() == 2), "query users missing")?;
-        ensure(model["status"]["pointer_enabled"] == false && model["status"]["key_enabled"] == false,
-            "input must default off")?;
-        ensure(model["status"]["live"] == true && model["status"]["terminal"].is_null()
-            && model["status"]["remote_cleanup_unconfirmed"] == false,
-            "live client must not claim terminal cleanup uncertainty")?;
-        for input in [Input::Motion { position: Point { x: 7, y: 9 } },
-            Input::Key { key: KeyCode(4), transition: Transition::Down }]
-        {
-            request(api, token, ClientCommand::Input { user: users[0], input }, INVALID)?;
+        ensure(
+            model["users"].as_array().is_some_and(|u| u.len() == 2),
+            "query users missing",
+        )?;
+        ensure(
+            model["status"]["pointer_enabled"] == false && model["status"]["key_enabled"] == false,
+            "input must default off",
+        )?;
+        ensure(
+            model["status"]["live"] == true
+                && model["status"]["terminal"].is_null()
+                && model["status"]["remote_cleanup_unconfirmed"] == false,
+            "live client must not claim terminal cleanup uncertainty",
+        )?;
+        for input in [
+            Input::Motion {
+                position: Point { x: 7, y: 9 },
+            },
+            Input::Key {
+                key: KeyCode(4),
+                transition: Transition::Down,
+            },
+        ] {
+            request(
+                api,
+                token,
+                ClientCommand::Input {
+                    user: users[0],
+                    input,
+                },
+                INVALID,
+            )?;
         }
-        status(unsafe { (api.enable)(token, 2, 0) }, INVALID, "invalid enable flag")?;
-        status(unsafe { (api.enable)(token, 0, 0) }, OK, "explicit disabled flags")?;
+        status(
+            unsafe { (api.enable)(token, 2, 0) },
+            INVALID,
+            "invalid enable flag",
+        )?;
+        status(
+            unsafe { (api.enable)(token, 0, 0) },
+            OK,
+            "explicit disabled flags",
+        )?;
         status(unsafe { (api.query)(token) }, OK, "query for discard")?;
         status(unsafe { (api.discard)(token) }, OK, "response discard")?;
         let mut ignored = 0;
-        status(unsafe { (api.size)(token, &mut ignored) }, NO_RESPONSE, "discard consumes response")?;
-        report.record("retained_short_buffer_and_default_off_checked", json!({"physical_input": false, "queue_saturation_tested": false}))?;
+        status(
+            unsafe { (api.size)(token, &mut ignored) },
+            NO_RESPONSE,
+            "discard consumes response",
+        )?;
+        report.record(
+            "retained_short_buffer_and_default_off_checked",
+            json!({"physical_input": false, "queue_saturation_tested": false}),
+        )?;
 
         // Retain a real pre-stop query so WM_NCDESTROY must fence that payload.
-        status(unsafe { (api.query)(token) }, OK, "retain before window death")?;
+        status(
+            unsafe { (api.query)(token) },
+            OK,
+            "retain before window death",
+        )?;
         ensure(unsafe { DestroyWindow(hwnd) } != 0, "DestroyWindow failed")?;
-        ensure(STOP_STATUS.get() == Some(OK), "Stop was not successful in WM_NCDESTROY")?;
-        status(unsafe { (api.size)(token, &mut ignored) }, NO_RESPONSE, "Stop retained-output fence")?;
-        status(unsafe { (api.query)(token) }, OK, "terminal query after Stop")?;
+        ensure(
+            STOP_STATUS.get() == Some(OK),
+            "Stop was not successful in WM_NCDESTROY",
+        )?;
+        status(
+            unsafe { (api.size)(token, &mut ignored) },
+            NO_RESPONSE,
+            "Stop retained-output fence",
+        )?;
+        status(
+            unsafe { (api.query)(token) },
+            OK,
+            "terminal query after Stop",
+        )?;
         let terminal = retained(api, token, false)?;
-        ensure(terminal["status"]["live"] == false
-            && terminal["status"]["terminal"] == "local_stop"
-            && terminal["status"]["remote_cleanup_unconfirmed"] == true,
-            "Stop must report local termination with remote cleanup unconfirmed")?;
-        ensure(terminal["users"].as_array().is_some_and(|users| users.is_empty()),
-            "Stop must clear local model")?;
-        report.record("hwnd_destroyed_stop_returned", json!({"stop_in": "WM_NCDESTROY", "retained_output_cleared": true}))?;
+        ensure(
+            terminal["status"]["live"] == false
+                && terminal["status"]["terminal"] == "local_stop"
+                && terminal["status"]["remote_cleanup_unconfirmed"] == true,
+            "Stop must report local termination with remote cleanup unconfirmed",
+        )?;
+        ensure(
+            terminal["users"]
+                .as_array()
+                .is_some_and(|users| users.is_empty()),
+            "Stop must clear local model",
+        )?;
+        report.record(
+            "hwnd_destroyed_stop_returned",
+            json!({"stop_in": "WM_NCDESTROY", "retained_output_cleared": true}),
+        )?;
 
         let first_destroy = unsafe { (api.destroy)(token) };
-        ensure(first_destroy == BUSY || first_destroy == OK, "Destroy returned neither BUSY nor OK")?;
-        report.record("initial_destroy_schedule", json!({"status": first_destroy,
-            "busy_required": false, "reason": "actual worker schedule; no artificial TLS barrier"}))?;
+        ensure(
+            first_destroy == BUSY || first_destroy == OK,
+            "Destroy returned neither BUSY nor OK",
+        )?;
+        report.record(
+            "initial_destroy_schedule",
+            json!({"status": first_destroy,
+            "busy_required": false, "reason": "actual worker schedule; no artificial TLS barrier"}),
+        )?;
         // Even if Destroy already succeeded, verify the independent OS duplicate.
         // Keep the owner message loop alive with no HWND until ACTUAL thread signal.
         let deadline = Instant::now() + BOUND;
         while unsafe { WaitForSingleObject(completion, 0) } != WAIT_OBJECT_0 {
             pump_wait(completion, deadline)?;
         }
-        report.record("actual_worker_os_thread_signaled_after_hwnd_death", json!({"logical_signal_only": false}))?;
+        report.record(
+            "actual_worker_os_thread_signaled_after_hwnd_death",
+            json!({"logical_signal_only": false}),
+        )?;
         if first_destroy == BUSY {
             status(unsafe { (api.destroy)(token) }, OK, "final destroy")?;
         }
         // Success consumes the token, including the completed Rust JoinHandle.
-        status(unsafe { (api.query)(token) }, INVALID_HANDLE, "destroy consumes token")?;
-        status(unsafe { (api.destroy)(token) }, INVALID_HANDLE, "second destroy invalid")?;
+        status(
+            unsafe { (api.query)(token) },
+            INVALID_HANDLE,
+            "destroy consumes token",
+        )?;
+        status(
+            unsafe { (api.destroy)(token) },
+            INVALID_HANDLE,
+            "second destroy invalid",
+        )?;
         TOKEN.set(0);
         WINDOW_API.set(None);
         WAKE.set(0);
         OLD_PROC.set(None);
-        ensure(unsafe { CloseHandle(completion) } != 0, "CloseHandle failed")?;
-        report.record("client_destroyed_completion_closed", json!({"token_consumed": true}))?;
-        peer_rx.recv_timeout(BOUND).map_err(|_| "peer retirement timeout")??;
+        ensure(
+            unsafe { CloseHandle(completion) } != 0,
+            "CloseHandle failed",
+        )?;
+        report.record(
+            "client_destroyed_completion_closed",
+            json!({"token_consumed": true}),
+        )?;
+        peer_rx
+            .recv_timeout(BOUND)
+            .map_err(|_| "peer retirement timeout")??;
         peer.join().map_err(|_| "peer panic")?;
-        report.record("bounded_peer_joined", json!({"gui_service_admission_qualified": false,
-            "authoritative_remote_hold_cleanup_claim": false}))?;
-        ensure(!unsafe { SetThreadDpiAwarenessContext(previous_dpi) }.is_null(), "DPI restore failed")?;
+        report.record(
+            "bounded_peer_joined",
+            json!({"gui_service_admission_qualified": false,
+            "authoritative_remote_hold_cleanup_claim": false}),
+        )?;
+        ensure(
+            !unsafe { SetThreadDpiAwarenessContext(previous_dpi) }.is_null(),
+            "DPI restore failed",
+        )?;
         // No SDK token, call, worker, callback or window procedure remains. API is
         // plain Copy storage with no destructor. Do not call any function afterwards.
         ensure(unsafe { FreeLibrary(module) } != 0, "FreeLibrary failed")?;
-        ensure(unsafe { GetModuleHandleW(name.as_ptr()) }.is_null(), "DLL still loaded after FreeLibrary")?;
-        report.record("dll_unloaded_before_owner_exit", json!({"all_native_calls_returned": true}))?;
+        ensure(
+            unsafe { GetModuleHandleW(name.as_ptr()) }.is_null(),
+            "DLL still loaded after FreeLibrary",
+        )?;
+        report.record(
+            "dll_unloaded_before_owner_exit",
+            json!({"all_native_calls_returned": true}),
+        )?;
         drop(locked);
         Ok(())
     }
 
     fn request(api: Api, token: u64, command: ClientCommand, expected: i32) -> Check<u64> {
-        let bytes = serde_json::to_vec(&ClientRequest { version: PROTOCOL_VERSION, command })
-            .map_err(|e| e.to_string())?;
+        let bytes = serde_json::to_vec(&ClientRequest {
+            version: PROTOCOL_VERSION,
+            command,
+        })
+        .map_err(|e| e.to_string())?;
         let mut id = u64::MAX;
-        status(unsafe { (api.request)(token, bytes.as_ptr(), bytes.len(), &mut id) }, expected, "request admission")?;
-        if expected == OK { ensure(id != u64::MAX && id != 0, "admission id missing")?; }
-        else { ensure(id == u64::MAX, "failed admission changed output")?; }
+        status(
+            unsafe { (api.request)(token, bytes.as_ptr(), bytes.len(), &mut id) },
+            expected,
+            "request admission",
+        )?;
+        if expected == OK {
+            ensure(id != u64::MAX && id != 0, "admission id missing")?;
+        } else {
+            ensure(id == u64::MAX, "failed admission changed output")?;
+        }
         Ok(id)
     }
     fn retained(api: Api, token: u64, check_short: bool) -> Check<Value> {
         let mut length = 0;
-        status(unsafe { (api.size)(token, &mut length) }, OK, "response_size")?;
-        ensure(length > 0 && length <= 4 * 1024 * 1024, "invalid retained length")?;
+        status(
+            unsafe { (api.size)(token, &mut length) },
+            OK,
+            "response_size",
+        )?;
+        ensure(
+            length > 0 && length <= 4 * 1024 * 1024,
+            "invalid retained length",
+        )?;
         if check_short {
-            status(unsafe { (api.query)(token) }, BUSY, "retained result blocks query")?;
+            status(
+                unsafe { (api.query)(token) },
+                BUSY,
+                "retained result blocks query",
+            )?;
             let mut short = vec![0xa5; length - 1];
             let mut needed = 0;
-            status(unsafe { (api.read)(token, short.as_mut_ptr(), short.len(), &mut needed) }, SHORT, "short read")?;
-            ensure(needed == length && short.iter().all(|b| *b == 0xa5), "short read changed bytes/size")?;
+            status(
+                unsafe { (api.read)(token, short.as_mut_ptr(), short.len(), &mut needed) },
+                SHORT,
+                "short read",
+            )?;
+            ensure(
+                needed == length && short.iter().all(|b| *b == 0xa5),
+                "short read changed bytes/size",
+            )?;
             let mut again = 0;
-            status(unsafe { (api.size)(token, &mut again) }, OK, "short read retains output")?;
+            status(
+                unsafe { (api.size)(token, &mut again) },
+                OK,
+                "short read retains output",
+            )?;
             ensure(again == length, "retained size changed")?;
         }
         let mut bytes = vec![0; length];
         let mut written = 0;
-        status(unsafe { (api.read)(token, bytes.as_mut_ptr(), bytes.len(), &mut written) }, OK, "response_read")?;
+        status(
+            unsafe { (api.read)(token, bytes.as_mut_ptr(), bytes.len(), &mut written) },
+            OK,
+            "response_read",
+        )?;
         ensure(written == length, "response length mismatch")?;
-        status(unsafe { (api.size)(token, &mut length) }, NO_RESPONSE, "full read consumes output")?;
+        status(
+            unsafe { (api.size)(token, &mut length) },
+            NO_RESPONSE,
+            "full read consumes output",
+        )?;
         serde_json::from_slice(&bytes).map_err(|e| e.to_string())
     }
     fn pump_wait(completion: HANDLE, deadline: Instant) -> Check {
         let remaining = deadline.saturating_duration_since(Instant::now());
         ensure(!remaining.is_zero(), "bounded owner wait timed out")?;
-        let result = unsafe { MsgWaitForMultipleObjectsEx(1, &completion,
-            remaining.as_millis().min(u32::MAX as u128) as u32, QS_ALLINPUT, MWMO_INPUTAVAILABLE) };
-        ensure(result == WAIT_OBJECT_0 || result == WAIT_OBJECT_0 + 1 || result == WAIT_TIMEOUT,
-            "message/completion wait failed")?;
+        let result = unsafe {
+            MsgWaitForMultipleObjectsEx(
+                1,
+                &completion,
+                remaining.as_millis().min(u32::MAX as u128) as u32,
+                QS_ALLINPUT,
+                MWMO_INPUTAVAILABLE,
+            )
+        };
+        ensure(
+            result == WAIT_OBJECT_0 || result == WAIT_OBJECT_0 + 1 || result == WAIT_TIMEOUT,
+            "message/completion wait failed",
+        )?;
         let mut message: MSG = unsafe { std::mem::zeroed() };
         while unsafe { PeekMessageW(&mut message, null_mut(), 0, 0, PM_REMOVE) } != 0 {
-            ensure(message.message != WM_QUIT, "unexpected owner quit before cleanup")?;
-            unsafe { TranslateMessage(&message); DispatchMessageW(&message); }
+            ensure(
+                message.message != WM_QUIT,
+                "unexpected owner quit before cleanup",
+            )?;
+            unsafe {
+                TranslateMessage(&message);
+                DispatchMessageW(&message);
+            }
         }
         Ok(())
     }
 
     fn peer(setup: mpsc::Sender<Check<(String, Vec<UserId>)>>) -> Check {
-        let runtime = tokio::runtime::Builder::new_current_thread().enable_all().build()
+        let runtime = tokio::runtime::Builder::new_current_thread()
+            .enable_all()
+            .build()
             .map_err(|e| e.to_string())?;
         runtime.block_on(async {
             tokio::time::timeout(BOUND + BOUND, async {
@@ -549,43 +865,64 @@ mod fixture {
     // Small dependency-free SHA-256 used only to bind this explicitly supplied file.
     fn sha256(input: &[u8]) -> String {
         const K: [u32; 64] = [
-            0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
-            0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,
-            0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,
-            0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,
-            0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,
-            0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,
-            0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,
-            0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2,
+            0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4,
+            0xab1c5ed5, 0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe,
+            0x9bdc06a7, 0xc19bf174, 0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f,
+            0x4a7484aa, 0x5cb0a9dc, 0x76f988da, 0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7,
+            0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967, 0x27b70a85, 0x2e1b2138, 0x4d2c6dfc,
+            0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85, 0xa2bfe8a1, 0xa81a664b,
+            0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070, 0x19a4c116,
+            0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
+            0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7,
+            0xc67178f2,
         ];
         let mut data = input.to_vec();
         data.push(0x80);
-        while data.len() % 64 != 56 { data.push(0); }
+        while data.len() % 64 != 56 {
+            data.push(0);
+        }
         data.extend_from_slice(&((input.len() as u64) * 8).to_be_bytes());
-        let mut h: [u32; 8] = [0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,
-            0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];
+        let mut h: [u32; 8] = [
+            0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab,
+            0x5be0cd19,
+        ];
         for chunk in data.chunks_exact(64) {
             let mut w = [0u32; 64];
             for (slot, bytes) in w[..16].iter_mut().zip(chunk.chunks_exact(4)) {
                 *slot = u32::from_be_bytes(bytes.try_into().expect("four-byte SHA word"));
             }
             for i in 16..64 {
-                let a = w[i - 15]; let b = w[i - 2];
+                let a = w[i - 15];
+                let b = w[i - 2];
                 let s0 = a.rotate_right(7) ^ a.rotate_right(18) ^ (a >> 3);
                 let s1 = b.rotate_right(17) ^ b.rotate_right(19) ^ (b >> 10);
-                w[i] = w[i - 16].wrapping_add(s0).wrapping_add(w[i - 7]).wrapping_add(s1);
+                w[i] = w[i - 16]
+                    .wrapping_add(s0)
+                    .wrapping_add(w[i - 7])
+                    .wrapping_add(s1);
             }
             let [mut a, mut b, mut c, mut d, mut e, mut f, mut g, mut z] = h;
             for i in 0..64 {
                 let s1 = e.rotate_right(6) ^ e.rotate_right(11) ^ e.rotate_right(25);
-                let t1 = z.wrapping_add(s1).wrapping_add((e & f) ^ ((!e) & g))
-                    .wrapping_add(K[i]).wrapping_add(w[i]);
+                let t1 = z
+                    .wrapping_add(s1)
+                    .wrapping_add((e & f) ^ ((!e) & g))
+                    .wrapping_add(K[i])
+                    .wrapping_add(w[i]);
                 let s0 = a.rotate_right(2) ^ a.rotate_right(13) ^ a.rotate_right(22);
                 let t2 = s0.wrapping_add((a & b) ^ (a & c) ^ (b & c));
-                z = g; g = f; f = e; e = d.wrapping_add(t1);
-                d = c; c = b; b = a; a = t1.wrapping_add(t2);
+                z = g;
+                g = f;
+                f = e;
+                e = d.wrapping_add(t1);
+                d = c;
+                c = b;
+                b = a;
+                a = t1.wrapping_add(t2);
             }
-            for (slot, value) in h.iter_mut().zip([a,b,c,d,e,f,g,z]) { *slot = slot.wrapping_add(value); }
+            for (slot, value) in h.iter_mut().zip([a, b, c, d, e, f, g, z]) {
+                *slot = slot.wrapping_add(value);
+            }
         }
         h.iter().map(|word| format!("{word:08x}")).collect()
     }

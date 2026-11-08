@@ -1,7 +1,7 @@
 // Pure renderer policy shared by the GUI and the opt-in renderer-only example.
-use anyhow::Result;
 #[cfg(feature = "software-renderer")]
 use anyhow::Context;
+use anyhow::Result;
 #[cfg(feature = "software-renderer")]
 use std::sync::Arc;
 
@@ -122,9 +122,7 @@ mod renderer_tests {
     #[test]
     fn default_mode_remains_glow() {
         assert_eq!(
-            renderer_options(false)
-                .unwrap()
-                .renderer,
+            renderer_options(false).unwrap().renderer,
             eframe::Renderer::Glow
         );
     }

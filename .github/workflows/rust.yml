@@ -178,10 +178,10 @@ jobs:
     needs: [check]
     runs-on: windows-latest
     timeout-minutes: 5
-    env:
-      QUALIFICATION_ROOT: ${{ runner.temp }}/native-lifecycle-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
       - name: Create fresh qualification evidence directory
+        env:
+          QUALIFICATION_ROOT: ${{ runner.temp }}/native-lifecycle-${{ github.run_id }}-${{ github.run_attempt }}
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
@@ -192,6 +192,8 @@ jobs:
           name: application-sdk-preview-${{ github.sha }}
           path: ${{ runner.temp }}/qualification-artifacts
       - name: Qualify each exact native lifecycle specimen once
+        env:
+          QUALIFICATION_ROOT: ${{ runner.temp }}/native-lifecycle-${{ github.run_id }}-${{ github.run_attempt }}
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
@@ -264,18 +266,18 @@ jobs:
           retention-days: 1
           if-no-files-found: warn
           path: |
-            ${{ env.QUALIFICATION_ROOT }}/*.json
-            ${{ env.QUALIFICATION_ROOT }}/*.jsonl
-            ${{ env.QUALIFICATION_ROOT }}/*.log
+            ${{ runner.temp }}/native-lifecycle-${{ github.run_id }}-${{ github.run_attempt }}/*.json
+            ${{ runner.temp }}/native-lifecycle-${{ github.run_id }}-${{ github.run_attempt }}/*.jsonl
+            ${{ runner.temp }}/native-lifecycle-${{ github.run_id }}-${{ github.run_attempt }}/*.log
 
   qualify-software-readback:
     needs: [check]
     runs-on: windows-latest
     timeout-minutes: 5
-    env:
-      QUALIFICATION_ROOT: ${{ runner.temp }}/software-readback-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
       - name: Create fresh renderer evidence directory
+        env:
+          QUALIFICATION_ROOT: ${{ runner.temp }}/software-readback-${{ github.run_id }}-${{ github.run_attempt }}
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
@@ -286,6 +288,8 @@ jobs:
           name: application-sdk-preview-${{ github.sha }}
           path: ${{ runner.temp }}/qualification-artifacts
       - name: Qualify only the explicit Cpu DX12 renderer readback fixture once
+        env:
+          QUALIFICATION_ROOT: ${{ runner.temp }}/software-readback-${{ github.run_id }}-${{ github.run_attempt }}
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
@@ -386,7 +390,7 @@ jobs:
           retention-days: 1
           if-no-files-found: warn
           path: |
-            ${{ env.QUALIFICATION_ROOT }}/*.json
-            ${{ env.QUALIFICATION_ROOT }}/*.jsonl
-            ${{ env.QUALIFICATION_ROOT }}/*.log
-            ${{ env.QUALIFICATION_ROOT }}/own-viewport-pattern*.png
+            ${{ runner.temp }}/software-readback-${{ github.run_id }}-${{ github.run_attempt }}/*.json
+            ${{ runner.temp }}/software-readback-${{ github.run_id }}-${{ github.run_attempt }}/*.jsonl
+            ${{ runner.temp }}/software-readback-${{ github.run_id }}-${{ github.run_attempt }}/*.log
+            ${{ runner.temp }}/software-readback-${{ github.run_id }}-${{ github.run_attempt }}/own-viewport-pattern*.png

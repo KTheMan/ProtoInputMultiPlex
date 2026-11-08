@@ -1358,7 +1358,8 @@ pub fn run(
     delays: WorkerDelays,
 ) -> Result<()> {
     let renderer = options.renderer;
-    let native_options = crate::renderer_config::renderer_options(renderer == crate::GuiRenderer::SoftwareDx12)?;
+    let native_options =
+        crate::renderer_config::renderer_options(renderer == crate::GuiRenderer::SoftwareDx12)?;
     ensure!(
         script.is_some() || delays.discovery.is_zero(),
         "Discovery delay requires the opt-in GUI script"
@@ -1402,7 +1403,10 @@ pub fn run(
         crate::APP_NAME,
         options,
         Box::new(move |cc| {
-            crate::renderer_config::verify_renderer(renderer == crate::GuiRenderer::SoftwareDx12, cc)?;
+            crate::renderer_config::verify_renderer(
+                renderer == crate::GuiRenderer::SoftwareDx12,
+                cc,
+            )?;
             Theme::install(
                 &cc.egui_ctx,
                 theme_mode(crate::app_preferences::Preferences::default().appearance_mode),
@@ -12949,4 +12953,3 @@ pub(crate) struct GuiRunOptions {
     pub renderer: crate::GuiRenderer,
     pub script_screenshots: bool,
 }
-

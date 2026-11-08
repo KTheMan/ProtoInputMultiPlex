@@ -49,8 +49,6 @@ mod forwarding_ui;
 #[cfg(windows)]
 mod gui;
 #[cfg(windows)]
-mod renderer_config;
-#[cfg(windows)]
 mod gui_activity;
 #[cfg(windows)]
 mod gui_agent_broker;
@@ -104,6 +102,8 @@ mod output_runtime;
 mod output_ui;
 #[cfg(windows)]
 mod probe;
+#[cfg(windows)]
+mod renderer_config;
 #[cfg(windows)]
 mod replication_queue;
 #[cfg(windows)]
