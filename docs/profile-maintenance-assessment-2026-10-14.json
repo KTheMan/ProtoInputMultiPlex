@@ -1,0 +1,63 @@
+{
+  "result": "PASS",
+  "date": "2026-10-14",
+  "reviewer": "Independent acceptance subagent",
+  "scope": "Bounded profile-document and stopped file/UI maintenance, plus one own x64 virtual assigned session for unavailable controls and connected read-only JSON operations.",
+  "builds": {
+    "documents_and_ui_prefix": {
+      "x64": "cae4d4180f885e4d457a23b7ee05d2b7413c56fbdd7d1f03dc4cc664a3bb3f2f",
+      "i686": "9d0e91f6cddc18c5c17d15f192ef718e49c802f21d767c29d0198f565a06aedd"
+    },
+    "ui_tail_and_active": {
+      "x64": "349b9d8b26f8b1edd472fa6f4981c3a92517531048cade8fc0088eb440af8420",
+      "i686": "f85427a1a7e244a9ce12475c90aca694eccc7dea8d808a31cc386ac04d292411"
+    },
+    "note": "Runtime gates execute x64 GUI/MCP/target. i686 image was built/copied and hashed but is not exercised by this group. Native v3 runtime is unchanged from the prior accepted Output Rules gate."
+  },
+  "accepted": [
+    "Standalone 22-tool object-schema discovery without DLLs; modern two-seat graph/output/bounds/annotation/magnifier fields roundtrip structurally; decimal output-key maps survive buffered JSON; legacy IDs materialize once and remain stable.",
+    "Invalid JSON/version/cyclic graph/output rules and a UTF-8 document exceeding 16 MiB reject while standalone session state stays unchanged; a same-sized oversized file import preserves draft/files.",
+    "Actual stopped Save keeps exact previous validated bytes in .bak; Import and separate-path Export preserve full profiles; successful Restore replaces the draft/main and backs up exact prior main. Representative staged Output and graph drafts reset on replacement.",
+    "Reset changes only the draft; actual Undo restores the complete prior profile; a second Undo is visibly disabled and never clicked.",
+    "Invalid backup and invalid existing main fail preflight without changing main, backup or draft. One real own handle lacking FILE_SHARE_DELETE denies final Windows replacement: main and draft stay unchanged, backup becomes exact validated prior main, temporary file is cleaned; unlocked Save/Export/Load then succeeds.",
+    "One active virtual session renders all seven maintenance controls disabled/visible with truthful non-click observations, preserving actual F5 hold and files/draft. Connected MCP validate/normalize/export and invalid document rejection cause no native input, worker configuration, profile or file-export change. Stop delivers plain F5 UP and destroys overlay/descriptor."
+  ],
+  "counts": {
+    "document_group": 1,
+    "offline_prefix_accepted_clicks": 19,
+    "offline_tail_clicks": 11,
+    "offline_tail_disabled_observations": 1,
+    "active_clicks": 11,
+    "active_disabled_observations": 7,
+    "note": "Step occurrences include repeated navigation/setup and are not distinct feature counts. The substantive equivalent-profile comparisons are grouped, not inflated."
+  },
+  "retained_failure": {
+    "artifact": "docs/profile-maintenance-ui-prefix-2026-10-14.json",
+    "original_result": "NOT ACCEPTED",
+    "accepted_scope": "Only its 19 recorded passed clicks through Reset. Its subsequent Undo is not counted; the tail independently verifies actual Undo.",
+    "cause": "The reused graph-only harness required an unresolved-ID warning for a disabled Undo and could not continue past disabled observations. Bounded opt-in Script instrumentation now records visible disabled responses without click/product dispatch; default scripts retain click-only behavior."
+  },
+  "limits": [
+    "Only virtual IDs, owned files/apps and own GUI pixels. No hardware/RustDesk input used for control or validation and no OS input injection; no general hardware, arbitrary-app, full parity or multi-user isolation claim.",
+    "Synthetic nonzero PIDs in offline profiles are validation/persistence data only and were never attached. Profile validation does not establish current PID authorization; the active phase uses its actual owned target PID.",
+    "Main and backup are individually atomic files, not a two-file transaction. Backup may update before failed main replacement. No crash/power-loss recovery, concurrent-writer stress, other filesystems or exhaustive near-limit serialization expansion testing.",
+    "Dependent editor reset is exercised for Output and graph drafts; other editor reset paths are not independently exhaustively tested. Historical feature delivery suites, OS startup/tray and unrelated migrations are not replayed."
+  ],
+  "cleanup": {
+    "all_recorded_owned_processes_closed": true,
+    "final_owned_path_cim_audit": "empty",
+    "exclusive_slot_returned": true
+  },
+  "producer_checks": {
+    "path": "docs/profile-maintenance-rust-checks-2026-10-14.json",
+    "sha256": "4b84b28af592701f66eb13e3fb09ccb84fc619a9cb798dbec2a2dd2580148c11",
+    "scope": "Producer fmt, strict Clippy, 114 tests and both builds; distinct from this independent runtime gate."
+  },
+  "evidence_manifest": "docs/profile-maintenance-evidence-manifest-2026-10-14.json",
+  "image": {
+    "original": "runtime\\acceptance-graph-profile-maintenance-offline-20261014-123051\\profile-controls.png",
+    "archive": "docs\\profile-maintenance-control-center.png",
+    "sha256": "4620bdab7619d4142f9cf24ed4024cc1c4137cdd23f4ea590aaa93bfe88c53a0",
+    "independent_visual_review": "Safe own GUI: Save/Load, Import/Export, Restore backup, Reset/Undo, stale-PID reminder and backup path all visible; no unrelated window inventory."
+  }
+}

@@ -1,0 +1,5368 @@
+{
+  "result": "PASS",
+  "samples": {
+    "input-page": {
+      "state": [],
+      "studio": null,
+      "acks": [],
+      "probes": [
+        {
+          "pid": 807296,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 31,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0,
+          "capture_color": [
+            40,
+            96,
+            152
+          ],
+          "capture_delay_ms": 0,
+          "capture_hwnd": 91491010,
+          "wm_print_count": 0,
+          "wm_printclient_count": 0,
+          "wm_paint_count": 1,
+          "last_print_flags": 0,
+          "last_print_hdc_non_null": false,
+          "capture_delay_applied_count": 0,
+          "capture_delay_total_ms": 0,
+          "native_events": [],
+          "native_event_count": 0,
+          "clock_us": 3175456
+        },
+        {
+          "pid": 809864,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 16,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0,
+          "capture_color": [
+            41,
+            97,
+            153
+          ],
+          "capture_delay_ms": 0,
+          "capture_hwnd": 42208650,
+          "wm_print_count": 0,
+          "wm_printclient_count": 0,
+          "wm_paint_count": 1,
+          "last_print_flags": 0,
+          "last_print_hdc_non_null": false,
+          "capture_delay_applied_count": 0,
+          "capture_delay_total_ms": 0,
+          "native_events": [],
+          "native_event_count": 0,
+          "clock_us": 1550780
+        }
+      ],
+      "button": "Input lab"
+    },
+    "start": {
+      "state": [
+        {
+          "name": "Macro UI 1",
+          "pid": 807296,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 38,
+            "top": 71,
+            "right": 442,
+            "bottom": 392
+          },
+          "movement_bounds": {
+            "left": 0,
+            "top": 0,
+            "right": 2560,
+            "bottom": 1440
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 89787512,
+            "x": 240,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 663,
+            "shape": "arrow",
+            "badge": null,
+            "render_origin": [
+              240,
+              231
+            ],
+            "hotspot": [
+              0,
+              0
+            ],
+            "pixel_hash": 14294273554942468095
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 807296,
+          "mode": null
+        },
+        {
+          "name": "Macro UI 2",
+          "pid": 809864,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 498,
+            "top": 71,
+            "right": 902,
+            "bottom": 392
+          },
+          "movement_bounds": {
+            "left": 0,
+            "top": 0,
+            "right": 2560,
+            "bottom": 1440
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 33360208,
+            "x": 700,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 671,
+            "shape": "arrow",
+            "badge": null,
+            "render_origin": [
+              700,
+              231
+            ],
+            "hotspot": [
+              0,
+              0
+            ],
+            "pixel_hash": 6223055287562733463
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 809864,
+          "mode": null
+        }
+      ],
+      "studio": {
+        "acknowledged": false,
+        "users": [
+          {
+            "user": 0,
+            "recording": false,
+            "recorded_events": 0,
+            "loaded_events": 0,
+            "revision": 0,
+            "clip": null,
+            "playback": null,
+            "keep_awake": false,
+            "power": null
+          },
+          {
+            "user": 1,
+            "recording": false,
+            "recorded_events": 0,
+            "loaded_events": 0,
+            "revision": 0,
+            "clip": null,
+            "playback": null,
+            "keep_awake": false,
+            "power": null
+          }
+        ],
+        "error": null
+      },
+      "acks": [],
+      "probes": [
+        {
+          "pid": 807296,
+          "cursor": [
+            240,
+            231
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 96,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0,
+          "capture_color": [
+            40,
+            96,
+            152
+          ],
+          "capture_delay_ms": 0,
+          "capture_hwnd": 91491010,
+          "wm_print_count": 0,
+          "wm_printclient_count": 0,
+          "wm_paint_count": 1,
+          "last_print_flags": 0,
+          "last_print_hdc_non_null": false,
+          "capture_delay_applied_count": 0,
+          "capture_delay_total_ms": 0,
+          "native_events": [],
+          "native_event_count": 0,
+          "clock_us": 9875519
+        },
+        {
+          "pid": 809864,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 79,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0,
+          "capture_color": [
+            41,
+            97,
+            153
+          ],
+          "capture_delay_ms": 0,
+          "capture_hwnd": 42208650,
+          "wm_print_count": 0,
+          "wm_printclient_count": 0,
+          "wm_paint_count": 1,
+          "last_print_flags": 0,
+          "last_print_hdc_non_null": false,
+          "capture_delay_applied_count": 0,
+          "capture_delay_total_ms": 0,
+          "native_events": [],
+          "native_event_count": 0,
+          "clock_us": 8133085
+        }
+      ],
+      "button": "Start routing"
+    },
+    "select-0": {
+      "state": [
+        {
+          "name": "Macro UI 1",
+          "pid": 807296,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 38,
+            "top": 71,
+            "right": 442,
+            "bottom": 392
+          },
+          "movement_bounds": {
+            "left": 0,
+            "top": 0,
+            "right": 2560,
+            "bottom": 1440
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [],
+          "overlay": {
+            "hwnd": 89787512,
+            "x": 240,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 663,
+            "shape": "arrow",
+            "badge": null,
+            "render_origin": [
+              240,
+              231
+            ],
+            "hotspot": [
+              0,
+              0
+            ],
+            "pixel_hash": 14294273554942468095
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 807296,
+          "mode": null
+        },
+        {
+          "name": "Macro UI 2",
+          "pid": 809864,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 498,
+            "top": 71,
+            "right": 902,
+            "bottom": 392
+          },
+          "movement_bounds": {
+            "left": 0,
+            "top": 0,
+            "right": 2560,
+            "bottom": 1440
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 33360208,
+            "x": 700,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 671,
+            "shape": "arrow",
+            "badge": null,
+            "render_origin": [
+              700,
+              231
+            ],
+            "hotspot": [
+              0,
+              0
+            ],
+            "pixel_hash": 6223055287562733463
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 809864,
+          "mode": null
+        }
+      ],
+      "studio": {
+        "acknowledged": false,
+        "users": [
+          {
+            "user": 0,
+            "recording": false,
+            "recorded_events": 0,
+            "loaded_events": 0,
+            "revision": 0,
+            "clip": null,
+            "playback": null,
+            "keep_awake": false,
+            "power": null
+          },
+          {
+            "user": 1,
+            "recording": false,
+            "recorded_events": 0,
+            "loaded_events": 0,
+            "revision": 0,
+            "clip": null,
+            "playback": null,
+            "keep_awake": false,
+            "power": null
+          }
+        ],
+        "error": null
+      },
+      "acks": [],
+      "probes": [
+        {
+          "pid": 807296,
+          "cursor": [
+            240,
+            231
+          ],
+          "buttons": 1,
+          "test_keys": 0,
+          "frames": 109,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            }
+          ],
+          "mouse_event_count": 1,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0,
+          "capture_color": [
+            40,
+            96,
+            152
+          ],
+          "capture_delay_ms": 0,
+          "capture_hwnd": 91491010,
+          "wm_print_count": 0,
+          "wm_printclient_count": 0,
+          "wm_paint_count": 1,
+          "last_print_flags": 0,
+          "last_print_hdc_non_null": false,
+          "capture_delay_applied_count": 0,
+          "capture_delay_total_ms": 0,
+          "native_events": [
+            {
+              "kind": "motion",
+              "at_us": 10940305,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 10940337,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 10940339,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 10940343,
+              "code": 0,
+              "pressed": true,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 10941549,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            }
+          ],
+          "native_event_count": 5,
+          "clock_us": 11227353
+        },
+        {
+          "pid": 809864,
+          "cursor": [
+            700,
+            231
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 93,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0,
+          "capture_color": [
+            41,
+            97,
+            153
+          ],
+          "capture_delay_ms": 0,
+          "capture_hwnd": 42208650,
+          "wm_print_count": 0,
+          "wm_printclient_count": 0,
+          "wm_paint_count": 1,
+          "last_print_flags": 0,
+          "last_print_hdc_non_null": false,
+          "capture_delay_applied_count": 0,
+          "capture_delay_total_ms": 0,
+          "native_events": [],
+          "native_event_count": 0,
+          "clock_us": 9585835
+        }
+      ],
+      "button": "1 Hold click"
+    },
+    "drop-0": {
+      "state": [
+        {
+          "name": "Macro UI 1",
+          "pid": 807296,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 38,
+            "top": 71,
+            "right": 442,
+            "bottom": 392
+          },
+          "movement_bounds": {
+            "left": 0,
+            "top": 0,
+            "right": 2560,
+            "bottom": 1440
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 89787512,
+            "x": 240,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 663,
+            "shape": "arrow",
+            "badge": null,
+            "render_origin": [
+              240,
+              231
+            ],
+            "hotspot": [
+              0,
+              0
+            ],
+            "pixel_hash": 14294273554942468095
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 807296,
+          "mode": null
+        },
+        {
+          "name": "Macro UI 2",
+          "pid": 809864,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 498,
+            "top": 71,
+            "right": 902,
+            "bottom": 392
+          },
+          "movement_bounds": {
+            "left": 0,
+            "top": 0,
+            "right": 2560,
+            "bottom": 1440
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 33360208,
+            "x": 700,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 671,
+            "shape": "arrow",
+            "badge": null,
+            "render_origin": [
+              700,
+              231
+            ],
+            "hotspot": [
+              0,
+              0
+            ],
+            "pixel_hash": 6223055287562733463
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 809864,
+          "mode": null
+        }
+      ],
+      "studio": {
+        "acknowledged": false,
+        "users": [
+          {
+            "user": 0,
+            "recording": false,
+            "recorded_events": 0,
+            "loaded_events": 0,
+            "revision": 0,
+            "clip": null,
+            "playback": null,
+            "keep_awake": false,
+            "power": null
+          },
+          {
+            "user": 1,
+            "recording": false,
+            "recorded_events": 0,
+            "loaded_events": 0,
+            "revision": 0,
+            "clip": null,
+            "playback": null,
+            "keep_awake": false,
+            "power": null
+          }
+        ],
+        "error": null
+      },
+      "acks": [],
+      "probes": [
+        {
+          "pid": 807296,
+          "cursor": [
+            240,
+            231
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 122,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0,
+          "capture_color": [
+            40,
+            96,
+            152
+          ],
+          "capture_delay_ms": 0,
+          "capture_hwnd": 91491010,
+          "wm_print_count": 0,
+          "wm_printclient_count": 0,
+          "wm_paint_count": 1,
+          "last_print_flags": 0,
+          "last_print_hdc_non_null": false,
+          "capture_delay_applied_count": 0,
+          "capture_delay_total_ms": 0,
+          "native_events": [
+            {
+              "kind": "motion",
+              "at_us": 10940305,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 10940337,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 10940339,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 10940343,
+              "code": 0,
+              "pressed": true,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 10941549,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 12348253,
+              "code": 0,
+              "pressed": false,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 12348589,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            }
+          ],
+          "native_event_count": 7,
+          "clock_us": 12593981
+        },
+        {
+          "pid": 809864,
+          "cursor": [
+            700,
+            231
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 106,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0,
+          "capture_color": [
+            41,
+            97,
+            153
+          ],
+          "capture_delay_ms": 0,
+          "capture_hwnd": 42208650,
+          "wm_print_count": 0,
+          "wm_printclient_count": 0,
+          "wm_paint_count": 1,
+          "last_print_flags": 0,
+          "last_print_hdc_non_null": false,
+          "capture_delay_applied_count": 0,
+          "capture_delay_total_ms": 0,
+          "native_events": [],
+          "native_event_count": 0,
+          "clock_us": 10939592
+        }
+      ],
+      "button": "1 Release click"
+    },
+    "select-1": {
+      "state": [
+        {
+          "name": "Macro UI 1",
+          "pid": 807296,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 38,
+            "top": 71,
+            "right": 442,
+            "bottom": 392
+          },
+          "movement_bounds": {
+            "left": 0,
+            "top": 0,
+            "right": 2560,
+            "bottom": 1440
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 89787512,
+            "x": 240,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 663,
+            "shape": "arrow",
+            "badge": null,
+            "render_origin": [
+              240,
+              231
+            ],
+            "hotspot": [
+              0,
+              0
+            ],
+            "pixel_hash": 14294273554942468095
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 807296,
+          "mode": null
+        },
+        {
+          "name": "Macro UI 2",
+          "pid": 809864,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 498,
+            "top": 71,
+            "right": 902,
+            "bottom": 392
+          },
+          "movement_bounds": {
+            "left": 0,
+            "top": 0,
+            "right": 2560,
+            "bottom": 1440
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [],
+          "overlay": {
+            "hwnd": 33360208,
+            "x": 700,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 671,
+            "shape": "arrow",
+            "badge": null,
+            "render_origin": [
+              700,
+              231
+            ],
+            "hotspot": [
+              0,
+              0
+            ],
+            "pixel_hash": 6223055287562733463
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 809864,
+          "mode": null
+        }
+      ],
+      "studio": {
+        "acknowledged": false,
+        "users": [
+          {
+            "user": 0,
+            "recording": false,
+            "recorded_events": 0,
+            "loaded_events": 0,
+            "revision": 0,
+            "clip": null,
+            "playback": null,
+            "keep_awake": false,
+            "power": null
+          },
+          {
+            "user": 1,
+            "recording": false,
+            "recorded_events": 0,
+            "loaded_events": 0,
+            "revision": 0,
+            "clip": null,
+            "playback": null,
+            "keep_awake": false,
+            "power": null
+          }
+        ],
+        "error": null
+      },
+      "acks": [],
+      "probes": [
+        {
+          "pid": 807296,
+          "cursor": [
+            240,
+            231
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 136,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0,
+          "capture_color": [
+            40,
+            96,
+            152
+          ],
+          "capture_delay_ms": 0,
+          "capture_hwnd": 91491010,
+          "wm_print_count": 0,
+          "wm_printclient_count": 0,
+          "wm_paint_count": 1,
+          "last_print_flags": 0,
+          "last_print_hdc_non_null": false,
+          "capture_delay_applied_count": 0,
+          "capture_delay_total_ms": 0,
+          "native_events": [
+            {
+              "kind": "motion",
+              "at_us": 10940305,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 10940337,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 10940339,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 10940343,
+              "code": 0,
+              "pressed": true,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 10941549,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 12348253,
+              "code": 0,
+              "pressed": false,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 12348589,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            }
+          ],
+          "native_event_count": 7,
+          "clock_us": 14047253
+        },
+        {
+          "pid": 809864,
+          "cursor": [
+            700,
+            231
+          ],
+          "buttons": 1,
+          "test_keys": 0,
+          "frames": 120,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            }
+          ],
+          "mouse_event_count": 1,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0,
+          "capture_color": [
+            41,
+            97,
+            153
+          ],
+          "capture_delay_ms": 0,
+          "capture_hwnd": 42208650,
+          "wm_print_count": 0,
+          "wm_printclient_count": 0,
+          "wm_paint_count": 1,
+          "last_print_flags": 0,
+          "last_print_hdc_non_null": false,
+          "capture_delay_applied_count": 0,
+          "capture_delay_total_ms": 0,
+          "native_events": [
+            {
+              "kind": "motion",
+              "at_us": 12036721,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                -1,
+                -1
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 12042152,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 12042217,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 12042227,
+              "code": 0,
+              "pressed": true,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 12044035,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            }
+          ],
+          "native_event_count": 5,
+          "clock_us": 12396913
+        }
+      ],
+      "button": "2 Hold click"
+    },
+    "drop-1": {
+      "state": [
+        {
+          "name": "Macro UI 1",
+          "pid": 807296,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 38,
+            "top": 71,
+            "right": 442,
+            "bottom": 392
+          },
+          "movement_bounds": {
+            "left": 0,
+            "top": 0,
+            "right": 2560,
+            "bottom": 1440
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 89787512,
+            "x": 240,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 663,
+            "shape": "arrow",
+            "badge": null,
+            "render_origin": [
+              240,
+              231
+            ],
+            "hotspot": [
+              0,
+              0
+            ],
+            "pixel_hash": 14294273554942468095
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 807296,
+          "mode": null
+        },
+        {
+          "name": "Macro UI 2",
+          "pid": 809864,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 498,
+            "top": 71,
+            "right": 902,
+            "bottom": 392
+          },
+          "movement_bounds": {
+            "left": 0,
+            "top": 0,
+            "right": 2560,
+            "bottom": 1440
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 33360208,
+            "x": 700,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 671,
+            "shape": "arrow",
+            "badge": null,
+            "render_origin": [
+              700,
+              231
+            ],
+            "hotspot": [
+              0,
+              0
+            ],
+            "pixel_hash": 6223055287562733463
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 809864,
+          "mode": null
+        }
+      ],
+      "studio": {
+        "acknowledged": false,
+        "users": [
+          {
+            "user": 0,
+            "recording": false,
+            "recorded_events": 0,
+            "loaded_events": 0,
+            "revision": 0,
+            "clip": null,
+            "playback": null,
+            "keep_awake": false,
+            "power": null
+          },
+          {
+            "user": 1,
+            "recording": false,
+            "recorded_events": 0,
+            "loaded_events": 0,
+            "revision": 0,
+            "clip": null,
+            "playback": null,
+            "keep_awake": false,
+            "power": null
+          }
+        ],
+        "error": null
+      },
+      "acks": [],
+      "probes": [
+        {
+          "pid": 807296,
+          "cursor": [
+            240,
+            231
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 148,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0,
+          "capture_color": [
+            40,
+            96,
+            152
+          ],
+          "capture_delay_ms": 0,
+          "capture_hwnd": 91491010,
+          "wm_print_count": 0,
+          "wm_printclient_count": 0,
+          "wm_paint_count": 1,
+          "last_print_flags": 0,
+          "last_print_hdc_non_null": false,
+          "capture_delay_applied_count": 0,
+          "capture_delay_total_ms": 0,
+          "native_events": [
+            {
+              "kind": "motion",
+              "at_us": 10940305,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 10940337,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 10940339,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 10940343,
+              "code": 0,
+              "pressed": true,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 10941549,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 12348253,
+              "code": 0,
+              "pressed": false,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 12348589,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            }
+          ],
+          "native_event_count": 7,
+          "clock_us": 15297677
+        },
+        {
+          "pid": 809864,
+          "cursor": [
+            700,
+            231
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 132,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0,
+          "capture_color": [
+            41,
+            97,
+            153
+          ],
+          "capture_delay_ms": 0,
+          "capture_hwnd": 42208650,
+          "wm_print_count": 0,
+          "wm_printclient_count": 0,
+          "wm_paint_count": 1,
+          "last_print_flags": 0,
+          "last_print_hdc_non_null": false,
+          "capture_delay_applied_count": 0,
+          "capture_delay_total_ms": 0,
+          "native_events": [
+            {
+              "kind": "motion",
+              "at_us": 12036721,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                -1,
+                -1
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 12042152,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 12042217,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 12042227,
+              "code": 0,
+              "pressed": true,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 12044035,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 13267142,
+              "code": 0,
+              "pressed": false,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 13268264,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            }
+          ],
+          "native_event_count": 7,
+          "clock_us": 13647853
+        }
+      ],
+      "button": "2 Release click"
+    },
+    "assigned-bounds-page": {
+      "state": [
+        {
+          "name": "Macro UI 1",
+          "pid": 807296,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 38,
+            "top": 71,
+            "right": 442,
+            "bottom": 392
+          },
+          "movement_bounds": {
+            "left": 0,
+            "top": 0,
+            "right": 2560,
+            "bottom": 1440
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 89787512,
+            "x": 240,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 663,
+            "shape": "arrow",
+            "badge": null,
+            "render_origin": [
+              240,
+              231
+            ],
+            "hotspot": [
+              0,
+              0
+            ],
+            "pixel_hash": 14294273554942468095
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 807296,
+          "mode": null
+        },
+        {
+          "name": "Macro UI 2",
+          "pid": 809864,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 498,
+            "top": 71,
+            "right": 902,
+            "bottom": 392
+          },
+          "movement_bounds": {
+            "left": 0,
+            "top": 0,
+            "right": 2560,
+            "bottom": 1440
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 33360208,
+            "x": 700,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 671,
+            "shape": "arrow",
+            "badge": null,
+            "render_origin": [
+              700,
+              231
+            ],
+            "hotspot": [
+              0,
+              0
+            ],
+            "pixel_hash": 6223055287562733463
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 809864,
+          "mode": null
+        }
+      ],
+      "studio": {
+        "acknowledged": false,
+        "users": [
+          {
+            "user": 0,
+            "recording": false,
+            "recorded_events": 0,
+            "loaded_events": 0,
+            "revision": 0,
+            "clip": null,
+            "playback": null,
+            "keep_awake": false,
+            "power": null
+          },
+          {
+            "user": 1,
+            "recording": false,
+            "recorded_events": 0,
+            "loaded_events": 0,
+            "revision": 0,
+            "clip": null,
+            "playback": null,
+            "keep_awake": false,
+            "power": null
+          }
+        ],
+        "error": null
+      },
+      "acks": [],
+      "probes": [
+        {
+          "pid": 807296,
+          "cursor": [
+            240,
+            231
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 157,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0,
+          "capture_color": [
+            40,
+            96,
+            152
+          ],
+          "capture_delay_ms": 0,
+          "capture_hwnd": 91491010,
+          "wm_print_count": 0,
+          "wm_printclient_count": 0,
+          "wm_paint_count": 1,
+          "last_print_flags": 0,
+          "last_print_hdc_non_null": false,
+          "capture_delay_applied_count": 0,
+          "capture_delay_total_ms": 0,
+          "native_events": [
+            {
+              "kind": "motion",
+              "at_us": 10940305,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 10940337,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 10940339,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 10940343,
+              "code": 0,
+              "pressed": true,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 10941549,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 12348253,
+              "code": 0,
+              "pressed": false,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 12348589,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            }
+          ],
+          "native_event_count": 7,
+          "clock_us": 16235707
+        },
+        {
+          "pid": 809864,
+          "cursor": [
+            700,
+            231
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 141,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0,
+          "capture_color": [
+            41,
+            97,
+            153
+          ],
+          "capture_delay_ms": 0,
+          "capture_hwnd": 42208650,
+          "wm_print_count": 0,
+          "wm_printclient_count": 0,
+          "wm_paint_count": 1,
+          "last_print_flags": 0,
+          "last_print_hdc_non_null": false,
+          "capture_delay_applied_count": 0,
+          "capture_delay_total_ms": 0,
+          "native_events": [
+            {
+              "kind": "motion",
+              "at_us": 12036721,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                -1,
+                -1
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 12042152,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 12042217,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 12042227,
+              "code": 0,
+              "pressed": true,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 12044035,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 13267142,
+              "code": 0,
+              "pressed": false,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 13268264,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            }
+          ],
+          "native_event_count": 7,
+          "clock_us": 14575127
+        }
+      ],
+      "button": "Configure user"
+    },
+    "assigned-lock-tab": {
+      "state": [
+        {
+          "name": "Macro UI 1",
+          "pid": 807296,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 38,
+            "top": 71,
+            "right": 442,
+            "bottom": 392
+          },
+          "movement_bounds": {
+            "left": 0,
+            "top": 0,
+            "right": 2560,
+            "bottom": 1440
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 89787512,
+            "x": 240,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 663,
+            "shape": "arrow",
+            "badge": null,
+            "render_origin": [
+              240,
+              231
+            ],
+            "hotspot": [
+              0,
+              0
+            ],
+            "pixel_hash": 14294273554942468095
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 807296,
+          "mode": null
+        },
+        {
+          "name": "Macro UI 2",
+          "pid": 809864,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 498,
+            "top": 71,
+            "right": 902,
+            "bottom": 392
+          },
+          "movement_bounds": {
+            "left": 0,
+            "top": 0,
+            "right": 2560,
+            "bottom": 1440
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 33360208,
+            "x": 700,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 671,
+            "shape": "arrow",
+            "badge": null,
+            "render_origin": [
+              700,
+              231
+            ],
+            "hotspot": [
+              0,
+              0
+            ],
+            "pixel_hash": 6223055287562733463
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 809864,
+          "mode": null
+        }
+      ],
+      "studio": {
+        "acknowledged": false,
+        "users": [
+          {
+            "user": 0,
+            "recording": false,
+            "recorded_events": 0,
+            "loaded_events": 0,
+            "revision": 0,
+            "clip": null,
+            "playback": null,
+            "keep_awake": false,
+            "power": null
+          },
+          {
+            "user": 1,
+            "recording": false,
+            "recorded_events": 0,
+            "loaded_events": 0,
+            "revision": 0,
+            "clip": null,
+            "playback": null,
+            "keep_awake": false,
+            "power": null
+          }
+        ],
+        "error": null
+      },
+      "acks": [],
+      "probes": [
+        {
+          "pid": 807296,
+          "cursor": [
+            240,
+            231
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 167,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0,
+          "capture_color": [
+            40,
+            96,
+            152
+          ],
+          "capture_delay_ms": 0,
+          "capture_hwnd": 91491010,
+          "wm_print_count": 0,
+          "wm_printclient_count": 0,
+          "wm_paint_count": 1,
+          "last_print_flags": 0,
+          "last_print_hdc_non_null": false,
+          "capture_delay_applied_count": 0,
+          "capture_delay_total_ms": 0,
+          "native_events": [
+            {
+              "kind": "motion",
+              "at_us": 10940305,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 10940337,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 10940339,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 10940343,
+              "code": 0,
+              "pressed": true,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 10941549,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 12348253,
+              "code": 0,
+              "pressed": false,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 12348589,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            }
+          ],
+          "native_event_count": 7,
+          "clock_us": 17280325
+        },
+        {
+          "pid": 809864,
+          "cursor": [
+            700,
+            231
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 151,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0,
+          "capture_color": [
+            41,
+            97,
+            153
+          ],
+          "capture_delay_ms": 0,
+          "capture_hwnd": 42208650,
+          "wm_print_count": 0,
+          "wm_printclient_count": 0,
+          "wm_paint_count": 1,
+          "last_print_flags": 0,
+          "last_print_hdc_non_null": false,
+          "capture_delay_applied_count": 0,
+          "capture_delay_total_ms": 0,
+          "native_events": [
+            {
+              "kind": "motion",
+              "at_us": 12036721,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                -1,
+                -1
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 12042152,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 12042217,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 12042227,
+              "code": 0,
+              "pressed": true,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 12044035,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 13267142,
+              "code": 0,
+              "pressed": false,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 13268264,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            }
+          ],
+          "native_event_count": 7,
+          "clock_us": 15602501
+        }
+      ],
+      "button": "Lock"
+    },
+    "assigned-root-window-bounds": {
+      "state": [
+        {
+          "name": "Macro UI 1",
+          "pid": 807296,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 38,
+            "top": 71,
+            "right": 442,
+            "bottom": 392
+          },
+          "movement_bounds": {
+            "left": 0,
+            "top": 0,
+            "right": 2560,
+            "bottom": 1440
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 89787512,
+            "x": 240,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 663,
+            "shape": "arrow",
+            "badge": null,
+            "render_origin": [
+              240,
+              231
+            ],
+            "hotspot": [
+              0,
+              0
+            ],
+            "pixel_hash": 14294273554942468095
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 807296,
+          "mode": null
+        },
+        {
+          "name": "Macro UI 2",
+          "pid": 809864,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 498,
+            "top": 71,
+            "right": 902,
+            "bottom": 392
+          },
+          "movement_bounds": {
+            "left": 0,
+            "top": 0,
+            "right": 2560,
+            "bottom": 1440
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 33360208,
+            "x": 700,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 671,
+            "shape": "arrow",
+            "badge": null,
+            "render_origin": [
+              700,
+              231
+            ],
+            "hotspot": [
+              0,
+              0
+            ],
+            "pixel_hash": 6223055287562733463
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 809864,
+          "mode": null
+        }
+      ],
+      "studio": {
+        "acknowledged": false,
+        "users": [
+          {
+            "user": 0,
+            "recording": false,
+            "recorded_events": 0,
+            "loaded_events": 0,
+            "revision": 0,
+            "clip": null,
+            "playback": null,
+            "keep_awake": false,
+            "power": null
+          },
+          {
+            "user": 1,
+            "recording": false,
+            "recorded_events": 0,
+            "loaded_events": 0,
+            "revision": 0,
+            "clip": null,
+            "playback": null,
+            "keep_awake": false,
+            "power": null
+          }
+        ],
+        "error": null
+      },
+      "acks": [],
+      "probes": [
+        {
+          "pid": 807296,
+          "cursor": [
+            240,
+            231
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 176,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0,
+          "capture_color": [
+            40,
+            96,
+            152
+          ],
+          "capture_delay_ms": 0,
+          "capture_hwnd": 91491010,
+          "wm_print_count": 0,
+          "wm_printclient_count": 0,
+          "wm_paint_count": 1,
+          "last_print_flags": 0,
+          "last_print_hdc_non_null": false,
+          "capture_delay_applied_count": 0,
+          "capture_delay_total_ms": 0,
+          "native_events": [
+            {
+              "kind": "motion",
+              "at_us": 10940305,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 10940337,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 10940339,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 10940343,
+              "code": 0,
+              "pressed": true,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 10941549,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 12348253,
+              "code": 0,
+              "pressed": false,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 12348589,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            }
+          ],
+          "native_event_count": 7,
+          "clock_us": 18209920
+        },
+        {
+          "pid": 809864,
+          "cursor": [
+            700,
+            231
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 160,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0,
+          "capture_color": [
+            41,
+            97,
+            153
+          ],
+          "capture_delay_ms": 0,
+          "capture_hwnd": 42208650,
+          "wm_print_count": 0,
+          "wm_printclient_count": 0,
+          "wm_paint_count": 1,
+          "last_print_flags": 0,
+          "last_print_hdc_non_null": false,
+          "capture_delay_applied_count": 0,
+          "capture_delay_total_ms": 0,
+          "native_events": [
+            {
+              "kind": "motion",
+              "at_us": 12036721,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                -1,
+                -1
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 12042152,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 12042217,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 12042227,
+              "code": 0,
+              "pressed": true,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 12044035,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 13267142,
+              "code": 0,
+              "pressed": false,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 13268264,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            }
+          ],
+          "native_event_count": 7,
+          "clock_us": 16538338
+        }
+      ],
+      "button": "Window bounds"
+    },
+    "assigned-bounds-apply": {
+      "state": [
+        {
+          "name": "Macro UI 1",
+          "pid": 807296,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 38,
+            "top": 71,
+            "right": 442,
+            "bottom": 392
+          },
+          "movement_bounds": {
+            "left": 38,
+            "top": 71,
+            "right": 442,
+            "bottom": 392
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 89787512,
+            "x": 240,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 663,
+            "shape": "arrow",
+            "badge": null,
+            "render_origin": [
+              240,
+              231
+            ],
+            "hotspot": [
+              0,
+              0
+            ],
+            "pixel_hash": 14294273554942468095
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 807296,
+          "mode": null
+        },
+        {
+          "name": "Macro UI 2",
+          "pid": 809864,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 498,
+            "top": 71,
+            "right": 902,
+            "bottom": 392
+          },
+          "movement_bounds": {
+            "left": 0,
+            "top": 0,
+            "right": 2560,
+            "bottom": 1440
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 33360208,
+            "x": 700,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 671,
+            "shape": "arrow",
+            "badge": null,
+            "render_origin": [
+              700,
+              231
+            ],
+            "hotspot": [
+              0,
+              0
+            ],
+            "pixel_hash": 6223055287562733463
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 809864,
+          "mode": null
+        }
+      ],
+      "studio": {
+        "acknowledged": false,
+        "users": [
+          {
+            "user": 0,
+            "recording": false,
+            "recorded_events": 0,
+            "loaded_events": 0,
+            "revision": 0,
+            "clip": null,
+            "playback": null,
+            "keep_awake": false,
+            "power": null
+          },
+          {
+            "user": 1,
+            "recording": false,
+            "recorded_events": 0,
+            "loaded_events": 0,
+            "revision": 0,
+            "clip": null,
+            "playback": null,
+            "keep_awake": false,
+            "power": null
+          }
+        ],
+        "error": null
+      },
+      "acks": [],
+      "probes": [
+        {
+          "pid": 807296,
+          "cursor": [
+            240,
+            231
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 186,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0,
+          "capture_color": [
+            40,
+            96,
+            152
+          ],
+          "capture_delay_ms": 0,
+          "capture_hwnd": 91491010,
+          "wm_print_count": 0,
+          "wm_printclient_count": 0,
+          "wm_paint_count": 1,
+          "last_print_flags": 0,
+          "last_print_hdc_non_null": false,
+          "capture_delay_applied_count": 0,
+          "capture_delay_total_ms": 0,
+          "native_events": [
+            {
+              "kind": "motion",
+              "at_us": 10940305,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 10940337,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 10940339,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 10940343,
+              "code": 0,
+              "pressed": true,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 10941549,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 12348253,
+              "code": 0,
+              "pressed": false,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 12348589,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 18861859,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 18861872,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 18861878,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            }
+          ],
+          "native_event_count": 10,
+          "clock_us": 19247371
+        },
+        {
+          "pid": 809864,
+          "cursor": [
+            700,
+            231
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 170,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0,
+          "capture_color": [
+            41,
+            97,
+            153
+          ],
+          "capture_delay_ms": 0,
+          "capture_hwnd": 42208650,
+          "wm_print_count": 0,
+          "wm_printclient_count": 0,
+          "wm_paint_count": 1,
+          "last_print_flags": 0,
+          "last_print_hdc_non_null": false,
+          "capture_delay_applied_count": 0,
+          "capture_delay_total_ms": 0,
+          "native_events": [
+            {
+              "kind": "motion",
+              "at_us": 12036721,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                -1,
+                -1
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 12042152,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 12042217,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 12042227,
+              "code": 0,
+              "pressed": true,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 12044035,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 13267142,
+              "code": 0,
+              "pressed": false,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 13268264,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            }
+          ],
+          "native_event_count": 7,
+          "clock_us": 17573231
+        }
+      ],
+      "button": "Apply cursor settings"
+    },
+    "assigned-capture-page": {
+      "state": [
+        {
+          "name": "Macro UI 1",
+          "pid": 807296,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 38,
+            "top": 71,
+            "right": 442,
+            "bottom": 392
+          },
+          "movement_bounds": {
+            "left": 38,
+            "top": 71,
+            "right": 442,
+            "bottom": 392
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 89787512,
+            "x": 240,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 663,
+            "shape": "arrow",
+            "badge": null,
+            "render_origin": [
+              240,
+              231
+            ],
+            "hotspot": [
+              0,
+              0
+            ],
+            "pixel_hash": 14294273554942468095
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 807296,
+          "mode": null
+        },
+        {
+          "name": "Macro UI 2",
+          "pid": 809864,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 498,
+            "top": 71,
+            "right": 902,
+            "bottom": 392
+          },
+          "movement_bounds": {
+            "left": 0,
+            "top": 0,
+            "right": 2560,
+            "bottom": 1440
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 33360208,
+            "x": 700,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 671,
+            "shape": "arrow",
+            "badge": null,
+            "render_origin": [
+              700,
+              231
+            ],
+            "hotspot": [
+              0,
+              0
+            ],
+            "pixel_hash": 6223055287562733463
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 809864,
+          "mode": null
+        }
+      ],
+      "studio": {
+        "acknowledged": false,
+        "users": [
+          {
+            "user": 0,
+            "recording": false,
+            "recorded_events": 0,
+            "loaded_events": 0,
+            "revision": 0,
+            "clip": null,
+            "playback": null,
+            "keep_awake": false,
+            "power": null
+          },
+          {
+            "user": 1,
+            "recording": false,
+            "recorded_events": 0,
+            "loaded_events": 0,
+            "revision": 0,
+            "clip": null,
+            "playback": null,
+            "keep_awake": false,
+            "power": null
+          }
+        ],
+        "error": null
+      },
+      "acks": [],
+      "probes": [
+        {
+          "pid": 807296,
+          "cursor": [
+            240,
+            231
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 195,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0,
+          "capture_color": [
+            40,
+            96,
+            152
+          ],
+          "capture_delay_ms": 0,
+          "capture_hwnd": 91491010,
+          "wm_print_count": 0,
+          "wm_printclient_count": 0,
+          "wm_paint_count": 1,
+          "last_print_flags": 0,
+          "last_print_hdc_non_null": false,
+          "capture_delay_applied_count": 0,
+          "capture_delay_total_ms": 0,
+          "native_events": [
+            {
+              "kind": "motion",
+              "at_us": 10940305,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 10940337,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 10940339,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 10940343,
+              "code": 0,
+              "pressed": true,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 10941549,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 12348253,
+              "code": 0,
+              "pressed": false,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 12348589,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 18861859,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 18861872,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 18861878,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            }
+          ],
+          "native_event_count": 10,
+          "clock_us": 20180672
+        },
+        {
+          "pid": 809864,
+          "cursor": [
+            700,
+            231
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 179,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0,
+          "capture_color": [
+            41,
+            97,
+            153
+          ],
+          "capture_delay_ms": 0,
+          "capture_hwnd": 42208650,
+          "wm_print_count": 0,
+          "wm_printclient_count": 0,
+          "wm_paint_count": 1,
+          "last_print_flags": 0,
+          "last_print_hdc_non_null": false,
+          "capture_delay_applied_count": 0,
+          "capture_delay_total_ms": 0,
+          "native_events": [
+            {
+              "kind": "motion",
+              "at_us": 12036721,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                -1,
+                -1
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 12042152,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 12042217,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 12042227,
+              "code": 0,
+              "pressed": true,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 12044035,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 13267142,
+              "code": 0,
+              "pressed": false,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 13268264,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            }
+          ],
+          "native_event_count": 7,
+          "clock_us": 18509045
+        }
+      ],
+      "button": "Annotation"
+    },
+    "assigned-root-capture-kind": {
+      "state": [
+        {
+          "name": "Macro UI 1",
+          "pid": 807296,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 38,
+            "top": 71,
+            "right": 442,
+            "bottom": 392
+          },
+          "movement_bounds": {
+            "left": 38,
+            "top": 71,
+            "right": 442,
+            "bottom": 392
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 89787512,
+            "x": 240,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 663,
+            "shape": "arrow",
+            "badge": null,
+            "render_origin": [
+              240,
+              231
+            ],
+            "hotspot": [
+              0,
+              0
+            ],
+            "pixel_hash": 14294273554942468095
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 807296,
+          "mode": null
+        },
+        {
+          "name": "Macro UI 2",
+          "pid": 809864,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 498,
+            "top": 71,
+            "right": 902,
+            "bottom": 392
+          },
+          "movement_bounds": {
+            "left": 0,
+            "top": 0,
+            "right": 2560,
+            "bottom": 1440
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 33360208,
+            "x": 700,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 671,
+            "shape": "arrow",
+            "badge": null,
+            "render_origin": [
+              700,
+              231
+            ],
+            "hotspot": [
+              0,
+              0
+            ],
+            "pixel_hash": 6223055287562733463
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 809864,
+          "mode": null
+        }
+      ],
+      "studio": {
+        "acknowledged": false,
+        "users": [
+          {
+            "user": 0,
+            "recording": false,
+            "recorded_events": 0,
+            "loaded_events": 0,
+            "revision": 0,
+            "clip": null,
+            "playback": null,
+            "keep_awake": false,
+            "power": null
+          },
+          {
+            "user": 1,
+            "recording": false,
+            "recorded_events": 0,
+            "loaded_events": 0,
+            "revision": 0,
+            "clip": null,
+            "playback": null,
+            "keep_awake": false,
+            "power": null
+          }
+        ],
+        "error": null
+      },
+      "acks": [],
+      "probes": [
+        {
+          "pid": 807296,
+          "cursor": [
+            240,
+            231
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 208,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0,
+          "capture_color": [
+            40,
+            96,
+            152
+          ],
+          "capture_delay_ms": 0,
+          "capture_hwnd": 91491010,
+          "wm_print_count": 0,
+          "wm_printclient_count": 0,
+          "wm_paint_count": 1,
+          "last_print_flags": 0,
+          "last_print_hdc_non_null": false,
+          "capture_delay_applied_count": 0,
+          "capture_delay_total_ms": 0,
+          "native_events": [
+            {
+              "kind": "motion",
+              "at_us": 10940305,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 10940337,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 10940339,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 10940343,
+              "code": 0,
+              "pressed": true,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 10941549,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 12348253,
+              "code": 0,
+              "pressed": false,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 12348589,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 18861859,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 18861872,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 18861878,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            }
+          ],
+          "native_event_count": 10,
+          "clock_us": 21565011
+        },
+        {
+          "pid": 809864,
+          "cursor": [
+            700,
+            231
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 193,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0,
+          "capture_color": [
+            41,
+            97,
+            153
+          ],
+          "capture_delay_ms": 0,
+          "capture_hwnd": 42208650,
+          "wm_print_count": 0,
+          "wm_printclient_count": 0,
+          "wm_paint_count": 1,
+          "last_print_flags": 0,
+          "last_print_hdc_non_null": false,
+          "capture_delay_applied_count": 0,
+          "capture_delay_total_ms": 0,
+          "native_events": [
+            {
+              "kind": "motion",
+              "at_us": 12036721,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                -1,
+                -1
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 12042152,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 12042217,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 12042227,
+              "code": 0,
+              "pressed": true,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 12044035,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 13267142,
+              "code": 0,
+              "pressed": false,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 13268264,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            }
+          ],
+          "native_event_count": 7,
+          "clock_us": 19963921
+        }
+      ],
+      "button": "Export selected target composition PNG"
+    },
+    "assigned-root-capture": {
+      "state": [
+        {
+          "name": "Macro UI 1",
+          "pid": 807296,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 38,
+            "top": 71,
+            "right": 442,
+            "bottom": 392
+          },
+          "movement_bounds": {
+            "left": 38,
+            "top": 71,
+            "right": 442,
+            "bottom": 392
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 89787512,
+            "x": 240,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 663,
+            "shape": "arrow",
+            "badge": null,
+            "render_origin": [
+              240,
+              231
+            ],
+            "hotspot": [
+              0,
+              0
+            ],
+            "pixel_hash": 14294273554942468095
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 807296,
+          "mode": null
+        },
+        {
+          "name": "Macro UI 2",
+          "pid": 809864,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 498,
+            "top": 71,
+            "right": 902,
+            "bottom": 392
+          },
+          "movement_bounds": {
+            "left": 0,
+            "top": 0,
+            "right": 2560,
+            "bottom": 1440
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 33360208,
+            "x": 700,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 671,
+            "shape": "arrow",
+            "badge": null,
+            "render_origin": [
+              700,
+              231
+            ],
+            "hotspot": [
+              0,
+              0
+            ],
+            "pixel_hash": 6223055287562733463
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 809864,
+          "mode": null
+        }
+      ],
+      "studio": {
+        "acknowledged": false,
+        "users": [
+          {
+            "user": 0,
+            "recording": false,
+            "recorded_events": 0,
+            "loaded_events": 0,
+            "revision": 0,
+            "clip": null,
+            "playback": null,
+            "keep_awake": false,
+            "power": null
+          },
+          {
+            "user": 1,
+            "recording": false,
+            "recorded_events": 0,
+            "loaded_events": 0,
+            "revision": 0,
+            "clip": null,
+            "playback": null,
+            "keep_awake": false,
+            "power": null
+          }
+        ],
+        "error": null
+      },
+      "acks": [],
+      "probes": [
+        {
+          "pid": 807296,
+          "cursor": [
+            240,
+            231
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 219,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0,
+          "capture_color": [
+            40,
+            96,
+            152
+          ],
+          "capture_delay_ms": 0,
+          "capture_hwnd": 91491010,
+          "wm_print_count": 0,
+          "wm_printclient_count": 0,
+          "wm_paint_count": 2,
+          "last_print_flags": 0,
+          "last_print_hdc_non_null": false,
+          "capture_delay_applied_count": 0,
+          "capture_delay_total_ms": 0,
+          "native_events": [
+            {
+              "kind": "motion",
+              "at_us": 10940305,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 10940337,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 10940339,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 10940343,
+              "code": 0,
+              "pressed": true,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 10941549,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 12348253,
+              "code": 0,
+              "pressed": false,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 12348589,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 18861859,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 18861872,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 18861878,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            }
+          ],
+          "native_event_count": 10,
+          "clock_us": 22706178
+        },
+        {
+          "pid": 809864,
+          "cursor": [
+            700,
+            231
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 203,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0,
+          "capture_color": [
+            41,
+            97,
+            153
+          ],
+          "capture_delay_ms": 0,
+          "capture_hwnd": 42208650,
+          "wm_print_count": 0,
+          "wm_printclient_count": 0,
+          "wm_paint_count": 1,
+          "last_print_flags": 0,
+          "last_print_hdc_non_null": false,
+          "capture_delay_applied_count": 0,
+          "capture_delay_total_ms": 0,
+          "native_events": [
+            {
+              "kind": "motion",
+              "at_us": 12036721,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                -1,
+                -1
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 12042152,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 12042217,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 12042227,
+              "code": 0,
+              "pressed": true,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 12044035,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 13267142,
+              "code": 0,
+              "pressed": false,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 13268264,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            }
+          ],
+          "native_event_count": 7,
+          "clock_us": 20996139
+        }
+      ],
+      "button": "Save annotation PNG",
+      "root_capture": {
+        "state": {
+          "acknowledged": true,
+          "users": [
+            {
+              "user": 0,
+              "settings": {
+                "tool": "off",
+                "activator": "primary",
+                "color": [
+                  96,
+                  165,
+                  250
+                ],
+                "alpha": 255,
+                "width": 6,
+                "clear_key": null,
+                "clear_all": false
+              },
+              "strokes": 0,
+              "segments": 0,
+              "open": false
+            },
+            {
+              "user": 1,
+              "settings": {
+                "tool": "off",
+                "activator": "primary",
+                "color": [
+                  96,
+                  165,
+                  250
+                ],
+                "alpha": 255,
+                "width": 6,
+                "clear_key": null,
+                "clear_all": false
+              },
+              "strokes": 0,
+              "segments": 0,
+              "open": false
+            }
+          ],
+          "revision": 0,
+          "overlay": null,
+          "export": {
+            "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-assigned-macro-studio-capture-ui-20261014-033208\\assigned-root.png",
+            "width": 404,
+            "height": 321,
+            "kind": "selected_target",
+            "pid": 807296,
+            "hwnd": 9114924
+          },
+          "error": null
+        },
+        "size": [
+          404,
+          321
+        ],
+        "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-assigned-macro-studio-capture-ui-20261014-033208\\assigned-root.png"
+      }
+    },
+    "stop-page": {
+      "state": [
+        {
+          "name": "Macro UI 1",
+          "pid": 807296,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 38,
+            "top": 71,
+            "right": 442,
+            "bottom": 392
+          },
+          "movement_bounds": {
+            "left": 38,
+            "top": 71,
+            "right": 442,
+            "bottom": 392
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 89787512,
+            "x": 240,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 663,
+            "shape": "arrow",
+            "badge": null,
+            "render_origin": [
+              240,
+              231
+            ],
+            "hotspot": [
+              0,
+              0
+            ],
+            "pixel_hash": 14294273554942468095
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 807296,
+          "mode": null
+        },
+        {
+          "name": "Macro UI 2",
+          "pid": 809864,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 498,
+            "top": 71,
+            "right": 902,
+            "bottom": 392
+          },
+          "movement_bounds": {
+            "left": 0,
+            "top": 0,
+            "right": 2560,
+            "bottom": 1440
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 33360208,
+            "x": 700,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 671,
+            "shape": "arrow",
+            "badge": null,
+            "render_origin": [
+              700,
+              231
+            ],
+            "hotspot": [
+              0,
+              0
+            ],
+            "pixel_hash": 6223055287562733463
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 809864,
+          "mode": null
+        }
+      ],
+      "studio": {
+        "acknowledged": false,
+        "users": [
+          {
+            "user": 0,
+            "recording": false,
+            "recorded_events": 0,
+            "loaded_events": 0,
+            "revision": 0,
+            "clip": null,
+            "playback": null,
+            "keep_awake": false,
+            "power": null
+          },
+          {
+            "user": 1,
+            "recording": false,
+            "recorded_events": 0,
+            "loaded_events": 0,
+            "revision": 0,
+            "clip": null,
+            "playback": null,
+            "keep_awake": false,
+            "power": null
+          }
+        ],
+        "error": null
+      },
+      "acks": [],
+      "probes": [
+        {
+          "pid": 807296,
+          "cursor": [
+            240,
+            231
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 228,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0,
+          "capture_color": [
+            40,
+            96,
+            152
+          ],
+          "capture_delay_ms": 0,
+          "capture_hwnd": 91491010,
+          "wm_print_count": 0,
+          "wm_printclient_count": 0,
+          "wm_paint_count": 2,
+          "last_print_flags": 0,
+          "last_print_hdc_non_null": false,
+          "capture_delay_applied_count": 0,
+          "capture_delay_total_ms": 0,
+          "native_events": [
+            {
+              "kind": "motion",
+              "at_us": 10940305,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 10940337,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 10940339,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 10940343,
+              "code": 0,
+              "pressed": true,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 10941549,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 12348253,
+              "code": 0,
+              "pressed": false,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 12348589,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 18861859,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 18861872,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 18861878,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            }
+          ],
+          "native_event_count": 10,
+          "clock_us": 23651339
+        },
+        {
+          "pid": 809864,
+          "cursor": [
+            700,
+            231
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 213,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0,
+          "capture_color": [
+            41,
+            97,
+            153
+          ],
+          "capture_delay_ms": 0,
+          "capture_hwnd": 42208650,
+          "wm_print_count": 0,
+          "wm_printclient_count": 0,
+          "wm_paint_count": 1,
+          "last_print_flags": 0,
+          "last_print_hdc_non_null": false,
+          "capture_delay_applied_count": 0,
+          "capture_delay_total_ms": 0,
+          "native_events": [
+            {
+              "kind": "motion",
+              "at_us": 12036721,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                -1,
+                -1
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 12042152,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 12042217,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 12042227,
+              "code": 0,
+              "pressed": true,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 12044035,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 13267142,
+              "code": 0,
+              "pressed": false,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 13268264,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            }
+          ],
+          "native_event_count": 7,
+          "clock_us": 22035441
+        }
+      ],
+      "button": "Input lab"
+    },
+    "stop": {
+      "state": [
+        {
+          "name": "Macro UI 1",
+          "pid": 807296,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 38,
+            "top": 71,
+            "right": 442,
+            "bottom": 392
+          },
+          "movement_bounds": {
+            "left": 38,
+            "top": 71,
+            "right": 442,
+            "bottom": 392
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 89787512,
+            "x": 240,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 663,
+            "shape": "arrow",
+            "badge": null,
+            "render_origin": [
+              240,
+              231
+            ],
+            "hotspot": [
+              0,
+              0
+            ],
+            "pixel_hash": 14294273554942468095
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 807296,
+          "mode": null
+        },
+        {
+          "name": "Macro UI 2",
+          "pid": 809864,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 498,
+            "top": 71,
+            "right": 902,
+            "bottom": 392
+          },
+          "movement_bounds": {
+            "left": 0,
+            "top": 0,
+            "right": 2560,
+            "bottom": 1440
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 33360208,
+            "x": 700,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 671,
+            "shape": "arrow",
+            "badge": null,
+            "render_origin": [
+              700,
+              231
+            ],
+            "hotspot": [
+              0,
+              0
+            ],
+            "pixel_hash": 6223055287562733463
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 809864,
+          "mode": null
+        }
+      ],
+      "studio": {
+        "acknowledged": false,
+        "users": [
+          {
+            "user": 0,
+            "recording": false,
+            "recorded_events": 0,
+            "loaded_events": 0,
+            "revision": 0,
+            "clip": null,
+            "playback": null,
+            "keep_awake": false,
+            "power": null
+          },
+          {
+            "user": 1,
+            "recording": false,
+            "recorded_events": 0,
+            "loaded_events": 0,
+            "revision": 0,
+            "clip": null,
+            "playback": null,
+            "keep_awake": false,
+            "power": null
+          }
+        ],
+        "error": null
+      },
+      "acks": [],
+      "probes": [
+        {
+          "pid": 807296,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 239,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0,
+          "capture_color": [
+            40,
+            96,
+            152
+          ],
+          "capture_delay_ms": 0,
+          "capture_hwnd": 91491010,
+          "wm_print_count": 0,
+          "wm_printclient_count": 0,
+          "wm_paint_count": 2,
+          "last_print_flags": 0,
+          "last_print_hdc_non_null": false,
+          "capture_delay_applied_count": 0,
+          "capture_delay_total_ms": 0,
+          "native_events": [
+            {
+              "kind": "motion",
+              "at_us": 10940305,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 10940337,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 10940339,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 10940343,
+              "code": 0,
+              "pressed": true,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 10941549,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 12348253,
+              "code": 0,
+              "pressed": false,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 12348589,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 18861859,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 18861872,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 18861878,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            }
+          ],
+          "native_event_count": 10,
+          "clock_us": 24794722
+        },
+        {
+          "pid": 809864,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 224,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0,
+          "capture_color": [
+            41,
+            97,
+            153
+          ],
+          "capture_delay_ms": 0,
+          "capture_hwnd": 42208650,
+          "wm_print_count": 0,
+          "wm_printclient_count": 0,
+          "wm_paint_count": 1,
+          "last_print_flags": 0,
+          "last_print_hdc_non_null": false,
+          "capture_delay_applied_count": 0,
+          "capture_delay_total_ms": 0,
+          "native_events": [
+            {
+              "kind": "motion",
+              "at_us": 12036721,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                -1,
+                -1
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 12042152,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 12042217,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 12042227,
+              "code": 0,
+              "pressed": true,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 12044035,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "button",
+              "at_us": 13267142,
+              "code": 0,
+              "pressed": false,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            },
+            {
+              "kind": "motion",
+              "at_us": 13268264,
+              "code": 0,
+              "pressed": null,
+              "client": [
+                180,
+                128
+              ],
+              "delta": null
+            }
+          ],
+          "native_event_count": 7,
+          "clock_us": 23170060
+        }
+      ],
+      "button": "Stop routing"
+    }
+  },
+  "scope": "Actual typed editor, generators, per-user playback/cancel, native x64/x86 readback and ACK-only clip save. Assigned is a bounded smoke.",
+  "build_sha256": {
+    "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-assigned-macro-studio-capture-ui-20261014-033208\\control64.exe": "5d872e25127bc276e00e9953fd155e2ef807e9ee135e7975dc9c7fb2db7db1c8",
+    "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-assigned-macro-studio-capture-ui-20261014-033208\\probe32.exe": "771910db260ddbcc6329faa4f9051249541b15fee60b38fd4e607f56213763dd"
+  },
+  "clicked_events": [
+    {
+      "button": "Input lab",
+      "clicked": true
+    },
+    {
+      "button": "Start routing",
+      "clicked": true
+    },
+    {
+      "button": "1 Hold click",
+      "clicked": true
+    },
+    {
+      "button": "1 Release click",
+      "clicked": true
+    },
+    {
+      "button": "2 Hold click",
+      "clicked": true
+    },
+    {
+      "button": "2 Release click",
+      "clicked": true
+    },
+    {
+      "button": "Configure user",
+      "clicked": true
+    },
+    {
+      "button": "Lock",
+      "clicked": true
+    },
+    {
+      "button": "Window bounds",
+      "clicked": true
+    },
+    {
+      "button": "Apply cursor settings",
+      "clicked": true
+    },
+    {
+      "button": "Annotation",
+      "clicked": true
+    },
+    {
+      "button": "Export selected target composition PNG",
+      "clicked": true
+    },
+    {
+      "button": "Save annotation PNG",
+      "clicked": true
+    },
+    {
+      "button": "Input lab",
+      "clicked": true
+    },
+    {
+      "button": "Stop routing",
+      "clicked": true
+    }
+  ],
+  "owned_processes_closed": true
+}

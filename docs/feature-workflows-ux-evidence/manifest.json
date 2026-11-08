@@ -1,0 +1,125 @@
+{
+  "status": "Independent bounded UX acceptance approved; raw live aggregate remains NOT ACCEPTED and Stop is separately qualified with no accepted at-stop HWND sample",
+  "note": "Byte-identical original product captures; no editing. Baseline is geometry reference only: fixture IDs and initial Output scroll differ. Output minimum shows an ordinary vertical scroll boundary. Whole-product/physical/accessibility parity is not claimed.",
+  "files": [
+    {
+      "file": "docs/feature-workflows-ux-evidence/before-output-normal.png",
+      "original": "runtime/acceptance-graph-feature-workflows-ux-baseline-20261015-123348/baseline-output-normal.png",
+      "sha256": "f65cc46a626312b44567902ee6a4a9a0df40173f37e379493cab75459b060b04"
+    },
+    {
+      "file": "docs/feature-workflows-ux-evidence/before-output-minimum.png",
+      "original": "runtime/acceptance-graph-feature-workflows-ux-baseline-20261015-123348/baseline-output-minimum.png",
+      "sha256": "19bd1e379a72daa1bfca4bcb95006b65db41748422201632c99306b9240980ea"
+    },
+    {
+      "file": "docs/feature-workflows-ux-evidence/before-profiles-normal.png",
+      "original": "runtime/acceptance-graph-feature-workflows-ux-baseline-20261015-123348/baseline-profiles-normal.png",
+      "sha256": "4b3814cf8bbaa5a319de74d0097ac3405403857ed9c4edae8fcdef01636ff3b9"
+    },
+    {
+      "file": "docs/feature-workflows-ux-evidence/before-profiles-minimum.png",
+      "original": "runtime/acceptance-graph-feature-workflows-ux-baseline-20261015-123348/baseline-profiles-minimum.png",
+      "sha256": "1333680fbd108c421c3e2e1f623942e45b1a9a090a36f4a3d82507a7d640173d"
+    },
+    {
+      "file": "docs/feature-workflows-ux-evidence/after-output-normal.png",
+      "original": "runtime/acceptance-graph-feature-workflows-ux-offline-20261015-141902/output-normal.png",
+      "sha256": "059c5f3fbbddc91f6b3e22c4906aa7f0e32657a4012c190beaa20ccfdefc12b1"
+    },
+    {
+      "file": "docs/feature-workflows-ux-evidence/after-output-minimum.png",
+      "original": "runtime/acceptance-graph-feature-workflows-ux-offline-20261015-141902/output-minimum.png",
+      "sha256": "3ea64ba54257670cd672b71cf9256ed41731c0e0ec3e041369d887b2657aefad"
+    },
+    {
+      "file": "docs/feature-workflows-ux-evidence/after-profiles-normal.png",
+      "original": "runtime/acceptance-graph-feature-workflows-ux-offline-20261015-141902/profiles-normal.png",
+      "sha256": "ce3b2ebec469da27a5fce3b98d3e92454ed7c2e16ec8fcaa02c285b5944bf6c9"
+    },
+    {
+      "file": "docs/feature-workflows-ux-evidence/after-settings-representative.png",
+      "original": "runtime/acceptance-graph-feature-workflows-ux-offline-20261015-141902/settings-representative.png",
+      "sha256": "62792877a566cc9d563294cb241e1f1b88191549885ad96e1207e63fb22e88c5"
+    },
+    {
+      "file": "docs/feature-workflows-ux-evidence/after-profiles-minimum-qualified.png",
+      "original": "runtime/acceptance-graph-feature-workflows-ux-layout-20261015-144654/profiles-minimum-qualified.png",
+      "sha256": "b555946c87ddfb02ead25fd02e55eb71db349289552e396de54e4a43f9370e4a"
+    },
+    {
+      "file": "docs/feature-workflows-ux-evidence/after-automation-minimum-qualified.png",
+      "original": "runtime/acceptance-graph-feature-workflows-ux-layout-20261015-144654/automation-minimum-qualified.png",
+      "sha256": "c016036526c7909d4d7431bae57dbe77362c38a4660425a9ab40adce88a1c56c"
+    }
+  ],
+  "build_evidence": [
+    {
+      "file": "docs/feature-workflows-ux-evidence/verification.json",
+      "original": "runtime/producer-feature-workflows-ux-20261015-143350/verification.json",
+      "sha256": "2133f674e18cc7f72b7561c3174e18ccf53452c3b7fbb57be673a18aee4ff56e"
+    },
+    {
+      "file": "docs/feature-workflows-ux-evidence/1.log",
+      "original": "runtime/producer-feature-workflows-ux-20261015-143350/1.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "docs/feature-workflows-ux-evidence/2.log",
+      "original": "runtime/producer-feature-workflows-ux-20261015-143350/2.log",
+      "sha256": "9a514609e04fc226fef07973c1e7d4d9f03de3cbbff879b0d4c6cd3033a89d26"
+    },
+    {
+      "file": "docs/feature-workflows-ux-evidence/3.log",
+      "original": "runtime/producer-feature-workflows-ux-20261015-143350/3.log",
+      "sha256": "c56945ac5455b81eaec04aa844b0db4206b512b166e1ab5bc97a5f401559c98c"
+    },
+    {
+      "file": "docs/feature-workflows-ux-evidence/4.log",
+      "original": "runtime/producer-feature-workflows-ux-20261015-143350/4.log",
+      "sha256": "da62b721ed556c87099ef3d7b54e3ec76c690082aeaabfa7854b1e4eea1f0d4a"
+    },
+    {
+      "file": "docs/feature-workflows-ux-evidence/5.log",
+      "original": "runtime/producer-feature-workflows-ux-20261015-143350/5.log",
+      "sha256": "166a24a4facb952bfdb8d63e1365f0f9e3b1c0de244abc44837fcc5cef3490fd"
+    }
+  ],
+  "workflow_evidence": [
+    {
+      "file": "docs/feature-workflows-ux-evidence/offline-functional-evidence.json",
+      "original": "runtime/acceptance-graph-feature-workflows-ux-offline-20261015-141902/evidence.json",
+      "sha256": "d2802e47cc3d4dc5560a9fc3780cd447c34d0cc155cee4077c99f8bbb8d73db5"
+    },
+    {
+      "file": "docs/feature-workflows-ux-evidence/layout-evidence.json",
+      "original": "runtime/acceptance-graph-feature-workflows-ux-layout-20261015-144654/evidence.json",
+      "sha256": "11012dfed649cde174ac3b5e4ad4d045e0ccd1f8736a0fe3900b26d1103b3916"
+    },
+    {
+      "file": "docs/feature-workflows-ux-evidence/live-evidence.json",
+      "original": "runtime/acceptance-graph-feature-workflows-ux-live-20261015-145712/evidence.json",
+      "sha256": "67a97d6b6462205ad004eaceb5a95402d727fa81d2610b55b8877ce8fbccb1c1"
+    },
+    {
+      "file": "docs/feature-workflows-ux-evidence/live-events.jsonl",
+      "original": "runtime/acceptance-graph-feature-workflows-ux-live-20261015-145712/ui.events.jsonl",
+      "sha256": "10e3bc89639684b570ab00079d318b10d934da4e7c9feba196a46394c0a0047a"
+    },
+    {
+      "file": "docs/feature-workflows-ux-evidence/live-final-recovery.json",
+      "original": "runtime/acceptance-graph-feature-workflows-ux-live-20261015-145712/ui.recovery.json",
+      "sha256": "591bbfcc217430d25efd44c473000ff399cd598d0246e501ab58888d2fc3f8c3"
+    },
+    {
+      "file": "docs/feature-workflows-ux-evidence/live-probe-0.json",
+      "original": "runtime/acceptance-graph-feature-workflows-ux-live-20261015-145712/probe-0.json",
+      "sha256": "8cc5eb9380aa343e33d45f9f621feea7e0a3b14408797775fc6274729d2b350a"
+    },
+    {
+      "file": "docs/feature-workflows-ux-evidence/live-probe-1.json",
+      "original": "runtime/acceptance-graph-feature-workflows-ux-live-20261015-145712/probe-1.json",
+      "sha256": "550ea3c8002bed7da40e7dfd960cd85b3cd7ff6ce4f503a42415e59f6f8ec6c8"
+    }
+  ]
+}

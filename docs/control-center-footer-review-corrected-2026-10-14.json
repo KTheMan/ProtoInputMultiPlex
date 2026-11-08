@@ -1,0 +1,17 @@
+{
+  "accepted": true,
+  "supersedes_interpretation_only": "visual-review.json is retained unchanged; no image/code/app run changed.",
+  "reason": "Independent re-review of each exact saved original at original detail confirms all three footer buttons are fully visible in both420x600 images. Previous missing-footer report was my visual interpretation error. Open image shows checked Automatic, Switched and keyboards; collapsed image shows Assigned / concurrent. Footer criterion unchanged and met.",
+  "images": [
+    {
+      "original": "runtime\\acceptance-graph-control-center-routing-options-20261014-153053\\home-current.png",
+      "sha256": "ef59d451c7a8904dc05019cf6d50e6b6438e4db168c8477f488e4d697de4e611",
+      "footer_mint_pixels": 8875
+    },
+    {
+      "original": "runtime\\acceptance-graph-control-center-routing-options-20261014-153053\\routing-options-on.png",
+      "sha256": "b42282f32154d41d5d32924da8d8f82e86aff11e915c3aa38c00ea2399d65c22",
+      "footer_mint_pixels": 8875
+    }
+  ]
+}

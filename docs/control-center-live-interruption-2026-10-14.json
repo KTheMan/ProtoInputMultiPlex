@@ -1,0 +1,6 @@
+{
+  "cause": "Parent requested close and slot return for a newly identified pixel-only R/P/K column alignment correction. Message crossed the live launch; this is intentional owned-GUI close, not a spontaneous product crash.",
+  "action": "CloseMainWindow on exact owned GUI title/PID, followed by normal runner cleanup",
+  "accepted_prefix_occurrences": 20,
+  "unaccepted": "Rehold/final Stop tail not completed; aggregate stays NOT ACCEPTED."
+}

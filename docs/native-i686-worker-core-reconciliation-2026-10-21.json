@@ -1,0 +1,34 @@
+{
+  "date": "2026-10-21",
+  "status": "BOUNDED_CORE_ACCEPTED; native009 aggregate remains NOT_ACCEPTED",
+  "purpose": "Correct stale i686 worker status and diagnosis without changing original receipts or expanding accepted scope.",
+  "historical_attempt001": {
+    "status": "NOT_ACCEPTED",
+    "evidence": "runtime/native-i686-worker-attempt001/evidence.json",
+    "review": "runtime/native-i686-worker-attempt001-review.json",
+    "interpretation": "routing_start failed before worker launch; sanitized MCP error was not retained. Source inspection of that frozen build identified an x64-only Backend::load / Loader64 guard, explaining the startup failure at source level. Later checked-in source maps x86 to Loader32, superseding that build's unsupported status without invalidating the historical diagnosis."
+  },
+  "bounded_core": {
+    "decision": "BOUNDED_CORE_ACCEPTED",
+    "evidence": "runtime/native-i686-worker-attempt009/evidence.json",
+    "evidence_sha256": "ef5ac2637b5bd2cb07ed68dd54b28f45da8ccfa05084dd174871f5f8cb630a71",
+    "failure_review": "runtime/native-i686-worker-attempt009-review.json",
+    "failure_review_sha256": "d2118fe50b2f798c93ad95d7b6b38c164c14eebe28bb623c98e1323f69a48bf7",
+    "independent_core_review": "runtime/native-i686-worker-bounded-core-review.json",
+    "independent_core_review_sha256": "5768dc5da0764df2c8b594973fd2c62504d95f9be9b7093c76d0e29021b1aee0",
+    "producer_source_snapshot_sha256": "7d972506561c4987b9555d5e275175d2acf5832ea6df3c0359a48f9ba9e10fbb",
+    "accepted_scope": "Actual I386 standalone controller and direct-child worker; 24 virtual RPC input calls; A/B owned I386 EDIT routing with 30 characters and independent focus/Tab; excluded C with zero target-local input events; live settings rejection preserving held Control through original UP; simultaneous capture and independent release; ordinary target close; normal Stop, clean recovery assertion, worker exit 0, overlays absent, MCP EOF exit 0, and ordinary cleanup.",
+    "aggregate_status": "NOT_ACCEPTED. The final post-unhook automation probe reported ambient VK_SPACE via GetAsyncKeyState without a Space virtual route or native Space event. Do not relabel the raw run PASS.",
+    "not_observed": "Post-Stop A reusable eligibility and C fresh eligibility queries did not run. No same-target reuse claim."
+  },
+  "source_and_baseline": {
+    "later_source_behavior": "process_arch.rs maps x86 to ProtoInputLoader32.dll and permits x86-to-I386; session.rs launches current_exe as the direct-child session-worker. This supersedes the earlier build's unsupported status; it does not invalidate its frozen-source guard diagnosis or explain native009's ambient assertion.",
+    "current_source_baseline_verification_sha256": "3a40ec5a78fb82260443e31e92f6fadc59aff753363bfee8b2fbefa510c84551",
+    "baseline_relationship": "The 3a40 current-source producer verification is separate from the frozen 7d972 native009 producer snapshot. It is not a rerun, rebinding, or upgrade of native009 evidence."
+  },
+  "limits": [
+    "No physical-device, native 32-bit Windows, i686 GUI-connected, arbitrary-application, same-process, desktop-wide, distribution, or full Ultra parity claim.",
+    "Historical GUI-stall P1 remains OPEN; this reconciliation provides no cause or fix.",
+    "No native helper was executed for this documentation reconciliation."
+  ]
+}

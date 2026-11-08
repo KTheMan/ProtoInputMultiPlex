@@ -1,0 +1,30 @@
+{
+  "decision": "APPROVED SOURCE ONLY",
+  "scope": "Read-only disposable ordinary probe WM_SETCURSOR tracing; no product cursor/routing behavior change",
+  "baseline_producer": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-app-cursor-following-20261015-042132\\verification.json",
+    "sha256": "fe152a0e0226bb46ae67f2c0bc8e29fbbda59bd64deda891e9622cf754bdfb20"
+  },
+  "source_sha256": {
+    "crates/protoinputmux/src/automation_probe.rs": "8084dca7d0fd0587984697eee206d574bae6e350b7b91439d7d5f8baf024bb66"
+  },
+  "other_inputs_unchanged": 80,
+  "review": [
+    "Ordinary EDIT path calls its original CallWindowProc exactly once, retains the exact return value and returns it unchanged. Fixture-specific path remains early-returned and separate.",
+    "Before/after GetCursor and stock-handle classification execute only in owned target thread. No SetCursor or serialized HCURSOR is added.",
+    "GetIconInfoExW resource/module text is bounded to256 UTF16 units; returned mask/color HBITMAPs are RAII-deleted with alias protection even on partial failure.",
+    "Native handlers and inspection execute without Snapshot mutex. Trace append alone takes that mutex and keeps last16 records/count; source contains no delay/hook/behavior override."
+  ],
+  "runner": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\scripts\\test-app-cursor-following-acceptance.py",
+    "sha256": "61f4273498e9d34a10fcef05c5d7380ca83d31cf590cb1e6516114cd31ac7673",
+    "plan_sha256": "31a1861037aab663da1d8e48126c5afecd837930b33cf3078bdabf4696a00f18",
+    "ast": "PASS",
+    "scope": "Same six mutations/no images. Require bounded actual trace for selected owned HWND/thread and retain unconstrained native result/kinds/resource metadata."
+  },
+  "limits": [
+    "Source-only, mandatory final producer and ROOT READY required before diagnostic.",
+    "GetIconInfoExW failure/unknown stock are observations, not independently proven capture incompatibility. No specific native outcome is assumed.",
+    "UNSUPPORTED branch diagnosis requires actual trace plus observer source; no full feature acceptance from diagnostic."
+  ]
+}

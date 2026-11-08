@@ -1,0 +1,44 @@
+{
+  "decision": "ACCEPTED_BOUNDED_CURRENT_WORKFLOW",
+  "independent_approval": true,
+  "reviewer": "independent preferences_review_oct27",
+  "date": "2026-10-27",
+  "group": "current_stopped_gui_frame_and_restore",
+  "full_goal_complete": false,
+  "historical_gui_stall_p1": "OPEN",
+  "predeclared_contract_path": "runtime/gui-frame-restore-acceptance-contract-20261027.json",
+  "predeclared_contract_sha256": "827fba2a6a976ce39cacbcb57ea7a1d882aaf2e7d5d84b16d719efc8343c2a04",
+  "source_review_sha256": "919078c2a68fb7f928d7d64568b8ab14ff7fe604483bf249646d368b2f413d55",
+  "producer_verification_sha256": "94b1b199a555e61b737757a41d3e2d6a926f83bd62a17b6662fc979e0573ca84",
+  "driver_sha256": "11591e6660a7d5c7ddb9a7d6d280b5bc8f5579eb0a7dce6b9f91b084f0767838",
+  "driver_review_sha256": "7d6055cbd36d7a2349e4d8be1604255374a0c70b8c3b2bc73d511082340850fa",
+  "raw_corrected_path": "runtime/gui-frame-restore-native-20261027-attempt002/evidence.json",
+  "raw_corrected_sha256": "731e95559c5949d6a5c51cdd31f8ce036c5e32ab5963cb2ff438d0efcee21741",
+  "raw_corrected_result": "PENDING_INDEPENDENT_ACCEPTANCE",
+  "raw_archive_manifest_sha256": "6233a7d6d42bcf6f07a0af8c9eb30ecd624a120c07003bc6da67625595e9cd7f",
+  "raw_archive_file_count": 26,
+  "raw_driver_exit_code": 0,
+  "preserved_prior_failure": {
+    "path": "runtime/gui-frame-restore-native-20261027-attempt001/evidence.json",
+    "sha256": "0adb8b2edbd740b145f5d31e673bc32e4e6281635d8edb25a8ccf8df573db774",
+    "result": "NOT_ACCEPTED",
+    "driver_exit_code": 1,
+    "reason": "Driver loop stopped at fifth durable click before sampling the fifth event; KeyError(native-controls). This is a test-driver bookkeeping failure, not evidence of a GUI stall. The original raw result remains unchanged.",
+    "archive_manifest_sha256": "12e7154b0ab451d96f44bd54c8b1bf8dd905d37ca805c2d1517432cff08a2751"
+  },
+  "accepted_observations": [
+    "One stopped, owned GUI with one virtual profile and original main HWND. Five actual UI controls clicked and sampled: Select user 1, Configure user, Keyboard, Compatibility, Native controls.",
+    "At DPI 96 the owned GUI was resized to exactly 320x640 client pixels at the desktop right edge. A fresh owned renderer PNG after Native controls visibly showed the selected mode; frame progress and direct WM_NULL responsiveness were observed.",
+    "Product close-to-tray hid the original root; actual owned tray Open restored that same HWND visible and noniconic. A fresh product PNG, frame progress and direct WM_NULL response followed.",
+    "Owned minimization made the same root iconic/hidden; actual owned tray Open again restored the same HWND visible and noniconic. A fresh product PNG, frame progress and direct WM_NULL response followed.",
+    "Stopped idle progress reached frame 1416 after trigger frame 603, close restore 743 and minimize restore 1067; GUI stayed stopped throughout, with no routing Start/input, MCP or physical input calls and no backend DLL staged.",
+    "One actual owned tray Quit exited 0. The main and lifecycle HWNDs were gone; no forced cleanup, cleanup error or postflight integrity failure occurred."
+  ],
+  "viewed_images": {
+    "post_resize_native_controls": "f84484a66d45176ed2d9a80c5d8f20b0f32568c4db1c4522770bff927c682a81",
+    "after_minimize_restore": "f84484a66d45176ed2d9a80c5d8f20b0f32568c4db1c4522770bff927c682a81",
+    "note": "Same pixels are expected for a static form; separate fresh file modification times, frame advancement and owned-window states establish temporal observations."
+  },
+  "disposition": "The current stopped GUI regression workflow passed in this reviewed build; the historical failure was not reproduced in this sample. Its cause and general reliability remain unproven. No full GUI-stall fix, broad UI parity, hardware behavior, RustDesk pointer behavior or MouseMux Ultra completion is claimed.",
+  "next": "Proceed to the next substantive Ultra parity gap; retain historical P1 as an open separate issue rather than repeating this one diagnostic matrix without new evidence."
+}

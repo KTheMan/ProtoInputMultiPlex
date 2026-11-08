@@ -1,0 +1,90 @@
+{
+  "date": "2026-11-06",
+  "decision": "MAPPER_FLOW_LIFECYCLE_ACCEPTED",
+  "scope": "Retain installation and data maintenance leases in the detached Mapper flow storage worker.",
+  "verification": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-flow-lifecycle-20261106\\checks-002\\verification.json",
+    "sha256": "5771dd4c4152adb7cbd6f3102b71e78a6507a5c36fe0ce8c530afd77e758a7ec"
+  },
+  "review": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-flow-lifecycle-20261106\\independent-acceptance.json",
+    "sha256": "aa5a02ce9be92e36bc5608969038f287882921aacb5eb5ddcc8ee4b0b11a8e3c"
+  },
+  "publication": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-flow-lifecycle-20261106\\publication.json",
+    "sha256": "ba240d416f0ab9cc1e4ef450daa761945921e7ca5de88803339e8f29ba564646"
+  },
+  "workspace_tests": {
+    "passed": 790,
+    "failed": 0,
+    "ignored": 19
+  },
+  "checks": {
+    "fmt": 0,
+    "clippy": 0,
+    "workspace-tests": 0,
+    "build-gui": 0
+  },
+  "producer": {
+    "original_session": 86067,
+    "original_exit_code": 0
+  },
+  "x64_image": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-flow-lifecycle-20261106\\checks-002\\x64\\protoinputmultiplex.exe",
+    "sha256": "ae4cec27a1d3e0cba325e217166725d932434ef7b87c4af9bc78f20113a8d50d"
+  },
+  "regression": {
+    "test": "mapper_ui::tests::blocked_flow_save_keeps_maintenance_excluded_after_gui_owner_drops",
+    "result": "PASS",
+    "observed": [
+      "The worker paused immediately before a real saved-flow write.",
+      "Mapper page teardown completed while storage was blocked.",
+      "The actual maintenance Backup command remained excluded after GUI guard ownership ended.",
+      "After the worker resumed, it committed the captured flow, released its runtime guards and allowed Backup."
+    ]
+  },
+  "native": {
+    "evidence": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mt-4b59dda6f84f\\evidence.json",
+      "sha256": "e88809c3e64afc0e11f1b0fbf4e8a4512f24f2670ce62749535c3050891aa77f"
+    },
+    "driver": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-flow-lifecycle-20261106\\native.py",
+      "sha256": "39c64438b7beed8b3277054206a242138c6c07a3d29ee1c0791b80493f19ab55"
+    },
+    "original_session": 51629,
+    "original_exit_code": 0,
+    "scope": {
+      "virtual_pairs": 1,
+      "GUI": 1,
+      "targets": 0,
+      "MCP": 1,
+      "hardware_input": 0,
+      "routing_or_injection": 0
+    },
+    "gui_exit": 0,
+    "mcp_exit": 0,
+    "browser_capture": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mt-4b59dda6f84f\\native\\saved-flow-library.png",
+      "sha256": "05f1a48ca0c9a7335f54be08c77fa38d52deb602c3188066ff4867c7522736dd",
+      "geometry": {
+        "hwnd": 1383552,
+        "dpi": 96,
+        "client_pixels": [
+          680,
+          620
+        ],
+        "client_logical": [
+          680.0,
+          620.0
+        ],
+        "window_rect": [
+          26,
+          26,
+          722,
+          685
+        ]
+      }
+    }
+  }
+}

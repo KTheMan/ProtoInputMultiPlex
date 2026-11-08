@@ -1,0 +1,21 @@
+{
+  "reviewed_at": "2026-10-14",
+  "scope": "Settings hub GUI source review only",
+  "baseline": "runtime/settings-hub-base/gui.rs",
+  "baseline_sha256": "e299e788894bb9fc4ac0e0ff1ee11ddab80203411878793adca86c995e23136d",
+  "current": "crates/protoinputmux/src/gui.rs",
+  "current_sha256": "b762aa6bfc3890360991efb0ff3c27660718b76b05855c178d9daf32153369fb",
+  "result": "approved_source_only",
+  "findings": [],
+  "verified": [
+    "All 13 destination labels and Page targets match the previous settings list.",
+    "Category and destination interactions retain Script.observe and consume_action guards; categories only select a category and destinations dispatch only their mapped page.",
+    "Wide layout uses a natural-height 148px category rail and avoids the prior infinite-height allocation from Divider::vertical inside vertical ScrollArea.",
+    "Destination rows now explicitly reserve available content width inside an interactive Ouroboros Surface; Response WidgetInfo remains a labeled Button and the existing observer/action guard remains intact.",
+    "The diff is limited to Settings category state, Settings routing, destination row presentation, and Settings initial size; no persistence, MCP, or business behavior changes."
+  ],
+  "limits": [
+    "Source-only review; no build or visual/native acceptance claimed.",
+    "Pinned egui 0.34.3 and Ouroboros Surface, MenuItem, Divider, and Text APIs inspected."
+  ]
+}

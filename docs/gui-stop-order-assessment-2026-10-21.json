@@ -1,0 +1,54 @@
+{
+  "status": "BOUNDED_ORDERING_ACCEPTED",
+  "group": "gui_stop_order",
+  "date": "2026-10-21",
+  "behavior": "GUI Stop publishes session cancellation through the existing shared handle and assigns ready=false, busy=true, stopping=true, retained quit intent and stopping status before retiring the Agent Broker and clearing its descriptor.",
+  "evidence": {
+    "producer": {
+      "path": "runtime/producer-gui-stop-order-20261021-attempt001/verification.json",
+      "sha256": "201950bf87ff600801a4cb1c204af40466f55a9e353b6e01af13fe1e85197373",
+      "original_session": 86760,
+      "terminal_exit": 0
+    },
+    "source_review": {
+      "path": "runtime/gui-stop-order-candidate/source-review.json",
+      "sha256": "b99711eec8ad157e659e65653a60dcc0e73446d68ec9db637f9bc55399cd5e82"
+    },
+    "independent_acceptance": {
+      "path": "runtime/gui-stop-order-acceptance-review.json",
+      "sha256": "d4e55c36c36384088a59f9d1efa8930fe0f123154a0f9e42d008b2073d4b7c6d"
+    }
+  },
+  "checks": {
+    "fmt": 0,
+    "clippy_workspace_all_targets_deny_warnings": 0,
+    "workspace_tests": {
+      "passed": 478,
+      "failed": 0,
+      "ignored": 3
+    },
+    "build_x64": 0,
+    "build_i686": 0,
+    "regression": "gui::macro_file_dispatch_tests::stop_and_gui_latch_precede_blocking_broker_cleanup",
+    "source_files": 865,
+    "sole_changed_source": "crates/protoinputmux/src/gui.rs",
+    "runtime_files_unchanged": 10
+  },
+  "artifacts_sha256": {
+    "x64": {
+      "protoinputmux_cursor_observer.dll": "9e31ac274d440d8d86e5649bab8baf1ab1f1de12fa8bf11c6e4343e572fc8eb2",
+      "protoinputmux.exe": "baab59e0d782fda8527d5e65bab90676be038472c59704cc688e09d5aadf8a1a"
+    },
+    "i686": {
+      "protoinputmux_cursor_observer.dll": "b368626d1fb7581cb6db1c406b194ec0520178f4db25b0553ee198e5ecd263cb",
+      "protoinputmux.exe": "fdf7aae438ae7c1f6384db823a8c4097fe65cd5667030709c23d89ee1a3d1f7d"
+    }
+  },
+  "test_scope": "Deterministic blocked-cleanup regression uses the production sequencing and latch helpers. The independent reviewer accepted this ordering scope without a repeated native input matrix. No native input or hardware/RustDesk actions were performed.",
+  "limits": [
+    "Broker cleanup still joins synchronously on the GUI path; callback duration, repaint and Stop latency are not established.",
+    "Stopped/Failed terminal-event and Agent Access disable cleanup paths are unchanged. Agent Access disable does not newly Stop routing.",
+    "Historical configuration-only GUI-stall P1 remains OPEN: cause and fix are unproven.",
+    "No broader application, hardware, desktop-wide isolation, complete UX or Ultra parity claim."
+  ]
+}

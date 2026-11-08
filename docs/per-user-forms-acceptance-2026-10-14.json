@@ -1,0 +1,96 @@
+{
+  "result": "PASS",
+  "group": "per_user_forms",
+  "date": "2026-10-14",
+  "judgment": "Bounded stopped four-form layout and selected-user profile integration accepted using original13 receipts, corrected8 upper/lower views and final4 missing Buttons views; no broader feature replay.",
+  "current_gui_sha256": "c5ff51f4ed79025e0ee2fa3def5927e6432151c4c3f586a8cb5b2c64a94b2fe7",
+  "current_build_sha256": {
+    "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-per-user-forms-20261014-215545\\control64.exe": "a3d7d5a979a612a2351aca24ef4601576ae3b98b630e28594102fcbaf84aba88",
+    "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-per-user-forms-20261014-215545\\probe32.exe": "9c90719130140d9dfa78e82d8fbc1ad9e5160a4c66c72c482b87709af556ff74"
+  },
+  "counts": {
+    "initial": {
+      "observations": 13,
+      "actual_clicks": 12,
+      "disabled": 1
+    },
+    "corrected_views": {
+      "observations": 8,
+      "actual_clicks": 8
+    },
+    "buttons_only": {
+      "observations": 4,
+      "actual_clicks": 4
+    },
+    "interpretation": "25 receipt occurrences include repeated setup/navigation; they are not25 distinct feature behaviors."
+  },
+  "accepted_scope": [
+    "Original13 proved only B Gentle response and Preserve incoming-horizontal policy changed while complete A and remaining normalized profile fields stayed exact. Stopped Apply was genuinely disabled, not a worker ACK.",
+    "Corrected8 preserved the entire exact accepted finalprofile. Input Name remained whole; Motion normal had paired bounded axes/response controls and minimum had a complete horizontal label/slider; Wheel upper normal exposed scale/emulation and concise distinct sections, minimum whole scale; normal lower frame exposed policy controls and horizontal scale.",
+    "Final4 preserved exact profile, proving all five Buttons mappings at normal size and complete first mapping row at minimum. Complete pinned Apply action/footer and selected identity/tabs remain visible.",
+    "Direct original-pixel review judges clearer form hierarchy and compact aligned control rows versus the earlier four-form images. This accepts representative usable rows at minimum, not simultaneous whole-form visibility."
+  ],
+  "retained_original_statuses": {
+    "214935": "PENDING INDEPENDENT VISUAL REVIEW; control/profile PASS; separate visual review NOT ACCEPTED",
+    "215259": "PENDING INDEPENDENT VISUAL REVIEW; control/profile PASS; separate visual review NOT ACCEPTED",
+    "215545": "PENDING INDEPENDENT VISUAL REVIEW; control/profile PASS; separate visual review PASS",
+    "initial_assessment": "NOT ACCEPTED unchanged; superseded only by this bounded combined acceptance"
+  },
+  "cross_build_scope": "Original13 at32c882/eaccb8; corrected8 atf63908/85a909; final4 ata3d7d5/9c9071. Production deltas were only reviewed four-form layout and final caption reorder. Earlier business/unchanged-form evidence retained rather than replayed.",
+  "limits": [
+    "Stopped x64 GUI, own virtual profile only. i686 copied and producer-built but not executed. No native DLL attachment, worker, MCP, routing/algorithms, popup selection behavior, save/persistence, hardware/RustDesk/global input, unrelated pixels or general-app isolation validation.",
+    "Minimum only representative whole horizontal Motion slider, Wheel scale and Primary mapping row; lower Wheel action minimum visibility, all mapping rows minimum and max-scroll reachability not claimed. Normal lower Wheel actions proved separately.",
+    "Full MouseMux/Ultra UX parity, exact assets, all-font/contrast certification and complete elimination of blank space remain unclaimed."
+  ],
+  "references": [
+    {
+      "path": "runtime\\acceptance-graph-per-user-forms-20261014-214935\\evidence.json",
+      "sha256": "7350d36ce3baac4bccb8fd4f0079199c101eb82127184390bdeca97cd6ec91fd"
+    },
+    {
+      "path": "runtime\\acceptance-graph-per-user-forms-20261014-214935\\independent-visual-review.json",
+      "sha256": "82af0544bc548c91949e471b52818cdf3293d518abf458014f85b99fa62e3cf5"
+    },
+    {
+      "path": "runtime\\acceptance-graph-per-user-forms-20261014-215259\\evidence.json",
+      "sha256": "9d0159d4b18fdebb50714a630efce59c9a7684a5a3e5da01b1894869d026f1ce"
+    },
+    {
+      "path": "runtime\\acceptance-graph-per-user-forms-20261014-215259\\independent-visual-review.json",
+      "sha256": "dfd42be5f294e1dd93d7d80983bf37226bb3a24acc1cf00cdcdd63e91f7bf34a"
+    },
+    {
+      "path": "runtime\\acceptance-graph-per-user-forms-20261014-215545\\evidence.json",
+      "sha256": "f3aeb58bed839e59f1fc45d7e5b4bfcfb84d07815edd0ef1403f821179a19660"
+    },
+    {
+      "path": "runtime\\acceptance-graph-per-user-forms-20261014-215545\\independent-visual-review.json",
+      "sha256": "c39ab0475ce74ac6560552682442a49a9fc8759413a5ce1a79e750e31d19fc68"
+    },
+    {
+      "path": "docs\\per-user-forms-assessment-2026-10-14.json",
+      "sha256": "aa234989c10070c33f0988263a90817c0eee2c57fff9cf2e04a6ff9320d67bf9"
+    },
+    {
+      "path": "docs\\per-user-forms-source-review-2026-10-14.json",
+      "sha256": "96349df903056c10e63273142c9f1cad109f261ec06c36ecb64bd799cfd41e96"
+    },
+    {
+      "path": "runtime\\producer-per-user-forms-20261014-214801\\verification.json",
+      "sha256": "753e793ab74ccc25be1f8c491344dbe9c257df2551a3070338623fd9b4a11659"
+    },
+    {
+      "path": "runtime\\producer-per-user-forms-20261014-215200\\verification.json",
+      "sha256": "ed6fee9af343ff3b85276829b77206ef976e54a6e04ad5ba3d9e0881c59aabd0"
+    },
+    {
+      "path": "runtime\\producer-per-user-forms-20261014-215445\\verification.json",
+      "sha256": "b1adce049474f6da42d0f343697c9bd26e01b5967507da29555d2f46fffbabf7"
+    }
+  ],
+  "cleanup": {
+    "owned_processes_closed": true,
+    "no_worker_state": true
+  },
+  "slot": "Returned to root after owned GUI exit; no further launches."
+}

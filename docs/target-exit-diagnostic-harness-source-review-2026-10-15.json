@@ -1,0 +1,20 @@
+{
+  "decision": "PREPARED_SOURCE_ONLY_PENDING_ROOT_READY",
+  "runner": {
+    "path": "scripts\\test-target-exit-recovery-acceptance.py",
+    "sha256": "f6bc8feb28de126c05fe3749bb08bf90004c0e1776a8dfe386ac2c06f735d3e2",
+    "AST": "PASS"
+  },
+  "plan": {
+    "path": "runtime/p1-target-exit-acceptance-plan.md",
+    "sha256": "405b6c3bd111d8b465d908cfc8fee73ef3a790d29b14d1f58d82d6fca5eeb805"
+  },
+  "delta": "Failure-only read collector and immutable initial-failure guards. Success flow remains four groups/nine GUI/four original frames.",
+  "reviewed": [
+    "Collector starts before any finally disconnect/GUI/probe close and reads only own files/process poll and owned product PNG.",
+    "One overall second with .1-second sampling records read errors instead of nested retries. No new routing, UI actions, provider calls, schema, hooks or Rust edits.",
+    "Only fresh own GUI PNG may be saved for a failed run, outside four success frames. GUI process/window absence does not trigger an external Restore or capture fallback.",
+    "First failure552bc and review391e are guarded; old80e runner/829f plan/f643 review preserved under runtime/p1-target-exit-pre-diagnostic-* copies."
+  ],
+  "execution": "No apps/Cargo/native launched for preparation. ROOT independent review/READY required."
+}

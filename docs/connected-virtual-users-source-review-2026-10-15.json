@@ -1,0 +1,70 @@
+{
+  "review": "independent source review: connected virtual-user lifecycle and graph synchronization",
+  "date": "2026-10-15",
+  "result": "approved_source_only",
+  "producer": {
+    "run": "runtime/producer-connected-virtual-users-20261015-004642/verification.json",
+    "sha256": "49acbe36c725c07daa49b818304bd6e4d0382ed503e6d687d30c1b4b0083e404",
+    "workspace_tests": 183,
+    "format_and_strict_clippy": "passed",
+    "builds": {
+      "x64": "19d5a2d6ce128e7445c27a66e3f3a66a09e18eaba62a12aba5c018f1a4bb73ed",
+      "i686": "ffafe077e1299683ba0bb00cb07cd68e0930a0ea681eddb8cd7eaa672e9fc595"
+    },
+    "native_acceptance": "not part of this source review",
+    "verification_sha256": "49ACBE36C725C07DAA49B818304BD6E4D0382ED503E6D687D30C1B4B0083E404"
+  },
+  "files": [
+    {
+      "path": "crates\\protoinputmux\\src\\gui.rs",
+      "baseline": "runtime\\connected-virtual-users-base\\gui.rs",
+      "baseline_sha256": "DB18B23315761BFA5281414FB004A984E4765D0048C15AB5828C7F9DDEF52BB4",
+      "reviewed_sha256": "687068DC345D8D38EFC282AB94DE782032731DA1428B493C72962CA08E28B91A"
+    },
+    {
+      "path": "crates\\protoinputmux\\src\\virtual_users_ui.rs",
+      "baseline": "runtime\\connected-virtual-users-base\\virtual_users_ui.rs",
+      "baseline_sha256": "58BA3D9A8B0BA5336237F26A9F5975F2898B5A7537FC69962FC1D52CD5D62F74",
+      "reviewed_sha256": "D94B5908134C12521403CA60E10CE5627058BC1D0A3E4993C0FC333308E5CC5A"
+    },
+    {
+      "path": "crates\\protoinputmux\\src\\replication_ui.rs",
+      "baseline": "runtime\\connected-virtual-users-base\\replication_ui.rs",
+      "baseline_sha256": "E3901A9CA97781F45221B7D4BACEF4F3C2BF48A7AD34282026C1676A2BFD416C",
+      "reviewed_sha256": "3C7C726B111F7F48B6E22520AC3211D8F493FD99DA4A08507D90061260D857B1"
+    },
+    {
+      "path": "crates\\protoinputmux\\src\\session.rs",
+      "baseline": "runtime\\connected-virtual-users-base\\session.rs",
+      "baseline_sha256": "F7DAD7E19CD536E176405C1AA0223266D9531FB7D41FF4A9414BFC22BF29C3B6",
+      "reviewed_sha256": "32D6E7DF5049F01470FF46F27FA0485AA4667FE7A083BA25178B99D513D27514"
+    },
+    {
+      "path": "crates\\protoinputmux\\src\\agent_runtime.rs",
+      "baseline": "runtime\\connected-virtual-users-base\\agent_runtime.rs",
+      "baseline_sha256": "66735C3B02337C85C944881AC40E389F9F8D477617504DAD27E3DECD4C599FD9",
+      "reviewed_sha256": "0E06F07166C377B0CF800B9DDA6013C76B6EEC92EE1363C9B1ED0029962E580E"
+    },
+    {
+      "path": "crates\\protoinputmux\\src\\mcp.rs",
+      "baseline": "runtime\\connected-virtual-users-base\\mcp.rs",
+      "baseline_sha256": "6FB51FD8B3DB1D90FA96BF3562D1A291D7DA7E6A7A07ACE567E67003CF8B9FFC",
+      "reviewed_sha256": "7B3AC245FDD8B5CE53193D284800029BE6CDA38F031ECBDF16F62E9E53C1B899"
+    },
+    {
+      "path": "crates\\protoinputmux\\src\\agent_ui.rs",
+      "baseline": "runtime\\connected-virtual-users-base\\agent_ui.rs",
+      "baseline_sha256": "26074D01398FF1A3DAC49A7D9A005847EFE3168B697A9A797F9C8DFB0A41967E",
+      "reviewed_sha256": "6A6EC5FCBF35A367E2A4E56649BB8CA96E8163D82955028CCA7A8CCDC14567EA"
+    }
+  ],
+  "findings": [],
+  "reviewed_contracts": [
+    "Connected clone mutations require a live client, current session-change permission, the inspected roster revision, automatic routing, and a nonempty desktop PID scope fully covered by Agent Access. Start validates the active source, requested PID, device type, permitted active users, and current in-scope recipients before mutation.",
+    "Stop requires current permission for every active user, except that a creator receipt can exempt only the exact active generated user created by that same connected client. PID scope and recipient checks still apply. Receipts are removed on disconnect, explicit stop, global policy reconfiguration, and retirement; there is no arbitrary ungranted-clone removal path.",
+    "A clone is not automatically granted to Agent Access. GUI policy Apply/reconnect is required before agent input or graph routes may include it. Disconnect leaves the clone owned by the GUI session.",
+    "GUI merges append-only roster state before nested graph state, keeps tombstones/indexes stable, prunes removed endpoints from the applied profile graph, and protects local pending edits from external telemetry and delayed older acknowledgements.",
+    "Scheduled tap releases are filtered against active virtual devices before delivery, so a release queued for a retired clone cannot be dispatched to a removed recipient."
+  ],
+  "scope_limit": "Source review plus producer verification only. Independent native acceptance remains separate; this does not establish real-device behavior, general application compatibility, same-process isolation, or full MouseMux Ultra parity."
+}

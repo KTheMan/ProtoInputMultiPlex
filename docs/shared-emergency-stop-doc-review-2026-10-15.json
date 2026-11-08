@@ -1,0 +1,124 @@
+{
+  "review_date": "2026-10-15",
+  "decision": "APPROVED",
+  "resolved_findings": [
+    {
+      "id": "F1",
+      "priority": "P2",
+      "finding": "The first frozen wording left the subscription gate broad and made GUI Start sound unconditionally dependent on Retry.",
+      "resolution": "Final docs scope standalone MCP leases to supervised automatic-desktop/concurrent routing and preserve direct CLI attach/nonconcurrent assigned behavior. GUI subscription and Start health requirements are conditioned on accepted default-binding preferences; Retry/policy-change and pending-preference behavior are stated."
+    },
+    {
+      "id": "F2",
+      "priority": "P2",
+      "finding": "The first frozen acceptance wording overclaimed tested GUI Stop isolation among peers.",
+      "resolution": "Final contract distinguishes tested native standalone routing_stop/EOF isolation with a live peer from separately tested GUI broker-loss and solo Retry/Start/Stop. Ordinary GUI Stop locality is identified as source behavior, and the GUI-plus-peer combination is explicitly called untested."
+    }
+  ],
+  "hashes": {
+    "documents": {
+      "README.md": "e25fe76177b69d03048baf1c906779eeaa5752f8efe64f5b733e38cc4cc1b2c8",
+      "docs/ultra-parity.md": "0e2815f664b69ddc83d4cec1a02086fc243aa5265bbbc0b17305ad8ac789b953",
+      "docs/roadmap.md": "2759fe41d5d82482ec1f3841cad95c79b8502f6affaf81f57efea4c0fbb122db",
+      "docs/agents.md": "d67075ead54fa31e4697ded44fb0bc7f41431606cd49b4815c1de689f649c00f",
+      "docs/validation.md": "107b02b07c5243e726356462e0b43e5f3ad429fcbb5708e308fc65d1adb8a09d",
+      "docs/shared-emergency-stop-contract.md": "69252b53c6acf040e7758d566ae585833fd42d76473a6be8f694c84cf96dd25b",
+      "skills/protoinputmux/SKILL.md": "5275bbe87cfaac5743ee264c3b69aafefbdf6ea1fdebd85b83d2d4d907bc1a9a"
+    },
+    "canonical_assessment": {
+      "path": "docs/shared-emergency-stop-assessment-2026-10-15.json",
+      "sha256": "d964d069d30a58855fc2990ff6e8cf71123499b5fdad31937bbb97756c0078f5"
+    },
+    "images": [
+      {
+        "path": "docs/shared-emergency-stop-home.png",
+        "sha256": "76e3d9dd04dc945b49bfd0492e4adc4c7c6fa60f76416e865b509088651f7e7b"
+      },
+      {
+        "path": "docs/shared-emergency-stop-minimum.png",
+        "sha256": "0260a8fee6555b2f3fd52aaf2b5aa89352ac92bb3d2d09382a44de9dbeb2764f"
+      }
+    ]
+  },
+  "checks": {
+    "all_docs_strict_utf8_valid": true,
+    "line_ending_styles_match_exact_backups": {
+      "README.md": {
+        "current_crlf": 125,
+        "current_bare_lf": 0,
+        "backup_crlf": 124,
+        "backup_bare_lf": 0,
+        "line_ending_style_preserved": false
+      },
+      "docs/ultra-parity.md": {
+        "current_crlf": 63,
+        "current_bare_lf": 0,
+        "backup_crlf": 62,
+        "backup_bare_lf": 0,
+        "line_ending_style_preserved": false
+      },
+      "docs/roadmap.md": {
+        "current_crlf": 58,
+        "current_bare_lf": 0,
+        "backup_crlf": 58,
+        "backup_bare_lf": 0,
+        "line_ending_style_preserved": false
+      },
+      "docs/agents.md": {
+        "current_crlf": 181,
+        "current_bare_lf": 0,
+        "backup_crlf": 179,
+        "backup_bare_lf": 0,
+        "line_ending_style_preserved": false
+      },
+      "docs/validation.md": {
+        "current_crlf": 335,
+        "current_bare_lf": 0,
+        "backup_crlf": 330,
+        "backup_bare_lf": 0,
+        "line_ending_style_preserved": false
+      },
+      "docs/shared-emergency-stop-contract.md": {
+        "current_crlf": 0,
+        "current_bare_lf": 15,
+        "backup_crlf": 0,
+        "backup_bare_lf": 15,
+        "line_ending_style_preserved": true
+      },
+      "skills/protoinputmux/SKILL.md": {
+        "current_crlf": 195,
+        "current_bare_lf": 0,
+        "backup_crlf": 193,
+        "backup_bare_lf": 0,
+        "line_ending_style_preserved": false
+      }
+    },
+    "all_local_markdown_links_resolve": {
+      "README.md": {
+        "missing": []
+      },
+      "docs/ultra-parity.md": {
+        "missing": []
+      },
+      "docs/roadmap.md": {
+        "missing": []
+      },
+      "docs/agents.md": {
+        "missing": []
+      },
+      "docs/validation.md": {
+        "missing": []
+      },
+      "docs/shared-emergency-stop-contract.md": {
+        "missing": []
+      },
+      "skills/protoinputmux/SKILL.md": {
+        "missing": []
+      }
+    },
+    "scope": "Same executable path, metadata/version, logon and desktop; supervised standalone MCP automatic-desktop/concurrent routing; GUI only with enabled default binding. No full Ultra/P1/UX, physical key activation, hardware, desktop-wide, same-process, mixed-binary or arbitrary-app claim.",
+    "acceptance_reporting": "Canonical record retains 38 accepted MCP mutations and 24 routing inputs as phase observations, 39 total attempts including failed setup, and six GUI clicks plus two disabled observations across phases; subgroup/prefix verdicts remain distinct. No claim of concurrent GUI Stop peer testing.",
+    "other_limits": "x64 controller executed; i686 built not run; footer crop documented; no new MCP tool/grant or expanded input/capture/global-agent authority.",
+    "tests_run": "None; read-only documentation review."
+  }
+}

@@ -1,0 +1,231 @@
+{
+  "result": "PASS",
+  "source_baseline": {
+    "snapshot_commit": "ff142942421215a7ae910cec99923d461dabe4a3",
+    "original_head": null,
+    "original_head_note": "Main repository was unborn; source-baseline.json preserves 2786 per-file hashes and original status",
+    "snapshot": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux-portable-20261014",
+    "baseline_sha256": "75c16202091fb6274adb9ca2fa76ef7a99caee19726c8377a87a89e474de2fa7"
+  },
+  "isolation": {
+    "main_checkout_modified_by_packaging": false,
+    "cargo_target_dir": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux-portable-20261014-target",
+    "shared_cargo_target_used": false
+  },
+  "packaged": {
+    "bundle": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux-portable-dist",
+    "archive": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux-0.1.0-windows-x64-portable.zip",
+    "archive_sha256": "59f66e2fea9ec7c0517c9b90fe028a2d5cd68c6ec8ed994af7201339e1e68a2e",
+    "archive_bytes": 18257926,
+    "manifest_sha256": "ff834e1c9daa923963a3250797dc6e02634812f92c35c6b1330b38898cfb377c",
+    "payload_files": 485,
+    "binaries": [
+      "protoinputmux.exe",
+      "runtime/ProtoInputHooks32.dll",
+      "runtime/ProtoInputHooks64.dll",
+      "runtime/ProtoInputIJ32.exe",
+      "runtime/ProtoInputIJ64.exe",
+      "runtime/ProtoInputIJP32.dll",
+      "runtime/ProtoInputIJP64.dll",
+      "runtime/ProtoInputLoader32.dll",
+      "runtime/ProtoInputLoader64.dll"
+    ],
+    "rust_notice_groups": 197,
+    "build_inputs_verified": true,
+    "build_source_commit": "fbf535927521d25f258ae823766be5b664e8b0b2"
+  },
+  "checks": {
+    "rust_release_build": "PASS static CRT x86_64-pc-windows-msvc --locked",
+    "native_release_build": "PASS x64 and x86 via existing conventions",
+    "cargo_fmt_all_check": "PASS",
+    "strict_clippy_and_workspace_tests": "Not rerun: no Rust source changes; isolated release compilation and focused checks used",
+    "shared_target_rejection": "PASS before build",
+    "headless": {
+      "result": "PASS",
+      "checks": [
+        {
+          "name": "manifest_hashes_and_pe",
+          "status": "PASS"
+        },
+        {
+          "name": "relocated_version",
+          "status": "PASS"
+        },
+        {
+          "name": "relocated_devices",
+          "status": "PASS"
+        },
+        {
+          "name": "runtime_loader_exports",
+          "status": "PASS"
+        },
+        {
+          "name": "runtime_virtual_abi_without_injection",
+          "status": "PASS"
+        },
+        {
+          "name": "missing_runtime_folder_diagnostic",
+          "status": "PASS"
+        },
+        {
+          "name": "missing_loader_diagnostic",
+          "status": "PASS"
+        },
+        {
+          "name": "dll_free_devices",
+          "status": "PASS"
+        },
+        {
+          "name": "dll_free_mcp_readonly_explicit_preferences",
+          "status": "PASS"
+        },
+        {
+          "name": "explicit_preferences_without_localappdata",
+          "status": "PASS"
+        },
+        {
+          "name": "default_localappdata_preferences",
+          "status": "PASS"
+        },
+        {
+          "name": "missing_localappdata_diagnostic",
+          "status": "PASS"
+        },
+        {
+          "name": "explicit_preferences_write_read",
+          "status": "PASS"
+        },
+        {
+          "name": "mcp_cmd_wrapper_unrelated_cwd",
+          "status": "PASS"
+        },
+        {
+          "name": "mcp_cmd_wrapper_argument_forwarding",
+          "status": "PASS"
+        },
+        {
+          "name": "packaged_files_unchanged",
+          "status": "PASS"
+        }
+      ]
+    },
+    "gui": {
+      "result": "PASS",
+      "routing_validation": "NOT RUN",
+      "input_emitted": false,
+      "cases": [
+        {
+          "name": "runtime-present",
+          "bundle": "E:\\Temp\\ProtoInputMux GUI portable g_5vp0gm\\runtime-present\\bundle with spaces",
+          "cwd": "E:\\Temp\\ProtoInputMux GUI portable g_5vp0gm\\unrelated cwd",
+          "startup_test_key": "Software\\ProtoInputMux\\Tests\\Portable-c19126954d0f43028bb63a14ebcafc47",
+          "windows": [
+            {
+              "hwnd": 13698780,
+              "pid": 96456
+            },
+            {
+              "hwnd": 1379096,
+              "pid": 96456
+            }
+          ],
+          "preferences_path": "E:\\Temp\\ProtoInputMux GUI portable g_5vp0gm\\runtime-present\\bundle with spaces\\data\\app-preferences.json",
+          "seeded_preferences": {
+            "version": 1,
+            "shortcuts": [],
+            "launch_at_login": false,
+            "close_to_tray": false,
+            "launch_minimized": false,
+            "appearance_mode": "light",
+            "zoom_percent": 75
+          },
+          "settings_snapshot_emitted": false,
+          "routing_state_emitted": false,
+          "result": "PASS",
+          "clean_close": true,
+          "preferences_unchanged": true,
+          "forced_cleanup_pids": [],
+          "remaining_owned_pids": []
+        },
+        {
+          "name": "dll-free",
+          "bundle": "E:\\Temp\\ProtoInputMux GUI portable g_5vp0gm\\dll-free\\bundle with spaces",
+          "cwd": "E:\\Temp\\ProtoInputMux GUI portable g_5vp0gm\\unrelated cwd",
+          "startup_test_key": "Software\\ProtoInputMux\\Tests\\Portable-825de7de560640f485ef661e5e008256",
+          "windows": [
+            {
+              "hwnd": 1706786,
+              "pid": 67556
+            },
+            {
+              "hwnd": 3017360,
+              "pid": 67556
+            }
+          ],
+          "preferences_path": "E:\\Temp\\ProtoInputMux GUI portable g_5vp0gm\\dll-free\\bundle with spaces\\data\\app-preferences.json",
+          "seeded_preferences": {
+            "version": 1,
+            "shortcuts": [],
+            "launch_at_login": false,
+            "close_to_tray": false,
+            "launch_minimized": false,
+            "appearance_mode": "light",
+            "zoom_percent": 75
+          },
+          "settings_snapshot_emitted": false,
+          "routing_state_emitted": false,
+          "result": "PASS",
+          "clean_close": true,
+          "preferences_unchanged": true,
+          "forced_cleanup_pids": [],
+          "remaining_owned_pids": []
+        }
+      ],
+      "tested_artifacts": {
+        "protoinputmux.exe": "886da0c7b7ba2468f700446a976f4372d86d5d09721b55f40fd0a9e2e562d344",
+        "launch-gui.cmd": "3aa5c6b2829e466161851b6f0b957041118ee30f757785fdcbe978ad2d3bde51",
+        "bundle-manifest.json": "295bd93f3445fc52f516e945ecf642a2035d79927a4c936e3fd4c87f10472262"
+      },
+      "tested_helper_sha256": "e2bcb9e8eb1cdceccec92307ca15143e7660290a229c087c99035402e8194a5e",
+      "startup_test_keys_absent": true,
+      "owned_screenshot_visual_check": "PASS: light appearance rendered, 270x270 client capture consistent with seeded 75% zoom; launch smoke only"
+    },
+    "repeat_staging": {
+      "result": "PASS",
+      "scope": "Repeat staging from unchanged build outputs, not compiler bit reproducibility",
+      "files_including_manifest": 486,
+      "differences": [],
+      "manifest_sha256": "ff834e1c9daa923963a3250797dc6e02634812f92c35c6b1330b38898cfb377c"
+    },
+    "archive_extraction": {
+      "result": "PASS",
+      "crc": "PASS",
+      "fresh_disposable_extraction_sha256": "PASS",
+      "gui_tested_exe_and_wrapper_unchanged": true,
+      "archive_sha256": "59f66e2fea9ec7c0517c9b90fe028a2d5cd68c6ec8ed994af7201339e1e68a2e",
+      "archive_bytes": 18257926,
+      "manifest_sha256": "ff834e1c9daa923963a3250797dc6e02634812f92c35c6b1330b38898cfb377c"
+    },
+    "notice_git_byte_preservation": "PASS: packaging/licenses/** -text; independent staged Git blob and upstream provenance hash verification"
+  },
+  "routing_validation": {
+    "result": "NOT RUN",
+    "scope": "No routing_start, injection, device attachment or input emitted. Loader/export/ABI3 checks load runtime only. Main native slot coordinated and explicitly released after zero survivors; no hardware or RustDesk pointer used."
+  },
+  "retained_failed_helper_attempts": [
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux-portable-gui-verification\\verification.json",
+      "reason": "Environment-key casing; stopped before any launch"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux-portable-gui-final-verification\\verification.json",
+      "reason": "Readiness expected Settings-only hook from Home; one exact owned process force-cleaned, zero survivors; corrected test passed"
+    }
+  ],
+  "scope_limits": [
+    "No installer, updater, signing or product behavior changes",
+    "Host Windows system dependencies and graphics driver are external requirements",
+    "No arbitrary-target or routing acceptance claimed",
+    "Native GPL/LGPL source notices retained with corresponding source; external redistribution clearance not asserted"
+  ]
+}

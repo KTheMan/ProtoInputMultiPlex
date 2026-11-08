@@ -1,4 +1,4 @@
-# ProtoInputMux Rust MCP client example
+# ProtoInputMultiPlex Rust MCP client example
 
 A standalone Rust crate with its own Cargo workspace and lockfile. It adds no
 dependencies or behavior to the application workspace.

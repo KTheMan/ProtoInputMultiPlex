@@ -13,7 +13,7 @@ fn real_server_discovery_and_documents_without_native_dlls() {
     let preferences = root.join("disposable-preferences.json");
     assert!(!preferences.exists(), "use a fresh disposable document");
     for action in ["inspect", "check"] {
-        let output = Command::new(env!("CARGO_BIN_EXE_protoinputmux-mcp-example"))
+        let output = Command::new(env!("CARGO_BIN_EXE_protoinputmultiplex-mcp-example"))
             .arg(action)
             .env("PIM_SERVER", &server)
             .env("PIM_RUNTIME", &runtime)

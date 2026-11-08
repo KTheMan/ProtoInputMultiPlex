@@ -1,0 +1,156 @@
+{
+  "decision": "APPROVED \u2014 BOUNDED KEYBOARD CONFIGURATION AND NATIVE UIA",
+  "date": "2026-10-15",
+  "producer": {
+    "path": "runtime/producer-keyboard-configuration-20261015-062334/verification.json",
+    "sha256": "dba45378089d98d004e98a9f39f6d18a918422599b5e752921ce29fdcb133b78"
+  },
+  "checks": "fmt/strictClippy/219workspace tests/x64+i686 PASS;83 frozen source inputs;10 existingruntime binaries reused.",
+  "build_sha256": {
+    "x64": "33d45accb79866bac4c5ab247dc7538e0a13bab9597b921c647a7225d9b6b40d",
+    "i686": "92481c21cc0256722e63fca5686894916ee76a5860e74060eb1607865e711d48"
+  },
+  "source_review": {
+    "path": "docs/keyboard-configuration-source-review-2026-10-15.json",
+    "sha256": "f9c403e577cd26efa0e04639e9534a0fc379882c9c6cfbad71b557468d4591d0"
+  },
+  "tail_source_review": {
+    "path": "docs/keyboard-persistence-tail-source-review-2026-10-15.json",
+    "sha256": "e491e1b3bbe5f5523a784b9a99d58595268e7ee0b691869055bef4266e324843"
+  },
+  "keyboard_uia_prefix": {
+    "raw": {
+      "path": "runtime/acceptance-graph-keyboard-configuration-20261015-062722/evidence.json",
+      "sha256": "e948224a515d0be6ca0de2ae40b1c41dfba4946634fe2296bf108977717801b8"
+    },
+    "independent_review": {
+      "path": "runtime/acceptance-graph-keyboard-configuration-20261015-062722/independent-review.json",
+      "sha256": "8b0e71d6e9c1844144b4a3392f8611fcfea3912f7a19cf2a1be49789a3e5bc43"
+    },
+    "terminal": {
+      "session_id": 81924,
+      "exit_code": 1
+    },
+    "status": "OriginalaggregateNOTACCEPTED preserved;22accepted prefix/23actual observations, oldSaveclick unproven andinterrupted.",
+    "counts": {
+      "key_receipts": 15,
+      "local_key_pairs": 42,
+      "pointer_clicks": 7,
+      "disabled_observations": 1,
+      "native_uia_writes": 1
+    },
+    "accepted": [
+      "Realapp-localTab/EnterBselection,Start,Configure/Motion;disabledRemoveguard. Right/Home/End/PageDown changed only Bspeed1\u21921.1\u2192.1\u21928\u21927; Aandpreferencesunchanged.",
+      "OwnGUIHWND-scopedWindowsUIAutomationClient exposedHomeButtonnames/status/selectedB andnativeMotionSliderrole/value/min.1/max8/SmallChange.1/readwrite. OneactualRangeValue.SetValue7\u21921.3 changedrealBprofile.",
+      "FocusedEnterApplyproducedgenericInputSentcompletion/readiness;normalStopremovedknownoverlays. No independentworker-speedreadback orroutedmotion."
+    ],
+    "native_uia_artifacts": [
+      {
+        "path": "runtime/acceptance-graph-keyboard-configuration-20261015-062722/home-native-tree.json",
+        "sha256": "56b74e47ae742ac5f2934264d11c559c2ce09d4a2f6febe2eed251c6db822cf9"
+      },
+      {
+        "path": "runtime/acceptance-graph-keyboard-configuration-20261015-062722/motion-native-tree.json",
+        "sha256": "572a05036c29faf31e50940679fae7c53e247ea5fa8ba76f2793a54969a299c8"
+      },
+      {
+        "path": "runtime/acceptance-graph-keyboard-configuration-20261015-062722/motion-native-setvalue.json",
+        "sha256": "3836754a196cb27e10131ea0bf50f909d775b81f07f5c7a2800803168a5a8ba1"
+      }
+    ]
+  },
+  "persistence_tail": {
+    "raw": {
+      "path": "runtime/acceptance-graph-keyboard-persistence-20261015-063813/evidence.json",
+      "sha256": "15cbca15d7e37411666dc4791fa7178ee3ee855f84e17f0a93b6000864c0cd18"
+    },
+    "independent_review": {
+      "path": "runtime/acceptance-graph-keyboard-persistence-20261015-063813/independent-review.json",
+      "sha256": "1821f2cdd88c4ba3a158c3d85e3348e803534d5933659cd8d4afca0491ede278"
+    },
+    "terminal": {
+      "session_id": 73865,
+      "exit_code": 0
+    },
+    "actual_pointer_clicks": 5,
+    "committed_file": {
+      "path": "runtime/acceptance-graph-keyboard-persistence-20261015-063813/fresh keyboard profile.json",
+      "sha256": "a4c241ff323f1748362aa7644055c87d9be3d749394e538011f8b32b17a42440"
+    },
+    "accepted": "Freshdestination actualSavecommit thenactualLoad; onlyBspeedcomparedbyIEEE754f32bits, allotherJSONtypes/keys/listorder/scalars exact. Sameactivepath andunchangedsavedbytes; preferencesunchanged."
+  },
+  "phase_counts": "28actual phaseobservations=23prefix+5tail, not28distinctcontrols.27accepted=22prefix+5tail; oldSave remainsunproven.42localkeypairs/oneUIAwrite total; nofresh24-step rerun.",
+  "originals": [
+    {
+      "path": "runtime/acceptance-graph-keyboard-configuration-20261015-062722/home-keyboard-selection.png",
+      "sha256": "2c120fce4052c6b0a30bcac436eda39024203c105ad551f94f6c62d4c2623a02",
+      "dimensions": [
+        360,
+        360
+      ],
+      "scope": "Bselectedvisible"
+    },
+    {
+      "path": "runtime/acceptance-graph-keyboard-configuration-20261015-062722/motion-native-range.png",
+      "sha256": "a2aa25dd197f2164d1d791efe1de1e5cf355e423f7cbc2b72ed18100366fe6d4",
+      "dimensions": [
+        540,
+        520
+      ],
+      "scope": "B1.3visible/focusedslider/wholeApply"
+    },
+    {
+      "path": "runtime/acceptance-graph-keyboard-persistence-20261015-063813/saved-and-reloaded.png",
+      "sha256": "b13289613dc5845b85c6e601172c88cb82b514557044e6e1fd77d91af6c8155f",
+      "dimensions": [
+        680,
+        620
+      ],
+      "scope": "Profilepage readabilityonly"
+    }
+  ],
+  "runners": [
+    {
+      "path": "scripts/test-keyboard-configuration-ui.py",
+      "sha256": "7ebc3f50321c468de50b73b2fa8bacae7c85c8ead4977fc34843fb2a714a347e"
+    },
+    {
+      "path": "scripts/test-keyboard-persistence-ui.py",
+      "sha256": "965a4af37f4c94f2ed0ca91e99d0de27dc703c49530281287ac0c6b195e2eb96"
+    }
+  ],
+  "plans": [
+    {
+      "path": "runtime/keyboard-ux-acceptance-plan.md",
+      "sha256": "80467e88307d3ad7addba159ffeae6ecf72544e8f9860dc30cbf385dbca519b8"
+    },
+    {
+      "path": "runtime/keyboard-persistence-acceptance-plan.md",
+      "sha256": "884412611a6e5e27a915f2267ea19de4f7c82b23bc35d853438ac40ac39094a8"
+    }
+  ],
+  "uia_helper": {
+    "path": "runtime/keyboard-ux-uia-helper.ps1",
+    "sha256": "784e2f71b6e38867f2c330c6e3295a20df6fc77d9643a48f10565b65b364c8ff"
+  },
+  "cleanup": [
+    {
+      "path": "runtime/acceptance-graph-keyboard-configuration-20261015-062722/cleanup-audit.json",
+      "sha256": "b7e7714b0ab96c4b0dd22c62c3308d1434746e71bb9ed65401c411da254ae298"
+    },
+    {
+      "path": "runtime/acceptance-graph-keyboard-persistence-20261015-063813/cleanup-audit.json",
+      "sha256": "dc4e13202b538c1a274c9e30e07b6a1bfac573a748c11c3d3ed5398387103034"
+    }
+  ],
+  "slot": "Returned; allownedprocessesclosed/CIM0/knownoverlaysgone/privateGUIDkeysandowndescriptorsabsent. InterruptedoldSave temp preserved asfailedartifact, notaliveresource.",
+  "limits": [
+    "BoundedMotionSlider/Home nativeWindowsAccessKit check, not fullscreenreader/assistivetechnology certification. SmallChangeobserved; no newLargeChangeclaim.",
+    "Other6logicalsliders/11responsivecallsites source/unit-reviewed, not fullnativekeyboardcrossproduct.",
+    "x64executed/i686built-only; virtualownedfixture only, zero routedinput/holds, no physical/global/RustDeskinput.",
+    "ApplygenericInputSentACK-only; noindependentworker-appliedspeed orroutedmotionvalidation.",
+    "Persistenceprovenbyfreshnewfiletail; oldinterruptedSave eventualoutcomeunproven, noproductSavefailureinferred.",
+    "No request-associatedPNGfreshnessclaim. Home/Motion exactvisiblecontent reviewed; finalprofileframe readabilityonly/JSONauthoritative.",
+    "NofullUXparity/generalapp/accessibilitycoverage claim."
+  ]
+}

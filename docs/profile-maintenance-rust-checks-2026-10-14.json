@@ -1,0 +1,75 @@
+{
+  "result": "PASS",
+  "date": "2026-10-14",
+  "checks": [
+    {
+      "command": [
+        "cargo",
+        "fmt",
+        "--all",
+        "--check"
+      ],
+      "exit_code": 0,
+      "log": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-profile-maintenance-20261014-123435\\1.log"
+    },
+    {
+      "command": [
+        "cargo",
+        "clippy",
+        "--workspace",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit_code": 0,
+      "log": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-profile-maintenance-20261014-123435\\2.log"
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--workspace"
+      ],
+      "exit_code": 0,
+      "log": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-profile-maintenance-20261014-123435\\3.log"
+    },
+    {
+      "command": [
+        "cargo",
+        "build",
+        "--workspace"
+      ],
+      "exit_code": 0,
+      "log": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-profile-maintenance-20261014-123435\\4.log"
+    },
+    {
+      "command": [
+        "cargo",
+        "build",
+        "--workspace",
+        "--target",
+        "i686-pc-windows-msvc"
+      ],
+      "exit_code": 0,
+      "log": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-profile-maintenance-20261014-123435\\5.log"
+    }
+  ],
+  "workspace_tests": 114,
+  "build_sha256": {
+    "x64": "349b9d8b26f8b1edd472fa6f4981c3a92517531048cade8fc0088eb440af8420",
+    "i686": "f85427a1a7e244a9ce12475c90aca694eccc7dea8d808a31cc386ac04d292411"
+  },
+  "frozen_source_sha256": {
+    "crates/protoinputmux/src/profile_store.rs": "75a65e86b10bf7f9e207971045777ae9a86b77de6785cc921f4904659cfa380f",
+    "crates/protoinputmux/src/main.rs": "9652955b8e502efd1b50199e5860493068ab96b7ff9e472c1a28461a0f5b59c9",
+    "crates/protoinputmux/src/mcp.rs": "0d145ce88f39715c07523f21179c7e350d9a2e8fa4109240559773e78ae0449d",
+    "crates/protoinputmux/src/gui.rs": "c6f00507917984f325067c7f10324621f02b150e0bf5019d4fb3f71901c1a803",
+    "crates/protoinputmux/src/ui_script.rs": "d65732a7139e7e2fb52a8b5b3b553526125e46aefeb36f48e19505da8bf722b3",
+    "scripts/test-mcp.py": "d8c0d3cf32e609dca59acfe241817ff708537df3032741e7fbfa8b8870c64dea",
+    "Cargo.lock": "8cfc16312fcd88261cdb9b0d337f95a5a7e811ddc11767f033d39e464249a06b"
+  },
+  "initial_producer_checks": "docs/profile-maintenance-initial-producer-checks-2026-10-14.json",
+  "superseded_initial_clippy_failure": "docs/profile-maintenance-first-source-checks-2026-10-14.json",
+  "change_since_initial_producer": "Opt-in disabled-control observation protocol in ui_script only; no profile/routing behavior changes."
+}

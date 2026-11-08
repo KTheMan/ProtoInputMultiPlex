@@ -1,0 +1,134 @@
+{
+  "archives": [
+    {
+      "label": "decoder-defect",
+      "original": "runtime\\acceptance-output-rules-20261014-103641\\evidence.json",
+      "archive": "docs\\output-rules-decoder-defect-2026-10-14.json",
+      "sha256": "7d84ab8c921cac1f9953c517c06bc325929db164986322332fc280704b7777ea",
+      "original_result": "NOT ACCEPTED"
+    },
+    {
+      "label": "native-prefix",
+      "original": "runtime\\acceptance-output-rules-20261014-104602\\evidence.json",
+      "archive": "docs\\output-rules-native-prefix-2026-10-14.json",
+      "sha256": "667a1e990d9c3e7baa4eeee91d7419b4a39b0420ca33dbdbf225838d26d8a5ac",
+      "original_result": "NOT ACCEPTED"
+    },
+    {
+      "label": "live-change",
+      "original": "runtime\\acceptance-output-rules-20261014-104853\\evidence.json",
+      "archive": "docs\\output-rules-live-change-2026-10-14.json",
+      "sha256": "6ad2318d391c62cf28c4e481bb2c4685ab376b785f43b958f69a7d6beccd07c9",
+      "original_result": "NOT ACCEPTED"
+    },
+    {
+      "label": "origins-recording",
+      "original": "runtime\\acceptance-output-rules-tail-20261014-105457\\evidence.json",
+      "archive": "docs\\output-rules-origins-recording-2026-10-14.json",
+      "sha256": "44b59a7149fcf9a3cfc8f33e86e3c731a10ef702c4161ff091a32af44a6e9b85",
+      "original_result": "NOT ACCEPTED"
+    },
+    {
+      "label": "five-buttons",
+      "original": "runtime\\acceptance-output-rules-tail-20261014-105711\\evidence.json",
+      "archive": "docs\\output-rules-five-buttons-2026-10-14.json",
+      "sha256": "7056e4f7f62da52349e89a0593a6c0632d6e2f669d5b140467eea11de2b06139",
+      "original_result": "PASS"
+    },
+    {
+      "label": "ui",
+      "original": "runtime\\acceptance-graph-output-rules-20261014-105901\\evidence.json",
+      "archive": "docs\\output-rules-ui-2026-10-14.json",
+      "sha256": "72fb7146ac4c72c0e6104a6fd2cd89634f53ead4ecfc546192d62c955eeec9fa",
+      "original_result": "PASS"
+    },
+    {
+      "label": "stop",
+      "original": "runtime\\acceptance-graph-output-rules-stop-20261014-114900\\evidence.json",
+      "archive": "docs\\output-rules-stop-2026-10-14.json",
+      "sha256": "ea1769b26c8448158d186041bedb2d692f3951bbc78b4a3c1b256729e4fef984",
+      "original_result": "PASS"
+    },
+    {
+      "label": "timeout-none",
+      "original": "runtime\\acceptance-output-shutdown-none-20261014-115537\\evidence.json",
+      "archive": "docs\\output-rules-timeout-none-2026-10-14.json",
+      "sha256": "9cd1c6be11a6eedf79de9ed02d64f51dba2f3b788dcb28b1f609a0564a671584",
+      "original_result": "PASS"
+    },
+    {
+      "label": "timeout-peek-no-remove",
+      "original": "runtime\\acceptance-output-shutdown-peek-no-remove-20261014-115550\\evidence.json",
+      "archive": "docs\\output-rules-timeout-peek-no-remove-2026-10-14.json",
+      "sha256": "b64645f773d6262ec2dcb68fe9dfcc700caddbd8be0625b603af2352a503f905",
+      "original_result": "PASS"
+    },
+    {
+      "label": "connected-prefix",
+      "original": "runtime\\acceptance-graph-output-rules-connected-20261014-115624\\evidence.json",
+      "archive": "docs\\output-rules-connected-prefix-2026-10-14.json",
+      "sha256": "9ace3c7c7e0aa9df5298734e3cb66f4dbdbc67c7af8169b2897e719d5a1fce97",
+      "original_result": "NOT ACCEPTED"
+    },
+    {
+      "label": "connected-tail",
+      "original": "runtime\\acceptance-graph-output-rules-connected-tail-20261014-115931\\evidence.json",
+      "archive": "docs\\output-rules-connected-tail-2026-10-14.json",
+      "sha256": "910365991ae3edb710a5efbee3d6fb99c768342bee97d7fa506012ce3e94d5a7",
+      "original_result": "PASS"
+    },
+    {
+      "label": "physical-offline",
+      "original": "runtime\\acceptance-graph-output-physical-offline-20261014-120014\\evidence.json",
+      "archive": "docs\\output-rules-physical-offline-2026-10-14.json",
+      "sha256": "b4a8cebd90ff1eb9982565fc40eb4b84962fdc4cbb5ae1f474506bcb0af06b7c",
+      "original_result": "PASS"
+    }
+  ],
+  "retained_fixture_failures": [
+    {
+      "original": "runtime\\acceptance-output-shutdown-none-20261014-115201\\evidence.json",
+      "sha256": "1c12278e807ecb1e484000c8678dca3c2c5399d10d1e409b360debd5982cb6be",
+      "original_result": "NOT ACCEPTED",
+      "reason": "Own fixture never entered requested pump mode; Stop not attempted."
+    },
+    {
+      "original": "runtime\\acceptance-output-shutdown-none-20261014-115330\\evidence.json",
+      "sha256": "36efe38e47ead384b48d694411896b0b1f0c4619888781d1c70f0d44ba6c2068",
+      "original_result": "NOT ACCEPTED",
+      "reason": "Fixture became unavailable before target discovery; unrelated window inventory in failure text is retained only in the runtime original."
+    },
+    {
+      "original": "runtime\\acceptance-output-shutdown-none-20261014-115420\\evidence.json",
+      "sha256": "374b244fadd63e4d00e55697046cbe50b8f480eff9c63105c42de266254d4e4d",
+      "original_result": "NOT ACCEPTED",
+      "reason": "Stale fixture reporting prevented entering the requested pump mode; Stop not attempted."
+    },
+    {
+      "original": "runtime\\acceptance-output-shutdown-none-20261014-115518\\evidence.json",
+      "sha256": "f79f644518655178e3afef58577752d6559dfb5a75f87f10bd4a52d9d4ec05d0",
+      "original_result": "NOT ACCEPTED",
+      "reason": "Recorded WinError5 confirmed own report-file replacement race."
+    },
+    {
+      "original": "runtime\\acceptance-graph-output-rules-connected-tail-20261014-115848\\evidence.json",
+      "sha256": "d5930cd0cc83708bf43492d2530799afc63b3d967190ee9cd59c5392620eea2f",
+      "original_result": "NOT ACCEPTED",
+      "reason": "Tail setup indexed script steps by name rather than their id; no GUI session launched."
+    }
+  ],
+  "images": [
+    {
+      "archive": "docs\\output-rules-control-center.png",
+      "original": "runtime\\acceptance-graph-output-rules-20261014-105901\\output-controls.png",
+      "sha256": "78e49d680c43f54f7dd8d0b98c27ec03f1a70b9fb586b1cbdbca6b2f45ed84bd",
+      "independent_visual_review": "Actual F7 to F8 and F9 Disabled rows, Apply and Restore buttons; five mouse selector rows are outside this scrolled viewport."
+    },
+    {
+      "archive": "docs\\output-rules-physical-readonly.png",
+      "original": "runtime\\acceptance-graph-output-physical-offline-20261014-120014\\physical-readonly.png",
+      "sha256": "b200167f93f06bbcc84fe8b804dfaed587c0fd4d82c03898468bb8aae58455eb",
+      "independent_visual_review": "Actual physical-seat unavailable/read-only explanation; no DLLs, probes or native session."
+    }
+  ]
+}

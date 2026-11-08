@@ -1,0 +1,237 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-29",
+  "decision": "ACCEPTED_BOUNDED_MAPPER_FOUNDATION",
+  "group": "input_mapper",
+  "acceptance_scope": "QUALIFIED_PRIVATE_X64_TYPED_MAPPER_FOUNDATION",
+  "independent_actual_review": {
+    "path": "runtime/input-mapper-native-attempt005-actual-review-20261029.json",
+    "sha256": "76ad1a69101d6d7809760b4b2eb6228cc4dbfb6e4e429da64f7c2dda30ce8c73"
+  },
+  "raw_evidence": {
+    "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mapper-4c365803c543\\r\\evidence.json",
+    "sha256": "bad6ea366aa343b6dbd0f16c563d825e211d2e1e926a6bc6076bb08354792bc1"
+  },
+  "frozen_candidate": {
+    "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\mapper-integration-checks-20261029-attempt004\\verification.json",
+    "sha256": "ca8b8d2f574100ccd4d64971a0e09e866fef02d072b716957dafa31ceecc7b1b"
+  },
+  "source_review": {
+    "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\input-mapper-integration-source-review-v3-20261029.json",
+    "sha256": "728c0dfd7f55f984194b683cfe7c3c9977fbdba1718fbaf470e8bd66480952a8"
+  },
+  "candidate_review": {
+    "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\input-mapper-integration-checks-independent-review-v3-20261029.json",
+    "sha256": "53ab52113baf3ff58694ae1e12d760a87d2408228925a5c44bddccbc8d3f83c9"
+  },
+  "gui": {
+    "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mapper-4c365803c543\\r\\protoinputmultiplex.exe",
+    "sha256": "60f4f6113c89fbc3ef90279a46de6962043dda1a3b8c2e78cd67d8955123de48",
+    "pe_machine": 34404
+  },
+  "driver": {
+    "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\mapper-native-v6-20261029.py",
+    "sha256": "8742c484f80fe2bf3a1cc93f4c12fd407ecb3963a983958522ba1067c45c0ee6"
+  },
+  "gate": {
+    "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\input-mapper-native-gate-20261029-attempt005.json",
+    "sha256": "ea0079a96301003fa6d6f6a1882d625d61d74523af2f08bffbfc1281151b1e5e"
+  },
+  "gate_approval": {
+    "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\input-mapper-native-gate-attempt005-independent-approval-20261029.json",
+    "sha256": "ce0adad065364cbd466e640132a9655874fff7dfe181a5ea89d98ba096145f6a"
+  },
+  "required_checks": {
+    "status": "PASS",
+    "labels": [
+      "fmt",
+      "clippy",
+      "workspace-tests",
+      "build-gui"
+    ],
+    "tests": {
+      "passed": 657,
+      "failed": 0,
+      "ignored": 1
+    },
+    "source_file_count": 118,
+    "source_before_equals_after": true,
+    "source_root": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\mapper-integration-checks-20261029-attempt004\\source",
+    "scope": "Private qualified source/artifact cohort; current live checkout and parallel Rust port are excluded."
+  },
+  "actual_counts": {
+    "UI_actions": 26,
+    "SDK_calls": 50,
+    "per_target_observations": 18,
+    "original_PNGs": 5,
+    "whole_response_pre_and_post_proof_steps": [
+      "graph-normal",
+      "inspector-normal",
+      "activity-minimum",
+      "arm-minimum",
+      "disarm-minimum"
+    ],
+    "virtual_users": 2,
+    "owned_target_processes": 2,
+    "owned_GUI": 1,
+    "SDK_peers": 2
+  },
+  "accepted_behaviors": [
+    "Version1 typed DAG catalogue/pure validation, MCP apply/inspect/explicit arm/disarm and revision authority",
+    "Original Ouroboros graph/list and scalar gain inspector; actual factor2→3 Update+Apply has matching own correlated ACK, clean page state, worker definition and in-memory profile, disarmed",
+    "Representative vectorDelta gain2 maps userA raw[7,-3] to userB logicalclient[+14,-6] while userA position remains unchanged; paired targetB native mouse-message presence",
+    "Scalar wheel gain branch delivers native wheel-message presence on targetB, plus exactly one explicit targetB F12 DOWN/UP pulse from impulse conversion",
+    "Source F7/F8 consumed with no native leakage; held gate combines two users only inside one actor, another actor cannot open/close its saved hold",
+    "Closing gate from a different source releases saved original DOWN ownership; stale Apply returns actual MCP negative error and preserves revision3/armed state/native events",
+    "Valid Apply and real GUI Disarm release only mapped holds, preserving manual F6 and other-peer ordinary F10",
+    "First peer EOF releases its own F11 and mapped claim while preserving surviving actor F9, manual F6 and peerF10; targetB event sequence unchanged across EOF",
+    "Global Stop intentionally releases all session holds and retires SDK endpoint; GUI and both owned targets close normally"
+  ],
+  "original_captures_copied_byte_for_byte": [
+    {
+      "path": "docs/input-mapper-graph-680x620-2026-10-29.png",
+      "sha256": "4557771701edc1e0a9f66f4e56c161fc52e37d183b9f1fedc645e008d1d7e440",
+      "original": {
+        "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mapper-4c365803c543\\r\\mapper-graph-normal.png",
+        "sha256": "4557771701edc1e0a9f66f4e56c161fc52e37d183b9f1fedc645e008d1d7e440"
+      },
+      "client_pixels": [
+        680,
+        620
+      ],
+      "dpi": 96,
+      "visual_assessment": "Readable graph catalogue/list and scalar gain inspector with reserved actions at680x620; optional canvas not opened."
+    },
+    {
+      "path": "docs/input-mapper-inspector-680x620-2026-10-29.png",
+      "sha256": "569c2453d8d27677587172769a86d6ca123f09d930b991d6e8ae1d97cc7d7737",
+      "original": {
+        "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mapper-4c365803c543\\r\\mapper-inspector-normal.png",
+        "sha256": "569c2453d8d27677587172769a86d6ca123f09d930b991d6e8ae1d97cc7d7737"
+      },
+      "client_pixels": [
+        680,
+        620
+      ],
+      "dpi": 96,
+      "visual_assessment": "Readable graph catalogue/list and scalar gain inspector with reserved actions at680x620; optional canvas not opened."
+    },
+    {
+      "path": "docs/input-mapper-activity-320x360-2026-10-29.png",
+      "sha256": "5f52c18bc110e5b89fef117284b6fdbc5bbffb71e7a2c39c1979e0d63cd56143",
+      "original": {
+        "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mapper-4c365803c543\\r\\mapper-activity-minimum.png",
+        "sha256": "5f52c18bc110e5b89fef117284b6fdbc5bbffb71e7a2c39c1979e0d63cd56143"
+      },
+      "client_pixels": [
+        320,
+        360
+      ],
+      "dpi": 96,
+      "visual_assessment": "Readable state strip and reachable reserved Arm/Disarm actions at320x360; Activity body requires ordinary scrolling and footer action/error history may remain stale."
+    },
+    {
+      "path": "docs/input-mapper-armed-320x360-2026-10-29.png",
+      "sha256": "ad19769a5f9a4fe8538bda982cdc690f164093f43c885ce015f70d9c8e66b7c5",
+      "original": {
+        "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mapper-4c365803c543\\r\\mapper-armed-minimum.png",
+        "sha256": "ad19769a5f9a4fe8538bda982cdc690f164093f43c885ce015f70d9c8e66b7c5"
+      },
+      "client_pixels": [
+        320,
+        360
+      ],
+      "dpi": 96,
+      "visual_assessment": "Readable state strip and reachable reserved Arm/Disarm actions at320x360; Activity body requires ordinary scrolling and footer action/error history may remain stale."
+    },
+    {
+      "path": "docs/input-mapper-disarmed-320x360-2026-10-29.png",
+      "sha256": "2ea0ca1cc7aa46ed3709281acd651bcfa119348f7e97d172f32c5c60b1f8a4fd",
+      "original": {
+        "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mapper-4c365803c543\\r\\mapper-disarmed-minimum.png",
+        "sha256": "2ea0ca1cc7aa46ed3709281acd651bcfa119348f7e97d172f32c5c60b1f8a4fd"
+      },
+      "client_pixels": [
+        320,
+        360
+      ],
+      "dpi": 96,
+      "visual_assessment": "Readable state strip and reachable reserved Arm/Disarm actions at320x360; Activity body requires ordinary scrolling and footer action/error history may remain stale."
+    }
+  ],
+  "liveness": {
+    "all5_captures_have_advancing_pre_post_frames_and_successful_WM_NULL": true,
+    "all10_probes_passed": true,
+    "maximum_observed_probe_ms": 15.000000013969839,
+    "miss_recovery_path_exercised": false,
+    "historical_P1_cause_or_fix_established": false
+  },
+  "normal_cleanup": {
+    "exit_codes": {
+      "gui": 0,
+      "targets": {
+        "a": 0,
+        "b": 0
+      }
+    },
+    "cleanup_errors": [],
+    "owned_close_oracles_completed": true,
+    "root_original_execution": {
+      "session_id": 38944,
+      "exit_code": 0,
+      "evidence_source": "Parent root observed original execution terminal; no additional process audit by reviewer."
+    }
+  },
+  "nonblocking_UI_debt": [
+    "The single-line footer can retain previous Apply/error wording after current armed/revision state changes; the dedicated current state strip is correct.",
+    "Minimum Activity body shows only part of the next statistic before scrolling; simultaneous visibility/readability of every statistic is not accepted."
+  ],
+  "limitations": [
+    "Accepted only the exact private frozen x64 Windows cohort with Dark100percent/96DPI captures at680x620 and320x360, two separate owned processes and app-local virtual devices.",
+    "Native target reports message presence and key transitions, not wheel payload magnitude or mouse coordinate payloads. Logical state delta and target message presence are paired; native payload magnitudes remain unverified.",
+    "Native runtime exercised Delta/Impulse/Hold/Pulse representatives; Position/State semantic operators and broader catalogue behavior have source/portable tests, not exhaustive native coverage.",
+    "Profile reload/save-on-disk remains unit-only in this cohort; GUI proof is in-memory acknowledged definition/profile commit.",
+    "GUI native authoring proof covers selecting an existing gain node, numeric parameter change and Apply. Optional canvas, full graph creation/wiring/deletion/undo and every catalogue parameter combination are not rendered/native-matrix accepted.",
+    "Native fault injection/failed-UP retry is covered by controlled Engine tests; this successful run did not induce a real provider partial-failure path.",
+    "No physical hardware, OS/RustDesk pointer, clipboard, browser, arbitrary applications, same-process isolation, full desktop-wide isolation or release certification.",
+    "Historical GUI stall P1 remains OPEN; the fixed ScriptIo whitelist defect is a separate new instrumentation integration error.",
+    "Current live checkout/parallel Rust port is not approved; this result belongs to the qualified private source/artifact cohort."
+  ],
+  "earlier_failed_aggregates_preserved": [
+    {
+      "raw_evidence": {
+        "path": "C:/Users/Kenny/.cache/ProtoInputMultiPlex/mapper-c26af495a36a/r/evidence.json",
+        "sha256": "75ece522e0af026ad8c3f0793b98a43c2daa722d5cd72c5a02cf6692b0bda153"
+      },
+      "result": "NOT_ACCEPTED",
+      "boundary": "Start click journal was recorded, but observer qualification incorrectly required the post-event response label. Original aggregate remains failed."
+    },
+    {
+      "raw_evidence": {
+        "path": "C:/Users/Kenny/.cache/ProtoInputMultiPlex/mapper-c09edf8a79f0/r/evidence.json",
+        "sha256": "1be59d626c1e26b9543f06987e732b5d86002a3a5815a38f7b5945966ad2f5a6"
+      },
+      "result": "NOT_ACCEPTED",
+      "boundary": "ScriptIo rejected missing Mapper snapshot/ACK allowlist paths; telemetry halted while routing was active. Repaired only in a new source/build cohort; original aggregate remains failed."
+    },
+    {
+      "raw_evidence": {
+        "path": "C:/Users/Kenny/.cache/ProtoInputMultiPlex/mapper-8ccb081ee43b/r/evidence.json",
+        "sha256": "987404b22ab5afc566aa8b6deb01f9ef3588aa0e477f1bed1c231a225b6de68f"
+      },
+      "result": "NOT_ACCEPTED",
+      "boundary": "Second user selection of the same owned PID correctly hit the existing process lease. Later fixture used two separate owned target processes; original aggregate remains failed."
+    }
+  ],
+  "bounded_foundation_accepted": true,
+  "feature_group_complete_within_reviewed_scope": true,
+  "native_acceptance": true,
+  "current_checkout_approved": false,
+  "port_feature_accepted": false,
+  "P1_gui_stall_fixed": false,
+  "same_process_isolation_accepted": false,
+  "full_mapper_parity": false,
+  "full_Ultra_parity": false,
+  "release_approved": false,
+  "additional_native_retest_required_for_this_bounded_group": false
+}

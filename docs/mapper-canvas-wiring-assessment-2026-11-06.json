@@ -1,0 +1,84 @@
+{
+  "date": "2026-11-06",
+  "decision": "MAPPER_CANVAS_WIRING_ACCEPTED",
+  "scope": "Typed wiring directly on the original Rust/Ouroboros Input Mapper canvas.",
+  "producer": {
+    "original_session": 77502,
+    "original_exit_code": 0
+  },
+  "verification": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-canvas-wiring-20261106\\checks-003\\verification.json",
+    "sha256": "3caae9bb230a2543775484ec97da575ed415ed40947c69f0c2530ec894e943c9"
+  },
+  "review": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-canvas-wiring-20261106\\independent-acceptance.json",
+    "sha256": "4feba429a6f568f886c13e1757c6c206533cb7519ba6e42a4266b1d8409daefd"
+  },
+  "publication": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-canvas-wiring-20261106\\publication.json",
+    "sha256": "55587705815367cf39d0293963b3d481f8ed7e2ab4673cb2f5c003f6ea8acec4"
+  },
+  "workspace_tests": {
+    "passed": 774,
+    "failed": 0,
+    "ignored": 19
+  },
+  "checks": {
+    "fmt": 0,
+    "clippy": 0,
+    "workspace-tests": 0,
+    "build-gui": 0
+  },
+  "x64_image": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-canvas-wiring-20261106\\checks-003\\x64\\protoinputmultiplex.exe",
+    "sha256": "318659372feae78ee86fbdf09736c33b9ed0740f269baa2beff71534663d4875"
+  },
+  "native": {
+    "original_session": 99683,
+    "original_exit_code": 0,
+    "raw": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mapper-canvas-wiring-c9731039ec64\\evidence.json",
+      "sha256": "26d488bf5a619cc6df91cd1ab5d0adc29170c52ed5ad9aff0a3d28400b281c69"
+    },
+    "driver": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-canvas-wiring-20261106\\native.py",
+      "sha256": "c747b85c8fc354c6908d014645a9e5cefb776c425b848961eb351febc11a3214"
+    },
+    "scope": {
+      "virtual_pairs": 2,
+      "GUI": 1,
+      "targets": 0,
+      "MCP": 0,
+      "hardware_input": 0,
+      "routing_or_injection": 0
+    },
+    "actions": [
+      "Settings",
+      "Settings category Automation",
+      "Input Mapper",
+      "Mapper canvas",
+      "Mapper canvas input output.value",
+      "Disconnect mapper canvas wire",
+      "Mapper canvas output pointer.delta",
+      "Mapper canvas input output.value"
+    ],
+    "wm_null_responded": true,
+    "normal_wm_close_exit": 0,
+    "png": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mapper-canvas-wiring-c9731039ec64\\native\\ui.png",
+      "sha256": "5ac04c6ace408103e373ca51cad7ab8ae796533de34e8a0afc689479ecc0080a",
+      "size": 86000,
+      "mtime_ns": 1794013713500663500,
+      "last_click_mtime_ns": 1794013712936502500
+    }
+  },
+  "coverage": [
+    "Owned stopped GUI verified click-select, disconnect, and click-connect with exact draft snapshots and a stable applied definition.",
+    "Focused egui input and structural validation tests cover drag and rejection.",
+    "The native run used app-local clicks and two virtual mouse/keyboard pairs."
+  ],
+  "open": [
+    "Native drag sampling, multi-node selection, and broader Ultra parity remain open.",
+    "Historical GUI stall remains open."
+  ]
+}

@@ -1,14 +1,14 @@
 # Rust MCP client workflow
 
-This example is a small MCP stdio client for ProtoInputMux. It discovers the running server's advertised tool schemas, uses only the capabilities required for its selected workflow, and verifies returned state. It does not wrap every tool or assume a fixed tool count. The official `rmcp` SDK handles negotiation, framing, request IDs and timeout cancellation. Calls use the discovered JSON Schemas; all planned mutations and cleanup calls are validated before the first mutation. Schema references cannot fetch files or network resources.
+This example is a small MCP stdio client for ProtoInputMultiPlex. It discovers the running server's advertised tool schemas, uses only the capabilities required for its selected workflow, and verifies returned state. It does not wrap every tool or assume a fixed tool count. The official `rmcp` SDK handles negotiation, framing, request IDs and timeout cancellation. Calls use the discovered JSON Schemas; all planned mutations and cleanup calls are validated before the first mutation. Schema references cannot fetch files or network resources.
 
 ## Prerequisites and isolated builds
 
-Use Rust 1.92 or later and Windows for the real ProtoInputMux server. This example is a standalone Cargo workspace with its own `Cargo.lock`; run Cargo from this directory. Keep the example and server builds outside the main checkout, with a dedicated target directory:
+Use Rust 1.92 or later and Windows for the real ProtoInputMultiPlex server. This example is a standalone Cargo workspace with its own `Cargo.lock`; run Cargo from this directory. Keep the example and server builds outside the main checkout, with a dedicated target directory:
 
 ```powershell
-Set-Location 'E:\Kenny\Documents\GitHub\ProtoInputMux\examples\rust-mcp-client'
-$env:CARGO_TARGET_DIR = 'E:\Kenny\Documents\GitHub\ProtoInputMux-client-build-20261014'
+Set-Location 'E:\Kenny\Documents\GitHub\ProtoInputMultiPlex\examples\rust-mcp-client'
+$env:CARGO_TARGET_DIR = 'E:\Kenny\Documents\GitHub\ProtoInputMultiPlex-client-build'
 cargo build --locked
 cargo fmt --all --check
 cargo clippy --workspace --all-targets --locked -- -D warnings
@@ -22,7 +22,7 @@ The accepted implementation was built in an isolated snapshot preserving the sou
 Set the server and runtime paths locally. The preferences path must identify a disposable test document, never the user's real settings:
 
 ```powershell
-$env:PIM_SERVER = 'C:\absolute\path\to\protoinputmux.exe'
+$env:PIM_SERVER = 'C:\absolute\path\to\protoinputmultiplex.exe'
 $env:PIM_RUNTIME = 'C:\absolute\path\to\disposable-runtime'
 $env:PIM_PREFERENCES = 'C:\absolute\path\to\disposable-preferences.json'
 cargo run --locked -- inspect
@@ -69,6 +69,8 @@ cargo run --locked -- demo --pid 12345 --x 300 --y 250
 ```
 
 Replace the PID and coordinates with the coordinated values; the numbers above are placeholders. The demonstrated sequence is discover capabilities, inspect users/targets, select the scoped target with virtual movement and click, send bounded virtual input, verify state, release ownership, and stop/disconnect. Acknowledged state must match the intended target and show released input after cleanup.
+For workflows needing an explicit root instead of click hit-testing, discover the current `routing_input` schema and send `action: "select_window"` with the authorized user, pid, hwnd, and exact `eligibility.creation_token` from `routing_windows`. Keep the singleton PID grant. This optional call in a GUI-owned session additionally requires the owner's existing **Allow session changes** grant; the click-based demo above remains unchanged and needs no additional grant. Wait for the `routing_input` response: the worker commits and emits `WindowSelected`, which the MCP server internally matches before returning worker state. The response contains no public event or request ID. Inspect selected PID/status. Applying Agent Access revokes every client; reconnect and Inspect under the new policy before further use. The next real input attaches lazily. No public grant bypass is available.
+
 
 For a GUI-owned session, the owner first enables Agent Access in the GUI and selects an active virtual user and exactly one allowed PID: the disposable target PID supplied to this example. The singleton policy is deliberate: hit testing happens on click, so a policy containing other permitted PIDs could deliver that first click to a different overlapping window. The example refuses a broader policy and never narrows it automatically. The selected seat must be running, unpaused and free of held input before movement. Keep capture, session control, and application-preference writes disabled unless a separate task expressly requires them. Obtain the private descriptor path locally and put it only in the current process environment:
 

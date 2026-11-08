@@ -1,0 +1,94 @@
+{
+  "date": "2026-11-06",
+  "decision": "MAPPER_CANVAS_GROUPS_ACCEPTED",
+  "scope": "Multi-node selection and editing on the Rust/Ouroboros Input Mapper canvas.",
+  "producer": {
+    "original_session": 8195,
+    "original_exit_code": 0
+  },
+  "verification": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-canvas-groups-20261106\\checks-003\\verification.json",
+    "sha256": "cfaf765eeb45056259f601b7dffa8061b234c135a37c7b6b160adc1c2046fe52"
+  },
+  "review": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-canvas-groups-20261106\\independent-acceptance.json",
+    "sha256": "1a9131b59566236b6bc019b092e5491a665504ed5dd6981c6a234332cd065023"
+  },
+  "publication": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-canvas-groups-20261106\\publication.json",
+    "sha256": "1e6ae104af45d8f2cf6faa768304fc4d25d9ce691c93ba595ab82871c0bb11af"
+  },
+  "workspace_tests": {
+    "passed": 777,
+    "failed": 0,
+    "ignored": 19
+  },
+  "checks": {
+    "fmt": 0,
+    "clippy": 0,
+    "workspace-tests": 0,
+    "build-gui": 0
+  },
+  "x64_image": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-canvas-groups-20261106\\checks-003\\x64\\protoinputmultiplex.exe",
+    "sha256": "8307996fbc94c3a39cdd39b637328ebe6fcc4006559b1f90f4f9bc3f96c60cf0"
+  },
+  "native": {
+    "original_session": 90277,
+    "original_exit_code": 0,
+    "raw": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mapper-canvas-groups-0cfa8efda003\\evidence.json",
+      "sha256": "989777966d6e9bdb98d26229094617ed76643cee88998fa38b561217438f3fe6"
+    },
+    "driver": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-canvas-groups-20261106\\native-v2.py",
+      "sha256": "1f04c61ca88d51b11defdbd02e8cccb49ba1e870aca2295141604f590217f3f9"
+    },
+    "scope": {
+      "virtual_pairs": 2,
+      "GUI": 1,
+      "targets": 0,
+      "MCP": 0,
+      "hardware_input": 0,
+      "routing_or_injection": 0
+    },
+    "actions": [
+      "Settings",
+      "Settings category Automation",
+      "Input Mapper",
+      "Mapper canvas",
+      "Mapper canvas select nodes",
+      "Mapper canvas node scale-a",
+      "Mapper canvas node scale-b",
+      "Duplicate selected mapper nodes",
+      "Delete selected mapper nodes"
+    ],
+    "wm_null_responded": true,
+    "normal_wm_close_exit": 0,
+    "png": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mapper-canvas-groups-0cfa8efda003\\native\\group-duplicated.png",
+      "sha256": "77fca5f72ae482ddb9ce1c642a90b959a59115446ccc30c4c287fcb62dae851b",
+      "size": 103321,
+      "mtime_ns": 1794014753081125500,
+      "click_mtime_ns": 1794014750991665800
+    }
+  },
+  "earlier_native_attempt": {
+    "original_session": 19124,
+    "original_exit_code": 1,
+    "raw": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mapper-canvas-groups-049603ef4e69\\evidence.json",
+      "sha256": "957f415f7bcb666cba4e17da16f2ffab20b7d3259f1b7a2260ff9308fb2c190b"
+    },
+    "observed": "The harness expected both copied nodes to have the first node's factor. The draft retained the two distinct factors."
+  },
+  "coverage": [
+    "Owned stopped GUI verified the selection controls and transactional duplication/deletion with an exact typed draft and applied graph.",
+    "Focused egui and graph tests cover selection gestures, wire remapping, history and group editing.",
+    "The native run used app-local clicks and two virtual mouse/keyboard pairs."
+  ],
+  "open": [
+    "Native marquee and group drag sampling, named collapsible groups, and broader Ultra parity remain open.",
+    "Historical GUI stall remains open."
+  ]
+}

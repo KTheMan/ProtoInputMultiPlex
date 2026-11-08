@@ -1,0 +1,16 @@
+{
+  "date": "2026-10-14",
+  "status": "PASS",
+  "skill": "protoinputmux",
+  "source": "skills/protoinputmux",
+  "installed": "C:/Users/Archform CAD Station/.codex/skills/protoinputmux",
+  "validation": "skill-creator quick_validate.py passed",
+  "sha256": {
+    "SKILL.md": "c8683966b3323b335d2f38e3d74145f672d96010fcd7afba6de325fb001a809c",
+    "agents/openai.yaml": "61c08546d1fafc09287f36c34a74766769d7462034a3eeabd33c999eb0fc16c3"
+  },
+  "installed_matches_source": true,
+  "tool_count": 18,
+  "assessment": "docs/virtual-users-assessment-2026-10-14.json",
+  "notes": "Updated only this project skill and its existing agents/openai.yaml after independent bounded virtual generated-user acceptance. No global MCP client configuration changed. Full Ultra parity, physical devices and assigned-process clone lifecycle remain separate."
+}

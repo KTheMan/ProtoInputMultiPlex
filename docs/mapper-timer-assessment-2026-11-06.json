@@ -1,0 +1,83 @@
+{
+  "date": "2026-11-06",
+  "decision": "MAPPER_TIMER_ACCEPTED",
+  "reference": "https://www.mousemux.com/pages/apps/webapp-input-mapper-beta/",
+  "scope": "Finite actor-local Rust Mapper Timer in the Ouroboros catalogue and inspector and existing MCP Mapper commands. One authenticated virtual actor routed between two explicitly selected, disposable x64 windows.",
+  "verification": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-timer-20261106\\checks-002\\verification.json",
+    "sha256": "3fc18cf7500ea0c3e5508ed9ef039680191e58142bae555894fa8e1b8c3febea"
+  },
+  "review": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-timer-20261106\\independent-acceptance.json",
+    "sha256": "f7979716ed3fc2b469c67eadcb32570fc6ac275228c2e749cf794736703dd7f8"
+  },
+  "publication": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-timer-20261106\\publication.json",
+    "sha256": "50fc4babc21b87d4dca5575fbab938123da1b064f8f6b571068860d079291ac7"
+  },
+  "workspace_tests": {
+    "passed": 756,
+    "failed": 0,
+    "ignored": 19
+  },
+  "x64_image": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-timer-20261106\\checks-002\\x64\\protoinputmultiplex.exe",
+    "sha256": "37837ea709f31b70cc81c5ca55e4fa7b385078c4b9cc3f08049c54fbce66765c"
+  },
+  "checks": {
+    "fmt": 0,
+    "clippy": 0,
+    "workspace-tests": 0,
+    "build-gui": 0
+  },
+  "native": {
+    "original_session": 79557,
+    "original_exit_code": 0,
+    "raw_result": "BOUNDED_WORKFLOW_PASSED_PENDING_INDEPENDENT_REVIEW",
+    "raw": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mt-ad25f87f1712\\evidence.json",
+      "sha256": "9bbf296bec0dc6af3b4376f28c4bd843a551cee9580484b15aafaf87b69e8d74"
+    },
+    "driver": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-timer-20261106\\native-v2.py",
+      "sha256": "845b892808faa3eea97f1b29d3e32993114b2750167590f35497c9ff505b12a5"
+    },
+    "readiness": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-timer-20261106\\native-ready-v2.json",
+      "sha256": "0742a8c8da2ba5b20a8b9dc297c0a19acb9eedad7a0aaff6e17c16e133b90733"
+    },
+    "exit_codes": {
+      "GUI": 0,
+      "MCP": [
+        0
+      ],
+      "targets": {
+        "a": 0,
+        "b": 0
+      }
+    }
+  },
+  "prior_attempt": {
+    "original_session": 29158,
+    "original_exit_code": 1,
+    "raw": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mt-64b5f55b947f\\evidence.json",
+      "sha256": "b2b82dd3d66ca5a93f82ca956121c1b26e3d4ddf89d22fe319db59aa8bdb204f"
+    },
+    "cleanup": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mt-64b5f55b947f\\owned-cleanup.json",
+      "sha256": "5354b11888f6c642f1b249701ac6d137c44bd32a7abb63d6577cf1114f378c2a"
+    },
+    "reason": "The test harness asserted after one sleep returned before its deadline. The run recorded three expected pulse pairs before that failure. The retry looped until the same absolute deadline and used the unchanged Rust image."
+  },
+  "coverage": [
+    "No native effect at Apply or Arm or before the first deadline. A held source produced exactly three spaced key pulses on the second target. Duplicate enable did not restart pending or exhausted work.",
+    "A fresh enable restarted work. Enable release and Disarm each cancelled remaining pulses. The source target's unrelated F6 hold survived Disarm and released on Stop. The descriptor retired after MCP EOF, and both windows, the GUI and MCP exited normally.",
+    "Rust tests cover late ticks without catch-up, exact recipient rejection, actor retirement, and retrying a retained release after a timed pulse UP failure. The 680\u00d7620 Ouroboros control test covers adding Timer and rendering its fields and port."
+  ],
+  "open": [
+    "Full Mapper and Ultra parity, including feedback, visual providers and native Timer authoring at minimum size.",
+    "Native Timer compatibility outside two ordinary x64 WNDPROC targets and one authenticated virtual actor.",
+    "Historical intermittent GUI-stall and minimized Quit observations."
+  ]
+}

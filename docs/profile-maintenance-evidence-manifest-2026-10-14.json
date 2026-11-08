@@ -1,0 +1,46 @@
+{
+  "archives": [
+    {
+      "label": "documents",
+      "original": "runtime\\acceptance-profile-documents-20261014-123034\\evidence.json",
+      "archive": "docs\\profile-maintenance-documents-2026-10-14.json",
+      "sha256": "90a308e4df1cc8930eae244344a277101b7523bf9b9decf8984204ca3ac32df4",
+      "original_result": "PASS",
+      "accepted_clicks": 0,
+      "accepted_disabled_observations": 0
+    },
+    {
+      "label": "ui-prefix",
+      "original": "runtime\\acceptance-graph-profile-maintenance-offline-20261014-123051\\evidence.json",
+      "archive": "docs\\profile-maintenance-ui-prefix-2026-10-14.json",
+      "sha256": "93328faf15e13e13e62b1601e3235de65809be348f236299f5cfe6b28ca794ad",
+      "original_result": "NOT ACCEPTED",
+      "accepted_clicks": 19,
+      "accepted_disabled_observations": 0
+    },
+    {
+      "label": "ui-tail",
+      "original": "runtime\\acceptance-graph-profile-maintenance-offline-tail-20261014-123720\\evidence.json",
+      "archive": "docs\\profile-maintenance-ui-tail-2026-10-14.json",
+      "sha256": "2499dbb17e1764a65a5049d3c4d0f6c70fd8c01b97937613759fccc77aff0fb6",
+      "original_result": "PASS",
+      "accepted_clicks": 11,
+      "accepted_disabled_observations": 1
+    },
+    {
+      "label": "active",
+      "original": "runtime\\acceptance-graph-profile-maintenance-active-20261014-123803\\evidence.json",
+      "archive": "docs\\profile-maintenance-active-2026-10-14.json",
+      "sha256": "70c5c6de29efaad72d452510f1ae2a84a78be2f4f4289d0ff05e53b6e39feb2c",
+      "original_result": "PASS",
+      "accepted_clicks": 11,
+      "accepted_disabled_observations": 7
+    }
+  ],
+  "image": {
+    "original": "runtime\\acceptance-graph-profile-maintenance-offline-20261014-123051\\profile-controls.png",
+    "archive": "docs\\profile-maintenance-control-center.png",
+    "sha256": "4620bdab7619d4142f9cf24ed4024cc1c4137cdd23f4ea590aaa93bfe88c53a0",
+    "independent_visual_review": "Safe own GUI: Save/Load, Import/Export, Restore backup, Reset/Undo, stale-PID reminder and backup path all visible; no unrelated window inventory."
+  }
+}

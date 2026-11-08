@@ -1,0 +1,122 @@
+{
+  "result": "PASS",
+  "date": "2026-10-14",
+  "checks": [
+    {
+      "command": [
+        "cargo",
+        "fmt",
+        "--all",
+        "--check"
+      ],
+      "exit_code": 0,
+      "log": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-cursor-appearance-20261014-143421\\1.log"
+    },
+    {
+      "command": [
+        "cargo",
+        "clippy",
+        "--workspace",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit_code": 0,
+      "log": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-cursor-appearance-20261014-143421\\2.log"
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--workspace"
+      ],
+      "exit_code": 0,
+      "log": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-cursor-appearance-20261014-143421\\3.log"
+    },
+    {
+      "command": [
+        "cargo",
+        "build",
+        "--workspace"
+      ],
+      "exit_code": 0,
+      "log": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-cursor-appearance-20261014-143421\\4.log"
+    },
+    {
+      "command": [
+        "cargo",
+        "build",
+        "--workspace",
+        "--target",
+        "i686-pc-windows-msvc"
+      ],
+      "exit_code": 0,
+      "log": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-cursor-appearance-20261014-143421\\5.log"
+    }
+  ],
+  "workspace_tests": 125,
+  "build_sha256": {
+    "x64": "f5d8b759fa35d6fb1884e3adc2a262170c0317e646f24777642ea05bac5c785d",
+    "i686": "3567bddfe46f7ed583aeb75700eb717cdf515f1e8e2534606a45bb19878fa195"
+  },
+  "frozen_source_sha256": {
+    "crates\\mux-core\\src\\annotation.rs": "a85264dda59bd33099188e1654134762255ab2611f0c62042f296f9f647ec621",
+    "crates\\mux-core\\src\\automation.rs": "af3d7437f8974d729957b6324aa5969ae2da1f86f4eecc43861a34f512eb5521",
+    "crates\\mux-core\\src\\desktop.rs": "1da5324ed2d041a85c6719598865cdfc4279456e9f037c6c0e63bf8abbd1ac2e",
+    "crates\\mux-core\\src\\emulated.rs": "a6187fce299845323279c74ae0c5caee1425200e319da4e37aef05e2ad63097a",
+    "crates\\mux-core\\src\\lib.rs": "7f5388984e4020f9c004ed4387eb76eb4530258df83c9af67b0d4ce3442ee24e",
+    "crates\\mux-core\\src\\macro_authoring.rs": "c09b42995c31d0615e49096e97698e070cdda29f43c25cb33b581317dfe09d5e",
+    "crates\\mux-core\\src\\magnifier.rs": "ef7748bb3a4d42e246c2075606183d31a83c44bf96f141aa535c0b5f06b1cfc7",
+    "crates\\mux-core\\src\\output.rs": "d45e10811d40a70131a7d08233aab872af293948fc2583edf4c31552a133b6a6",
+    "crates\\mux-core\\src\\replication.rs": "6eaaf07a5896991f085f5f4098532961afcf99d41fa1e59aeb91e12282bd24fb",
+    "crates\\mux-core\\src\\routing.rs": "02d053e0e2f2dcbd25cae30e89752be0d4784701e497d1915f66041b1a851479",
+    "crates\\mux-windows\\src\\annotation_overlay.rs": "4d3c43e407cd8f156f225a82d857464c705b2bd98d0723bb2b990389532f4c79",
+    "crates\\mux-windows\\src\\desktop_capture.rs": "089b938874cfe58e70056187c39cae02f2d76df2273f5f372835874b8bb25fc7",
+    "crates\\mux-windows\\src\\job.rs": "a2bef8f5ebe0a480b095390b43424553eff5211cc6024a6de9d4fc8f263faa50",
+    "crates\\mux-windows\\src\\keyboard.rs": "73cb54fdf4a8fc52e85fb8e51da2e745929ac58aeb360c5be435855114407980",
+    "crates\\mux-windows\\src\\lib.rs": "6f2bb2863be3e3fb2cc847bfa06bd241218a000fda23c2ffad6abe872e08154d",
+    "crates\\mux-windows\\src\\magnifier_overlay.rs": "003fe89185bd4ea2b3c87874c743af61ba2e899e0237c0735ffaeac4dd43d34f",
+    "crates\\mux-windows\\src\\monitors.rs": "4dfba0cb54be0160d86fc612715071ad7a57e63af3abaae65aed30edb7c67313",
+    "crates\\mux-windows\\src\\overlay.rs": "833ec1cd74ca5bb87e196fb05471e010247687ab97039954873d50e5929b5aa7",
+    "crates\\mux-windows\\src\\power.rs": "52fb49291b307c820ad791df493c3bd84be955a23512b9fc66e21deffce52c09",
+    "crates\\mux-windows\\src\\protoinput.rs": "d451ede7add73352c1c2802eb282656c32904fd46c0e2fac9379f26bad6d8a23",
+    "crates\\mux-windows\\src\\queue_fence.rs": "bc975dc8900ded4c9816ec1241a551b3b2bc32862dc92a797e488e2f60414cef",
+    "crates\\mux-windows\\src\\raw_input.rs": "0e45fe6821827ca993642902e089b9e20efc4cbbe8ee6633d7fef100ef3f8a42",
+    "crates\\mux-windows\\src\\target_capture.rs": "1d638e53f02c13a07fad3389f026c9db9955fabb4df62efaec491b0ce8af1534",
+    "crates\\mux-windows\\src\\targets.rs": "20150219d093cfb7daa84a09c801737b230807271d007f4f5227e8d5fb4f9dc8",
+    "crates\\mux-windows\\src\\wheel.rs": "ddcbaf591658aaf9d840348ec8335f72b2c82cf6a1c69dbe726fa36f6a4d0aff",
+    "crates\\mux-windows\\tests\\abi.rs": "dca8df9f0675ad6260d90046bd8bd0079d5811bf2992f594bce1447dff2343ce",
+    "crates\\mux-windows\\tests\\fixtures\\loader.rs": "804c3f854418446d590a28dc6e64f1a9a1a75abf41d99a333a807531c61874d8",
+    "crates\\mux-windows\\tests\\hit_test.rs": "8710d72c552d57f6180962eaa98f38907686663e8f3838d90d01294f9d5384eb",
+    "crates\\protoinputmux\\src\\agent_runtime.rs": "31da1d7e40a8d5158fccdcba98b28c4a07bd22b8b2ce26c8f5a345297f8d72ca",
+    "crates\\protoinputmux\\src\\agent_ui.rs": "2f7ddedf76351971065fa26915db407b7b20767cf767086d00b1b408023a81ae",
+    "crates\\protoinputmux\\src\\annotation_runtime.rs": "00478f19fdb7540e606121f233de8174142d4d6b3233fca3a919a8be73e205a5",
+    "crates\\protoinputmux\\src\\annotation_ui.rs": "b4f0e920672e62dba1cd224948f19bd4225c3cbc2017339164107de0f00f3700",
+    "crates\\protoinputmux\\src\\automation_probe.rs": "e26519e202661be31eeff6cb0e79b413b1fc9552fc0491901b4d6119c46d8445",
+    "crates\\protoinputmux\\src\\automation_runtime.rs": "2304623a3845b04c2684364f82eab9a7c153f0da865b121932a6ee1ef1c1010b",
+    "crates\\protoinputmux\\src\\desktop_router.rs": "b95d7e7bbe2b18da29aa4b945f86b98945e31b86265967b9fbbf080b74281ed6",
+    "crates\\protoinputmux\\src\\gui.rs": "3b02e3cabb9814e7d23c26ba17e6d4d62b2a3b928b2f898aa04b2ccf2c50f8b1",
+    "crates\\protoinputmux\\src\\gui_bridge.rs": "fdaac3344ee826a263a045ac140cdbf3e031197dcd012aedbee01f31b38c3e95",
+    "crates\\protoinputmux\\src\\macro_studio.rs": "58f10c2906184424d2e13fc5bd582d39ef962d91763b8c56eb311fe3fb86498d",
+    "crates\\protoinputmux\\src\\macro_studio_ui.rs": "ce55322f33afe641bafc7e80db03b2d071e7067b7ae1f6445d5c39749ac59e60",
+    "crates\\protoinputmux\\src\\magnifier_runtime.rs": "c72f369eeecedddf10c5d889d2ff797ff04c9db56c937b842d0efea8a4936790",
+    "crates\\protoinputmux\\src\\magnifier_ui.rs": "18508c5884169fb58a028b1648a5107d8295dee43899cb112e642225d747fbb8",
+    "crates\\protoinputmux\\src\\main.rs": "9652955b8e502efd1b50199e5860493068ab96b7ff9e472c1a28461a0f5b59c9",
+    "crates\\protoinputmux\\src\\mcp.rs": "87f7290ba912d215c53067ac938e0f069e4c82b582955042b2c593d938704c34",
+    "crates\\protoinputmux\\src\\output_runtime.rs": "0eebe45232a438a8efa08055803421c1fa0fabed686bba9f933df45982ef92fb",
+    "crates\\protoinputmux\\src\\output_ui.rs": "adeb61621a1711da1b685033e8a15994bb77c5e81bc466693a1cd2ae8e093053",
+    "crates\\protoinputmux\\src\\probe.rs": "f45043c5a6cf76c640b770c0d584608ae3621d9ae4362ef93bfd5cebb53ef1db",
+    "crates\\protoinputmux\\src\\profile_store.rs": "75a65e86b10bf7f9e207971045777ae9a86b77de6785cc921f4904659cfa380f",
+    "crates\\protoinputmux\\src\\replication_queue.rs": "644627fcef504615b5aeef744be343a22c7759b078a645a5e271c48e022c20a5",
+    "crates\\protoinputmux\\src\\replication_ui.rs": "d514cf9a20099eb4bd1716e3da78a1c8445791290b5ab37e94787f74b8476ee0",
+    "crates\\protoinputmux\\src\\router.rs": "1f1c0357fe9d5ea4df93c4ddefedf2e8ad6921106cb407d4149e28913914b778",
+    "crates\\protoinputmux\\src\\routing_engine.rs": "55ca9c1003d9d2a585b6575573a98026472f3ce7e17d87e8ae811573c93f012c",
+    "crates\\protoinputmux\\src\\session.rs": "ffac6b26e08a8aa3ff52795ba6c2ac77a80b6afceaeb66e717dab2f598d07eeb",
+    "crates\\protoinputmux\\src\\ui_script.rs": "d65732a7139e7e2fb52a8b5b3b553526125e46aefeb36f48e19505da8bf722b3",
+    "crates\\protoinputmux\\src\\virtual_users.rs": "b4d88e67f6b028384cb4907c826c185b8d8de5336db9d4ead0c3870e8088ad24",
+    "crates\\protoinputmux\\src\\virtual_users_ui.rs": "58ba3d9a8b0ba5336237f26a9f5975f2898b5a7537fc69962fc1d52cd5d62f74",
+    "Cargo.toml": "7a2ff935873dd4dde169ccd2821c427d3784847d5e06c26fce4351aa2f2f5246",
+    "Cargo.lock": "8cfc16312fcd88261cdb9b0d337f95a5a7e811ddc11767f033d39e464249a06b"
+  }
+}

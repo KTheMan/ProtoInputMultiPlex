@@ -1,0 +1,16 @@
+{
+  "result": "PASS",
+  "canonical_json_archives_verified": 4,
+  "retained_prefix_result": "NOT ACCEPTED",
+  "owned_png_byte_exact": true,
+  "root_visual_review": "All seven maintenance buttons, separate file paths, stale-PID reminder, backup and draft-only Undo text inspected in own GUI PNG. No unrelated inventory.",
+  "frozen_source_hashes_verified": 7,
+  "current_binary_hashes_verified": 2,
+  "initial_to_current_source_difference": [
+    "crates/protoinputmux/src/ui_script.rs"
+  ],
+  "assessment_sha256": "feb6b2ef3509012a6391a2a2a3311ee51565cae2e77ec0e219b22a30ad85ee3c",
+  "manifest_sha256": "48bdfe515928edd7e6957660ae02dec15a9c3075a2c7acd10a3125518119602d",
+  "scope": "Root archive/provenance verification supplements the independent gate; no historical native suites replayed.",
+  "root_owned_fixture_cim_count": 0
+}

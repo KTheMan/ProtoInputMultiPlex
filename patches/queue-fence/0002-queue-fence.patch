@@ -1,0 +1,403 @@
+diff --git a/src/ProtoInput/ProtoInputHooks/MessageFilterHook.cpp b/src/ProtoInput/ProtoInputHooks/MessageFilterHook.cpp
+index ca76933..1dcdefb 100644
+--- a/src/ProtoInput/ProtoInputHooks/MessageFilterHook.cpp
++++ b/src/ProtoInput/ProtoInputHooks/MessageFilterHook.cpp
+@@ -4,10 +4,122 @@
+ #include <imgui.h>
+ #include "MessageList.h"
+ #include "MessageFilters.h"
++#include <mutex>
++#include <unordered_map>
+ 
+ namespace Proto
+ {
+ 
++namespace
++{
++struct QueueFenceEntry
++{
++	HWND hwnd;
++	HANDLE event;
++};
++
++std::mutex queueFenceMutex;
++std::unordered_map<uint64_t, QueueFenceEntry> queueFences;
++
++UINT QueueFenceMessage()
++{
++	static const UINT message = RegisterWindowMessageW(L"ProtoInputMultiPlex.QueueFence.V1");
++	return message;
++}
++}
++
++bool MessageFilterHook::RegisterQueueFence(HWND hwnd, HANDLE event, uint64_t cookie)
++{
++	if (event == nullptr)
++		return false;
++	auto reject = [event]()
++	{
++		CloseHandle(event);
++		return false;
++	};
++	if (hwnd == nullptr || cookie == 0 || !IsWindow(hwnd))
++		return reject();
++
++	DWORD owningPid = 0;
++	if (GetWindowThreadProcessId(hwnd, &owningPid) == 0 || owningPid != GetCurrentProcessId())
++		return reject();
++
++	const UINT message = QueueFenceMessage();
++	if (message == 0)
++		return reject();
++
++	{
++		std::lock_guard<std::mutex> lock(queueFenceMutex);
++		if (queueFences.size() >= 4096 || queueFences.find(cookie) != queueFences.end())
++			return reject();
++		queueFences.emplace(cookie, QueueFenceEntry{ hwnd, event });
++	}
++
++	if (!PostMessageW(hwnd, message, static_cast<WPARAM>(static_cast<uint32_t>(cookie)),
++		static_cast<LPARAM>(static_cast<uint32_t>(cookie >> 32))))
++	{
++		HANDLE registeredEvent = nullptr;
++		{
++			std::lock_guard<std::mutex> lock(queueFenceMutex);
++			const auto found = queueFences.find(cookie);
++			if (found != queueFences.end() && found->second.hwnd == hwnd && found->second.event == event)
++			{
++				registeredEvent = found->second.event;
++				queueFences.erase(found);
++			}
++		}
++		if (registeredEvent != nullptr)
++			CloseHandle(registeredEvent);
++		return false;
++	}
++
++	return true;
++}
++
++bool MessageFilterHook::HasPendingFences()
++{
++	std::lock_guard<std::mutex> lock(queueFenceMutex);
++	return !queueFences.empty();
++}
++
++bool MessageFilterHook::FilterQueueFence(MSG* message, bool removed)
++{
++	const UINT fenceMessage = QueueFenceMessage();
++	if (message == nullptr || fenceMessage == 0 || message->message != fenceMessage)
++		return false;
++
++	const uint64_t cookie = static_cast<uint32_t>(message->wParam)
++		| (static_cast<uint64_t>(static_cast<uint32_t>(message->lParam)) << 32);
++	HANDLE event = nullptr;
++	{
++		std::lock_guard<std::mutex> lock(queueFenceMutex);
++		const auto found = queueFences.find(cookie);
++		if (found == queueFences.end() || found->second.hwnd != message->hwnd)
++			return false;
++		if (removed)
++		{
++			event = found->second.event;
++			queueFences.erase(found);
++		}
++	}
++
++	if (event != nullptr)
++	{
++		SetEvent(event);
++		CloseHandle(event);
++	}
++
++	// Hide the private marker from application message consumers. For PM_NOREMOVE,
++	// only the returned copy is changed; the queue entry and event remain pending.
++	message->hwnd = nullptr;
++	message->message = WM_NULL;
++	message->wParam = 0;
++	message->lParam = 0;
++	message->time = 0;
++	message->pt = POINT{};
++	return true;
++}
++
+ template<typename T>
+ bool* IsFilterEnabled()
+ {
+@@ -28,6 +140,9 @@ bool MessageFilterAllow(unsigned int message, unsigned int* lparam, unsigned int
+ 
+ inline BOOL FilterMessage(MSG* lpMsg)
+ {	
++	if (MessageFilterHook::FilterQueueFence(lpMsg, true))
++		return 1;
++
+ 	lpMsg->pt.x = FakeMouseKeyboard::GetMouseState().x;
+ 	lpMsg->pt.y = FakeMouseKeyboard::GetMouseState().y;
+ 	
+@@ -158,14 +273,22 @@ BOOL WINAPI Hook_PeekMessageA(LPMSG lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT w
+ {
+ 	const auto ret = PeekMessageA(lpMsg, hWnd, wMsgFilterMin, wMsgFilterMax, wRemoveMsg);
+ 
+-	return ret == FALSE ? FALSE : ((1 + FilterMessage(lpMsg)) / 2);
++	if (ret == FALSE)
++		return FALSE;
++	if (MessageFilterHook::FilterQueueFence(lpMsg, (wRemoveMsg & PM_REMOVE) != 0))
++		return 1;
++	return (1 + FilterMessage(lpMsg)) / 2;
+ }
+ 
+ BOOL WINAPI Hook_PeekMessageW(LPMSG lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax, UINT wRemoveMsg)
+ {
+ 	const auto ret = PeekMessageW(lpMsg, hWnd, wMsgFilterMin, wMsgFilterMax, wRemoveMsg);
+ 
+-	return ret == FALSE ? FALSE : ((1 + FilterMessage(lpMsg)) / 2);
++	if (ret == FALSE)
++		return FALSE;
++	if (MessageFilterHook::FilterQueueFence(lpMsg, (wRemoveMsg & PM_REMOVE) != 0))
++		return 1;
++	return (1 + FilterMessage(lpMsg)) / 2;
+ }
+ 
+ void MessageFilterHook::InstallImpl()
+diff --git a/src/ProtoInput/ProtoInputHooks/MessageFilterHook.h b/src/ProtoInput/ProtoInputHooks/MessageFilterHook.h
+index 7e663de..54c1dc2 100644
+--- a/src/ProtoInput/ProtoInputHooks/MessageFilterHook.h
++++ b/src/ProtoInput/ProtoInputHooks/MessageFilterHook.h
+@@ -2,6 +2,8 @@
+ #include "Hook.h"
+ #include "HookManager.h"
+ #include "protoloader.h"
++#include <Windows.h>
++#include <cstdint>
+ 
+ namespace Proto
+ {
+@@ -33,6 +35,9 @@ public:
+ 	void UninstallImpl() override;
+ 
+ 	static bool IsKeyboardButtonFilterEnabled();
++	static bool RegisterQueueFence(HWND hwnd, HANDLE event, uint64_t cookie);
++	static bool HasPendingFences();
++	static bool FilterQueueFence(MSG* message, bool removed);
+ };
+ 
+ }
+diff --git a/src/ProtoInput/ProtoInputHooks/PipeCommunication.cpp b/src/ProtoInput/ProtoInputHooks/PipeCommunication.cpp
+index 77ec5c2..ee879b9 100644
+--- a/src/ProtoInput/ProtoInputHooks/PipeCommunication.cpp
++++ b/src/ProtoInput/ProtoInputHooks/PipeCommunication.cpp
+@@ -153,6 +153,31 @@ DWORD WINAPI PipeThread(LPVOID lpParameter)
+ 				RawInput::ProcessPacket(input);
+ 				break;
+ 			}
++			case ProtoPipe::PipeMessageType::MuxQueueFence:
++			{
++				if (msgHeader.messageSize != sizeof(ProtoPipe::MuxQueueFencePacket)) goto endPipe;
++				const auto body = reinterpret_cast<const ProtoPipe::MuxQueueFencePacket*>(messageBuffer);
++				if (sizeof(uintptr_t) == 4 && (body->hwnd > UINT32_MAX || body->event > UINT32_MAX))
++					break;
++				if (body->event == 0)
++					break;
++				const auto event = reinterpret_cast<HANDLE>(static_cast<uintptr_t>(body->event));
++				if (body->hwnd == 0 || body->cookie == 0)
++				{
++					CloseHandle(event);
++					break;
++				}
++				const auto hwnd = reinterpret_cast<HWND>(static_cast<uintptr_t>(body->hwnd));
++				DWORD owningPid = 0;
++				if (!IsWindow(hwnd) || GetWindowThreadProcessId(hwnd, &owningPid) == 0
++					|| owningPid != GetCurrentProcessId())
++				{
++					CloseHandle(event);
++					break;
++				}
++				MessageFilterHook::RegisterQueueFence(hwnd, event, body->cookie);
++				break;
++			}
+ 			case ProtoPipe::PipeMessageType::SetupHook:
+ 				{
+ 					const auto body = reinterpret_cast<ProtoPipe::PipeMessageSetupHook*>(messageBuffer);
+@@ -506,7 +531,13 @@ DWORD WINAPI PipeThread(LPVOID lpParameter)
+ 	FakeCursor::EnableDisableFakeCursor(false);
+ 	const auto& hooks = HookManager::GetHooks();
+ 	for (auto it = hooks.rbegin(); it != hooks.rend(); ++it)
+-		if ((*it)->IsInstalled()) (*it)->Uninstall();
++		if ((*it)->IsInstalled())
++		{
++			const bool retainFenceHook = MessageFilterHook::HasPendingFences()
++				&& std::string((*it)->GetHookName()) == "Message Filter";
++			if (!retainFenceHook)
++				(*it)->Uninstall();
++		}
+ 
+ 	printf("End of pipe thread\n");
+ 	
+diff --git a/src/ProtoInput/ProtoInputHooks/pipeinclude/pipeinclude.h b/src/ProtoInput/ProtoInputHooks/pipeinclude/pipeinclude.h
+index 04dfc56..ef3f5a7 100644
+--- a/src/ProtoInput/ProtoInputHooks/pipeinclude/pipeinclude.h
++++ b/src/ProtoInput/ProtoInputHooks/pipeinclude/pipeinclude.h
+@@ -1,4 +1,5 @@
+ #pragma once
++#include <cstdint>
+ 
+ // This file needs to be used in both ProtoInputHooks and ProtoInputLoader for pipe communication
+ 
+@@ -32,7 +33,8 @@ enum class PipeMessageType
+ 	SetToggleCursorVisibilityShortcut,
+ 	SetRawInputBypass,
+ 	SetShowCursorWhenImageUpdated,
+-	MuxInput
++	MuxInput,
++	MuxQueueFence
+ };
+ 
+ // Fixed-width adapter for Rust-generated application-local devices (not OS HID).
+@@ -44,6 +46,13 @@ struct MuxInputPacket
+ };
+ static_assert(sizeof(MuxInputPacket) == 24, "Rust packet ABI");
+ 
++// Queue-fence handles belong to the target process. The loader only transfers their values.
++struct MuxQueueFencePacket
++{
++	uint64_t hwnd, event, cookie;
++};
++static_assert(sizeof(MuxQueueFencePacket) == 24, "Rust queue-fence ABI");
++
+ struct PipeMessageHeader
+ {
+ 	PipeMessageType messageType;
+diff --git a/src/ProtoInput/ProtoInputLoader/Inject.cpp b/src/ProtoInput/ProtoInputLoader/Inject.cpp
+index e5dc4f2..e0229d3 100644
+--- a/src/ProtoInput/ProtoInputLoader/Inject.cpp
++++ b/src/ProtoInput/ProtoInputLoader/Inject.cpp
+@@ -12,8 +12,31 @@
+ #include <filesystem>
+ 
+ #include "Loader.h"
++#include <cstdint>
++#include <mutex>
+ 
+-extern "C" __declspec(dllexport) unsigned int MuxInputVersion() { return 2; }
++namespace
++{
++	bool TargetUses64BitHandles(unsigned long pid)
++	{
++		HANDLE process = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, pid);
++		if (process == nullptr)
++			return false;
++
++		BOOL isWow64 = FALSE;
++		const BOOL queried = IsWow64Process(process, &isWow64);
++		CloseHandle(process);
++		if (!queried)
++			return false;
++
++		SYSTEM_INFO systemInfo{};
++		GetNativeSystemInfo(&systemInfo);
++		const bool nativeIs32Bit = systemInfo.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_INTEL;
++		return !isWow64 && !nativeIs32Bit;
++	}
++}
++
++extern "C" __declspec(dllexport) unsigned int MuxInputVersion() { return 3; }
+ 
+ extern "C" __declspec(dllexport) void MuxSubmitInput(ProtoInstanceHandle instanceHandle, const ProtoPipe::MuxInputPacket* packet)
+ {
+@@ -26,6 +49,57 @@ extern "C" __declspec(dllexport) void MuxSubmitInput(ProtoInstanceHandle instanc
+ 	}
+ }
+ 
++extern "C" __declspec(dllexport) bool MuxQueueFence(ProtoInstanceHandle instanceHandle,
++	uint64_t hwnd, uint64_t remote_event, uint64_t cookie)
++{
++	if (hwnd == 0 || remote_event == 0 || cookie == 0)
++		return false;
++
++	const auto found = Proto::instances.find(instanceHandle);
++	if (found == Proto::instances.end())
++		return false;
++
++	auto& instance = found->second;
++	if (instance.pipeHandle == nullptr || instance.pipeHandle == INVALID_HANDLE_VALUE)
++		return false;
++	const auto nativeHwnd = reinterpret_cast<HWND>(static_cast<uintptr_t>(hwnd));
++	if (static_cast<uint64_t>(reinterpret_cast<uintptr_t>(nativeHwnd)) != hwnd)
++		return false;
++
++	DWORD owningPid = 0;
++	if (GetWindowThreadProcessId(nativeHwnd, &owningPid) == 0 || owningPid != instance.pid)
++		return false;
++
++	if (!TargetUses64BitHandles(instance.pid)
++		&& ((hwnd >> 32) != 0 || (remote_event >> 32) != 0))
++		return false;
++
++	WaitClientConnect(instance);
++	if (!instance.clientConnected)
++		return false;
++	ProtoPipe::PipeMessageHeader header{
++		ProtoPipe::PipeMessageType::MuxQueueFence,
++		static_cast<unsigned int>(sizeof(ProtoPipe::MuxQueueFencePacket))
++	};
++	ProtoPipe::MuxQueueFencePacket body{ hwnd, remote_event, cookie };
++
++	// A failed or partial write may still have reached the target. After starting the
++	// transfer, ownership is therefore treated as transferred and Rust resolves failure
++	// through its bounded timeout rather than closing a possibly live target handle.
++	std::lock_guard<std::mutex> lock(ProtoPipeWriteMutex());
++	DWORD written = 0;
++	const BOOL headerWritten = WriteFile(instance.pipeHandle, &header, sizeof(header), &written, nullptr);
++	if (!headerWritten || written != sizeof(header))
++		return true;
++
++	written = 0;
++	const BOOL bodyWritten = WriteFile(instance.pipeHandle, &body, sizeof(body), &written, nullptr);
++	if (!bodyWritten || written != sizeof(body))
++		return true;
++
++	return true;
++}
++
+ extern "C" NTSTATUS __declspec(dllexport) __stdcall HookCompleteInjection(void* InInfo)
+ {
+ 	return HookCompleteInjectionImpl(InInfo);
+diff --git a/src/ProtoInput/ProtoInputLoader/Loader.h b/src/ProtoInput/ProtoInputLoader/Loader.h
+index 2801951..bc440b0 100644
+--- a/src/ProtoInput/ProtoInputLoader/Loader.h
++++ b/src/ProtoInput/ProtoInputLoader/Loader.h
+@@ -2,11 +2,18 @@
+ #include "protoloader.h"
+ #include <windows.h>
+ #include <iostream>
++#include <mutex>
+ #include "TrackedInstances.h"
+ #include "pipeinclude.h"
+ 
+ bool Isx64(unsigned long pid);
+ 
++inline std::mutex& ProtoPipeWriteMutex()
++{
++	static std::mutex mutex;
++	return mutex;
++}
++
+ ProtoInstanceHandle CreateInstanceHandle(unsigned long pid);
+ 
+ void WaitClientConnect(Proto::ProtoInstance& instance);
+@@ -14,6 +21,7 @@ void WaitClientConnect(Proto::ProtoInstance& instance);
+ template<typename Body>
+ void ProtoSendPipeMessage(HANDLE pipe, ProtoPipe::PipeMessageType messageType, Body* body)
+ {
++	std::lock_guard<std::mutex> lock(ProtoPipeWriteMutex());
+ 	ProtoPipe::PipeMessageHeader header
+ 	{
+ 		messageType,
+@@ -50,4 +58,4 @@ void ProtoSendPipeMessage(HANDLE pipe, ProtoPipe::PipeMessageType messageType, B
+ 	}
+ 	else
+ 		std::cerr << "Failed to send message body" << std::endl;
+-}
+\ No newline at end of file
++}

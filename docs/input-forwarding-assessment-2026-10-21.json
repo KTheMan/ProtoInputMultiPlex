@@ -1,0 +1,14 @@
+{
+  "assessment": "BOUNDED_ACCEPTANCE",
+  "feature": "Input Forwarding virtual-only GUI and connected MCP workflow",
+  "date": "2026-10-21",
+  "evidence": "runtime/input-forwarding-ui-attempt004/evidence.json",
+  "evidence_sha256": "9acbbbdcd6515bed014035e8d1de8306d02a2e435c3edac797638612c362790d",
+  "independent_review": "runtime/input-forwarding-ui-attempt004-review.json",
+  "independent_review_sha256": "99c6562f10b0ec87cfe42fcdb4d01de030b3e53e96743320411c59f9551e5451",
+  "observed": "One exact-owned GUI and three ordinary EDIT probes completed 51 real GUI actions, 13 app-local virtual routing calls (including one expected denial), and one connected MCP Apply. Actual chooser/checkbox actions staged chain, partial keyboard and convergence graphs; three acknowledged GUI Apply receipts matched Inspect. B received A-hop and local text, C received tuned forwarded motion and exactly one converged primary DOWN/UP, while denied sink access left owned native traces unchanged. Stopped Save persisted the nonempty graph; same-GUI restart required a fresh Agent Access grant before MCP Apply, and GUI Clear restored source overlay visibility. Both normal Stops and ordinary owned-process cleanup passed.",
+  "validation": "Producer passed fmt, strict Clippy, workspace tests (452 passed, 0 failed, 3 ignored), and x64/i686 app plus observer builds. Independent review rechecked all 861 product source hashes, 31 source/helper bindings, ten private runtime files, x64 executable/PDB, three original product PNGs, process absence and raw native probe reports.",
+  "prior_attempts": "Native attempts001, 002, and 003 remain FAIL with original evidence and independent reviews preserved. Their narrow harness oracle/authorization sequence findings were corrected before this fresh passing attempt004; none were relabeled.",
+  "limits": "One bounded app-local virtual-device development workflow. Real hardware, arbitrary applications, desktop-wide routing, same-process multi-user isolation, full Ultra parity, and the separate historical GUI-stall P1 are not validated; the P1 remains OPEN."
+}
+

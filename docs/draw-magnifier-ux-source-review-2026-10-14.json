@@ -1,0 +1,23 @@
+{
+  "reviewed_at": "2026-10-14",
+  "scope": "Source-only review of the bounded Draw and Magnifier UI hierarchy changes.",
+  "decision": "approved_source_review",
+  "current_source_sha256": {
+    "crates/protoinputmux/src/magnifier_ui.rs": "ae87b13b6565c5991af4a52d1a7c47fc02d3324553446f969b145328bc65861c",
+    "crates/protoinputmux/src/annotation_ui.rs": "46d7c4e752d1bbb80aee24a8378fb8de8915058dbe0d8507ccb1a83287144759"
+  },
+  "baseline_snapshot_sha256": {
+    "crates/protoinputmux/src/magnifier_ui.rs": "ce8947dda123f6e5f17a1942437a77d1c5483ddbcc35ec5343d54269ad20acad",
+    "crates/protoinputmux/src/annotation_ui.rs": "d6bf5a48e3af7df7bef0be23ea55dc528ece382f3fcb9f13ff88e6adf3234e0a"
+  },
+  "findings": [],
+  "review": [
+    "The diff is limited to annotation_ui.rs and magnifier_ui.rs and only reorganizes presentation; existing action labels and command guards remain intact. Save/clear/apply/refresh paths retain their prior enabled conditions and selected-user recipient.",
+    "Both pages keep validation, worker/state errors, and pending acknowledgements outside the new details disclosures. Magnifier capture status remains near its actions; PID/HWND, bounds, cursor and overlay diagnostics move into Capture details. Draw retains a concise running-state summary and moves stroke counts/layer bounds into Layer details.",
+    "The pinned Ouroboros Collapsible uses a default-closed state, stable id_source, and returns a response that the existing Script.observe path records. Opening details dispatches no worker command.",
+    "Final source recheck includes only replacing the two terminal Script.observe Option borrows to satisfy strict Clippy; the presentation and guard review is unchanged."
+  ],
+  "limits": [
+    "Source review only; no Cargo checks or native visual acceptance were performed."
+  ]
+}

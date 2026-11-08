@@ -1,0 +1,67 @@
+{
+  "decision": "APPROVED fixture-only revision and finite harness source; no native acceptance",
+  "initial_source_review": {
+    "path": "docs/keyboard-delivery-source-review-2026-10-15.json",
+    "sha256": "45dcf33dc518f5ea52c73c59eadac66ea9eed201f56ab197d6cc168502a1fcc6"
+  },
+  "baseline_producer": {
+    "path": "runtime\\producer-keyboard-delivery-20261015-085346\\verification.json",
+    "sha256": "dcbdb87f571aef42c629f0f4605e25750ffc7dc2b1b31eeafa41dfa960d8d61d",
+    "checks": "252 tests/fmt/strictClippy/both builds passed on preceding fixture, not new revision"
+  },
+  "changed_inputs": {
+    "crates\\protoinputmux\\src\\automation_probe.rs": {
+      "before": "9f02a6b1166f5892022c13c0ed2223bec378ec5cd97986271cb3eebc66e9f8ba",
+      "current": "3d7ba51f93a4b40bccbac5ff1ae41b867faaaf527e2c908a8ec6e3e434e11b23"
+    }
+  },
+  "protected_count": 85,
+  "fixture_before": {
+    "path": "runtime/keyboard-focus-fixture-before-revision.rs",
+    "sha256": "9f02a6b1166f5892022c13c0ed2223bec378ec5cd97986271cb3eebc66e9f8ba"
+  },
+  "fixture_diff": {
+    "path": "runtime/keyboard-focus-fixture-revision.patch",
+    "sha256": "31d4453bff5591871179ed6e23802b240c6bc9ce61c69dc25e89fb868170846d"
+  },
+  "root_independent_fixture_review": "Root reviewed exact narrow five-message guard; approved custom target-owned behavior, no postinjection focus manipulation. Root owns new mandatory producer before READY.",
+  "runner": {
+    "path": "scripts\\test-keyboard-delivery-acceptance.py",
+    "sha256": "ed4bf325b661a8f0d11b45a26af2e031b37378173c99cd68c039ca2055fffed8",
+    "ast": "PASS",
+    "budget": "24 GUI/27 expected mutating MCP (<=28)/3 originals; one fresh2target session"
+  },
+  "plan": {
+    "path": "runtime/keyboard-delivery-acceptance-plan.md",
+    "sha256": "f6024db3a6d24b6ba29e30b0ff6399f77a7986cffcdf1c80593c5ba9bab95e83"
+  },
+  "preserved_initial": {
+    "evidence.json": {
+      "path": "runtime\\acceptance-graph-keyboard-delivery-20261015-085740\\evidence.json",
+      "sha256": "3532b4913ccd48a643f8212774e5c1e0967afb3f2f1f9bbeacf0811bb8220d07"
+    },
+    "independent-review.json": {
+      "path": "runtime\\acceptance-graph-keyboard-delivery-20261015-085740\\independent-review.json",
+      "sha256": "3d6ecfd7aa4a4f9316d2a76ff05caeb4ef945b168b049d16676d642f6a5bb74f"
+    },
+    "post-terminal-cleanup.json": {
+      "path": "runtime\\acceptance-graph-keyboard-delivery-20261015-085740\\post-terminal-cleanup.json",
+      "sha256": "38abd83735464701fe37b799f6a50c7ffcd447d6e88e9bd22c4574cb1d681746"
+    }
+  },
+  "findings": [],
+  "proof_requirements": [
+    "Explicit telemetry focus-preserving policy",
+    "Real specificTID GTI focus/caret left before injection and after both virtual clicked-right selections, before any test key/Text",
+    "Native receiving HWND and actual EDIT text verify recipient; diagnostic State alone cannot prove delivery",
+    "Right EDIT key/text messages retain original class procedure; message guard only optin second HWND, activation/focus/primary-click behavior",
+    "New producer must show onlyfixture changed vs252 input manifest; runtime10 and other85 protected"
+  ],
+  "limits": [
+    "This is custom application-owned click/focus behavior, not ordinary EDIT click equivalence",
+    "Previous native right-focus transition remains valid ordinary EDIT evidence, not resolver failure",
+    "Pinned FocusMessageLoop notifications/FocusHook may constrain arbitrary application-driven focus/Tab; no broad dynamicfocus or fullMouseMux workflow claim",
+    "No production resolver/API/provider override, fake GTI or postinjection SetFocus used",
+    "New revision requires fresh mandatory checks and explicit ROOT READY; no native launch at review time"
+  ]
+}

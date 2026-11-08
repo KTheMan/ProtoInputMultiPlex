@@ -1,0 +1,11 @@
+{
+  "scope": "Producer PrintWindow regression analysis; independent acceptance still pending",
+  "failed_run": "runtime/producer-cursor-appearance-20261014-142842",
+  "retained_record": "docs/cursor-appearance-print-pixel-source-failure-2026-10-14.json",
+  "compared_pixels": 632184,
+  "rgb_mismatches": 0,
+  "unused_alpha_byte_mismatches": 632184,
+  "captured_rgb_colors": 32,
+  "expected_rgb_colors": 32,
+  "correction": "Compare every rendered RGB pixel for the ULW_COLORKEY surface, allowing PrintWindow to make the unused alpha byte opaque. Flush GDI before reading the destination DIB. No production rendering change or criterion waiver."
+}

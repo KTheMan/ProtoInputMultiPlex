@@ -1,0 +1,106 @@
+{
+  "group": "compact_agent_connection_handoff",
+  "date": "2026-10-21",
+  "status": "ACCEPTED_BOUNDED_COMPACT_LAYOUT_DRAFT_SEPARATION_READ_ONLY_HANDOFF",
+  "behavior": [
+    "Connection status and copy controls precede the scrolling scope form. User/PID choices and policy actions precede detailed permissions.",
+    "Additional permissions uses a default-closed Ouroboros disclosure. Applied grants reflect acknowledged enabled policy; differing drafts are separately labeled, including while disabled.",
+    "Server-entry JSON uses the exact GUI executable and args [mcp, --gui-connection, current descriptor path]. Descriptor copying uses its exact path, never contents.",
+    "Copy intent requires ready live session, acknowledged enabled nonpending policy, Active broker and exact descriptor; server entry also requires an exact UTF-8 executable path. No tools, grants or broker lifecycle changes."
+  ],
+  "producer": {
+    "path": "runtime/producer-agent-connection-handoff-20261021-attempt001/verification.json",
+    "sha256": "2898eeb94cbf34ed7bd5569ebb464c5349dcb5bc676c9ecd426344abee0c3e17",
+    "checks": "fmt, strict all-target workspace Clippy, workspace tests, x64 and i686 app/observer builds all passed",
+    "tests": {
+      "passed": 494,
+      "failed": 0,
+      "ignored": 3
+    },
+    "stable_source_paths": 866
+  },
+  "independent_acceptance": {
+    "path": "runtime/native-agent-connection-handoff-attempt001/composed-bounded-acceptance.json",
+    "sha256": "697fb9ebfd13cbed5199672bfa7e6c8126c4b906f56e328b4e21f8b0124878f9",
+    "scope": "One x64 owned GUI/EDIT, one virtual pair and one read-only connected MCP. Compact disabled/draft/ready-control layout, unsubmitted permission separation and a current scoped read-only handoff are accepted from the existing run plus later missing-only cleanup evidence."
+  },
+  "evidence_identity": {
+    "producer_sha256": "2898eeb94cbf34ed7bd5569ebb464c5349dcb5bc676c9ecd426344abee0c3e17",
+    "source_go_sha256": "f37eb7bdd406e8ad527f0f40dadfb7a2fb19fb00286160ba5e38cfce7d386f92",
+    "runner_sha256": "3fccf4535fb8c1a87703407a6732847cfed3e6248ee389ea63026cb9dd6568a6",
+    "binding_projection_sha256": "b6b2146c1d116d1917c3c6a4e94cd699668901513da06b3e0eb66da0770f75f0",
+    "raw_evidence_sha256": "c7c1704e9bea4b664e98cdf91a4571b68aef3b2acde0a42c3b74bf7f20796eb9",
+    "original_actual_acceptance_sha256": "632e347d4c84b296b5150d7d690e5df80a4f4bbd4b73dc5ce937603d4a90b8de",
+    "later_cleanup_supplement_sha256": "0152904a8668bd4fb1463368afb64db7489e723602b4f4026d0e5c20c6db5ff9"
+  },
+  "raw_results_preserved": {
+    "runner_result": "FAIL",
+    "original_actual_acceptance": "NOT_ACCEPTED",
+    "cause": "Final step18 sample diagnostic exhausted the existing64-phase log capacity. All18 observations/actions and terminal Home Stop were already observed; final critical I/O was submitted=acked84 with pending_critical0/faultnone.",
+    "exclusion": "This acceptance does not require, infer or claim the missing final diagnostic sample_ack. It does not rewrite either original record."
+  },
+  "accepted_native_and_visual_evidence": [
+    "Initial680x620 capture clearly shows disabled policy explanation and both unavailable copy controls above scope; user/PID choices, policy actions, Applied grants none and closed Additional permissions header are visible.",
+    "Second680x620 capture clearly separates Applied grants none from Draft permissions for Enable/Apply:selected-target capture, with disclosure closed. Script/snapshot observations show draft checked only while disabled and restored false before sole Enable.",
+    "Third680x620 capture clearly shows enabled policy/descriptor availability, exact path and available copy controls above the selected scope and reachable Disable/Apply actions; Applied grants none is visible. Its client line says none and is not evidence of one connected client.",
+    "All three capture hashes and dimensions match retained evidence, and the independent tester inspected every image.",
+    "Both copy controls were observed unavailable with expect_disabled without pointer events; no copy control was clicked and no OS clipboard access occurred.",
+    "The sole connected MCP returned agent_session and routing_state under the exact sole-user/owned-PID policy with all optional grants false, live session and no held input/attached target. This supports the read-only connection independently of the earlier active image client line.",
+    "Client retained-handle liveness continued through disabled ACK/descriptor cleanup before normal EOF exit0. Home Stop reached controller_present=false/ready=false/stopping=false and a valid successful stopped status with descriptor absent.",
+    "All three retained owned process handles exited0/signaled; no forced cleanup or ordinary_close_failures was recorded. Source cleanup path uses guarded WM_CLOSE for GUI/target.237 WM_NULL samples were bounded, maximum250ms."
+  ],
+  "visual_exclusions": [
+    "No native visual proof of active connected-client count one; capture3 predates its rendered update. Do not publish its milestone label as pixel evidence of one client.",
+    "The active disclosure header is below that image edge. Default-closed presentation is visible in initial/draft captures; opening/closing and checkbox operation are supported by Script flow.",
+    "No blanket all-content-fit or broad UI/UX acceptance claim. Accepted layout concerns prominent connection controls, selected scope, visible policy actions and applied/draft summaries at the tested viewport."
+  ],
+  "source_unit_vs_native": {
+    "source_and_unit_only": [
+      "Exact structured server-entry JSON and path/copy-intent helpers",
+      "Clicked feedback content and invalidation rules"
+    ],
+    "native_unverified": [
+      "OS clipboard contents",
+      "Actual clicked copy feedback",
+      "Native stale-feedback invalidation",
+      "Forced transient/pending/failure visuals"
+    ],
+    "native_verified": "Passive unavailable controls, ready-control appearance, default-closed initial/draft disclosure presentation, applied-vs-draft separation and one scoped read-only connection."
+  },
+  "later_cleanup_confirmation": {
+    "observed_at_utc": "2026-10-21T22:59:12.983069+00:00",
+    "method": "One new Python metadata-query subprocess; no runner/fixture/product import or launch",
+    "all_three_original_process_identities_absent": true,
+    "known_target_root_edit_last_overlay_hwnds_absent": true,
+    "complete_original_pid_scoped_windows_empty": true,
+    "exact_descriptor_filename_absent": true,
+    "complete_exact_staged_app_helper_image_audit_empty": true,
+    "unknown_matching_images": [],
+    "enumerated_processes": 726,
+    "enumeration_end_error": 18,
+    "all874_source_and_private_runtime_bindings_stable": true,
+    "timing_limit": "Later observation only; cannot prove exact Stop/failure-time absence. Original GUI root HWND was not persisted; original process identity absence and complete PID-scoped windows were checked instead."
+  },
+  "execution_scope": {
+    "native_cohort_runs": 1,
+    "cohort_replays": 0,
+    "missing_only_cleanup_audits": 1,
+    "mcp_tool_calls": [
+      "agent_session",
+      "routing_state"
+    ],
+    "routing_input_calls": 0,
+    "copy_clicks": 0,
+    "clipboard_access_performed": false,
+    "forced_cleanup_used": false,
+    "additional_product_fixture_worker_launches_after_original_run": false,
+    "input_clipboard_termination_deletion_in_supplement": false
+  },
+  "limits": [
+    "No missing diagnostic ACK claim, worker-handle proof, OS-wide overlay inventory, blocked OS-call or cleanup-failure simulation.",
+    "No hardware/RustDesk/global pointer/input/target injection, uncertain mutation retry, historical P1 fix, full Ultra parity, broad feature/group/product completion or distribution acceptance.",
+    "Original raw FAIL and NOT_ACCEPTED remain preserved. No cohort replay or Script cap increase was used to obtain this narrower composed assessment.",
+    "The historical intermittent GUI stall remains OPEN/P1.",
+    "Native viewport acceptance is limited to the three sampled 680x620 states; no complete compact-page or full UI/Ultra parity claim."
+  ]
+}

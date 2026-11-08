@@ -1,0 +1,111 @@
+{
+  "date": "2026-11-06",
+  "decision": "KEYBOARD_CAPTURE_TAIL_ACCEPTED",
+  "scope": "Same accepted x64 executable, one stopped virtual-only User B Keyboard workflow in each capture mode.",
+  "review": {
+    "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\capture-diff-1a115bd728bf\\keyboard-tail-independent-acceptance.json",
+    "sha256": "d87ea8601666dba206d0787f87f3c98bf87a7ecb4a3a885f5f84ca9f5bcd7be4"
+  },
+  "verification": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\gui-capture-differential-20261106\\checks-001\\verification.json",
+    "sha256": "9712383ed514a2c8df46a7277bd9d4163b1089868e878792e192e0e6590928ea"
+  },
+  "x64_image": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\gui-capture-differential-20261106\\checks-001\\x64\\protoinputmultiplex.exe",
+    "sha256": "c0c1fda64f60051609866758b70ff16ef5ded59aa34b5b171ca9d4bdfff98b70"
+  },
+  "native": {
+    "original_session": 24866,
+    "original_exit_code": 0,
+    "raw": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\capture-diff-1a115bd728bf\\evidence.json",
+      "sha256": "aac4d61a6196f1d2fb462324adae5485d13fd9528600aaa122cdf223948507f3"
+    },
+    "driver": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\gui-capture-differential-20261106\\native-keyboard-tail-v3.py",
+      "sha256": "055ca30a6e08bcd198e67b230628bfadc5d19ff5efacdbd97f6d5309091e8810"
+    },
+    "scope": {
+      "virtual_pairs": 2,
+      "GUI_per_arm": 1,
+      "targets": 0,
+      "MCP": 0,
+      "hardware_input": 0,
+      "routing_or_injection": 0
+    },
+    "arms": {
+      "default": {
+        "actions": [
+          "Select user 2",
+          "Configure user",
+          "Keyboard",
+          "Compatibility",
+          "Native controls"
+        ],
+        "application_focus": [
+          "compatibility",
+          "native_controls"
+        ],
+        "dwell_seconds": 4.25,
+        "dwell_frames": [
+          741,
+          1247
+        ],
+        "capture_render": {
+          "enabled": true,
+          "received_generation": 4,
+          "requested_generation": 4
+        },
+        "published_generation": 4,
+        "png": [
+          {
+            "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\capture-diff-1a115bd728bf\\default\\ui.png",
+            "sha256": "ad12566823301a1ee0f516380b8075d482202851060478d67e162d7c862d7d0a",
+            "size": 61640,
+            "mtime_ns": 1794011964545333500
+          }
+        ],
+        "wm_null_responded": true,
+        "normal_wm_close_exit": 0
+      },
+      "screenshots-disabled": {
+        "actions": [
+          "Select user 2",
+          "Configure user",
+          "Keyboard",
+          "Compatibility",
+          "Native controls"
+        ],
+        "application_focus": [
+          "compatibility",
+          "native_controls"
+        ],
+        "dwell_seconds": 4.25,
+        "dwell_frames": [
+          756,
+          1258
+        ],
+        "capture_render": {
+          "enabled": false,
+          "received_generation": 0,
+          "requested_generation": 0
+        },
+        "published_generation": null,
+        "png": [],
+        "wm_null_responded": true,
+        "normal_wm_close_exit": 0
+      }
+    }
+  },
+  "earlier_attempt": {
+    "original_session": 58923,
+    "original_exit_code": 1,
+    "raw": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\capture-diff-94fe49bc0cb6\\evidence.json",
+      "sha256": "9833a0f2b74bdd61d019f02f2a4abb88ce54ee41a700e425daf693f39929f436"
+    },
+    "result": "NOT_ACCEPTED",
+    "observed": "The default arm completed both keyboard setting changes. The one-shot progress read failed before the second arm. Retained shutdown telemetry advanced beyond the final click."
+  },
+  "historical_gui_stall": "OPEN/P1. The controlled workflow advanced and closed in both arms. The historical cause remains unresolved."
+}

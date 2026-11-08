@@ -1,0 +1,205 @@
+{
+  "decision": "BOUNDED VIRTUAL MOTION COALESCING ACCEPTED; FULL ULTRA PARITY REMAINS OPEN",
+  "date": "2026-10-15",
+  "scope": "Per-user virtual mouse motion coalescing using Rust, Ouroboros Motion controls and existing MCP settings; full Ultra parity remains open.",
+  "producer": {
+    "path": "runtime/producer-motion-coalescing-20261015-070832/verification.json",
+    "sha256": "e6be400792fcb1e7ae07a36d09ef69933ce46e7db992a7b8d5625a6d12875a05",
+    "result": "PASS",
+    "checks": [
+      {
+        "command": [
+          "cargo",
+          "fmt",
+          "--all",
+          "--check"
+        ],
+        "exit_code": 0,
+        "log": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-motion-coalescing-20261015-070832\\1.log"
+      },
+      {
+        "command": [
+          "cargo",
+          "clippy",
+          "--config",
+          "build.rustc-wrapper=\"\"",
+          "--workspace",
+          "--all-targets",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "exit_code": 0,
+        "log": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-motion-coalescing-20261015-070832\\2.log"
+      },
+      {
+        "command": [
+          "cargo",
+          "test",
+          "--config",
+          "build.rustc-wrapper=\"\"",
+          "--workspace"
+        ],
+        "exit_code": 0,
+        "log": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-motion-coalescing-20261015-070832\\3.log"
+      },
+      {
+        "command": [
+          "cargo",
+          "build",
+          "--config",
+          "build.rustc-wrapper=\"\"",
+          "--workspace"
+        ],
+        "exit_code": 0,
+        "log": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-motion-coalescing-20261015-070832\\4.log"
+      },
+      {
+        "command": [
+          "cargo",
+          "build",
+          "--config",
+          "build.rustc-wrapper=\"\"",
+          "--workspace",
+          "--target",
+          "i686-pc-windows-msvc"
+        ],
+        "exit_code": 0,
+        "log": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-motion-coalescing-20261015-070832\\5.log"
+      }
+    ],
+    "workspace_tests": 226,
+    "source_inputs": 84,
+    "source_unchanged": true,
+    "build_sha256": {
+      "x64": "6027d5263003d0622973e6451e50a7ff85d9e50fde54838f26f9e815e0338911",
+      "i686": "45629b0c5524e7d4a4bddb0f4cc5a59d1156cc3eb2bac47db3c153b03a3b8272"
+    },
+    "native_runtime_files": 10,
+    "native_runtime_provenance": "Ten files reused from the earlier accepted app-cursor native build; no C++ rebuild in this group.",
+    "earlier_attempt": {
+      "path": "runtime/producer-motion-coalescing-20261015-070659/verification.json",
+      "result": "FAIL: strict Clippy9 mechanical warnings, then fixed before current producer; original record unchanged"
+    }
+  },
+  "source_review": {
+    "path": "docs/motion-coalescing-source-review-2026-10-15.json",
+    "sha256": "a92c7aecc110dd025387959c068e47b0b486d2e1fd61d639dee17a4da913fa91",
+    "decision": "APPROVED source and bounded original harness; twelve changed/new Rust inputs and72 protected inputs. Historical baseline is hash manifest, not a byte snapshot."
+  },
+  "native_prefix": {
+    "path": "runtime/acceptance-motion-coalescing-20261015-071258",
+    "raw_result": "NOT ACCEPTED; preserved",
+    "raw_sha256": "67c9fb43d5eddf1f185bd0455ea220d8c3aafafdab0986c10528df766ad48ce3",
+    "review_sha256": "d3edceeb6fcfcabd04ff9895fd2567635daace0258f02232910143ecb3188f9c",
+    "accepted": [
+      "Default-off baseline A8/B4 actual native motion messages, logical deltas[24,0]/[4,0]",
+      "Count+timer configuration A2/B4 messages with equal logical/native endpoints",
+      "Count-only A2 messages with equal A endpoint"
+    ],
+    "rejected": "Combined barrier historical-coordinate oracle: enabled existing MouseMoveFilter rewrites queued motion coordinates from latest fake cursor at dequeue; no product defect established. Timer/lifecycle/GUI not reached.",
+    "actual_mutations": 18,
+    "actual_source_packets": 47,
+    "cleanup": "Owned processes/overlays closed; no held keys/buttons; scoped CIM0; terminal1, no yielded session"
+  },
+  "native_tail": {
+    "path": "runtime/acceptance-motion-coalescing-20261015-072050",
+    "raw_result": "PENDING INDEPENDENT DATA REVIEW",
+    "raw_sha256": "dad255d5a4192ae8c052739c9b55dfbb6482f1cd8258ae447d0cbe84e10d2f88",
+    "review_sha256": "ca15b65b3e9610d99750f14526daad4787da195d05ca39871186327b1e07adee",
+    "decision": "APPROVED native combination",
+    "actual_mutations": 29,
+    "actual_source_packets": 22,
+    "exec_session": 25140,
+    "terminal_exit": 0,
+    "accepted": [
+      "Three separately settled motion+button/key/wheel clips, native endpoints124/130/136,88 before each discrete event; actual duplicate motions retained(4/2/3)",
+      "One timer-only raw(2,0) packet gives logical/native endpoint delta(3,0) with only readonly polling afterward",
+      "Invalid buffer1 and interval17 rejected without settings change",
+      "Settings/Pause/Resume and target exit boundaries; B F7 Down/Up continues after A exit",
+      "Normal Stop, empty holds, overlays destroyed and owned processes closed; scoped CIM0"
+    ],
+    "setup": "Fresh two-target setup only; no baseline/count/per-user/count-only replay",
+    "continuation_harness_review": {
+      "path": "runtime/coalescing-native-tail-source-review.json",
+      "sha256": "b932d7fa1eb4a7e7b5576a05b7f30df3adf5ac16dbec5f42a262e0e4c87a219c"
+    }
+  },
+  "combined_native_attempts": {
+    "mutations": 47,
+    "source_packets": 69,
+    "budget": {
+      "mutations": 64,
+      "source_packets": 96
+    },
+    "original_aggregate_relabelled": false
+  },
+  "gui": {
+    "decision": "BOUNDED DATA AND PIXEL PASS, independently approved and root viewed both exact originals",
+    "run": "runtime\\acceptance-graph-motion-coalescing-gui-20261015-072253",
+    "raw_result": "PENDING INDEPENDENT GUI DATA/PIXEL REVIEW; preserved",
+    "raw_sha256": "a37cb0bde2e3428893ed76c225267d4a32a985d7ffe84af67db843d7608ba63c",
+    "review_sha256": "acdc9be0325ea38fa1c527ee901e4cdc502672ed2854dc88100bb5ecc7de11cc",
+    "exec_session": 91947,
+    "terminal_exit": 0,
+    "gui_pid": 152560,
+    "observations": 14,
+    "pointer_clicks": 10,
+    "key_receipts": 4,
+    "app_local_key_pairs": 48,
+    "key_pair_breakdown": [
+      22,
+      1,
+      24,
+      1
+    ],
+    "scope": "Stopped GUI only; B toggles count/time, focuses and adjusts each slider8\u21929events/4\u21925ms, actual fresh Save; no worker/probes/UIA.",
+    "fresh_save": {
+      "path": "runtime\\acceptance-graph-motion-coalescing-gui-20261015-072253\\fresh coalescing profile.json",
+      "sha256": "1f42a52493fea698d1f0750e2dbf4d6dfcbdfc2dade0d9ae4e1ef6f9ebdc6deb",
+      "verification": "Terminal Saved status, committed file, full typed JSON equality, only B coalescing changes to9/5 matching native MCP payload; A/rest/preferences preserved; no temps. No new Load claim."
+    },
+    "images": [
+      {
+        "source": "runtime\\acceptance-graph-motion-coalescing-gui-20261015-072253\\count-normal.png",
+        "copy": "docs/motion-coalescing-normal.png",
+        "sha256": "a75a5a1df92938afc3c7cebb51929553fe007c5b8ae0b2d0b342f87bcfcf093e",
+        "size": [
+          540,
+          520
+        ],
+        "observed": "SelectedB,Motion,count9 checked,time off,disabled foreground mode and explanation,whole disabled Apply."
+      },
+      {
+        "source": "runtime\\acceptance-graph-motion-coalescing-gui-20261015-072253\\time-minimum.png",
+        "copy": "docs/motion-coalescing-minimum.png",
+        "sha256": "1f1aea42aff51c0d229c8357b6f0cdc9f31b2484a7cd3925e4e295ab30b216d3",
+        "size": [
+          320,
+          360
+        ],
+        "observed": "B identity,Motion,time5ms label and whole slider,whole disabled Apply; time-enable checkbox above viewport."
+      }
+    ],
+    "pixel_limits": "Content reviewed directly; periodic UI PNG mtime is not request-associated freshness. Not simultaneous-all-controls or complete-layout/accessibility coverage.",
+    "cleanup": "PID closed; scoped CIM0, private startup GUID absent, no temporary files or agent descriptors. All owned resources closed."
+  },
+  "limits": [
+    "Virtual app-local devices and explicitly owned ordinary x64 target processes only; no hardware, OS pointer or RustDesk input",
+    "i686 build only, no x86 native execution in this group",
+    "Count/timer caps and per-packet transform preservation have source/unit evidence; no latency/performance benchmark",
+    "Exact still-pending settings/Pause/exit/Stop interleavings, forced publication failures/resize races, coalesced annotation/graph combinations and relative ABI splitting lack new native acceptance",
+    "Fixed relative mode has no Rust logical cursor; merged intermediate native clipping/hover can differ, so identical endpoints at native clamp boundaries are not established",
+    "Foreground/high-DPI filtering visibly unavailable; virtual provider lacks required metadata",
+    "No desktop-wide or same-process multi-user isolation, GPU or broad application compatibility claim"
+  ],
+  "contract": "docs/motion-coalescing-contract.md",
+  "harness": {
+    "path": "scripts/test-motion-coalescing-acceptance.py",
+    "sha256": "4497bba20ac39d5a08741156c73e8b4b6826c26b31888c0a7a96fa20de30cb4d",
+    "plan": "runtime/coalescing-acceptance-plan.md",
+    "plan_sha256": "2f3647e8f3b115820abcbdc206db1b39123ffaf78890d88a7ef7ed15b0f63e73",
+    "note": "Original071258 uses its preserved historical runner860a96..., missing-only native tail and GUI use current4497bba...; no original raw relabelled."
+  },
+  "documentation_review_record": "docs/motion-coalescing-doc-review-2026-10-15.json"
+}

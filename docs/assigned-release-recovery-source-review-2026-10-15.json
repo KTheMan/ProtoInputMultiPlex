@@ -1,0 +1,108 @@
+{
+  "decision": "APPROVED SOURCE AND FINITE HARNESS; NATIVE ACCEPTANCE PENDING",
+  "scope": "Assigned-route failure-safe held release ownership/healthy-seat continuity; compact Ouroboros release details; existing connected MCP settings/input and local/standalone typed rejection. No new tools/grants/vendor behavior.",
+  "baseline": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-motion-coalescing-20261015-070832\\verification.json",
+    "sha256": "e6be400792fcb1e7ae07a36d09ef69933ce46e7db992a7b8d5625a6d12875a05",
+    "source_inputs": 84,
+    "limit": "Accepted producer hash manifest only; no preserved source-byte snapshot/diff claimed."
+  },
+  "current": {
+    "changed_inputs": 8,
+    "protected_identical_inputs": 76,
+    "changed_sha256": {
+      "crates\\mux-windows\\src\\protoinput.rs": {
+        "baseline": "fe3483c45233f712da581a3089769bf65082b9419a29cd5222ab1ec0f36b6a9b",
+        "current": "5020e70f7ad0cc252da74c93c215c2b2731fbd18f2617ad3b546fbfaf39cef51"
+      },
+      "crates\\protoinputmux\\src\\agent_runtime.rs": {
+        "baseline": "736aa3e2482ee0fea6ad09d600b58a91f8eeeb7c77848985f5adc8cc70869c7a",
+        "current": "79a29e0065cbac668a178c1524479a5556861a3164a2e0187a0c7a61f5dd1ed0"
+      },
+      "crates\\protoinputmux\\src\\desktop_router.rs": {
+        "baseline": "b9e986c3484bbb6fa5b62d499289c8e686978f6ae73b13b89c52bab5c3f21113",
+        "current": "f4f23c06056fb955f4a1f92c8ecfb3b8baab906cb1775b7368e1a17437ac30c3"
+      },
+      "crates\\protoinputmux\\src\\gui.rs": {
+        "baseline": "da7b789a0fc46307e68b879ad8d3c940ee35927fee04ebfe92ce68321c579ab0",
+        "current": "35547068700f9872faef31ca1b6bb7efcb38328123731b969902a3a72eaaa3f8"
+      },
+      "crates\\protoinputmux\\src\\macro_studio.rs": {
+        "baseline": "c77faaaee27c7a9f37f88ae35626a9f06eae45b429b18c968441e4d188cef13b",
+        "current": "e216ace564f8daf103df6a6f3342d975f63cfd5a30ccfa6d10ee9ba9dea2e23d"
+      },
+      "crates\\protoinputmux\\src\\mcp.rs": {
+        "baseline": "a9d629bffbff28ecdd769dacf3f25cf1211f2fc29572d2cdc1a59f0bd936e967",
+        "current": "ff1c0fd8872c3a14415ddd9cb6fe4b9bae8ebe7577d271a95d2b162326ace0ad"
+      },
+      "crates\\protoinputmux\\src\\router.rs": {
+        "baseline": "fe4a21b69c79d2f716811ee831d9e1e8de93305aff733700a386e24739ee1555",
+        "current": "76c994062fbe7c0f6c330c7dcd62e5ebb825135deb0d0cf4c51973d55c565fa8"
+      },
+      "crates\\protoinputmux\\src\\session.rs": {
+        "baseline": "0f3fac8967686ebbf198dc669df51cb12cc41570804f15ea9b0923d0f260c6ea",
+        "current": "669ebec8b397d1141875155337a7afa0b5ed8afd769a26b5484da3decc0c2d3f"
+      }
+    },
+    "full_manifest_sha256": "b1c076a5667953ed8168ca950c1c6d69dc0307d7f56205d45dc4799d4f63c31e"
+  },
+  "findings": [
+    {
+      "id": "resume-unavailable-seat",
+      "status": "RESOLVED",
+      "initial": "pause(false) position_pointer()? could terminate worker at unavailable A and starve B.",
+      "resolution": "Current76c994 calls production continue_resume_seats for every seat, retires exited identities, hides unavailable overlays/records per-seat status and contains typed publication errors. Unknown global flush errors retain fatal propagation. Production helper regression attempts B after A failure. Native adds one existing connected resume before Bpair."
+    },
+    {
+      "id": "global-claims-rehold",
+      "status": "WITHDRAWN after complete source trace",
+      "detail": "ClaimEngine leaves claims on partial global release error, but Claims::input_output first prunes tokens/pairs no longer held before owner lookup. Thus healthy B rehold is not suppressed. Retained A remains held; no claim-layer behavior change requested."
+    }
+  ],
+  "reviewed_paths": [
+    "Router inserts Held only after accepted native Down; Up uses saved original user/window/packet, retains on failed validation/submission, removes only success or pinned original process exit. Exhaustive sweeps and periodic250ms retries only failed saved Ups. No arbitrary new recipient/Down. Snapshot counts Some(failedtoken count), status combines per-seat error and release cause.",
+    "Keyboard focus replacement releases original keys before commit. Settings validate/release before acknowledged worker/VirtualUsers settings commit. Pause requires required releases; Resume isolates seat unavailable errors. Tick retires only original watched exits and contains per-seat unavailable windows.",
+    "Session::alive exposes existing pinned process watches. Router shutdown attempts release sweep then session shutdown even after a release error; conservative Controller recovery ownership unchanged. Failed Stop still quarantines all assigned originals.",
+    "Global MacroStudio.cancel attempts every lane and inner global cleanup despite errors. Claims release methods retain failed owners and prune successful native releases before future input; source-specific release and authorization guards remain.",
+    "Typed router ReleaseFailure alone maps to transient nonreplayed local InputRejected. Session request settings/mode/Pause and background tap/tick failures preserve original releases without replaying triggering Down. Connected requests retain correlated Agent error replies; MCP updates bridge state before returning error while preserving bridge; standalone negative ACK returns without waiting for optional State.",
+    "GUI pending details uses current Some counts, original user names/status, visible retry disclosure, bounded content+actual global cleanup/close controls. Terminal events close modal/reset agent policy/broker and defer Start to existing quarantine. No native glyph/layout acceptance from source.",
+    "Physical capture/discovery/output restrictions, virtual grants, explicit assigned PIDs and RustDesk/hardware/global pointer bans remain. Only additive State metadata; no C++/ABI/schema/tools/auth expansion."
+  ],
+  "harness": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\scripts\\test-assigned-release-recovery-acceptance.py",
+    "sha256": "9811abb582d79c5fc21ac7f5763cadf0d7e58be23485ed333d19649b72e9b1ca",
+    "ast": "PASS",
+    "callback_signatures": "PASS",
+    "plan_path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\assigned-release-recovery-acceptance-plan.md",
+    "plan_sha256": "800281565a1e15283c2b252bea0ed8437aff2d4ff61b63791ec1b4cfdcd66e8c",
+    "gui_observations": 18,
+    "gui_clicks": 17,
+    "disabled_observations": 1,
+    "expected_explicit_mcp_mutations": 17,
+    "mutation_cap": 20,
+    "original_cap": 2,
+    "guard": "Final producer SHA, PASS fivecommands/equal source-before-after, all current input hashes, both exe hashes and reused runtime hashes before startup.",
+    "same_client": "Initial agent_session.client saved and matched by all later State/positive Resume replies; no extra requests."
+  },
+  "contract": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\assigned-release-recovery-contract-draft.md",
+    "sha256": "e87b1ca99acfeafc1d678b2078b63f3c1b15781ad30b7ee999e109ea3f7a562a",
+    "review": "Matches settled bounded behavior/oracles. Still draft/not accepted until native and direct owned-pixel review."
+  },
+  "harness_limits": "One connected client; initial A/B then fresh C/D after terminal/old process exit, at most2 target processes simultaneously. Receiver chosen by actual virtual click into exact owned EDIT. No raw client impersonation or old disconnected-client replay. ui.agent.json is not a live Home-reset observer: policy clear is source-reviewed, descriptor disappearance/client closure observed. Two periodic owned PNGs need manual content review; cadence checks do not prove request-associated freshness.",
+  "verification_status": "Final producer records5requiredcommands/238tests/bothbuilds PASS. Independently rehashed all84current inputs, both actual executable files and10reused runtime files with0mismatch. No Cargo/apps/native actions/tests executed by this reviewer. Source/harness approved; actual native/pixels await ROOT READY.",
+  "producer_binding": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-assigned-release-recovery-20261015-080115\\verification.json",
+    "sha256": "8d57dd3e4f94646caaf49927c08982478b959ce6d087bded28f432db4cdb614b",
+    "result": "PASS",
+    "workspace_tests": 238,
+    "five_checks_exit_zero": true,
+    "source_before_after_current_equal": true,
+    "build_sha256": {
+      "x64": "a13c919ccac5ea98351d17756ab2b7a389297838ae9758f2f8cddb97fbec1209",
+      "i686": "602d914c80f73249c4f08626ffa18fb98b02e9081a8c75b6e7ead6359e451792"
+    },
+    "reused_runtime_files_verified": 10,
+    "native_runtime_note": "Runtime reused, no new C++ build; i686 built only until any explicitly authorized native gate."
+  }
+}

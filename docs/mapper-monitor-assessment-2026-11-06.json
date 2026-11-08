@@ -1,0 +1,92 @@
+{
+  "date": "2026-11-06",
+  "decision": "MAPPER_MONITOR_ACCEPTED",
+  "reference": "https://www.mousemux.com/pages/apps/webapp-input-mapper-beta/",
+  "scope": "Typed passive latest-sample Monitor, with actor-specific GUI and MCP projections.",
+  "verification": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-monitor-20261106\\checks-001\\verification.json",
+    "sha256": "2d65f42845e060638995e20b0a5bd31bad5c2385b121cdbaab54a5b0c070bba7"
+  },
+  "review": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-monitor-20261106\\independent-acceptance.json",
+    "sha256": "c779cea7f482a93981ccf98e40d1706f10c798535dc3e84a0e68572e8c1659d3"
+  },
+  "publication": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-monitor-20261106\\publication.json",
+    "sha256": "74963ceeef170a8503ee5563e63001555a6e217670b59bf9a22ec1ee5c0e4690"
+  },
+  "workspace_tests": {
+    "passed": 770,
+    "failed": 0,
+    "ignored": 19
+  },
+  "x64_image": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-monitor-20261106\\checks-001\\x64\\protoinputmultiplex.exe",
+    "sha256": "069c302ff7f748d4c1a7eab3e2d9fbecc8abf10c95a58655863c197b5497d107"
+  },
+  "checks": {
+    "fmt": 0,
+    "clippy": 0,
+    "workspace-tests": 0,
+    "build-gui": 0
+  },
+  "native": {
+    "original_session": 53830,
+    "original_exit_code": 0,
+    "raw": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mm-514bbafef5fe\\evidence.json",
+      "sha256": "d235bd668335b07cc214aeb9e99d8d21f0c28770765581d6763ee9313ca157a3"
+    },
+    "driver": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-monitor-20261106\\native.py",
+      "sha256": "d30260d52b4e7ca593ac9f3842265000eb33400f1a0f8c45602f01a77957a7fd"
+    },
+    "readiness": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-monitor-20261106\\native-ready.json",
+      "sha256": "b84bfc38e4dc37f630d2ab49692cae4bd6a083055283e4a428e81948fccd4ffc"
+    },
+    "UI_actions": 17,
+    "capture": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mm-514bbafef5fe\\monitor-activity.png",
+      "sha256": "10d00e233e86f0e8470b822c750dc4703c552ac6b6422673babe9bc8895297ad",
+      "geometry": {
+        "hwnd": 727966,
+        "dpi": 96,
+        "client_pixels": [
+          680,
+          620
+        ],
+        "client_logical": [
+          680.0,
+          620.0
+        ],
+        "window_rect": [
+          104,
+          104,
+          800,
+          763
+        ]
+      }
+    },
+    "exit_codes": {
+      "GUI": 0,
+      "MCP": [
+        0,
+        0
+      ],
+      "targets": {
+        "a": 0,
+        "b": 0
+      }
+    }
+  },
+  "coverage": [
+    "A typed Hold monitor observed a connected virtual F7 press and release with exact native passthrough. The second authenticated client saw an empty sample set, and ordinary routing state carried no private monitor values.",
+    "The GUI Activity capture showed a separate manual F7 hold. The connected actors' values did not change. Disarm cleared samples, Stop released the original local hold, and both clients, the GUI and two owned windows exited normally.",
+    "Portable tests cover type matching, source ancestry, bounds, per-actor state, latest-value sampling, and rollback. Transport and view tests cover exact reply routing, absence from common broadcasts and script state, polling bounds, and stale or retired reads."
+  ],
+  "open": [
+    "The native observation exercised Hold only. Other typed signals and the standalone private-read transport have source and test coverage as recorded in the producer and review.",
+    "Oscilloscopes, traces, other visualizations, historical GUI stall, and full Ultra parity remain open."
+  ]
+}

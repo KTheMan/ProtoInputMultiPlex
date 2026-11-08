@@ -1,0 +1,1989 @@
+{
+  "checks": {},
+  "architectures": [
+    "x86",
+    "x86",
+    "x64",
+    "x64"
+  ],
+  "physical_fixture_architectures": [
+    "x64",
+    "x86",
+    "x64",
+    "x86"
+  ],
+  "build_sha256": {
+    "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-replication-graph-20261014-042653\\control64.exe": "a277e86e6f56b7b9c24a9b236a7a1809c4b557662f36aa1bcba0f57fbc0e2aaa",
+    "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-replication-graph-20261014-042653\\probe32.exe": "93741d056a5c0307184260ae117eae00a0b44fcbc83e4cad7b5047d18cc93553"
+  },
+  "tools": [
+    {
+      "name": "annotation",
+      "description": "Configure and inspect session-local virtual annotation, clear ink, or export PNG. Configure settings are complete per-user objects and are validated before mutation. ClearUser affects only the selected user; ClearAll is a separate explicit command. InkOnly exports a transparent virtual-desktop canvas. SelectedTarget composites only the already selected/assigned window and never captures the desktop. Inspect annotation through this result or routing_state.",
+      "inputSchema": {
+        "$defs": {
+          "Activator": {
+            "enum": [
+              "primary",
+              "secondary",
+              "middle",
+              "x1",
+              "x2"
+            ],
+            "type": "string"
+          },
+          "ExportKind": {
+            "enum": [
+              "ink_only",
+              "selected_target"
+            ],
+            "type": "string"
+          },
+          "Settings": {
+            "additionalProperties": false,
+            "properties": {
+              "activator": {
+                "$ref": "#/$defs/Activator",
+                "default": "primary"
+              },
+              "alpha": {
+                "default": 255,
+                "format": "uint8",
+                "maximum": 255,
+                "minimum": 0,
+                "type": "integer"
+              },
+              "clear_all": {
+                "default": false,
+                "type": "boolean"
+              },
+              "clear_key": {
+                "default": null,
+                "format": "uint16",
+                "maximum": 65535,
+                "minimum": 0,
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "color": {
+                "default": [
+                  96,
+                  165,
+                  250
+                ],
+                "items": {
+                  "format": "uint8",
+                  "maximum": 255,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "maxItems": 3,
+                "minItems": 3,
+                "type": "array"
+              },
+              "tool": {
+                "$ref": "#/$defs/Tool",
+                "default": "off"
+              },
+              "width": {
+                "default": 6,
+                "format": "uint16",
+                "maximum": 65535,
+                "minimum": 0,
+                "type": "integer"
+              }
+            },
+            "type": "object"
+          },
+          "Tool": {
+            "enum": [
+              "off",
+              "brush",
+              "eraser"
+            ],
+            "type": "string"
+          }
+        },
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "oneOf": [
+          {
+            "properties": {
+              "operation": {
+                "const": "inspect",
+                "type": "string"
+              }
+            },
+            "required": [
+              "operation"
+            ],
+            "type": "object"
+          },
+          {
+            "properties": {
+              "operation": {
+                "const": "configure",
+                "type": "string"
+              },
+              "settings": {
+                "$ref": "#/$defs/Settings"
+              },
+              "user": {
+                "format": "uint",
+                "minimum": 0,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "operation",
+              "user",
+              "settings"
+            ],
+            "type": "object"
+          },
+          {
+            "properties": {
+              "operation": {
+                "const": "clear_user",
+                "type": "string"
+              },
+              "user": {
+                "format": "uint",
+                "minimum": 0,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "operation",
+              "user"
+            ],
+            "type": "object"
+          },
+          {
+            "properties": {
+              "operation": {
+                "const": "clear_all",
+                "type": "string"
+              }
+            },
+            "required": [
+              "operation"
+            ],
+            "type": "object"
+          },
+          {
+            "properties": {
+              "kind": {
+                "$ref": "#/$defs/ExportKind"
+              },
+              "operation": {
+                "const": "export",
+                "type": "string"
+              },
+              "path": {
+                "type": "string"
+              },
+              "user": {
+                "format": "uint",
+                "minimum": 0,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "operation",
+              "user",
+              "path",
+              "kind"
+            ],
+            "type": "object"
+          }
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "automation_cancel",
+      "description": "Cancel all composite and per-user Macro Studio programs, release all macro-held virtual input and keep the agent routing session available. This is a global session command; use macro_studio cancel to stop only one selected user's program.",
+      "inputSchema": {
+        "properties": {},
+        "type": "object"
+      }
+    },
+    {
+      "name": "automation_clip",
+      "description": "Inspect the legacy composite clip or load a serialized clip into this local agent session. Loading does not play it and is rejected while any independent Macro Studio lane is recording or playing.",
+      "inputSchema": {
+        "$defs": {
+          "ClipAction": {
+            "enum": [
+              "inspect",
+              "load"
+            ],
+            "type": "string"
+          }
+        },
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "$ref": "#/$defs/ClipAction"
+          },
+          "clip": {
+            "description": "Serialized automation clip. Required for load and ignored for inspect."
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "automation_play",
+      "description": "Play the loaded legacy composite macro across this session's app-local virtual users on one session-wide clock. Playback is rejected while any independent Macro Studio lane is recording or playing, remains scoped to authorized target processes, and never injects global desktop input.",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "loops": {
+            "description": "Number of play-throughs; omitted means repeat until cancelled.",
+            "format": "uint32",
+            "minimum": 0,
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "speed": {
+            "description": "Playback multiplier. Must be finite and positive.",
+            "format": "double",
+            "type": "number"
+          }
+        },
+        "required": [
+          "speed"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "automation_record",
+      "description": "Start or stop the legacy composite recorder, which records a session-wide stream across users on one clock. Recording only captures this session's virtual inputs; it does not observe global desktop input. Starting recording is rejected while any independent Macro Studio lane is recording or playing.",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "recording": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "recording"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "macro_studio",
+      "description": "Record, load, edit, generate, reset, or play an independent per-user virtual-input macro in this agent session. Clip JSON contains only validated virtual actions and is bounded by the core clip limits. Playback can repeat, delay its start, stop on virtual Escape scoped to this application's focused window, or request a reversible keep-awake power state. Starting a lane recording or playback is rejected while legacy composite recording/playback is active. Cancel stops only the selected user's program; automation_cancel stops every program. It never watches global physical input or injects outside explicitly authorized session targets.",
+      "inputSchema": {
+        "$defs": {
+          "Action": {
+            "description": "An authored action. Device identity translation is deliberately left to the caller.",
+            "oneOf": [
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "packet": {
+                    "$ref": "#/$defs/Packet"
+                  },
+                  "type": {
+                    "const": "packet",
+                    "type": "string"
+                  },
+                  "user": {
+                    "format": "uint",
+                    "minimum": 0,
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "type",
+                  "user",
+                  "packet"
+                ],
+                "type": "object"
+              },
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "type": {
+                    "const": "move_to",
+                    "type": "string"
+                  },
+                  "user": {
+                    "format": "uint",
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "x": {
+                    "format": "int32",
+                    "type": "integer"
+                  },
+                  "y": {
+                    "format": "int32",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "type",
+                  "user",
+                  "x",
+                  "y"
+                ],
+                "type": "object"
+              },
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "text": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "const": "text",
+                    "type": "string"
+                  },
+                  "user": {
+                    "format": "uint",
+                    "minimum": 0,
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "type",
+                  "user",
+                  "text"
+                ],
+                "type": "object"
+              }
+            ]
+          },
+          "Clip": {
+            "additionalProperties": false,
+            "properties": {
+              "events": {
+                "items": {
+                  "$ref": "#/$defs/TimedAction"
+                },
+                "type": "array"
+              },
+              "version": {
+                "format": "uint32",
+                "minimum": 0,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "version",
+              "events"
+            ],
+            "type": "object"
+          },
+          "Edit": {
+            "description": "Timeline edits are applied atomically and retain the standard Clip format.",
+            "oneOf": [
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "event": {
+                    "$ref": "#/$defs/TimedAction"
+                  },
+                  "operation": {
+                    "const": "insert",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "operation",
+                  "event"
+                ],
+                "type": "object"
+              },
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "event": {
+                    "$ref": "#/$defs/TimedAction"
+                  },
+                  "index": {
+                    "format": "uint",
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "operation": {
+                    "const": "replace",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "operation",
+                  "index",
+                  "event"
+                ],
+                "type": "object"
+              },
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "end": {
+                    "format": "uint",
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "operation": {
+                    "const": "delete",
+                    "type": "string"
+                  },
+                  "start": {
+                    "format": "uint",
+                    "minimum": 0,
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "operation",
+                  "start",
+                  "end"
+                ],
+                "type": "object"
+              },
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "end": {
+                    "format": "uint",
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "offset_micros": {
+                    "format": "uint64",
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "operation": {
+                    "const": "duplicate",
+                    "type": "string"
+                  },
+                  "start": {
+                    "format": "uint",
+                    "minimum": 0,
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "operation",
+                  "start",
+                  "end",
+                  "offset_micros"
+                ],
+                "type": "object"
+              },
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "at_micros": {
+                    "format": "uint64",
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "index": {
+                    "format": "uint",
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "operation": {
+                    "const": "retime",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "operation",
+                  "index",
+                  "at_micros"
+                ],
+                "type": "object"
+              },
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "delta_micros": {
+                    "format": "int64",
+                    "type": "integer"
+                  },
+                  "end": {
+                    "format": "uint",
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "operation": {
+                    "const": "shift",
+                    "type": "string"
+                  },
+                  "start": {
+                    "format": "uint",
+                    "minimum": 0,
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "operation",
+                  "start",
+                  "end",
+                  "delta_micros"
+                ],
+                "type": "object"
+              },
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "from": {
+                    "format": "uint",
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "operation": {
+                    "const": "remap",
+                    "type": "string"
+                  },
+                  "to": {
+                    "format": "uint",
+                    "minimum": 0,
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "operation",
+                  "from",
+                  "to"
+                ],
+                "type": "object"
+              },
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "operation": {
+                    "const": "clear",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "operation"
+                ],
+                "type": "object"
+              }
+            ]
+          },
+          "Generator": {
+            "additionalProperties": false,
+            "description": "Parameters for a bounded deterministic path generator.",
+            "properties": {
+              "center": {
+                "default": [
+                  0,
+                  0
+                ],
+                "maxItems": 2,
+                "minItems": 2,
+                "prefixItems": [
+                  {
+                    "format": "int32",
+                    "type": "integer"
+                  },
+                  {
+                    "format": "int32",
+                    "type": "integer"
+                  }
+                ],
+                "type": "array"
+              },
+              "click": {
+                "default": null,
+                "description": "Optional emulated mouse button index: 0 primary, 1 secondary, 2 middle, 3/4 back/forward.",
+                "format": "uint8",
+                "maximum": 255,
+                "minimum": 0,
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "duration_micros": {
+                "default": 1000000,
+                "format": "uint64",
+                "minimum": 0,
+                "type": "integer"
+              },
+              "points": {
+                "default": 100,
+                "description": "Total path intervals, except Jiggle where this is the sample count.",
+                "format": "uint32",
+                "minimum": 0,
+                "type": "integer"
+              },
+              "radius": {
+                "default": 100,
+                "format": "uint32",
+                "minimum": 0,
+                "type": "integer"
+              },
+              "seed": {
+                "default": 0,
+                "format": "uint64",
+                "minimum": 0,
+                "type": "integer"
+              },
+              "shape": {
+                "$ref": "#/$defs/Pattern",
+                "default": "circle"
+              },
+              "user": {
+                "default": 0,
+                "format": "uint",
+                "minimum": 0,
+                "type": "integer"
+              }
+            },
+            "type": "object"
+          },
+          "Packet": {
+            "description": "Fixed-width native transport. All generation and validation live in Rust.",
+            "properties": {
+              "data": {
+                "format": "uint32",
+                "minimum": 0,
+                "type": "integer"
+              },
+              "device": {
+                "format": "uint32",
+                "minimum": 0,
+                "type": "integer"
+              },
+              "flags": {
+                "format": "uint32",
+                "minimum": 0,
+                "type": "integer"
+              },
+              "kind": {
+                "format": "uint32",
+                "minimum": 0,
+                "type": "integer"
+              },
+              "x": {
+                "format": "int32",
+                "type": "integer"
+              },
+              "y": {
+                "format": "int32",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "device",
+              "kind",
+              "flags",
+              "x",
+              "y",
+              "data"
+            ],
+            "type": "object"
+          },
+          "Pattern": {
+            "enum": [
+              "circle",
+              "square",
+              "triangle",
+              "line",
+              "figure_eight",
+              "jiggle"
+            ],
+            "type": "string"
+          },
+          "PlaybackOptions": {
+            "additionalProperties": false,
+            "properties": {
+              "delay_ms": {
+                "default": 0,
+                "format": "uint64",
+                "minimum": 0,
+                "type": "integer"
+              },
+              "keep_awake": {
+                "default": false,
+                "type": "boolean"
+              },
+              "loops": {
+                "default": 1,
+                "format": "uint32",
+                "minimum": 0,
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "speed": {
+                "default": 1.0,
+                "format": "double",
+                "type": "number"
+              },
+              "stop_on_escape": {
+                "default": true,
+                "type": "boolean"
+              }
+            },
+            "type": "object"
+          },
+          "TimedAction": {
+            "additionalProperties": false,
+            "properties": {
+              "action": {
+                "$ref": "#/$defs/Action"
+              },
+              "at_micros": {
+                "description": "Timestamp relative to the beginning of the clip, in microseconds.",
+                "format": "uint64",
+                "minimum": 0,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "at_micros",
+              "action"
+            ],
+            "type": "object"
+          }
+        },
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "oneOf": [
+          {
+            "properties": {
+              "operation": {
+                "const": "inspect",
+                "type": "string"
+              },
+              "user": {
+                "format": "uint",
+                "minimum": 0,
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "operation"
+            ],
+            "type": "object"
+          },
+          {
+            "properties": {
+              "active": {
+                "type": "boolean"
+              },
+              "operation": {
+                "const": "record",
+                "type": "string"
+              },
+              "user": {
+                "format": "uint",
+                "minimum": 0,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "operation",
+              "user",
+              "active"
+            ],
+            "type": "object"
+          },
+          {
+            "properties": {
+              "clip": {
+                "$ref": "#/$defs/Clip"
+              },
+              "operation": {
+                "const": "load",
+                "type": "string"
+              },
+              "user": {
+                "format": "uint",
+                "minimum": 0,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "operation",
+              "user",
+              "clip"
+            ],
+            "type": "object"
+          },
+          {
+            "properties": {
+              "edit": {
+                "$ref": "#/$defs/Edit"
+              },
+              "operation": {
+                "const": "edit",
+                "type": "string"
+              },
+              "user": {
+                "format": "uint",
+                "minimum": 0,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "operation",
+              "user",
+              "edit"
+            ],
+            "type": "object"
+          },
+          {
+            "properties": {
+              "operation": {
+                "const": "generate",
+                "type": "string"
+              },
+              "settings": {
+                "$ref": "#/$defs/Generator"
+              },
+              "user": {
+                "format": "uint",
+                "minimum": 0,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "operation",
+              "user",
+              "settings"
+            ],
+            "type": "object"
+          },
+          {
+            "properties": {
+              "operation": {
+                "const": "reset",
+                "type": "string"
+              },
+              "user": {
+                "format": "uint",
+                "minimum": 0,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "operation",
+              "user"
+            ],
+            "type": "object"
+          },
+          {
+            "properties": {
+              "operation": {
+                "const": "play",
+                "type": "string"
+              },
+              "options": {
+                "$ref": "#/$defs/PlaybackOptions"
+              },
+              "user": {
+                "format": "uint",
+                "minimum": 0,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "operation",
+              "user",
+              "options"
+            ],
+            "type": "object"
+          },
+          {
+            "properties": {
+              "operation": {
+                "const": "cancel",
+                "type": "string"
+              },
+              "user": {
+                "format": "uint",
+                "minimum": 0,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "operation",
+              "user"
+            ],
+            "type": "object"
+          }
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "magnifier",
+      "description": "Inspect, configure, refresh, or export a virtual magnifier in this routing session. Configure selected_target only inspects the selected user's eligible application window; it may wait for that user to select a target. Desktop source is a separate capture capability and requires a caller-authorized explicit desktop_region in physical pixels, even when the virtual input PID scope is narrow. Any full-desktop region must be explicitly authorized as such. Monitor choices must use connected stable display IDs. All output is bounded to validated source and viewport rectangles; no OS pointer or input is synthesized.",
+      "inputSchema": {
+        "$defs": {
+          "Bounds": {
+            "properties": {
+              "bottom": {
+                "format": "int32",
+                "type": "integer"
+              },
+              "left": {
+                "format": "int32",
+                "type": "integer"
+              },
+              "right": {
+                "format": "int32",
+                "type": "integer"
+              },
+              "top": {
+                "format": "int32",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "left",
+              "top",
+              "right",
+              "bottom"
+            ],
+            "type": "object"
+          },
+          "DockSide": {
+            "enum": [
+              "right",
+              "left",
+              "top",
+              "bottom"
+            ],
+            "type": "string"
+          },
+          "Mode": {
+            "enum": [
+              "off",
+              "lens",
+              "docked",
+              "fullscreen"
+            ],
+            "type": "string"
+          },
+          "Settings": {
+            "additionalProperties": false,
+            "properties": {
+              "auto_refresh": {
+                "default": true,
+                "type": "boolean"
+              },
+              "border": {
+                "default": true,
+                "type": "boolean"
+              },
+              "border_color": {
+                "default": [
+                  96,
+                  165,
+                  250
+                ],
+                "items": {
+                  "format": "uint8",
+                  "maximum": 255,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "maxItems": 3,
+                "minItems": 3,
+                "type": "array"
+              },
+              "desktop_region": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/Bounds"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "dock": {
+                "$ref": "#/$defs/DockSide",
+                "default": "right"
+              },
+              "height": {
+                "default": 240,
+                "format": "uint32",
+                "minimum": 0,
+                "type": "integer"
+              },
+              "mode": {
+                "$ref": "#/$defs/Mode",
+                "default": "off"
+              },
+              "monitor_id": {
+                "default": null,
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "refresh_hz": {
+                "default": 8,
+                "format": "uint8",
+                "maximum": 255,
+                "minimum": 0,
+                "type": "integer"
+              },
+              "source": {
+                "$ref": "#/$defs/Source",
+                "default": "selected_target"
+              },
+              "width": {
+                "default": 320,
+                "format": "uint32",
+                "minimum": 0,
+                "type": "integer"
+              },
+              "work_area": {
+                "default": true,
+                "type": "boolean"
+              },
+              "zoom": {
+                "default": 2.0,
+                "format": "double",
+                "type": "number"
+              }
+            },
+            "type": "object"
+          },
+          "Source": {
+            "enum": [
+              "selected_target",
+              "desktop"
+            ],
+            "type": "string"
+          }
+        },
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "oneOf": [
+          {
+            "properties": {
+              "operation": {
+                "const": "inspect",
+                "type": "string"
+              }
+            },
+            "required": [
+              "operation"
+            ],
+            "type": "object"
+          },
+          {
+            "properties": {
+              "operation": {
+                "const": "configure",
+                "type": "string"
+              },
+              "settings": {
+                "$ref": "#/$defs/Settings"
+              },
+              "user": {
+                "format": "uint",
+                "minimum": 0,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "operation",
+              "user",
+              "settings"
+            ],
+            "type": "object"
+          },
+          {
+            "properties": {
+              "operation": {
+                "const": "refresh",
+                "type": "string"
+              },
+              "user": {
+                "format": "uint",
+                "minimum": 0,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "operation",
+              "user"
+            ],
+            "type": "object"
+          },
+          {
+            "properties": {
+              "operation": {
+                "const": "export",
+                "type": "string"
+              },
+              "path": {
+                "type": "string"
+              },
+              "user": {
+                "format": "uint",
+                "minimum": 0,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "operation",
+              "user",
+              "path"
+            ],
+            "type": "object"
+          }
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "routing_displays",
+      "description": "Read the virtual desktop bounds and connected display monitors, including stable monitor interface paths when Windows provides them. This read-only inventory does not load ProtoInput, change displays, or return transient monitor handles. Adapter-name fallbacks are explicitly marked unverified and cannot be persisted as monitor selections.",
+      "inputSchema": {
+        "properties": {},
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": true
+      }
+    },
+    {
+      "name": "routing_graph",
+      "description": "Inspect or apply a saved replication graph using stable seat IDs from identities. Saved definitions contain version and directed categorized edges; restoring a session can provide routing_start user_ids and graph. Apply validates all endpoints, keyboards, categories and cycles before releasing input. It rejects active recording/playback and stale expected_revision without changing the graph or held input. Successful replacement releases current held input to retire the previous graph. This tool uses only the authorized virtual routing session.",
+      "inputSchema": {
+        "$defs": {
+          "Definition": {
+            "additionalProperties": false,
+            "properties": {
+              "edges": {
+                "default": [],
+                "items": {
+                  "$ref": "#/$defs/Edge"
+                },
+                "type": "array"
+              },
+              "version": {
+                "default": 1,
+                "format": "uint32",
+                "minimum": 0,
+                "type": "integer"
+              }
+            },
+            "type": "object"
+          },
+          "Edge": {
+            "additionalProperties": false,
+            "properties": {
+              "keyboard": {
+                "type": "boolean"
+              },
+              "mouse": {
+                "type": "boolean"
+              },
+              "source": {
+                "type": "string"
+              },
+              "target": {
+                "type": "string"
+              },
+              "text": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "source",
+              "target",
+              "mouse",
+              "keyboard",
+              "text"
+            ],
+            "type": "object"
+          }
+        },
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "oneOf": [
+          {
+            "properties": {
+              "operation": {
+                "const": "inspect",
+                "type": "string"
+              }
+            },
+            "required": [
+              "operation"
+            ],
+            "type": "object"
+          },
+          {
+            "properties": {
+              "expected_revision": {
+                "format": "uint64",
+                "minimum": 0,
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "graph": {
+                "$ref": "#/$defs/Definition"
+              },
+              "operation": {
+                "const": "apply",
+                "type": "string"
+              }
+            },
+            "required": [
+              "operation",
+              "graph"
+            ],
+            "type": "object"
+          }
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "routing_input",
+      "description": "Operate an app-local virtual device. User indices start at zero; coordinates are physical desktop pixels. Press or release primary, secondary, middle, back or forward buttons; scroll vertically (default) or horizontally; use named keys or validated Unicode text. Returns worker state after acknowledgement. Inspect user status and target to verify delivery. Never moves the OS pointer or injects global input.",
+      "inputSchema": {
+        "$defs": {
+          "Button": {
+            "enum": [
+              "primary",
+              "secondary",
+              "middle",
+              "back",
+              "forward"
+            ],
+            "type": "string"
+          },
+          "WheelAxis": {
+            "enum": [
+              "vertical",
+              "horizontal"
+            ],
+            "type": "string"
+          }
+        },
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "oneOf": [
+          {
+            "description": "Absolute virtual desktop coordinates; never moves the OS pointer.",
+            "properties": {
+              "action": {
+                "const": "move_to",
+                "type": "string"
+              },
+              "user": {
+                "format": "uint",
+                "minimum": 0,
+                "type": "integer"
+              },
+              "x": {
+                "format": "int32",
+                "type": "integer"
+              },
+              "y": {
+                "format": "int32",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "action",
+              "user",
+              "x",
+              "y"
+            ],
+            "type": "object"
+          },
+          {
+            "properties": {
+              "action": {
+                "const": "motion",
+                "type": "string"
+              },
+              "dx": {
+                "format": "int32",
+                "type": "integer"
+              },
+              "dy": {
+                "format": "int32",
+                "type": "integer"
+              },
+              "user": {
+                "format": "uint",
+                "minimum": 0,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "action",
+              "user",
+              "dx",
+              "dy"
+            ],
+            "type": "object"
+          },
+          {
+            "properties": {
+              "action": {
+                "const": "button",
+                "type": "string"
+              },
+              "button": {
+                "$ref": "#/$defs/Button"
+              },
+              "pressed": {
+                "type": "boolean"
+              },
+              "user": {
+                "format": "uint",
+                "minimum": 0,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "action",
+              "user",
+              "button",
+              "pressed"
+            ],
+            "type": "object"
+          },
+          {
+            "properties": {
+              "action": {
+                "const": "wheel",
+                "type": "string"
+              },
+              "axis": {
+                "$ref": "#/$defs/WheelAxis",
+                "description": "Axis for this delta; omitted axis stays vertical for older calls."
+              },
+              "delta": {
+                "format": "int16",
+                "maximum": 32767,
+                "minimum": -32768,
+                "type": "integer"
+              },
+              "user": {
+                "format": "uint",
+                "minimum": 0,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "action",
+              "user",
+              "delta"
+            ],
+            "type": "object"
+          },
+          {
+            "description": "Press or release a named key on this user's virtual keyboard.",
+            "properties": {
+              "action": {
+                "const": "key",
+                "type": "string"
+              },
+              "key": {
+                "type": "string"
+              },
+              "pressed": {
+                "type": "boolean"
+              },
+              "user": {
+                "format": "uint",
+                "minimum": 0,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "action",
+              "user",
+              "key",
+              "pressed"
+            ],
+            "type": "object"
+          },
+          {
+            "description": "Type text through this user's virtual keyboard. This does not use the OS clipboard.",
+            "properties": {
+              "action": {
+                "const": "text",
+                "type": "string"
+              },
+              "text": {
+                "type": "string"
+              },
+              "user": {
+                "format": "uint",
+                "minimum": 0,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "action",
+              "user",
+              "text"
+            ],
+            "type": "object"
+          },
+          {
+            "properties": {
+              "action": {
+                "const": "release_all",
+                "type": "string"
+              }
+            },
+            "required": [
+              "action"
+            ],
+            "type": "object"
+          },
+          {
+            "properties": {
+              "action": {
+                "const": "pause",
+                "type": "string"
+              }
+            },
+            "required": [
+              "action"
+            ],
+            "type": "object"
+          },
+          {
+            "properties": {
+              "action": {
+                "const": "resume",
+                "type": "string"
+              }
+            },
+            "required": [
+              "action"
+            ],
+            "type": "object"
+          }
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "routing_mode",
+      "description": "Switch between switched and concurrent arbitration and independent keyboards. Releases held input before switching, preserves selected targets.",
+      "inputSchema": {
+        "$defs": {
+          "Mode": {
+            "enum": [
+              "switched",
+              "concurrent"
+            ],
+            "type": "string"
+          }
+        },
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "mode": {
+            "$ref": "#/$defs/Mode"
+          },
+          "multi_keyboard": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "mode",
+          "multi_keyboard"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "routing_replication",
+      "description": "Replace the directed input replication graph for this virtual session. User indices start at zero; every edge is checked against the session user list, and graph cycles are rejected by the worker. Applying the graph is rejected while composite or Macro Studio recording/playback is active. For saved stable seat identities and revision checks use routing_graph.",
+      "inputSchema": {
+        "$defs": {
+          "ReplicationEdge": {
+            "additionalProperties": false,
+            "properties": {
+              "keyboard": {
+                "default": true,
+                "type": "boolean"
+              },
+              "mouse": {
+                "default": true,
+                "type": "boolean"
+              },
+              "source": {
+                "description": "Source user index, starting at zero.",
+                "format": "uint",
+                "minimum": 0,
+                "type": "integer"
+              },
+              "target": {
+                "description": "Destination user index, starting at zero.",
+                "format": "uint",
+                "minimum": 0,
+                "type": "integer"
+              },
+              "text": {
+                "default": true,
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "source",
+              "target"
+            ],
+            "type": "object"
+          }
+        },
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "edges": {
+            "description": "Directed source-to-destination edges. Cycles are rejected by the worker.",
+            "items": {
+              "$ref": "#/$defs/ReplicationEdge"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "edges"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "routing_settings",
+      "description": "Read and apply a complete per-user cursor settings object. The response and routing_state expose the last acknowledged settings for each zero-based user. Invalid objects, values or user indices are rejected before the worker request.",
+      "inputSchema": {
+        "$defs": {
+          "Bounds": {
+            "properties": {
+              "bottom": {
+                "format": "int32",
+                "type": "integer"
+              },
+              "left": {
+                "format": "int32",
+                "type": "integer"
+              },
+              "right": {
+                "format": "int32",
+                "type": "integer"
+              },
+              "top": {
+                "format": "int32",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "left",
+              "top",
+              "right",
+              "bottom"
+            ],
+            "type": "object"
+          },
+          "BoundsMode": {
+            "oneOf": [
+              {
+                "enum": [
+                  "desktop",
+                  "window",
+                  "monitor",
+                  "region"
+                ],
+                "type": "string"
+              },
+              {
+                "const": "legacy",
+                "description": "Uses the legacy `lock_window` setting for existing profiles.",
+                "type": "string"
+              }
+            ]
+          },
+          "CursorSettings": {
+            "additionalProperties": false,
+            "properties": {
+              "badge": {
+                "default": null,
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "bounds_mode": {
+                "$ref": "#/$defs/BoundsMode",
+                "default": "legacy"
+              },
+              "button_mapping": {
+                "default": [
+                  "primary",
+                  "secondary",
+                  "middle",
+                  "x1",
+                  "x2"
+                ],
+                "description": "Source order: primary, secondary, middle, back, forward. Null disables a source.\nActive destinations must be unique; x1/x2 are back/forward outputs.",
+                "items": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/$defs/MouseButton"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "maxItems": 5,
+                "minItems": 5,
+                "type": "array"
+              },
+              "color": {
+                "default": [
+                  45,
+                  212,
+                  191
+                ],
+                "items": {
+                  "format": "uint8",
+                  "maximum": 255,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "maxItems": 3,
+                "minItems": 3,
+                "type": "array"
+              },
+              "horizontal_wheel": {
+                "$ref": "#/$defs/HorizontalWheelPolicy",
+                "default": "ignore"
+              },
+              "horizontal_wheel_scale": {
+                "default": 1.0,
+                "format": "float",
+                "type": "number"
+              },
+              "invert_horizontal_wheel": {
+                "default": false,
+                "type": "boolean"
+              },
+              "invert_wheel": {
+                "default": false,
+                "type": "boolean"
+              },
+              "invert_x": {
+                "default": false,
+                "type": "boolean"
+              },
+              "invert_y": {
+                "default": false,
+                "type": "boolean"
+              },
+              "label": {
+                "default": true,
+                "type": "boolean"
+              },
+              "lock_window": {
+                "default": true,
+                "type": "boolean"
+              },
+              "monitor_id": {
+                "default": null,
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "monitor_work_area": {
+                "default": false,
+                "type": "boolean"
+              },
+              "motion_curve": {
+                "$ref": "#/$defs/MotionCurve",
+                "default": "linear",
+                "description": "Original radial gain per input packet: linear, gentle or strong. Not Windows ballistics."
+              },
+              "region": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/Bounds"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null
+              },
+              "shape": {
+                "$ref": "#/$defs/CursorShape",
+                "default": "arrow"
+              },
+              "size": {
+                "default": 28.0,
+                "format": "float",
+                "type": "number"
+              },
+              "speed_x": {
+                "default": 1.0,
+                "format": "float",
+                "type": "number"
+              },
+              "speed_y": {
+                "default": 1.0,
+                "format": "float",
+                "type": "number"
+              },
+              "swap_buttons": {
+                "default": false,
+                "type": "boolean"
+              },
+              "visible": {
+                "default": true,
+                "type": "boolean"
+              },
+              "wheel_scale": {
+                "default": 1.0,
+                "format": "float",
+                "type": "number"
+              }
+            },
+            "type": "object"
+          },
+          "CursorShape": {
+            "enum": [
+              "arrow",
+              "crosshair",
+              "i_beam",
+              "ring"
+            ],
+            "type": "string"
+          },
+          "HorizontalWheelPolicy": {
+            "enum": [
+              "ignore",
+              "convert_to_vertical"
+            ],
+            "type": "string"
+          },
+          "MotionCurve": {
+            "enum": [
+              "linear",
+              "gentle",
+              "strong"
+            ],
+            "type": "string"
+          },
+          "MouseButton": {
+            "enum": [
+              "primary",
+              "secondary",
+              "middle",
+              "x1",
+              "x2"
+            ],
+            "type": "string"
+          }
+        },
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "settings": {
+            "$ref": "#/$defs/CursorSettings",
+            "description": "Complete cursor settings object for this user."
+          },
+          "user": {
+            "format": "uint",
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "user",
+          "settings"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "routing_start",
+      "description": "Start an agent-owned virtual-only routing session scoped to explicit PIDs. Does not inject until a virtual click selects an eligible window. Do not run alongside an active GUI session.",
+      "inputSchema": {
+        "$defs": {
+          "Definition": {
+            "additionalProperties": false,
+            "properties": {
+              "edges": {
+                "default": [],
+                "items": {
+                  "$ref": "#/$defs/Edge"
+                },
+                "type": "array"
+              },
+              "version": {
+                "default": 1,
+                "format": "uint32",
+                "minimum": 0,
+                "type": "integer"
+              }
+            },
+            "type": "object"
+          },
+          "Edge": {
+            "additionalProperties": false,
+            "properties": {
+              "keyboard": {
+                "type": "boolean"
+              },
+              "mouse": {
+                "type": "boolean"
+              },
+              "source": {
+                "type": "string"
+              },
+              "target": {
+                "type": "string"
+              },
+              "text": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "source",
+              "target",
+              "mouse",
+              "keyboard",
+              "text"
+            ],
+            "type": "object"
+          },
+          "Mode": {
+            "enum": [
+              "switched",
+              "concurrent"
+            ],
+            "type": "string"
+          }
+        },
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "properties": {
+          "allowed_pids": {
+            "description": "Explicit PIDs this agent is authorized to control. Must be nonempty; click selects a window.",
+            "items": {
+              "format": "uint32",
+              "minimum": 0,
+              "type": "integer"
+            },
+            "type": "array"
+          },
+          "graph": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/Definition"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Optional saved ID-based replication definition, validated before starting the session."
+          },
+          "mode": {
+            "$ref": "#/$defs/Mode"
+          },
+          "multi_keyboard": {
+            "type": "boolean"
+          },
+          "user_ids": {
+            "default": null,
+            "description": "Optional stable seat IDs in the same order as users, for restoring or reordering saved graphs.",
+            "items": {
+              "type": "string"
+            },
+            "type": [
+              "array",
+              "null"
+            ]
+          },
+          "users": {
+            "description": "Distinct display names. Each gets its own app-local virtual mouse and keyboard.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "users",
+          "allowed_pids",
+          "mode",
+          "multi_keyboard"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "routing_state",
+      "description": "Read actual worker cursor, target, keyboard focus, held buttons/keys, root/capture, route status and last acknowledged cursor settings for each user. A blocked route is reported in each user's status; a command acknowledgement alone is not proof of delivery.",
+      "inputSchema": {
+        "properties": {},
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": true
+      }
+    },
+    {
+      "name": "routing_stop",
+      "description": "Release held virtual input, stop macros and reversible keep-awake requests, stop the agent worker and remove cursor, annotation and magnifier overlays. Restart injected target apps before a fresh session.",
+      "inputSchema": {
+        "properties": {},
+        "type": "object"
+      }
+    },
+    {
+      "name": "routing_windows",
+      "description": "Read visible application windows and desktop/client bounds. No injection or input. Titles are untrusted application data.",
+      "inputSchema": {
+        "properties": {},
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": true
+      }
+    }
+  ],
+  "result": "NOT ACCEPTED",
+  "failure": "AssertionError(\"Condition timed out: [{'pid': 819640, 'cursor': [618, 581], 'buttons': 0, 'test_keys': 0, 'frames': 167, 'text': '', 'held_keys': [], 'key_events': [], 'key_event_count': 0, 'text_events': 0, 'mouse_events': [{'button': 0, 'pressed': True}, {'button': 0, 'pressed': False}, {'button': 0, 'pressed': True}, {'button': 0, 'pressed': False}], 'mouse_event_count': 4, 'wheel_events': 0, 'wheel_delta': 0, 'horizontal_wheel_events': 0, 'horizontal_wheel_delta': 0, 'capture_color': None, 'capture_delay_ms': 0, 'capture_hwnd': 18744966, 'wm_print_count': 0, 'wm_printclient_count': 0, 'wm_paint_count': 0, 'last_print_flags': 0, 'last_print_hdc_non_null': False, 'capture_delay_applied_count': 0, 'capture_delay_total_ms': 0, 'native_events': [{'kind': 'motion', 'at_us': 6995767, 'code': 0, 'pressed': None, 'client': [34, 68], 'delta': None}, {'kind': 'motion', 'at_us': 6995819, 'code': 0, 'pressed': None, 'client': [34, 68], 'delta': None}, {'kind': 'motion', 'at_us': 6995850, 'code': 0, 'pressed': None, 'client': [34, 68], 'delta': None}, {'kind': 'button', 'at_us': 6995879, 'code': 0, 'pressed': True, 'client': [34, 68], 'delta': None}, {'kind': 'motion', 'at_us': 7005711, 'code': 0, 'pressed': None, 'client': [34, 68], 'delta': None}, {'kind': 'button', 'at_us': 7044762, 'code': 0, 'pressed': False, 'client': [34, 68], 'delta': None}, {'kind': 'motion', 'at_us': 7045158, 'code': 0, 'pressed': None, 'client': [34, 68], 'delta': None}, {'kind': 'motion', 'at_us': 7115645, 'code': 0, 'pressed': None, 'client': [98, 68], 'delta': None}, {'kind': 'motion', 'at_us': 7175440, 'code': 0, 'pressed': None, 'client': [98, 68], 'delta': None}, {'kind': 'button', 'at_us': 7175456, 'code': 0, 'pressed': True, 'client': [98, 68], 'delta': None}, {'kind': 'motion', 'at_us': 7176031, 'code': 0, 'pressed': None, 'client': [98, 68], 'delta': None}, {'kind': 'button', 'at_us': 7233133, 'code': 0, 'pressed': False, 'client': [98, 68], 'delta': None}, {'kind': 'motion', 'at_us': 7233650, 'code': 0, 'pressed': None, 'client': [98, 68], 'delta': None}], 'native_event_count': 13, 'clock_us': 17220303}, {'pid': 819864, 'cursor': [618, 171], 'buttons': 0, 'test_keys': 0, 'frames': 167, 'text': '', 'held_keys': [], 'key_events': [], 'key_event_count': 0, 'text_events': 0, 'mouse_events': [{'button': 0, 'pressed': True}, {'button': 0, 'pressed': False}], 'mouse_event_count': 2, 'wheel_events': 0, 'wheel_delta': 0, 'horizontal_wheel_events': 0, 'horizontal_wheel_delta': 0, 'capture_color': None, 'capture_delay_ms': 0, 'capture_hwnd': 12520708, 'wm_print_count': 0, 'wm_printclient_count': 0, 'wm_paint_count': 0, 'last_print_flags': 0, 'last_print_hdc_non_null': False, 'capture_delay_applied_count': 0, 'capture_delay_total_ms': 0, 'native_events': [{'kind': 'motion', 'at_us': 3722477, 'code': 0, 'pressed': None, 'client': [98, 68], 'delta': None}, {'kind': 'motion', 'at_us': 3732071, 'code': 0, 'pressed': None, 'client': [98, 68], 'delta': None}, {'kind': 'motion', 'at_us': 3733118, 'code': 0, 'pressed': None, 'client': [98, 68], 'delta': None}, {'kind': 'button', 'at_us': 3733124, 'code': 0, 'pressed': True, 'client': [98, 68], 'delta': None}, {'kind': 'motion', 'at_us': 3733784, 'code': 0, 'pressed': None, 'client': [98, 68], 'delta': None}, {'kind': 'button', 'at_us': 3751505, 'code': 0, 'pressed': False, 'client': [98, 68], 'delta': None}, {'kind': 'motion', 'at_us': 3751804, 'code': 0, 'pressed': None, 'client': [98, 68], 'delta': None}], 'native_event_count': 7, 'clock_us': 17252390}, {'pid': 816244, 'cursor': [158, 171], 'buttons': 0, 'test_keys': 0, 'frames': 172, 'text': '', 'held_keys': [], 'key_events': [], 'key_event_count': 0, 'text_events': 0, 'mouse_events': [{'button': 0, 'pressed': True}, {'button': 0, 'pressed': False}], 'mouse_event_count': 2, 'wheel_events': 0, 'wheel_delta': 0, 'horizontal_wheel_events': 0, 'horizontal_wheel_delta': 0, 'capture_color': None, 'capture_delay_ms': 0, 'capture_hwnd': 62262074, 'wm_print_count': 0, 'wm_printclient_count': 0, 'wm_paint_count': 0, 'last_print_flags': 0, 'last_print_hdc_non_null': False, 'capture_delay_applied_count': 0, 'capture_delay_total_ms': 0, 'native_events': [{'kind': 'motion', 'at_us': 2489941, 'code': 0, 'pressed': None, 'client': [98, 68], 'delta': None}, {'kind': 'motion', 'at_us': 2489988, 'code': 0, 'pressed': None, 'client': [98, 68], 'delta': None}, {'kind': 'motion', 'at_us': 2490033, 'code': 0, 'pressed': None, 'client': [98, 68], 'delta': None}, {'kind': 'button', 'at_us': 2495595, 'code': 0, 'pressed': True, 'client': [98, 68], 'delta': None}, {'kind': 'motion', 'at_us': 2497062, 'code': 0, 'pressed': None, 'client': [98, 68], 'delta': None}, {'kind': 'button', 'at_us': 2525727, 'code': 0, 'pressed': False, 'client': [98, 68], 'delta': None}, {'kind': 'motion', 'at_us': 2526169, 'code': 0, 'pressed': None, 'client': [98, 68], 'delta': None}], 'native_event_count': 7, 'clock_us': 17725503}, {'pid': 818592, 'cursor': [158, 581], 'buttons': 0, 'test_keys': 0, 'frames': 167, 'text': '', 'held_keys': [], 'key_events': [], 'key_event_count': 0, 'text_events': 0, 'mouse_events': [{'button': 0, 'pressed': True}, {'button': 0, 'pressed': False}], 'mouse_event_count': 2, 'wheel_events': 0, 'wheel_delta': 0, 'horizontal_wheel_events': 0, 'horizontal_wheel_delta': 0, 'capture_color': None, 'capture_delay_ms': 0, 'capture_hwnd': 15599168, 'wm_print_count': 0, 'wm_printclient_count': 0, 'wm_paint_count': 0, 'last_print_flags': 0, 'last_print_hdc_non_null': False, 'capture_delay_applied_count': 0, 'capture_delay_total_ms': 0, 'native_events': [{'kind': 'motion', 'at_us': 5453861, 'code': 0, 'pressed': None, 'client': [98, 68], 'delta': None}, {'kind': 'motion', 'at_us': 5453878, 'code': 0, 'pressed': None, 'client': [98, 68], 'delta': None}, {'kind': 'motion', 'at_us': 5453880, 'code': 0, 'pressed': None, 'client': [98, 68], 'delta': None}, {'kind': 'button', 'at_us': 5453882, 'code': 0, 'pressed': True, 'client': [98, 68], 'delta': None}, {'kind': 'motion', 'at_us': 5454194, 'code': 0, 'pressed': None, 'client': [98, 68], 'delta': None}, {'kind': 'button', 'at_us': 7068485, 'code': 0, 'pressed': False, 'client': [98, 68], 'delta': None}, {'kind': 'motion', 'at_us': 7068811, 'code': 0, 'pressed': None, 'client': [98, 68], 'delta': None}], 'native_event_count': 7, 'clock_us': 17206113}]\")",
+  "owned_processes_closed": true
+}

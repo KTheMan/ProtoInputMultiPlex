@@ -1,0 +1,11 @@
+{
+  "result": "PASS",
+  "date": "2026-10-14",
+  "previous_installed_skill_sha256": "a679e12a6eb46d40afa0c1a97ffd7d5ae492e8cfcd66ad3c8603fd743b75709a",
+  "installed_skill_sha256": "cc2b5f14a1718bc5a514a209aef391ab82c4d93e035d33994642c24a5fc27bd6",
+  "unchanged_agents_yaml_sha256": "61c08546d1fafc09287f36c34a74766769d7462034a3eeabd33c999eb0fc16c3",
+  "source_validation": "Skill is valid!",
+  "installed_validation": "Skill is valid!",
+  "assessment": "docs/cursor-appearance-assessment-2026-10-14.json",
+  "scope": "Installed only the validated project skill after independent bounded appearance acceptance. No global MCP configuration changed; compact control-center cleanup remains pending."
+}

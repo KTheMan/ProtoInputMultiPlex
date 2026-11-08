@@ -1,0 +1,623 @@
+{
+  "decision": "PROFILE_PERSISTENCE_ACCEPTED",
+  "group": "profile_policy_20261107",
+  "basis": "Composed independent acceptance: approved first five components from the original partial run plus the focused remaining GUI/MCP tail; not one full successful original raw run",
+  "refs": {
+    "original_raw": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMux\\profile-policy-20261107\\native-run-2887f788d7b7\\evidence.json",
+      "sha256": "61c9943f3a3c310715cbc5a53c786f93fc8676b15a8579bb0d6fd41261fa1d73",
+      "raw_result": "NOT_ACCEPTED"
+    },
+    "core_review": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMux\\profile-policy-20261107\\notes\\native-core-review.json",
+      "sha256": "1823e36e826605c17822d1119654840ab5394a338dc44f4d12858eae6efbf7cd"
+    },
+    "tail_raw": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMux\\profile-policy-20261107\\native-tail-run-b4d2bdf4fe3b\\evidence.json",
+      "sha256": "e59ecd75b7ac54a7cd2f41017c1092011cc4f1579750f1ee9a6a7f16ab00f0d8",
+      "raw_result": "PROFILE_POLICY_NATIVE_PASSED_PENDING_INDEPENDENT_REVIEW"
+    },
+    "tail_readiness": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMux\\profile-policy-20261107\\notes\\native-tail-ready.json",
+      "sha256": "05735f30dfec745b6ffa458a1be5af421d7fb5407879f694cbc32538402c49d1"
+    },
+    "checks": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMux\\profile-policy-20261107\\notes\\checks-review.json",
+      "sha256": "3d12f801c95d43f88d30a6d82b292eb16abba348bf024daf5d2b2f2dad09a25f"
+    },
+    "verification": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMux\\profile-policy-20261107\\checks-002\\verification.json",
+      "sha256": "0ad7bd9c0e75fabe3f364b6fc4aac424f225bf8813e5cf5437f1acd226e6d9ec"
+    },
+    "source_review": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMux\\profile-policy-20261107\\notes\\source-review-v3.json",
+      "sha256": "10d2f80a95ba3a2550d3e9e9992047bf886152e8af799571d10d7719efcc9389"
+    },
+    "implementation": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMux\\profile-policy-20261107\\notes\\implementation-v3.json",
+      "sha256": "8a18816fa9308bbfbae42ad246a17cb7293eead26aabb41535bf20e4722bd7d0"
+    }
+  },
+  "rust_checks": {
+    "fmt": 0,
+    "clippy": 0,
+    "workspace_tests": 0,
+    "x64_gui": 0,
+    "i686_gui": 0,
+    "passed": 955,
+    "failed": 0,
+    "ignored": 19
+  },
+  "source_inputs_unchanged": {
+    "count": 160,
+    "hashes": {
+      "Cargo.lock": "23ea6876354a23832631db82b3a933076cf32b80cc6955ec02940c21a35f73bb",
+      "Cargo.toml": "8a03b5ed68f6ea499dc12ff6230ea32e80352018f99a0b38f701ab45270231ae",
+      "crates/cursor-observer/Cargo.toml": "2991c285835d5498a42dcddc9f830a22da08af250417a4822adcda873aeeac38",
+      "crates/cursor-observer/src/keyboard.rs": "e8e18893cb476cb21057e102adab98e846ea7c16900326c9dfdf17c7b2b55275",
+      "crates/cursor-observer/src/keyboard_state.rs": "fe2b531a7d8fa65bf198d46bfcb501828368a8d56a27a2c1e8e8c50849e66a78",
+      "crates/cursor-observer/src/lib.rs": "c0b2234aeef0b569c91d9fdeeb4cee8ba709bc22dd0ee7b61e98c15089908800",
+      "crates/cursor-snapshot-protocol/Cargo.toml": "1cc75298ef4872d3616563883f44c0046bf96eb2d48e3c3ff5596e8fbd14ef9c",
+      "crates/cursor-snapshot-protocol/src/lib.rs": "44c56dbe9eb48c5d544eff989f6ba427af98530c78ce76888b9f8af53af28000",
+      "crates/mux-core/Cargo.toml": "35e6eaffb196ad68dda00c3f7eafdac1ae6319eb95cc7f1b43b7d32765eb78d3",
+      "crates/mux-core/src/annotation.rs": "b678f44970df44d8af1294aee8cf45f7f52fe5d60b05ad193cfa9ec1ec5af4d3",
+      "crates/mux-core/src/automation.rs": "873fdfe4a85825a3cb6873e148d8060d4928ce1c9df607a020dc911f40018932",
+      "crates/mux-core/src/desktop.rs": "1a0e2868a58c38cb6eff045f93a690ad6e3d2e6bff0d9a1ecac5d5ad9ab2b144",
+      "crates/mux-core/src/emulated.rs": "7cdeea7a6e5760133ca2e4e7d0205fd430c636005c4b728f4f81d5755c06d599",
+      "crates/mux-core/src/forwarding.rs": "d5d2749dff969dc9568c9904a90c2c13e8ca811cfb986957e4f4331fff438a66",
+      "crates/mux-core/src/keyboard.rs": "6c77f05e8148a7b684c0af321f5a8941fa117111bea9c4faf28bf8cc1c20ae3e",
+      "crates/mux-core/src/lib.rs": "7e678fe0332dcaa856370d862d31518434861ec2831c8a403b61f132d21f3597",
+      "crates/mux-core/src/macro_authoring.rs": "c09b42995c31d0615e49096e97698e070cdda29f43c25cb33b581317dfe09d5e",
+      "crates/mux-core/src/magnifier.rs": "ef7748bb3a4d42e246c2075606183d31a83c44bf96f141aa535c0b5f06b1cfc7",
+      "crates/mux-core/src/mapper.rs": "a14a6f086d41924f6fac31c8a20a5793d3f6a695b440c3cc6c4c7a55959fa626",
+      "crates/mux-core/src/motion_coalescing.rs": "2164b12ce2a5987ade2aeed992fc5900cd74037c1c32ddfaa9d2d1f42c7aebaa",
+      "crates/mux-core/src/output.rs": "d45e10811d40a70131a7d08233aab872af293948fc2583edf4c31552a133b6a6",
+      "crates/mux-core/src/replication.rs": "6eaaf07a5896991f085f5f4098532961afcf99d41fa1e59aeb91e12282bd24fb",
+      "crates/mux-core/src/routing.rs": "5f2ab5dbbc22a62b003f5288e37eb3bd617fc5913151f4ec7b62eaa4a1b6b9ee",
+      "crates/mux-core/src/screen.rs": "b8eb1cf7432ca7ad546f2af56251ef8ba74adf6576a6ae57750702e71c655b28",
+      "crates/mux-sdk-client/Cargo.toml": "d0c487556774c6e07dd3d5f33a95effade7ffc098370f7fec14557fe09d953a4",
+      "crates/mux-sdk-client/examples/call.rs": "c5eef4d1a8c84a85eae90e1f6cd8833cf39a440db420ae8656b0ec79fbbae77d",
+      "crates/mux-sdk-client/src/lib.rs": "35efbdc4dbee0229a5ee8ef2b9396d005483f66ed5a0a076e57f2dd0e3064529",
+      "crates/mux-windows/Cargo.toml": "678fbc4a938921361c804330dab9b2f77b3068e78e835022702dc5e6bd39bed2",
+      "crates/mux-windows/src/annotation_overlay.rs": "eef58e4c14e2c87b2876a60ac2c254c168a8c8804c20754686ed19fe8261e7f9",
+      "crates/mux-windows/src/app_cursor.rs": "213491ee54fb6a168e23731b5d69bfe9f7b97559da9966e915c029ec40475108",
+      "crates/mux-windows/src/cursor_evidence.rs": "e12483244f049dae1794a961e012532491e9bc2ae5f60ddaa964c1b4584d3bf1",
+      "crates/mux-windows/src/cursor_presenter.rs": "ad2963e9c3c484f52629a2ce2b4719121af78f57f168e6a108e1c532841d06f0",
+      "crates/mux-windows/src/cursor_rasterizer.rs": "affe2fd2382a100a775b5f195e5323224bf85d6cdf9e54d6febddb491a701bbc",
+      "crates/mux-windows/src/cursor_telemetry.rs": "7fe16671c9a864958fedb75e444977e55219e70cf6cb73489a4693c3d539d530",
+      "crates/mux-windows/src/desktop_capture.rs": "089b938874cfe58e70056187c39cae02f2d76df2273f5f372835874b8bb25fc7",
+      "crates/mux-windows/src/job.rs": "a2bef8f5ebe0a480b095390b43424553eff5211cc6024a6de9d4fc8f263faa50",
+      "crates/mux-windows/src/keyboard.rs": "73cb54fdf4a8fc52e85fb8e51da2e745929ac58aeb360c5be435855114407980",
+      "crates/mux-windows/src/keyboard_focus.rs": "bb5527806d07cf818d2abe3c3db2cc980bf22bd5f3b4664d9637e5b767de6dfa",
+      "crates/mux-windows/src/keyboard_state.rs": "a8eb9297c5becdb167337cb75597380aa4fb9ab004047afe5c1d94ca809dab03",
+      "crates/mux-windows/src/lib.rs": "ac1e618ac7ce94d76258c8a34665bdc9905aa5c3dacc728226c63f69ce742d4c",
+      "crates/mux-windows/src/lifecycle.rs": "ab32f608101e995dfdba5cd511d4228974e438853ddb411c79052c4da51c5d4e",
+      "crates/mux-windows/src/magnifier_overlay.rs": "96e80bc7d4633fb9d7b5cf43f3bc751b1ba7c605caae63fce0ae319a754b5ba4",
+      "crates/mux-windows/src/monitors.rs": "59d17a80ff9fbdd3a807270fe7b9449db53c1e45a3af19024ff3c0d43883f572",
+      "crates/mux-windows/src/overlay.rs": "c37cbb9e444b12e9cc6e68e5bd94c4046ca257c5fb750f8b8b92331e2eac9930",
+      "crates/mux-windows/src/overlay_integration_benchmark.rs": "b1e4ddaa1e8b9a7e437c954dea0f483681d41a4edaeb97fdea49ec6e3612b3d2",
+      "crates/mux-windows/src/overlay_native_acceptance.rs": "a5ef63824c31d5e3231f1c7ed399c0cb704d72d84fd044a0e13a8279cd1f1f93",
+      "crates/mux-windows/src/overlay_optimization_acceptance.rs": "f7ce3ff52a5ff1f7765ea4153896bbc8ea35c8a66072f0707c3f5cdd7e362728",
+      "crates/mux-windows/src/power.rs": "ff0d15a143ac99f8f6716dea0b508d691b328d2e618449a15906bf19aef3a358",
+      "crates/mux-windows/src/process_arch.rs": "15ada7c34b83f234c4ee14b56cac85b8e6c2366fbb06e00543681f44f1f9f485",
+      "crates/mux-windows/src/protoinput/control.rs": "006234cacd44596ed8283fa28487b259d47e4524591f6da7d380fc41c612a89a",
+      "crates/mux-windows/src/protoinput/control_pipe.rs": "c8b8a154b3c5637a80e34538c52d4324ac5a4fe5c2b33266b92b56ac874be477",
+      "crates/mux-windows/src/protoinput/dispatch.rs": "1667cfbaef5ebb883b785d5695297af72efe16fa9405fdd3b75d17bdf1c2be3d",
+      "crates/mux-windows/src/protoinput/injector.rs": "5ff87f264bae056682d8b7a2380c5c47c49b4fb7777458d1418d285de85798cc",
+      "crates/mux-windows/src/protoinput/wire.rs": "c86748a0c76905ed94fe25bdd6fffaba9878f5567cd5a7004e5afc8746c44057",
+      "crates/mux-windows/src/protoinput.rs": "bab414806e09f8bb01aa060421e8a1abaea6a7b0b59045cd84873c9222075d7e",
+      "crates/mux-windows/src/queue_fence.rs": "fc0b74033f33fe7748af43c019a7795d33da964172cd3619e5a13d34e33e4f4e",
+      "crates/mux-windows/src/raw_input.rs": "aece8dd13dc955a669bf569e2a67a44cf141106ae4ec28975b3da88ac3161417",
+      "crates/mux-windows/src/system_cursor.rs": "7deb2917fbd867793dfb4a9a64e737b51c96aaf65ee832dc103671941e06b5ea",
+      "crates/mux-windows/src/target_capture.rs": "1d638e53f02c13a07fad3389f026c9db9955fabb4df62efaec491b0ce8af1534",
+      "crates/mux-windows/src/targets.rs": "7c9536451033930ea05d10e50deed3e15af7a4953b97e46ac2d24ca9b8edf8c6",
+      "crates/mux-windows/src/wheel.rs": "ddcbaf591658aaf9d840348ec8335f72b2c82cf6a1c69dbe726fa36f6a4d0aff",
+      "crates/mux-windows/tests/abi.rs": "357458a15cbb651c40f9af934602df10f5e7566e9f44d2dd0f70e57ea24d30b3",
+      "crates/mux-windows/tests/fixtures/injector.rs": "20c95a445f9b236835ebcacc3a5cbc408d6ebb837c4fa5f420d7a6eaac5605ec",
+      "crates/mux-windows/tests/fixtures/loader.rs": "804c3f854418446d590a28dc6e64f1a9a1a75abf41d99a333a807531c61874d8",
+      "crates/mux-windows/tests/fixtures/native_cleanup_failure.rs": "a420dbca2a409d08b8322dffcc7f8e7abb27d625bdc41a2547dc3a01dbe0fb7e",
+      "crates/mux-windows/tests/fixtures/native_incompatible.rs": "bb3defc95855cc80e9651e4ada8a5cfd96e838d4310a58cf9f326987311944be",
+      "crates/mux-windows/tests/fixtures/native_input_surface.rs": "570fd17939c0f6f254c74626a76bf35fc9ce2108690a841da1ffc3b2b63bcbbb",
+      "crates/mux-windows/tests/fixtures/native_performance.rs": "b01f8fd69d977283643f6618f425e9ccc330b979e68fc47641354cd6da684b8c",
+      "crates/mux-windows/tests/fixtures/native_providers.rs": "f6914ba05939a8c97c9bcc15dfcf3c4d365e072dd36e57545cd65177cffd5a78",
+      "crates/mux-windows/tests/fixtures/native_scope_rejection.rs": "c8357ffbfa02c45075da1f3e8c0442f35e763be3e14e3edd1a6de5973522a3da",
+      "crates/mux-windows/tests/fixtures/native_short_frame.rs": "9cfcb52c3e06a6fd80aa2e2fc814ee179a9ae21a8b2a19e2a6e9ee02c0317782",
+      "crates/mux-windows/tests/fixtures/native_worker_backpressure.rs": "54fec429497ba54584d6a4cde61929eb9c0c4f12227ef1be85f553ced5905cf4",
+      "crates/mux-windows/tests/fixtures/native_worker_failure.rs": "5fdb404b17270b4b6aa6c9f2894d22d1e2dd0d58db8e7cfe55e52e83e61081cf",
+      "crates/mux-windows/tests/fixtures/native_worker_stop.rs": "5dac5c203e397c11b82526f0935a50704e01625f26d5f11e15b5bbde37373e80",
+      "crates/mux-windows/tests/hit_test.rs": "8ab89f0ac65b39f549cfbcbaf84f9b5d73e5e22d286fdb8e2176d96427022a11",
+      "crates/mux-windows/tests/rust_control_native.rs": "49e8775dd74b8622d020d686b2b00db840460cd451b359a805bd815743bddf30",
+      "crates/protoinputmultiplex/assets/ocr/ATTRIBUTION.md": "37ef71157bd287dc558da93cadabde50c56eecf8c1d80dd682de24de7413a7f8",
+      "crates/protoinputmultiplex/assets/ocr/LICENSE-CC-BY-SA-4.0.txt": "28a9529c7d0bb4dc51f4bf5c116a3d16ef247a052f7591466768ddf563fd1cf5",
+      "crates/protoinputmultiplex/assets/ocr/MODEL_CARD.md": "dd8758be23f3c41367104b17936afbd4833bffdefccf76d30b010924e99faea1",
+      "crates/protoinputmultiplex/assets/ocr/provenance.json": "21e5dce02fd2be42e79c82a39b39cdbd8bc3755086c1245e11135c7b7f8c60a2",
+      "crates/protoinputmultiplex/assets/ocr/text-detection-ssfbcj81.rten": "614aafabf27c94d386f7aa036c967c2e47e4b9938fa11531ca8f5698c1ca4c36",
+      "crates/protoinputmultiplex/assets/ocr/text-rec-checkpoint-s52qdbqt.rten": "606d9a0414c6b73c99df75b707c11c70d1c8b12e1d4f900922e185fc37bfca65",
+      "crates/protoinputmultiplex/build.rs": "abf8b26b90538044950da657af744eff81b8dd52e077369905bf0f37a74aab94",
+      "crates/protoinputmultiplex/Cargo.toml": "b9fd1e4fcb06f1122510b706176dc2adcfa0331542f9f2b0006bf98f6ebc2e31",
+      "crates/protoinputmultiplex/notices/ocrs-MIT.txt": "96b5371602fbd3cb11a680dade714465520c72b02397be5095a3c29b1a3fb30a",
+      "crates/protoinputmultiplex/src/agent_export.rs": "53153cb652ff6a5f8e57f7ec6c79a188c095c902ee193e89cf0fcf8666783740",
+      "crates/protoinputmultiplex/src/agent_runtime/annotation_export.rs": "fc22ca739fbe428f1acd69ef598e507b0c1c428104c8ab6ad2a18c7babd5a80e",
+      "crates/protoinputmultiplex/src/agent_runtime.rs": "4a85c2b25cb5e77dc011eeb33627bbb669127051eefe1dd283aa6aceeed1fec1",
+      "crates/protoinputmultiplex/src/agent_ui.rs": "a9a86f6fe63dbda892128cd476a0d3dae65da2e939e91760c7158446cc69a8c8",
+      "crates/protoinputmultiplex/src/annotation_runtime.rs": "b4c4eeb50ea940b2dabf3e25b1f2922ec8206bfb0b3ba980c13f8c7be51ca2f7",
+      "crates/protoinputmultiplex/src/annotation_ui.rs": "dc769c2f28fcf52924b2346c33fde2faf3b1a857755aff15fee4ad6a4213963c",
+      "crates/protoinputmultiplex/src/app_lifecycle.rs": "670c85d7c7bf82f30a6ed474d5bddaffa813eb1f5e32054e7da02592740068aa",
+      "crates/protoinputmultiplex/src/app_paths.rs": "861f104d1fe07db33a203f84d6b09f4a55cdfe1358710d090a2695cfe0c95578",
+      "crates/protoinputmultiplex/src/app_preferences.rs": "119ccd2677b5a17197e0c8d42877ad7d1235be4b1bde2d1637ded08e29d30cc9",
+      "crates/protoinputmultiplex/src/app_preferences_ui.rs": "258d46a6dbb15f9c22f5f553ef981c5c98b3bee2ec2ae39140e17ccac8d34f89",
+      "crates/protoinputmultiplex/src/automation_probe.rs": "feddef1899cdc99d6fdfbd166c676826e13d2c4c7e3d0620489e41e6bcb4cdad",
+      "crates/protoinputmultiplex/src/automation_runtime.rs": "58434e9f55e0076ddc90c0d5340f7cb0a5b9c058a3c12b583f12f742959cc15d",
+      "crates/protoinputmultiplex/src/config_maintenance.rs": "18aea3955f12f2326c52eff51de2073aaab4cd8a8f670df5239580d1ebcc2cbf",
+      "crates/protoinputmultiplex/src/cursor_settings_ui.rs": "3d550069e6d44e17dbd33312b8e5ba5997afa9490b29f54d4ac54bb994228bc0",
+      "crates/protoinputmultiplex/src/desktop_capture_fixture.rs": "0215dc8ede8a0a1c6e48a481c886ae0daea363f77b7ca28d1b81d4a3910cb521",
+      "crates/protoinputmultiplex/src/desktop_router.rs": "bf50c88934ba454f51b3c88c8b57e313e829f4908ecedc29ee98c7eac74fc0b8",
+      "crates/protoinputmultiplex/src/emergency_stop.rs": "4f2767b25d67dc1ce01083a0ff143f9b9dfb07a02f9dbfc1be5a89c672ea3f7a",
+      "crates/protoinputmultiplex/src/forwarding_ui.rs": "5b25fd228788d32ff3e11e2e80b92dd7d00081595afd94dcdc6413d8da0f11f2",
+      "crates/protoinputmultiplex/src/gui.rs": "7e6a7e00ce69b6f28f8df2bae1c8bdb2ae4a5f7087124ef9d25800e80e440910",
+      "crates/protoinputmultiplex/src/gui_activity.rs": "7a78d024cf2db2736a50d69bb77d18ca1cf7b73a26020e520a0060e3cfbeab10",
+      "crates/protoinputmultiplex/src/gui_agent_broker.rs": "6de4bc546779be69b3db9081162fe4207159baa35543ae3745697a8b96e484c7",
+      "crates/protoinputmultiplex/src/gui_app_preferences.rs": "3e7d981f22aec5e8a78804ab29a2e3eb3c91e710d2798848538d7d13d76b7d18",
+      "crates/protoinputmultiplex/src/gui_bridge.rs": "03c561c88e7909ffb8cd252ed4a5d04d9125a831f5d0a424adc6a96bb05d3e7e",
+      "crates/protoinputmultiplex/src/gui_capture.rs": "29f03ea0d29f4fb5f836086df1bc3488e6f345a2834ccff4fd5d55376d217458",
+      "crates/protoinputmultiplex/src/gui_discovery.rs": "c61a9faaf7e877e6c1a4c6ff83195050b91308d501e1b360e78d1dec2c1654a8",
+      "crates/protoinputmultiplex/src/gui_macro_file.rs": "a345f8d5c1a62d04e4226b34b607fafbf2a8bf4a224edeba10b531dea375a447",
+      "crates/protoinputmultiplex/src/gui_profile_file.rs": "b94fb7f0c8a3b774724c92663d9fd4dae75998c2c97ce6c81366b2b80f2201a7",
+      "crates/protoinputmultiplex/src/gui_profile_policy.rs": "e55453bb0f9d120c439bf25ca289a68b133783b6ef843a5d4808bd88e0124f55",
+      "crates/protoinputmultiplex/src/gui_script_io.rs": "3ce33483ee44d57ef9382bbd8083b8c9b5a6b34ebca5ca08fa19905be057ffd4",
+      "crates/protoinputmultiplex/src/gui_sdk.rs": "12aeae041577e68db107657d53756dc85b20c4d7cc42ee0f1ab8a6120f2604a5",
+      "crates/protoinputmultiplex/src/gui_setup.rs": "bcf910f643bb82be854a789657a168ecfa4643032bcb053e25cf0fe498349d76",
+      "crates/protoinputmultiplex/src/gui_window_lock.rs": "79f23e5902c0b2536e955061c7db54c85fe4d8f57b42e59963b0497568bbfb64",
+      "crates/protoinputmultiplex/src/installation.rs": "a3d79997ad436086e44f651a5dff3815e6313988221d74ad0edfaf5005c20337",
+      "crates/protoinputmultiplex/src/keyboard_slider.rs": "bb612ae33a97d8df3ce9ccc34d71e215dd3f7c532380159052b5ea938cc3b4de",
+      "crates/protoinputmultiplex/src/macro_studio/mapper_delivery.rs": "de0a463e7443eb774f72bb3e3215a91dd08c1650291d5b62679f69676ce4410a",
+      "crates/protoinputmultiplex/src/macro_studio/mapper_delivery_tests.rs": "7f91e6964e5a010d935a740dc4911cd7cf249b7efb3d21db8ee7fc817719e16c",
+      "crates/protoinputmultiplex/src/macro_studio/user_pause.rs": "a5d4787a64b2bd312cfa4172686759aa5b6f59bc5fdd3e9d8b58940d0a9bf40d",
+      "crates/protoinputmultiplex/src/macro_studio/user_pause_tests.rs": "4e9c34d0b16ad748c2d9bf7e6a6cff6a9e7d4ab7a77186d9007ada142559c1c8",
+      "crates/protoinputmultiplex/src/macro_studio.rs": "230adbfc23175d4acdff0b19e86509654ef7a5f7f6a662ee3e7220603dfdbfcb",
+      "crates/protoinputmultiplex/src/macro_studio_ui.rs": "224e70d2addda51dc24fd728834b79ae5c25b0a130bb63c2f6b943fa274af8bb",
+      "crates/protoinputmultiplex/src/magnifier_runtime.rs": "86b479ec435c1e50670f4605546961bf5ef6db84486207f73be4ce5d347b0de6",
+      "crates/protoinputmultiplex/src/magnifier_ui.rs": "db05f2975cb9d8763a05be2a89f687a3c5df8cd3f4aa7c7875c9eb2d8b903ccc",
+      "crates/protoinputmultiplex/src/main.rs": "fc30166337f7d64281a6e26969280883043f95d442ebc13e49b8192ed20a864f",
+      "crates/protoinputmultiplex/src/mapper_flow_store.rs": "1dd3c4ca090f0593257d1bd2e4085b3c3c0ec3666840054cf1dd9f10952f8cfe",
+      "crates/protoinputmultiplex/src/mapper_runtime.rs": "32f3192dc8bfd525c5102dae08fe0b260890695bf8a9ba775a2f834018dae4cb",
+      "crates/protoinputmultiplex/src/mapper_screen.rs": "231b1abaf68c9bca1d32f51a41e76384c3494605fddaeb5b7476c3c34b0432ed",
+      "crates/protoinputmultiplex/src/mapper_ui.rs": "ed3309bfd717830f5e4f7cbcf804f611a29f9f11e8e700918a9d0f9224f6f99f",
+      "crates/protoinputmultiplex/src/mcp.rs": "4b8c26db3e137eaf5e100d7916bedd64cf91e78f51f5a074b95b52769a60f99d",
+      "crates/protoinputmultiplex/src/output_runtime.rs": "f917993f8a0ff6c8e4b9d8a123673b52697150905a5c324a305e2d69ab517821",
+      "crates/protoinputmultiplex/src/output_ui.rs": "132db7812c80839b873050c9ad8f6ffd33c2dd7251c79d92dab0a7b114223a0f",
+      "crates/protoinputmultiplex/src/probe.rs": "e8fa7944e004fdf81707e3a6d5f362073ba26039805ebc933fac72ef68855dd0",
+      "crates/protoinputmultiplex/src/profile_store.rs": "220ca70bb79ceb0d877b2971414314ed344266cf15e1e7c6a303c5676efb87eb",
+      "crates/protoinputmultiplex/src/replication_queue.rs": "809a3ce190ebc61283b66e024241d5df2ba96e8d402d9f76a15d974aabc4f079",
+      "crates/protoinputmultiplex/src/replication_ui.rs": "0f1144d4a5b141f2cf02f3168441b0a2d9e708fb7907f7bc8e7ecbbf60288ee4",
+      "crates/protoinputmultiplex/src/router.rs": "bdb4a1b3fadf48477931af39819e69afec9a6642e9bbd34037f27aeeb066bafd",
+      "crates/protoinputmultiplex/src/routing_engine.rs": "e0cd42eb2280680408b712795122bb314807a746dfc320ce012bbd897adcce21",
+      "crates/protoinputmultiplex/src/screen_analysis.rs": "202d4b24e8c0edbbf9464b5389f5983ac6fd884cd424de79386ced0c1854ccad",
+      "crates/protoinputmultiplex/src/screen_ocr.rs": "2f922919a97677a67856154022e02a3dfce7029f0365dcfd60ff036f984243aa",
+      "crates/protoinputmultiplex/src/screen_ui.rs": "a511a336ce81c9ecbe8bd767945e69dcdcefbb17ddf9700e129a50347f55f2c9",
+      "crates/protoinputmultiplex/src/sdk_listener.rs": "4da0d3699fd26ebc107759293fba77bbf0f615971bac34e22dc939ab16a64a67",
+      "crates/protoinputmultiplex/src/sdk_wire.rs": "914f88b21d67d9a316932970f01f5aff30b9e08d9cf9d99115be0b81ae6903e0",
+      "crates/protoinputmultiplex/src/session/backend_selection.rs": "6474d2690da7de2ab776e9d9a6754921fd75b51b0e0f94195e3dcd59eff0b248",
+      "crates/protoinputmultiplex/src/session/transport.rs": "1dca3de1a122f572d2e2526c949674ae73d6f1c2dbe2ac2cd36d6107926c353e",
+      "crates/protoinputmultiplex/src/session.rs": "3a08810f558d2ef4dfcbb19ec7343917d84faeab2fce3e0c9f9c03013a438111",
+      "crates/protoinputmultiplex/src/session_recovery.rs": "0b9cc9df2d0cb41601e86db8ba3e8dedb6a25dc11eea51b6000b6fbbc2ae4f66",
+      "crates/protoinputmultiplex/src/ui_script.rs": "fd60e07e3d979b4eced03f0eae460bf1c6482bd6fc77024b1745706f0814bc3b",
+      "crates/protoinputmultiplex/src/virtual_users.rs": "fb127378091aa7d5cad5f17f169e58a8655020aa7412a294773946de2c55343e",
+      "crates/protoinputmultiplex/src/virtual_users_ui.rs": "2e59900ede2925a8cd71578ca1974b2780edf0a1551c30ffd10c0a8a03577745",
+      "crates/protoinputmultiplex/src/window_selection.rs": "c3f05e3baee7a8f3dd766fe4ee8a715f9ee99d34875eca4fd5448e1e8427ee41",
+      "crates/protoinputmultiplex/tests/fixtures/ocr-clean-line.png": "1a12a6519b056d09e7addae5c4849f81bfbf2e5724051caacecc46a61922e941",
+      "scripts/native/setup-ack-golden.txt": "2583c4adb1d1ff4600f388e63487872a2cc5d5ccb6f46e66c7b1c9bd4b80d4ad",
+      "scripts/native/setup-ack.cpp": "20644bd4ea47986ab36a197cbc006c059d2906fbaf9b10d11ae30b8d332ec26d",
+      "scripts/native/wire-abi-golden.txt": "206c7c3e82cefda59ddecaf80a0c772bc62f15cc445c4da5549bce1579b09deb",
+      "scripts/native/wire-abi.cpp": "728ca91948c2e0bc866941a4793094b491c0893c723c448eef67f64ca0444db3",
+      "scripts/package-portable.py": "572af2a7490f7d32ce24a188b04245ac66ef8f674edc27131c03ad0aa3b95921"
+    },
+    "mismatches": []
+  },
+  "native_scope": {
+    "routing": false,
+    "DLLs": 0,
+    "targets": 0,
+    "physical_input": false,
+    "first_run_sequential_GUI": 6,
+    "tail_sequential_GUI": 1,
+    "tail_MCP_max_active": 1,
+    "no_force": true,
+    "live_owned_PIDs": []
+  },
+  "approved_components": [
+    "Separate preferences with legacy defaults load=true/save=false; original Ouroboros UI labels and local Apply workflow",
+    "Ordinary default profile startup read, missing-default fresh initialization, disabled startup read with manual Load still available",
+    "Save-off preserves exact file bytes; applied-profile exit saving uses exact ticket and snapshot after routing/SDK/preferences/profile quiescence",
+    "Three-second delayed exit save advances frames while pending and repeated Close retains one ticket; saved main and prior backup verified",
+    "Pending Restore settles before exit saving and retains main B / recovery backup A",
+    "Corrupt default remains unresolved and blocks exit-save fallback overwrite while revealing a readable error; explicit isolated repair and GUI Load are cleanup only",
+    "Local normal/compact scripted checkbox activation with actual committed flags",
+    "Stopped setup MCP policy Inspect, mismatched expected-revision rejection (inspected revision + 1) without preference change, correlated Configure commit and revision advancement",
+    "Ordinary live app-preference Configure schema rejects both policy fields; setup origin remains distinct and cannot mutate login registration"
+  ],
+  "tail_review": {
+    "artifact_count": 29,
+    "artifact_hash_mismatches": [],
+    "ui_proofs": [
+      {
+        "id": "settings",
+        "valid": true
+      },
+      {
+        "id": "application",
+        "valid": true
+      },
+      {
+        "id": "preferences",
+        "valid": true
+      },
+      {
+        "id": "load-toggle",
+        "valid": true,
+        "dimensions": [
+          [
+            680,
+            620
+          ],
+          [
+            680,
+            620
+          ]
+        ]
+      },
+      {
+        "id": "save-toggle",
+        "valid": true,
+        "dimensions": [
+          [
+            320,
+            360
+          ],
+          [
+            320,
+            360
+          ]
+        ]
+      },
+      {
+        "id": "apply",
+        "valid": true
+      },
+      {
+        "id": "home",
+        "valid": true
+      },
+      {
+        "id": "settings-access",
+        "valid": true
+      },
+      {
+        "id": "access-category",
+        "valid": true
+      },
+      {
+        "id": "access-page",
+        "valid": true
+      },
+      {
+        "id": "enable",
+        "valid": true
+      },
+      {
+        "id": "disable",
+        "valid": true
+      }
+    ],
+    "local_commit": {
+      "artificial_delay_ms": 0,
+      "degraded": false,
+      "error": null,
+      "kind": "configure",
+      "origin": "local",
+      "pending": false,
+      "result": "committed",
+      "retiring": false,
+      "revision": 1,
+      "shutdown_complete": false,
+      "ticket": 1
+    },
+    "local_policy": {
+      "load_profile_at_startup": false,
+      "save_profile_on_exit": true
+    },
+    "mcp_ack": {
+      "outcome": "committed",
+      "preferences_revision": 2,
+      "profile_persistence": {
+        "load_profile_at_startup": true,
+        "save_profile_on_exit": false
+      },
+      "revision": 25,
+      "ticket": 2
+    },
+    "final_policy": {
+      "load_profile_at_startup": true,
+      "save_profile_on_exit": false
+    },
+    "profile_file_created": false,
+    "GUI_exit_code": 0,
+    "MCP_normal_exit_basis": "Both setup and standalone close() normal-EOF returncode-zero assertions completed before raw pass; no live owned PID remains"
+  },
+  "visual_review": {
+    "normal": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMux\\profile-policy-20261107\\native-tail-run-b4d2bdf4fe3b\\missing-default-policy-gui-mcp\\policy-normal-load.png",
+      "sha256": "7ec05d7fc2248e27ea71df7e80cf3cbef51e58a5612143081149e979607d7bbc",
+      "geometry": {
+        "hwnd": 1187182,
+        "dpi": 96,
+        "client_pixels": [
+          680,
+          620
+        ],
+        "client_logical": [
+          680,
+          620
+        ],
+        "window_rect": [
+          182,
+          182,
+          878,
+          841
+        ]
+      },
+      "assessment": "680x620: both policy checkbox labels and explanatory caption readable, with Apply/Revert visible"
+    },
+    "compact": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMux\\profile-policy-20261107\\native-tail-run-b4d2bdf4fe3b\\missing-default-policy-gui-mcp\\policy-compact-save.png",
+      "sha256": "f765a7cb11317cc31cb11ae6432fe4742beb341b593622a19d0b805db345da06",
+      "geometry": {
+        "hwnd": 1187182,
+        "dpi": 96,
+        "client_pixels": [
+          320,
+          360
+        ],
+        "client_logical": [
+          320,
+          360
+        ],
+        "window_rect": [
+          182,
+          182,
+          518,
+          581
+        ]
+      },
+      "assessment": "320x360: wrapped disclosure, lower preferences content and Apply/Revert visible. Policy checkboxes are scrolled above this postaction capture; compact checkbox visual readability is not claimed. Exact 320x360 prepress/release containment and actual click establish bounded reachability."
+    },
+    "failed_exit": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMux\\profile-policy-20261107\\native-run-2887f788d7b7\\corrupt-default-blocks-exit\\failed-exit-visible.png",
+      "sha256": "4ea008cedcdaf38f74d7e6be2a3bd6c5acefd95d761dd51623da9b3ff4b57ea1",
+      "geometry": {
+        "hwnd": 8588536,
+        "dpi": 96,
+        "client_pixels": [
+          540,
+          480
+        ],
+        "client_logical": [
+          540,
+          480
+        ],
+        "window_rect": [
+          26,
+          26,
+          582,
+          545
+        ]
+      },
+      "assessment": "Visible restored GUI and readable footer instruct resolving failed initial profile before exit saving"
+    }
+  },
+  "original_failure_preserved": {
+    "raw_result": "NOT_ACCEPTED",
+    "first_failure": {
+      "type": "AssertionError",
+      "message": "",
+      "phase": "save-toggle",
+      "profile": {
+        "active_path": "C:\\Users\\Kenny\\.cache\\ProtoInputMux\\profile-policy-20261107\\native-run-2887f788d7b7\\missing-default-policy-gui-mcp\\data\\profiles/local.json",
+        "backup_path": "C:\\Users\\Kenny\\.cache\\ProtoInputMux\\profile-policy-20261107\\native-run-2887f788d7b7\\missing-default-policy-gui-mcp\\data\\profiles/local.json.bak",
+        "cursor_settings_sync": {
+          "applied": null,
+          "conflict": false,
+          "error": null,
+          "pending_identity": null,
+          "selected_identity": null
+        },
+        "exit_save": {
+          "error": null,
+          "path": null,
+          "phase": "idle",
+          "ticket": null
+        },
+        "profile": {
+          "concurrent": true,
+          "desktop": null,
+          "forwarding": {
+            "edges": [],
+            "version": 1
+          },
+          "replication": {
+            "edges": [],
+            "version": 1
+          },
+          "seats": [],
+          "version": 1
+        },
+        "profile_file": {
+          "initial_unresolved": false,
+          "operation": {
+            "context": {
+              "active_path": "C:\\Users\\Kenny\\.cache\\ProtoInputMux\\profile-policy-20261107\\native-run-2887f788d7b7\\missing-default-policy-gui-mcp\\data\\profiles/local.json",
+              "interaction": 0,
+              "profile": 0,
+              "session": 0,
+              "transfer_path": "C:\\Users\\Kenny\\.cache\\ProtoInputMux\\profile-policy-20261107\\native-run-2887f788d7b7\\missing-default-policy-gui-mcp\\data\\profiles/transfer.json"
+            },
+            "kind": "initial_load_default",
+            "mutating": false,
+            "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMux\\profile-policy-20261107\\native-run-2887f788d7b7\\missing-default-policy-gui-mcp\\data\\profiles/local.json",
+            "pending": false,
+            "test_delay_ms": 0,
+            "ticket": 1,
+            "valid": false
+          },
+          "quit_waiting": false,
+          "result": "installed"
+        },
+        "status": "No saved startup profile was found. The current fresh setup is ready.",
+        "transfer_path": "C:\\Users\\Kenny\\.cache\\ProtoInputMux\\profile-policy-20261107\\native-run-2887f788d7b7\\missing-default-policy-gui-mcp\\data\\profiles/transfer.json",
+        "undo_available": false
+      },
+      "progress": {
+        "awaiting_click": false,
+        "capture": {
+          "active": null,
+          "failed": null,
+          "pending": null,
+          "published": 3,
+          "rejected": null
+        },
+        "capture_render": {
+          "enabled": true,
+          "received_generation": 3,
+          "requested_generation": 3
+        },
+        "elapsed_ms": 8,
+        "frame": 880,
+        "hit": null,
+        "io": {
+          "acked_sequence": 24,
+          "active": true,
+          "fault": null,
+          "pending_critical": 0,
+          "pending_snapshots": 11,
+          "sampled": null,
+          "submitted_sequence": 24
+        },
+        "key": null,
+        "key_pairs": 0,
+        "last_event_sequence": 24,
+        "next": "Apply application preferences",
+        "ready": true,
+        "release": null,
+        "response": {
+          "clicked": true,
+          "enabled": true,
+          "interact_rect": [
+            8,
+            78,
+            217.375,
+            43
+          ],
+          "rect": [
+            8,
+            27,
+            217.375,
+            43
+          ]
+        },
+        "response_enabled": null,
+        "response_label": null,
+        "response_visible": null,
+        "target_focused": false,
+        "viewport": {
+          "focused": false,
+          "viewport": {
+            "close_requested": false,
+            "focused": false,
+            "fullscreen": false,
+            "inner_rect": [
+              112,
+              135,
+              432,
+              495
+            ],
+            "maximized": false,
+            "minimized": false,
+            "native_pixels_per_point": 1,
+            "occluded": null,
+            "outer_rect": [
+              104,
+              104,
+              440,
+              503
+            ]
+          },
+          "viewport_id": "\"FFFF\""
+        }
+      },
+      "launch": {
+        "controller_present": false,
+        "preflight_pending": false,
+        "ready": false,
+        "setup": {
+          "broker_generation": 0,
+          "broker_phase": "stopped",
+          "enabled": false,
+          "quit_trace": {
+            "allow_close": false,
+            "close_ready": false,
+            "preferences_operation": {
+              "artificial_delay_ms": 0,
+              "degraded": false,
+              "error": null,
+              "kind": null,
+              "origin": null,
+              "pending": false,
+              "result": null,
+              "retiring": false,
+              "revision": 0,
+              "shutdown_complete": false,
+              "ticket": 0
+            },
+            "preferences_quit_waiting": false,
+            "quit_after_stop": false,
+            "received": {
+              "entries": 0,
+              "last_action": null,
+              "last_action_frame": null,
+              "quit_received": 0,
+              "stop_received": 0
+            }
+          },
+          "retiring": false,
+          "sdk": {
+            "endpoint_path": null,
+            "error": null,
+            "phase": "off",
+            "retired": true,
+            "url": null
+          },
+          "start_order": null
+        },
+        "stopping": false
+      },
+      "completed_UI_steps": 4
+    },
+    "diagnosis": "Postclick full_rect requirement compared changed layout geometry; original click-phase proof shows visible control at interaction. Tail fixture separates preinteraction geometry from postclick acknowledgement. Product source was unchanged."
+  },
+  "material_findings": [],
+  "limits": [
+    "Accepted feature group only; full MouseMux Ultra parity and release readiness are not claimed",
+    "Original six-cohort raw remains NOT_ACCEPTED; acceptance composes independently verified core and focused tail evidence",
+    "Direct saved-profile relaunch, explicit --profile missing path, tray-hide no-save distinction, and local-draft preservation rely on source/unit coverage or component composition, not separate native experiments in this matrix",
+    "Before-claim revocation, after-claim retained commit, and live GUI app-preference grant mutation boundaries are source/unit coverage; standalone schema rejection is not a live-grant experiment",
+    "No hardware input, same-process multi-user isolation, or desktop-wide isolation claim",
+    "Historical P1 GUI stall remains open and unattributed; the geometry assertion did not reproduce a stall and this work establishes no general health or P1 fix claim",
+    "No extra healthy native replay or unrelated scope expansion was needed",
+    "Native revision rejection used a future mismatch (expected_revision = inspected revision + 1); old-stale-revision rejection is source/unit coverage, with the same inequality guard. Prior sealed fixture labels are not relabeled or modified."
+  ],
+  "private_acceptance": {
+    "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMux\\profile-policy-20261107\\notes\\independent-acceptance.json",
+    "sha256": "63fbc5bc6a7c2edd0d75475b81699fd9c7c09cb160ba3b3a2c9e3379dec00571"
+  },
+  "contract": "docs/profile-persistence-contract.md"
+}

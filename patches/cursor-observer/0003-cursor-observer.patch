@@ -1,0 +1,319 @@
+diff --git a/src/ProtoInput/ProtoInputHooks/CursorVisibilityHook.cpp b/src/ProtoInput/ProtoInputHooks/CursorVisibilityHook.cpp
+--- a/src/ProtoInput/ProtoInputHooks/CursorVisibilityHook.cpp
++++ b/src/ProtoInput/ProtoInputHooks/CursorVisibilityHook.cpp
+@@ -1,5 +1,7 @@
+ #include "CursorVisibilityHook.h"
+ #include "FakeCursor.h"
++#include "HwndSelector.h"
++#include "MuxCursorObserverBridge.h"
+ #include <imgui.h>
+ 
+ namespace Proto
+@@ -10,6 +12,7 @@
+ int WINAPI Hook_ShowCursor(BOOL bShow)
+ {
+ 	FakeCursor::SetCursorVisibility(bShow == TRUE);
++	MuxCursorObserverBridge::Notify(FakeCursor::GetCursorHandle(), FakeCursor::GetCursorVisibility(), HwndSelector::GetSelectedHwnd());
+ 	if (bShow == FALSE) ShowCursor(FALSE);
+ 	return bShow == TRUE ? 0 : -1;
+ }
+@@ -34,6 +37,7 @@
+ 	if (hCursor != nullptr)
+ 		FakeCursor::SetCursorHandle(hCursor); // Custom cursor image
+ 	
++	MuxCursorObserverBridge::Notify(hCursor, hCursor != nullptr, HwndSelector::GetSelectedHwnd());
+ 	return hCursor;
+ }
+ 
+@@ -45,6 +49,7 @@
+ 
+ 		if (hCursor != nullptr)
+ 			FakeCursor::SetCursorHandle(hCursor); // Custom cursor image
++		MuxCursorObserverBridge::Notify(hCursor, hCursor != nullptr, HwndSelector::GetSelectedHwnd());
+ 	}
+ 
+ 	return TRUE;
+diff --git a/src/ProtoInput/ProtoInputHooks/FakeCursor.h b/src/ProtoInput/ProtoInputHooks/FakeCursor.h
+--- a/src/ProtoInput/ProtoInputHooks/FakeCursor.h
++++ b/src/ProtoInput/ProtoInputHooks/FakeCursor.h
+@@ -72,6 +72,8 @@
+ 		return state.showCursor;
+ 	}
+ 
++	static HCURSOR GetCursorHandle() { return state.hCursor; }
++
+ 	static void SetCursorHandle(HCURSOR newCursor)
+ 	{
+ 		state.hCursor = newCursor;
+diff --git a/src/ProtoInput/ProtoInputHooks/PipeCommunication.cpp b/src/ProtoInput/ProtoInputHooks/PipeCommunication.cpp
+--- a/src/ProtoInput/ProtoInputHooks/PipeCommunication.cpp
++++ b/src/ProtoInput/ProtoInputHooks/PipeCommunication.cpp
+@@ -23,6 +23,7 @@
+ #include "ClipCursorHook.h"
+ #include "FakeMouseKeyboard.h"
+ #include "CursorVisibilityHook.h"
++#include "MuxCursorObserverBridge.h"
+ 
+ namespace Proto
+ {
+@@ -178,6 +179,29 @@
+ 				MessageFilterHook::RegisterQueueFence(hwnd, event, body->cookie);
+ 				break;
+ 			}
++            case ProtoPipe::PipeMessageType::MuxCursorObserverStart:
++            {
++                if (msgHeader.messageSize != sizeof(ProtoPipe::MuxCursorObserverStartPacket)) goto endPipe;
++                const auto body = reinterpret_cast<const ProtoPipe::MuxCursorObserverStartPacket*>(messageBuffer);
++                if (sizeof(uintptr_t) == 4 && (body->mapping > UINT32_MAX || body->mutex > UINT32_MAX)) goto endPipe;
++                MuxCursorObserverBridge::Start(body->mapping, body->mutex, body->attachment);
++                break;
++            }
++            case ProtoPipe::PipeMessageType::MuxCursorObserverAssociate:
++            {
++                if (msgHeader.messageSize != sizeof(ProtoPipe::MuxCursorObserverAssociatePacket)) goto endPipe;
++                const auto body = reinterpret_cast<const ProtoPipe::MuxCursorObserverAssociatePacket*>(messageBuffer);
++                if (sizeof(uintptr_t) == 4 && body->hwnd > UINT32_MAX) goto endPipe;
++                MuxCursorObserverBridge::Associate(body->hwnd, body->association);
++                break;
++            }
++            case ProtoPipe::PipeMessageType::MuxCursorObserverStop:
++            {
++                if (msgHeader.messageSize != sizeof(ProtoPipe::MuxCursorObserverStopPacket)) goto endPipe;
++                const auto body = reinterpret_cast<const ProtoPipe::MuxCursorObserverStopPacket*>(messageBuffer);
++                MuxCursorObserverBridge::Stop(body->attachment);
++                break;
++            }
+ 			case ProtoPipe::PipeMessageType::SetupHook:
+ 				{
+ 					const auto body = reinterpret_cast<ProtoPipe::PipeMessageSetupHook*>(messageBuffer);
+@@ -521,6 +545,7 @@
+ 		}
+ 	}
+ 	endPipe:
++	MuxCursorObserverBridge::StopAll();
+ 	// The controller may exit or be terminated by its watchdog. Restore ordinary input.
+ 	RawInput::rawInputState.externalFreezeInput = true;
+ 	RawInput::rawInputState.sendMouseMoveMessages = false;
+diff --git a/src/ProtoInput/ProtoInputHooks/pipeinclude/pipeinclude.h b/src/ProtoInput/ProtoInputHooks/pipeinclude/pipeinclude.h
+--- a/src/ProtoInput/ProtoInputHooks/pipeinclude/pipeinclude.h
++++ b/src/ProtoInput/ProtoInputHooks/pipeinclude/pipeinclude.h
+@@ -34,7 +34,10 @@
+ 	SetRawInputBypass,
+ 	SetShowCursorWhenImageUpdated,
+ 	MuxInput,
+-	MuxQueueFence
++	MuxQueueFence,
++	MuxCursorObserverStart,
++	MuxCursorObserverAssociate,
++	MuxCursorObserverStop
+ };
+ 
+ // Fixed-width adapter for Rust-generated application-local devices (not OS HID).
+@@ -52,6 +55,14 @@
+ 	uint64_t hwnd, event, cookie;
+ };
+ static_assert(sizeof(MuxQueueFencePacket) == 24, "Rust queue-fence ABI");
++
++// Output-only observer transport. These are target-local duplicated handles.
++struct MuxCursorObserverStartPacket { uint64_t mapping, mutex, attachment; };
++struct MuxCursorObserverAssociatePacket { uint64_t hwnd, association; };
++struct MuxCursorObserverStopPacket { uint64_t attachment; };
++static_assert(sizeof(MuxCursorObserverStartPacket) == 24, "cursor Start ABI");
++static_assert(sizeof(MuxCursorObserverAssociatePacket) == 16, "cursor Associate ABI");
++static_assert(sizeof(MuxCursorObserverStopPacket) == 8, "cursor Stop ABI");
+ 
+ struct PipeMessageHeader
+ {
+diff --git a/src/ProtoInput/ProtoInputHooks/RawInput.cpp b/src/ProtoInput/ProtoInputHooks/RawInput.cpp
+--- a/src/ProtoInput/ProtoInputHooks/RawInput.cpp
++++ b/src/ProtoInput/ProtoInputHooks/RawInput.cpp
+@@ -16,6 +16,7 @@
+ #include "protoinpututil.h"
+ #include "KeyboardButtonFilter.h"
+ #include "MessageFilterHook.h"
++#include "MuxCursorObserverBridge.h"
+ 
+ namespace Proto
+ {
+@@ -164,6 +165,7 @@
+ 	if (rawInputState.sendMouseMoveMessages)
+ 	{
+ 		PostMessageW((HWND)HwndSelector::GetSelectedHwnd(), WM_MOUSEMOVE, mouseMkFlags, mousePointLparam);
++		MuxCursorObserverBridge::Motion(HwndSelector::GetSelectedHwnd());
+ 	}
+ 
+ 
+diff --git a/src/ProtoInput/ProtoInputLoader/include/protoloader.h b/src/ProtoInput/ProtoInputLoader/include/protoloader.h
+--- a/src/ProtoInput/ProtoInputLoader/include/protoloader.h
++++ b/src/ProtoInput/ProtoInputLoader/include/protoloader.h
+@@ -122,4 +122,9 @@
+ 
+ extern "C" __declspec(dllexport) void SetRawInputBypass(ProtoInstanceHandle instanceHandle, bool enabled);
+ 
+-extern "C" __declspec(dllexport) void SetShowCursorWhenImageUpdated(ProtoInstanceHandle instanceHandle, bool enabled);
+\ No newline at end of file
++extern "C" __declspec(dllexport) void SetShowCursorWhenImageUpdated(ProtoInstanceHandle instanceHandle, bool enabled);
++// Optional output-only cursor observer bridge version 1; no routing dependency.
++extern "C" __declspec(dllexport) unsigned int MuxCursorObserverVersion();
++extern "C" __declspec(dllexport) bool MuxCursorObserverStart(ProtoInstanceHandle instance, uint64_t mapping, uint64_t mutex, uint64_t attachment);
++extern "C" __declspec(dllexport) bool MuxCursorObserverAssociate(ProtoInstanceHandle instance, uint64_t hwnd, uint64_t association);
++extern "C" __declspec(dllexport) bool MuxCursorObserverStop(ProtoInstanceHandle instance, uint64_t attachment);
+diff --git a/src/ProtoInput/ProtoInputLoader/Inject.cpp b/src/ProtoInput/ProtoInputLoader/Inject.cpp
+--- a/src/ProtoInput/ProtoInputLoader/Inject.cpp
++++ b/src/ProtoInput/ProtoInputLoader/Inject.cpp
+@@ -98,6 +98,52 @@
+ 		return true;
+ 
+ 	return true;
++}
++
++namespace
++{
++    template<typename Body>
++    bool SendCursorCommand(ProtoInstanceHandle handle, ProtoPipe::PipeMessageType type, const Body& body)
++    {
++        const auto found = Proto::instances.find(handle);
++        if (found == Proto::instances.end()) return false;
++        auto& instance = found->second;
++        if (!instance.pipeHandle || instance.pipeHandle == INVALID_HANDLE_VALUE) return false;
++        WaitClientConnect(instance);
++        if (!instance.clientConnected) return false;
++        const ProtoPipe::PipeMessageHeader header{ type, static_cast<unsigned int>(sizeof(Body)) };
++        std::lock_guard<std::mutex> lock(ProtoPipeWriteMutex());
++        DWORD written = 0;
++        // As with queue fences, once writing begins Start transfers ownership even
++        // on a partial failure. Rust must not close a potentially consumed handle.
++        if (!WriteFile(instance.pipeHandle, &header, sizeof(header), &written, nullptr) || written != sizeof(header)) return true;
++        written = 0;
++        WriteFile(instance.pipeHandle, &body, sizeof(body), &written, nullptr);
++        return true;
++    }
++}
++extern "C" __declspec(dllexport) unsigned int MuxCursorObserverVersion() { return 1; }
++extern "C" __declspec(dllexport) bool MuxCursorObserverStart(ProtoInstanceHandle instance, uint64_t mapping, uint64_t mutex, uint64_t attachment)
++{
++    const auto found = Proto::instances.find(instance);
++    if (found == Proto::instances.end() || !mapping || !mutex || !attachment) return false;
++    if (!TargetUses64BitHandles(found->second.pid) && ((mapping >> 32) || (mutex >> 32))) return false;
++    return SendCursorCommand(instance, ProtoPipe::PipeMessageType::MuxCursorObserverStart, ProtoPipe::MuxCursorObserverStartPacket{mapping, mutex, attachment});
++}
++extern "C" __declspec(dllexport) bool MuxCursorObserverAssociate(ProtoInstanceHandle instance, uint64_t hwnd, uint64_t association)
++{
++    const auto found = Proto::instances.find(instance);
++    if (found == Proto::instances.end() || !hwnd || !association) return false;
++    const auto native = reinterpret_cast<HWND>(static_cast<uintptr_t>(hwnd));
++    if (static_cast<uint64_t>(reinterpret_cast<uintptr_t>(native)) != hwnd) return false;
++    DWORD pid = 0;
++    if (!GetWindowThreadProcessId(native, &pid) || pid != found->second.pid) return false;
++    return SendCursorCommand(instance, ProtoPipe::PipeMessageType::MuxCursorObserverAssociate, ProtoPipe::MuxCursorObserverAssociatePacket{hwnd, association});
++}
++extern "C" __declspec(dllexport) bool MuxCursorObserverStop(ProtoInstanceHandle instance, uint64_t attachment)
++{
++    if (!attachment) return false;
++    return SendCursorCommand(instance, ProtoPipe::PipeMessageType::MuxCursorObserverStop, ProtoPipe::MuxCursorObserverStopPacket{attachment});
+ }
+ 
+ extern "C" NTSTATUS __declspec(dllexport) __stdcall HookCompleteInjection(void* InInfo)
+diff --git a/src/ProtoInput/ProtoInputHooks/MuxCursorObserverBridge.h b/src/ProtoInput/ProtoInputHooks/MuxCursorObserverBridge.h
+new file mode 100644
+--- /dev/null
++++ b/src/ProtoInput/ProtoInputHooks/MuxCursorObserverBridge.h
+@@ -0,0 +1,98 @@
++#pragma once
++#include <Windows.h>
++#include <atomic>
++#include <cstdint>
++#include <mutex>
++#include <string>
++
++// Optional forwarding only. Cursor ownership, conversion and publication are Rust.
++// Keep the DLL loaded until target exit: a hook may already hold a function pointer.
++namespace Proto::MuxCursorObserverBridge
++{
++// Rust observer result ABI: 0=success; 1=disabled; 2=busy; 3=invalid; 4=capture failure.
++inline constexpr uint32_t ObserverSuccess = 0;
++using StartFn = uint32_t (__cdecl*)(uint64_t, uint64_t, uint32_t, uint64_t);
++using AssociateFn = uint32_t (__cdecl*)(uint64_t, uint64_t);
++using NotifyFn = uint32_t (__cdecl*)(uint64_t, uint32_t, uint64_t);
++using MotionFn = uint32_t (__cdecl*)(uint64_t);
++using StopFn = uint32_t (__cdecl*)(uint64_t);
++inline std::once_flag loadOnce;
++inline StartFn startFn = nullptr;
++inline AssociateFn associateFn = nullptr;
++inline StopFn stopFn = nullptr;
++inline std::atomic<NotifyFn> notifyFn{ nullptr };
++inline std::atomic<MotionFn> motionFn{ nullptr };
++inline uint64_t activeAttachment = 0; // command pipe thread only
++
++inline void Load()
++{
++	std::call_once(loadOnce, [] {
++		HMODULE own = nullptr;
++		if (!GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
++			reinterpret_cast<LPCWSTR>(&Load), &own)) return;
++		wchar_t filename[32768]{};
++		const DWORD length = GetModuleFileNameW(own, filename, 32768);
++		if (length == 0 || length >= 32768) return;
++		std::wstring path(filename, length);
++		const auto slash = path.find_last_of(L"\\/");
++		if (slash == std::wstring::npos) return;
++		path.resize(slash + 1);
++#ifdef _WIN64
++		path += L"protoinputmultiplex_cursor_observer64.dll";
++#else
++		path += L"protoinputmultiplex_cursor_observer32.dll";
++#endif
++		const HMODULE module = LoadLibraryExW(path.c_str(), nullptr,
++			LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR | LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
++		if (!module) return;
++		const auto start = reinterpret_cast<StartFn>(GetProcAddress(module, "ProtoMuxCursorObserverStart"));
++		const auto associate = reinterpret_cast<AssociateFn>(GetProcAddress(module, "ProtoMuxCursorObserverAssociate"));
++		const auto notify = reinterpret_cast<NotifyFn>(GetProcAddress(module, "ProtoMuxCursorObserverNotify"));
++		const auto motion = reinterpret_cast<MotionFn>(GetProcAddress(module, "ProtoMuxCursorObserverMotion"));
++		const auto stop = reinterpret_cast<StopFn>(GetProcAddress(module, "ProtoMuxCursorObserverStop"));
++		if (!start || !associate || !notify || !motion || !stop) return;
++		startFn = start;
++		associateFn = associate;
++		stopFn = stop;
++		motionFn.store(motion, std::memory_order_release);
++		notifyFn.store(notify, std::memory_order_release);
++	});
++}
++
++inline void Start(uint64_t mapping, uint64_t mutex, uint64_t attachment)
++{
++	Load();
++	if (!startFn) {
++		if (mapping) CloseHandle(reinterpret_cast<HANDLE>(static_cast<uintptr_t>(mapping)));
++		if (mutex) CloseHandle(reinterpret_cast<HANDLE>(static_cast<uintptr_t>(mutex)));
++		return;
++	}
++	// The Rust export consumes both remote handles on every result.
++	if (startFn(mapping, mutex, GetCurrentProcessId(), attachment) == ObserverSuccess)
++		activeAttachment = attachment;
++}
++inline void Associate(uint64_t hwnd, uint64_t epoch)
++{
++	if (associateFn && activeAttachment) associateFn(hwnd, epoch);
++}
++inline void Notify(HCURSOR cursor, bool visible, intptr_t selectedHwnd)
++{
++	if (const auto notify = notifyFn.load(std::memory_order_acquire))
++		notify(static_cast<uint64_t>(reinterpret_cast<uintptr_t>(cursor)), visible ? 1U : 0U,
++			static_cast<uint64_t>(static_cast<uintptr_t>(selectedHwnd)));
++}
++inline void Motion(intptr_t selectedHwnd)
++{
++	if (const auto motion = motionFn.load(std::memory_order_acquire))
++		motion(static_cast<uint64_t>(static_cast<uintptr_t>(selectedHwnd)));
++}
++inline void Stop(uint64_t attachment)
++{
++	if (stopFn && attachment && attachment == activeAttachment) {
++		// A failed Stop retains the attachment so pipe EOF can retry cleanup.
++		if (stopFn(attachment) == ObserverSuccess)
++			activeAttachment = 0;
++	}
++}
++inline void StopAll() { Stop(activeAttachment); }
++}

@@ -1,0 +1,17 @@
+# Profile maintenance
+
+The Profiles page now separates the active profile path from a transfer path. It keeps the existing Save and Load actions, and adds validated Import, Export, Restore profile backup, Reset, and one-step Undo controls. Import/load/restore/reset install a candidate only after validation succeeds and reset the user selection plus profile-dependent editor drafts. Failures leave the active profile and undo slot unchanged.
+
+Save uses the bounded profile store: it normalizes legacy seat IDs, validates the full candidate, writes atomically, and preserves the exact prior valid file bytes at `<filename>.bak`. Restore validates that backup and saves it through the same path, so the current valid file becomes the next backup. Export writes a validated snapshot to the transfer path without changing the active profile, active path, or undo state. Reset changes only the in-memory profile. Undo restores the preceding in-memory profile; it does not reverse disk writes. The page displays the automatic backup path.
+
+The page remains unavailable while a routing session is active, including profile and target-allowlist edits. UI script output records the current profile, paths, backup path, undo availability, and status for independent control verification. `profile_store` supplies the 16 MiB bound and validation for file reads and writes.
+
+File replacement is atomic per file; saving the backup and main file is not a two-file transaction. If Windows refuses the final replacement, the main file and current draft remain unchanged, but the backup may already contain the prior validated main bytes. Temporary files are cleaned up after ordinary failures. Concurrent writers, forced crashes, network/synchronized filesystems and whole-product backups are outside this slice.
+
+Save and Restore preserve invalid existing main files instead of overwriting them. To recover such a file, import a valid backup into the stopped draft and export to a new path. Validation preserves device interface paths, stable IDs, graph and user settings, and saved PIDs. It does not verify current device connectivity or authorize attachment to those PIDs.
+
+The JSON-only `profile_document` MCP tool accepts `validate`, `normalize` or `export` plus a supplied `document` string. It shares the bounded codec, materializes deterministic legacy IDs, and returns validation metadata or normalized JSON. It does not access files, dispatch to the GUI broker, acquire the routing control lock, or install the document. Startup/tray preferences, generalized version migration, program libraries and whole-product backups remain separate work.
+
+The public [MouseMux manual](https://www.mousemux.com/pages/manual/) describes separate load/save and setup backup workflows. Those are behavioral references; the Rust code, Ouroboros controls and wording here are original.
+
+Bounded profile JSON, atomic saves with exact prior-file backups, stopped-session Import/Export/Restore/Reset/Undo, and the JSON-only `profile_document` MCP tool passed the [independent profile assessment](profile-maintenance-assessment-2026-10-14.json). Files are individually atomic, not a two-file transaction; an OS replacement failure can update the backup while preserving the main file. Invalid existing main files are preserved: import a valid backup into the draft and export to a new path for recovery. Startup/tray, broader migrations and whole-product backup remain outstanding.

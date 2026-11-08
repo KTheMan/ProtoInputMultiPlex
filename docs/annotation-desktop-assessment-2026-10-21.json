@@ -1,0 +1,118 @@
+{
+  "assessment": "Bounded annotation desktop PNG exports and revocation",
+  "date": "2026-10-21",
+  "decision": "ACCEPTED_VIRTUAL_OWNED_FIXTURE_ONLY",
+  "scope": "One55.531-second native GUI/MCP family with two virtual users, two disposable owned probes and a nonactivating owned known-color fixture covering every captured pixel.",
+  "evidence": [
+    {
+      "path": "runtime/annotation-desktop-ui-attempt008/evidence.json",
+      "sha256": "f2345ea5a9e6573911cd7358f6e36ab5d49426807483788a664784dd37a12244"
+    },
+    {
+      "path": "runtime/annotation-desktop-ui-attempt008-review.json",
+      "sha256": "6538c4a7981929a91c0694916348c21cf87db3910da6d5781a771864a3e0c8a3"
+    },
+    {
+      "path": "runtime/annotation-desktop-ui-source-attempt010-review.json",
+      "sha256": "07d570dd6fdeb967ebd081503cdd69c6684caf0ee40883edf9b1de60e8ccc05a"
+    },
+    {
+      "path": "runtime/producer-annotation-desktop-20261020-attempt003/verification.json",
+      "sha256": "806035370e89427e3ff83aaf3b8504362eed09a3cd84624d2ec37be36488ed0e"
+    },
+    {
+      "path": "runtime/annotation-desktop-producer-attempt003-review.json",
+      "sha256": "4aaf173d1844e1cc5a0ed5f12a439800ddab08c8225410aa97d90358f8ee80fb"
+    },
+    {
+      "path": "runtime/annotation-desktop-source-v4-review.json",
+      "sha256": "69ff6ea4f790f39592cfa1eb3fac013a0d0fbd7fb7f4f181fb97c7c0c4171d63"
+    },
+    {
+      "path": "runtime/annotation-desktop-source-bindings-v4.json",
+      "sha256": "c3c4f2c5b1a367d26c1b5de33c1435f3c77c1080d1202b54b3efc855c06d504b"
+    }
+  ],
+  "build": {
+    "fmt": "PASS",
+    "strict_clippy_workspace_all_targets": "PASS",
+    "workspace_tests": {
+      "passed": 419,
+      "failed": 0,
+      "ignored": 3
+    },
+    "x64_app_observer": "PASS",
+    "i686_app_observer": "PASS",
+    "declared_sources": 859,
+    "backend": "Unchanged accepted pinned runtime; no backend rebuild in this group."
+  },
+  "accepted": [
+    "Explicit FullDesktop selected-userA export has actual physical bounds0,0,2560,1440; full image decoded and every background pixel outside expected A ink verified. B live annotation is excluded.",
+    "Explicit DesktopRegion all-users MCP export and real GUI Save have actual bounds20,20,900,520 and880x500 pixels; GUI durable export ACK matches kind/scope/user0/revision8/bounds/dimensions.",
+    "Live both-user alpha128 ink remains above the owned fixture with capture-exclusion affinity17. Exported A/B centers show exactly one composite over known fixtureRGB24,48,72.",
+    "Actual compact PNG source popup exposes transparent ink, selected application, full desktop and desktop region. Four editable region rows were individually observed fully within360x360 viewport while scrolling.",
+    "Connected-agent desktop_capture is default-off and independent of target capture. Target-only desktop request is denied; actual checkbox and Apply enable desktop-only grant; exact two-user/two-PID scope and unrelated false grants are maintained.",
+    "Out-of-desktop region and invalid kind/region pairing are denied without output.",
+    "Actual preapproval preparing state is observed before checkbox-off policy Apply; original connected request is cancelled with Agent connection was revoked. Sentinel bytes remain unchanged and no temporary file remains.",
+    "All35 GUI steps,12 scoped virtual routing calls, ordinary Stop/recovery/worker exit/MCP EOF/WM_CLOSE and private-process absence passed without fallback or cleanup errors."
+  ],
+  "pngs": [
+    {
+      "path": "runtime/annotation-desktop-ui-attempt008/run/mcp-full-selected-a.png",
+      "sha256": "020b551f95a063ba0d85fab5599c2fca6f541ee9feb1ef706d25e6c6a17fd585",
+      "dimensions": [
+        2560,
+        1440
+      ],
+      "decoded_pixels": 3686400,
+      "background_pixels_verified": 3685485,
+      "unexpected_background_pixels": 0
+    },
+    {
+      "path": "runtime/annotation-desktop-ui-attempt008/run/mcp-region-all.png",
+      "sha256": "2cdaa17a789db8f18aa4ec4482bece872b3335bc5ae530286991e031cb893fe0",
+      "dimensions": [
+        880,
+        500
+      ],
+      "decoded_pixels": 440000,
+      "background_pixels_verified": 438170,
+      "unexpected_background_pixels": 0
+    },
+    {
+      "path": "runtime/annotation-desktop-ui-attempt008/run/gui-owned-region.png",
+      "sha256": "2cdaa17a789db8f18aa4ec4482bece872b3335bc5ae530286991e031cb893fe0",
+      "dimensions": [
+        880,
+        500
+      ],
+      "decoded_pixels": 440000,
+      "background_pixels_verified": 438170,
+      "unexpected_background_pixels": 0
+    },
+    {
+      "path": "runtime/annotation-desktop-ui-attempt008/run/source-popup.png",
+      "sha256": "880d811524eec3d95a5b16cc428cdf605a40ada411922e53f32f78db4fce0296",
+      "dimensions": [
+        360,
+        360
+      ]
+    },
+    {
+      "path": "runtime/annotation-desktop-ui-attempt008/run/source-region-menu.png",
+      "sha256": "27fbc561a2a7bca4ca30fc9ac10a15d57d5131dedf03d3c262be1a2d43e7253b",
+      "dimensions": [
+        360,
+        360
+      ]
+    }
+  ],
+  "preserved_failures": "Native attempts001 through007 remain FAIL. Failed producer001 remains FAIL. Successful subphases in007 and responsive GUI-close diagnostic are not relabeled as whole-feature or GUI-repair acceptance.",
+  "limitations": [
+    "Owned virtual fixture only. No arbitrary user or RustDesk desktop capture, hardware input, mixed-DPI/multimonitor breadth, display-driver breadth, same-process isolation or performance benchmark.",
+    "No proven historical GUI stall cause or Rust GUI reliability fix. Broader P1 responsiveness and full MouseMux Ultra parity remain incomplete.",
+    "Draw shortcuts and broader annotation tools/routing are separate unfinished work. Compact evidence permits scrolling and does not prove every field or control visible at once.",
+    "Exact original pre-group annotation_runtime.rs backup was unavailable; source review explicitly used full-module review and exact later lifetime-repair backups. This caveat remains preserved.",
+    "This assessment adds no tool, policy grant or automatic native-run authorization."
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "date": "2026-10-14",
+  "byte_exact_archives": [
+    {
+      "original": "runtime/acceptance-conditional-wheel-20261014-133008/evidence.json",
+      "archive": "docs/conditional-wheel-native-prefix-2026-10-14.json",
+      "sha256": "813ec2a8af0b9ba3ebd355fce6e015f59a36c7a077b070579ce4c5b9994a3b08",
+      "original_result": "NOT ACCEPTED"
+    },
+    {
+      "original": "runtime/acceptance-conditional-wheel-20261014-133432/evidence.json",
+      "archive": "docs/conditional-wheel-native-tail-2026-10-14.json",
+      "sha256": "b7de880de3c03677584949805da8fa58b628f876abaece568c97be1f7fbbbfab",
+      "original_result": "PASS"
+    },
+    {
+      "original": "runtime/acceptance-graph-conditional-wheel-ui-20261014-133451/evidence.json",
+      "archive": "docs/conditional-wheel-ui-automatic-2026-10-14.json",
+      "sha256": "44e285b9c315672b82010dbe782a4b375475ed615eb052097aa8440e703d2e11",
+      "original_result": "PASS"
+    },
+    {
+      "original": "runtime/acceptance-graph-conditional-wheel-assigned-20261014-133624/evidence.json",
+      "archive": "docs/conditional-wheel-ui-assigned-prefix-2026-10-14.json",
+      "sha256": "e063003360488f30d2c46c1120f38a90264d8b3eadf404f9f867be3992e26b73",
+      "original_result": "NOT ACCEPTED"
+    },
+    {
+      "original": "runtime/acceptance-graph-conditional-wheel-assigned-tail-20261014-133849/evidence.json",
+      "archive": "docs/conditional-wheel-ui-assigned-tail-2026-10-14.json",
+      "sha256": "af25bccb798009b276cd4738e53c372d6509e651d576c535af538fcd27d61395",
+      "original_result": "PASS"
+    },
+    {
+      "original": "runtime/acceptance-graph-conditional-wheel-unavailable-20261014-134001/evidence.json",
+      "archive": "docs/conditional-wheel-ui-unavailable-prefix-2026-10-14.json",
+      "sha256": "d693553940055385b08b17de67cf6d1e7294a8ae8a319ca0631f1fe41ae8b1eb",
+      "original_result": "NOT ACCEPTED"
+    },
+    {
+      "original": "runtime/acceptance-graph-conditional-wheel-fixed-tail-20261014-134339/evidence.json",
+      "archive": "docs/conditional-wheel-ui-fixed-tail-2026-10-14.json",
+      "sha256": "1a026a70560d59b62c58c2ccabe4c4b32cc52374c005ab4b8b6dcba090ae9fe5",
+      "original_result": "PASS"
+    }
+  ],
+  "image": {
+    "original": "runtime/acceptance-graph-conditional-wheel-ui-20261014-133451/conditional-wheel-controls.png",
+    "archive": "docs/conditional-wheel-control-center.png",
+    "sha256": "e83e564d63ed02bd6a5564e919c1d06a6200d7e8f042c0cda5fd7eaab2909249"
+  }
+}

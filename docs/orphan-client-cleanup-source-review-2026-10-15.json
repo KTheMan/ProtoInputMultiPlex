@@ -1,0 +1,50 @@
+{
+  "decision": "APPROVED SOURCE ONLY",
+  "scope": "Retired connected-client saved-release obligations; independent native/pixel gate still required",
+  "producer": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-orphan-client-cleanup-20261015-052001\\verification.json",
+    "sha256": "442501721463067a82c19fc8ac016ef04d9790553eb87482025bbdd9ef2347e2",
+    "checks": "fmt/strictClippy/211 workspace tests/x64+i686 builds PASS"
+  },
+  "baseline": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-failed-cleanup-recovery-20261015-045854\\verification.json",
+    "sha256": "e439636aea925d7c12427bc7340f0451e96751a86116341a5038873538e649e5"
+  },
+  "changed_source_sha256": {
+    "crates/protoinputmux/src/agent_runtime.rs": "9d7948a6891b1ad30da22f36b8ec450a8dfcca0181fa1f8b5ba17624e82c062d",
+    "crates/protoinputmux/src/agent_ui.rs": "46d4e2a957493918031e12fa214dbfd640c341a255ec8b1d6a59d5c6bfbbc3ac",
+    "crates/protoinputmux/src/gui.rs": "6798efc1b50bc94c896f03cd1e18dc26f95c9639560caf52109de9328b1f47c6",
+    "crates/protoinputmux/src/macro_studio.rs": "cf4df9d3c6fe8474169b0323d2b0db257aaefe4aab6d891f7b4f3ee97300a6a2",
+    "crates/protoinputmux/src/mcp.rs": "a9d629bffbff28ecdd769dacf3f25cf1211f2fc29572d2cdc1a59f0bd936e967",
+    "crates/protoinputmux/src/session.rs": "30125886b8773dca0e34aad3499bfd05a71fbc933a7b18c3c83b0ca8a8c968e3"
+  },
+  "protected_sources_unchanged": 76,
+  "runtime_files_unchanged": 10,
+  "review": [
+    "Claims::release_matching snapshots matching owners, prunes only genuinely unheld outputs, attempts every owner and returns error after sweep; failed last owners retain exact savedUP. Shared token releases only on last owner.",
+    "cancel_agent stops only matching recording/Studio/ordinary queues and power work before fallible release. One exhaustive Agent/AgentStudio/replica-owner sweep reaches every user and preserves failed Studio identity until its claims finish.",
+    "Retirement enrolls obligation before removing authorization/sequence/creation receipts. Retry never gains permissions or replays inputDOWN/text/actions. Active+pending admission cap8 bounds storage without dropping obligations; existing authorized Y remains active.",
+    "250ms due scheduling retries at mostone client per tick, rotating after prior client. Attempts saturate and stable owner/error state avoids timer ACKs. Completed owners removed once; process-exit tick precedes saved-release reconciliation.",
+    "Valid policy installs consistently in automation/runtime then retires every active client even if one sweep fails. Candidate errors reject before changing actual policy.",
+    "Passive client0 Agent updates are acknowledged=false and telemetry in both supervisor and GUI; cannot clear local pending command or timeout. GUI/MCP clone cleanup metadata, explicit Inspect remains authoritative.",
+    "Current virtual-user/actual recipient PID checks and capture-policy checks remain in place. Cleanup only retries saved releases after revocation, not foreground selection/capture/physical input. No backend/vendor changes."
+  ],
+  "meaningful_unit_scope": [
+    "Production Engine release-failure/healthy-otherowner/sharedtoken/retry/exactUP transitions and cancellation acrossusers/program resources.",
+    "Production coordinator retired auth denial, policy transaction, process-exit reconciliation, cadence/fairness and capacity slot retention. These are distinct from the forthcoming one native EOF/parent-exit case."
+  ],
+  "harness": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\scripts\\test-orphan-client-cleanup.py",
+    "sha256": "ce3f088e677b668d913121b8a9c06814ef8e29138e0250fb8c23755c5e0c3c43",
+    "plan_sha256": "e19d9d44b2873dba759ea7e98fd92cbd68c17961f2b14f935dcae44d72dbdb9b",
+    "ast": "PASS",
+    "budget": "8actualGUI clicks/15successful rawExecute/2Connects+EOF/2ownedGUIframes; x64twoownedprobes/virtualonly",
+    "binding": "State.cleanup andGUI.agent.cleanup fields; actualLastreleaseerrorheader; no Gate.execute shadowing; originalchildHWND class/PID/parent guard; no retired identity impersonation"
+  },
+  "findings": [],
+  "limits": [
+    "No native apps/Cargo executed by this source review. Must inspect actual pending/recovered originals after cleanup.",
+    "Live-target transient release retry/fairness/multiplepending/policyApply are source+productionunit evidence, not proven by the single parent-exit native fixture.",
+    "No MCPstdio toolcall equivalence claim: native runner uses actual authenticated public rawbridge clients and realGUIcontrols."
+  ]
+}

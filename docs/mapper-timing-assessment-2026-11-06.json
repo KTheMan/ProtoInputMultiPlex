@@ -1,0 +1,132 @@
+{
+  "date": "2026-11-06",
+  "decision": "MAPPER_TIMING_ACCEPTED",
+  "scope": "Supervised typed Delay queues and actor-local leading-edge Throttle using Rust, Ouroboros and existing MCP commands.",
+  "verification": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-timing-20261106\\checks-004\\verification.json",
+    "sha256": "8186404becbc15b492ee703e3f719158daa33f0df16e55671a180e7efe89e3ee"
+  },
+  "review": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-timing-20261106\\independent-acceptance.json",
+    "sha256": "4b7711c267a70999b6bf35427cfa3d981cf365158f8d91e2fc511ca26e783cf4"
+  },
+  "publication": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-timing-20261106\\publication.json",
+    "sha256": "31e6fc51341bbd98296e2097afcdaa8c0eb12d81be816b15caf29d6ba6fbb9b1"
+  },
+  "workspace_tests": {
+    "passed": 830,
+    "failed": 0,
+    "ignored": 19
+  },
+  "checks": {
+    "fmt": 0,
+    "clippy": 0,
+    "workspace-tests": 0,
+    "build-gui": 0
+  },
+  "x64_image": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-timing-20261106\\checks-004\\x64\\protoinputmultiplex.exe",
+    "sha256": "6248209c8a465c772c325abbd6ef71fd5e09829308e36eaf30b72d6ff856d6ba"
+  },
+  "producer": {
+    "original_session": 88894,
+    "original_exit_code": 0
+  },
+  "native": {
+    "evidence": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mt-01f4f4fe3903\\evidence.json",
+      "sha256": "3697db115f03e8fc54fc0fce841653a2615932a0fb87c69c67c84f9d0ab7009e"
+    },
+    "driver": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-timing-20261106\\native.py",
+      "sha256": "1ff88eee955ea6923c2544e501184acc5c45a92f6aa7bee8cea3d3f15c9925a7"
+    },
+    "target_wrapper": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-timing-20261106\\owned-target.py",
+      "sha256": "7218fa55a4bee3fef3295d794911dd61c4339bf97433a943731e1366b0b53032"
+    },
+    "original_session": 50787,
+    "original_exit_code": 0,
+    "scope": {
+      "GUI": 1,
+      "normal_x64_targets": 3,
+      "virtual_pairs": 2,
+      "authenticated_MCP_actors": 2
+    },
+    "exit_codes": {
+      "GUI": 0,
+      "MCP": [
+        0,
+        0
+      ],
+      "targets": {
+        "a": 0,
+        "b": 0,
+        "c": 0
+      }
+    },
+    "UI_actions": 17,
+    "MCP_calls": 88
+  },
+  "accepted": [
+    "Delay and Throttle preserve all six typed signal semantics; configured durations are 1\u201360000 milliseconds.",
+    "Delay captures exact values, including Hold releases and zero values, in actor-private ordered queues; Pulse(false) does not create work.",
+    "At most 16 Delay nodes, 128 queued values per actor and 256 per session; one oldest due wave per worker turn.",
+    "Scheduling anchors after accepted input/effects and rechecks original authority, target lifetime, recipients and sink scope at delivery.",
+    "Delayed admission errors that could strand old queued or held work retire the mapper and drain saved claims; retirement drops pending queues.",
+    "Throttle preserves its leading-edge window across immediate Hold releases, ignores false pulses, and never replays suppressed values.",
+    "Ouroboros Inspector duration editing and Activity queue counters share the worker model and existing MCP catalogue/state.",
+    "Accepted healthy worker state clears only worker diagnostics, preserving local errors and unrelated GUI status; stale publications cannot resurrect worker faults.",
+    "Bounded owned-native evidence covers minimum-delay timestamps, exact payloads, Hold ordering, actor-private throttle, EOF cancellation, recipient-change retirement, GUI queue/processed readings and normal shutdown."
+  ],
+  "limits": [
+    "Virtual devices only, two virtual pairs, two MCP actors and three owned ordinary x64 targets; no hardware or RustDesk/global input.",
+    "Controlled-clock source tests cover capacity, injected lifetime/permission/reservation faults and mixed Timer/Delay chains; native evidence has no broad stress, process-expiry or application/device matrix.",
+    "No real-time delivery deadline, arbitrary-app compatibility, same-process or desktop-wide isolation claim.",
+    "Historical intermittent GUI stall, full Ultra/SDK/UI parity, broader device coverage and release readiness remain open; folder rename stays user-deferred."
+  ],
+  "retained_failed_checks": [
+    {
+      "receipt": {
+        "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-timing-20261106\\checks-001\\verification.json",
+        "sha256": "968cf6bbf57fb43476cd15feb07fe8d78783b9f79db09136d20d6ee20304f3d0"
+      },
+      "error": "RuntimeError('clippy failed')",
+      "checks": {
+        "fmt": 0,
+        "clippy": 101
+      }
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-timing-20261106\\checks-002\\verification.json",
+        "sha256": "c761113a2f24c9c9e87378b2a16429c24def3c1d0dfe18bde0533c9e6551e3e7"
+      },
+      "error": "RuntimeError('workspace-tests failed')",
+      "checks": {
+        "fmt": 0,
+        "clippy": 0,
+        "workspace-tests": 101
+      }
+    }
+  ],
+  "retained_failed_native": [
+    {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mt-24161caa934b\\evidence.json",
+      "sha256": "6c93dc8c1499244ff84743ef9fee3b5a4acea9cdf5673a8cd4d91ee365b7fa99"
+    },
+    {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mt-c1f4856e2d29\\evidence.json",
+      "sha256": "623e31d53153fa0329b30b8dc7eb119da37bf748b2153865d3a7c03d634b7657"
+    },
+    {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mt-0edf126a0bcc\\evidence.json",
+      "sha256": "c12dbe27c3b0b2395a2dc711d57a58a8155802240572525f32fd45852a717b6e"
+    },
+    {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mt-ca4e4f1795df\\evidence.json",
+      "sha256": "38e042356c5f8df9f86c7f58cda4694a1c920b04ab36f740917ce09da05f4648"
+    }
+  ]
+}

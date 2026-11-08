@@ -1,0 +1,13 @@
+{
+  "date": "2026-10-21",
+  "status": "bounded_gui_capture_liveness_accepted",
+  "claim": "Opt-in UI-script screenshots now move PNG encoding and atomic publication off the GUI hook. A bounded, ProtoInput-DLL-free, virtual-seat GUI run clicked Keyboard Compatibility and Native controls, obtained a complete app-owned 540x520 PNG whose request-time modification timestamp followed the Native controls event, returned Home, and closed normally.",
+  "validation": "The required Rust format, strict Clippy, workspace tests (456 passed, 0 failed, 3 ignored), and x64/i686 builds passed. Four capture worker tests cover latest-frame coalescing, nonjoining Drop, failure recovery, prior-PNG retention, and stale request-time freshness. The single owned native run recorded six actual control events and six sample acknowledgments, with no surviving staged process.",
+  "evidence": {
+    "source_review": "runtime/gui-capture-liveness-source-review.json",
+    "producer": "runtime/producer-gui-capture-liveness-20261021-attempt001/verification.json",
+    "native_run": "runtime/gui-capture-liveness-ui-attempt001/evidence.json",
+    "independent_acceptance": "runtime/gui-capture-liveness-ui-attempt001-review.json"
+  },
+  "limits": "Historical native-controls attempt004 remains OPEN/P1; its cause and fix are unproven. Other GUI telemetry writes and renderer behavior are outside this change. This run makes no physical-input, RustDesk, desktop-wide, same-process, backend-injection, or full Ultra-parity claim."
+}

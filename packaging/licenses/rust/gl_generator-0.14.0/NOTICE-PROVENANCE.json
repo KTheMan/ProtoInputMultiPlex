@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "crate": "gl_generator",
+  "version": "0.14.0",
+  "declared_license": "Apache-2.0",
+  "repository": "https://github.com/brendanzab/gl-rs/",
+  "repository_root": "https://github.com/brendanzab/gl-rs",
+  "cargo_vcs_info": {
+    "git": {
+      "sha1": "ea503e8d5fb6d73c6030e6191ce738cd3bf3433e"
+    }
+  },
+  "files": [
+    {
+      "path": "LICENSE",
+      "upstream_path": "LICENSE",
+      "url": "https://raw.githubusercontent.com/brendanzab/gl-rs/ea503e8d5fb6d73c6030e6191ce738cd3bf3433e/LICENSE",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "SOURCE-LICENSE-NOTICE.txt",
+      "upstream_path": "gl_generator/lib.rs",
+      "url": "https://raw.githubusercontent.com/brendanzab/gl-rs/ea503e8d5fb6d73c6030e6191ce738cd3bf3433e/gl_generator/lib.rs",
+      "bytes": 621,
+      "sha256": "7eb15307bafc2e83b48490a5a4f1024f860d00c98b173fb5b8fa11e4e6692a31",
+      "upstream_file_sha256": "6f47da878479b503b5202bda84ad8935607264ac03c0b68203109fad9cd479db",
+      "extraction": "Exact leading source license/copyright comment block."
+    }
+  ],
+  "crate_authors": [
+    "Brendan Zabarauskas <bjzaba@yahoo.com.au>",
+    "Corey Richardson",
+    "Arseny Kapoulkine"
+  ]
+}

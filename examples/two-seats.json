@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "seats": [
+    { "name": "Blue", "mouse": "REPLACE_WITH_FIRST_MOUSE_PATH", "keyboard": null, "target_pid": 1000 },
+    { "name": "Coral", "mouse": "REPLACE_WITH_SECOND_MOUSE_PATH", "keyboard": "REPLACE_WITH_KEYBOARD_PATH", "target_pid": 2000 }
+  ]
+}

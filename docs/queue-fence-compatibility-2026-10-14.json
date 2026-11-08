@@ -1,0 +1,32 @@
+{
+  "status": "PASS: native builds, 108-test Rust verification and independent ordinary-pump cleanup acceptance",
+  "vendor_base": "dd29bf8d22349605d0e1950c1c5dc4893d72670e",
+  "patches": [
+    {
+      "path": "patches\\archive\\0001-backend-before-queue-fence.patch",
+      "sha256": "15c555f12c06ec5c97d68e5c8bf3718fd6695325bb7cdee1260db3a1ac0e3083"
+    },
+    {
+      "path": "patches\\queue-fence\\0002-queue-fence.patch",
+      "sha256": "a38dfec8c7dc9f5ed64bc0180b2709793c6ba9fec8d681335a172be20516727f"
+    },
+    {
+      "path": "patches\\0001-backend.patch",
+      "sha256": "593f292c840edeb8fa388972be00c95216a62eb8cfa05c86df2963dcb56c0007"
+    }
+  ],
+  "files": [
+    "src/ProtoInput/ProtoInputHooks/MessageFilterHook.cpp",
+    "src/ProtoInput/ProtoInputHooks/MessageFilterHook.h",
+    "src/ProtoInput/ProtoInputHooks/PipeCommunication.cpp",
+    "src/ProtoInput/ProtoInputHooks/pipeinclude/pipeinclude.h",
+    "src/ProtoInput/ProtoInputLoader/Inject.cpp",
+    "src/ProtoInput/ProtoInputLoader/Loader.h"
+  ],
+  "isolation": "The isolated delta is nested and not independently applied by build-backend.ps1. The existing top-level compatibility patch includes it so idempotent reverse-checking remains valid for overlapping files. Original patch and original touched-file bytes are preserved.",
+  "policy": "Only generic transport/frame/fence acknowledgement is native. Routing, output rules, ownership, deadlines, target validation and error reporting are Rust.",
+  "native_build_record": "docs/queue-fence-native-build-2026-10-14.json",
+  "rust_check_record": "docs/output-rules-rust-checks-2026-10-14.json",
+  "independent_assessment": "docs/output-rules-assessment-2026-10-14.json",
+  "scope_limit": "Ordinary unfiltered target retrieval only; selected-range PM_REMOVE, physical input and broader application compatibility remain unverified"
+}

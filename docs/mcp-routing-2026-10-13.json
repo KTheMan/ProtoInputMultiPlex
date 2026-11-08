@@ -1,0 +1,866 @@
+{
+  "start": {
+    "last_error": null,
+    "paused": false,
+    "running": true,
+    "users": [
+      {
+        "bounds": {
+          "bottom": 1440,
+          "left": 0,
+          "right": 2560,
+          "top": 0
+        },
+        "buttons": [],
+        "captured": false,
+        "client": [
+          1280,
+          720
+        ],
+        "keyboard_pid": 0,
+        "keys": [],
+        "mode": "switched",
+        "name": "Blue",
+        "overlay": {
+          "click_through": true,
+          "hwnd": 45876878,
+          "no_activate": true,
+          "painted_pixels": 545,
+          "visible": true,
+          "x": 1280,
+          "y": 720
+        },
+        "pid": 0,
+        "root": false,
+        "status": "Click a window to route input",
+        "title": ""
+      },
+      {
+        "bounds": {
+          "bottom": 1440,
+          "left": 0,
+          "right": 2560,
+          "top": 0
+        },
+        "buttons": [],
+        "captured": false,
+        "client": [
+          1312,
+          720
+        ],
+        "keyboard_pid": 0,
+        "keys": [],
+        "mode": "switched",
+        "name": "Coral",
+        "overlay": {
+          "click_through": true,
+          "hwnd": 24578550,
+          "no_activate": true,
+          "painted_pixels": 545,
+          "visible": true,
+          "x": 1312,
+          "y": 720
+        },
+        "pid": 0,
+        "root": false,
+        "status": "Click a window to route input",
+        "title": ""
+      }
+    ]
+  },
+  "select-0": {
+    "last_error": null,
+    "paused": false,
+    "running": true,
+    "users": [
+      {
+        "bounds": {
+          "bottom": 402,
+          "left": 48,
+          "right": 432,
+          "top": 81
+        },
+        "buttons": [
+          1
+        ],
+        "captured": true,
+        "client": [
+          150,
+          140
+        ],
+        "keyboard_pid": 759672,
+        "keys": [],
+        "mode": "switched",
+        "name": "Blue",
+        "overlay": {
+          "click_through": true,
+          "hwnd": 45876878,
+          "no_activate": true,
+          "painted_pixels": 545,
+          "visible": true,
+          "x": 198,
+          "y": 221
+        },
+        "pid": 759672,
+        "root": true,
+        "status": "Switched \u00b7 ProtoInputMux Routing Test \u2014 PID 759672",
+        "title": "ProtoInputMux Routing Test \u2014 PID 759672"
+      },
+      {
+        "bounds": {
+          "bottom": 1440,
+          "left": 0,
+          "right": 2560,
+          "top": 0
+        },
+        "buttons": [],
+        "captured": false,
+        "client": [
+          1312,
+          720
+        ],
+        "keyboard_pid": 0,
+        "keys": [],
+        "mode": "switched",
+        "name": "Coral",
+        "overlay": {
+          "click_through": true,
+          "hwnd": 24578550,
+          "no_activate": true,
+          "painted_pixels": 545,
+          "visible": true,
+          "x": 1312,
+          "y": 720
+        },
+        "pid": 0,
+        "root": false,
+        "status": "Click a window to route input",
+        "title": ""
+      }
+    ]
+  },
+  "select-1": {
+    "last_error": null,
+    "paused": false,
+    "running": true,
+    "users": [
+      {
+        "bounds": {
+          "bottom": 402,
+          "left": 48,
+          "right": 432,
+          "top": 81
+        },
+        "buttons": [],
+        "captured": false,
+        "client": [
+          150,
+          140
+        ],
+        "keyboard_pid": 759672,
+        "keys": [],
+        "mode": "switched",
+        "name": "Blue",
+        "overlay": {
+          "click_through": true,
+          "hwnd": 45876878,
+          "no_activate": true,
+          "painted_pixels": 545,
+          "visible": true,
+          "x": 198,
+          "y": 221
+        },
+        "pid": 759672,
+        "root": false,
+        "status": "Switched \u00b7 ProtoInputMux Routing Test \u2014 PID 759672",
+        "title": "ProtoInputMux Routing Test \u2014 PID 759672"
+      },
+      {
+        "bounds": {
+          "bottom": 402,
+          "left": 508,
+          "right": 892,
+          "top": 81
+        },
+        "buttons": [
+          1
+        ],
+        "captured": true,
+        "client": [
+          150,
+          140
+        ],
+        "keyboard_pid": 763892,
+        "keys": [],
+        "mode": "switched",
+        "name": "Coral",
+        "overlay": {
+          "click_through": true,
+          "hwnd": 24578550,
+          "no_activate": true,
+          "painted_pixels": 545,
+          "visible": true,
+          "x": 658,
+          "y": 221
+        },
+        "pid": 763892,
+        "root": true,
+        "status": "Switched \u00b7 ProtoInputMux Routing Test \u2014 PID 763892",
+        "title": "ProtoInputMux Routing Test \u2014 PID 763892"
+      }
+    ]
+  },
+  "switched-block": {
+    "last_error": null,
+    "paused": false,
+    "running": true,
+    "users": [
+      {
+        "bounds": {
+          "bottom": 402,
+          "left": 48,
+          "right": 432,
+          "top": 81
+        },
+        "buttons": [
+          1
+        ],
+        "captured": true,
+        "client": [
+          150,
+          140
+        ],
+        "keyboard_pid": 759672,
+        "keys": [],
+        "mode": "switched",
+        "name": "Blue",
+        "overlay": {
+          "click_through": true,
+          "hwnd": 45876878,
+          "no_activate": true,
+          "painted_pixels": 545,
+          "visible": true,
+          "x": 198,
+          "y": 221
+        },
+        "pid": 759672,
+        "root": true,
+        "status": "Switched \u00b7 ProtoInputMux Routing Test \u2014 PID 759672",
+        "title": "ProtoInputMux Routing Test \u2014 PID 759672"
+      },
+      {
+        "bounds": {
+          "bottom": 402,
+          "left": 508,
+          "right": 892,
+          "top": 81
+        },
+        "buttons": [],
+        "captured": false,
+        "client": [
+          150,
+          140
+        ],
+        "keyboard_pid": 763892,
+        "keys": [],
+        "mode": "switched",
+        "name": "Coral",
+        "overlay": {
+          "click_through": true,
+          "hwnd": 24578550,
+          "no_activate": true,
+          "painted_pixels": 545,
+          "visible": true,
+          "x": 658,
+          "y": 221
+        },
+        "pid": 763892,
+        "root": false,
+        "status": "Waiting for Blue to release input",
+        "title": "ProtoInputMux Routing Test \u2014 PID 763892"
+      }
+    ]
+  },
+  "concurrent": {
+    "last_error": null,
+    "paused": false,
+    "running": true,
+    "users": [
+      {
+        "bounds": {
+          "bottom": 402,
+          "left": 48,
+          "right": 432,
+          "top": 81
+        },
+        "buttons": [],
+        "captured": false,
+        "client": [
+          150,
+          140
+        ],
+        "keyboard_pid": 759672,
+        "keys": [],
+        "mode": "concurrent",
+        "name": "Blue",
+        "overlay": {
+          "click_through": true,
+          "hwnd": 45876878,
+          "no_activate": true,
+          "painted_pixels": 545,
+          "visible": true,
+          "x": 198,
+          "y": 221
+        },
+        "pid": 759672,
+        "root": false,
+        "status": "Concurrent \u00b7 ProtoInputMux Routing Test \u2014 PID 759672",
+        "title": "ProtoInputMux Routing Test \u2014 PID 759672"
+      },
+      {
+        "bounds": {
+          "bottom": 402,
+          "left": 508,
+          "right": 892,
+          "top": 81
+        },
+        "buttons": [],
+        "captured": false,
+        "client": [
+          150,
+          140
+        ],
+        "keyboard_pid": 763892,
+        "keys": [],
+        "mode": "concurrent",
+        "name": "Coral",
+        "overlay": {
+          "click_through": true,
+          "hwnd": 24578550,
+          "no_activate": true,
+          "painted_pixels": 545,
+          "visible": true,
+          "x": 658,
+          "y": 221
+        },
+        "pid": 763892,
+        "root": false,
+        "status": "Concurrent \u00b7 ProtoInputMux Routing Test \u2014 PID 763892",
+        "title": "ProtoInputMux Routing Test \u2014 PID 763892"
+      }
+    ]
+  },
+  "held-0": {
+    "last_error": null,
+    "paused": false,
+    "running": true,
+    "users": [
+      {
+        "bounds": {
+          "bottom": 402,
+          "left": 48,
+          "right": 432,
+          "top": 81
+        },
+        "buttons": [
+          1
+        ],
+        "captured": true,
+        "client": [
+          150,
+          140
+        ],
+        "keyboard_pid": 759672,
+        "keys": [
+          87
+        ],
+        "mode": "concurrent",
+        "name": "Blue",
+        "overlay": {
+          "click_through": true,
+          "hwnd": 45876878,
+          "no_activate": true,
+          "painted_pixels": 545,
+          "visible": true,
+          "x": 198,
+          "y": 221
+        },
+        "pid": 759672,
+        "root": false,
+        "status": "Concurrent \u00b7 ProtoInputMux Routing Test \u2014 PID 759672",
+        "title": "ProtoInputMux Routing Test \u2014 PID 759672"
+      },
+      {
+        "bounds": {
+          "bottom": 402,
+          "left": 508,
+          "right": 892,
+          "top": 81
+        },
+        "buttons": [],
+        "captured": false,
+        "client": [
+          150,
+          140
+        ],
+        "keyboard_pid": 763892,
+        "keys": [],
+        "mode": "concurrent",
+        "name": "Coral",
+        "overlay": {
+          "click_through": true,
+          "hwnd": 24578550,
+          "no_activate": true,
+          "painted_pixels": 545,
+          "visible": true,
+          "x": 658,
+          "y": 221
+        },
+        "pid": 763892,
+        "root": false,
+        "status": "Concurrent \u00b7 ProtoInputMux Routing Test \u2014 PID 763892",
+        "title": "ProtoInputMux Routing Test \u2014 PID 763892"
+      }
+    ]
+  },
+  "held-1": {
+    "last_error": null,
+    "paused": false,
+    "running": true,
+    "users": [
+      {
+        "bounds": {
+          "bottom": 402,
+          "left": 48,
+          "right": 432,
+          "top": 81
+        },
+        "buttons": [
+          1
+        ],
+        "captured": true,
+        "client": [
+          150,
+          140
+        ],
+        "keyboard_pid": 759672,
+        "keys": [
+          87
+        ],
+        "mode": "concurrent",
+        "name": "Blue",
+        "overlay": {
+          "click_through": true,
+          "hwnd": 45876878,
+          "no_activate": true,
+          "painted_pixels": 545,
+          "visible": true,
+          "x": 198,
+          "y": 221
+        },
+        "pid": 759672,
+        "root": false,
+        "status": "Concurrent \u00b7 ProtoInputMux Routing Test \u2014 PID 759672",
+        "title": "ProtoInputMux Routing Test \u2014 PID 759672"
+      },
+      {
+        "bounds": {
+          "bottom": 402,
+          "left": 508,
+          "right": 892,
+          "top": 81
+        },
+        "buttons": [
+          1
+        ],
+        "captured": true,
+        "client": [
+          150,
+          140
+        ],
+        "keyboard_pid": 763892,
+        "keys": [
+          87
+        ],
+        "mode": "concurrent",
+        "name": "Coral",
+        "overlay": {
+          "click_through": true,
+          "hwnd": 24578550,
+          "no_activate": true,
+          "painted_pixels": 545,
+          "visible": true,
+          "x": 658,
+          "y": 221
+        },
+        "pid": 763892,
+        "root": false,
+        "status": "Concurrent \u00b7 ProtoInputMux Routing Test \u2014 PID 763892",
+        "title": "ProtoInputMux Routing Test \u2014 PID 763892"
+      }
+    ]
+  },
+  "motion": {
+    "last_error": null,
+    "paused": false,
+    "running": true,
+    "users": [
+      {
+        "bounds": {
+          "bottom": 402,
+          "left": 48,
+          "right": 432,
+          "top": 81
+        },
+        "buttons": [
+          1
+        ],
+        "captured": true,
+        "client": [
+          180,
+          160
+        ],
+        "keyboard_pid": 759672,
+        "keys": [
+          87
+        ],
+        "mode": "concurrent",
+        "name": "Blue",
+        "overlay": {
+          "click_through": true,
+          "hwnd": 45876878,
+          "no_activate": true,
+          "painted_pixels": 545,
+          "visible": true,
+          "x": 228,
+          "y": 241
+        },
+        "pid": 759672,
+        "root": false,
+        "status": "Concurrent \u00b7 ProtoInputMux Routing Test \u2014 PID 759672",
+        "title": "ProtoInputMux Routing Test \u2014 PID 759672"
+      },
+      {
+        "bounds": {
+          "bottom": 402,
+          "left": 508,
+          "right": 892,
+          "top": 81
+        },
+        "buttons": [
+          1
+        ],
+        "captured": true,
+        "client": [
+          150,
+          140
+        ],
+        "keyboard_pid": 763892,
+        "keys": [
+          87
+        ],
+        "mode": "concurrent",
+        "name": "Coral",
+        "overlay": {
+          "click_through": true,
+          "hwnd": 24578550,
+          "no_activate": true,
+          "painted_pixels": 545,
+          "visible": true,
+          "x": 658,
+          "y": 221
+        },
+        "pid": 763892,
+        "root": false,
+        "status": "Concurrent \u00b7 ProtoInputMux Routing Test \u2014 PID 763892",
+        "title": "ProtoInputMux Routing Test \u2014 PID 763892"
+      }
+    ]
+  },
+  "pause": {
+    "last_error": null,
+    "paused": true,
+    "running": true,
+    "users": [
+      {
+        "bounds": {
+          "bottom": 402,
+          "left": 48,
+          "right": 432,
+          "top": 81
+        },
+        "buttons": [],
+        "captured": false,
+        "client": [
+          180,
+          160
+        ],
+        "keyboard_pid": 759672,
+        "keys": [],
+        "mode": "concurrent",
+        "name": "Blue",
+        "overlay": {
+          "click_through": true,
+          "hwnd": 45876878,
+          "no_activate": true,
+          "painted_pixels": 545,
+          "visible": true,
+          "x": 228,
+          "y": 241
+        },
+        "pid": 759672,
+        "root": false,
+        "status": "Concurrent \u00b7 ProtoInputMux Routing Test \u2014 PID 759672",
+        "title": "ProtoInputMux Routing Test \u2014 PID 759672"
+      },
+      {
+        "bounds": {
+          "bottom": 402,
+          "left": 508,
+          "right": 892,
+          "top": 81
+        },
+        "buttons": [],
+        "captured": false,
+        "client": [
+          150,
+          140
+        ],
+        "keyboard_pid": 763892,
+        "keys": [],
+        "mode": "concurrent",
+        "name": "Coral",
+        "overlay": {
+          "click_through": true,
+          "hwnd": 24578550,
+          "no_activate": true,
+          "painted_pixels": 545,
+          "visible": true,
+          "x": 658,
+          "y": 221
+        },
+        "pid": 763892,
+        "root": false,
+        "status": "Concurrent \u00b7 ProtoInputMux Routing Test \u2014 PID 763892",
+        "title": "ProtoInputMux Routing Test \u2014 PID 763892"
+      }
+    ]
+  },
+  "resume": {
+    "last_error": null,
+    "paused": false,
+    "running": true,
+    "users": [
+      {
+        "bounds": {
+          "bottom": 402,
+          "left": 48,
+          "right": 432,
+          "top": 81
+        },
+        "buttons": [],
+        "captured": false,
+        "client": [
+          180,
+          160
+        ],
+        "keyboard_pid": 759672,
+        "keys": [],
+        "mode": "concurrent",
+        "name": "Blue",
+        "overlay": {
+          "click_through": true,
+          "hwnd": 45876878,
+          "no_activate": true,
+          "painted_pixels": 545,
+          "visible": true,
+          "x": 228,
+          "y": 241
+        },
+        "pid": 759672,
+        "root": false,
+        "status": "Concurrent \u00b7 ProtoInputMux Routing Test \u2014 PID 759672",
+        "title": "ProtoInputMux Routing Test \u2014 PID 759672"
+      },
+      {
+        "bounds": {
+          "bottom": 402,
+          "left": 508,
+          "right": 892,
+          "top": 81
+        },
+        "buttons": [],
+        "captured": false,
+        "client": [
+          150,
+          140
+        ],
+        "keyboard_pid": 763892,
+        "keys": [],
+        "mode": "concurrent",
+        "name": "Coral",
+        "overlay": {
+          "click_through": true,
+          "hwnd": 24578550,
+          "no_activate": true,
+          "painted_pixels": 545,
+          "visible": true,
+          "x": 658,
+          "y": 221
+        },
+        "pid": 763892,
+        "root": false,
+        "status": "Concurrent \u00b7 ProtoInputMux Routing Test \u2014 PID 763892",
+        "title": "ProtoInputMux Routing Test \u2014 PID 763892"
+      }
+    ]
+  },
+  "shared-keyboard": {
+    "last_error": null,
+    "paused": false,
+    "running": true,
+    "users": [
+      {
+        "bounds": {
+          "bottom": 402,
+          "left": 48,
+          "right": 432,
+          "top": 81
+        },
+        "buttons": [],
+        "captured": false,
+        "client": [
+          180,
+          160
+        ],
+        "keyboard_pid": 763892,
+        "keys": [
+          87
+        ],
+        "mode": "concurrent",
+        "name": "Blue",
+        "overlay": {
+          "click_through": true,
+          "hwnd": 45876878,
+          "no_activate": true,
+          "painted_pixels": 545,
+          "visible": true,
+          "x": 228,
+          "y": 241
+        },
+        "pid": 759672,
+        "root": false,
+        "status": "Concurrent \u00b7 ProtoInputMux Routing Test \u2014 PID 759672",
+        "title": "ProtoInputMux Routing Test \u2014 PID 759672"
+      },
+      {
+        "bounds": {
+          "bottom": 402,
+          "left": 508,
+          "right": 892,
+          "top": 81
+        },
+        "buttons": [],
+        "captured": false,
+        "client": [
+          150,
+          140
+        ],
+        "keyboard_pid": 763892,
+        "keys": [],
+        "mode": "concurrent",
+        "name": "Coral",
+        "overlay": {
+          "click_through": true,
+          "hwnd": 24578550,
+          "no_activate": true,
+          "painted_pixels": 545,
+          "visible": true,
+          "x": 658,
+          "y": 221
+        },
+        "pid": 763892,
+        "root": false,
+        "status": "Concurrent \u00b7 ProtoInputMux Routing Test \u2014 PID 763892",
+        "title": "ProtoInputMux Routing Test \u2014 PID 763892"
+      }
+    ]
+  },
+  "before-eof": {
+    "last_error": null,
+    "paused": false,
+    "running": true,
+    "users": [
+      {
+        "bounds": {
+          "bottom": 402,
+          "left": 48,
+          "right": 432,
+          "top": 81
+        },
+        "buttons": [
+          1
+        ],
+        "captured": true,
+        "client": [
+          180,
+          160
+        ],
+        "keyboard_pid": 759672,
+        "keys": [],
+        "mode": "concurrent",
+        "name": "Blue",
+        "overlay": {
+          "click_through": true,
+          "hwnd": 45876878,
+          "no_activate": true,
+          "painted_pixels": 545,
+          "visible": true,
+          "x": 228,
+          "y": 241
+        },
+        "pid": 759672,
+        "root": false,
+        "status": "Concurrent \u00b7 ProtoInputMux Routing Test \u2014 PID 759672",
+        "title": "ProtoInputMux Routing Test \u2014 PID 759672"
+      },
+      {
+        "bounds": {
+          "bottom": 402,
+          "left": 508,
+          "right": 892,
+          "top": 81
+        },
+        "buttons": [],
+        "captured": false,
+        "client": [
+          150,
+          140
+        ],
+        "keyboard_pid": 763892,
+        "keys": [],
+        "mode": "concurrent",
+        "name": "Coral",
+        "overlay": {
+          "click_through": true,
+          "hwnd": 24578550,
+          "no_activate": true,
+          "painted_pixels": 545,
+          "visible": true,
+          "x": 658,
+          "y": 221
+        },
+        "pid": 763892,
+        "root": false,
+        "status": "Concurrent \u00b7 ProtoInputMux Routing Test \u2014 PID 763892",
+        "title": "ProtoInputMux Routing Test \u2014 PID 763892"
+      }
+    ]
+  },
+  "stop": {
+    "last_error": null,
+    "paused": false,
+    "running": false,
+    "users": []
+  }
+}

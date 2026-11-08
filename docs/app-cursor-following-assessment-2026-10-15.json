@@ -1,0 +1,239 @@
+{
+  "decision": "APPROVED — BOUNDED APPLICATION CURSOR FOLLOWING",
+  "date": "2026-10-15",
+  "producer": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-app-cursor-following-20261015-043112\\verification.json",
+    "sha256": "6b045ea6fd620a1158b360b95df35d9e6a127fbc6a581dead3e46d2e716fe9ec",
+    "checks": "fmt, strict Clippy,198 workspace tests,x64+i686 builds PASS",
+    "build_sha256": {
+      "x64": "f29c3569a37081d51099ee462b20aefc59cc61f66e9a664910d0e00bb6f686b1",
+      "i686": "071561990e9ead7dd48d6f88561d2433fd325af911c1bca32b4f6184bb25ba0f"
+    },
+    "runtime_manifest": "10 exact runtime hashes in producer; legacy phase instead used immutable8-file pre-feature runtime"
+  },
+  "source_approvals": [
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\docs\\app-cursor-following-source-review-2026-10-15.json",
+      "sha256": "504bfef4101abfe417e54248a0b5b34bb68d923c166b6030f18570049b15da88"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\docs\\app-cursor-following-source-fix-review-2026-10-15.json",
+      "sha256": "c692d69d01b813328b8678439dd26743d1ad13fd2b11680437ee529ab343eef1"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\docs\\app-cursor-following-native-dispatch-source-review-2026-10-15.json",
+      "sha256": "31536e934d57d32dbcfc2ee2a109d1d8a23905196706d8434ef35ea315a49f56"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\docs\\app-cursor-following-silent-loss-source-review-2026-10-15.json",
+      "sha256": "b3a8bd2c7af613b2b36075dd7eba185b097ef8aa1bcefd25eb651fd29b858876"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\docs\\app-cursor-following-probe-trace-source-review-2026-10-15.json",
+      "sha256": "5a7081346369a1644dce9895e022048348131a660a18254ecced9cbcb13c5bab"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\docs\\app-cursor-following-return-gate-source-review-2026-10-15.json",
+      "sha256": "3707adfb7fc71bc81c043f813365dd0d8ef0b2f5d755c5dd9da9297abfc73d7f"
+    }
+  ],
+  "delta_since_prior193_renderer_prefix": {
+    "crates/cursor-observer/src/lib.rs": "b77d5b13cc65fd84efe7263e5c245c260aa65e9087efb308f5d10d496d228e4a",
+    "crates/cursor-snapshot-protocol/src/lib.rs": "44c56dbe9eb48c5d544eff989f6ba427af98530c78ce76888b9f8af53af28000",
+    "crates/mux-windows/src/app_cursor.rs": "41f5cdff6a548e2788822e2384322188f4cc9b94c3186299e6035956422eb87e",
+    "crates/protoinputmux/src/agent_export.rs": "4c0ec1f7befe5bb42ea080d4a5c4949894ff89d10a670fff67df1fbb1b362780",
+    "crates/protoinputmux/src/automation_probe.rs": "8084dca7d0fd0587984697eee206d574bae6e350b7b91439d7d5f8baf024bb66"
+  },
+  "protected_inputs_unchanged": 76,
+  "accepted_scope": [
+    "Prior six independently reviewed fixture originals: Hand, B IBeam, busy, horizontal resize, custom16x16/hotspot3,5 and hidden application layer retaining label/badge.",
+    "Final-build main-tail24 mutations: representative custom/hidden contentidentity and Hand/B IBeam metadata; actual ordinary EDIT IBeam/currentPID+HWND, independentB and no cachedA overwrite; exit configured fallback, Stop plainF7UP/overlaysgone, fresh-session snapshot reset.",
+    "Final host with real legacy8-file provider6 mutations: absent optional capability reports unavailable, preserves preference/fallback and ordinary target input/Stop.",
+    "Stopped GUI6 accepted prefix receipts provide actual checkedFollow pixels; separate fresh9 receipts prove checkbox→Save changes only B follow_application and leaves complete remaining profile/preferences unchanged, without worker."
+  ],
+  "phase_evidence": [
+    {
+      "phase": "main",
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-app-cursor-main-tail-20261015-043253\\evidence.json",
+      "sha256": "451e53e66d6cc4abbcf600b5efe0f3d1e583f73d2b095bf5b6effec21d919089",
+      "raw_result_preserved": "PENDING INDEPENDENT DATA/PIXEL REVIEW",
+      "mutations": 24,
+      "actual_gui_receipts": 0
+    },
+    {
+      "phase": "legacy",
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-app-cursor-legacy-20261015-043325\\evidence.json",
+      "sha256": "f8c702670f079c7a4351c2b3f9838945464fe4c3a816bf9baa732f5412d335df",
+      "raw_result_preserved": "PENDING INDEPENDENT DATA/PIXEL REVIEW",
+      "mutations": 6,
+      "actual_gui_receipts": 0
+    },
+    {
+      "phase": "gui_prefix",
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-app-cursor-follow-checkbox-20261015-043343\\evidence.json",
+      "sha256": "e145590d32409661eb9d09de3b2ec744490c5ef9688e4f1590912347d9fe83db",
+      "raw_result_preserved": "NOT ACCEPTED",
+      "mutations": null,
+      "actual_gui_receipts": 6
+    },
+    {
+      "phase": "gui_save",
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-app-cursor-follow-save-tail-20261015-043651\\evidence.json",
+      "sha256": "4ab0ade474b840307b31fff60c0dc4fae46ee0f11d3c61401ecea9af6f32dc00",
+      "raw_result_preserved": "PENDING INDEPENDENT DATA/PIXEL REVIEW",
+      "mutations": null,
+      "actual_gui_receipts": 9
+    }
+  ],
+  "originals": [
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-app-cursor-main-20261015-035728\\hand.png",
+      "sha256": "bd3a55c1e751e8d183f12d09a1ae5eaf2a59278bf0a1af092539a84363eaa302",
+      "producer": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-app-cursor-following-20261015-035509\\verification.json",
+      "review": "direct original independently approved",
+      "scope": "prior193-provider pixels; renderer unchanged"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-app-cursor-main-20261015-035728\\ibeam-B.png",
+      "sha256": "ac56d87891b7346f134c23c7a0ec2eda552ec8269a5edcf4c4338a8daa910f75",
+      "producer": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-app-cursor-following-20261015-035509\\verification.json",
+      "review": "direct original independently approved",
+      "scope": "prior193-provider pixels; renderer unchanged"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-app-cursor-main-20261015-035728\\busy.png",
+      "sha256": "aa35f829216c19a7f38efd1b9f52fd068960f923a9b77e2a8e3433d79ebc245e",
+      "producer": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-app-cursor-following-20261015-035509\\verification.json",
+      "review": "direct original independently approved",
+      "scope": "prior193-provider pixels; renderer unchanged"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-app-cursor-main-20261015-035728\\resize.png",
+      "sha256": "2312e534d370e8375dc1f6e1c5f965667c879da33911a563688f7e2c0f5224dc",
+      "producer": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-app-cursor-following-20261015-035509\\verification.json",
+      "review": "direct original independently approved",
+      "scope": "prior193-provider pixels; renderer unchanged"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-app-cursor-main-20261015-035728\\custom.png",
+      "sha256": "d455af521838d618b491a76e068987a7afad658dc218783ee3ea7814136241b8",
+      "producer": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-app-cursor-following-20261015-035509\\verification.json",
+      "review": "direct original independently approved",
+      "scope": "prior193-provider pixels; renderer unchanged"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-app-cursor-main-20261015-035728\\hidden-label.png",
+      "sha256": "7b4fbb6fc02c8f9bfd9d96dca45c8087ba241375d3c79f0d380dafcce9dc423c",
+      "producer": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-app-cursor-following-20261015-035509\\verification.json",
+      "review": "direct original independently approved",
+      "scope": "prior193-provider pixels; renderer unchanged"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-app-cursor-main-tail-20261015-043253\\selected-C.png",
+      "sha256": "ed1834b1bae69c458695991779e335ecedcae4a27420e4ac01f97bbd0e109093",
+      "producer": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-app-cursor-following-20261015-043112\\verification.json",
+      "review": "direct original independently approved",
+      "scope": "final198 build bounded pixels"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-app-cursor-main-tail-20261015-043253\\selected-exit-fallback.png",
+      "sha256": "cf94eabffceb9cfdc67ff8b9e02d48d704c4fb556cdf1cd7647614fe120433b9",
+      "producer": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-app-cursor-following-20261015-043112\\verification.json",
+      "review": "direct original independently approved",
+      "scope": "final198 build bounded pixels"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-app-cursor-legacy-20261015-043325\\legacy-unavailable-fallback.png",
+      "sha256": "cf94eabffceb9cfdc67ff8b9e02d48d704c4fb556cdf1cd7647614fe120433b9",
+      "producer": "E:\\Kenny\\Documents\\GitHub\\Protoinputmux\\runtime\\producer-app-cursor-following-20261015-043112\\verification.json",
+      "review": "direct original independently approved",
+      "scope": "final198 build bounded pixels"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-app-cursor-follow-checkbox-20261015-043343\\follow-checkbox.png",
+      "sha256": "c378d0dba203fafe6002c425a072787a0e5cc800c15a8f8a581a7244bd591ec1",
+      "producer": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-app-cursor-following-20261015-043112\\verification.json",
+      "review": "direct original independently approved",
+      "scope": "final198 build bounded pixels"
+    }
+  ],
+  "saved_profile": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-app-cursor-follow-save-tail-20261015-043651\\profile.json",
+    "sha256": "1341f455032e86e04d55be51485bd1e52284bee99e243ba39bdf9d75619aa20b"
+  },
+  "retained_failures_and_diagnostics": [
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-app-cursor-main-20261015-035118\\evidence.json",
+      "sha256": "07d6b597f5cf9874293eed6d10239f0851e9373dda19a6a2349ad7229ec8eaa5",
+      "original_result": "NOT ACCEPTED"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-app-cursor-main-20261015-035728\\evidence.json",
+      "sha256": "1d745a4fa5cfc7892f42c0173a825cae431ede609934428185c183a6e9e83baf",
+      "original_result": "NOT ACCEPTED"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-app-cursor-main-tail-20261015-041029\\evidence.json",
+      "sha256": "0ecc3b4671c7e5e9e1eeb258e07741917dbbf6f79c8caef1d94d5b6b629349c9",
+      "original_result": "NOT ACCEPTED"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-app-cursor-ordinary-diagnostic-20261015-042231\\evidence.json",
+      "sha256": "3efd3778336ac9272b86b6696c967abaa25df6e6d60f621e61367e3edad54ee4",
+      "original_result": "DIAGNOSTIC COMPLETE — NO FEATURE ACCEPTANCE"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-app-cursor-ordinary-diagnostic-20261015-042759\\evidence.json",
+      "sha256": "0541a758f74949fdc2eed494ed6093727a9ffa92ba997976d8b5314458153e2b",
+      "original_result": "DIAGNOSTIC COMPLETE — NO FEATURE ACCEPTANCE"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-app-cursor-follow-checkbox-20261015-043343\\evidence.json",
+      "sha256": "e145590d32409661eb9d09de3b2ec744490c5ef9688e4f1590912347d9fe83db",
+      "original_result": "NOT ACCEPTED"
+    }
+  ],
+  "terminal_handles": {
+    "main_tail": {
+      "session": 50182,
+      "exit": 0
+    },
+    "legacy": {
+      "chunk": "818c23",
+      "exit": 0
+    },
+    "gui_prefix": {
+      "session": 23731,
+      "exit": 1
+    },
+    "gui_save": {
+      "session": 57987,
+      "exit": 0
+    }
+  },
+  "cleanup": {
+    "all_owned_processes_closed": true,
+    "native_cleanup_errors": [],
+    "all_known_overlay_windows_destroyed": true,
+    "scoped_cim_survivors": 0,
+    "both_private_guid_keys_absent": true,
+    "audit": {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-app-cursor-follow-save-tail-20261015-043651\\cleanup-audit.json",
+      "sha256": "a16d76888eb2fc2eb164ad5d3ec8a6d77ffc7b78ae6cd5053368585f14c5f341"
+    },
+    "exclusive_slot_returned": true
+  },
+  "preview": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\docs\\app-cursor-following-control-center.png",
+    "sha256": "c378d0dba203fafe6002c425a072787a0e5cc800c15a8f8a581a7244bd591ec1",
+    "byte_exact_source": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-app-cursor-follow-checkbox-20261015-043343\\follow-checkbox.png"
+  },
+  "limits": [
+    "Ten accepted originals combine six prior193-provider and four final198-build images; not ten current-build native images. Later metadata checks do not replay every old renderer variant.",
+    "i686 host/observer built and hash-verified only; native targets/controller exercised x64, virtual users and explicitly scoped owned processes only.",
+    "Representative owned EDIT/explicit fixture compatibility, not general applications, all cursor APIs, hardware, hostpointer, desktopwide or same-process multi-user isolation.",
+    "Atomic generation supersession, queue-admission and retry eligibility transitions have deterministic unit coverage. Forced native stale-order races, unhook/post failures and load/pressure behavior were not exercised by this native gate; their safeguards remain source-reviewed. No native fault injection or performance guarantee.",
+    "Old raw NOT ACCEPTED and diagnostic outcomes remain unchanged; prior exact failure interleavings are not all retroactively proven by later trace.",
+    "No whole UI/Ultra parity or Unicode/emoji expansion claim."
+  ]
+}

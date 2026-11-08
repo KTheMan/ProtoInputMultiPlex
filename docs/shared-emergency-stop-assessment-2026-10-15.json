@@ -1,0 +1,113 @@
+{
+  "decision": "BOUNDED SHARED EMERGENCY STOP FEATURE APPROVED",
+  "full_P1_Ultra_UX": "OPEN",
+  "scope": "Shared default Ctrl+Alt+Shift+F11 broker for concurrent same-executable participants, ordinary cleanup on exact owned hotkey/loss, explicit GUI health recovery and usable compact error view. Virtual disposable targets only.",
+  "references_sha256": {
+    "docs/shared-emergency-stop-source-review-2026-10-15.json": "b8a170c265e075d4cf3dc89086441a8b3318a882fd9d56a1a441b3a5e459a58f",
+    "docs/shared-emergency-stop-source-addendum-2026-10-15.json": "0a018a0ea34d375c901a3a24f5d077027c0bfbdfbaf8075c9d9fd796b0637a32",
+    "docs/shared-emergency-stop-harness-review-2026-10-15.json": "66c2ab9dd8f19377b8e6ffb8992f3457477ab76078857cf17ef3f1e5dc2f6d87",
+    "docs/shared-emergency-stop-layout-source-review-2026-10-15.json": "d014f3e991636d55c5727ec22672e0c0852e772892b190be08ae265a89de04db",
+    "runtime/shared-stop-layout-harness-review.json": "9f40b0d2c07a6a4fc89166a4a6feb4de99051903108fa6902e4fa5b531a35f50",
+    "runtime/producer-shared-emergency-stop-20261015-105014/verification.json": "bbc2b23dd915fbe42531d78a2e6d614a7253c1a0973caa242337ba0beb0d0358",
+    "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-shared-stop-layout-20261015-110729\\verification.json": "279e16cfd60ca2077fb93822ffd3e2c50bae541f0cb774d5ff3e6b750bb9ad75",
+    "runtime/producer-shared-emergency-stop-20261015-104851/verification.json": "a0d1a6816e197057c5e1486b3c393539aa0c685c509605db6864187c12c9c049",
+    "runtime/producer-shared-stop-layout-20261015-110536/verification.json": "13eae949fd51d758b3a1e6bfd59465febbb7e5353df629a78781e1b445cac134",
+    "runtime/acceptance-shared-stop-native-20261015-105351/evidence.json": "be4070e89541aaeb39c0217d41bffd5ceb5769d499054ddc45f22b84232e60a3",
+    "runtime/shared-stop-native-first-failure-review.json": "30363e57f18e53eb34455e46990a5db711b6fc31e4bb09cda7bde5c50165f1b7",
+    "runtime/acceptance-shared-stop-native-20261015-105535/evidence.json": "d627daf5829eb0e882fa67109edbe387a07e1c16a41b5e3647550bc99838e29c",
+    "runtime/acceptance-shared-stop-native-20261015-105535/independent-review.json": "6e46f0115301e2a8326f4e915940e27a9fdd8ee55e80f9a808b004e1f3279200",
+    "runtime/acceptance-graph-shared-stop-gui-20261015-105728/evidence.json": "39307e5afa70d6c87caac0dad09eb58bcd1a595f225e951aba9fde431a355ce7",
+    "runtime/acceptance-graph-shared-stop-gui-20261015-105728/independent-prefix-review.json": "e8383298ca8d5df54f2c81ddffbdd8dbd1e2c78d9222364bbfc7480175a98762",
+    "runtime/acceptance-graph-shared-stop-gui-tail-20261015-110205/evidence.json": "ac189fa86be81870f8c7379c2a0d4b7f448562cbe9422c7f85ede2e4375a6743",
+    "runtime/acceptance-graph-shared-stop-gui-tail-20261015-110205/independent-review.json": "ebb33a134b6d186c0020d6e28a849f4700c3b246235def01000baef9117bf6a9",
+    "runtime\\acceptance-graph-shared-stop-layout-20261015-110846\\evidence.json": "69a783435034378fa5f3bc09c591aee1ba705e91627e1800a71c0810d57d9b93",
+    "runtime\\acceptance-graph-shared-stop-layout-20261015-110846\\independent-review.json": "7e2f194c953aa7a786179c8e51dc576ae66a7af8227fba124c91a2529f77cccb"
+  },
+  "provenance": {
+    "functional_producer": "runtime/producer-shared-emergency-stop-20261015-105014/verification.json",
+    "functional_checks": "Five Rust commands,269tests,both builds,doctor PASS; accepted native runtime10 reused unchanged.",
+    "functional_build_sha256": {
+      "x64": "0427476383c974d951dbf2c6bb99da4b92f7bfe1d0689d4a924d1e2567f807ad",
+      "i686": "f93b892a4710193406aebbf2c62355af1302e5b8abaca9be313949684c5fdc07"
+    },
+    "final_visual_producer": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-shared-stop-layout-20261015-110729\\verification.json",
+    "final_checks": "Five Rust commands,269tests,both builds,doctor PASS; all831 current manifest inputs and runtime10 independently matched.",
+    "final_build_sha256": {
+      "x64": "72d671fe7f6781b5506fe555ab03b144aed53cf1f120c9e54aea3af9e1d46135",
+      "i686": "999f90f58e145094a99356958db41fc6b1ee99cac4a742013875e67ca7cebf20"
+    },
+    "GUI_change": "Exact warning caption only plus rustfmt: Emergency stop unavailable \u2192 Stop unavailable. Existing Retry/Start/Stop/gates/broker/supervisor unchanged; all830 other old compiled inputs byte-identical. Producer-helper manifest path differs between producers.",
+    "per_phase_copies_match": true
+  },
+  "accepted_combination": [
+    {
+      "phase": "native105535",
+      "PTY": 58601,
+      "terminal": 0,
+      "evidence": "26mutating MCP/16routing_input calls. Owned chord collision refuses before worker; actual standalone coexistence/Busy isolation; first participant Stop+EOF leaves broker/B intact; exact B+C WM_HOTKEY fanout releases original F7/F9, normal workers/broker exit and chord registration becomes available."
+    },
+    {
+      "phase": "GUI functional prefix105728",
+      "PTY": 59307,
+      "terminal": 1,
+      "evidence": "12mutating MCP/8routing_input calls. Three workers and shared broker coexist; owned broker kill23 produces all3worker exits0, exact original F6/F7 UPs and retained standalone emergency notice; GUI recovery stopped. Aggregate remains NOT ACCEPTED because harness stale overlay assertion prevented pixels; finally GUI exit1 is not accepted normal Quit."
+    },
+    {
+      "phase": "solo GUI recovery110205",
+      "PTY": 45140,
+      "terminal": 0,
+      "evidence": "4actual GUI clicks+1disabled observation,zeroMCP/input. Actual disabled Start, explicit Retry new broker, Start2/Stop2, normal GUI/probe/workers/retrybroker cleanup. Two original images rejected for clipped roster; raw PENDING remains unchanged."
+    },
+    {
+      "phase": "caption-only visual110846",
+      "PTY": 22757,
+      "terminal": 0,
+      "evidence": "1setup Start+1disabled observation,zeroMCP/input; two corrected actual error originals close sole-user row clipping at360x360 and320x360. Functional Retry family not replayed."
+    }
+  ],
+  "counts": {
+    "accepted_functional_mutating_MCP_calls": 38,
+    "accepted_routing_input_calls": 24,
+    "all_MCP_mutation_attempts_including_failed_query_setup": 39,
+    "actual_GUI_clicks_across_phases": 6,
+    "disabled_GUI_observations_across_phases": 2,
+    "accepted_final_originals": 2,
+    "not_distinct_tests_or_controls": true
+  },
+  "accepted_originals": [
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-shared-stop-layout-20261015-110846\\unavailable-normal.png",
+      "sha256": "76e3d9dd04dc945b49bfd0492e4adc4c7c6fa60f76416e865b509088651f7e7b",
+      "dimensions": [
+        360,
+        360
+      ]
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-shared-stop-layout-20261015-110846\\unavailable-minimum.png",
+      "sha256": "0260a8fee6555b2f3fd52aaf2b5aa89352ac92bb3d2d09382a44de9dbeb2764f",
+      "dimensions": [
+        320,
+        360
+      ]
+    }
+  ],
+  "preserved_history": [
+    "Native105351 remains NOT ACCEPTED:1mutation/0input/0groups; generated PowerShell missing parenthesis. Independent later exact-image inventory0, probes0; original parse-error cleanup diagnostics retained.",
+    "GUI105728 remains NOT ACCEPTED despite accepted broker-loss functional prefix; forced finally GUI exit1 explicit.",
+    "GUI110205 raw PENDING and two visual NOT ACCEPTED images retained; corrected layout acceptance is separate.",
+    "Producer104851 FAIL strict Clippy retained; six mechanical fixes and telemetry exclusion source-approved before105014.",
+    "Layout producer110536 same-source export-unit wait timeout FAIL retained; cause not demonstrated. Same frozen-source repeat110729 PASS, no export/product-source change."
+  ],
+  "cleanup": "All owned phase resources closed with exact unique run-image CIM inventories empty, all known accepted overlays closed; GUI private GUID/descriptor absence verified. Deliberate broker exit23 distinguished from normal exits0; failed-prefix GUI exit1 disclosed. No surviving native slot; exclusive slot returned.",
+  "remaining_limits": [
+    "No physical chord actuation: native broadcast used exact WM_HOTKEY to verified owned broker HWND. No hardware/RustDesk/global pointer/SendInput/foreground manipulation.",
+    "Same exact executable path/metadata/version, interactive logon/window-station/desktop scope only; mixed copied paths/versions, other desktops/logons and arbitrary applications remain unvalidated.",
+    "x64 native execution only; i686 built, not executed for this group.",
+    "Heartbeat protocol/malformed traffic/transactional rollback/health timing edge cases source or deterministic unit evidence; no hung-broker/pause timing, malformed native IPC matrix or forced cleanup-quarantine failure replay.",
+    "Long Home footer clipped and full compact UX remains open; tested sole-user roster/error controls only, no broader roster matrix.",
+    "Periodic GUI PNG timing does not establish request-associated freshness.",
+    "No same-process multi-user isolation, desktop-wide routing, full P1/Ultra or broad UX completion claim."
+  ],
+  "findings": []
+}

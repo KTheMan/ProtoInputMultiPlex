@@ -1,0 +1,103 @@
+{
+  "date": "2026-11-06",
+  "decision": "SCRIPT_IO_PRIORITY_ACCEPTED",
+  "scope": "Opt-in UI-script snapshot scheduling and one stopped, owned x64 GUI observation with two virtual device pairs and one authenticated stopped Setup Activity client.",
+  "verification": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\script-io-priority-20261106\\checks-001\\verification.json",
+    "sha256": "1048e0b2a630106c7070bcfccfb77b4df18aff546c93f634d1a8baa07988bd5d"
+  },
+  "review": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\script-io-priority-20261106\\independent-acceptance.json",
+    "sha256": "c029dd505750185f176f808da4ec76f0df629165aab0de12f0201f79518ccce5"
+  },
+  "publication": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\script-io-priority-20261106\\publication.json",
+    "sha256": "caf84ff6a63ad6904b7cbae4730b5596ef92a32e9571151efc92adf0885a8ed7"
+  },
+  "workspace_tests": {
+    "passed": 747,
+    "failed": 0,
+    "ignored": 19
+  },
+  "x64_image": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\script-io-priority-20261106\\checks-001\\x64\\protoinputmultiplex.exe",
+    "sha256": "31b15511e6e750eaf9c8268d7a53a86e1b4d853f2da4dbc92359853fc6f6fad1"
+  },
+  "checks": {
+    "fmt": 0,
+    "clippy": 0,
+    "workspace-tests": 0,
+    "build-gui": 0
+  },
+  "native": {
+    "original_session": 17492,
+    "original_exit_code": 0,
+    "raw_result": "FOCUSED_OBSERVATION_COMPLETED",
+    "raw": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\stall-c29d2f5d99\\evidence.json",
+      "sha256": "f7a0811bf6f6632fcbbce1fa6211da3554456a15b64c4a1e7e054257a4ba016c"
+    },
+    "driver": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\script-io-priority-20261106\\stall-observation.py",
+      "sha256": "79000fd7282c6257223fd33a10b678a2fca60a0791bf198f3f0be0e91ae2a4e6"
+    },
+    "prior_observation": {
+      "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\docs\\gui-stall-observation-2026-11-06.json",
+      "sha256": "a917198d6b9827e0ec666dffddb65f54889be3acedf29a5fd7ddc80fa8e920ae"
+    },
+    "first_observation_from_owned_window_ms": {
+      "first_observed_ready": 4234.0,
+      "first_readable_progress": 4406.0
+    },
+    "native_controls_frame": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\stall-c29d2f5d99\\native-b.png",
+      "sha256": "c83bc34ac67a804f0940fe92b687928322e9bc54612645d03faf9216f4270f16",
+      "geometry": {
+        "hwnd": 198916,
+        "dpi": 96,
+        "client_pixels": [
+          320,
+          640
+        ],
+        "client_logical": [
+          320.0,
+          640.0
+        ],
+        "window_rect": [
+          2224,
+          0,
+          2560,
+          679
+        ]
+      },
+      "event_mtime_ns": 1794001686464578600,
+      "screenshot_ticket_request_mtime_ns": 1794001689278217000,
+      "source": {
+        "mtime_ns": 1794001689278217000,
+        "size": 46559
+      }
+    },
+    "ui_clicks": 10,
+    "keyboard_transition_tickets": [
+      44,
+      49
+    ],
+    "coherent_activity_samples": 7,
+    "ui_returned_range": [
+      571,
+      1478
+    ],
+    "owned_window_responses": 7,
+    "exit_codes": {
+      "gui": 0,
+      "mcp": 0
+    },
+    "cleanup_errors": []
+  },
+  "caveats": [
+    "Home was observed as a click, while its sampled progress row reused the preceding Setup Enable ticket. The Compatibility and Native controls samples each have their own matching durable ticket.",
+    "The recorded first-read times include polling and file visibility. The previous attempt used a different binary and separate execution. This comparison cannot isolate SMB behavior or assign a wall-clock guarantee to snapshot scheduling.",
+    "Priority reorders snapshot jobs between I/O calls. A native I/O call already in progress is nonpreemptible. Routine snapshots can receive fewer write slots while both priority paths are busy, and the older routine path is selected after two priority picks.",
+    "The historical GUI stall remains open."
+  ]
+}

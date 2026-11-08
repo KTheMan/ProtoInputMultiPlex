@@ -1,0 +1,20 @@
+{
+  "reviewed_at": "2026-10-15",
+  "decision": "APPROVED SOURCE ONLY; PRODUCER PENDING",
+  "scope": "Agent Access cleanup status pinned above the independently scrollable policy form",
+  "source_sha256": {
+    "crates/protoinputmux/src/agent_ui.rs": "62EEDDDDD911A1635508B02A06DCD49FBE8CF1E16B94A867BF305E64B1CF7248"
+  },
+  "baseline_diff": "runtime/orphan-client-cleanup-pinned-status.diff",
+  "material_findings": [],
+  "review": "The Agent Access heading and cleanup state now render outside the policy ScrollArea, so scrolling the long permission/connection form does not scroll cleanup status away. The cleanup list has its own explicit scroll id and a maximum height bounded by both 180 points and 45% of the remaining height; each client row has a client-specific id so repeated disclosure widgets do not collide. The policy form remains in its own explicitly identified vertical ScrollArea. Cleanup data, disclosure behavior, script observation, policy controls, and their gates are otherwise unchanged in the reviewed diff.",
+  "producer": {
+    "status": "pending",
+    "note": "No formatting, compile, lint, or test checks were run by this reviewer."
+  },
+  "limits": [
+    "Source review only; no Cargo commands or applications were run.",
+    "This approves the pinned bounded layout source, not native pixel acceptance or the separate observer-versus-screenshot discrepancy.",
+    "The minimum useful visible height for very small windows was not exercised; the status area is proportionally bounded and all retained rows remain reachable by its own scroll area when space permits."
+  ]
+}

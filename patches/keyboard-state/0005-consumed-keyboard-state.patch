@@ -1,0 +1,527 @@
+diff --git a/src/ProtoInput/ProtoInputHooks/GetKeyStateHook.cpp b/src/ProtoInput/ProtoInputHooks/GetKeyStateHook.cpp
+--- a/src/ProtoInput/ProtoInputHooks/GetKeyStateHook.cpp
++++ b/src/ProtoInput/ProtoInputHooks/GetKeyStateHook.cpp
+@@ -1,11 +1,16 @@
+ #include "GetKeyStateHook.h"
+ #include "FakeMouseKeyboard.h"
++#include "MuxKeyboardStateBridge.h"
+ 
+ namespace Proto
+ {
+ 
+ SHORT WINAPI Hook_GetKeyState(int nVirtKey)
+ {
++	int16_t value = 0;
++	const uint32_t status = MuxKeyboardStateBridge::GetKeyState(nVirtKey, &value);
++	if (status == MuxKeyboardStateBridge::Ok) return static_cast<SHORT>(value);
++	if (status != MuxKeyboardStateBridge::Disabled) return 0;
+ 	return FakeMouseKeyboard::IsKeyStatePressed(nVirtKey) ? 0b1000000000000000 : 0;
+ }
+ 
+@@ -19,4 +24,4 @@
+ 	UninstallHook(&hookInfo);
+ }
+ 
+-}
+\ No newline at end of file
++}
+diff --git a/src/ProtoInput/ProtoInputHooks/GetKeyboardStateHook.cpp b/src/ProtoInput/ProtoInputHooks/GetKeyboardStateHook.cpp
+--- a/src/ProtoInput/ProtoInputHooks/GetKeyboardStateHook.cpp
++++ b/src/ProtoInput/ProtoInputHooks/GetKeyboardStateHook.cpp
+@@ -1,11 +1,22 @@
+ #include "GetKeyboardStateHook.h"
+ #include "FakeMouseKeyboard.h"
++#include "MuxKeyboardStateBridge.h"
+ 
+ namespace Proto
+ {
+ 
+ BOOL WINAPI Hook_GetKeyboardState(PBYTE lpKeyState)
+ {
++	if (lpKeyState)
++	{
++		const uint32_t status = MuxKeyboardStateBridge::GetKeyboardState(lpKeyState);
++		if (status == MuxKeyboardStateBridge::Ok) return TRUE;
++		if (status != MuxKeyboardStateBridge::Disabled)
++		{
++			memset(lpKeyState, 0, 256);
++			return FALSE;
++		}
++	}
+ 	if (lpKeyState)
+ 	{
+ 		memset(lpKeyState, 0, 256);
+diff --git a/src/ProtoInput/ProtoInputHooks/MessageFilterHook.cpp b/src/ProtoInput/ProtoInputHooks/MessageFilterHook.cpp
+--- a/src/ProtoInput/ProtoInputHooks/MessageFilterHook.cpp
++++ b/src/ProtoInput/ProtoInputHooks/MessageFilterHook.cpp
+@@ -4,6 +4,7 @@
+ #include <imgui.h>
+ #include "MessageList.h"
+ #include "MessageFilters.h"
++#include "MuxKeyboardStateBridge.h"
+ #include <mutex>
+ #include <unordered_map>
+ 
+@@ -49,15 +50,19 @@
+ 	if (message == 0)
+ 		return reject();
+ 
++	bool registered = false;
+ 	{
+ 		std::lock_guard<std::mutex> lock(queueFenceMutex);
+-		if (queueFences.size() >= 4096 || queueFences.find(cookie) != queueFences.end())
+-			return reject();
+-		queueFences.emplace(cookie, QueueFenceEntry{ hwnd, event });
+-		if (std::find(lifecycleRecipients.begin(), lifecycleRecipients.end(), hwnd) == lifecycleRecipients.end()
+-			&& lifecycleRecipients.size() < 4096)
+-			lifecycleRecipients.push_back(hwnd);
+-	}
++		if (queueFences.size() < 4096 && queueFences.find(cookie) == queueFences.end())
++		{
++			queueFences.emplace(cookie, QueueFenceEntry{ hwnd, event });
++			if (std::find(lifecycleRecipients.begin(), lifecycleRecipients.end(), hwnd) == lifecycleRecipients.end()
++				&& lifecycleRecipients.size() < 4096)
++				lifecycleRecipients.push_back(hwnd);
++			registered = true;
++		}
++	}
++	if (!registered) return reject();
+ 
+ 	if (!PostMessageW(hwnd, message, static_cast<WPARAM>(static_cast<uint32_t>(cookie)),
+ 		static_cast<LPARAM>(static_cast<uint32_t>(cookie >> 32))))
+@@ -88,8 +93,12 @@
+ 
+ void MessageFilterHook::WakeLifecycleRecipients()
+ {
+-	std::lock_guard<std::mutex> lock(queueFenceMutex);
+-	for (const auto hwnd : lifecycleRecipients)
++	std::vector<HWND> recipients;
++	{
++		std::lock_guard<std::mutex> lock(queueFenceMutex);
++		recipients = lifecycleRecipients;
++	}
++	for (const auto hwnd : recipients)
+ 	{
+ 		DWORD pid = 0;
+ 		if (GetWindowThreadProcessId(hwnd, &pid) && pid == GetCurrentProcessId())
+@@ -112,23 +121,38 @@
+ 
+ 	const uint64_t cookie = static_cast<uint32_t>(message->wParam)
+ 		| (static_cast<uint64_t>(static_cast<uint32_t>(message->lParam)) << 32);
+-	HANDLE event = nullptr;
++	HANDLE registeredEvent = nullptr;
+ 	{
+ 		std::lock_guard<std::mutex> lock(queueFenceMutex);
+ 		const auto found = queueFences.find(cookie);
+ 		if (found == queueFences.end() || found->second.hwnd != message->hwnd)
+ 			return false;
+-		if (removed)
+-		{
+-			event = found->second.event;
+-			queueFences.erase(found);
+-		}
+-	}
+-
+-	if (event != nullptr)
+-	{
+-		SetEvent(event);
+-		CloseHandle(event);
++		registeredEvent = found->second.event;
++	}
++
++	if (removed)
++	{
++		const MSG original = *message;
++		const uint32_t status = MuxKeyboardStateBridge::Message(original, true, false, true);
++		if (MuxKeyboardStateBridge::FenceMayAck(status))
++		{
++			HANDLE event = nullptr;
++			{
++				std::lock_guard<std::mutex> lock(queueFenceMutex);
++				const auto found = queueFences.find(cookie);
++				if (found != queueFences.end() && found->second.hwnd == original.hwnd
++					&& found->second.event == registeredEvent)
++				{
++					event = found->second.event;
++					queueFences.erase(found);
++				}
++			}
++			if (event)
++			{
++				SetEvent(event);
++				CloseHandle(event);
++			}
++		}
+ 	}
+ 
+ 	// Hide the private marker from application message consumers. For PM_NOREMOVE,
+@@ -160,16 +184,20 @@
+ 		return a;
+ }
+ 
+-inline BOOL FilterMessage(MSG* lpMsg)
++inline BOOL FilterMessage(MSG* lpMsg, bool removed)
+ {	
+-	if (MessageFilterHook::FilterQueueFence(lpMsg, true))
++	if (MessageFilterHook::FilterQueueFence(lpMsg, removed))
+ 		return 1;
++	const MSG original = *lpMsg;
+ 
+ 	lpMsg->pt.x = FakeMouseKeyboard::GetMouseState().x;
+ 	lpMsg->pt.y = FakeMouseKeyboard::GetMouseState().y;
+ 	
+-	if (!MessageFilterAllow<PROTO_MESSAGE_FILTERS>(lpMsg->message, (unsigned int*)&lpMsg->lParam, (unsigned int*)&lpMsg->wParam, (intptr_t)lpMsg->hwnd)
+-		|| MessageList::IsBlocked(lpMsg->message))
++	const bool allowed = MessageFilterAllow<PROTO_MESSAGE_FILTERS>(lpMsg->message,
++		(unsigned int*)&lpMsg->lParam, (unsigned int*)&lpMsg->wParam, (intptr_t)lpMsg->hwnd)
++		&& !MessageList::IsBlocked(lpMsg->message);
++	MuxKeyboardStateBridge::Message(original, removed, allowed, false);
++	if (!allowed)
+ 	{
+ 		//Massive performance benefits for returning a successful WM_NULL compared to causing an error in the application.
+ 		memset(lpMsg, 0, sizeof(MSG));
+@@ -281,14 +309,14 @@
+ {
+ 	const auto ret = GetMessageA(lpMsg, hWnd, wMsgFilterMin, wMsgFilterMax);
+ 
+-	return ret == -1 ? -1 : FilterMessage(lpMsg);
++	return ret <= 0 ? ret : FilterMessage(lpMsg, true);
+ }
+ 
+ BOOL WINAPI Hook_GetMessageW(LPMSG lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax)
+ {
+ 	const auto ret = GetMessageW(lpMsg, hWnd, wMsgFilterMin, wMsgFilterMax);
+ 
+-	return ret == -1 ? -1 : FilterMessage(lpMsg);
++	return ret <= 0 ? ret : FilterMessage(lpMsg, true);
+ }
+ 
+ BOOL WINAPI Hook_PeekMessageA(LPMSG lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax, UINT wRemoveMsg)
+@@ -297,9 +325,7 @@
+ 
+ 	if (ret == FALSE)
+ 		return FALSE;
+-	if (MessageFilterHook::FilterQueueFence(lpMsg, (wRemoveMsg & PM_REMOVE) != 0))
+-		return 1;
+-	return (1 + FilterMessage(lpMsg)) / 2;
++	return FilterMessage(lpMsg, (wRemoveMsg & PM_REMOVE) != 0);
+ }
+ 
+ BOOL WINAPI Hook_PeekMessageW(LPMSG lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax, UINT wRemoveMsg)
+@@ -308,9 +334,7 @@
+ 
+ 	if (ret == FALSE)
+ 		return FALSE;
+-	if (MessageFilterHook::FilterQueueFence(lpMsg, (wRemoveMsg & PM_REMOVE) != 0))
+-		return 1;
+-	return (1 + FilterMessage(lpMsg)) / 2;
++	return FilterMessage(lpMsg, (wRemoveMsg & PM_REMOVE) != 0);
+ }
+ 
+ void MessageFilterHook::InstallImpl()
+diff --git a/src/ProtoInput/ProtoInputHooks/MuxKeyboardStateBridge.h b/src/ProtoInput/ProtoInputHooks/MuxKeyboardStateBridge.h
+new file mode 100644
+--- /dev/null
++++ b/src/ProtoInput/ProtoInputHooks/MuxKeyboardStateBridge.h
+@@ -0,0 +1,126 @@
++#pragma once
++#include <Windows.h>
++#include <atomic>
++#include <cstdint>
++#include <mutex>
++#include <string>
++#include "FakeMouseKeyboard.h"
++
++// Facts-only adapter. The Rust provider owns consumed keyboard state and
++// publication. Keep this module loaded until process exit: hooks may be live.
++namespace Proto::MuxKeyboardStateBridge
++{
++inline constexpr uint32_t Ok = 0;
++inline constexpr uint32_t Disabled = 1;
++inline constexpr uint32_t Invalid = 3;
++using VersionFn = uint32_t (__cdecl*)();
++using StartFn = uint32_t (__cdecl*)(uint64_t);
++using StopFn = uint32_t (__cdecl*)(uint64_t);
++using MessageFn = uint32_t (__cdecl*)(uint32_t, uint64_t, uint64_t, uint32_t, uint32_t, uint32_t, uint32_t);
++using GetKeyStateFn = uint32_t (__cdecl*)(int32_t, uint32_t, int16_t*);
++using GetKeyboardStateFn = uint32_t (__cdecl*)(uint32_t, uint8_t*);
++
++inline std::once_flag loadOnce;
++inline std::atomic<StartFn> startFn{nullptr};
++inline std::atomic<StopFn> stopFn{nullptr};
++inline std::atomic<MessageFn> messageFn{nullptr};
++inline std::atomic<GetKeyStateFn> getKeyStateFn{nullptr};
++inline std::atomic<GetKeyboardStateFn> getKeyboardStateFn{nullptr};
++inline std::atomic<uint64_t> activeEpoch{0};
++
++inline void Load()
++{
++    std::call_once(loadOnce, [] {
++        HMODULE own = nullptr;
++        if (!GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
++            reinterpret_cast<LPCWSTR>(&Load), &own)) return;
++        wchar_t filename[32768]{};
++        const DWORD length = GetModuleFileNameW(own, filename, 32768);
++        if (!length || length >= 32768) return;
++        std::wstring path(filename, length);
++        const auto slash = path.find_last_of(L"\\/");
++        if (slash == std::wstring::npos) return;
++        path.resize(slash + 1);
++#ifdef _WIN64
++        path += L"protoinputmultiplex_cursor_observer64.dll";
++#else
++        path += L"protoinputmultiplex_cursor_observer32.dll";
++#endif
++        const HMODULE module = LoadLibraryExW(path.c_str(), nullptr,
++            LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR | LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
++        if (!module) return;
++        const auto version = reinterpret_cast<VersionFn>(GetProcAddress(module, "ProtoMuxKeyboardVersion"));
++        const auto start = reinterpret_cast<StartFn>(GetProcAddress(module, "ProtoMuxKeyboardStart"));
++        const auto stop = reinterpret_cast<StopFn>(GetProcAddress(module, "ProtoMuxKeyboardStop"));
++        const auto message = reinterpret_cast<MessageFn>(GetProcAddress(module, "ProtoMuxKeyboardMessage"));
++        const auto getKey = reinterpret_cast<GetKeyStateFn>(GetProcAddress(module, "ProtoMuxKeyboardGetKeyState"));
++        const auto getKeyboard = reinterpret_cast<GetKeyboardStateFn>(GetProcAddress(module, "ProtoMuxKeyboardGetKeyboardState"));
++        if (!version || !start || !stop || !message || !getKey || !getKeyboard || version() != 1) return;
++        // Publish start last, only after every required export passed validation.
++        stopFn.store(stop, std::memory_order_release);
++        messageFn.store(message, std::memory_order_release);
++        getKeyStateFn.store(getKey, std::memory_order_release);
++        getKeyboardStateFn.store(getKeyboard, std::memory_order_release);
++        startFn.store(start, std::memory_order_release);
++    });
++}
++
++inline uint32_t MouseBits()
++{
++    uint32_t bits = 0;
++    if (FakeMouseKeyboard::IsKeyStatePressed(VK_LBUTTON)) bits |= 1U << 0;
++    if (FakeMouseKeyboard::IsKeyStatePressed(VK_RBUTTON)) bits |= 1U << 1;
++    if (FakeMouseKeyboard::IsKeyStatePressed(VK_MBUTTON)) bits |= 1U << 2;
++    if (FakeMouseKeyboard::IsKeyStatePressed(VK_XBUTTON1)) bits |= 1U << 3;
++    if (FakeMouseKeyboard::IsKeyStatePressed(VK_XBUTTON2)) bits |= 1U << 4;
++    return bits;
++}
++inline uint32_t Start(uint64_t epoch)
++{
++    Load();
++    const auto start = startFn.load(std::memory_order_acquire);
++    if (!start) return Disabled;
++    const uint32_t status = start(epoch);
++    if (status == Ok) activeEpoch.store(epoch, std::memory_order_release);
++    return status;
++}
++inline uint32_t Stop(uint64_t epoch)
++{
++    const uint64_t active = activeEpoch.load(std::memory_order_acquire);
++    if (!active) return Disabled;
++    if (!epoch || epoch != active) return Invalid;
++    const auto stop = stopFn.load(std::memory_order_acquire);
++    if (!stop) return Invalid;
++    const uint32_t status = stop(epoch);
++    if (status == Ok) activeEpoch.store(0, std::memory_order_release);
++    return status;
++}
++inline uint32_t Message(const MSG& original, bool removed, bool allowed, bool fence)
++{
++    const auto message = messageFn.load(std::memory_order_acquire);
++    if (!message) return Disabled;
++    return message(original.message, static_cast<uint64_t>(original.wParam),
++        static_cast<uint64_t>(static_cast<uintptr_t>(original.lParam)),
++        removed ? 1U : 0U, allowed ? 1U : 0U, MouseBits(), fence ? 1U : 0U);
++}
++inline uint32_t GetKeyState(int vkey, int16_t* out)
++{
++    const auto get = getKeyStateFn.load(std::memory_order_acquire);
++    return get ? get(vkey, MouseBits(), out) : Disabled;
++}
++inline uint32_t GetKeyboardState(uint8_t* out)
++{
++    const auto get = getKeyboardStateFn.load(std::memory_order_acquire);
++    return get ? get(MouseBits(), out) : Disabled;
++}
++inline uint32_t StopAll() { return Stop(activeEpoch.load(std::memory_order_acquire)); }
++inline bool QuiescentForLifecycle()
++{
++    StopAll();
++    return activeEpoch.load(std::memory_order_acquire) == 0;
++}
++inline bool FenceMayAck(uint32_t status)
++{
++    return status == Ok || (status == Disabled && activeEpoch.load(std::memory_order_acquire) == 0);
++}
++}
+diff --git a/src/ProtoInput/ProtoInputHooks/MuxLifecycleNative.h b/src/ProtoInput/ProtoInputHooks/MuxLifecycleNative.h
+--- a/src/ProtoInput/ProtoInputHooks/MuxLifecycleNative.h
++++ b/src/ProtoInput/ProtoInputHooks/MuxLifecycleNative.h
+@@ -152,7 +152,8 @@
+         result = Incompatible;
+     else if (current.state == Active) result = Busy;
+     else if (current.state != Unclaimed && current.state != Reusable) result = Dirty;
+-    else if (MessageFilterHook::HasPendingFences() || !MuxCursorObserverBridge::QuiescentForLifecycle()) result = Dirty;
++    else if (MessageFilterHook::HasPendingFences() || !MuxCursorObserverBridge::QuiescentForLifecycle()
++        || !MuxKeyboardStateBridge::QuiescentForLifecycle()) result = Dirty;
+     else
+     {
+         if (commitView) UnmapViewOfFile(commitView);
+@@ -200,13 +201,15 @@
+     FocusMessageLoop::PauseMessageLoop();
+     FakeCursor::EnableDisableFakeCursor(false);
+     const ULONGLONG deadline = GetTickCount64() + 2000;
+-    bool observerClean = MuxCursorObserverBridge::QuiescentForLifecycle();
+-    while (!observerClean && GetTickCount64() < deadline)
++    bool bridgesClean = MuxCursorObserverBridge::QuiescentForLifecycle()
++        && MuxKeyboardStateBridge::QuiescentForLifecycle();
++    while (!bridgesClean && GetTickCount64() < deadline)
+     {
+         Sleep(10);
+-        observerClean = MuxCursorObserverBridge::QuiescentForLifecycle();
+-    }
+-    bool clean = observerClean && !MessageFilterHook::HasPendingFences();
++        bridgesClean = MuxCursorObserverBridge::QuiescentForLifecycle()
++            && MuxKeyboardStateBridge::QuiescentForLifecycle();
++    }
++    bool clean = bridgesClean && !MessageFilterHook::HasPendingFences();
+     if (clean)
+     {
+         const auto& hooks = HookManager::GetHooks();
+@@ -271,6 +274,7 @@
+     case T::MuxCursorObserverStart: return header.messageSize == sizeof(ProtoPipe::MuxCursorObserverStartPacket);
+     case T::MuxCursorObserverAssociate: return header.messageSize == sizeof(ProtoPipe::MuxCursorObserverAssociatePacket);
+     case T::MuxCursorObserverStop: return header.messageSize == sizeof(ProtoPipe::MuxCursorObserverStopPacket);
++    case T::MuxKeyboardStateCommand: return header.messageSize == sizeof(ProtoPipe::MuxKeyboardStateCommandPacket);
+     default: return false;
+     }
+ }
+diff --git a/src/ProtoInput/ProtoInputHooks/PipeCommunication.cpp b/src/ProtoInput/ProtoInputHooks/PipeCommunication.cpp
+--- a/src/ProtoInput/ProtoInputHooks/PipeCommunication.cpp
++++ b/src/ProtoInput/ProtoInputHooks/PipeCommunication.cpp
+@@ -24,6 +24,7 @@
+ #include "FakeMouseKeyboard.h"
+ #include "CursorVisibilityHook.h"
+ #include "MuxCursorObserverBridge.h"
++#include "MuxKeyboardStateBridge.h"
+ #include "MuxLifecycleNative.h"
+ 
+ namespace Proto
+@@ -214,6 +215,38 @@
+                 MuxCursorObserverBridge::Stop(body->attachment);
+                 break;
+             }
++			case ProtoPipe::PipeMessageType::MuxKeyboardStateCommand:
++			{
++				if (msgHeader.messageSize != sizeof(ProtoPipe::MuxKeyboardStateCommandPacket)) goto endPipe;
++				const auto body = reinterpret_cast<const ProtoPipe::MuxKeyboardStateCommandPacket*>(messageBuffer);
++				if (sizeof(uintptr_t) == 4 && (body->mapping > UINT32_MAX || body->event > UINT32_MAX))
++				{
++					if (body->mapping && body->mapping <= UINT32_MAX)
++						CloseHandle(reinterpret_cast<HANDLE>(static_cast<uintptr_t>(body->mapping)));
++					if (body->event && body->event <= UINT32_MAX && body->event != body->mapping)
++						CloseHandle(reinterpret_cast<HANDLE>(static_cast<uintptr_t>(body->event)));
++					goto endPipe;
++				}
++				const auto mapping = reinterpret_cast<HANDLE>(static_cast<uintptr_t>(body->mapping));
++				const auto event = reinterpret_cast<HANDLE>(static_cast<uintptr_t>(body->event));
++				uint32_t status = 3; // Invalid; status is always reported if the mapping is writable.
++				if (mapping && event && mapping != event)
++				{
++					auto reply = static_cast<LONG*>(MapViewOfFile(mapping, FILE_MAP_WRITE, 0, 0, sizeof(LONG)));
++					if (reply)
++					{
++						if (body->epoch && body->reserved == 0 && (body->action == 1 || body->action == 2))
++							status = body->action == 1 ? MuxKeyboardStateBridge::Start(body->epoch)
++								: MuxKeyboardStateBridge::Stop(body->epoch);
++						InterlockedExchange(reply, static_cast<LONG>(status));
++						SetEvent(event);
++						UnmapViewOfFile(reply);
++					}
++				}
++				if (mapping) CloseHandle(mapping);
++				if (event && event != mapping) CloseHandle(event);
++				break;
++			}
+ 			case ProtoPipe::PipeMessageType::SetupHook:
+ 				{
+ 					const auto body = reinterpret_cast<ProtoPipe::PipeMessageSetupHook*>(messageBuffer);
+@@ -564,6 +597,7 @@
+ 	{
+ 	std::lock_guard<std::recursive_mutex> packetLock(RawInput::packetMutex);
+ 	MuxCursorObserverBridge::StopAll();
++	MuxKeyboardStateBridge::StopAll();
+ 	// The controller may exit or be terminated by its watchdog. Restore ordinary input.
+ 	RawInput::rawInputState.externalFreezeInput = true;
+ 	RawInput::rawInputState.sendMouseMoveMessages = false;
+diff --git a/src/ProtoInput/ProtoInputHooks/pipeinclude/MuxLifecycleProtocol.h b/src/ProtoInput/ProtoInputHooks/pipeinclude/MuxLifecycleProtocol.h
+--- a/src/ProtoInput/ProtoInputHooks/pipeinclude/MuxLifecycleProtocol.h
++++ b/src/ProtoInput/ProtoInputHooks/pipeinclude/MuxLifecycleProtocol.h
+@@ -6,7 +6,7 @@
+ namespace ProtoMuxLifecycle
+ {
+ constexpr uint32_t Version = 1;
+-constexpr uint64_t Build = 0x2026101500000001ULL;
++constexpr uint64_t Build = 0x2026102000000001ULL;
+ constexpr uint32_t ReadyMagic = 0x4D585244;
+ constexpr uint32_t CommitMagic = 0x4D58434D;
+ constexpr uint32_t ReplyMagic = 0x4D585250;
+diff --git a/src/ProtoInput/ProtoInputHooks/pipeinclude/pipeinclude.h b/src/ProtoInput/ProtoInputHooks/pipeinclude/pipeinclude.h
+--- a/src/ProtoInput/ProtoInputHooks/pipeinclude/pipeinclude.h
++++ b/src/ProtoInput/ProtoInputHooks/pipeinclude/pipeinclude.h
+@@ -40,7 +40,8 @@
+ 	MuxCursorObserverAssociate,
+ 	MuxCursorObserverStop,
+ 	MuxLifecycleBegin,
+-	MuxLifecyclePrepareRetire
++	MuxLifecyclePrepareRetire,
++	MuxKeyboardStateCommand
+ };
+ 
+ // Fixed-width adapter for Rust-generated application-local devices (not OS HID).
+@@ -67,6 +68,14 @@
+ static_assert(sizeof(MuxCursorObserverAssociatePacket) == 16, "cursor Associate ABI");
+ static_assert(sizeof(MuxCursorObserverStopPacket) == 8, "cursor Stop ABI");
+ 
++// Target-local duplicated mapping/event handles; status is a u32 in mapping.
++struct MuxKeyboardStateCommandPacket
++{
++	uint64_t epoch, mapping, event;
++	uint32_t action, reserved;
++};
++static_assert(sizeof(MuxKeyboardStateCommandPacket) == 32, "keyboard command ABI");
++
+ struct PipeMessageHeader
+ {
+ 	PipeMessageType messageType;
+diff --git a/src/ProtoInput/ProtoInputLoader/Inject.cpp b/src/ProtoInput/ProtoInputLoader/Inject.cpp
+--- a/src/ProtoInput/ProtoInputLoader/Inject.cpp
++++ b/src/ProtoInput/ProtoInputLoader/Inject.cpp
+@@ -146,6 +146,21 @@
+     return SendCursorCommand(instance, ProtoPipe::PipeMessageType::MuxCursorObserverStop, ProtoPipe::MuxCursorObserverStopPacket{attachment});
+ }
+ 
++extern "C" __declspec(dllexport) unsigned int MuxKeyboardStateVersion() { return 1; }
++extern "C" __declspec(dllexport) bool MuxKeyboardStateCommand(ProtoInstanceHandle instance, uint64_t epoch,
++    unsigned int action, uint64_t mapping, uint64_t event)
++{
++    const auto found = Proto::instances.find(instance);
++    if (found == Proto::instances.end() || !found->second.lifecycle || !epoch || (action != 1 && action != 2)
++        || !mapping || !event || mapping == event) return false;
++    if (!TargetUses64BitHandles(found->second.pid) && ((mapping >> 32) || (event >> 32))) return false;
++    // SendCursorCommand treats a partial write as ownership transfer. The
++    // caller must resolve an absent acknowledgement without closing handles
++    // that the target may already own.
++    return SendCursorCommand(instance, ProtoPipe::PipeMessageType::MuxKeyboardStateCommand,
++        ProtoPipe::MuxKeyboardStateCommandPacket{epoch, mapping, event, action, 0});
++}
++
+ extern "C" __declspec(dllexport) bool MuxLifecycleBegin(unsigned int instance, const ProtoMuxLifecycle::BeginPacket* packet)
+ {
+     const auto found = Proto::instances.find(instance);
+diff --git a/src/ProtoInput/ProtoInputLoader/include/protoloader.h b/src/ProtoInput/ProtoInputLoader/include/protoloader.h
+--- a/src/ProtoInput/ProtoInputLoader/include/protoloader.h
++++ b/src/ProtoInput/ProtoInputLoader/include/protoloader.h
+@@ -136,3 +136,6 @@
+ extern "C" __declspec(dllexport) bool MuxCursorObserverStart(ProtoInstanceHandle instance, uint64_t mapping, uint64_t mutex, uint64_t attachment);
+ extern "C" __declspec(dllexport) bool MuxCursorObserverAssociate(ProtoInstanceHandle instance, uint64_t hwnd, uint64_t association);
+ extern "C" __declspec(dllexport) bool MuxCursorObserverStop(ProtoInstanceHandle instance, uint64_t attachment);
++extern "C" __declspec(dllexport) unsigned int MuxKeyboardStateVersion();
++extern "C" __declspec(dllexport) bool MuxKeyboardStateCommand(ProtoInstanceHandle instance, uint64_t epoch,
++    unsigned int action, uint64_t mapping, uint64_t event);

@@ -1,0 +1,105 @@
+{
+  "date": "2026-11-06",
+  "decision": "CAPTURE_DIFFERENTIAL_ACCEPTED",
+  "scope": "Opt-in stopped-GUI screenshot readback differential using one x64 build and two virtual mouse/keyboard pairs.",
+  "producer": {
+    "original_session": 87970,
+    "original_exit_code": 0
+  },
+  "verification": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\gui-capture-differential-20261106\\checks-001\\verification.json",
+    "sha256": "9712383ed514a2c8df46a7277bd9d4163b1089868e878792e192e0e6590928ea"
+  },
+  "review": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\gui-capture-differential-20261106\\independent-acceptance-canonical.json",
+    "sha256": "9612cd3a50564e8eda88784ce069312fdfda6b4309040886b7efaf80ecef77cf"
+  },
+  "publication": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\gui-capture-differential-20261106\\publication.json",
+    "sha256": "1ff02efbfa2203d521ac1333cc2da0d179d327a1574fd2803e9ee7c990f19741"
+  },
+  "workspace_tests": {
+    "passed": 770,
+    "failed": 0,
+    "ignored": 19
+  },
+  "checks": {
+    "fmt": 0,
+    "clippy": 0,
+    "workspace-tests": 0,
+    "build-gui": 0
+  },
+  "x64_image": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\gui-capture-differential-20261106\\checks-001\\x64\\protoinputmultiplex.exe",
+    "sha256": "c0c1fda64f60051609866758b70ff16ef5ded59aa34b5b171ca9d4bdfff98b70"
+  },
+  "native": {
+    "original_session": 32870,
+    "original_exit_code": 0,
+    "raw": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\capture-diff-39c0640dd866\\evidence.json",
+      "sha256": "296a0c54ef8a157880facc3410ee54038c81868bfa0b07999bdc53b7b4411cc8"
+    },
+    "driver": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\gui-capture-differential-20261106\\native.py",
+      "sha256": "4217693f52bc300daea7eb41f0bc6fff8f6407bce071eb0500b0a6405f60ac93"
+    },
+    "scope": {
+      "virtual_pairs": 2,
+      "GUI_per_arm": 1,
+      "targets": 0,
+      "MCP": 0,
+      "hardware_input": 0,
+      "routing_or_injection": 0
+    },
+    "arms": {
+      "default": {
+        "actions": [
+          "Select user 2",
+          "Configure user",
+          "Keyboard"
+        ],
+        "dwell_frames": [
+          453,
+          954
+        ],
+        "render": {
+          "enabled": true,
+          "received_generation": 3,
+          "requested_generation": 3
+        },
+        "published_generation": 3,
+        "png": [
+          {
+            "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\capture-diff-39c0640dd866\\default\\ui.png",
+            "sha256": "eae1f7cb794248e4fcb4eacf8fe926438e5d289e17bd70a9203a9cea9123d334",
+            "size": 62099
+          }
+        ],
+        "wm_null_responded": true,
+        "normal_wm_close_exit": 0
+      },
+      "screenshots-disabled": {
+        "actions": [
+          "Select user 2",
+          "Configure user",
+          "Keyboard"
+        ],
+        "dwell_frames": [
+          452,
+          950
+        ],
+        "render": {
+          "enabled": false,
+          "received_generation": 0,
+          "requested_generation": 0
+        },
+        "published_generation": null,
+        "png": [],
+        "wm_null_responded": true,
+        "normal_wm_close_exit": 0
+      }
+    }
+  },
+  "historical_gui_stall": "OPEN/P1. It did not recur in either arm. Cause and fix remain unverified."
+}

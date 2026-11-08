@@ -1,0 +1,29 @@
+{
+  "date": "2026-10-14",
+  "kind": "producer Rust verification",
+  "result": "PASS",
+  "commands": [
+    "cargo fmt --all --check",
+    "cargo clippy --workspace --all-targets -- -D warnings",
+    "cargo test --workspace",
+    "cargo build -p protoinputmux",
+    "cargo build -p protoinputmux --target i686-pc-windows-msvc"
+  ],
+  "bundle_session": 33158,
+  "clippy_session": "c57736",
+  "exit_code": 0,
+  "tests": {
+    "mux_core": 41,
+    "mux_windows": 2,
+    "abi": 3,
+    "hit_test": 2,
+    "protoinputmux": 4,
+    "total": 52,
+    "failed": 0
+  },
+  "build_sha256": {
+    "x64": "5d872e25127bc276e00e9953fd155e2ef807e9ee135e7975dc9c7fb2db7db1c8",
+    "x86": "771910db260ddbcc6329faa4f9051249541b15fee60b38fd4e607f56213763dd"
+  },
+  "scope": "These required producer checks are separate from independent native and Ouroboros acceptance. They do not establish hardware or arbitrary application compatibility."
+}

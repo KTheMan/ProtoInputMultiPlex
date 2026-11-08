@@ -1,0 +1,35 @@
+{
+  "decision": "PREPARED_SOURCE_ONLY_PENDING_ROOT_READY",
+  "runner": {
+    "path": "scripts\\test-target-exit-recovery-acceptance.py",
+    "sha256": "aaa2cba409095dff5b2dd6582fa61a2f7ee045407beea58536f43a64ad0815a9",
+    "AST": "PASS"
+  },
+  "plan": {
+    "path": "runtime/p1-target-exit-acceptance-plan.md",
+    "sha256": "976a24a995a9a3e2bd239d11766262aa50480c6c77fd5621bf9cbb0dc93a1da0"
+  },
+  "scope": "Explicit diagnostic-only mode, eight setup controls, initial A/B holds, A close, one post-exit Inspect and one-second read collector; no recovery acceptance.",
+  "mode_checks": [
+    "CLI currently requires --diagnostic-only; the full nine-control acceptance flow cannot be launched accidentally.",
+    "Diagnostic steps truncate before Stop. The A-close branch records raw Inspect reply/error with expected tag, runs collector and returns before B tap/C selection.",
+    "capture in this mode only records one-shot optional PNG metadata/copy and cannot block A closure on a missing frame.",
+    "Diagnostic after-controls returns immediately; finally owns client/process cleanup. No success frame-count criterion. Raw save converts generic UI-helper PASS into NOT ACCEPTED with diagnostic marker. The generic helper may print a setup receipt PASS line, which is not feature acceptance.",
+    "Both failed raw/review hashes and all64 frozen sources/images are guarded. Original runners/plans/reviews remain preserved."
+  ],
+  "callback_signatures": [
+    [
+      "verify",
+      2
+    ],
+    [
+      "before_controls",
+      1
+    ],
+    [
+      "after_controls",
+      1
+    ]
+  ],
+  "execution": "Preparation only: no apps/native/Cargo/product source changes. Await explicit ROOT READY; no launch after this preparation."
+}

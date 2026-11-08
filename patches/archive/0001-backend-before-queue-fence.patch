@@ -1,0 +1,444 @@
+diff --git a/lib/Blackbone/src/BlackBone/Process/ProcessModules.cpp b/lib/Blackbone/src/BlackBone/Process/ProcessModules.cpp
+index f4683e9..6b38a79 100644
+--- a/lib/Blackbone/src/BlackBone/Process/ProcessModules.cpp
++++ b/lib/Blackbone/src/BlackBone/Process/ProcessModules.cpp
+@@ -418,7 +418,7 @@ call_result_t<ModuleDataPtr> ProcessModules::Inject( const std::wstring& path, T
+     // Write dll name into target process
+     auto fillDllName = [&modName, &path]( auto& ustr )
+     {
+-        ustr.Buffer = modName->ptr<std::decay_t<decltype(ustr)>::type>() + sizeof( ustr );
++        ustr.Buffer = modName->ptr<typename std::decay_t<decltype(ustr)>::type>() + sizeof( ustr );
+         ustr.MaximumLength = ustr.Length = static_cast<USHORT>(path.size() * sizeof( wchar_t ));
+ 
+         modName->Write( 0, ustr );
+diff --git a/lib/EasyHook/Public/easyhook.h b/lib/EasyHook/Public/easyhook.h
+index d71838f..7b9a5b0 100644
+--- a/lib/EasyHook/Public/easyhook.h
++++ b/lib/EasyHook/Public/easyhook.h
+@@ -42,8 +42,12 @@
+ 	// #define NTDDI_VERSION           NTDDI_WIN2KSP4
+     // #define _WIN32_WINNT            0x500
+ 
+-	#define NTDDI_VERSION           _NTDDI_WIN10
+-	#define _WIN32_WINNT            _WIN32_WINNT_WIN10 
++	#ifndef NTDDI_VERSION
++	#define NTDDI_VERSION           0x0A000000
++	#endif
++	#ifndef _WIN32_WINNT
++	#define _WIN32_WINNT            0x0A00
++	#endif
+ 
+ 
+ 
+@@ -469,4 +473,4 @@ DRIVER_SHARED_API(NTSTATUS, LhBarrierCallStackTrace(
+ };
+ #endif
+ 
+-#endif
+\ No newline at end of file
++#endif
+diff --git a/src/ProtoInput/ProtoInputHooks/Gui.cpp b/src/ProtoInput/ProtoInputHooks/Gui.cpp
+index 98d50ea..0da587e 100644
+--- a/src/ProtoInput/ProtoInputHooks/Gui.cpp
++++ b/src/ProtoInput/ProtoInputHooks/Gui.cpp
+@@ -53,8 +53,8 @@ void HandleSelectableDualList(std::vector<T>& selected, std::vector<T>& deselect
+     std::sort(deselected.begin(), deselected.end());
+ 	
+     std::vector<T> toAddToB{};
+-    std::vector<std::vector<T>::const_iterator> removeA{};
+-    std::vector<std::vector<T>::const_iterator> removeB{};
++    std::vector<typename std::vector<T>::const_iterator> removeA{};
++    std::vector<typename std::vector<T>::const_iterator> removeB{};
+ 
+     for (size_t i = 0; i < selected.size(); ++i)
+     {
+diff --git a/src/ProtoInput/ProtoInputHooks/HwndSelector.cpp b/src/ProtoInput/ProtoInputHooks/HwndSelector.cpp
+index ab38d6a..d7a6d77 100644
+--- a/src/ProtoInput/ProtoInputHooks/HwndSelector.cpp
++++ b/src/ProtoInput/ProtoInputHooks/HwndSelector.cpp
+@@ -60,7 +60,7 @@ void HwndSelector::UpdateMainHwnd(bool logOutput)
+     }
+ 		
+     if (data.hwnd != nullptr)
+-        selectedHwnd = (intptr_t)data.hwnd;
++        SetSelectedHwnd((intptr_t)data.hwnd);
+ }
+ 
+ void HwndSelector::UpdateWindowBounds()
+diff --git a/src/ProtoInput/ProtoInputHooks/KeyboardButtonFilter.h b/src/ProtoInput/ProtoInputHooks/KeyboardButtonFilter.h
+index 25647cc..70b24f6 100644
+--- a/src/ProtoInput/ProtoInputHooks/KeyboardButtonFilter.h
++++ b/src/ProtoInput/ProtoInputHooks/KeyboardButtonFilter.h
+@@ -6,13 +6,15 @@
+ namespace Proto
+ {
+ 
+-class KeyboardButtonFilter : public MessageFilterBase<ProtoMessageFilterIDs::KeyboardButtonFilterID, WM_KEYDOWN, WM_KEYUP>
++class KeyboardButtonFilter : public MessageFilterBase<ProtoMessageFilterIDs::KeyboardButtonFilterID, WM_KEYDOWN, WM_SYSKEYUP>
+ {
+ public:
+ 	static constexpr unsigned int signature = 0x10000000;
+ 
+ 	static bool Filter(unsigned int message, unsigned int* lparam, unsigned int* wparam, intptr_t hwnd)
+ 	{
++		// This range includes character messages produced by TranslateMessage or the text adapter.
++		if (message == WM_CHAR || message == WM_DEADCHAR) return true;
+ 		if ((*wparam & signature) != 0)
+ 		{
+ 			*wparam = (*wparam) & (~signature);
+diff --git a/src/ProtoInput/ProtoInputHooks/MouseButtonFilter.h b/src/ProtoInput/ProtoInputHooks/MouseButtonFilter.h
+index 3dd1f64..e74af04 100644
+--- a/src/ProtoInput/ProtoInputHooks/MouseButtonFilter.h
++++ b/src/ProtoInput/ProtoInputHooks/MouseButtonFilter.h
+@@ -16,7 +16,7 @@ public:
+ 		if (message == WM_LBUTTONDOWN || message == WM_LBUTTONUP ||
+ 			message == WM_RBUTTONDOWN || message == WM_RBUTTONUP ||
+ 			message == WM_MBUTTONDOWN || message == WM_MBUTTONUP ||
+-			message == WM_XBUTTONDOWN || message == WM_MBUTTONUP)
++			message == WM_XBUTTONDOWN || message == WM_XBUTTONUP)
+ 		{
+ 			if ((*wparam & signature) != 0)
+ 			{
+diff --git a/src/ProtoInput/ProtoInputHooks/PipeCommunication.cpp b/src/ProtoInput/ProtoInputHooks/PipeCommunication.cpp
+index 46411d4..77ec5c2 100644
+--- a/src/ProtoInput/ProtoInputHooks/PipeCommunication.cpp
++++ b/src/ProtoInput/ProtoInputHooks/PipeCommunication.cpp
+@@ -91,7 +91,7 @@ DWORD WINAPI PipeThread(LPVOID lpParameter)
+ 				NULL
+ 			);
+ 
+-			if (success == 0)
++			if (success == 0 || numBytesRead != sizeof(ProtoPipe::PipeMessageHeader))
+ 			{
+ 				fprintf(stderr, "Failed to read message header from pipe, last error = 0x%X\n", GetLastError());
+ 				break;
+@@ -113,7 +113,7 @@ DWORD WINAPI PipeThread(LPVOID lpParameter)
+ 				NULL
+ 			);
+ 
+-			if (success == 0)
++			if (success == 0 || numBytesRead != msgHeader.messageSize)
+ 			{
+ 				fprintf(stderr, "Failed to read message body from pipe, last error = 0x%X\n", GetLastError());
+ 				break;
+@@ -121,6 +121,38 @@ DWORD WINAPI PipeThread(LPVOID lpParameter)
+ 
+ 			switch(msgHeader.messageType)
+ 			{
++			case ProtoPipe::PipeMessageType::MuxInput:
++			{
++				if (msgHeader.messageSize != sizeof(ProtoPipe::MuxInputPacket)) goto endPipe;
++				const auto body = reinterpret_cast<const ProtoPipe::MuxInputPacket*>(messageBuffer);
++				if ((body->device & 0xFF000000) != 0xF1000000 || body->kind > 2 || (body->device & 1) != (body->kind == 0 ? 0 : 1)) goto endPipe;
++				if (body->kind == 2)
++				{
++					if (body->flags != 0 || body->x != 0 || body->y != 0 || body->data == 0 || body->data > 0xFFFF) goto endPipe;
++					RawInput::ProcessText(static_cast<unsigned short>(body->data), reinterpret_cast<HANDLE>(static_cast<uintptr_t>(body->device)));
++					break;
++				}
++				RAWINPUT input{};
++				input.header.dwType = body->kind;
++				input.header.dwSize = sizeof(input);
++				input.header.hDevice = reinterpret_cast<HANDLE>(static_cast<uintptr_t>(body->device));
++				if (body->kind == RIM_TYPEMOUSE)
++				{
++					input.data.mouse.lLastX = body->x;
++					input.data.mouse.lLastY = body->y;
++					input.data.mouse.usButtonFlags = static_cast<USHORT>(body->flags);
++					input.data.mouse.usButtonData = static_cast<USHORT>(body->data);
++				}
++				else
++				{
++					input.data.keyboard.VKey = static_cast<USHORT>(body->data);
++					input.data.keyboard.MakeCode = static_cast<USHORT>(body->x);
++					input.data.keyboard.Flags = static_cast<USHORT>(body->flags);
++					input.data.keyboard.Message = body->flags & RI_KEY_BREAK ? WM_KEYUP : WM_KEYDOWN;
++				}
++				RawInput::ProcessPacket(input);
++				break;
++			}
+ 			case ProtoPipe::PipeMessageType::SetupHook:
+ 				{
+ 					const auto body = reinterpret_cast<ProtoPipe::PipeMessageSetupHook*>(messageBuffer);
+@@ -464,6 +496,17 @@ DWORD WINAPI PipeThread(LPVOID lpParameter)
+ 		}
+ 	}
+ 	endPipe:
++	// The controller may exit or be terminated by its watchdog. Restore ordinary input.
++	RawInput::rawInputState.externalFreezeInput = true;
++	RawInput::rawInputState.sendMouseMoveMessages = false;
++	RawInput::rawInputState.sendMouseButtonMessages = false;
++	RawInput::rawInputState.sendMouseWheelMessages = false;
++	RawInput::rawInputState.sendKeyboardPressMessages = false;
++	FocusMessageLoop::PauseMessageLoop();
++	FakeCursor::EnableDisableFakeCursor(false);
++	const auto& hooks = HookManager::GetHooks();
++	for (auto it = hooks.rbegin(); it != hooks.rend(); ++it)
++		if ((*it)->IsInstalled()) (*it)->Uninstall();
+ 
+ 	printf("End of pipe thread\n");
+ 	
+diff --git a/src/ProtoInput/ProtoInputHooks/RawInput.cpp b/src/ProtoInput/ProtoInputHooks/RawInput.cpp
+index 4d1a852..61d5046 100644
+--- a/src/ProtoInput/ProtoInputHooks/RawInput.cpp
++++ b/src/ProtoInput/ProtoInputHooks/RawInput.cpp
+@@ -7,6 +7,7 @@
+ #include "HookManager.h"
+ #include "FakeMouseKeyboard.h"
+ #include <unordered_map>
++#include <mutex>
+ #include "HwndSelector.h"
+ #include "MouseWheelFilter.h"
+ #include "MouseButtonFilter.h"
+@@ -120,7 +121,9 @@ void RawInput::ProcessMouseInput(const RAWMOUSE& data, HANDLE deviceHandle)
+ 				| MouseWheelFilter::protoInputSignature
+ 				| mouseMkFlags;
+ 						
+-			PostMessageW((HWND)HwndSelector::GetSelectedHwnd(), WM_MOUSEWHEEL, wparam, mousePointLparam);
++			POINT wheelPoint{ FakeMouseKeyboard::GetMouseState().x, FakeMouseKeyboard::GetMouseState().y };
++			ClientToScreen((HWND)HwndSelector::GetSelectedHwnd(), &wheelPoint);
++			PostMessageW((HWND)HwndSelector::GetSelectedHwnd(), WM_MOUSEWHEEL, wparam, MAKELPARAM(wheelPoint.x, wheelPoint.y));
+ 
+ 		}
+ 	}
+@@ -145,14 +148,14 @@ void RawInput::ProcessMouseInput(const RAWMOUSE& data, HANDLE deviceHandle)
+ 			PostMessageW((HWND)HwndSelector::GetSelectedHwnd(), WM_RBUTTONUP, mouseMkFlags | MouseButtonFilter::signature, mousePointLparam);
+ 
+ 		if ((data.usButtonFlags & RI_MOUSE_BUTTON_4_DOWN) != 0)
+-			PostMessageW((HWND)HwndSelector::GetSelectedHwnd(), WM_XBUTTONDOWN, mouseMkFlags | (XBUTTON1 << 4) | MouseButtonFilter::signature, mousePointLparam);
++			PostMessageW((HWND)HwndSelector::GetSelectedHwnd(), WM_XBUTTONDOWN, mouseMkFlags | (XBUTTON1 << 16) | MouseButtonFilter::signature, mousePointLparam);
+ 		if ((data.usButtonFlags & RI_MOUSE_BUTTON_4_UP) != 0)
+-			PostMessageW((HWND)HwndSelector::GetSelectedHwnd(), WM_XBUTTONUP, mouseMkFlags | (XBUTTON1 << 4) | MouseButtonFilter::signature, mousePointLparam);
++			PostMessageW((HWND)HwndSelector::GetSelectedHwnd(), WM_XBUTTONUP, mouseMkFlags | (XBUTTON1 << 16) | MouseButtonFilter::signature, mousePointLparam);
+ 
+ 		if ((data.usButtonFlags & RI_MOUSE_BUTTON_5_DOWN) != 0)
+-			PostMessageW((HWND)HwndSelector::GetSelectedHwnd(), WM_XBUTTONDOWN, mouseMkFlags | (XBUTTON2 << 4) | MouseButtonFilter::signature, mousePointLparam);
++			PostMessageW((HWND)HwndSelector::GetSelectedHwnd(), WM_XBUTTONDOWN, mouseMkFlags | (XBUTTON2 << 16) | MouseButtonFilter::signature, mousePointLparam);
+ 		if ((data.usButtonFlags & RI_MOUSE_BUTTON_5_UP) != 0)
+-			PostMessageW((HWND)HwndSelector::GetSelectedHwnd(), WM_XBUTTONUP, mouseMkFlags | (XBUTTON2 << 4) | MouseButtonFilter::signature, mousePointLparam);
++			PostMessageW((HWND)HwndSelector::GetSelectedHwnd(), WM_XBUTTONUP, mouseMkFlags | (XBUTTON2 << 16) | MouseButtonFilter::signature, mousePointLparam);
+ 	}
+ 
+ 
+@@ -169,10 +172,19 @@ void RawInput::ProcessMouseInput(const RAWMOUSE& data, HANDLE deviceHandle)
+ 	FakeCursor::NotifyUpdatedCursorPosition();
+ }
+ 
++void RawInput::ProcessText(unsigned short unit, HANDLE device)
++{
++	// Narrow transport adapter: Rust validates/encodes the authored Unicode string.
++	if (rawInputState.externalFreezeInput || rawInputState.freezeInput || !rawInputState.sendKeyboardPressMessages) return;
++	if (std::find(rawInputState.selectedKeyboardHandles.begin(), rawInputState.selectedKeyboardHandles.end(), device) == rawInputState.selectedKeyboardHandles.end()) return;
++	PostMessageW((HWND)HwndSelector::GetSelectedHwnd(), WM_CHAR, unit, 1);
++}
++
+ void RawInput::ProcessKeyboardInput(const RAWKEYBOARD& data, HANDLE deviceHandle)
+ {
+ 	const bool released = (data.Flags & RI_KEY_BREAK) != 0;
+ 	const bool pressed = !released;
++	const bool systemKey = FakeMouseKeyboard::IsKeyStatePressed(VK_MENU) || data.VKey == VK_MENU || data.VKey == VK_LMENU || data.VKey == VK_RMENU || data.VKey == VK_F10;
+ 
+ 	if (pressed && FakeCursor::GetToggleVisilbityShorcutEnabled() &&  data.VKey == FakeCursor::GetToggleVisibilityVkey())
+ 	{
+@@ -188,14 +200,16 @@ void RawInput::ProcessKeyboardInput(const RAWKEYBOARD& data, HANDLE deviceHandle
+ 			
+ 			lparam |= 1; // Repeat bit
+ 			lparam |= (data.MakeCode << 16); // Scan code
++			if ((data.Flags & RI_KEY_E0) != 0) lparam |= (1 << 24);
++			if (FakeMouseKeyboard::IsKeyStatePressed(VK_MENU)) lparam |= (1 << 29);
+ 			
+ 			if (FakeMouseKeyboard::IsKeyStatePressed(data.VKey))
+ 			{
+ 				lparam |= (1 << 30);
+ 			}
+ 			
+-			PostMessageW((HWND)HwndSelector::GetSelectedHwnd(), WM_KEYDOWN, 
+-				MessageFilterHook::IsKeyboardButtonFilterEnabled() ? data.VKey | KeyboardButtonFilter::signature : data.VKey, 
++			PostMessageW((HWND)HwndSelector::GetSelectedHwnd(), systemKey ? WM_SYSKEYDOWN : WM_KEYDOWN,
++				MessageFilterHook::IsKeyboardButtonFilterEnabled() ? data.VKey | KeyboardButtonFilter::signature : data.VKey,
+ 				lparam);
+ 			
+ 			// if (data.VKey == VK_SHIFT || data.VKey == VK_LSHIFT)
+@@ -213,10 +227,12 @@ void RawInput::ProcessKeyboardInput(const RAWKEYBOARD& data, HANDLE deviceHandle
+ 			unsigned int lparam = 0;
+ 			lparam |= 1; // Repeat count (always 1 for key up)
+ 			lparam |= (data.MakeCode << 16); // Scan code
++			if ((data.Flags & RI_KEY_E0) != 0) lparam |= (1 << 24);
++			if (FakeMouseKeyboard::IsKeyStatePressed(VK_MENU)) lparam |= (1 << 29);
+ 			lparam |= (1 << 30); // Previous key state (always 1 for key up)
+ 			lparam |= (1 << 31); // Transition state (always 1 for key up)
+ 
+-			PostMessageW((HWND)HwndSelector::GetSelectedHwnd(), WM_KEYUP, 
++			PostMessageW((HWND)HwndSelector::GetSelectedHwnd(), systemKey ? WM_SYSKEYUP : WM_KEYUP,
+ 				MessageFilterHook::IsKeyboardButtonFilterEnabled() ? data.VKey | KeyboardButtonFilter::signature : data.VKey,
+ 				lparam);
+ 			
+@@ -262,6 +278,14 @@ void RawInput::ProcessRawInput(HRAWINPUT rawInputHandle, bool inForeground, cons
+ 	
+ 	if (cbSize != GetRawInputData(rawInputHandle, RID_INPUT, &rawinput, &cbSize, sizeof(RAWINPUTHEADER)))
+ 		return;
++	ProcessPacket(rawinput);
++}
++
++void RawInput::ProcessPacket(RAWINPUT rawinput)
++{
++	// Serialize physical and emulated packet processing through the existing routing code.
++	static std::mutex packetMutex;
++	std::lock_guard<std::mutex> lock(packetMutex);
+ 		
+ 	rawinput.header.wParam = RIM_INPUT; // Sent in the foreground
+ 
+@@ -294,7 +318,8 @@ void RawInput::ProcessRawInput(HRAWINPUT rawInputHandle, bool inForeground, cons
+ 	{
+ 		//TODO: This may waste CPU? (But need a way to update window otherwise)
+ 		//if (HwndSelector::GetSelectedHwnd() == 0)
+-			HwndSelector::UpdateMainHwnd(false);
++			if (!IsWindow((HWND)HwndSelector::GetSelectedHwnd()))
++				HwndSelector::UpdateMainHwnd(false);
+ 	
+ 		HwndSelector::UpdateWindowBounds();
+ 	}
+@@ -326,12 +351,32 @@ void RawInput::ProcessRawInput(HRAWINPUT rawInputHandle, bool inForeground, cons
+ 	
+ 	
+ 	//TODO: handle forwarding HID input
++	// A release during an external pause must clear an already-held key/button.
++	// Otherwise resuming leaves it stuck until the user presses and releases it again.
++	bool releaseWhilePaused = false;
++	if (rawInputState.externalFreezeInput && !rawInputBypass)
++	{
++		if (rawinput.header.dwType == RIM_TYPEKEYBOARD)
++			releaseWhilePaused = (rawinput.data.keyboard.Flags & RI_KEY_BREAK) != 0;
++		else if (rawinput.header.dwType == RIM_TYPEMOUSE)
++		{
++			const USHORT releases = rawinput.data.mouse.usButtonFlags &
++				(RI_MOUSE_LEFT_BUTTON_UP | RI_MOUSE_RIGHT_BUTTON_UP | RI_MOUSE_MIDDLE_BUTTON_UP |
++				 RI_MOUSE_BUTTON_4_UP | RI_MOUSE_BUTTON_5_UP);
++			if (releases != 0)
++			{
++				releaseWhilePaused = true;
++				rawinput.data.mouse.usFlags = MOUSE_MOVE_RELATIVE;
++				rawinput.data.mouse.lLastX = rawinput.data.mouse.lLastY = 0;
++				rawinput.data.mouse.usButtonFlags = releases;
++			}
++		}
++	}
+ 	
+ 	if (
+ 		(	
+ 			(!rawInputState.externalFreezeInput && !rawInputState.freezeInput && (!rawInputState.freezeInputWhileGuiOpened || !rawInputState.guiOpened))
+-			||
+-			rawInputBypass
++			|| releaseWhilePaused || rawInputBypass
+ 		)
+ 		
+ 		&& 
+@@ -507,7 +552,7 @@ void RawInput::RefreshDevices()
+ 	// If any devices are unplugged, remove them
+ 	for (int i = rawInputState.selectedMouseHandles.size() - 1; i >= 0; --i)
+ 	{
+-		if (std::find(rawInputState.mouseHandles.begin(), rawInputState.mouseHandles.end(), rawInputState.selectedMouseHandles[i]) == rawInputState.mouseHandles.end())
++		if ((reinterpret_cast<uintptr_t>(rawInputState.selectedMouseHandles[i]) & 0xFF000000) != 0xF1000000 && std::find(rawInputState.mouseHandles.begin(), rawInputState.mouseHandles.end(), rawInputState.selectedMouseHandles[i]) == rawInputState.mouseHandles.end())
+ 			rawInputState.selectedMouseHandles.erase(rawInputState.selectedMouseHandles.begin() + i);
+ 	}
+ 	for (int i = rawInputState.deselectedMouseHandles.size() - 1; i >= 0; --i)
+@@ -518,8 +563,8 @@ void RawInput::RefreshDevices()
+ 	
+ 	for (int i = rawInputState.selectedKeyboardHandles.size() - 1; i >= 0; --i)
+ 	{
+-		if (std::find(rawInputState.keyboardHandles.begin(), rawInputState.keyboardHandles.end(), rawInputState.selectedKeyboardHandles[i]) == rawInputState.keyboardHandles.end())
+-			rawInputState.selectedMouseHandles.erase(rawInputState.selectedMouseHandles.begin() + i);
++		if ((reinterpret_cast<uintptr_t>(rawInputState.selectedKeyboardHandles[i]) & 0xFF000000) != 0xF1000000 && std::find(rawInputState.keyboardHandles.begin(), rawInputState.keyboardHandles.end(), rawInputState.selectedKeyboardHandles[i]) == rawInputState.keyboardHandles.end())
++			rawInputState.selectedKeyboardHandles.erase(rawInputState.selectedKeyboardHandles.begin() + i);
+ 	}
+ 	for (int i = rawInputState.deselectedKeyboardHandles.size() - 1; i >= 0; --i)
+ 	{
+diff --git a/src/ProtoInput/ProtoInputHooks/RawInput.h b/src/ProtoInput/ProtoInputHooks/RawInput.h
+index aa2c4e7..4ce6960 100644
+--- a/src/ProtoInput/ProtoInputHooks/RawInput.h
++++ b/src/ProtoInput/ProtoInputHooks/RawInput.h
+@@ -65,6 +65,8 @@ public:
+ 	static std::bitset<9> GetUsageBitField();
+ 
+ 	static void ProcessRawInput(HRAWINPUT rawInputHandle, bool inForeground, const MSG& msg);
++	static void ProcessPacket(RAWINPUT rawinput);
++	static void ProcessText(unsigned short unit, HANDLE device);
+ 		
+ 	static void InitialiseRawInput();
+ 
+diff --git a/src/ProtoInput/ProtoInputHooks/pipeinclude/pipeinclude.h b/src/ProtoInput/ProtoInputHooks/pipeinclude/pipeinclude.h
+index 2acbef8..04dfc56 100644
+--- a/src/ProtoInput/ProtoInputHooks/pipeinclude/pipeinclude.h
++++ b/src/ProtoInput/ProtoInputHooks/pipeinclude/pipeinclude.h
+@@ -31,9 +31,19 @@ enum class PipeMessageType
+ 	SetAllowFakeCursorOutOfBounds,
+ 	SetToggleCursorVisibilityShortcut,
+ 	SetRawInputBypass,
+-	SetShowCursorWhenImageUpdated
++	SetShowCursorWhenImageUpdated,
++	MuxInput
+ };
+ 
++// Fixed-width adapter for Rust-generated application-local devices (not OS HID).
++struct MuxInputPacket
++{
++	uint32_t device, kind, flags;
++	int32_t x, y;
++	uint32_t data;
++};
++static_assert(sizeof(MuxInputPacket) == 24, "Rust packet ABI");
++
+ struct PipeMessageHeader
+ {
+ 	PipeMessageType messageType;
+@@ -185,4 +195,4 @@ struct PipeMessageShowCursorWhenImageUpdated
+ 	bool ShowCursorWhenImageUpdated;
+ };
+ 
+-}
+\ No newline at end of file
++}
+diff --git a/src/ProtoInput/ProtoInputLoader/Inject.cpp b/src/ProtoInput/ProtoInputLoader/Inject.cpp
+index e97fc7b..e5dc4f2 100644
+--- a/src/ProtoInput/ProtoInputLoader/Inject.cpp
++++ b/src/ProtoInput/ProtoInputLoader/Inject.cpp
+@@ -13,6 +13,19 @@
+ 
+ #include "Loader.h"
+ 
++extern "C" __declspec(dllexport) unsigned int MuxInputVersion() { return 2; }
++
++extern "C" __declspec(dllexport) void MuxSubmitInput(ProtoInstanceHandle instanceHandle, const ProtoPipe::MuxInputPacket* packet)
++{
++	if (packet == nullptr) return;
++	if (auto found = Proto::instances.find(instanceHandle); found != Proto::instances.end())
++	{
++		WaitClientConnect(found->second);
++		auto body = *packet;
++		ProtoSendPipeMessage(found->second.pipeHandle, ProtoPipe::PipeMessageType::MuxInput, &body);
++	}
++}
++
+ extern "C" NTSTATUS __declspec(dllexport) __stdcall HookCompleteInjection(void* InInfo)
+ {
+ 	return HookCompleteInjectionImpl(InInfo);
+diff --git a/src/ProtoInput/ProtoInputLoader/InstanceHandling.cpp b/src/ProtoInput/ProtoInputLoader/InstanceHandling.cpp
+index d9e2e51..8e524d1 100644
+--- a/src/ProtoInput/ProtoInputLoader/InstanceHandling.cpp
++++ b/src/ProtoInput/ProtoInputLoader/InstanceHandling.cpp
+@@ -51,7 +51,7 @@ void WaitClientConnect(Proto::ProtoInstance& instance)
+ 		while (count < 10)
+ 		{
+ 			//FIXME: This needs a timeout
+-			if (ConnectNamedPipe(instance.pipeHandle, NULL))
++			if (ConnectNamedPipe(instance.pipeHandle, NULL) || GetLastError() == ERROR_PIPE_CONNECTED)
+ 			{
+ 				std::cout << "Connected named pipe to pid " << instance.pid << std::endl;
+ 				instance.clientConnected = true;
+@@ -65,4 +65,4 @@ void WaitClientConnect(Proto::ProtoInstance& instance)
+ 			}
+ 		}
+ 	}
+-}
+\ No newline at end of file
++}

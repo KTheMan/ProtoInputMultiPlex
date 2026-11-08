@@ -1,0 +1,16 @@
+{
+  "result": "PASS",
+  "canonical_json_archives_verified": 7,
+  "original_not_accepted_aggregates_retained": 3,
+  "frozen_source_hashes_verified": 57,
+  "current_binary_hashes_verified": 2,
+  "owned_png_byte_exact": true,
+  "root_visual_review": "All seven original Ouroboros popup options visible; While Back selected. Own GUI only. Native output is established by independent events, not image inference.",
+  "initial_to_current_source_difference": [
+    "crates\\protoinputmux\\src\\macro_studio.rs",
+    "crates\\protoinputmux\\src\\session.rs"
+  ],
+  "assessment_sha256": "5e297b52ad67d2e632d8f31f15c919a2a01dfaa57b2afcf59534d3e77e033f36",
+  "manifest_sha256": "a475d74342eb14494e4260d465d53ed1fa42546ac820c6b4fe5172ee50db5bcd",
+  "scope": "Archive/provenance verification supplements independent virtual acceptance; no historical native suites replayed."
+}

@@ -1,0 +1,11 @@
+{
+  "result": "PASS",
+  "command": ["cargo", "test", "-p", "mux-windows", "--test", "hit_test", "--", "--nocapture"],
+  "exit_code": 0,
+  "tests": 2,
+  "scope": "Focused unchanged-fixture retry after the full workspace hit-test collision. Both existing cross-process tests passed; no product, target scoping, fixture assertions, hardware, or unrelated application state was changed.",
+  "original_failure": "docs/conditional-wheel-second-source-checks-2026-10-14.json",
+  "original_log": "runtime/producer-conditional-wheel-20261014-130706/3.log",
+  "original_failure_detail": "At the fixed owned fixture point the unrestricted hit returned unrelated PID 14684 instead of owned fixture PID 891548. The original failed result remains unchanged.",
+  "next_check": "A complete required workspace run must still pass; this focused retry does not substitute for it."
+}

@@ -1,0 +1,128 @@
+{
+  "result": "PASS",
+  "group": "connected_client_attributed_macro_recording",
+  "date": "2026-10-15",
+  "judgment": "Bounded virtual client-attributed recording, transactional commit preservation, owner exclusion and GUI integration accepted. Original raw PENDING visual-review status remains unchanged; this independent review completes the bounded approval.",
+  "counts": {
+    "substantive_native_groups": 6,
+    "named_suboutcomes": 14,
+    "actual_gui_receipts": 28,
+    "own_original_frames": 3,
+    "owned_x64_targets": 2,
+    "i686_executions": 0
+  },
+  "build_sha256": {
+    "x64": "9680192123d178ec72406288600b18a152e8131809488d3dfa3b265f69371aac",
+    "i686": "a00d1c668c5a13e6d063872cd190e390e0fb35114dc595bc6f6f718dbd19e055"
+  },
+  "source_integrity": {
+    "rehashed_files": 64,
+    "mismatches": 0
+  },
+  "provenance": {
+    "raw": {
+      "path": "runtime\\acceptance-graph-connected-macro-recording-20261015-000156\\evidence.json",
+      "sha256": "185809c982f83a7e06a0b1851f6db97fc63bed9aaee32f3239637056a53d2b30"
+    },
+    "producer": {
+      "path": "runtime\\producer-connected-macro-recording-20261014-235859\\verification.json",
+      "sha256": "fd7be53433c0149fcc40e892281c3468be9eb3cc406c1ff2a846ac53c2552f79"
+    },
+    "source_review": {
+      "path": "docs\\connected-macro-recording-source-review-2026-10-14.json",
+      "sha256": "0c7fcc53674194d39a6de6481ca420fadbef38620a4a46996c5ed738c19bb2a6"
+    },
+    "executed_runner": {
+      "path": "runtime\\acceptance-graph-connected-macro-recording-20261015-000156\\runner-source\\test-connected-macro-recording-acceptance.py",
+      "sha256": "9451596d3bf3f1368f092009810f08648da2a6490a1d83f3a3ae9abfd049d890"
+    },
+    "saved_gui_clip": {
+      "path": "runtime\\acceptance-graph-connected-macro-recording-20261015-000156\\gui-committed-recording.json",
+      "sha256": "f4cc49304306e51c4edeac40f5ba621973a6c7e2035a31f6a04aba7419c6f293"
+    }
+  },
+  "accepted": [
+    "Real Agent Access grant-off Start and excluded-user Start reject. A pre-existing other-actor A held key makes Start reject without release. Under A-only grant, a Back request whose route includes ungranted B fails before native edges or recorded events; empty Stop clears recording with an explanation while exact prior clip/revision remain.",
+    "With both users granted, owner Back DOWN/UP and one Text action produce native converted F5 on A and Legacy Back on B plus exact REC✓ text on A. Stop commits exactly three original logical actions: raw source Back packets flags64/128 and one Text, version1/userA. Neither converted F5 output nor replica duplicate enters the clip; timestamp ordering is checked, not timing precision.",
+    "Second connected actor A key tap and actual GUI roster-selected A F7 tap are delivered but excluded from the working count. Foreign Stop/replace and owning connected Cancel reject without changing working capture/committed clip/holds. Successful owner Stop increments revision once, from1 to2.",
+    "Owner EOF drops only the next uncommitted candidate. Prior clip/revision remain, another actor A F5 hold and unrelated GUI/manual B W remain until their respective releases. Fresh A Start succeeds while unrelated B W holds.",
+    "Actual roster-selected A Macros page exposes a working agent take separately from the committed clip. Real Discard agent recording drops only the candidate while owner direct F5 and GUI B W remain held. Ordinary F5 release outside recording works; actual GUI Save user clip JSON equals the committed connected clip/revision.",
+    "Real policy Apply revokes the next candidate/client; fresh reconnect sees the prior clip/revision retained, B manual W still held and grant-off Start denied. Actual Stop delivers plain native B W DOWN/UP, empties holds, removes known overlays/descriptor; GUI/probes/MCP/raw handles close and own GUID registry key is absent."
+  ],
+  "committed_source_log": {
+    "revision": 2,
+    "version": 1,
+    "logical_actions": [
+      {
+        "type": "packet",
+        "user": 0,
+        "packet": {
+          "device": 4043309058,
+          "kind": 0,
+          "flags": 64,
+          "x": 0,
+          "y": 0,
+          "data": 0
+        }
+      },
+      {
+        "type": "packet",
+        "user": 0,
+        "packet": {
+          "device": 4043309058,
+          "kind": 0,
+          "flags": 128,
+          "x": 0,
+          "y": 0,
+          "data": 0
+        }
+      },
+      {
+        "type": "text",
+        "user": 0,
+        "text": "REC✓"
+      }
+    ],
+    "note": "Accepted input effects of discarded takes remain in the target application; candidate discard is not application-state rollback."
+  },
+  "independent_pixel_review": {
+    "result": "PASS",
+    "method": "Direct view_image of all three immutable own product originals after cleanup.",
+    "findings": [
+      "Permission image visibly selects only both own users/PIDs with session changes on, capture and app preferences off; the revised explanatory copy accurately describes client-only accepted virtual recording.",
+      "Working image visibly shows Agent recording,2 recorded versus3 loaded,revision2; owner-only explanation and Discard action are clear. Local Stop is visibly disabled while Discard is enabled, but that disabled Stop control was not separately interaction-tested.",
+      "Post-discard image shows Idle,0 recorded,3 loaded,revision2, disabled Discard, enabled clip Save/Load and the committed timeline. Complete cached-clip equality is established by saved own JSON, not by claiming all three rows are visible simultaneously."
+    ],
+    "frames": [
+      {
+        "path": "runtime\\acceptance-graph-connected-macro-recording-20261015-000156\\recording-permissions.png",
+        "sha256": "89ebfae25eed872532b53ce08e71245416af73eb057b9115592a354397a86a8d"
+      },
+      {
+        "path": "runtime\\acceptance-graph-connected-macro-recording-20261015-000156\\agent-working-versus-committed.png",
+        "sha256": "28fb6031ca7436c8da8c78a6184f0e177440a3c94455c120373e2abb1e0877a3"
+      },
+      {
+        "path": "runtime\\acceptance-graph-connected-macro-recording-20261015-000156\\committed-after-discard.png",
+        "sha256": "f0da8a0a2abe95e5870c0420440f0a570b946745e28c4e25aafe6779453ab515"
+      }
+    ]
+  },
+  "limits": [
+    "Native scope is one original owner/user A, distinct actor/manual exclusions, one Back output conversion and one graph edge with two owned x64 targets. No playback-suite, generated geometry or full action-family replay; i686 image is copied but not executed.",
+    "Controlled unit cases cover capacity/elapsed overflow auto-discard before input, invalid candidate preservation, partial Text acceptance boundaries, failed Tap UP/prefix retention and retryable claims. The native gate does not force partial delivery, overflow, invalid candidate, composite conflict or failure-provider paths.",
+    "Exact pending-local/external-ACK races, queued/translated-origin combinations, retired/generated users, exact target/PID race permutations and HWND reuse remain outside this native gate; source review and selected deterministic tests provide distinct support, not uniform native coverage. The actual recording-scope failure exercised here is the replica user path.",
+    "No physical/global/observed-application input recording, hardware/RustDesk input for control or validation, OS input injection, private desktop pixels, broad delivery rollback/atomicity, general-app or independent same-process multi-user isolation, performance guarantee or full UX/Ultra parity."
+  ],
+  "original_raw_status": "PENDING INDEPENDENT VISUAL REVIEW",
+  "cleanup": {
+    "owned_processes_closed": true,
+    "connected_mcp_closed": true,
+    "raw_handles_closed": true,
+    "guid_key_absent": true,
+    "scoped_process_survivors": 0,
+    "runner_session": 57521,
+    "runner_exit_code": 0,
+    "exclusive_slot_returned": true
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "decision": "SOURCE APPROVED; mandatory producer/native/data/pixels pending",
+  "baseline": {
+    "path": "runtime\\producer-shared-stop-layout-20261015-110729\\verification.json",
+    "sha256": "279e16cfd60ca2077fb93822ffd3e2c50bae541f0cb774d5ff3e6b750bb9ad75"
+  },
+  "reviewed_six_files": {
+    "crates/protoinputmux/src/gui.rs": {
+      "before_path": "runtime\\startup-shortcut-before\\gui.rs",
+      "before_sha256": "1f3501148f77d8592805d9a77d7db85214d075366add035acc738b437b186b81",
+      "current_sha256": "97e3a023c02fc100198a6a15cc9ec2d5cdad329faab2eebb5580146068de2d7d"
+    },
+    "crates/protoinputmux/src/app_lifecycle.rs": {
+      "before_path": "runtime\\startup-shortcut-before\\app_lifecycle.rs",
+      "before_sha256": "c6ed771b53121d822e8bd09f54f7e6e0f84b28927f64a38e50aa2b910eeb6781",
+      "current_sha256": "21dd54ec58df20153e122c7e2bee52c12dcf98923cff66c296344d97329b7c62"
+    },
+    "crates/protoinputmux/src/app_preferences_ui.rs": {
+      "before_path": "runtime\\startup-shortcut-before\\app_preferences_ui.rs",
+      "before_sha256": "e40687c38232e2bf142fa5592ba8476391e8b0ab41f66aebe541586b02c01512",
+      "current_sha256": "62df7ddfe20ab8fd303c8268f9df0a7d8d62ca0a8b94b2723b7fe609e8e91764"
+    },
+    "crates/protoinputmux/src/agent_runtime.rs": {
+      "before_path": "runtime\\startup-shortcut-before\\agent_runtime.rs",
+      "before_sha256": "b839db29a29335ed9c0d9418423b83fcf0882eae9c0f4939d2b9da064ebd511f",
+      "current_sha256": "bfa803694526ed270561fecdacab4cf009f776f5683132dc244b3167bd0d501f"
+    },
+    "crates/protoinputmux/src/mcp.rs": {
+      "before_path": "runtime\\startup-shortcut-before\\mcp.rs",
+      "before_sha256": "adf4750d62aa595e0f678070905f3429db9fb3186e60b416b24a8bf8aacdd178",
+      "current_sha256": "d399a10430553c4311c03a43405631124796d7937fb490168c3541cdf0797644"
+    },
+    "crates/protoinputmux/src/ui_script.rs": {
+      "before_path": "runtime\\startup-shortcut-before\\ui_script.rs",
+      "before_sha256": "879817ff8284f88f56d62caf022b0b1719ce0d9e51f971dc9c9974bca87d7c75",
+      "current_sha256": "5ca6cf87646d28eba57e527c10e31eb5c2fac133c6c24e8bc80061cba1edfe3c"
+    }
+  },
+  "protected_baseline_inputs": 825,
+  "all_protected_inputs_match": true,
+  "runtime10_unchanged": {
+    "ProtoInputHooks32.dll": "9fcc2e0602d15ba1ba0c2433217c9868fef6ea039b05fd29c53b35a43ee4e4bb",
+    "ProtoInputIJ32.exe": "73c10f7397d22ed9a9f9b1ee804f17853a2c9f96d495a83f9448201b97f27a86",
+    "ProtoInputIJP32.dll": "d593e4b4f304f55743c6bbb680cf3c81f2be97392980c29367639859ffdccc3e",
+    "ProtoInputLoader32.dll": "f8e0a573a42b948f099ccd8cfd5ce3427d3eabef4de25302cb6fa1e9e4e9e7be",
+    "ProtoInputHooks64.dll": "3a67717f8711fa7d310c4c679ec51b8f994b08839eadb58c67519ae85ec7addc",
+    "ProtoInputIJ64.exe": "e11a9fd0f14902f0c749781a42a8f912fb3eb876a54454f4cb5eddea5fa5636d",
+    "ProtoInputIJP64.dll": "8daf63d2c87a150e0928f0b6d359ea503b6180538faf14bc3c66fa8228a49172",
+    "ProtoInputLoader64.dll": "e4e3889472761337de4bd232863b84a319833fc0104c2062ae553239910f5f11",
+    "protoinputmux_cursor_observer32.dll": "bc2b2fbd2655e3324fcea2f41dc54a493bbd3120dd48daf92bb08ecfb5d20069",
+    "protoinputmux_cursor_observer64.dll": "3ade9c71977c87340daae545295cbea11aba3347ee84171aab189814d03f2212"
+  },
+  "review": [
+    "Shortcut registration failure is recoverable while native window/tray failures remain fatal. Lifecycle remains alive and saved desired set is retained; no silent rewriting or subset acceptance.",
+    "Registry tracks staged/orphaned registrations until successful removal, suppresses unaccepted dispatch, cleans residuals before replacement, and deactivates entirely on failed restoration. Successful full commit or explicit Retry alone marks active.",
+    "Failed Retry and pending preference transactions preserve policy/state; latest successful explicit edits become retry_source, and explicitly accepted empty set is valid.",
+    "Start rechecks full-set health through ensure_emergency, not just the Home button. Live registry deactivation requests ordinary Stop; no forced native rollback-race claim.",
+    "Saved launch_minimized is suppressed only for inactive cold startup; draft Revert does not activate; transaction/file/startup rollback semantics retained. No native window/tray error behavior change.",
+    "Existing connected AppPreferencesState adds default-compatible optional health; GUI supplies actual health under existing policy, standalone document returns null. No stopped-GUI bridge expansion/new tool/grant or remote startup registration.",
+    "Only new Script status output is read-only health evidence; no status injection or mutation hook.",
+    "Three registry transition tests cover partial startup/retry, inactive staging/latest accepted/empty policy, and healthy rollback versus failed restoration; one agent reply compatibility test distinguishes live status from document unknown. Tiny cfg(test) constructor/tuple-parameter Clippy fixes do not change behavior."
+  ],
+  "findings": [],
+  "plan": {
+    "path": "docs/startup-shortcut-recovery-plan.md",
+    "sha256": "2433e3bd56329e58d3a18ac77130a1684188148bdcccbe7804429cd1fe9a9998"
+  },
+  "limits": [
+    "No app/native/UI/Cargo/test executed by reviewer.",
+    "Freshly inactive GUI has no connected Agent Access; native connected inspect can cover healthy recovered session only.",
+    "Native actual owned conflict/visibility/Retry/correction/cleanup and direct relevant pixels remain required.",
+    "No physical shortcuts, real logon/reboot, malformed prefs recovery, forced tray/native window failures, or full P1/Ultra/UX claim."
+  ]
+}

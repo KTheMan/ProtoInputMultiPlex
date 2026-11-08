@@ -1,0 +1,87 @@
+{
+  "date": "2026-11-06",
+  "decision": "HOME_ACCESS_ACCEPTED",
+  "reference": "https://www.mousemux.com/pages/manual/#the-main-window",
+  "scope": "Focused Home keyboard access and direct numbered roster navigation.",
+  "verification": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\home-access-20261106\\checks-001\\verification.json",
+    "sha256": "c80efeff2c487b482068d476fd2c518fa3dad2384f70be6d99ffae6e0f0aafee"
+  },
+  "review": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\home-access-20261106\\independent-acceptance.json",
+    "sha256": "c295c3b424f7eeeb2629cae8035226aed2564d35cccfbc369e6ed546bae1178f"
+  },
+  "publication": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\home-access-20261106\\publication.json",
+    "sha256": "7e20553d8daa283ebf01ef2f45cd545e9c254de5df4a8fee64b18fe406bffe37"
+  },
+  "workspace_tests": {
+    "passed": 765,
+    "failed": 0,
+    "ignored": 19
+  },
+  "x64_image": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\home-access-20261106\\checks-001\\x64\\protoinputmultiplex.exe",
+    "sha256": "31b23c8b81e5c71e650b4f1ffa024ca18f6262b198b2f165f7c3a042236528fa"
+  },
+  "checks": {
+    "fmt": 0,
+    "clippy": 0,
+    "workspace-tests": 0,
+    "build-gui": 0
+  },
+  "native": {
+    "original_session": 53680,
+    "original_exit_code": 0,
+    "raw": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\ha-4708f303342c\\evidence.json",
+      "sha256": "05bb7d7c5eb9b6de7096ad46d1523d3eca7e995c7c77e19cbf3e898b05cda57b"
+    },
+    "driver": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\home-access-20261106\\native-v3.py",
+      "sha256": "4aa700a004800fbe018ff2eabf10776adf9eb3bead6e7ddc8325d51a6f2ca95a"
+    },
+    "readiness": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\home-access-20261106\\native-ready-v3.json",
+      "sha256": "e3925e389e936b2c85250068ed82d9395de5ff7964535f0b2cd26db38a80be2f"
+    },
+    "UI_events": 6,
+    "exit_code": 0
+  },
+  "prior_native": {
+    "original_session": 14787,
+    "original_exit_code": 1,
+    "raw": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\ha-e5a0bf3d7627\\evidence.json",
+      "sha256": "63859e6a32d95fbceee4da8b6c55bc2e5bd5fb0c473505fe18b0fab2a1eb9717"
+    },
+    "cleanup": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\ha-e5a0bf3d7627\\owned-cleanup.json",
+      "sha256": "ec95f10cc72ad017586a5c7bcec3ce6a3b52637b552d178a90ee8fc11355eebc"
+    },
+    "reason": "The first driver used an assigned profile with no target PID. The app correctly rejected it. The retry used a valid automatic desktop profile and waited for both virtual users to load."
+  },
+  "second_prior_native": {
+    "original_session": 74386,
+    "original_exit_code": 1,
+    "raw": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\ha-0424323e1031\\evidence.json",
+      "sha256": "aea9dabb624da4eae00a81cf5c9730119e7865ad112c333d0898c92b76b11ee2"
+    },
+    "cleanup": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\ha-0424323e1031\\owned-cleanup.json",
+      "sha256": "b0766840366c8b604b2e27c91d14cd810ddfbffcbab3062f4f4a178aee4ae7a1"
+    },
+    "reason": "After a valid profile loads, Home selects user A automatically. The driver expected disabled Configure based on a transient bootstrap state, so it never issued input. The final gate uses the valid installed baseline."
+  },
+  "coverage": [
+    "One owned stopped x64 window with two virtual pairs. The installed profile initially selected A. A single click selected B while staying on Home. App-local Alt+C opened B's settings, Alt+S opened Settings, and Alt+H minimized the same owned root. Restoring that root without activation showed the same selection. Ordinary Quit exited normally.",
+    "Focused egui tests verify non-repeating exact Alt chords and distinguish single and double clicks on the same numbered user widget. The Home handler requires the user to be selected by the first click before opening on the double-click.",
+    "Shortcuts dispatch through the existing navigation and minimize behavior. The stopped run used no routing, target, MCP, backend DLLs or host input."
+  ],
+  "open": [
+    "Double-click has egui response coverage. The native driver did not send the gesture or sample shortcut hints while Alt was held.",
+    "App launcher, broader accessibility and full Ultra UX parity remain open.",
+    "Historical intermittent GUI stall remains open."
+  ]
+}

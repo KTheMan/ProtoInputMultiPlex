@@ -1,0 +1,27 @@
+{
+  "review_date": "2026-10-14",
+  "result": "source_review_approved",
+  "scope": "Home routing-panel overflow fix; source review only, no Cargo build or native UI acceptance",
+  "reviewed_files": {
+    "crates/protoinputmux/src/gui.rs": "396728e897b5de9c78a4e46dbdbb6676162dedbc5f1b29c4e2fb9c0fadb9c9e7",
+    "crates/protoinputmux/src/app_preferences.rs": "6aba587084f8b8c7fafbe89f5ee3c2f33ea7c6bd8697a3ecefd077e7a3bc222a",
+    "crates/protoinputmux/src/app_preferences_ui.rs": "58bc0a688529c3d437f8a73854d224a6342810fc45fe7777213060db5f87f8df",
+    "crates/protoinputmux/src/agent_runtime.rs": "dd42e5d7afc15a3debd52b15ecdf966df29bdd175ab747e1469d9eba730a39ce"
+  },
+  "source_checks": [
+    "Confirmed egui 0.34.3 Panel::bottom, Panel::exact_size, and Frame::side_top_panel APIs; exact_size includes panel margins.",
+    "Confirmed Divider::show returns a Response with a rect, and the routing panel uses that measured divider height.",
+    "Confirmed the header-height formula matches egui 0.34.3 CollapsingHeader sizing: button-text galley height plus vertical button padding, bounded by interact_size.",
+    "Confirmed the fixed-height budget accounts for the divider-to-routing, routing-to-header, and header-to-body item gaps.",
+    "The panel uses a two-row-plus-visible-warnings fallback before a route measurement exists, then stores the measured route-control height for subsequent frames.",
+    "When open, the options viewport targets 32 to 96 points when the remaining central height permits; it is reduced to the available remainder when less space remains.",
+    "The route and footer remain bottom-pinned. The residual central region is clipped to its remaining rect, and roster/status content uses only that area.",
+    "The existing Routing options observer and header ID are retained. Multi keyboard now observes and consumes the user action before issuing the existing profile/session mutation.",
+    "Existing start, stop, selection, Restore, close, quit, and cleanup-failure handlers remain in place.",
+    "Confirmed egui-winit 0.34.3 converts MinInnerSize using pixels_per_point, and egui computes pixels_per_point from zoom_factor times native_pixels_per_point; the existing GUI reapplies the minimum after zoom changes."
+  ],
+  "limitations": [
+    "The 32-point options minimum is conditional: if the route panel leaves less space, the viewport uses that smaller remainder, which may be zero under insufficient available height.",
+    "No runtime measurement or visual assertion was performed for 320x360, opened routing options, visible warnings, or resize transitions. Independent native/UI acceptance remains necessary."
+  ]
+}

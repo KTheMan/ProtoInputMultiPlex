@@ -1,0 +1,99 @@
+{
+  "review_date": "2026-10-15",
+  "decision": "REVISE",
+  "findings": [
+    {
+      "priority": "P2",
+      "files": [
+        "docs/agents.md",
+        "skills/protoinputmux/SKILL.md"
+      ],
+      "finding": "The operational guide and installed skill omit that simultaneous standalone MCP sessions collide on the app-global Ctrl+Alt+Shift+F11 emergency registration. The canonical assessment records this limit, but agents following the entrypoints can still attempt concurrent standalone ownership.",
+      "recommendation": "Document the standalone F11 collision in both entrypoints and direct concurrent agents to the existing authorized GUI bridge when appropriate; do not imply multiple standalone sessions are supported.",
+      "acceptance": "Both entrypoints state the collision and describe the GUI-connected ownership path."
+    },
+    {
+      "priority": "P2",
+      "files": [
+        "skills/protoinputmux/SKILL.md",
+        "docs/agents.md"
+      ],
+      "finding": "The generic acknowledgement caveat omits the demonstrated Busy routing_input case: a denied attempt may return isError:false with a Routing unavailable status and no delivery/native output.",
+      "recommendation": "Explain that processed Busy denial is not successful delivery; inspect routing_state/status and do not retry as if the input was delivered.",
+      "acceptance": "The agent instructions identify this nonfatal processed ACK and tell agents to inspect status before proceeding."
+    }
+  ],
+  "hashes": {
+    "documents": {
+      "README.md": "a05d90af67ac90625df4510859c27fdea586720a66de8d49edadce5bc8abbbc6",
+      "docs/ultra-parity.md": "1e7357f17a7bce3dc16b00b7a8977bbef68815f80dfa78a0c569d034a2c91c3e",
+      "docs/roadmap.md": "ed16066d7f01d381b9ab99bd70f4576ae0f2c385051a9c897d13314e5476ca3d",
+      "docs/agents.md": "62fa66aa545904d41fdf9cc8258e9bd8ac1fd3d355fb1f1ec607dee7f46eab9f",
+      "docs/validation.md": "1e13523b7153f1f8f2d4762885a208f9b82727d489af07d0c52968bc1549d97e",
+      "docs/clean-restart-contract.md": "d6331b91363d49a8ae491cdef5e8edc94021c45a1edd4e5898a6b4d645ba3a05",
+      "skills/protoinputmux/SKILL.md": "a3df7129e0b6f4654659926e5348bd7b510f9da4cf926dab7a3aad41cddfd6bb"
+    },
+    "canonical_assessment": {
+      "path": "docs/clean-restart-assessment-2026-10-15.json",
+      "sha256": "0788020a84c0ff78ce511cdd5d77ee0ef49707614d0fd6237b9d86d32c4e443b"
+    },
+    "images": [
+      {
+        "path": "docs/clean-restart-home.png",
+        "sha256": "6a198c643f605c7a3838ea93f96017c099764880e4c3066ac4dc03be9e39f560"
+      },
+      {
+        "path": "docs/clean-restart-minimum.png",
+        "sha256": "002775c347c92968cc0c22e1f81c636ce5d1e210fc4f1cd52580bbe8970ec76f"
+      }
+    ]
+  },
+  "checks": {
+    "utf8_crlf_and_backup_line_endings": {
+      "README.md": {
+        "valid_utf8": true,
+        "only_crlf": true,
+        "line_ending_style_preserved": true,
+        "final_newline_preserved": true
+      },
+      "docs/ultra-parity.md": {
+        "valid_utf8": true,
+        "only_crlf": true,
+        "line_ending_style_preserved": true,
+        "final_newline_preserved": true
+      },
+      "docs/roadmap.md": {
+        "valid_utf8": true,
+        "only_crlf": true,
+        "line_ending_style_preserved": true,
+        "final_newline_preserved": true
+      },
+      "docs/agents.md": {
+        "valid_utf8": true,
+        "only_crlf": true,
+        "line_ending_style_preserved": true,
+        "final_newline_preserved": true
+      },
+      "docs/validation.md": {
+        "valid_utf8": true,
+        "only_crlf": true,
+        "line_ending_style_preserved": true,
+        "final_newline_preserved": true
+      },
+      "docs/clean-restart-contract.md": {
+        "valid_utf8": true,
+        "only_crlf": true,
+        "line_ending_style_preserved": true,
+        "final_newline_preserved": true
+      },
+      "skills/protoinputmux/SKILL.md": {
+        "valid_utf8": true,
+        "only_crlf": true,
+        "line_ending_style_preserved": true,
+        "final_newline_preserved": true
+      }
+    },
+    "all_local_markdown_links_resolve": true,
+    "scope_claims": "Bounded scope is truthful: no full Ultra/P1, hardware, desktop-wide or same-process isolation claim; simultaneous standalone limitation is recorded in canonical assessment; i686 controller built but not run; footer crop documented; quarantine scoped to touched targets; two clean Stop/restart sessions bounded."
+  }
+}

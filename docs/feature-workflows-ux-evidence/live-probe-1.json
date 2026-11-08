@@ -1,0 +1,177 @@
+{
+  "cursor_selection_count": 0,
+  "cursor_selection_events": [],
+  "cursor_fixture_kind": null,
+  "keyboard_focus_fixture": null,
+  "pid": 265048,
+  "cursor": [
+    662,
+    1213
+  ],
+  "buttons": 0,
+  "test_keys": 0,
+  "frames": 911,
+  "text": "",
+  "held_keys": [],
+  "key_events": [
+    {
+      "vk": 117,
+      "pressed": true,
+      "scan": 64,
+      "extended": false,
+      "alt": false
+    },
+    {
+      "vk": 117,
+      "pressed": false,
+      "scan": 64,
+      "extended": false,
+      "alt": false
+    }
+  ],
+  "key_event_count": 2,
+  "text_events": 0,
+  "mouse_events": [
+    {
+      "button": 0,
+      "pressed": true
+    },
+    {
+      "button": 0,
+      "pressed": false
+    }
+  ],
+  "mouse_event_count": 2,
+  "wheel_events": 0,
+  "wheel_delta": 0,
+  "horizontal_wheel_events": 0,
+  "horizontal_wheel_delta": 0,
+  "capture_color": null,
+  "capture_delay_ms": 0,
+  "capture_hwnd": 34212938,
+  "wm_print_count": 0,
+  "wm_printclient_count": 0,
+  "wm_paint_count": 0,
+  "last_print_flags": 0,
+  "last_print_hdc_non_null": false,
+  "capture_delay_applied_count": 0,
+  "capture_delay_total_ms": 0,
+  "native_events": [
+    {
+      "hwnd": 34212938,
+      "kind": "motion",
+      "at_us": 15596475,
+      "code": 0,
+      "pressed": null,
+      "client": [
+        0,
+        0
+      ],
+      "delta": null
+    },
+    {
+      "hwnd": 34212938,
+      "kind": "motion",
+      "at_us": 15596499,
+      "code": 0,
+      "pressed": null,
+      "client": [
+        0,
+        0
+      ],
+      "delta": null
+    },
+    {
+      "hwnd": 34212938,
+      "kind": "motion",
+      "at_us": 15608684,
+      "code": 0,
+      "pressed": null,
+      "client": [
+        98,
+        68
+      ],
+      "delta": null
+    },
+    {
+      "hwnd": 34212938,
+      "kind": "button",
+      "at_us": 15608699,
+      "code": 0,
+      "pressed": true,
+      "client": [
+        98,
+        68
+      ],
+      "delta": null
+    },
+    {
+      "hwnd": 34212938,
+      "kind": "motion",
+      "at_us": 15609478,
+      "code": 0,
+      "pressed": null,
+      "client": [
+        98,
+        68
+      ],
+      "delta": null
+    },
+    {
+      "hwnd": 34212938,
+      "kind": "button",
+      "at_us": 16951891,
+      "code": 0,
+      "pressed": false,
+      "client": [
+        98,
+        68
+      ],
+      "delta": null
+    },
+    {
+      "hwnd": 34212938,
+      "kind": "motion",
+      "at_us": 16952368,
+      "code": 0,
+      "pressed": null,
+      "client": [
+        98,
+        68
+      ],
+      "delta": null
+    },
+    {
+      "hwnd": 34212938,
+      "kind": "motion",
+      "at_us": 18041944,
+      "code": 0,
+      "pressed": null,
+      "client": [
+        98,
+        68
+      ],
+      "delta": null
+    },
+    {
+      "hwnd": 34212938,
+      "kind": "key",
+      "at_us": 18041968,
+      "code": 117,
+      "pressed": true,
+      "client": null,
+      "delta": null
+    },
+    {
+      "hwnd": 34212938,
+      "kind": "key",
+      "at_us": 56091832,
+      "code": 117,
+      "pressed": false,
+      "client": null,
+      "delta": null
+    }
+  ],
+  "native_event_count": 10,
+  "clock_us": 110901472
+}

@@ -1,0 +1,22 @@
+{
+  "result": "APPROVED",
+  "reviewer": "Independent packaging_review agent",
+  "review_date_local": "2026-10-14",
+  "manifest_sha256": "ff834e1c9daa923963a3250797dc6e02634812f92c35c6b1330b38898cfb377c",
+  "verified": [
+    "All 485 payload hashes and exact archived source hashes",
+    "Frozen build inputs match source files",
+    "No Rust or vendored behavior changes against captured baseline",
+    "Native import resolution and 197 Rust dependency notice groups",
+    "All 17 fallback notice commits and hashes match published crate VCS metadata",
+    "Final executable, GUI launcher and helper match GUI-tested checksums",
+    "All 16 final headless relocation checks pass",
+    "Both coordinated GUI cases visibly render light Home with Stopped status and no assigned users",
+    "Exact owned process cleanup and disposable directory removal",
+    "All 486 files including manifest identical across repeat staging",
+    "License Git attributes preserve exact upstream bytes across checkouts"
+  ],
+  "material_findings_remaining": [],
+  "routing_validation": "NOT RUN; launch and runtime-export checks only",
+  "archive_check": "Producer additionally verifies CRC and SHA256 after fresh disposable ZIP extraction"
+}

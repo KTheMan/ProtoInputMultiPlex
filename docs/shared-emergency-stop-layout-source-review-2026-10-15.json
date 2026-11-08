@@ -1,0 +1,26 @@
+{
+  "decision": "SOURCE APPROVED; corrected pixels pending",
+  "baseline_producer": {
+    "path": "runtime/producer-shared-emergency-stop-20261015-105014/verification.json",
+    "sha256": "bbc2b23dd915fbe42531d78a2e6d614a7253c1a0973caa242337ba0beb0d0358"
+  },
+  "GUI_before": {
+    "path": "runtime\\shared-stop-layout-before-gui.rs",
+    "sha256": "76d1373031796b76ddca40c3f3dc7b82a28e4cca0835656b5e2a129d93b23258"
+  },
+  "GUI_after": {
+    "path": "crates\\protoinputmux\\src\\gui.rs",
+    "sha256": "1f3501148f77d8592805d9a77d7db85214d075366add035acc738b437b186b81"
+  },
+  "exact_delta": "Only visible warning caption Emergency stop unavailable becomes Stop unavailable, plus rustfmt collapses its fluent calls. Existing row/container, Retry label/handler, gating and state unchanged.",
+  "protected_inputs": 830,
+  "all_protected_match": true,
+  "runtime10_unchanged": true,
+  "retained_evidence": "Native broker/three-controller-loss/explicit Retry+restart+Stop data approvals remain applicable because only presentation caption changed. Old two error originals remain visual NOT ACCEPTED.",
+  "required_gate": "Fresh five mandatory Rust commands then dedicated missing-only two error views with full usable user row; solo Start+broker kill setup, disabled Start observation, normal close. No peer/packet/Retry family replay.",
+  "findings": [],
+  "limits": [
+    "Shorter caption has plausible width benefit but only actual originals can close the clipping finding.",
+    "No claim of footer cleanup or full compact UX polish."
+  ]
+}

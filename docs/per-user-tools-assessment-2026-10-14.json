@@ -1,0 +1,168 @@
+{
+  "date": "2026-10-14",
+  "reviewer": "independent acceptance agent",
+  "result": "PASS within bounded embedded-tool UX scope",
+  "scope": "Draw, Magnifier and Macros embedded in the selected user workspace; twelve tabs/two rows, stopped Save and actual worker ACK ownership, representative Dark/Light readability and minimum layout. Existing tool algorithms are not revalidated.",
+  "current_build": {
+    "x64_sha256": "44a88c282286e3a65bdf09672e052e569e7892c479587fe9bbfd16d1de505b2c",
+    "i686_sha256": "c9f6da1db963e89fd88624d049a2ee597e853fa1d940101f6b95080eadb25734",
+    "i686_executed": false,
+    "producer": {
+      "path": "runtime/producer-per-user-tools-20261014-213333/verification.json",
+      "sha256": "faee74047a3536dfea79a2bc4bc657cd3debf343ca976ce07a07cfa6dd6b9701"
+    },
+    "producer_checks": "fmt, strict Clippy,138workspace tests and both builds PASS; separate from independent GUI acceptance",
+    "source_review": {
+      "path": "docs/per-user-tools-source-review-2026-10-14.json",
+      "sha256": "27127d7261b26edb180ea86b879223d459fae55b90adc2b4456fe52a551631b4"
+    },
+    "reviewed_source_sha256": {
+      "crates/protoinputmux/src/gui.rs": "6241b807eed5f27c45250868d5a157254227a55f4e1fa46c42f447f6e08a42db",
+      "crates/protoinputmux/src/annotation_ui.rs": "403a507fcff5b6b3e439b0a56814c1d29e6721fce90cfb1eb205ec6450bb4114",
+      "crates/protoinputmux/src/magnifier_ui.rs": "f56923e1992d156af8b4cbc129930adc522bb7057529ec60c2524f6e954af832",
+      "crates/protoinputmux/src/macro_studio_ui.rs": "c753abab76460b9e2e6f8d5c23c8b6e388ca4c1c0a4dfdb0008038cc0acab851"
+    }
+  },
+  "accepted_groups": [
+    {
+      "evidence": {
+        "path": "runtime/acceptance-graph-per-user-tools-offline-20261014-212753/evidence.json",
+        "sha256": "fd1f9aaa0f151488a3da939ecba4ac9182aabddeabde66cafc1095f47014e133"
+      },
+      "observations": 26,
+      "clicks": 25,
+      "disabled": 1,
+      "builds": [
+        "55d755afc5666bc19fd9de53a5dea05e8bf6e41eb419a0b02c80416e289b90ee",
+        "6d80848455b515bdb0eb8ffdd70e210cb990b031fc2bbe7b51d12a192fde6055"
+      ],
+      "coverage": "Actual Home selection B and tool tabs only; no recipient fields. Stopped Draw Brush31/Magnifier Lens3.5 Save changes B only and survives tab/user switches. A and unrelated fields remain exact. Offline Generate disabled. Global Annotation/Magnifier/Macro Studio retain original pickers. Dark caption/disabled distinction reviewed.",
+      "original_status": "PENDING INDEPENDENT VISUAL REVIEW; initial minimum tab-label review NOT ACCEPTED retained"
+    },
+    {
+      "evidence": {
+        "path": "runtime/acceptance-graph-per-user-tools-visual-20261014-213942/evidence.json",
+        "sha256": "fbbd462446a07d2a0ad63c04ffe34febcd7d4518909103f2dcfc6ba8e45692cf"
+      },
+      "observations": 9,
+      "clicks": 7,
+      "disabled": 2,
+      "coverage": "Focused corrected pixels from exact accepted final profile, no save/global replay: solid scrollbar gutter separate from labels, selected Macro/Draw/Magnifier/Lock labels visible320. Normal generator representative Points/Seed paired; narrow CenterX/Y/Duration/Radius pairs fit. Input whole Name and Lock whole Legacy/Desktop/Apply still fit. Full profile unchanged.",
+      "review": {
+        "path": "runtime/acceptance-graph-per-user-tools-visual-20261014-213942/independent-visual-review.json",
+        "sha256": "acb29225ddc5d6b86a75652b33970ac9d8824f1858a2f614323611c283133c15"
+      },
+      "original_status": "PENDING INDEPENDENT VISUAL REVIEW unchanged"
+    },
+    {
+      "evidence": {
+        "path": "runtime/acceptance-graph-per-user-tools-live-20261014-214048/evidence.json",
+        "sha256": "29119936b9f8b09eb03cb0b8384fbe0f8790d782d2eb2ba5e5e11586e085b55e"
+      },
+      "observations": 12,
+      "clicks": 11,
+      "disabled": 1,
+      "coverage": "Assigned concurrent route to two owned x64 probes. Actual Home-selected B, exactly one acknowledged Configure each Draw and Magnifier, one Generate Macro. Bwidth33/zoom4.5 and eight clip actions all user1; A settings/empty clip unchanged. Commits survive tab switches. Selected-target frame completed from own B PID, not desktop. Cancel playback genuinely disabled; no playback. Light captures reviewed readable with disabled distinction. Stop destroys known cursor/tool layers.",
+      "ack_counts": {
+        "annotation": 1,
+        "magnifier": 1,
+        "macro-studio": 1
+      },
+      "own_magnifier_frame": {
+        "source_pid": 77172,
+        "capture_sequence": 2,
+        "status": "Ready",
+        "in_flight": false
+      },
+      "original_status": "PENDING INDEPENDENT VISUAL REVIEW unchanged"
+    }
+  ],
+  "visual_approval": {
+    "judgment": "Selected identity and twelve-tab structure remain clear at normal size. Corrected minimum labels and scrollbar gutters do not overlap; whole representative controls are usable. Muted captions read distinctly from disabled controls in Dark and Light. Original branding/assets retained.",
+    "limitations": "Dense tool forms and some normal blank space remain; this is cleaner integration, not full UX or MouseMux16-tab parity. Representative field/control views only, not every field at once.",
+    "directly_reviewed_representatives": [
+      {
+        "path": "runtime/acceptance-graph-per-user-tools-visual-20261014-213942/corrected-macros-b-minimum.png",
+        "sha256": "4c6dd4b93d7e6be7218f3e2e18b50b528531b48db2923482cfa6ce067b3965ff"
+      },
+      {
+        "path": "runtime/acceptance-graph-per-user-tools-visual-20261014-213942/corrected-generator-upper-normal.png",
+        "sha256": "28cbe340f4021b95e25627cd46ab23c823db845e892f7b3e6304333ce7ebd5f6"
+      },
+      {
+        "path": "runtime/acceptance-graph-per-user-tools-visual-20261014-213942/corrected-generator-lower-minimum.png",
+        "sha256": "52aead3f22fc1b08934b5d970c43cd4ce8d863b582b1456afdf80cf08191322c"
+      },
+      {
+        "path": "runtime/acceptance-graph-per-user-tools-visual-20261014-213942/corrected-input-b-minimum.png",
+        "sha256": "df2e4a2074dd25caad5c280d7a4f05b59d6cd82c639581f7bc299192efe6ae9f"
+      },
+      {
+        "path": "runtime/acceptance-graph-per-user-tools-visual-20261014-213942/corrected-lock-b-minimum.png",
+        "sha256": "3a10834d32ee72bd572ac12589181488c2540cd8cba9bfab9e852f7a7fcb5def"
+      },
+      {
+        "path": "runtime/acceptance-graph-per-user-tools-live-20261014-214048/draw-light-normal.png",
+        "sha256": "457c7771079ce3822133674fc52d501f64b9700e35f250359650fd965014e56e"
+      },
+      {
+        "path": "runtime/acceptance-graph-per-user-tools-live-20261014-214048/magnifier-light-normal.png",
+        "sha256": "ec23398afc34463f48343cfe0ff62453c4353bbabca8ca304e47dcb4bcfa8544"
+      },
+      {
+        "path": "runtime/acceptance-graph-per-user-tools-live-20261014-214048/macros-light-normal.png",
+        "sha256": "03a3c2ae47712126aa8d263bafc26f05d704cc31aa1d8abcbb3c501f92c96c91"
+      },
+      {
+        "path": "runtime/acceptance-graph-per-user-tools-live-20261014-214048/macros-light-disabled.png",
+        "sha256": "4634da15ba74555e7778640e8e20c5293286face009af9d6a38617fc42b4cdfb"
+      }
+    ]
+  },
+  "retained_findings": {
+    "initial_visual_review": {
+      "path": "runtime/acceptance-graph-per-user-tools-offline-20261014-212753/independent-visual-review.json",
+      "sha256": "e6d7f23d82cc7eba174220b60975ede480062a3b6e8d90b7f8d97617ff099268"
+    },
+    "finding": "Actual initial minimum scrollbar-over-label and selected Macro offscreen finding confirmed and fixed. Responsive generator rows also corrected. Initial raw result and review were not rewritten.",
+    "all_raw_results_preserved": [
+      {
+        "evidence": {
+          "path": "runtime/acceptance-graph-per-user-tools-offline-20261014-212753/evidence.json",
+          "sha256": "fd1f9aaa0f151488a3da939ecba4ac9182aabddeabde66cafc1095f47014e133"
+        },
+        "result": "PENDING INDEPENDENT VISUAL REVIEW"
+      },
+      {
+        "evidence": {
+          "path": "runtime/acceptance-graph-per-user-tools-visual-20261014-213942/evidence.json",
+          "sha256": "fbbd462446a07d2a0ad63c04ffe34febcd7d4518909103f2dcfc6ba8e45692cf"
+        },
+        "result": "PENDING INDEPENDENT VISUAL REVIEW"
+      },
+      {
+        "evidence": {
+          "path": "runtime/acceptance-graph-per-user-tools-live-20261014-214048/evidence.json",
+          "sha256": "29119936b9f8b09eb03cb0b8384fbe0f8790d782d2eb2ba5e5e11586e085b55e"
+        },
+        "result": "PENDING INDEPENDENT VISUAL REVIEW"
+      }
+    ],
+    "corrected_source_review_metadata": "Baseline-hash transcription corrected programmatically by source reviewer; reviewed product hashes/findings unchanged. Canonical references corrected report hash."
+  },
+  "limits": [
+    "No annotation strokes/eraser, magnifier image-quality/export algorithms, recording/playback/input families, physical hardware, RustDesk or global input tested.",
+    "No desktop-source capture; only selected-target own probes. No general-app or same-process isolation claim.",
+    "No actual pending-window cross-user retarget rejection race claimed. focus_user busy guard independently source/unit reviewed; actual positive ACK ownership is separately proven.",
+    "Only x64 GUI/probes executed; i686 copied unused. No tool-discovery/schema regression or hotkey/lifecycle family replay."
+  ],
+  "cleanup": {
+    "all_three_run_processes_closed": true,
+    "own_executable_prefix_CIM_matches": 0,
+    "all_three_GUID_test_keys_absent": true,
+    "known_layers_destroyed_on_Stop": true,
+    "exclusive_native_slot_released": true
+  },
+  "counting": "Original planned26+12 observations plus9 focused corrective observations. Counts include setup/navigation/disabled receipts, not distinct algorithms. No26-flow replay, ZIP or additional suite.",
+  "approval": "Independent bounded approval after actual original-pixel, complete profile, ACK and cleanup checks. All original outcomes retained; no further acceptance tests required for this group."
+}

@@ -1,0 +1,39 @@
+{
+  "result": "PASS",
+  "date": "2026-10-15",
+  "source": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\skills\\protoinputmux\\SKILL.md",
+  "installed": "C:\\Users\\Archform CAD Station\\.codex\\skills\\protoinputmux\\SKILL.md",
+  "source_and_installed_sha256": "8eb3e67ef753f0a7ac6fb92070d81347faffe127f2982f79a34598cf428f3af6",
+  "previous_installed_sha256": "aa6683ef3794e798c1328f016001ab68e0f380433fb58a83b10ef9df33094e63",
+  "guarded_prior_backup": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\orphan-client-cleanup-skill-before.md",
+  "approval": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\docs\\orphan-client-cleanup-doc-review-2026-10-15.json",
+    "sha256": "aaa78e501e3ce3e49b4ce128a408068457fa513d42aa66243f87554f0a438a8e"
+  },
+  "canonical_assessment": {
+    "path": "docs/orphan-client-cleanup-assessment-2026-10-15.json",
+    "sha256": "9b8fdcae32b8ccdbaf171d27cc02e7d662273151f483fa92b6321d8f9706fe99"
+  },
+  "checks": [
+    {
+      "command": [
+        "C:\\Users\\Archform CAD Station\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "C:\\Users\\Archform CAD Station\\.codex\\skills\\.system\\skill-creator\\scripts\\quick_validate.py",
+        "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\skills\\protoinputmux"
+      ],
+      "exit_code": 0,
+      "output": "Skill is valid!\n"
+    },
+    {
+      "command": [
+        "C:\\Users\\Archform CAD Station\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "C:\\Users\\Archform CAD Station\\.codex\\skills\\.system\\skill-creator\\scripts\\quick_validate.py",
+        "C:\\Users\\Archform CAD Station\\.codex\\skills\\protoinputmux"
+      ],
+      "exit_code": 0,
+      "output": "Skill is valid!\n"
+    }
+  ],
+  "final_producer_inputs_unchanged": 82,
+  "scope": "Documentation-only installed guidance for accepted bounded saved-release cleanup; no new tool permissions or native validation."
+}

@@ -1,0 +1,37 @@
+{
+  "reviewed_at": "2026-10-14",
+  "scope": "Connected GUI-session magnifier source review: agent policy, capture target binding, deferred export, settings/state synchronization, and UI eligibility.",
+  "decision": "approved_source_review",
+  "baseline_snapshots": {
+    "crates\\protoinputmux\\src\\magnifier_ui.rs": "f56923e1992d156af8b4cbc129930adc522bb7057529ec60c2524f6e954af832",
+    "crates\\protoinputmux\\src\\magnifier_runtime.rs": "a4e1f111532156b7a2a9c5f7196d19366c8431c08ea56aff929662f05d253d83",
+    "crates\\protoinputmux\\src\\main.rs": "2e17c2c5efda71d2d3b693f17b14f2088bcea41974c47e9e7b9e8517101dd3d4",
+    "crates\\protoinputmux\\src\\gui.rs": "b762aa6bfc3890360991efb0ff3c27660718b76b05855c178d9daf32153369fb",
+    "crates\\protoinputmux\\src\\session.rs": "ce9e3acd4af34d5abfca73526ba7062f9953da91ca880cd8000a599d7f4b2ec9",
+    "crates\\protoinputmux\\src\\virtual_users.rs": "b4d88e67f6b028384cb4907c826c185b8d8de5336db9d4ead0c3870e8088ad24",
+    "crates\\protoinputmux\\src\\agent_runtime.rs": "49b2a3d2027477b9628a049474bb42d948c3ec736727326819858a2116fec134",
+    "crates\\protoinputmux\\src\\mcp.rs": "40df09f2b257bed33238fb58b629d341a6dcaa7303ccebfbc290736d570ef4cd"
+  },
+  "current_source_sha256": {
+    "crates\\protoinputmux\\src\\magnifier_ui.rs": "ce8947dda123f6e5f17a1942437a77d1c5483ddbcc35ec5343d54269ad20acad",
+    "crates\\protoinputmux\\src\\magnifier_runtime.rs": "f20f745773314de55a88a78f5f79d4b73de0dcf6313d2eac6d804db6609c543b",
+    "crates\\protoinputmux\\src\\main.rs": "4c0c1797a47baee35959b91aab525f2ef7128cff32522699bbe2a5abd787dea4",
+    "crates\\protoinputmux\\src\\gui.rs": "517e1a048576d0ee8160072270343d468cee613287f558c55e09c57fff2ab779",
+    "crates\\protoinputmux\\src\\session.rs": "f7dad7e19cd536e176405c1aa0223266d9531fb7d41ff4a9414bfc22bf29c3b6",
+    "crates\\protoinputmux\\src\\agent_export.rs": "d8c5fac6e459e98d3f9c1390b7421c50a84d714f162787c6812c2dd2c9cf13b4",
+    "crates\\protoinputmux\\src\\virtual_users.rs": "437f12b3154425bd2eaccfa8e7e76417880af86046599fc377d3a3ac30eeed06",
+    "crates\\protoinputmux\\src\\agent_runtime.rs": "e784edded3a8ba7b2820c092ea49d02a17396806e28c6b765c1f1542bf86731e",
+    "crates\\protoinputmux\\src\\mcp.rs": "2ef1dc8147c6909e26f5eefff2b19cf39e9e5f1dc47e73584d0d3c42a4b1e461"
+  },
+  "findings": [],
+  "review": [
+    "Configure Off requires session-control and an active permitted virtual user; enabling additionally requires capture permission and the currently selected allowed application target. Refresh and Export require capture permission and the same selected-target checks. Desktop-source capture remains standalone-only.",
+    "Connected PNG export uses an immutable completed cached frame. Encoding and same-directory atomic publication run on a bounded worker with a single pending export slot. Authorization is rechecked before approval and at completion. Pre-commit denial produces no filesystem write; if authorization changes after commit or the completion deadline passes, the correlated error states that an already committed/pending file cannot be rolled back or may still be published.",
+    "Magnifier settings are projected into both the agent profile snapshot and virtual-user state, and successful local/agent Configure requests update the virtual-user seat settings. GUI external acknowledgements update telemetry/profile without consuming a pending local command; successful local configure refreshes region fields. A valid cached frame remains exportable during a newer capture in flight."
+  ],
+  "limits": [
+    "Source review only; native acceptance was not performed by this reviewer.",
+    "This approval covers the connected MCP/GUI path only. Existing local/standalone export remains synchronous and is outside the new asynchronous I/O guarantee.",
+    "Connected capture is limited to the currently selected allowed application window; desktop-source capture is not exposed through the connected path."
+  ]
+}

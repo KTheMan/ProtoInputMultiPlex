@@ -1,0 +1,203 @@
+{
+  "decision": "BOUNDED SHARED EMERGENCY STOP GROUP CLOSED / APPROVED",
+  "full_P1_UX_Ultra": "OPEN",
+  "audit_scope": "Read-only frozen artifact/hash/claim/install/cleanup review. No apps, native input, UI, Cargo, test or validator reruns.",
+  "canonical": {
+    "path": "docs\\shared-emergency-stop-assessment-2026-10-15.json",
+    "sha256": "d964d069d30a58855fc2990ff6e8cf71123499b5fdad31937bbb97756c0078f5"
+  },
+  "final_producer": {
+    "path": "runtime\\producer-shared-stop-layout-20261015-110729\\verification.json",
+    "sha256": "279e16cfd60ca2077fb93822ffd3e2c50bae541f0cb774d5ff3e6b750bb9ad75",
+    "source_count": 831,
+    "all_current_inputs_match": true,
+    "runtime10_match": true,
+    "current_build2_match": true,
+    "build_sha256": {
+      "x64": "72d671fe7f6781b5506fe555ab03b144aed53cf1f120c9e54aea3af9e1d46135",
+      "i686": "999f90f58e145094a99356958db41fc6b1ee99cac4a742013875e67ca7cebf20"
+    }
+  },
+  "functional_producer": {
+    "path": "runtime\\producer-shared-emergency-stop-20261015-105014\\verification.json",
+    "sha256": "bbc2b23dd915fbe42531d78a2e6d614a7253c1a0973caa242337ba0beb0d0358",
+    "protected_nonGUI_inputs": 830,
+    "all_match": true,
+    "retained_run_copies": {
+      "runtime/acceptance-shared-stop-native-20261015-105351": "PASS proper producer",
+      "runtime/acceptance-shared-stop-native-20261015-105535": "PASS proper producer",
+      "runtime/acceptance-graph-shared-stop-gui-20261015-105728": "PASS proper producer",
+      "runtime/acceptance-graph-shared-stop-gui-tail-20261015-110205": "PASS proper producer",
+      "runtime/acceptance-graph-shared-stop-layout-20261015-110846": "PASS proper producer"
+    }
+  },
+  "independent_phase_references_verified": {
+    "docs/shared-emergency-stop-source-review-2026-10-15.json": "b8a170c265e075d4cf3dc89086441a8b3318a882fd9d56a1a441b3a5e459a58f",
+    "docs/shared-emergency-stop-source-addendum-2026-10-15.json": "0a018a0ea34d375c901a3a24f5d077027c0bfbdfbaf8075c9d9fd796b0637a32",
+    "docs/shared-emergency-stop-harness-review-2026-10-15.json": "66c2ab9dd8f19377b8e6ffb8992f3457477ab76078857cf17ef3f1e5dc2f6d87",
+    "docs/shared-emergency-stop-layout-source-review-2026-10-15.json": "d014f3e991636d55c5727ec22672e0c0852e772892b190be08ae265a89de04db",
+    "runtime/shared-stop-layout-harness-review.json": "9f40b0d2c07a6a4fc89166a4a6feb4de99051903108fa6902e4fa5b531a35f50",
+    "runtime/producer-shared-emergency-stop-20261015-105014/verification.json": "bbc2b23dd915fbe42531d78a2e6d614a7253c1a0973caa242337ba0beb0d0358",
+    "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-shared-stop-layout-20261015-110729\\verification.json": "279e16cfd60ca2077fb93822ffd3e2c50bae541f0cb774d5ff3e6b750bb9ad75",
+    "runtime/producer-shared-emergency-stop-20261015-104851/verification.json": "a0d1a6816e197057c5e1486b3c393539aa0c685c509605db6864187c12c9c049",
+    "runtime/producer-shared-stop-layout-20261015-110536/verification.json": "13eae949fd51d758b3a1e6bfd59465febbb7e5353df629a78781e1b445cac134",
+    "runtime/acceptance-shared-stop-native-20261015-105351/evidence.json": "be4070e89541aaeb39c0217d41bffd5ceb5769d499054ddc45f22b84232e60a3",
+    "runtime/shared-stop-native-first-failure-review.json": "30363e57f18e53eb34455e46990a5db711b6fc31e4bb09cda7bde5c50165f1b7",
+    "runtime/acceptance-shared-stop-native-20261015-105535/evidence.json": "d627daf5829eb0e882fa67109edbe387a07e1c16a41b5e3647550bc99838e29c",
+    "runtime/acceptance-shared-stop-native-20261015-105535/independent-review.json": "6e46f0115301e2a8326f4e915940e27a9fdd8ee55e80f9a808b004e1f3279200",
+    "runtime/acceptance-graph-shared-stop-gui-20261015-105728/evidence.json": "39307e5afa70d6c87caac0dad09eb58bcd1a595f225e951aba9fde431a355ce7",
+    "runtime/acceptance-graph-shared-stop-gui-20261015-105728/independent-prefix-review.json": "e8383298ca8d5df54f2c81ddffbdd8dbd1e2c78d9222364bbfc7480175a98762",
+    "runtime/acceptance-graph-shared-stop-gui-tail-20261015-110205/evidence.json": "ac189fa86be81870f8c7379c2a0d4b7f448562cbe9422c7f85ede2e4375a6743",
+    "runtime/acceptance-graph-shared-stop-gui-tail-20261015-110205/independent-review.json": "ebb33a134b6d186c0020d6e28a849f4700c3b246235def01000baef9117bf6a9",
+    "runtime\\acceptance-graph-shared-stop-layout-20261015-110846\\evidence.json": "69a783435034378fa5f3bc09c591aee1ba705e91627e1800a71c0810d57d9b93",
+    "runtime\\acceptance-graph-shared-stop-layout-20261015-110846\\independent-review.json": "7e2f194c953aa7a786179c8e51dc576ae66a7af8227fba124c91a2529f77cccb"
+  },
+  "documentation": {
+    "review": {
+      "path": "docs\\shared-emergency-stop-doc-review-2026-10-15.json",
+      "sha256": "1f9bb48b215b81709b609884fb3bfa82f65f7ebee2bc7d4d105a0b73c7ccb842",
+      "decision": "APPROVED"
+    },
+    "seven_documents": {
+      "README.md": "e25fe76177b69d03048baf1c906779eeaa5752f8efe64f5b733e38cc4cc1b2c8",
+      "docs/ultra-parity.md": "0e2815f664b69ddc83d4cec1a02086fc243aa5265bbbc0b17305ad8ac789b953",
+      "docs/roadmap.md": "2759fe41d5d82482ec1f3841cad95c79b8502f6affaf81f57efea4c0fbb122db",
+      "docs/agents.md": "d67075ead54fa31e4697ded44fb0bc7f41431606cd49b4815c1de689f649c00f",
+      "docs/validation.md": "107b02b07c5243e726356462e0b43e5f3ad429fcbb5708e308fc65d1adb8a09d",
+      "docs/shared-emergency-stop-contract.md": "69252b53c6acf040e7758d566ae585833fd42d76473a6be8f694c84cf96dd25b",
+      "skills/protoinputmux/SKILL.md": "5275bbe87cfaac5743ee264c3b69aafefbdf6ea1fdebd85b83d2d4d907bc1a9a"
+    },
+    "canonical_hash_match": true,
+    "two_byte_exact_image_copies": [
+      {
+        "path": "docs/shared-emergency-stop-home.png",
+        "sha256": "76e3d9dd04dc945b49bfd0492e4adc4c7c6fa60f76416e865b509088651f7e7b"
+      },
+      {
+        "path": "docs/shared-emergency-stop-minimum.png",
+        "sha256": "0260a8fee6555b2f3fd52aaf2b5aa89352ac92bb3d2d09382a44de9dbeb2764f"
+      }
+    ],
+    "scope_review": "Subscription qualifiers preserve standalone automatic-desktop/concurrent versus direct CLI/nonconcurrent behavior and GUI accepted-default-binding condition. Tested standalone Stop/EOF peer isolation is distinguished from unperformed GUI Stop-plus-peer combination. No new tools/grants/global agent trigger or broad physical/desktop/UX claim."
+  },
+  "skill_install": {
+    "record": {
+      "path": "docs\\shared-emergency-stop-skill-install-2026-10-15.json",
+      "sha256": "ea7e40620bb67bafa5d2701e1b899bbb8e52780ec3629e64c2b0e92859bb3474"
+    },
+    "source": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\skills\\protoinputmux\\SKILL.md",
+    "installed": "C:\\Users\\Archform CAD Station\\.codex\\skills\\protoinputmux\\SKILL.md",
+    "source_installed_byte_equal": true,
+    "source_installed_sha256": "5275bbe87cfaac5743ee264c3b69aafefbdf6ea1fdebd85b83d2d4d907bc1a9a",
+    "backup": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\shared-stop-skill-before.md",
+    "backup_sha256": "a7bb279fdd8f04db8c37925d415e8295068fd1a8d1be37d594c6c3741ea1528f",
+    "guarded_atomic_replace_recorded": true,
+    "recorded_validator_exit_codes": [
+      0,
+      0
+    ],
+    "validators_rerun": false
+  },
+  "cleanup_tables_verified": {
+    "runtime/acceptance-shared-stop-native-20261015-105351": {
+      "result": "NOT ACCEPTED",
+      "owned_worker_exits": {},
+      "owned_broker_exits": {},
+      "owned_target_exit_codes": {
+        "175404": 0,
+        "177220": 0,
+        "178476": 0
+      },
+      "known_overlays_closed": true,
+      "cleanup_errors": [
+        "owned broker inventory: AssertionError(\"Missing closing ')' in subexpression.\\n    + CategoryInfo          : ParserError: (:) [], ParentContainsErrorRecordException\\n    + FullyQualifiedErrorId : MissingEndParenthesisInSubexpression\\n \\n\")",
+        "scoped CIM cleanup audit: AssertionError(\"Missing closing ')' in subexpression.\\n    + CategoryInfo          : ParserError: (:) [], ParentContainsErrorRecordException\\n    + FullyQualifiedErrorId : MissingEndParenthesisInSubexpression\\n \\n\")"
+      ],
+      "scoped_cim_survivors": []
+    },
+    "runtime/acceptance-shared-stop-native-20261015-105535": {
+      "result": "PENDING INDEPENDENT NATIVE DATA REVIEW",
+      "owned_worker_exits": {
+        "178036": 0,
+        "172292": 0,
+        "168876": 0,
+        "158388": 0
+      },
+      "owned_broker_exits": {
+        "155004": 0
+      },
+      "owned_target_exit_codes": {
+        "178244": 0,
+        "177184": 0,
+        "178908": 0
+      },
+      "known_overlays_closed": true,
+      "cleanup_errors": [],
+      "scoped_cim_survivors": []
+    },
+    "runtime/acceptance-graph-shared-stop-gui-20261015-105728": {
+      "result": "NOT ACCEPTED",
+      "owned_exit_codes": {
+        "171108": 0,
+        "175036": 1,
+        "179008": 0,
+        "169288": 0,
+        "170252": 0,
+        "177876": 0
+      },
+      "known_overlays_closed": true,
+      "owned_processes_closed": true,
+      "guid_value_absent": true,
+      "descriptor_absent": true,
+      "cleanup_errors": [],
+      "scoped_cim_survivors": []
+    },
+    "runtime/acceptance-graph-shared-stop-gui-tail-20261015-110205": {
+      "result": "PENDING INDEPENDENT DATA/PIXEL REVIEW",
+      "owned_exit_codes": {
+        "166560": 0,
+        "169812": 0
+      },
+      "known_overlays_closed": true,
+      "owned_processes_closed": true,
+      "guid_value_absent": true,
+      "descriptor_absent": true,
+      "cleanup_errors": [],
+      "scoped_cim_survivors": []
+    },
+    "runtime/acceptance-graph-shared-stop-layout-20261015-110846": {
+      "result": "PENDING INDEPENDENT DATA/PIXEL REVIEW",
+      "owned_exit_codes": {
+        "179936": 0,
+        "179968": 0
+      },
+      "known_overlays_closed": true,
+      "owned_processes_closed": true,
+      "guid_value_absent": true,
+      "descriptor_absent": true,
+      "cleanup_errors": [],
+      "scoped_cim_survivors": []
+    }
+  },
+  "preservation": "All canonical referenced raw/review/source/producer files unchanged. Failed native query and GUI aggregate remain NOT ACCEPTED; old visual rejection and raw PENDING states retained. First query cleanup errors and GUI finally exit1 remain explicit; later independent exact-image audits closed those resources. Final and accepted normal cleanup tables remain clear.",
+  "accepted_counts": {
+    "accepted_functional_mutating_MCP_calls": 38,
+    "accepted_routing_input_calls": 24,
+    "all_MCP_mutation_attempts_including_failed_query_setup": 39,
+    "actual_GUI_clicks_across_phases": 6,
+    "disabled_GUI_observations_across_phases": 2,
+    "accepted_final_originals": 2,
+    "not_distinct_tests_or_controls": true
+  },
+  "remaining_limits": [
+    "No physical chord actuation: native broadcast used exact WM_HOTKEY to verified owned broker HWND. No hardware/RustDesk/global pointer/SendInput/foreground manipulation.",
+    "Same exact executable path/metadata/version, interactive logon/window-station/desktop scope only; mixed copied paths/versions, other desktops/logons and arbitrary applications remain unvalidated.",
+    "x64 native execution only; i686 built, not executed for this group.",
+    "Heartbeat protocol/malformed traffic/transactional rollback/health timing edge cases source or deterministic unit evidence; no hung-broker/pause timing, malformed native IPC matrix or forced cleanup-quarantine failure replay.",
+    "Long Home footer clipped and full compact UX remains open; tested sole-user roster/error controls only, no broader roster matrix.",
+    "Periodic GUI PNG timing does not establish request-associated freshness.",
+    "No same-process multi-user isolation, desktop-wide routing, full P1/Ultra or broad UX completion claim."
+  ],
+  "unresolved_material_findings": [],
+  "result": "This bounded item may close. No full-goal completion or further native replay authorized."
+}

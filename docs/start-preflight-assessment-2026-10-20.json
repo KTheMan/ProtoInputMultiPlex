@@ -1,0 +1,88 @@
+{
+  "decision": "GUI_START_PREFLIGHT_BOUNDED_ACCEPTED",
+  "date": "2026-10-20",
+  "scope": "GUI-owned asynchronous Start preflight, pending Stop/close, same-GUI fresh restart and read-only connected MCP inspection with two virtual user pairs and two owned x64 probes. No routed input or attachment. Both GUI cohorts set close_to_tray=false.",
+  "source_review": {
+    "path": "runtime/start-preflight-source-review.json",
+    "sha256": "9a9925ea3f2c1129a2289a6b39bbbadad6b1d69d7f87477ced177eeba798ca9f"
+  },
+  "producer": {
+    "path": "runtime/producer-start-preflight-20261020-attempt001/verification.json",
+    "sha256": "41e813034d516afdfdc75b416688e7e6a64c4583d856b026bfb8acfed5fff8e4"
+  },
+  "producer_review": {
+    "path": "runtime/start-preflight-producer-review.json",
+    "sha256": "50a708f66255227a9278b8ca6698b8e85be46a6fd379010aa162ae1e49996a31"
+  },
+  "runner_source_review": {
+    "path": "runtime/start-preflight-ui-source-review.json",
+    "sha256": "de6622c757628765d8b277b814e734ce1b1fcbe7d90ae748eed1220fbae076f2"
+  },
+  "actual_evidence": {
+    "path": "runtime/start-preflight-ui-attempt001/evidence.json",
+    "sha256": "1473e78d3edf66e797de7ba8cc3d97b453677232f26cfa853034cedc3fe24282"
+  },
+  "independent_acceptance": {
+    "path": "runtime/start-preflight-ui-attempt001-review.json",
+    "sha256": "0300e1f2f514a6d97573c70d5518801f0bc7113236315d76a9c8a3e0c5041aaa"
+  },
+  "implemented": [
+    "GUI Start immediately owns one Controller; its supervisor performs authoritative device, profile, target, runtime, original-process identity and emergency-stop health checks off the UI thread. Synchronous Controller entry points retain validation for standalone MCP.",
+    "Stop is latched through preflight and identity installation. One owned controller/receiver remains until terminal, preventing overlapping launches or stale completion reuse. GUI ignores late nonterminal readiness after Stop.",
+    "Prepared watches are built off-lock. Cancellation before profile delivery drops untouched identities and yields clean Stopped; after delivery, existing worker/job/transport cleanup and quarantine remain authoritative.",
+    "Ouroboros Start/Pause/Stop and Starting/Stopping labels reflect pending state. Navigation and owner-requested normal close with close-to-tray disabled remain usable during the accepted cancellable diagnostic delay."
+  ],
+  "checks": {
+    "formatting": "PASS",
+    "strict_clippy": "PASS",
+    "workspace_tests": {
+      "passed": 404,
+      "failed": 0,
+      "ignored": 3
+    },
+    "builds": [
+      "x86_64-pc-windows-msvc app/observer",
+      "i686-pc-windows-msvc app/observer"
+    ],
+    "native_backend_rebuilt": false
+  },
+  "actual": {
+    "ui_actions": 18,
+    "cohort_a_actions": 13,
+    "cohort_b_actions": 5,
+    "configured_delay_ms": 6000,
+    "cohort_a_cancellation_elapsed_from_conservative_start_origin_ms": 3281,
+    "cohort_a_restart": "Same GUI, new pending controller then Ready/Running, scoped read-only agent_session/routing_state with two users, ordinary Stop and close.",
+    "cohort_b_close_ms": 312,
+    "cohort_b_exit_elapsed_from_conservative_start_origin_ms": 3172,
+    "family_elapsed_ms": 20110,
+    "probe_native_mouse_key_events": 0,
+    "cleanup_errors": [],
+    "remaining_owned_processes": 0
+  },
+  "image": {
+    "published": {
+      "path": "docs/start-preflight-pending.png",
+      "sha256": "28cd9f26a3727a32fe075cf209d86623e95daef65575ca4fb25317a4c195b261"
+    },
+    "second_owned_original": {
+      "path": "runtime/start-preflight-ui-attempt001/cohort-b-preflight.png",
+      "sha256": "28cd9f26a3727a32fe075cf209d86623e95daef65575ca4fb25317a4c195b261"
+    },
+    "size": [
+      360,
+      360
+    ],
+    "note": "Both fresh owned captures have identical pixels for the same configured names; distinct HWND/geometry and files are recorded.",
+    "source_original": {
+      "path": "runtime/start-preflight-ui-attempt001/cohort-a-preflight.png",
+      "sha256": "28cd9f26a3727a32fe075cf209d86623e95daef65575ca4fb25317a4c195b261"
+    }
+  },
+  "limits": [
+    "Native acceptance uses the bounded cooperative delay before preflight; it does not interrupt or establish cancellation timing inside arbitrary blocked Windows calls. Cancellation checks are between native phases.",
+    "Fresh validation and process scope were retained, not bypassed. Post-delivery failed cleanup and original-process quarantine remain required.",
+    "Raw Input capture startup, the historical GUI stall cause, general P1 reliability, hardware/RustDesk input, arbitrary application compatibility, mixed-DPI, benchmarks, full UX and Ultra parity remain open.",
+    "Standalone MCP Start retains its existing synchronous control semantics; no new tool, grant, pre-Ready GUI connection or generalized standalone Start cancellation is claimed."
+  ]
+}

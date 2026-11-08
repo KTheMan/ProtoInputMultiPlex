@@ -1,0 +1,1788 @@
+--- a/src/ProtoInput/ProtoInputHooks/FakeMouseKeyboard.cpp
++++ b/src/ProtoInput/ProtoInputHooks/FakeMouseKeyboard.cpp
+@@ -7,6 +7,13 @@
+ 
+ FakeMouseState FakeMouseKeyboard::mouseState{};
+ FakeKeyboardState FakeMouseKeyboard::keyboardState{};
++
++void FakeMouseKeyboard::ResetForLifecycle()
++{
++	// Called only after emission and native detours have quiesced.
++	mouseState = FakeMouseState{};
++	keyboardState = FakeKeyboardState{};
++}
+ 
+ void FakeMouseKeyboard::AddMouseDelta(int dx, int dy)
+ {
+--- a/src/ProtoInput/ProtoInputHooks/FakeMouseKeyboard.h
++++ b/src/ProtoInput/ProtoInputHooks/FakeMouseKeyboard.h
+@@ -41,6 +41,7 @@
+ 	static FakeKeyboardState keyboardState;
+ 	
+ public:
++	static void ResetForLifecycle();
+ 	static const FakeMouseState& GetMouseState() { return mouseState; }
+ 	static void AddMouseDelta(int dx, int dy);
+ 	static void SetMousePos(int x, int y);
+--- a/src/ProtoInput/ProtoInputHooks/FocusMessageLoop.cpp
++++ b/src/ProtoInput/ProtoInputHooks/FocusMessageLoop.cpp
+@@ -1,75 +1,65 @@
+ #include "FocusMessageLoop.h"
+ #include <cstdio>
++#include <mutex>
++#include <condition_variable>
++#include <chrono>
+ #include "HwndSelector.h"
+ #include "GetKeyboardStateHook.h"
+ 
+ namespace Proto
+ {
+-
+ HANDLE FocusMessageLoop::loopThread = nullptr;
+ bool FocusMessageLoop::running = false;
+-
+ int FocusMessageLoop::sleepMilliseconds = 5;
+ FocusMessageLoop::ToSend FocusMessageLoop::messagesToSend{};
+-
+-DWORD WINAPI LoopThread(LPVOID lpParameter)
++namespace
+ {
+-	printf("Starting focus message loop thread\n");
+-
+-	//TODO: need to close the thread handle when application closes
+-	//TODO: check how much cpu this uses
+-
+-	
+-	AddThreadToACL(GetCurrentThreadId());
+-
+-	while(true)
+-	{		
+-		const HWND hwnd = (HWND)HwndSelector::GetSelectedHwnd();
+-		if (hwnd != nullptr)
+-		{
+-			if (FocusMessageLoop::messagesToSend.wm_activate) PostMessageW(hwnd, WM_ACTIVATE, WA_CLICKACTIVE, 0);
+-			if (FocusMessageLoop::messagesToSend.wm_activateapp) PostMessageW(hwnd, WM_ACTIVATEAPP, TRUE, 0);
+-			if (FocusMessageLoop::messagesToSend.wm_ncactivate) PostMessageW(hwnd, WM_NCACTIVATE, TRUE, 0);
+-			if (FocusMessageLoop::messagesToSend.wm_setfocus) PostMessageW(hwnd, WM_SETFOCUS, 0, 0);
+-			if (FocusMessageLoop::messagesToSend.wm_mouseactivate) PostMessageW(hwnd, WM_MOUSEACTIVATE, HwndSelector::GetSelectedHwnd(), 1);
+-
+-			Sleep(FocusMessageLoop::sleepMilliseconds);
+-		}
+-		else
+-		{
+-			Sleep(100);
+-		}
+-	}
+-	
+-	return 0;
++std::mutex focusMutex;
++std::condition_variable focusWake;
+ }
+-
++DWORD WINAPI LoopThread(LPVOID)
++{
++    AddThreadToACL(GetCurrentThreadId());
++    std::unique_lock<std::mutex> lock(focusMutex);
++    while (true)
++    {
++        focusWake.wait(lock, [] { return FocusMessageLoop::running; });
++        const HWND hwnd = (HWND)HwndSelector::GetSelectedHwnd();
++        if (hwnd)
++        {
++            const auto& send = FocusMessageLoop::messagesToSend;
++            if (send.wm_activate) PostMessageW(hwnd, WM_ACTIVATE, WA_CLICKACTIVE, 0);
++            if (send.wm_activateapp) PostMessageW(hwnd, WM_ACTIVATEAPP, TRUE, 0);
++            if (send.wm_ncactivate) PostMessageW(hwnd, WM_NCACTIVATE, TRUE, 0);
++            if (send.wm_setfocus) PostMessageW(hwnd, WM_SETFOCUS, 0, 0);
++            if (send.wm_mouseactivate) PostMessageW(hwnd, WM_MOUSEACTIVATE, (WPARAM)hwnd, 1);
++        }
++        focusWake.wait_for(lock, std::chrono::milliseconds(hwnd ? FocusMessageLoop::sleepMilliseconds : 100),
++            [] { return !FocusMessageLoop::running; });
++    }
++}
+ void FocusMessageLoop::SetupThread()
+ {
+-	loopThread = CreateThread(nullptr, 0,(LPTHREAD_START_ROUTINE)LoopThread, 
+-							  GetModuleHandle(0), CREATE_SUSPENDED, 0);
+-		
+-	running = false;
++    std::lock_guard<std::mutex> lock(focusMutex);
++    if (!loopThread) loopThread = CreateThread(nullptr, 0, LoopThread, nullptr, 0, nullptr);
+ }
+-
+ void FocusMessageLoop::StartMessageLoop()
+ {
+-	if (loopThread == nullptr)
+-		SetupThread();
+-	
+-	ResumeThread(loopThread);
+-	running = true;
++    SetupThread();
++    std::lock_guard<std::mutex> lock(focusMutex);
++    running = loopThread != nullptr;
++    focusWake.notify_all();
+ }
+-
+ void FocusMessageLoop::PauseMessageLoop()
+ {
+-	SuspendThread(loopThread);
+-	running = false;
++    // Acknowledges previous posts; repeated pause cannot accumulate suspend counts.
++    std::lock_guard<std::mutex> lock(focusMutex);
++    running = false;
++    focusWake.notify_all();
+ }
+-
+ void FocusMessageLoop::Cleanup()
+ {
+-	CloseHandle(loopThread);
++    PauseMessageLoop();
++    // Resident support thread lives until target exit, matching the hooks DLL.
+ }
+-
+ }
+--- a/src/ProtoInput/ProtoInputHooks/HookInstaller.cpp
++++ b/src/ProtoInput/ProtoInputHooks/HookInstaller.cpp
+@@ -5,19 +5,41 @@
+ #include "Gui.h"
+ #include <vector>
+ #include <mutex>
++#include <atomic>
++#include <algorithm>
+ 
+ namespace Proto
+ {
+ 
+ std::vector<unsigned long> ACLThreads{};
+ std::vector<HOOK_TRACE_INFO> trackedHooks{};
++std::vector<std::pair<unsigned long, HANDLE>> aclThreadWatches;
+ std::mutex mutex;
++std::atomic<unsigned long> lifecycleError{0};
++void ResetHookLifecycleError() { lifecycleError.store(0, std::memory_order_release); }
++unsigned long HookLifecycleError() { return lifecycleError.load(std::memory_order_acquire); }
++void RecordLifecycleError(NTSTATUS result)
++{
++	if (result != 0)
++	{
++		unsigned long expected = 0;
++		lifecycleError.compare_exchange_strong(expected, static_cast<unsigned long>(result));
++	}
++}
++bool WaitForHookLifecycleRemovals()
++{
++	// STATUS_TIMEOUT is positive; FAILED()/NT_SUCCESS() would wrongly accept it.
++	const auto result = LhWaitForPendingRemovals();
++	RecordLifecycleError(result);
++	return result == 0 && HookLifecycleError() == 0;
++}
+ 
+ void RefreshACL()
+ {
+ 	for (auto& hook : trackedHooks)
+ 	{
+ 		const auto ACLres = LhSetExclusiveACL(&ACLThreads[0], ACLThreads.size(), &hook);
++		RecordLifecycleError(ACLres);
+ 
+ 		// FAILED(ACLres) ?
+ 		// 	printf("Error setting ACL, res = 0x%X, error string = %ls\n", ACLres, RtlGetLastErrorString()) :
+@@ -33,21 +55,43 @@
+ 	mutex.lock();
+ 	printf("Adding thread ID %d to ACL\n", threadID);
+ 	ACLThreads.push_back(threadID);
++	aclThreadWatches.emplace_back(threadID, OpenThread(SYNCHRONIZE, FALSE, threadID));
+ 	RefreshACL();
+ 	mutex.unlock();
+ }
+ 
++void PruneHookLifecycleThreads()
++{
++	std::lock_guard<std::mutex> lock(mutex);
++	ACLThreads.clear();
++	for (auto it = aclThreadWatches.begin(); it != aclThreadWatches.end();)
++	{
++		if (it->second && WaitForSingleObject(it->second, 0) == WAIT_TIMEOUT)
++		{
++			ACLThreads.push_back(it->first);
++			++it;
++		}
++		else
++		{
++			if (it->second) CloseHandle(it->second);
++			it = aclThreadWatches.erase(it);
++		}
++	}
++	RefreshACL();
++}
++
+ void AddTrackedHook(HOOK_TRACE_INFO hook)
+ {
++	std::lock_guard<std::mutex> lock(mutex);
+ 	trackedHooks.push_back(hook);
+ 	RefreshACL();
+ }
+ 
+ void RemoveTrackedHook(HOOK_TRACE_INFO hook)
+ {
+-	// We don't really need to do anything, since EasyHook will just give a graceful error when setting ACL of an ejected hook.
+-	
+-	//RefreshACL();
++	std::lock_guard<std::mutex> lock(mutex);
++	trackedHooks.erase(std::remove_if(trackedHooks.begin(), trackedHooks.end(),
++		[hook](const HOOK_TRACE_INFO& item) { return item.Link == hook.Link; }), trackedHooks.end());
+ }
+ 
+ std::tuple<NTSTATUS, HookInfo> InstallHook(void* address, void* callback)
+@@ -61,6 +105,7 @@
+ 		callback,
+ 		NULL,
+ 		&hHook);
++	RecordLifecycleError(result);
+ 
+ 	if (FAILED(result))
+ 	{
+@@ -90,6 +135,7 @@
+ 		callBack,
+ 		NULL,
+ 		&hHook);
++	RecordLifecycleError(result);
+ 
+ 	// Don't treat proc as an actual pointer to a string if it used as an ordinal.
+ 	const auto name = isOrdinal ? "ORDINAL" : proc;
+@@ -111,9 +157,14 @@
+ 	if (hookInfo->hasHook)
+ 	{
+ 		std::cout << "Uninstalling an EasyHook hook" << std::endl;
+-		LhUninstallHook(&hookInfo->info);
+-		RemoveTrackedHook(hookInfo->info);
+-		hookInfo->hasHook = false;
++		const auto tracked = hookInfo->info;
++		const auto result = LhUninstallHook(&hookInfo->info);
++		RecordLifecycleError(result);
++		if (result == 0)
++		{
++			RemoveTrackedHook(tracked);
++			hookInfo->hasHook = false;
++		}
+ 	}
+ }
+ 
+--- a/src/ProtoInput/ProtoInputHooks/InstallHooks.h
++++ b/src/ProtoInput/ProtoInputHooks/InstallHooks.h
+@@ -18,5 +18,9 @@
+ std::tuple<NTSTATUS, HookInfo> InstallHook(void* address, void* callback);
+ std::tuple<NTSTATUS, HookInfo> InstallNamedHook(const LPCWSTR moduleHandle, const LPCSTR proc, void* callBack, const bool isOrdinal = false);
+ void UninstallHook(HookInfo* hookInfo);
++void ResetHookLifecycleError();
++unsigned long HookLifecycleError();
++bool WaitForHookLifecycleRemovals();
++void PruneHookLifecycleThreads();
+ 
+-}
+\ No newline at end of file
++}
+--- a/src/ProtoInput/ProtoInputHooks/MessageFilterHook.cpp
++++ b/src/ProtoInput/ProtoInputHooks/MessageFilterHook.cpp
+@@ -1,315 +1,337 @@
+-#include "Hook.h"
+-#include "InstallHooks.h"
+-#include "MessageFilterHook.h"
+-#include <imgui.h>
+-#include "MessageList.h"
+-#include "MessageFilters.h"
+-#include <mutex>
+-#include <unordered_map>
+-
+-namespace Proto
+-{
+-
+-namespace
+-{
+-struct QueueFenceEntry
+-{
+-	HWND hwnd;
+-	HANDLE event;
+-};
+-
+-std::mutex queueFenceMutex;
+-std::unordered_map<uint64_t, QueueFenceEntry> queueFences;
+-
+-UINT QueueFenceMessage()
+-{
+-	static const UINT message = RegisterWindowMessageW(L"ProtoInputMultiPlex.QueueFence.V1");
+-	return message;
+-}
+-}
+-
+-bool MessageFilterHook::RegisterQueueFence(HWND hwnd, HANDLE event, uint64_t cookie)
+-{
+-	if (event == nullptr)
+-		return false;
+-	auto reject = [event]()
+-	{
+-		CloseHandle(event);
+-		return false;
+-	};
+-	if (hwnd == nullptr || cookie == 0 || !IsWindow(hwnd))
+-		return reject();
+-
+-	DWORD owningPid = 0;
+-	if (GetWindowThreadProcessId(hwnd, &owningPid) == 0 || owningPid != GetCurrentProcessId())
+-		return reject();
+-
+-	const UINT message = QueueFenceMessage();
+-	if (message == 0)
+-		return reject();
+-
+-	{
+-		std::lock_guard<std::mutex> lock(queueFenceMutex);
+-		if (queueFences.size() >= 4096 || queueFences.find(cookie) != queueFences.end())
+-			return reject();
+-		queueFences.emplace(cookie, QueueFenceEntry{ hwnd, event });
+-	}
+-
+-	if (!PostMessageW(hwnd, message, static_cast<WPARAM>(static_cast<uint32_t>(cookie)),
+-		static_cast<LPARAM>(static_cast<uint32_t>(cookie >> 32))))
+-	{
+-		HANDLE registeredEvent = nullptr;
+-		{
+-			std::lock_guard<std::mutex> lock(queueFenceMutex);
+-			const auto found = queueFences.find(cookie);
+-			if (found != queueFences.end() && found->second.hwnd == hwnd && found->second.event == event)
+-			{
+-				registeredEvent = found->second.event;
+-				queueFences.erase(found);
+-			}
+-		}
+-		if (registeredEvent != nullptr)
+-			CloseHandle(registeredEvent);
+-		return false;
+-	}
+-
+-	return true;
+-}
+-
+-bool MessageFilterHook::HasPendingFences()
+-{
+-	std::lock_guard<std::mutex> lock(queueFenceMutex);
+-	return !queueFences.empty();
+-}
+-
+-bool MessageFilterHook::FilterQueueFence(MSG* message, bool removed)
+-{
+-	const UINT fenceMessage = QueueFenceMessage();
+-	if (message == nullptr || fenceMessage == 0 || message->message != fenceMessage)
+-		return false;
+-
+-	const uint64_t cookie = static_cast<uint32_t>(message->wParam)
+-		| (static_cast<uint64_t>(static_cast<uint32_t>(message->lParam)) << 32);
+-	HANDLE event = nullptr;
+-	{
+-		std::lock_guard<std::mutex> lock(queueFenceMutex);
+-		const auto found = queueFences.find(cookie);
+-		if (found == queueFences.end() || found->second.hwnd != message->hwnd)
+-			return false;
+-		if (removed)
+-		{
+-			event = found->second.event;
+-			queueFences.erase(found);
+-		}
+-	}
+-
+-	if (event != nullptr)
+-	{
+-		SetEvent(event);
+-		CloseHandle(event);
+-	}
+-
+-	// Hide the private marker from application message consumers. For PM_NOREMOVE,
+-	// only the returned copy is changed; the queue entry and event remain pending.
+-	message->hwnd = nullptr;
+-	message->message = WM_NULL;
+-	message->wParam = 0;
+-	message->lParam = 0;
+-	message->time = 0;
+-	message->pt = POINT{};
+-	return true;
+-}
+-
+-template<typename T>
+-bool* IsFilterEnabled()
+-{
+-	static bool enabled = false;
+-	return &enabled;
+-}
+-
+-template<typename X, typename... T>
+-bool MessageFilterAllow(unsigned int message, unsigned int* lparam, unsigned int* wparam, intptr_t hwnd)
+-{
+-	bool a = (!*IsFilterEnabled<X>() || message < X::MessageMin() || message > X::MessageMax() || X::Filter(message, lparam, wparam, hwnd));
+-	
+-	if constexpr (sizeof...(T) != 0)
+-		return a && MessageFilterAllow<T...>(message, lparam, wparam, hwnd);
+-	else
+-		return a;
+-}
+-
+-inline BOOL FilterMessage(MSG* lpMsg)
+-{	
+-	if (MessageFilterHook::FilterQueueFence(lpMsg, true))
+-		return 1;
+-
+-	lpMsg->pt.x = FakeMouseKeyboard::GetMouseState().x;
+-	lpMsg->pt.y = FakeMouseKeyboard::GetMouseState().y;
+-	
+-	if (!MessageFilterAllow<PROTO_MESSAGE_FILTERS>(lpMsg->message, (unsigned int*)&lpMsg->lParam, (unsigned int*)&lpMsg->wParam, (intptr_t)lpMsg->hwnd)
+-		|| MessageList::IsBlocked(lpMsg->message))
+-	{
+-		//Massive performance benefits for returning a successful WM_NULL compared to causing an error in the application.
+-		memset(lpMsg, 0, sizeof(MSG));
+-	}
+-	
+-	return 1;
+-}
+-
+-template<typename X, typename... T>
+-void SetFilter(ProtoMessageFilterIDs filterID, bool enabled)
+-{
+-	if (X::FilterID() == filterID)
+-	{
+-		*IsFilterEnabled<X>() = enabled;
+-		printf("Set filter %s to %s\n", X::Name(), enabled ? "enabled" : "disabled");
+-		return;
+-	}
+-
+-	if constexpr (sizeof...(T) != 0)
+-		SetFilter<T...>(filterID, enabled);
+-}
+-
+-void MessageFilterHook::SetFilterEnabled(ProtoMessageFilterIDs filterID, bool enabled)
+-{
+-	SetFilter<PROTO_MESSAGE_FILTERS>(filterID, enabled);
+-}
+-
+-template<typename X, typename... T>
+-std::tuple<bool*, const char*, const char*> ShowListSelectable(int& selected)
+-{
+-	const int N = sizeof...(T);
+-	
+-	ImGui::PushID(N);
+-	ImGui::PushStyleColor(ImGuiCol_Text,
+-						  *IsFilterEnabled<X>() ?
+-						  (ImVec4)ImColor::HSV(2 / 7.0f, 0.6f, 0.6f) :
+-						  (ImVec4)ImColor::HSV(0 / 7.0f, 0.6f, 0.6f)
+-	);
+-
+-	if (ImGui::Selectable(X::Name(), selected == N))
+-	{
+-		selected = N;
+-	}
+-
+-	ImGui::PopStyleColor(1);
+-	ImGui::PopID();
+-
+-	auto tup1 = selected == N ?
+-		std::tuple<bool*, const char*, const char*>{ IsFilterEnabled<X>(), X::Name(), X::Description() } :
+-		std::tuple<bool*, const char*, const char*>{ nullptr, "???", "???" };
+-	
+-	if constexpr (sizeof...(T) == 0)
+-		return tup1;
+-	else
+-	{
+-		auto tup2 = ShowListSelectable<T...>(selected);
+-		return std::get<0>(tup1) == nullptr ? tup2 : tup1;
+-	}
+-}
+-
+-void MessageFilterHook::FilterGui()
+-{
+-	ImGui::BeginChild("left pane filter", ImVec2(180, 0), true);
+-		
+-	static int selected = 0;
+-	auto [enabledPtr, name, desc] = ShowListSelectable<PROTO_MESSAGE_FILTERS>(selected);
+-
+-	ImGui::EndChild();
+-
+-	ImGui::SameLine();
+-
+-	if (enabledPtr != nullptr)
+-	{
+-		ImGui::BeginGroup();
+-		ImGui::BeginChild("item view", ImVec2(0, -ImGui::GetFrameHeightWithSpacing())); // Leave room for 1 line below us
+-		ImGui::TextWrapped("%s Filter: %s", name, *enabledPtr ? "Enabled" : "Disabled");
+-
+-		if (ImGui::Button("Enable") && !*enabledPtr)
+-		{
+-			*enabledPtr = true;
+-		}
+-
+-		ImGui::SameLine();
+-
+-		if (ImGui::Button("Disable") && *enabledPtr)
+-		{
+-			*enabledPtr = false;
+-		}
+-
+-		ImGui::Separator();
+-		if (ImGui::BeginTabBar("##Tabs", ImGuiTabBarFlags_None))
+-		{
+-			if (ImGui::BeginTabItem("Description"))
+-			{
+-				ImGui::TextWrapped(desc);
+-				ImGui::EndTabItem();
+-			}
+-
+-			ImGui::EndTabBar();
+-		}
+-
+-		ImGui::EndChild();
+-
+-		ImGui::EndGroup();
+-	}
+-}
+-
+-BOOL WINAPI Hook_GetMessageA(LPMSG lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax)
+-{
+-	const auto ret = GetMessageA(lpMsg, hWnd, wMsgFilterMin, wMsgFilterMax);
+-
+-	return ret == -1 ? -1 : FilterMessage(lpMsg);
+-}
+-
+-BOOL WINAPI Hook_GetMessageW(LPMSG lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax)
+-{
+-	const auto ret = GetMessageW(lpMsg, hWnd, wMsgFilterMin, wMsgFilterMax);
+-
+-	return ret == -1 ? -1 : FilterMessage(lpMsg);
+-}
+-
+-BOOL WINAPI Hook_PeekMessageA(LPMSG lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax, UINT wRemoveMsg)
+-{
+-	const auto ret = PeekMessageA(lpMsg, hWnd, wMsgFilterMin, wMsgFilterMax, wRemoveMsg);
+-
+-	if (ret == FALSE)
+-		return FALSE;
+-	if (MessageFilterHook::FilterQueueFence(lpMsg, (wRemoveMsg & PM_REMOVE) != 0))
+-		return 1;
+-	return (1 + FilterMessage(lpMsg)) / 2;
+-}
+-
+-BOOL WINAPI Hook_PeekMessageW(LPMSG lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax, UINT wRemoveMsg)
+-{
+-	const auto ret = PeekMessageW(lpMsg, hWnd, wMsgFilterMin, wMsgFilterMax, wRemoveMsg);
+-
+-	if (ret == FALSE)
+-		return FALSE;
+-	if (MessageFilterHook::FilterQueueFence(lpMsg, (wRemoveMsg & PM_REMOVE) != 0))
+-		return 1;
+-	return (1 + FilterMessage(lpMsg)) / 2;
+-}
+-
+-void MessageFilterHook::InstallImpl()
+-{
+-	hookInfoGetMessageW = std::get<1>(InstallNamedHook(L"user32", "GetMessageW", Hook_GetMessageW));
+-	hookInfoGetMessageA = std::get<1>(InstallNamedHook(L"user32", "GetMessageA", Hook_GetMessageA));
+-	hookInfoPeekMessageW = std::get<1>(InstallNamedHook(L"user32", "PeekMessageW", Hook_PeekMessageW));
+-	hookInfoPeekMessageA = std::get<1>(InstallNamedHook(L"user32", "PeekMessageA", Hook_PeekMessageA));
+-}
+-
+-void MessageFilterHook::UninstallImpl()
+-{
+-	UninstallHook(&hookInfoGetMessageW);
+-	UninstallHook(&hookInfoGetMessageA);
+-	UninstallHook(&hookInfoPeekMessageW);
+-	UninstallHook(&hookInfoPeekMessageA);
++#include "Hook.h"
++#include "InstallHooks.h"
++#include "MessageFilterHook.h"
++#include <imgui.h>
++#include "MessageList.h"
++#include "MessageFilters.h"
++#include <mutex>
++#include <unordered_map>
++
++namespace Proto
++{
++
++namespace
++{
++struct QueueFenceEntry
++{
++	HWND hwnd;
++	HANDLE event;
++};
++
++std::mutex queueFenceMutex;
++std::unordered_map<uint64_t, QueueFenceEntry> queueFences;
++std::vector<HWND> lifecycleRecipients;
++
++UINT QueueFenceMessage()
++{
++	static const UINT message = RegisterWindowMessageW(L"ProtoInputMultiPlex.QueueFence.V1");
++	return message;
++}
++}
++
++bool MessageFilterHook::RegisterQueueFence(HWND hwnd, HANDLE event, uint64_t cookie)
++{
++	if (event == nullptr)
++		return false;
++	auto reject = [event]()
++	{
++		CloseHandle(event);
++		return false;
++	};
++	if (hwnd == nullptr || cookie == 0 || !IsWindow(hwnd))
++		return reject();
++
++	DWORD owningPid = 0;
++	if (GetWindowThreadProcessId(hwnd, &owningPid) == 0 || owningPid != GetCurrentProcessId())
++		return reject();
++
++	const UINT message = QueueFenceMessage();
++	if (message == 0)
++		return reject();
++
++	{
++		std::lock_guard<std::mutex> lock(queueFenceMutex);
++		if (queueFences.size() >= 4096 || queueFences.find(cookie) != queueFences.end())
++			return reject();
++		queueFences.emplace(cookie, QueueFenceEntry{ hwnd, event });
++		if (std::find(lifecycleRecipients.begin(), lifecycleRecipients.end(), hwnd) == lifecycleRecipients.end()
++			&& lifecycleRecipients.size() < 4096)
++			lifecycleRecipients.push_back(hwnd);
++	}
++
++	if (!PostMessageW(hwnd, message, static_cast<WPARAM>(static_cast<uint32_t>(cookie)),
++		static_cast<LPARAM>(static_cast<uint32_t>(cookie >> 32))))
++	{
++		HANDLE registeredEvent = nullptr;
++		{
++			std::lock_guard<std::mutex> lock(queueFenceMutex);
++			const auto found = queueFences.find(cookie);
++			if (found != queueFences.end() && found->second.hwnd == hwnd && found->second.event == event)
++			{
++				registeredEvent = found->second.event;
++				queueFences.erase(found);
++			}
++		}
++		if (registeredEvent != nullptr)
++			CloseHandle(registeredEvent);
++		return false;
++	}
++
++	return true;
++}
++
++bool MessageFilterHook::HasPendingFences()
++{
++	std::lock_guard<std::mutex> lock(queueFenceMutex);
++	return !queueFences.empty();
++}
++
++void MessageFilterHook::WakeLifecycleRecipients()
++{
++	std::lock_guard<std::mutex> lock(queueFenceMutex);
++	for (const auto hwnd : lifecycleRecipients)
++	{
++		DWORD pid = 0;
++		if (GetWindowThreadProcessId(hwnd, &pid) && pid == GetCurrentProcessId())
++			PostMessageW(hwnd, WM_NULL, 0, 0);
++	}
++}
++
++void MessageFilterHook::ResetLifecycleRecipients()
++{
++	std::lock_guard<std::mutex> lock(queueFenceMutex);
++	// Never discard unresolved handles/callbacks to manufacture a clean result.
++	if (queueFences.empty()) lifecycleRecipients.clear();
++}
++
++bool MessageFilterHook::FilterQueueFence(MSG* message, bool removed)
++{
++	const UINT fenceMessage = QueueFenceMessage();
++	if (message == nullptr || fenceMessage == 0 || message->message != fenceMessage)
++		return false;
++
++	const uint64_t cookie = static_cast<uint32_t>(message->wParam)
++		| (static_cast<uint64_t>(static_cast<uint32_t>(message->lParam)) << 32);
++	HANDLE event = nullptr;
++	{
++		std::lock_guard<std::mutex> lock(queueFenceMutex);
++		const auto found = queueFences.find(cookie);
++		if (found == queueFences.end() || found->second.hwnd != message->hwnd)
++			return false;
++		if (removed)
++		{
++			event = found->second.event;
++			queueFences.erase(found);
++		}
++	}
++
++	if (event != nullptr)
++	{
++		SetEvent(event);
++		CloseHandle(event);
++	}
++
++	// Hide the private marker from application message consumers. For PM_NOREMOVE,
++	// only the returned copy is changed; the queue entry and event remain pending.
++	message->hwnd = nullptr;
++	message->message = WM_NULL;
++	message->wParam = 0;
++	message->lParam = 0;
++	message->time = 0;
++	message->pt = POINT{};
++	return true;
++}
++
++template<typename T>
++bool* IsFilterEnabled()
++{
++	static bool enabled = false;
++	return &enabled;
++}
++
++template<typename X, typename... T>
++bool MessageFilterAllow(unsigned int message, unsigned int* lparam, unsigned int* wparam, intptr_t hwnd)
++{
++	bool a = (!*IsFilterEnabled<X>() || message < X::MessageMin() || message > X::MessageMax() || X::Filter(message, lparam, wparam, hwnd));
++	
++	if constexpr (sizeof...(T) != 0)
++		return a && MessageFilterAllow<T...>(message, lparam, wparam, hwnd);
++	else
++		return a;
++}
++
++inline BOOL FilterMessage(MSG* lpMsg)
++{	
++	if (MessageFilterHook::FilterQueueFence(lpMsg, true))
++		return 1;
++
++	lpMsg->pt.x = FakeMouseKeyboard::GetMouseState().x;
++	lpMsg->pt.y = FakeMouseKeyboard::GetMouseState().y;
++	
++	if (!MessageFilterAllow<PROTO_MESSAGE_FILTERS>(lpMsg->message, (unsigned int*)&lpMsg->lParam, (unsigned int*)&lpMsg->wParam, (intptr_t)lpMsg->hwnd)
++		|| MessageList::IsBlocked(lpMsg->message))
++	{
++		//Massive performance benefits for returning a successful WM_NULL compared to causing an error in the application.
++		memset(lpMsg, 0, sizeof(MSG));
++	}
++	
++	return 1;
++}
++
++template<typename X, typename... T>
++void SetFilter(ProtoMessageFilterIDs filterID, bool enabled)
++{
++	if (X::FilterID() == filterID)
++	{
++		*IsFilterEnabled<X>() = enabled;
++		printf("Set filter %s to %s\n", X::Name(), enabled ? "enabled" : "disabled");
++		return;
++	}
++
++	if constexpr (sizeof...(T) != 0)
++		SetFilter<T...>(filterID, enabled);
++}
++
++void MessageFilterHook::SetFilterEnabled(ProtoMessageFilterIDs filterID, bool enabled)
++{
++	SetFilter<PROTO_MESSAGE_FILTERS>(filterID, enabled);
++}
++
++template<typename X, typename... T>
++std::tuple<bool*, const char*, const char*> ShowListSelectable(int& selected)
++{
++	const int N = sizeof...(T);
++	
++	ImGui::PushID(N);
++	ImGui::PushStyleColor(ImGuiCol_Text,
++						  *IsFilterEnabled<X>() ?
++						  (ImVec4)ImColor::HSV(2 / 7.0f, 0.6f, 0.6f) :
++						  (ImVec4)ImColor::HSV(0 / 7.0f, 0.6f, 0.6f)
++	);
++
++	if (ImGui::Selectable(X::Name(), selected == N))
++	{
++		selected = N;
++	}
++
++	ImGui::PopStyleColor(1);
++	ImGui::PopID();
++
++	auto tup1 = selected == N ?
++		std::tuple<bool*, const char*, const char*>{ IsFilterEnabled<X>(), X::Name(), X::Description() } :
++		std::tuple<bool*, const char*, const char*>{ nullptr, "???", "???" };
++	
++	if constexpr (sizeof...(T) == 0)
++		return tup1;
++	else
++	{
++		auto tup2 = ShowListSelectable<T...>(selected);
++		return std::get<0>(tup1) == nullptr ? tup2 : tup1;
++	}
++}
++
++void MessageFilterHook::FilterGui()
++{
++	ImGui::BeginChild("left pane filter", ImVec2(180, 0), true);
++		
++	static int selected = 0;
++	auto [enabledPtr, name, desc] = ShowListSelectable<PROTO_MESSAGE_FILTERS>(selected);
++
++	ImGui::EndChild();
++
++	ImGui::SameLine();
++
++	if (enabledPtr != nullptr)
++	{
++		ImGui::BeginGroup();
++		ImGui::BeginChild("item view", ImVec2(0, -ImGui::GetFrameHeightWithSpacing())); // Leave room for 1 line below us
++		ImGui::TextWrapped("%s Filter: %s", name, *enabledPtr ? "Enabled" : "Disabled");
++
++		if (ImGui::Button("Enable") && !*enabledPtr)
++		{
++			*enabledPtr = true;
++		}
++
++		ImGui::SameLine();
++
++		if (ImGui::Button("Disable") && *enabledPtr)
++		{
++			*enabledPtr = false;
++		}
++
++		ImGui::Separator();
++		if (ImGui::BeginTabBar("##Tabs", ImGuiTabBarFlags_None))
++		{
++			if (ImGui::BeginTabItem("Description"))
++			{
++				ImGui::TextWrapped(desc);
++				ImGui::EndTabItem();
++			}
++
++			ImGui::EndTabBar();
++		}
++
++		ImGui::EndChild();
++
++		ImGui::EndGroup();
++	}
++}
++
++BOOL WINAPI Hook_GetMessageA(LPMSG lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax)
++{
++	const auto ret = GetMessageA(lpMsg, hWnd, wMsgFilterMin, wMsgFilterMax);
++
++	return ret == -1 ? -1 : FilterMessage(lpMsg);
++}
++
++BOOL WINAPI Hook_GetMessageW(LPMSG lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax)
++{
++	const auto ret = GetMessageW(lpMsg, hWnd, wMsgFilterMin, wMsgFilterMax);
++
++	return ret == -1 ? -1 : FilterMessage(lpMsg);
++}
++
++BOOL WINAPI Hook_PeekMessageA(LPMSG lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax, UINT wRemoveMsg)
++{
++	const auto ret = PeekMessageA(lpMsg, hWnd, wMsgFilterMin, wMsgFilterMax, wRemoveMsg);
++
++	if (ret == FALSE)
++		return FALSE;
++	if (MessageFilterHook::FilterQueueFence(lpMsg, (wRemoveMsg & PM_REMOVE) != 0))
++		return 1;
++	return (1 + FilterMessage(lpMsg)) / 2;
++}
++
++BOOL WINAPI Hook_PeekMessageW(LPMSG lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax, UINT wRemoveMsg)
++{
++	const auto ret = PeekMessageW(lpMsg, hWnd, wMsgFilterMin, wMsgFilterMax, wRemoveMsg);
++
++	if (ret == FALSE)
++		return FALSE;
++	if (MessageFilterHook::FilterQueueFence(lpMsg, (wRemoveMsg & PM_REMOVE) != 0))
++		return 1;
++	return (1 + FilterMessage(lpMsg)) / 2;
++}
++
++void MessageFilterHook::InstallImpl()
++{
++	hookInfoGetMessageW = std::get<1>(InstallNamedHook(L"user32", "GetMessageW", Hook_GetMessageW));
++	hookInfoGetMessageA = std::get<1>(InstallNamedHook(L"user32", "GetMessageA", Hook_GetMessageA));
++	hookInfoPeekMessageW = std::get<1>(InstallNamedHook(L"user32", "PeekMessageW", Hook_PeekMessageW));
++	hookInfoPeekMessageA = std::get<1>(InstallNamedHook(L"user32", "PeekMessageA", Hook_PeekMessageA));
++}
++
++void MessageFilterHook::UninstallImpl()
++{
++	UninstallHook(&hookInfoGetMessageW);
++	UninstallHook(&hookInfoGetMessageA);
++	UninstallHook(&hookInfoPeekMessageW);
++	UninstallHook(&hookInfoPeekMessageA);
+ }
+ 
+ bool MessageFilterHook::IsKeyboardButtonFilterEnabled()
+ {
+ 	return IsFilterEnabled<KeyboardButtonFilter>();
+-}
+-
+-}
++}
++
++}
+--- a/src/ProtoInput/ProtoInputHooks/MessageFilterHook.h
++++ b/src/ProtoInput/ProtoInputHooks/MessageFilterHook.h
+@@ -37,6 +37,8 @@
+ 	static bool IsKeyboardButtonFilterEnabled();
+ 	static bool RegisterQueueFence(HWND hwnd, HANDLE event, uint64_t cookie);
+ 	static bool HasPendingFences();
++	static void WakeLifecycleRecipients();
++	static void ResetLifecycleRecipients();
+ 	static bool FilterQueueFence(MSG* message, bool removed);
+ };
+ 
+--- a/src/ProtoInput/ProtoInputHooks/MuxCursorObserverBridge.h
++++ b/src/ProtoInput/ProtoInputHooks/MuxCursorObserverBridge.h
+@@ -16,10 +16,13 @@
+ using NotifyFn = uint32_t (__cdecl*)(uint64_t, uint32_t, uint64_t);
+ using MotionFn = uint32_t (__cdecl*)(uint64_t);
+ using StopFn = uint32_t (__cdecl*)(uint64_t);
++using QuiescentFn = uint32_t (__cdecl*)();
+ inline std::once_flag loadOnce;
+ inline StartFn startFn = nullptr;
+ inline AssociateFn associateFn = nullptr;
+ inline StopFn stopFn = nullptr;
++inline QuiescentFn quiescentFn = nullptr;
++inline bool lifecycleObserverUsed = false;
+ inline std::atomic<NotifyFn> notifyFn{ nullptr };
+ inline std::atomic<MotionFn> motionFn{ nullptr };
+ inline uint64_t activeAttachment = 0; // command pipe thread only
+@@ -54,6 +57,7 @@
+ 		startFn = start;
+ 		associateFn = associate;
+ 		stopFn = stop;
++		quiescentFn = reinterpret_cast<QuiescentFn>(GetProcAddress(module, "ProtoMuxCursorObserverQuiescent"));
+ 		motionFn.store(motion, std::memory_order_release);
+ 		notifyFn.store(notify, std::memory_order_release);
+ 	});
+@@ -69,7 +73,10 @@
+ 	}
+ 	// The Rust export consumes both remote handles on every result.
+ 	if (startFn(mapping, mutex, GetCurrentProcessId(), attachment) == ObserverSuccess)
++	{
++		lifecycleObserverUsed = true;
+ 		activeAttachment = attachment;
++	}
+ }
+ inline void Associate(uint64_t hwnd, uint64_t epoch)
+ {
+@@ -95,4 +102,9 @@
+ 	}
+ }
+ inline void StopAll() { Stop(activeAttachment); }
++inline bool QuiescentForLifecycle()
++{
++	StopAll();
++	return activeAttachment == 0 && (!lifecycleObserverUsed || (quiescentFn && quiescentFn() == 1));
+ }
++}
+--- /dev/null
++++ b/src/ProtoInput/ProtoInputHooks/MuxLifecycleNative.h
+@@ -0,0 +1,277 @@
++#pragma once
++#include "pipeinclude/MuxLifecycleProtocol.h"
++#include <atomic>
++#include <cstring>
++
++// Backend compatibility only. Rust owns selection, leases, quarantine and the
++// all-target final commitment. This single pipe thread owns the mutable state.
++namespace Proto::MuxLifecycleNative
++{
++using namespace ProtoMuxLifecycle;
++inline HANDLE readyMapping = nullptr;
++inline Ready* readyView = nullptr;
++inline Ready current{};
++inline HANDLE commitMapping = nullptr;
++inline const Commit* commitView = nullptr;
++
++inline bool NativeHandle(uint64_t value)
++{
++    return value != 0 && (sizeof(uintptr_t) == 8 || value <= UINT32_MAX);
++}
++inline HANDLE Handle(uint64_t value) { return reinterpret_cast<HANDLE>(static_cast<uintptr_t>(value)); }
++inline void Publish()
++{
++    if (!readyView) return;
++    // Every externally observed word is atomically published. The sequence
++    // makes the fixed-width cross-process snapshot coherent on both arches.
++    auto words = reinterpret_cast<LONG*>(readyView);
++    const auto source = reinterpret_cast<const uint32_t*>(&current);
++    InterlockedIncrement(words + 3);
++    for (size_t i = 0; i < sizeof(Ready) / sizeof(uint32_t); ++i)
++        if (i != 3) InterlockedExchange(words + i, static_cast<LONG>(source[i]));
++    InterlockedIncrement(words + 3);
++}
++inline void Initialize()
++{
++    FILETIME created{}, exited{}, kernel{}, user{};
++    if (!GetProcessTimes(GetCurrentProcess(), &created, &exited, &kernel, &user)) return;
++    current.magic = ReadyMagic;
++    current.abi = Version;
++    current.bytes = sizeof(Ready);
++    current.state = Unclaimed;
++    current.bits = sizeof(uintptr_t) * 8;
++    current.creation = static_cast<uint64_t>(created.dwHighDateTime) << 32 | created.dwLowDateTime;
++    current.build = Build;
++    const auto name = std::wstring(L"Local\\ProtoInputMultiPlex.Lifecycle.")
++        + std::to_wstring(GetCurrentProcessId()) + L"." + std::to_wstring(current.creation);
++    readyMapping = CreateFileMappingW(INVALID_HANDLE_VALUE, nullptr, PAGE_READWRITE, 0, sizeof(Ready), name.c_str());
++    if (!readyMapping) return;
++    if (GetLastError() == ERROR_ALREADY_EXISTS)
++    {
++        CloseHandle(readyMapping);
++        readyMapping = nullptr;
++        return; // Never trust or overwrite somebody else's bootstrap record.
++    }
++    readyView = static_cast<Ready*>(MapViewOfFile(readyMapping, FILE_MAP_WRITE, 0, 0, sizeof(Ready)));
++    Publish();
++}
++inline void PollCommit()
++{
++    if (current.state == Prepared && commitView
++        && reinterpret_cast<const std::atomic<uint32_t>*>(&commitView->state)->load(std::memory_order_acquire) == 1)
++    {
++        current.state = Reusable;
++        current.owner_pid = 0;
++        Publish();
++    }
++}
++inline std::wstring PipeName()
++{
++    return std::wstring(L"\\\\.\\pipe\\ProtoInputMultiPlex.Lifecycle.")
++        + std::to_wstring(GetCurrentProcessId()) + L"." + std::to_wstring(current.creation);
++}
++inline void ReplyTo(uint64_t replyMapping, uint64_t replyEvent, uint32_t result,
++    uint64_t generation, uint64_t session)
++{
++    if (!NativeHandle(replyMapping) || !NativeHandle(replyEvent) || replyMapping == replyEvent) return;
++    const auto mapping = Handle(replyMapping);
++    const auto event = Handle(replyEvent);
++    auto view = static_cast<Reply*>(MapViewOfFile(mapping, FILE_MAP_WRITE, 0, 0, sizeof(Reply)));
++    if (view)
++    {
++        const Reply response{ReplyMagic, Version, sizeof(Reply), result,
++            current.creation, generation, session, current.state, current.error, {0, 0}};
++        std::memcpy(view, &response, sizeof(response));
++        MemoryBarrier();
++        SetEvent(event);
++        UnmapViewOfFile(view);
++    }
++    CloseHandle(mapping);
++    CloseHandle(event);
++}
++inline void ResetSessionState()
++{
++    RawInput::ResetForLifecycle();
++    FakeMouseKeyboard::ResetForLifecycle();
++    HwndSelector::GetSelectedHwnd() = 0;
++    HwndSelector::windowWidth = HwndSelector::windowHeight = 0;
++    StateInfo::info.instanceIndex = 0;
++    FocusMessageLoop::messagesToSend = FocusMessageLoop::ToSend{};
++    FocusMessageLoop::sleepMilliseconds = 5;
++    FakeCursor::GetToggleVisilbityShorcutEnabled() = false;
++    FakeCursor::GetToggleVisibilityVkey() = VK_HOME;
++    FakeCursor::SetCursorVisibility(true);
++    FakeCursor::SetCursorHandle(LoadCursorW(nullptr, IDC_ARROW));
++    ClipCursorHook::SetUseFakeCursorClip(true);
++    CursorVisibilityHook::ShowCursorWhenImageUpdated = false;
++    for (unsigned int filter = 0; filter < 8; ++filter)
++        MessageFilterHook::SetFilterEnabled(static_cast<ProtoMessageFilterIDs>(filter), false);
++    for (auto& message : MessageList::messages) message.blocked = false;
++    MessageFilterHook::ResetLifecycleRecipients();
++}
++inline bool ServerOwnsLease(ULONG server)
++{
++    const auto name = std::wstring(L"Local\\ProtoInputMultiPlex.Lease.")
++        + std::to_wstring(GetCurrentProcessId()) + L"." + std::to_wstring(current.creation);
++    const HANDLE mapping = OpenFileMappingW(FILE_MAP_READ, FALSE, name.c_str());
++    if (!mapping) return false;
++    const auto lease = static_cast<const Commit*>(MapViewOfFile(mapping, FILE_MAP_READ, 0, 0, sizeof(Commit)));
++    bool valid = false;
++    if (lease && reinterpret_cast<const std::atomic<uint32_t>*>(&lease->state)->load(std::memory_order_acquire) == 2
++        && lease->magic == 0x4D584C53 && lease->abi == Version && lease->bytes == sizeof(Commit)
++        && lease->session == current.creation && lease->reserved[1] == server)
++    {
++        const HANDLE owner = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION | SYNCHRONIZE, FALSE, server);
++        FILETIME created{}, exited{}, kernel{}, user{};
++        valid = owner && WaitForSingleObject(owner, 0) == WAIT_TIMEOUT
++            && GetProcessTimes(owner, &created, &exited, &kernel, &user)
++            && (static_cast<uint64_t>(created.dwHighDateTime) << 32 | created.dwLowDateTime) == lease->reserved[0]
++            && reinterpret_cast<const std::atomic<uint32_t>*>(&lease->state)->load(std::memory_order_acquire) == 2;
++        if (owner) CloseHandle(owner);
++    }
++    if (lease) UnmapViewOfFile(lease);
++    CloseHandle(mapping);
++    return valid;
++}
++inline bool Begin(HANDLE pipe, const BeginPacket& body)
++{
++    PollCommit();
++    uint32_t result = Invalid;
++    ULONG server = 0;
++    const bool handles = NativeHandle(body.remote_commit_mapping) && NativeHandle(body.remote_reply_mapping)
++        && NativeHandle(body.remote_event) && body.remote_commit_mapping != body.remote_reply_mapping
++        && body.remote_commit_mapping != body.remote_event && body.remote_reply_mapping != body.remote_event;
++    const Commit* proposedView = nullptr;
++    if (handles)
++        proposedView = static_cast<const Commit*>(MapViewOfFile(Handle(body.remote_commit_mapping), FILE_MAP_READ, 0, 0, sizeof(Commit)));
++    if (!readyView || !proposedView || body.creation != current.creation || !body.generation || !body.session
++        || !GetNamedPipeServerProcessId(pipe, &server) || server == 0 || !ServerOwnsLease(server)
++        || proposedView->magic != CommitMagic || proposedView->abi != Version
++        || proposedView->bytes != sizeof(Commit) || proposedView->session != body.session
++        || reinterpret_cast<const std::atomic<uint32_t>*>(&proposedView->state)->load(std::memory_order_acquire) != 0)
++        result = Incompatible;
++    else if (current.state == Active) result = Busy;
++    else if (current.state != Unclaimed && current.state != Reusable) result = Dirty;
++    else if (MessageFilterHook::HasPendingFences() || !MuxCursorObserverBridge::QuiescentForLifecycle()) result = Dirty;
++    else
++    {
++        if (commitView) UnmapViewOfFile(commitView);
++        if (commitMapping) CloseHandle(commitMapping);
++        commitMapping = Handle(body.remote_commit_mapping);
++        commitView = proposedView;
++        proposedView = nullptr;
++        FocusMessageLoop::PauseMessageLoop();
++        ResetSessionState();
++        RawInput::lifecycleVirtualOnly = true;
++        HwndSelector::UpdateMainHwnd(false);
++        ResetHookLifecycleError();
++        PruneHookLifecycleThreads();
++        current.state = Active;
++        current.owner_pid = server;
++        current.generation = body.generation;
++        current.session = body.session;
++        current.error = 0;
++        Publish();
++        result = Ok;
++    }
++    if (proposedView) UnmapViewOfFile(proposedView);
++    if (result != Ok && NativeHandle(body.remote_commit_mapping)
++        && body.remote_commit_mapping != body.remote_reply_mapping && body.remote_commit_mapping != body.remote_event)
++        CloseHandle(Handle(body.remote_commit_mapping));
++    ReplyTo(body.remote_reply_mapping, body.remote_event, result, body.generation, body.session);
++    return result == Ok;
++}
++inline bool Prepare(const RetirePacket& body)
++{
++    if (current.state != Active || body.generation != current.generation || body.session != current.session)
++    {
++        ReplyTo(body.remote_reply_mapping, body.remote_event, Dirty, body.generation, body.session);
++        return false;
++    }
++    // Poison first, including every exceptional/timeout path. Only the explicit
++    // ACK below permits Prepared; only Rust's later shared commit permits reuse.
++    current.state = Poisoned;
++    Publish();
++    RawInput::rawInputState.externalFreezeInput = true;
++    RawInput::rawInputState.sendMouseMoveMessages = false;
++    RawInput::rawInputState.sendMouseButtonMessages = false;
++    RawInput::rawInputState.sendMouseWheelMessages = false;
++    RawInput::rawInputState.sendKeyboardPressMessages = false;
++    FocusMessageLoop::PauseMessageLoop();
++    FakeCursor::EnableDisableFakeCursor(false);
++    const ULONGLONG deadline = GetTickCount64() + 2000;
++    bool observerClean = MuxCursorObserverBridge::QuiescentForLifecycle();
++    while (!observerClean && GetTickCount64() < deadline)
++    {
++        Sleep(10);
++        observerClean = MuxCursorObserverBridge::QuiescentForLifecycle();
++    }
++    bool clean = observerClean && !MessageFilterHook::HasPendingFences();
++    if (clean)
++    {
++        const auto& hooks = HookManager::GetHooks();
++        for (auto it = hooks.rbegin(); it != hooks.rend(); ++it)
++            if ((*it)->IsInstalled()) (*it)->Uninstall();
++        // Release an existing blocking GetMessage callback after disabling its
++        // detour. Only known, explicitly attached target queues are touched.
++        MessageFilterHook::WakeLifecycleRecipients();
++        const auto selected = reinterpret_cast<HWND>(HwndSelector::GetSelectedHwnd());
++        DWORD selectedPid = 0;
++        if (selected && GetWindowThreadProcessId(selected, &selectedPid) && selectedPid == GetCurrentProcessId())
++            PostMessageW(selected, WM_NULL, 0, 0);
++        clean = WaitForHookLifecycleRemovals();
++    }
++    if (clean)
++    {
++        ResetSessionState();
++        current.state = Prepared;
++        current.error = 0;
++    }
++    else current.error = HookLifecycleError() ? HookLifecycleError() : ERROR_BUSY;
++    Publish();
++    ReplyTo(body.remote_reply_mapping, body.remote_event, clean ? Ok : CleanupFailed, body.generation, body.session);
++    return clean;
++}
++inline void Poison()
++{
++    current.state = Poisoned;
++    if (!current.error) current.error = ERROR_BROKEN_PIPE;
++    Publish();
++}
++inline bool ValidVirtualCommand(const ProtoPipe::PipeMessageHeader& header, const unsigned char* buffer)
++{
++    using T = ProtoPipe::PipeMessageType;
++    switch (header.messageType)
++    {
++    case T::MuxLifecycleBegin: return header.messageSize == sizeof(BeginPacket);
++    case T::MuxLifecyclePrepareRetire: return header.messageSize == sizeof(RetirePacket);
++    case T::SetupHook:
++        if (header.messageSize != sizeof(ProtoPipe::PipeMessageSetupHook)) return false;
++        return reinterpret_cast<const ProtoPipe::PipeMessageSetupHook*>(buffer)->hookID >= 1
++            && reinterpret_cast<const ProtoPipe::PipeMessageSetupHook*>(buffer)->hookID <= 10;
++    case T::SetupMessageFilter: return header.messageSize == sizeof(ProtoPipe::PipeMessageSetupMessageFilter);
++    case T::SetupMessageBlock: return header.messageSize == sizeof(ProtoPipe::PipeMessageSetupMessageBlock);
++    case T::UpdateMainWindowHandle: return header.messageSize == sizeof(ProtoPipe::PipeMesasgeUpdateMainWindowHandle);
++    case T::StartFocusMessageLoop: return header.messageSize == sizeof(ProtoPipe::PipeMessageStartFocusMessageLoop);
++    case T::StopFocusMessageLoop: return header.messageSize == sizeof(ProtoPipe::PipeMessageStopFocusMessageLoop);
++    case T::SetupState: return header.messageSize == sizeof(ProtoPipe::PipeMessageSetupState);
++    case T::SetupMessagesToSend: return header.messageSize == sizeof(ProtoPipe::PipeMessageSetupMessagesToSend);
++    case T::SetDrawFakeCursor: return header.messageSize == sizeof(ProtoPipe::PipeMessageSetDrawFakeCursor);
++    case T::SetExternalFreezeFakeInput: return header.messageSize == sizeof(ProtoPipe::PipeMessageSetExternalFreezeFakeInput);
++    case T::AddSelectedMouseOrKeyboard:
++    {
++        if (header.messageSize != sizeof(ProtoPipe::PipeMesasgeAddSelectedMouseOrKeyboard)) return false;
++        const auto body = reinterpret_cast<const ProtoPipe::PipeMesasgeAddSelectedMouseOrKeyboard*>(buffer);
++        return (body->mouse == -1 || (static_cast<uint32_t>(body->mouse) & 0xFF000001) == 0xF1000000)
++            && (body->keyboard == -1 || (static_cast<uint32_t>(body->keyboard) & 0xFF000001) == 0xF1000001);
++    }
++    case T::SetAllowFakeCursorOutOfBounds: return header.messageSize == sizeof(ProtoPipe::PipeMessageSetAllowFakeCursorOutOfBounds);
++    case T::MuxInput: return header.messageSize == sizeof(ProtoPipe::MuxInputPacket);
++    case T::MuxQueueFence: return header.messageSize == sizeof(ProtoPipe::MuxQueueFencePacket);
++    case T::MuxCursorObserverStart: return header.messageSize == sizeof(ProtoPipe::MuxCursorObserverStartPacket);
++    case T::MuxCursorObserverAssociate: return header.messageSize == sizeof(ProtoPipe::MuxCursorObserverAssociatePacket);
++    case T::MuxCursorObserverStop: return header.messageSize == sizeof(ProtoPipe::MuxCursorObserverStopPacket);
++    default: return false;
++    }
++}
++}
+--- a/src/ProtoInput/ProtoInputHooks/PipeCommunication.cpp
++++ b/src/ProtoInput/ProtoInputHooks/PipeCommunication.cpp
+@@ -24,6 +24,7 @@
+ #include "FakeMouseKeyboard.h"
+ #include "CursorVisibilityHook.h"
+ #include "MuxCursorObserverBridge.h"
++#include "MuxLifecycleNative.h"
+ 
+ namespace Proto
+ {
+@@ -43,36 +44,33 @@
+ 
+ 	AddThreadToACL(GetCurrentThreadId());
+ 
+-	// Just in case the dll is injected first, before the loader starts the pipe
+-	HANDLE pipe;
+-	int connectCount = 0;
++	MuxLifecycleNative::Initialize();
++	HANDLE pipe = INVALID_HANDLE_VALUE;
++	bool lifecycle = false;
++	bool lifecycleEver = false;
++	bool claimed = false;
++connectPipe:
++	claimed = false;
++	// One resident serialized transport thread. A new generation cannot overlap
++	// an old thread's cleanup; no reinjection or remote DLL unload is involved.
+ 	do
+ 	{
+-		pipe = CreateFileW(
+-			pipeName.c_str(),
+-			GENERIC_READ,
+-			FILE_SHARE_READ,
+-			NULL,
+-			OPEN_EXISTING,
+-			FILE_ATTRIBUTE_NORMAL,
+-			NULL
+-		);
+-
+-		if (pipe == INVALID_HANDLE_VALUE)
++		MuxLifecycleNative::PollCommit();
++		pipe = INVALID_HANDLE_VALUE;
++		if (MuxLifecycleNative::readyView)
++			pipe = CreateFileW(MuxLifecycleNative::PipeName().c_str(), GENERIC_READ,
++				FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
++		lifecycle = pipe != INVALID_HANDLE_VALUE;
++		if (lifecycle) lifecycleEver = true;
++		if (!lifecycleEver)
+ 		{
+-			if (connectCount++ < 10)
+-			{
+-				fprintf(stderr, "Failed to open pipe, trying again in 2s\n");
+-				Sleep(2000);
+-			}
+-			else
+-			{
+-				fprintf(stderr, "Failed to open pipe, giving up!\n");
+-				break;
+-			}
++			pipe = CreateFileW(pipeName.c_str(), GENERIC_READ, FILE_SHARE_READ,
++				nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+ 		}
++		if (pipe == INVALID_HANDLE_VALUE) Sleep(25);
+ 	}
+ 	while (pipe == INVALID_HANDLE_VALUE);
++	if (!lifecycle) MuxLifecycleNative::Poison(); // Legacy state is never reusable.
+ 	
+ 	if (pipe != INVALID_HANDLE_VALUE)
+ 	{
+@@ -120,8 +118,22 @@
+ 				break;
+ 			}
+ 
++			std::lock_guard<std::recursive_mutex> packetLock(RawInput::packetMutex);
++			if (lifecycle && (!MuxLifecycleNative::ValidVirtualCommand(msgHeader, messageBuffer)
++				|| (msgHeader.messageType != ProtoPipe::PipeMessageType::MuxLifecycleBegin
++					&& msgHeader.messageType != ProtoPipe::PipeMessageType::MuxLifecyclePrepareRetire
++					&& MuxLifecycleNative::current.state != ProtoMuxLifecycle::Active))) goto endPipe;
+ 			switch(msgHeader.messageType)
+ 			{
++			case ProtoPipe::PipeMessageType::MuxLifecycleBegin:
++				if (!lifecycle || msgHeader.messageSize != sizeof(ProtoMuxLifecycle::BeginPacket)) goto endPipe;
++				if (MuxLifecycleNative::Begin(pipe, *reinterpret_cast<const ProtoMuxLifecycle::BeginPacket*>(messageBuffer)))
++					claimed = true;
++				break;
++			case ProtoPipe::PipeMessageType::MuxLifecyclePrepareRetire:
++				if (!lifecycle || msgHeader.messageSize != sizeof(ProtoMuxLifecycle::RetirePacket)) goto endPipe;
++				MuxLifecycleNative::Prepare(*reinterpret_cast<const ProtoMuxLifecycle::RetirePacket*>(messageBuffer));
++				break;
+ 			case ProtoPipe::PipeMessageType::MuxInput:
+ 			{
+ 				if (msgHeader.messageSize != sizeof(ProtoPipe::MuxInputPacket)) goto endPipe;
+@@ -298,6 +310,7 @@
+ 			case ProtoPipe::PipeMessageType::StartFocusMessageLoop:
+ 			{
+ 				const auto body = reinterpret_cast<ProtoPipe::PipeMessageStartFocusMessageLoop*>(messageBuffer);
++				FocusMessageLoop::PauseMessageLoop();
+ 
+ 				printf("Received StartFocusMessageLoop, Milliseconds = %d, "
+ 					   "wm_activate = %d, "
+@@ -545,6 +558,11 @@
+ 		}
+ 	}
+ 	endPipe:
++	if (lifecycle && claimed && MuxLifecycleNative::current.state == ProtoMuxLifecycle::Active)
++		MuxLifecycleNative::Poison();
++	if (!lifecycle || claimed)
++	{
++	std::lock_guard<std::recursive_mutex> packetLock(RawInput::packetMutex);
+ 	MuxCursorObserverBridge::StopAll();
+ 	// The controller may exit or be terminated by its watchdog. Restore ordinary input.
+ 	RawInput::rawInputState.externalFreezeInput = true;
+@@ -563,10 +581,12 @@
+ 			if (!retainFenceHook)
+ 				(*it)->Uninstall();
+ 		}
++	}
+ 
+ 	printf("End of pipe thread\n");
+ 	
+ 	CloseHandle(pipe);
++	if (lifecycle) goto connectPipe;
+ 
+ 	return 0;
+ }
+--- a/src/ProtoInput/ProtoInputHooks/RawInput.cpp
++++ b/src/ProtoInput/ProtoInputHooks/RawInput.cpp
+@@ -22,6 +22,14 @@
+ {
+ 
+ RawInputState RawInput::rawInputState{};
++std::recursive_mutex RawInput::packetMutex;
++bool RawInput::lifecycleVirtualOnly = false;
++namespace
++{
++	std::unordered_map<HANDLE, std::pair<int, int>> absolutePositions;
++	bool shortcutKeyDown = false;
++	size_t forwardingBufferIndex = 0;
++}
+ std::bitset<9> RawInput::usages{};
+ std::vector<HWND> RawInput::forwardingWindows{};
+ bool RawInput::forwardRawInput = true;
+@@ -63,7 +71,7 @@
+ 		const int absoluteX = int((data.lLastX / 65535.0f) * (isVirtualDesktop ? widthVirtual : widthNonVirtual));
+ 		const int absoluteY = int((data.lLastY / 65535.0f) * (isVirtualDesktop ? heightVirtual : heightNonVirtual));
+ 
+-		static std::unordered_map<HANDLE, std::pair<int, int>> oldPositions{};
++		auto& oldPositions = absolutePositions;
+ 		
+ 		if (const auto find = oldPositions.find(deviceHandle); find != oldPositions.end())
+ 		{
+@@ -176,6 +184,7 @@
+ 
+ void RawInput::ProcessText(unsigned short unit, HANDLE device)
+ {
++	std::lock_guard<std::recursive_mutex> lock(packetMutex);
+ 	// Narrow transport adapter: Rust validates/encodes the authored Unicode string.
+ 	if (rawInputState.externalFreezeInput || rawInputState.freezeInput || !rawInputState.sendKeyboardPressMessages) return;
+ 	if (std::find(rawInputState.selectedKeyboardHandles.begin(), rawInputState.selectedKeyboardHandles.end(), device) == rawInputState.selectedKeyboardHandles.end()) return;
+@@ -286,17 +295,19 @@
+ void RawInput::ProcessPacket(RAWINPUT rawinput)
+ {
+ 	// Serialize physical and emulated packet processing through the existing routing code.
+-	static std::mutex packetMutex;
+-	std::lock_guard<std::mutex> lock(packetMutex);
++	std::lock_guard<std::recursive_mutex> lock(packetMutex);
+ 		
+ 	rawinput.header.wParam = RIM_INPUT; // Sent in the foreground
++	if (lifecycleVirtualOnly
++		&& (reinterpret_cast<uintptr_t>(rawinput.header.hDevice) & 0xFF000000) != 0xF1000000)
++		return;
+ 
+ 	const int index = StateInfo::info.instanceIndex;
+ 	
+ 	// Shortcut to open UI (doesn't care about what keyboard is attached)
+-	if (rawinput.header.dwType == RIM_TYPEKEYBOARD && index >= 1 && index <= 9 && (rawinput.data.keyboard.VKey == 0x30 + index))
+-	{
+-		static bool keyDown = false;
++	if (!lifecycleVirtualOnly && rawinput.header.dwType == RIM_TYPEKEYBOARD && index >= 1 && index <= 9 && (rawinput.data.keyboard.VKey == 0x30 + index))
++	{
++		auto& keyDown = shortcutKeyDown;
+ 		if (rawinput.data.keyboard.Flags == RI_KEY_MAKE && !keyDown)
+ 		{
+ 			keyDown = true;
+@@ -407,7 +418,7 @@
+ 			{
+ 				for (const auto& hwnd : forwardingWindows)
+ 				{
+-					static size_t inputBufferCounter = 0;
++					auto& inputBufferCounter = forwardingBufferIndex;
+ 	
+ 					// The game is going to lag behind the data we get by a few times, so store in an array and pass the index as a message parameter
+ 					
+@@ -501,6 +512,7 @@
+ 
+ void RawInput::RefreshDevices()
+ {
++	std::lock_guard<std::recursive_mutex> lock(packetMutex);
+ 	unsigned int numDevices = 0;
+ 	GetRawInputDeviceList(NULL, &numDevices, sizeof(RAWINPUTDEVICELIST));
+ 	auto deviceArray = std::make_unique<RAWINPUTDEVICELIST[]>(numDevices);
+@@ -577,6 +589,7 @@
+ 
+ void RawInput::AddSelectedMouseHandle(unsigned handle)
+ {
++	std::lock_guard<std::recursive_mutex> lock(packetMutex);
+ 	if (std::find(rawInputState.selectedMouseHandles.begin(), rawInputState.selectedMouseHandles.end(), (void*)handle) == rawInputState.selectedMouseHandles.end())
+ 		rawInputState.selectedMouseHandles.push_back((void*)handle);
+ 
+@@ -589,6 +602,7 @@
+ 
+ void RawInput::AddSelectedKeyboardHandle(unsigned handle)
+ {
++	std::lock_guard<std::recursive_mutex> lock(packetMutex);
+ 	if (std::find(rawInputState.selectedKeyboardHandles.begin(), rawInputState.selectedKeyboardHandles.end(), (void*)handle) == rawInputState.selectedKeyboardHandles.end())
+ 		rawInputState.selectedKeyboardHandles.push_back((void*)handle);
+ 
+@@ -616,6 +630,23 @@
+ std::bitset<9> RawInput::GetUsageBitField()
+ {
+ 	return usages;
++}
++
++void RawInput::ResetForLifecycle()
++{
++	std::lock_guard<std::recursive_mutex> lock(packetMutex);
++	rawInputState = RawInputState{};
++	rawInputState.externalFreezeInput = true;
++	usages.reset();
++	forwardingWindows.clear();
++	rawinputs.clear();
++	ZeroMemory(inputBuffer, sizeof(inputBuffer));
++	absolutePositions.clear();
++	shortcutKeyDown = false;
++	forwardingBufferIndex = 0;
++	rawInputBypass = false;
++	forwardRawInput = true;
++	lockInputToggleEnabled = false;
+ }
+ 
+ void RawInput::InitialiseRawInput()
+--- a/src/ProtoInput/ProtoInputHooks/RawInput.h
++++ b/src/ProtoInput/ProtoInputHooks/RawInput.h
+@@ -2,6 +2,7 @@
+ #include <vector>
+ #include <windows.h>
+ #include <bitset>
++#include <mutex>
+ #include <hidusage.h>
+ 
+ namespace Proto
+@@ -43,6 +44,9 @@
+ 	static void ProcessKeyboardInput(const RAWKEYBOARD& data, HANDLE deviceHandle);
+ 
+ public:
++	static std::recursive_mutex packetMutex;
++	static bool lifecycleVirtualOnly;
++	static void ResetForLifecycle();
+ 	static RawInputState rawInputState;
+ 	static HWND rawInputHwnd;
+ 	static bool forwardRawInput;
+--- /dev/null
++++ b/src/ProtoInput/ProtoInputHooks/pipeinclude/MuxLifecycleProtocol.h
+@@ -0,0 +1,48 @@
++#pragma once
++#include <cstdint>
++
++// Passive, fixed-width lifecycle transport. All ownership policy and final
++// all-target commitment belong to Rust. Remote handles belong to the target.
++namespace ProtoMuxLifecycle
++{
++constexpr uint32_t Version = 1;
++constexpr uint64_t Build = 0x2026101500000001ULL;
++constexpr uint32_t ReadyMagic = 0x4D585244;
++constexpr uint32_t CommitMagic = 0x4D58434D;
++constexpr uint32_t ReplyMagic = 0x4D585250;
++enum State : uint32_t { Initializing, Unclaimed, Active, Prepared, Poisoned, Reusable };
++enum Result : uint32_t { Ok = 1, Busy, Dirty, Incompatible, CleanupFailed, Invalid };
++
++struct Commit
++{
++    uint32_t magic, abi, bytes, state;
++    uint64_t session, reserved[5];
++};
++struct Ready
++{
++    uint32_t magic, abi, bytes, sequence;
++    uint32_t state, owner_pid, bits, error;
++    uint64_t creation, generation, session, build;
++    uint64_t reserved[8];
++};
++struct Reply
++{
++    uint32_t magic, abi, bytes, result;
++    uint64_t creation, generation, session;
++    uint32_t native_state, error;
++    uint64_t reserved[2];
++};
++struct BeginPacket
++{
++    uint64_t creation, generation, session, remote_commit_mapping, remote_reply_mapping, remote_event;
++};
++struct RetirePacket
++{
++    uint64_t generation, session, remote_reply_mapping, remote_event;
++};
++static_assert(sizeof(Commit) == 64, "lifecycle commit ABI");
++static_assert(sizeof(Ready) == 128, "lifecycle ready ABI");
++static_assert(sizeof(Reply) == 64, "lifecycle reply ABI");
++static_assert(sizeof(BeginPacket) == 48, "lifecycle Begin ABI");
++static_assert(sizeof(RetirePacket) == 32, "lifecycle retire ABI");
++}
+--- a/src/ProtoInput/ProtoInputHooks/pipeinclude/pipeinclude.h
++++ b/src/ProtoInput/ProtoInputHooks/pipeinclude/pipeinclude.h
+@@ -1,5 +1,6 @@
+ #pragma once
+ #include <cstdint>
++#include "MuxLifecycleProtocol.h"
+ 
+ // This file needs to be used in both ProtoInputHooks and ProtoInputLoader for pipe communication
+ 
+@@ -37,7 +38,9 @@
+ 	MuxQueueFence,
+ 	MuxCursorObserverStart,
+ 	MuxCursorObserverAssociate,
+-	MuxCursorObserverStop
++	MuxCursorObserverStop,
++	MuxLifecycleBegin,
++	MuxLifecyclePrepareRetire
+ };
+ 
+ // Fixed-width adapter for Rust-generated application-local devices (not OS HID).
+--- a/src/ProtoInput/ProtoInputLoader/EasyHookRuntime.cpp
++++ b/src/ProtoInput/ProtoInputLoader/EasyHookRuntime.cpp
+@@ -9,7 +9,8 @@
+ #include "easyhook.h"
+ #include <filesystem>
+ 
+-ProtoInstanceHandle EasyHookInjectImpl(unsigned long pid, const wchar_t* dllFolderPath, bool stealth)
++ProtoInstanceHandle EasyHookInjectImpl(unsigned long pid, const wchar_t* dllFolderPath, bool stealth,
++	bool createInstance = true, unsigned int timeout = INFINITE)
+ {
+ 	const bool is64 = Isx64(pid);
+ 	std::cout << "Target is " << (is64 ? "64-bit" : "32-bit") << std::endl;
+@@ -28,7 +29,7 @@
+ 		NULL,
+ 		NULL,
+ 		FALSE,
+-		0,
++		createInstance ? 0 : CREATE_NO_WINDOW,
+ 		NULL,
+ 		NULL,
+ 		&startupInfo,
+@@ -39,7 +40,15 @@
+ 		ProtoInstanceHandle ret = 0;
+ 
+ 
+-		WaitForSingleObject(processInfo.hProcess, INFINITE);
++		if (WaitForSingleObject(processInfo.hProcess, timeout) != WAIT_OBJECT_0)
++		{
++			// This is our injector helper, never the selected application.
++			TerminateProcess(processInfo.hProcess, ERROR_TIMEOUT);
++			WaitForSingleObject(processInfo.hProcess, 250);
++			CloseHandle(processInfo.hThread);
++			CloseHandle(processInfo.hProcess);
++			return 0;
++		}
+ 
+ 		DWORD exitCode;
+ 		GetExitCodeProcess(processInfo.hProcess, &exitCode);
+@@ -81,7 +90,7 @@
+ 
+ 		if (exitCode == 0)
+ 		{
+-			ret = CreateInstanceHandle(pid);
++			ret = createInstance ? CreateInstanceHandle(pid) : 1;
+ 		}
+ 
+ 		CloseHandle(processInfo.hThread);
+@@ -104,4 +113,4 @@
+ extern "C" __declspec(dllexport) ProtoInstanceHandle EasyHookStealthInjectRuntime(unsigned long pid, const wchar_t* dllFolderPath)
+ {
+ 	return EasyHookInjectImpl(pid, dllFolderPath, true);
+-}
+\ No newline at end of file
++}
+--- a/src/ProtoInput/ProtoInputLoader/Inject.cpp
++++ b/src/ProtoInput/ProtoInputLoader/Inject.cpp
+@@ -146,6 +146,19 @@
+     return SendCursorCommand(instance, ProtoPipe::PipeMessageType::MuxCursorObserverStop, ProtoPipe::MuxCursorObserverStopPacket{attachment});
+ }
+ 
++extern "C" __declspec(dllexport) bool MuxLifecycleBegin(unsigned int instance, const ProtoMuxLifecycle::BeginPacket* packet)
++{
++    const auto found = Proto::instances.find(instance);
++    if (!packet || found == Proto::instances.end() || !found->second.lifecycle) return false;
++    return SendCursorCommand(instance, ProtoPipe::PipeMessageType::MuxLifecycleBegin, *packet);
++}
++extern "C" __declspec(dllexport) bool MuxLifecyclePrepareRetire(unsigned int instance, const ProtoMuxLifecycle::RetirePacket* packet)
++{
++    const auto found = Proto::instances.find(instance);
++    if (!packet || found == Proto::instances.end() || !found->second.lifecycle) return false;
++    return SendCursorCommand(instance, ProtoPipe::PipeMessageType::MuxLifecyclePrepareRetire, *packet);
++}
++
+ extern "C" NTSTATUS __declspec(dllexport) __stdcall HookCompleteInjection(void* InInfo)
+ {
+ 	return HookCompleteInjectionImpl(InInfo);
+--- a/src/ProtoInput/ProtoInputLoader/InstanceHandling.cpp
++++ b/src/ProtoInput/ProtoInputLoader/InstanceHandling.cpp
+@@ -4,6 +4,79 @@
+ #include "TrackedInstances.h"
+ #include <iostream>
+ #include "pipeinclude.h"
++#include <algorithm>
++
++ProtoInstanceHandle EasyHookInjectImpl(unsigned long, const wchar_t*, bool, bool, unsigned int);
++
++extern "C" __declspec(dllexport) unsigned int MuxLifecycleVersion()
++{
++	return ProtoMuxLifecycle::Version;
++}
++
++extern "C" __declspec(dllexport) ProtoInstanceHandle MuxLifecycleOpen(uint64_t original_process,
++	unsigned int pid, uint64_t creation, const wchar_t* folder, bool inject_fresh, unsigned int timeout_ms)
++{
++	const auto process = reinterpret_cast<HANDLE>(static_cast<uintptr_t>(original_process));
++	FILETIME created{}, exited{}, kernel{}, user{};
++	if (!process || !folder || !pid || !creation || timeout_ms == 0 || timeout_ms > 45000
++		|| GetProcessId(process) != pid || WaitForSingleObject(process, 0) != WAIT_TIMEOUT
++		|| !GetProcessTimes(process, &created, &exited, &kernel, &user)
++		|| (static_cast<uint64_t>(created.dwHighDateTime) << 32 | created.dwLowDateTime) != creation)
++		return 0;
++	const auto name = std::wstring(L"\\\\.\\pipe\\ProtoInputMultiPlex.Lifecycle.")
++		+ std::to_wstring(pid) + L"." + std::to_wstring(creation);
++	// Nonblocking connection polling gives a real deadline without leaving a
++	// loader thread behind. Once connected, ordinary serialized writes are used.
++	const HANDLE pipe = CreateNamedPipeW(name.c_str(), PIPE_ACCESS_OUTBOUND | FILE_FLAG_FIRST_PIPE_INSTANCE,
++		PIPE_TYPE_BYTE | PIPE_NOWAIT | PIPE_REJECT_REMOTE_CLIENTS, 1, 8192, 8192, 0, nullptr);
++	if (pipe == INVALID_HANDLE_VALUE) return 0;
++	const ULONGLONG deadline = GetTickCount64() + timeout_ms;
++	if (inject_fresh && EasyHookInjectImpl(pid, folder, false, false, timeout_ms) == 0)
++	{
++		CloseHandle(pipe);
++		return 0;
++	}
++	bool connected = false;
++	while (GetTickCount64() < deadline && WaitForSingleObject(process, 0) == WAIT_TIMEOUT)
++	{
++		if (ConnectNamedPipe(pipe, nullptr) || GetLastError() == ERROR_PIPE_CONNECTED)
++		{
++			ULONG actual = 0;
++			DWORD mode = PIPE_READMODE_BYTE | PIPE_WAIT;
++			connected = GetNamedPipeClientProcessId(pipe, &actual) && actual == pid
++				&& SetNamedPipeHandleState(pipe, &mode, nullptr, nullptr);
++			break;
++		}
++		const DWORD error = GetLastError();
++		if (error != ERROR_PIPE_LISTENING && error != ERROR_NO_DATA) break;
++		Sleep(10);
++	}
++	if (!connected || WaitForSingleObject(process, 0) != WAIT_TIMEOUT)
++	{
++		DisconnectNamedPipe(pipe);
++		CloseHandle(pipe);
++		return 0;
++	}
++	const auto handle = Proto::instanceCounter++;
++	Proto::ProtoInstance instance{};
++	instance.pid = pid;
++	instance.pipeHandle = pipe;
++	instance.clientConnected = true;
++	instance.lifecycle = true;
++	Proto::instances.emplace(handle, instance);
++	return handle;
++}
++
++extern "C" __declspec(dllexport) bool MuxLifecycleClose(unsigned int handle)
++{
++	const auto found = Proto::instances.find(handle);
++	if (found == Proto::instances.end() || !found->second.lifecycle) return false;
++	std::lock_guard<std::mutex> lock(ProtoPipeWriteMutex());
++	DisconnectNamedPipe(found->second.pipeHandle);
++	const bool closed = CloseHandle(found->second.pipeHandle) != FALSE;
++	Proto::instances.erase(found);
++	return closed;
++}
+ 
+ std::wstring GetPipeName(unsigned long pid)
+ {
+--- a/src/ProtoInput/ProtoInputLoader/TrackedInstances.h
++++ b/src/ProtoInput/ProtoInputLoader/TrackedInstances.h
+@@ -12,9 +12,10 @@
+ 	HANDLE pipeHandle = nullptr;
+ 	bool clientConnected = false;
+ 	unsigned long pid = 0;
++	bool lifecycle = false;
+ };
+ 
+ extern std::unordered_map<ProtoInstanceHandle, ProtoInstance> instances;
+ extern ProtoInstanceHandle instanceCounter;
+ 
+-}
+\ No newline at end of file
++}
+--- a/src/ProtoInput/ProtoInputLoader/include/protoloader.h
++++ b/src/ProtoInput/ProtoInputLoader/include/protoloader.h
+@@ -1,5 +1,13 @@
+ #pragma once
+ #include <cstdint>
++#include "../../ProtoInputHooks/pipeinclude/MuxLifecycleProtocol.h"
++
++extern "C" __declspec(dllexport) unsigned int MuxLifecycleVersion();
++extern "C" __declspec(dllexport) unsigned int MuxLifecycleOpen(uint64_t original_process, unsigned int pid,
++    uint64_t creation, const wchar_t* folder, bool inject_fresh, unsigned int timeout_ms);
++extern "C" __declspec(dllexport) bool MuxLifecycleBegin(unsigned int instance, const ProtoMuxLifecycle::BeginPacket* packet);
++extern "C" __declspec(dllexport) bool MuxLifecyclePrepareRetire(unsigned int instance, const ProtoMuxLifecycle::RetirePacket* packet);
++extern "C" __declspec(dllexport) bool MuxLifecycleClose(unsigned int instance);
+ 
+ // 0 means invalid handle
+ using ProtoInstanceHandle = unsigned int;

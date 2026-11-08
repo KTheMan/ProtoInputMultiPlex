@@ -1,0 +1,12 @@
+{
+  "date": "2026-10-21",
+  "status": "bounded_gui_session_drain_accepted",
+  "claim": "The GUI session-event poll now consumes at most 256 FIFO events per callback and requests another repaint after a full batch. The existing event handler and Stop suppression rule remain unchanged.",
+  "validation": "Required Rust format, strict Clippy, workspace tests (472 passed, 0 failed, 3 ignored), and x64/i686 app and observer builds passed. Focused tests confirmed that a live producer's 257th event stays queued after the first batch and that acknowledgements and Stopped remain in FIFO order across two batches. All 864 compiled source hashes stayed stable; gui.rs was the sole change from the accepted Macro producer, and ten private runtime file hashes remained pinned.",
+  "evidence": {
+    "source_review": "runtime/gui-session-drain-candidate/source-review.json",
+    "producer": "runtime/producer-gui-session-drain-20261021-attempt001/verification.json",
+    "independent_acceptance": "runtime/gui-session-drain-attempt001-review.json"
+  },
+  "limits": "This is a source-and-test acceptance of a finite event-count and temporary batch-allocation bound. No new native cohort was run. Per-event processing time, total channel backlog, Stop or terminal-ACK latency, and general GUI responsiveness were not established. The historical GUI-stall P1 remains OPEN; this change neither identifies nor proves a fix for its cause."
+}

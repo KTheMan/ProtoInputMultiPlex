@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "crate": "accesskit_consumer",
+  "version": "0.35.0",
+  "declared_license": "MIT OR Apache-2.0",
+  "repository": "https://github.com/AccessKit/accesskit",
+  "repository_root": "https://github.com/AccessKit/accesskit",
+  "cargo_vcs_info": {
+    "git": {
+      "sha1": "1bbcf100942bac96c2c3a4a91cb67b0b20201a24"
+    },
+    "path_in_vcs": "consumer"
+  },
+  "files": [
+    {
+      "path": "LICENSE-MIT",
+      "upstream_path": "LICENSE-MIT",
+      "url": "https://raw.githubusercontent.com/AccessKit/accesskit/1bbcf100942bac96c2c3a4a91cb67b0b20201a24/LICENSE-MIT",
+      "bytes": 1023,
+      "sha256": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+    },
+    {
+      "path": "LICENSE-APACHE",
+      "upstream_path": "LICENSE-APACHE",
+      "url": "https://raw.githubusercontent.com/AccessKit/accesskit/1bbcf100942bac96c2c3a4a91cb67b0b20201a24/LICENSE-APACHE",
+      "bytes": 9723,
+      "sha256": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a"
+    },
+    {
+      "path": "LICENSE.chromium",
+      "upstream_path": "LICENSE.chromium",
+      "url": "https://raw.githubusercontent.com/AccessKit/accesskit/1bbcf100942bac96c2c3a4a91cb67b0b20201a24/LICENSE.chromium",
+      "bytes": 1559,
+      "sha256": "845022e0c1db1abb41a6ba4cd3c4b674ec290f3359d9d3c78ae558d4c0ed9308"
+    },
+    {
+      "path": "AUTHORS-NOTICE.txt",
+      "upstream_path": "AUTHORS",
+      "url": "https://raw.githubusercontent.com/AccessKit/accesskit/1bbcf100942bac96c2c3a4a91cb67b0b20201a24/AUTHORS",
+      "bytes": 346,
+      "sha256": "3bab8c36f6a85657504aaefb37c7ff34e29b8c917290f3d28a1f0920c992e502"
+    }
+  ],
+  "source_notices": [
+    {
+      "path": "source-notices/src/filters.rs.NOTICE.txt",
+      "upstream_path": "consumer/src/filters.rs",
+      "url": "https://raw.githubusercontent.com/AccessKit/accesskit/1bbcf100942bac96c2c3a4a91cb67b0b20201a24/consumer/src/filters.rs",
+      "bytes": 222,
+      "sha256": "2965f6a5c80d577d726eee4d2a2ebbb7534d7c0eb5c3cf6c1fdf6f2d187c88d7",
+      "cached_source_sha256": "e2df7bf15790369fbedd20030c61949292664f4d2881615c8170b42380681c10",
+      "extraction": "Unmodified leading source comment and following blank lines from the cached registry source."
+    },
+    {
+      "path": "source-notices/src/iterators.rs.NOTICE.txt",
+      "upstream_path": "consumer/src/iterators.rs",
+      "url": "https://raw.githubusercontent.com/AccessKit/accesskit/1bbcf100942bac96c2c3a4a91cb67b0b20201a24/consumer/src/iterators.rs",
+      "bytes": 451,
+      "sha256": "468e37a93c8dd8e5458b325dcc7ccf348bfd176dcc07e79cdcc023e53041c456",
+      "cached_source_sha256": "22233da2a6c999c355b74edddbf80fc98c6f32bd52f55de2bacd523f013824a7",
+      "extraction": "Unmodified leading source comment and following blank lines from the cached registry source."
+    },
+    {
+      "path": "source-notices/src/lib.rs.NOTICE.txt",
+      "upstream_path": "consumer/src/lib.rs",
+      "url": "https://raw.githubusercontent.com/AccessKit/accesskit/1bbcf100942bac96c2c3a4a91cb67b0b20201a24/consumer/src/lib.rs",
+      "bytes": 222,
+      "sha256": "14598066ccf2a0f6e6726b11301ff06b462b459d611de46d02e3f4d6873d600b",
+      "cached_source_sha256": "f7c619c1c2e4add099d4dece693b36be535262a1f696a188e6040ad6877e34bf",
+      "extraction": "Unmodified leading source comment and following blank lines from the cached registry source."
+    },
+    {
+      "path": "source-notices/src/node.rs.NOTICE.txt",
+      "upstream_path": "consumer/src/node.rs",
+      "url": "https://raw.githubusercontent.com/AccessKit/accesskit/1bbcf100942bac96c2c3a4a91cb67b0b20201a24/consumer/src/node.rs",
+      "bytes": 451,
+      "sha256": "ee076522c88c907a9822f9e07f193a067b5ec5547dbabe7ec6bb68fc6fd6385a",
+      "cached_source_sha256": "7ca5b53a821529e168af71f63d064ef20308a3634e019c8ce4f1c965c2b483cf",
+      "extraction": "Unmodified leading source comment and following blank lines from the cached registry source."
+    },
+    {
+      "path": "source-notices/src/text.rs.NOTICE.txt",
+      "upstream_path": "consumer/src/text.rs",
+      "url": "https://raw.githubusercontent.com/AccessKit/accesskit/1bbcf100942bac96c2c3a4a91cb67b0b20201a24/consumer/src/text.rs",
+      "bytes": 222,
+      "sha256": "96f1f6f5178e37f50383e0fdb4ceae3c989fe13e991fd7246bda1d6e74cf1dde",
+      "cached_source_sha256": "44d8d2732fda2a60a67bd7c002ff712409b6dfa19318679d448fa9b5fc6b5f18",
+      "extraction": "Unmodified leading source comment and following blank lines from the cached registry source."
+    },
+    {
+      "path": "source-notices/src/tree.rs.NOTICE.txt",
+      "upstream_path": "consumer/src/tree.rs",
+      "url": "https://raw.githubusercontent.com/AccessKit/accesskit/1bbcf100942bac96c2c3a4a91cb67b0b20201a24/consumer/src/tree.rs",
+      "bytes": 222,
+      "sha256": "14598066ccf2a0f6e6726b11301ff06b462b459d611de46d02e3f4d6873d600b",
+      "cached_source_sha256": "af83cff834458f32b954f98039b816a9fa610dfe135f8b198ab1813ecef67b67",
+      "extraction": "Unmodified leading source comment and following blank lines from the cached registry source."
+    }
+  ],
+  "crate_authors": [
+    "The AccessKit contributors"
+  ],
+  "scope": "Immutable upstream root license/authors bytes at the cached crate VCS revision, plus verbatim cached source copyright and attribution headers. No crate, dependency, or compiled product source changes."
+}

@@ -1,0 +1,92 @@
+{
+  "date": "2026-11-07",
+  "decision": "CAPTURE_OBSERVATION_ACCEPTED",
+  "scope": "Optional Script screenshot metadata in existing GUI activity, stopped/live MCP responses and the Ouroboros diagnostics disclosure; private GUI bridge descriptor publication in long temporary directories.",
+  "verification": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\capture-observation-20261107\\checks-003\\verification.json",
+    "sha256": "4534fe4f6c26d467cd55cf424c4b4d47f8e50b554a500bcae04484f82b299faa"
+  },
+  "review": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\capture-observation-20261107\\independent-acceptance.json",
+    "sha256": "ff7dd617858269ffe8072657a465e68756784eee5f5a5cbad86d91269f18a6ad"
+  },
+  "publication": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\capture-observation-20261107\\publication.json",
+    "sha256": "07eabdba6eaac3ba78cc81c20320d51b8b0f8050dd4caccf8e49e374fa39b2db"
+  },
+  "workspace_tests": {
+    "passed": 890,
+    "failed": 0,
+    "ignored": 19
+  },
+  "checks": {
+    "fmt": 0,
+    "clippy": 0,
+    "workspace-tests": 0,
+    "build-gui": 0
+  },
+  "x64_image": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\capture-observation-20261107\\checks-003\\x64\\protoinputmultiplex.exe",
+    "sha256": "65a8f8c92e15b006521d17440cc0b591237fb8b59b69413a9b835f2ee9806b50"
+  },
+  "producer": {
+    "original_session": 60589,
+    "original_exit_code": 0
+  },
+  "native": {
+    "evidence": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\capture-observation-20261107\\native-run-bcbe74222ae9\\evidence.json",
+      "sha256": "d1ff533aa4d0e28f6bc12fc7164a1e6e1e65fdcc85ac6c1008bd179548a6ae15"
+    },
+    "original_session": 8766,
+    "original_exit_code": 0,
+    "scope": {
+      "GUI": 1,
+      "MCP": 1,
+      "virtual_pairs": 2,
+      "targets": 0,
+      "routing": false,
+      "backend_DLLs": 0
+    },
+    "exit_codes": {
+      "GUI": 0,
+      "MCP": 0
+    },
+    "UI_actions": 6,
+    "MCP_calls": 36
+  },
+  "accepted": [
+    "Private GUI bridge files resolve the existing parent to an extended Windows path for create, publication and cleanup, retaining the protected current-logon ACL, CREATE_NEW semantics and atomic publication.",
+    "Existing version-1 callback observations retain compatibility when optional capture metadata is absent or malformed.",
+    "Request and receipt generations, counts, monotonic ages, pending interval, dimensions and worker acceptance are metadata only; no image content, path, hash or credential is exposed.",
+    "The independent observer performs bounded atomic reads and one nonblocking worker try_lock, without file I/O, image copying or a GUI request round trip.",
+    "PNG worker status is sampled independently from request/receipt markers; the combined response is not a globally atomic pipeline transaction.",
+    "Ouroboros and existing MCP surfaces distinguish request, receipt, worker acceptance and publication; retirement does not imply completion."
+  ],
+  "limits": [
+    "Native acceptance used one stopped x64 GUI, one setup MCP client and two virtual pairs, with no Start, routing, targets or backend DLLs.",
+    "Blocked-writer, lock contention, malformed/legacy metadata, wrong-ticket and retirement cases use deterministic Rust coverage; no native failure injection or broad reliability matrix was run.",
+    "Ages do not time glReadPixels, normal repaint, presentation or input delivery. This does not identify a historical stall cause or establish a GUI-stall fix.",
+    "Historical GUI-stall P1, full Ultra/UI parity, hardware and broad application coverage, and release readiness remain open."
+  ],
+  "descriptor_regression_before_fix": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\capture-observation-20261107\\descriptor-red\\receipt.json",
+    "sha256": "36b78c8642cb4b853b4add8c4644c2d2fb95b15364326699e24c287d6051f39b"
+  },
+  "retained_failed_checks": [
+    {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\capture-observation-20261107\\checks-001\\verification.json",
+      "sha256": "68fa040c04de1ebc296e4bc140dd4cbddd4200a4323bc343bb3c89245bfb670e"
+    }
+  ],
+  "retained_failed_native": [
+    {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\capture-observation-20261107\\native-run-6ed4682fea7e\\evidence.json",
+      "sha256": "0356f5689ebd298db6fe18f3ee8ba5b3304f9a7f819195065cd2b8c1478f8256"
+    },
+    {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\capture-observation-20261107\\native-run-c2aa19dd2d7b\\evidence.json",
+      "sha256": "56ff4989b5f64f4b2896d9d0f09f31e1cd7f4b1cd2d09079a4bc16997590b72c"
+    }
+  ]
+}

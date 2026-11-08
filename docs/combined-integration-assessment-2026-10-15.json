@@ -1,0 +1,126 @@
+{
+  "date": "2026-10-15",
+  "result": "APPROVED BOUNDED COMBINED INTEGRATION",
+  "full_ultra_parity_complete": false,
+  "source": "Main checkout combines reviewed Rust installation/config maintenance, GPU presentation and Ouroboros workflow patches with current annotation/session work. Pinned backend and four protected Rust inputs preserved.",
+  "source_assembly_review": {
+    "path": "runtime/integration-source-20261015-151107/independent-final-source-assembly-review.json",
+    "sha256": "b05f2c6fc96c6a4162c68f64c02983ecdf06e645f1ba2faf504679272839044c"
+  },
+  "producer": {
+    "path": "runtime\\producer-combined-integration-20261015-152817\\verification.json",
+    "sha256": "8ba6f1d318088fbd9cdb4c752fbc1a2e7aaa03c4b652553e042e23719207bdf6",
+    "result": "PASS",
+    "workspace_tests": 329,
+    "compiled_inputs": 846,
+    "checks": "Formatting; strict default/evidence workspace Clippy; workspace and evidence-feature tests; default/evidence x64+i686 application and observer builds; x64 Doctor.",
+    "artifacts_sha256": {
+      "default-x64": {
+        "protoinputmux.exe": "26579c116198220aaeee109ba5c932bea7bfff12c20a3ebd443cf2ad3a4771b4",
+        "protoinputmux_cursor_observer.dll": "3ade9c71977c87340daae545295cbea11aba3347ee84171aab189814d03f2212"
+      },
+      "default-i686": {
+        "protoinputmux.exe": "3ac6bb5e810b35e963bee5303ca57ca07ca2a08f3e5d24cf4c7748cd0d8cf0c6",
+        "protoinputmux_cursor_observer.dll": "bc2b2fbd2655e3324fcea2f41dc54a493bbd3120dd48daf92bb08ecfb5d20069"
+      },
+      "evidence-x64": {
+        "protoinputmux.exe": "f471df840d2fe310d4869e2e95246baa3baffdb6b9de75affcf124994a3381ff",
+        "protoinputmux_cursor_observer.dll": "3ade9c71977c87340daae545295cbea11aba3347ee84171aab189814d03f2212"
+      },
+      "evidence-i686": {
+        "protoinputmux.exe": "4cf49812621f058749f561ea2a9fd94b3e7e0eca4bda6548bbd3d7764ff5c39e",
+        "protoinputmux_cursor_observer.dll": "bc2b2fbd2655e3324fcea2f41dc54a493bbd3120dd48daf92bb08ecfb5d20069"
+      }
+    }
+  },
+  "producer_integrity_review": {
+    "path": "runtime/producer-combined-integration-20261015-152817/producer-independent-review.json",
+    "sha256": "3e5ea088dd6736e03096c73e978532d3237fdf62e073c5446fa77a0f50da55f9"
+  },
+  "independent_native_review_sha256": "a9e5087348c07d079b97346b48b83bf4b0de91ec69b3f335cb02f74202e8ea59",
+  "independent_native_review": {
+    "decision": "APPROVED BOUNDED COMBINED INTEGRATION SMOKE",
+    "raw_evidence": {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-combined-integration-20261015-155133\\acceptance-graph-combined-integration-smoke-20261015-155102\\evidence.json",
+      "sha256": "4b9411d179462e7aca9c04d36fe2b2b11aff2fd3fa9a5c2246956c5411458ca5",
+      "preserved_label": "PENDING_INDEPENDENT_VISUAL_REVIEW"
+    },
+    "producer": {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-combined-integration-20261015-152817\\verification.json",
+      "sha256": "8ba6f1d318088fbd9cdb4c752fbc1a2e7aaa03c4b652553e042e23719207bdf6"
+    },
+    "preflight_review": {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\combined-integration-smoke-independent-review.json",
+      "sha256": "dc11844d5bd16d2d4fc3c0016f4882c7bc359594ff44c28bc9d8691875e6ff0e"
+    },
+    "actual_counts": {
+      "GUI_observations": 29,
+      "clicks": 27,
+      "disabled_observations": 2,
+      "routing_input_calls": 12,
+      "virtual_users": 2,
+      "owned_x64_probe_PIDs": [
+        273824,
+        274120
+      ],
+      "owned_original_frames": 1
+    },
+    "data_approved": [
+      "New matching exact-user/PID Agent policy ACK before connection; capture/app-preferences false and session-control true.",
+      "Matching Output worker ACK commits A Back-to-F5 while B remains legacy.",
+      "After six selection inputs exact owned PIDs confirmed; complete native A F5 and B F6 DOWN/UP pairs plus one primary pair each; no Back leak, no held inputs.",
+      "Exact-PID GPU status reports direct_composition_d3d11 and positive upload/present/commit counters, no fallback.",
+      "Fresh explicit Home Stop reports stopped/error-free/targets-empty/can_start, both known cursor HWNDs absent before GUI close, probe holds empty and descriptor removed.",
+      "Actual stopped Save/Load in isolated config root with spaces preserves full profile except intended A output rule; disk SHA unchanged across Load; no unexpected transfer/CWD profile writes."
+    ],
+    "saved_profile": {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-combined-integration-20261015-155133\\isolated config root with spaces\\profiles\\local.json",
+      "sha256": "c5576a4a08854172b82298670f82756e8df23b5aec6fe3074a603c08172e2d18"
+    },
+    "direct_original_review": {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-combined-integration-20261015-155133\\acceptance-graph-combined-integration-smoke-20261015-155102\\combined-original-automation-320.png",
+      "sha256": "e8d5f50f351005fa84ec758a2ee04c8dc63f34d6cc9cece01db7a2627b76e493",
+      "pixels": [
+        320,
+        360
+      ],
+      "decision": "APPROVED: readable From/To selected users and both down-caret affordances; whole Add edge and disabled Apply controls visible.",
+      "limit": "Long bottom status/footer text clips; footer readability and full compact UX are not certified. PNG cadence metadata is not request-associated freshness proof."
+    },
+    "cleanup": {
+      "recorded_audit": {
+        "startup_key_removed": true,
+        "owned_binary_processes_closed": true,
+        "remaining_exact_owned_image_processes": [],
+        "cleanup_errors": []
+      },
+      "owned_processes_closed": true,
+      "read_only_current_exact_image_processes": [],
+      "current_descriptor_absent": true,
+      "current_private_startup_key_absent": true,
+      "known_cursor_HWNDs_absent_before_GUI_close": [
+        36638430,
+        28708716
+      ]
+    },
+    "postrun_hash_checks": {
+      "current_compiled_inputs": 846,
+      "acceptance_native_files": 10,
+      "copied_builds": 2,
+      "raw_unchanged": true
+    },
+    "unresolved_material_findings": [],
+    "remaining_limits": [
+      "One bounded default-x64 combined slice only; i686 built/hash-checked, not executed.",
+      "GPU reporting is not GPU pixel/performance validation.",
+      "No shipping/installer, full UX/Ultra/P1, hardware, arbitrary-app, same-process or desktop-wide isolation acceptance."
+    ],
+    "reviewer_actions": "Read-only artifacts/source/process inventory and direct original image review; no app/native/Cargo/test reruns."
+  },
+  "published_original": {
+    "path": "combined-integration-controls-320.png",
+    "sha256": "e8d5f50f351005fa84ec758a2ee04c8dc63f34d6cc9cece01db7a2627b76e493"
+  },
+  "shipping_acceptance": "OPEN: combined producer is source/build qualification; final distribution provenance and focused package smoke remain pending",
+  "scope": "Frozen packaging, UX and GPU isolated assessments retain their own source identities and limits. This bounded default-x64 smoke does not replace their full gates or establish desktop-wide/same-process isolation."
+}

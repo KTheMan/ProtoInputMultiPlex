@@ -1,0 +1,42 @@
+{
+  "decision": "APPROVED MISSING-ONLY HARNESS; ROOT READY REQUIRED",
+  "retained_accepted_prefix": {
+    "raw": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-clean-restart-native-20261015-101049\\evidence.json",
+    "raw_sha256": "5a5b42efade63268bd80f6b94d1904a7e354d0210616980b754eb2937848c962",
+    "review": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-clean-restart-native-20261015-101049\\independent-prefix-review.json",
+    "review_sha256": "026cc74bc6d7a2c043cf7105bd032c3f496a4940ac2274d9d673b95da17f0065",
+    "group": "same_original_two_sessions",
+    "accepted_mutations": 26,
+    "accepted_routing_input_calls": 19,
+    "whole_raw_status": "NOT ACCEPTED"
+  },
+  "runner": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\scripts\\test-clean-restart-acceptance.py",
+    "sha256": "eb594ba2e30c2e087cf4302be63a7ed7fc5931b580fee4e27bd847af1841f661",
+    "AST": "PASS"
+  },
+  "plan": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\clean-restart-acceptance-plan.md",
+    "sha256": "609eb08ed4facd81ec27e386ac831a05bc4ec40b9469337bb257cf894be19047"
+  },
+  "oracles_rebound_to_source": {
+    "nonfatal_route_error": "desktop_router.rs input_with_mask catches route error, sets Routing unavailable: {error:#}, returns Ok; MCP processed ACK is not delivery",
+    "failed_attach": "exact intendedPID prior eligibility.reason + Routing unavailable: prefix; running/noheldkeys/buttons/capture; unchanged complete native event traces including motion (pump WM_MOUSEMOVE count included)",
+    "GUI_busy": "same exact livePID busy reason; unchanged ALL nativeevents inclmotion; real known ownEDIT with topmost NOACTIVATE setup",
+    "positive_replay": "--phase native refused; native-tail hardguard exact prefix/raw/review/producer and executes only fence+worker-loss",
+    "callbacks": "g.once for all GUI imperative Busy requests; catches exceptions as RuntimeError, never retried by read-json loop"
+  },
+  "remaining_budget": {
+    "native_tail_expected_mutations": 27,
+    "native_tail_cap": 30,
+    "native_tail_expected_routing_input": 18,
+    "native_tail_input_cap": 20,
+    "GUI_controls": 4,
+    "GUI_MCP_mutations": 4,
+    "GUI_routing_input": 2,
+    "GUI_originals": 2
+  },
+  "product_mutations": false,
+  "new_apps_run": false,
+  "findings": []
+}

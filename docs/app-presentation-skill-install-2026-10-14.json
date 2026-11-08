@@ -1,0 +1,9 @@
+{
+  "result": "PASS for validated skill-document update only",
+  "source_and_installed_sha256": "8ed64692037c152b9f128f6801e54a3e4418cd666b0fdfe51166e0c4bdb9bd38",
+  "previous_sha256": "2ada4b7fd815572c0bd792627b07c11918a81fef3d73b79826d1560dda293950",
+  "backup": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\presentation-skill-backup-20261014-183335\\SKILL.md",
+  "agent_yaml_unchanged_sha256": "61c08546d1fafc09287f36c34a74766769d7462034a3eeabd33c999eb0fc16c3",
+  "mcp_document_evidence": "runtime/acceptance-application-presentation-documents-20261014-183214/evidence.json",
+  "limits": "GUI presentation/lifecycle acceptance still pending; no configuration, metadata or server registration changed."
+}

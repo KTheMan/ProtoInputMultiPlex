@@ -1,0 +1,55 @@
+{
+  "review": "APPROVED_SOURCE_ONLY",
+  "scope": "Source review of adding per-user Draw, Magnifier, and Macros tabs and app-local muted text styling. No build, native, or visual acceptance is claimed here.",
+  "files": {
+    "crates/protoinputmux/src/gui.rs": {
+      "baseline_sha256": "08e1641a17b8d52a194e48e4bc2cae2d39c527be87b29efe9a4a7adbb9a71e11",
+      "reviewed_sha256": "6241b807eed5f27c45250868d5a157254227a55f4e1fa46c42f447f6e08a42db"
+    },
+    "crates/protoinputmux/src/annotation_ui.rs": {
+      "baseline_sha256": "b4f0e920672e62dba1cd224948f19bd4225c3cbc2017339164107de0f00f3700",
+      "reviewed_sha256": "403a507fcff5b6b3e439b0a56814c1d29e6721fce90cfb1eb205ec6450bb4114"
+    },
+    "crates/protoinputmux/src/magnifier_ui.rs": {
+      "baseline_sha256": "18508c5884169fb58a028b1648a5107d8295dee43899cb112e642225d747fbb8",
+      "reviewed_sha256": "f56923e1992d156af8b4cbc129930adc522bb7057529ec60c2524f6e954af832"
+    },
+    "crates/protoinputmux/src/macro_studio_ui.rs": {
+      "baseline_sha256": "ce55322f33afe641bafc7e80db03b2d071e7067b7ae1f6445d5c39749ac59e60",
+      "reviewed_sha256": "c753abab76460b9e2e6f8d5c23c8b6e388ca4c1c0a4dfdb0008038cc0acab851"
+    }
+  },
+  "app_logic": {
+    "baseline_and_reviewed_sha256_after_newline_normalization": "a19317b5ddc9a817f8be86da0ac79fd78ed2ffa29c7b448594038e5aacc84f29",
+    "byte_equivalent": true
+  },
+  "findings": [],
+  "layout_correction_review": {
+    "baseline_sha256": {
+      "crates/protoinputmux/src/gui.rs": "61c4c9842f82b4c91a097aea22f876b730936107970f8cfa0cecccb35be2144f",
+      "crates/protoinputmux/src/macro_studio_ui.rs": "52b2f95187829305d72aee8b6d4735a4080e7d954af3123d71f43cb45d1ad425"
+    },
+    "reviewed_sha256": {
+      "crates/protoinputmux/src/gui.rs": "6241b807eed5f27c45250868d5a157254227a55f4e1fa46c42f447f6e08a42db",
+      "crates/protoinputmux/src/macro_studio_ui.rs": "c753abab76460b9e2e6f8d5c23c8b6e388ca4c1c0a4dfdb0008038cc0acab851"
+    },
+    "review": "APPROVED_SOURCE_ONLY",
+    "scope": "Reviewed horizontal user-tab scrollbar reservation, selected-tab reveal on width changes and actual clicks, and narrow Macro Studio wrapping/grid layout. No business command paths changed in these diffs.",
+    "findings": [],
+    "visual_or_native_acceptance": "Pending independent UI acceptance; source review does not establish rendered-pixel behavior."
+  },
+  "review_notes": [
+    "Embedded tool tabs pass the selected roster index into their controller before rendering or dispatch; profile-draft writeback is bypassed for these tabs.",
+    "Annotation and magnifier acknowledge settings against the user stored with the pending command; selection refreshes the clear-key and region drafts. Macro commands carry their selected user, and its standalone picker is disabled while a command is pending.",
+    "The nine existing tabs and their guarded Ouroboros button/Script.observe path remain intact; three tabs are added using the same guarded pattern. Scroll areas have separate IDs for the embedded pages.",
+    "The weak-text override is local to the application and reads the active Ouroboros muted-foreground token after theme installation and theme changes; it does not alter the pinned dependency or disabled-widget styling.",
+    "The reviewed follow-up reserves a non-floating scrollbar strip for both user-tab rows, revealing the selected tab after viewport-width changes and scrolling to an actually clicked tab without changing the guarded action path.",
+    "Macro Studio's generator grid switches between paired and four-column layouts by available width, while timeline, click, playback, and action rows wrap on narrow windows; command values and dispatch guards are unchanged."
+  ],
+  "verification": {
+    "source_comparison": "Compared final files against runtime/per-user-tools-source-base snapshots after the parent reported format/Clippy freeze.",
+    "producer_status": "Not assessed by this review; the parent owns the active producer checks.",
+    "visual_or_native_acceptance": "Not assessed by this review."
+  },
+  "correction_note": "Baseline hashes were recomputed from the source-base snapshots and confirmed to match the accepted compact-chrome producer manifest; reviewed-source hashes and findings are unchanged."
+}

@@ -1,0 +1,10 @@
+{
+  "result": "CANCELLED",
+  "run": "runtime/producer-cursor-appearance-20261014-140152",
+  "retained_record": "docs/cursor-appearance-review-cancelled-checks-2026-10-14.json",
+  "reason": "Review identified full-name allocations despite the displayed-prefix bound and missing native hidden-window positioning before a cached frame exists. The coordinator intentionally stopped only verified owned verifier descendants so both source repairs could share one fresh coordinated check run.",
+  "completed": ["formatting", "strict workspace/all-target Clippy"],
+  "workspace_test_exit_code": 4294967295,
+  "test_result_interpretation": "Intentional cancellation; not a completed workspace test pass or an observed product test failure.",
+  "independent_feature_acceptance": "Not started"
+}

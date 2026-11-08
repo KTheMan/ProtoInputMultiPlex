@@ -1,0 +1,26 @@
+{
+  "review": "Optional Windows CJK font fallback source review",
+  "reviewed_at": "2026-10-14",
+  "result": "approved_with_limitation",
+  "scope": "Compared current gui.rs with runtime/gui-font-fallback-base/gui.rs; only this file was changed for the group.",
+  "checks": [
+    "Existing proportional-family stack is captured before Ouroboros registration, then phosphor is appended; the optional CJK font is appended afterward to every family, so existing UI and icon fonts remain first.",
+    "The helper treats missing/unreadable/non-file/empty/oversized fonts as unavailable and leaves definitions unchanged; reading is capped at 32 MiB plus one sentinel byte, and the sentinel detects/rejects oversize data before installing it.",
+    "WINDIR is optional; the code attempts only the standard Fonts/malgun.ttf path and does not affect other systems or add a runtime dependency.",
+    "The test covers a missing optional font and verifies families/font names are unchanged."
+  ],
+  "limitation": {
+    "finding": "A readable malformed/replaced font can reach epaint FontFace::new, which unwraps parser failure into panic (pinned source: E:/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/epaint-0.34.3/src/text/fonts.rs, FontsImpl::new around line 782).",
+    "assessment": "Not a blocker for ordinary loading of the stock Windows system font; malformed-file fallback is not guaranteed and remains a narrow robustness limitation.",
+    "native_or_runtime_test": "Not performed"
+  },
+  "files": [
+    {
+      "path": "crates/protoinputmux/src/gui.rs",
+      "baseline_path": "runtime/gui-font-fallback-base/gui.rs",
+      "baseline_sha256": "05d120d1fb28f2e852cae6f25be14c33025cf043435d96fb1f2b15a14cd493b8",
+      "current_sha256": "e299e788894bb9fc4ac0e0ff1ee11ddab80203411878793adca86c995e23136d"
+    }
+  ],
+  "validation": "Source review only; no Cargo or application run."
+}

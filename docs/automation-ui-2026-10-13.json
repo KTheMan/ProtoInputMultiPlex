@@ -1,0 +1,5860 @@
+{
+  "samples": {
+    "start": {
+      "probes": [
+        {
+          "pid": 705208,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 33,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        },
+        {
+          "pid": 779108,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 28,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 0,
+          "client": [
+            158,
+            171
+          ],
+          "bounds": {
+            "left": 0,
+            "top": 0,
+            "right": 2560,
+            "bottom": 1440
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 18482748,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "",
+          "status": "Click a window to route input",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 0,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 0,
+          "client": [
+            618,
+            171
+          ],
+          "bounds": {
+            "left": 0,
+            "top": 0,
+            "right": 2560,
+            "bottom": 1440
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 58592058,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "",
+          "status": "Click a window to route input",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 0,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Start routing"
+    },
+    "select-0": {
+      "probes": [
+        {
+          "pid": 705208,
+          "cursor": [
+            158,
+            171
+          ],
+          "buttons": 1,
+          "test_keys": 0,
+          "frames": 63,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            }
+          ],
+          "mouse_event_count": 1,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        },
+        {
+          "pid": 779108,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 58,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 705208,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [],
+          "overlay": {
+            "hwnd": 18482748,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 705208",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 705208",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 705208,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 0,
+          "client": [
+            618,
+            171
+          ],
+          "bounds": {
+            "left": 0,
+            "top": 0,
+            "right": 2560,
+            "bottom": 1440
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 58592058,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "",
+          "status": "Click a window to route input",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 0,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "1 Hold click"
+    },
+    "drop-0": {
+      "probes": [
+        {
+          "pid": 705208,
+          "cursor": [
+            158,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 73,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        },
+        {
+          "pid": 779108,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 68,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 705208,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 18482748,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 705208",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 705208",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 705208,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 0,
+          "client": [
+            618,
+            171
+          ],
+          "bounds": {
+            "left": 0,
+            "top": 0,
+            "right": 2560,
+            "bottom": 1440
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 58592058,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "",
+          "status": "Click a window to route input",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 0,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "1 Release click"
+    },
+    "select-1": {
+      "probes": [
+        {
+          "pid": 705208,
+          "cursor": [
+            158,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 105,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        },
+        {
+          "pid": 779108,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 1,
+          "test_keys": 0,
+          "frames": 100,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            }
+          ],
+          "mouse_event_count": 1,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 705208,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 18482748,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 705208",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 705208",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 705208,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 779108,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [],
+          "overlay": {
+            "hwnd": 58592058,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 779108",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 779108",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 779108,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "2 Hold click"
+    },
+    "drop-1": {
+      "probes": [
+        {
+          "pid": 705208,
+          "cursor": [
+            158,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 113,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        },
+        {
+          "pid": 779108,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 108,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 705208,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 18482748,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 705208",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 705208",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 705208,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 779108,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 58592058,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 779108",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 779108",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 779108,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "2 Release click"
+    },
+    "key64": {
+      "probes": [
+        {
+          "pid": 705208,
+          "cursor": [
+            158,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 122,
+          "text": "",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 0,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        },
+        {
+          "pid": 779108,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 116,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 705208,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 18482748,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 705208",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 705208",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 705208,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 779108,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 58592058,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 779108",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 779108",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 779108,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Tap key"
+    },
+    "hold32": {
+      "probes": [
+        {
+          "pid": 705208,
+          "cursor": [
+            158,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 129,
+          "text": "",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 0,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        },
+        {
+          "pid": 779108,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 124,
+          "text": "",
+          "held_keys": [
+            117
+          ],
+          "key_events": [
+            {
+              "vk": 117,
+              "pressed": true,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 1,
+          "text_events": 0,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 705208,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 18482748,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 705208",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 705208",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 705208,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 779108,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [
+            117
+          ],
+          "overlay": {
+            "hwnd": 58592058,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 779108",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 779108",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 779108,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Hold key"
+    },
+    "release32": {
+      "probes": [
+        {
+          "pid": 705208,
+          "cursor": [
+            158,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 141,
+          "text": "",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 0,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        },
+        {
+          "pid": 779108,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 136,
+          "text": "",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 117,
+              "pressed": true,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 117,
+              "pressed": false,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 0,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 705208,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 18482748,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 705208",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 705208",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 705208,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 779108,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 58592058,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 779108",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 779108",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 779108,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Release key"
+    },
+    "text64": {
+      "probes": [
+        {
+          "pid": 705208,
+          "cursor": [
+            158,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 151,
+          "text": "UI64 東京 🦊",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 10,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        },
+        {
+          "pid": 779108,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 146,
+          "text": "",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 117,
+              "pressed": true,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 117,
+              "pressed": false,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 0,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 705208,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 18482748,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 705208",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 705208",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 705208,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 779108,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 58592058,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 779108",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 779108",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 779108,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Send text"
+    },
+    "text32": {
+      "probes": [
+        {
+          "pid": 705208,
+          "cursor": [
+            158,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 159,
+          "text": "UI64 東京 🦊",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 10,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        },
+        {
+          "pid": 779108,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 153,
+          "text": "UI32 café 🙂",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 117,
+              "pressed": true,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 117,
+              "pressed": false,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 12,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 705208,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 18482748,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 705208",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 705208",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 705208,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 779108,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 58592058,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 779108",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 779108",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 779108,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Send text"
+    },
+    "macro-page": {
+      "probes": [
+        {
+          "pid": 705208,
+          "cursor": [
+            158,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 171,
+          "text": "UI64 東京 🦊",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 10,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        },
+        {
+          "pid": 779108,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 165,
+          "text": "UI32 café 🙂",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 117,
+              "pressed": true,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 117,
+              "pressed": false,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 12,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 705208,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 18482748,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 705208",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 705208",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 705208,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 779108,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 58592058,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 779108",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 779108",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 779108,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Macros & replication"
+    },
+    "record-start": {
+      "probes": [
+        {
+          "pid": 705208,
+          "cursor": [
+            158,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 179,
+          "text": "UI64 東京 🦊",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 10,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        },
+        {
+          "pid": 779108,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 174,
+          "text": "UI32 café 🙂",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 117,
+              "pressed": true,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 117,
+              "pressed": false,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 12,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 705208,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 18482748,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 705208",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 705208",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 705208,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 779108,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 58592058,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 779108",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 779108",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 779108,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Start recording"
+    },
+    "record-input-page": {
+      "probes": [
+        {
+          "pid": 705208,
+          "cursor": [
+            158,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 187,
+          "text": "UI64 東京 🦊",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 10,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        },
+        {
+          "pid": 779108,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 182,
+          "text": "UI32 café 🙂",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 117,
+              "pressed": true,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 117,
+              "pressed": false,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 12,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 705208,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 18482748,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 705208",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 705208",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 705208,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 779108,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 58592058,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 779108",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 779108",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 779108,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Input lab"
+    },
+    "record-text": {
+      "probes": [
+        {
+          "pid": 705208,
+          "cursor": [
+            158,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 201,
+          "text": "UI64 東京 🦊R",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 11,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        },
+        {
+          "pid": 779108,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 196,
+          "text": "UI32 café 🙂",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 117,
+              "pressed": true,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 117,
+              "pressed": false,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 12,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 705208,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 18482748,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 705208",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 705208",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 705208,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 779108,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 58592058,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 779108",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 779108",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 779108,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Send text"
+    },
+    "record-key": {
+      "probes": [
+        {
+          "pid": 705208,
+          "cursor": [
+            158,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 209,
+          "text": "UI64 東京 🦊R",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 4,
+          "text_events": 11,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        },
+        {
+          "pid": 779108,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 204,
+          "text": "UI32 café 🙂",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 117,
+              "pressed": true,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 117,
+              "pressed": false,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 12,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 705208,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 18482748,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 705208",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 705208",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 705208,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 779108,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 58592058,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 779108",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 779108",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 779108,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Tap key"
+    },
+    "record-page": {
+      "probes": [
+        {
+          "pid": 705208,
+          "cursor": [
+            158,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 217,
+          "text": "UI64 東京 🦊R",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 4,
+          "text_events": 11,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        },
+        {
+          "pid": 779108,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 212,
+          "text": "UI32 café 🙂",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 117,
+              "pressed": true,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 117,
+              "pressed": false,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 12,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 705208,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 18482748,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 705208",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 705208",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 705208,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 779108,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 58592058,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 779108",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 779108",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 779108,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Macros & replication"
+    },
+    "record-stop": {
+      "probes": [
+        {
+          "pid": 705208,
+          "cursor": [
+            158,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 228,
+          "text": "UI64 東京 🦊R",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 4,
+          "text_events": 11,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        },
+        {
+          "pid": 779108,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 223,
+          "text": "UI32 café 🙂",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 117,
+              "pressed": true,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 117,
+              "pressed": false,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 12,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 705208,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 18482748,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 705208",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 705208",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 705208,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 779108,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 58592058,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 779108",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 779108",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 779108,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Stop recording"
+    },
+    "save": {
+      "probes": [
+        {
+          "pid": 705208,
+          "cursor": [
+            158,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 236,
+          "text": "UI64 東京 🦊R",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 4,
+          "text_events": 11,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        },
+        {
+          "pid": 779108,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 231,
+          "text": "UI32 café 🙂",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 117,
+              "pressed": true,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 117,
+              "pressed": false,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 12,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 705208,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 18482748,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 705208",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 705208",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 705208,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 779108,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 58592058,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 779108",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 779108",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 779108,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Save macro",
+      "saved_clip": {
+        "version": 1,
+        "events": [
+          {
+            "at_micros": 2434922,
+            "action": {
+              "type": "text",
+              "user": 0,
+              "text": "R"
+            }
+          },
+          {
+            "at_micros": 3253130,
+            "action": {
+              "type": "packet",
+              "user": 0,
+              "packet": {
+                "device": 4043309059,
+                "kind": 1,
+                "flags": 0,
+                "x": 63,
+                "y": 0,
+                "data": 116
+              }
+            }
+          },
+          {
+            "at_micros": 3254754,
+            "action": {
+              "type": "packet",
+              "user": 0,
+              "packet": {
+                "device": 4043309059,
+                "kind": 1,
+                "flags": 1,
+                "x": 63,
+                "y": 0,
+                "data": 116
+              }
+            }
+          }
+        ]
+      }
+    },
+    "load": {
+      "probes": [
+        {
+          "pid": 705208,
+          "cursor": [
+            158,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 244,
+          "text": "UI64 東京 🦊R",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 4,
+          "text_events": 11,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        },
+        {
+          "pid": 779108,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 239,
+          "text": "UI32 café 🙂",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 117,
+              "pressed": true,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 117,
+              "pressed": false,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 12,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 705208,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 18482748,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 705208",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 705208",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 705208,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 779108,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 58592058,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 779108",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 779108",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 779108,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Load macro"
+    },
+    "play": {
+      "probes": [
+        {
+          "pid": 705208,
+          "cursor": [
+            158,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 271,
+          "text": "UI64 東京 🦊RRR",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 8,
+          "text_events": 13,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        },
+        {
+          "pid": 779108,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 266,
+          "text": "UI32 café 🙂",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 117,
+              "pressed": true,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 117,
+              "pressed": false,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 12,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 705208,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 18482748,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 705208",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 705208",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 705208,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 779108,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 58592058,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 779108",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 779108",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 779108,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Play macro"
+    },
+    "edge": {
+      "probes": [
+        {
+          "pid": 705208,
+          "cursor": [
+            158,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 282,
+          "text": "UI64 東京 🦊RRR",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 8,
+          "text_events": 13,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        },
+        {
+          "pid": 779108,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 277,
+          "text": "UI32 café 🙂",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 117,
+              "pressed": true,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 117,
+              "pressed": false,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 12,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 705208,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 18482748,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 705208",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 705208",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 705208,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 779108,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 58592058,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 779108",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 779108",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 779108,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Add replication edge"
+    },
+    "apply": {
+      "probes": [
+        {
+          "pid": 705208,
+          "cursor": [
+            158,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 290,
+          "text": "UI64 東京 🦊RRR",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 8,
+          "text_events": 13,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        },
+        {
+          "pid": 779108,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 285,
+          "text": "UI32 café 🙂",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 117,
+              "pressed": true,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 117,
+              "pressed": false,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 12,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 705208,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 18482748,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 705208",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 705208",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 705208,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 779108,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 58592058,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 779108",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 779108",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 779108,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Apply replication"
+    },
+    "replication-input-page": {
+      "probes": [
+        {
+          "pid": 705208,
+          "cursor": [
+            158,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 298,
+          "text": "UI64 東京 🦊RRR",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 8,
+          "text_events": 13,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        },
+        {
+          "pid": 779108,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 293,
+          "text": "UI32 café 🙂",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 117,
+              "pressed": true,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 117,
+              "pressed": false,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 12,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 705208,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 18482748,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 705208",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 705208",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 705208,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 779108,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 58592058,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 779108",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 779108",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 779108,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Input lab"
+    },
+    "replicated-key": {
+      "probes": [
+        {
+          "pid": 705208,
+          "cursor": [
+            158,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 315,
+          "text": "UI64 東京 🦊RRR",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 10,
+          "text_events": 13,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        },
+        {
+          "pid": 779108,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 310,
+          "text": "UI32 café 🙂",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 117,
+              "pressed": true,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 117,
+              "pressed": false,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 4,
+          "text_events": 12,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 705208,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 18482748,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 705208",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 705208",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 705208,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 779108,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 58592058,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 779108",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 779108",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 779108,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Tap key"
+    },
+    "replicated-text": {
+      "probes": [
+        {
+          "pid": 705208,
+          "cursor": [
+            158,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 323,
+          "text": "UI64 東京 🦊RRRZ",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 10,
+          "text_events": 14,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        },
+        {
+          "pid": 779108,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 318,
+          "text": "UI32 café 🙂Z",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 117,
+              "pressed": true,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 117,
+              "pressed": false,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 4,
+          "text_events": 13,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 705208,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 18482748,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 705208",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 705208",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 705208,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 779108,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 58592058,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 779108",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 779108",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 779108,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Send text"
+    },
+    "cleanup-page": {
+      "probes": [
+        {
+          "pid": 705208,
+          "cursor": [
+            158,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 331,
+          "text": "UI64 東京 🦊RRRZ",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 10,
+          "text_events": 14,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        },
+        {
+          "pid": 779108,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 326,
+          "text": "UI32 café 🙂Z",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 117,
+              "pressed": true,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 117,
+              "pressed": false,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 4,
+          "text_events": 13,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 705208,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 18482748,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 705208",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 705208",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 705208,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 779108,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 58592058,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 779108",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 779108",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 779108,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Macros & replication"
+    },
+    "remove-edge": {
+      "probes": [
+        {
+          "pid": 705208,
+          "cursor": [
+            158,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 344,
+          "text": "UI64 東京 🦊RRRZ",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 10,
+          "text_events": 14,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        },
+        {
+          "pid": 779108,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 339,
+          "text": "UI32 café 🙂Z",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 117,
+              "pressed": true,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 117,
+              "pressed": false,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 4,
+          "text_events": 13,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 705208,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 18482748,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 705208",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 705208",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 705208,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 779108,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 58592058,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 779108",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 779108",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 779108,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Remove edge"
+    },
+    "apply-empty": {
+      "probes": [
+        {
+          "pid": 705208,
+          "cursor": [
+            158,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 352,
+          "text": "UI64 東京 🦊RRRZ",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 10,
+          "text_events": 14,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        },
+        {
+          "pid": 779108,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 347,
+          "text": "UI32 café 🙂Z",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 117,
+              "pressed": true,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 117,
+              "pressed": false,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 4,
+          "text_events": 13,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 705208,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 18482748,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 705208",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 705208",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 705208,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 779108,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 58592058,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 779108",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 779108",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 779108,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Apply replication"
+    },
+    "load-held": {
+      "probes": [
+        {
+          "pid": 705208,
+          "cursor": [
+            158,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 360,
+          "text": "UI64 東京 🦊RRRZ",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 10,
+          "text_events": 14,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        },
+        {
+          "pid": 779108,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 355,
+          "text": "UI32 café 🙂Z",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 117,
+              "pressed": true,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 117,
+              "pressed": false,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 4,
+          "text_events": 13,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 705208,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 18482748,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 705208",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 705208",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 705208,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 779108,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 58592058,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 779108",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 779108",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 779108,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Load macro"
+    },
+    "play-held": {
+      "probes": [
+        {
+          "pid": 705208,
+          "cursor": [
+            158,
+            171
+          ],
+          "buttons": 1,
+          "test_keys": 0,
+          "frames": 373,
+          "text": "UI64 東京 🦊RRRZ",
+          "held_keys": [
+            116
+          ],
+          "key_events": [
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 11,
+          "text_events": 14,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            }
+          ],
+          "mouse_event_count": 3,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        },
+        {
+          "pid": 779108,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 368,
+          "text": "UI32 café 🙂Z",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 117,
+              "pressed": true,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 117,
+              "pressed": false,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 4,
+          "text_events": 13,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 705208,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [
+            116
+          ],
+          "overlay": {
+            "hwnd": 18482748,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 705208",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 705208",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 705208,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 779108,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 58592058,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 779108",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 779108",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 779108,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Play macro"
+    },
+    "cancel": {
+      "probes": [
+        {
+          "pid": 705208,
+          "cursor": [
+            158,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 382,
+          "text": "UI64 東京 🦊RRRZ",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 12,
+          "text_events": 14,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 4,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        },
+        {
+          "pid": 779108,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 377,
+          "text": "UI32 café 🙂Z",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 117,
+              "pressed": true,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 117,
+              "pressed": false,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 4,
+          "text_events": 13,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 705208,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 18482748,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 705208",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 705208",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 705208,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 779108,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 58592058,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 779108",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 779108",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 779108,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Cancel playback"
+    },
+    "stop": {
+      "probes": [
+        {
+          "pid": 705208,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 390,
+          "text": "UI64 東京 🦊RRRZ",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 12,
+          "text_events": 14,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 4,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        },
+        {
+          "pid": 779108,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 385,
+          "text": "UI32 café 🙂Z",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 117,
+              "pressed": true,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 117,
+              "pressed": false,
+              "scan": 64,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": true,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 116,
+              "pressed": false,
+              "scan": 63,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 4,
+          "text_events": 13,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 705208,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 18482748,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 705208",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 705208",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 705208,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 779108,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 58592058,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 779108",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 779108",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 779108,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Stop routing"
+    }
+  },
+  "result": "PASS",
+  "clicked_events": [
+    {
+      "button": "Start routing",
+      "clicked": true
+    },
+    {
+      "button": "1 Hold click",
+      "clicked": true
+    },
+    {
+      "button": "1 Release click",
+      "clicked": true
+    },
+    {
+      "button": "2 Hold click",
+      "clicked": true
+    },
+    {
+      "button": "2 Release click",
+      "clicked": true
+    },
+    {
+      "button": "Tap key",
+      "clicked": true
+    },
+    {
+      "button": "Hold key",
+      "clicked": true
+    },
+    {
+      "button": "Release key",
+      "clicked": true
+    },
+    {
+      "button": "Send text",
+      "clicked": true
+    },
+    {
+      "button": "Send text",
+      "clicked": true
+    },
+    {
+      "button": "Macros & replication",
+      "clicked": true
+    },
+    {
+      "button": "Start recording",
+      "clicked": true
+    },
+    {
+      "button": "Input lab",
+      "clicked": true
+    },
+    {
+      "button": "Send text",
+      "clicked": true
+    },
+    {
+      "button": "Tap key",
+      "clicked": true
+    },
+    {
+      "button": "Macros & replication",
+      "clicked": true
+    },
+    {
+      "button": "Stop recording",
+      "clicked": true
+    },
+    {
+      "button": "Save macro",
+      "clicked": true
+    },
+    {
+      "button": "Load macro",
+      "clicked": true
+    },
+    {
+      "button": "Play macro",
+      "clicked": true
+    },
+    {
+      "button": "Add replication edge",
+      "clicked": true
+    },
+    {
+      "button": "Apply replication",
+      "clicked": true
+    },
+    {
+      "button": "Input lab",
+      "clicked": true
+    },
+    {
+      "button": "Tap key",
+      "clicked": true
+    },
+    {
+      "button": "Send text",
+      "clicked": true
+    },
+    {
+      "button": "Macros & replication",
+      "clicked": true
+    },
+    {
+      "button": "Remove edge",
+      "clicked": true
+    },
+    {
+      "button": "Apply replication",
+      "clicked": true
+    },
+    {
+      "button": "Load macro",
+      "clicked": true
+    },
+    {
+      "button": "Play macro",
+      "clicked": true
+    },
+    {
+      "button": "Cancel playback",
+      "clicked": true
+    },
+    {
+      "button": "Stop routing",
+      "clicked": true
+    }
+  ],
+  "owned_processes_closed": true
+}

@@ -1,0 +1,158 @@
+{
+  "schema_version": 1,
+  "crate": "accesskit_windows",
+  "version": "0.32.1",
+  "declared_license": "MIT OR Apache-2.0",
+  "repository": "https://github.com/AccessKit/accesskit",
+  "repository_root": "https://github.com/AccessKit/accesskit",
+  "cargo_vcs_info": {
+    "git": {
+      "sha1": "1bbcf100942bac96c2c3a4a91cb67b0b20201a24"
+    },
+    "path_in_vcs": "platforms/windows"
+  },
+  "files": [
+    {
+      "path": "LICENSE-MIT",
+      "upstream_path": "LICENSE-MIT",
+      "url": "https://raw.githubusercontent.com/AccessKit/accesskit/1bbcf100942bac96c2c3a4a91cb67b0b20201a24/LICENSE-MIT",
+      "bytes": 1023,
+      "sha256": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+    },
+    {
+      "path": "LICENSE-APACHE",
+      "upstream_path": "LICENSE-APACHE",
+      "url": "https://raw.githubusercontent.com/AccessKit/accesskit/1bbcf100942bac96c2c3a4a91cb67b0b20201a24/LICENSE-APACHE",
+      "bytes": 9723,
+      "sha256": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a"
+    },
+    {
+      "path": "LICENSE.chromium",
+      "upstream_path": "LICENSE.chromium",
+      "url": "https://raw.githubusercontent.com/AccessKit/accesskit/1bbcf100942bac96c2c3a4a91cb67b0b20201a24/LICENSE.chromium",
+      "bytes": 1559,
+      "sha256": "845022e0c1db1abb41a6ba4cd3c4b674ec290f3359d9d3c78ae558d4c0ed9308"
+    },
+    {
+      "path": "AUTHORS-NOTICE.txt",
+      "upstream_path": "AUTHORS",
+      "url": "https://raw.githubusercontent.com/AccessKit/accesskit/1bbcf100942bac96c2c3a4a91cb67b0b20201a24/AUTHORS",
+      "bytes": 346,
+      "sha256": "3bab8c36f6a85657504aaefb37c7ff34e29b8c917290f3d28a1f0920c992e502"
+    }
+  ],
+  "source_notices": [
+    {
+      "path": "source-notices/src/adapter.rs.NOTICE.txt",
+      "upstream_path": "platforms/windows/src/adapter.rs",
+      "url": "https://raw.githubusercontent.com/AccessKit/accesskit/1bbcf100942bac96c2c3a4a91cb67b0b20201a24/platforms/windows/src/adapter.rs",
+      "bytes": 222,
+      "sha256": "96f1f6f5178e37f50383e0fdb4ceae3c989fe13e991fd7246bda1d6e74cf1dde",
+      "cached_source_sha256": "7135ef9045b907f33e675888940b90f2d967fd6a26b1484d69773f2154247187",
+      "extraction": "Unmodified leading source comment and following blank lines from the cached registry source."
+    },
+    {
+      "path": "source-notices/src/context.rs.NOTICE.txt",
+      "upstream_path": "platforms/windows/src/context.rs",
+      "url": "https://raw.githubusercontent.com/AccessKit/accesskit/1bbcf100942bac96c2c3a4a91cb67b0b20201a24/platforms/windows/src/context.rs",
+      "bytes": 222,
+      "sha256": "2965f6a5c80d577d726eee4d2a2ebbb7534d7c0eb5c3cf6c1fdf6f2d187c88d7",
+      "cached_source_sha256": "8a45005a8c1449e4ed234bb6f041f026f2dbc6d2935e76407637adb1c127601c",
+      "extraction": "Unmodified leading source comment and following blank lines from the cached registry source."
+    },
+    {
+      "path": "source-notices/src/filters.rs.NOTICE.txt",
+      "upstream_path": "platforms/windows/src/filters.rs",
+      "url": "https://raw.githubusercontent.com/AccessKit/accesskit/1bbcf100942bac96c2c3a4a91cb67b0b20201a24/platforms/windows/src/filters.rs",
+      "bytes": 222,
+      "sha256": "2965f6a5c80d577d726eee4d2a2ebbb7534d7c0eb5c3cf6c1fdf6f2d187c88d7",
+      "cached_source_sha256": "744374b547065b153123c80028f129f5c6bb53052660205e1a2f231c3e169f64",
+      "extraction": "Unmodified leading source comment and following blank lines from the cached registry source."
+    },
+    {
+      "path": "source-notices/src/lib.rs.NOTICE.txt",
+      "upstream_path": "platforms/windows/src/lib.rs",
+      "url": "https://raw.githubusercontent.com/AccessKit/accesskit/1bbcf100942bac96c2c3a4a91cb67b0b20201a24/platforms/windows/src/lib.rs",
+      "bytes": 222,
+      "sha256": "14598066ccf2a0f6e6726b11301ff06b462b459d611de46d02e3f4d6873d600b",
+      "cached_source_sha256": "8a6f20ed5354c9834d88a59091c764f65aa31359f81c57386fe06e9d806e9396",
+      "extraction": "Unmodified leading source comment and following blank lines from the cached registry source."
+    },
+    {
+      "path": "source-notices/src/node.rs.NOTICE.txt",
+      "upstream_path": "platforms/windows/src/node.rs",
+      "url": "https://raw.githubusercontent.com/AccessKit/accesskit/1bbcf100942bac96c2c3a4a91cb67b0b20201a24/platforms/windows/src/node.rs",
+      "bytes": 451,
+      "sha256": "a03f6ad444d6633b88fc5b82244d805d0ccd1c8511b351e3900f8270fa647fb9",
+      "cached_source_sha256": "e2e558a8f7ce54cd7d5b66e95cd65f42f7ee2533ece0b7796a999348f6640e49",
+      "extraction": "Unmodified leading source comment and following blank lines from the cached registry source."
+    },
+    {
+      "path": "source-notices/src/subclass.rs.NOTICE.txt",
+      "upstream_path": "platforms/windows/src/subclass.rs",
+      "url": "https://raw.githubusercontent.com/AccessKit/accesskit/1bbcf100942bac96c2c3a4a91cb67b0b20201a24/platforms/windows/src/subclass.rs",
+      "bytes": 222,
+      "sha256": "96f1f6f5178e37f50383e0fdb4ceae3c989fe13e991fd7246bda1d6e74cf1dde",
+      "cached_source_sha256": "6ef6fc3722ea00daa30feb5170a2d5bf485bf80902992e6173a926f6d9121912",
+      "extraction": "Unmodified leading source comment and following blank lines from the cached registry source."
+    },
+    {
+      "path": "source-notices/src/tests/mod.rs.NOTICE.txt",
+      "upstream_path": "platforms/windows/src/tests/mod.rs",
+      "url": "https://raw.githubusercontent.com/AccessKit/accesskit/1bbcf100942bac96c2c3a4a91cb67b0b20201a24/platforms/windows/src/tests/mod.rs",
+      "bytes": 222,
+      "sha256": "96f1f6f5178e37f50383e0fdb4ceae3c989fe13e991fd7246bda1d6e74cf1dde",
+      "cached_source_sha256": "b31a63b104a38319b0e469700a77ed0a3b3360fb9a917bc0723d33e7e869495c",
+      "extraction": "Unmodified leading source comment and following blank lines from the cached registry source."
+    },
+    {
+      "path": "source-notices/src/tests/simple.rs.NOTICE.txt",
+      "upstream_path": "platforms/windows/src/tests/simple.rs",
+      "url": "https://raw.githubusercontent.com/AccessKit/accesskit/1bbcf100942bac96c2c3a4a91cb67b0b20201a24/platforms/windows/src/tests/simple.rs",
+      "bytes": 222,
+      "sha256": "96f1f6f5178e37f50383e0fdb4ceae3c989fe13e991fd7246bda1d6e74cf1dde",
+      "cached_source_sha256": "3981bd1cc64ab035c24f7a51b047d73cd456af7744a553cef10452477afe7c46",
+      "extraction": "Unmodified leading source comment and following blank lines from the cached registry source."
+    },
+    {
+      "path": "source-notices/src/tests/subclassed.rs.NOTICE.txt",
+      "upstream_path": "platforms/windows/src/tests/subclassed.rs",
+      "url": "https://raw.githubusercontent.com/AccessKit/accesskit/1bbcf100942bac96c2c3a4a91cb67b0b20201a24/platforms/windows/src/tests/subclassed.rs",
+      "bytes": 222,
+      "sha256": "96f1f6f5178e37f50383e0fdb4ceae3c989fe13e991fd7246bda1d6e74cf1dde",
+      "cached_source_sha256": "499a4a08afb3fe91ed9ce7b5a481bcfb42cdecb8a344489663ef7726a1941076",
+      "extraction": "Unmodified leading source comment and following blank lines from the cached registry source."
+    },
+    {
+      "path": "source-notices/src/text.rs.NOTICE.txt",
+      "upstream_path": "platforms/windows/src/text.rs",
+      "url": "https://raw.githubusercontent.com/AccessKit/accesskit/1bbcf100942bac96c2c3a4a91cb67b0b20201a24/platforms/windows/src/text.rs",
+      "bytes": 222,
+      "sha256": "96f1f6f5178e37f50383e0fdb4ceae3c989fe13e991fd7246bda1d6e74cf1dde",
+      "cached_source_sha256": "e04830efdf45fc7e30de1b0e1b711c52193e5367022cb0b7a7698d8c326c6cc4",
+      "extraction": "Unmodified leading source comment and following blank lines from the cached registry source."
+    },
+    {
+      "path": "source-notices/src/util.rs.NOTICE.txt",
+      "upstream_path": "platforms/windows/src/util.rs",
+      "url": "https://raw.githubusercontent.com/AccessKit/accesskit/1bbcf100942bac96c2c3a4a91cb67b0b20201a24/platforms/windows/src/util.rs",
+      "bytes": 222,
+      "sha256": "96f1f6f5178e37f50383e0fdb4ceae3c989fe13e991fd7246bda1d6e74cf1dde",
+      "cached_source_sha256": "34f5b8e21e3da912087c538744bc48a0a38a5044dbc741ffa18e2cf88cd70d1a",
+      "extraction": "Unmodified leading source comment and following blank lines from the cached registry source."
+    },
+    {
+      "path": "source-notices/src/window_handle.rs.NOTICE.txt",
+      "upstream_path": "platforms/windows/src/window_handle.rs",
+      "url": "https://raw.githubusercontent.com/AccessKit/accesskit/1bbcf100942bac96c2c3a4a91cb67b0b20201a24/platforms/windows/src/window_handle.rs",
+      "bytes": 222,
+      "sha256": "6ae2fa8a3171d106e97c71b334536d9cfe7b0e2f87a6c853ae157d61dd6200e3",
+      "cached_source_sha256": "dec1d78c81784a18c50f066e89d57d0fe02a7c9199a11e47a0833f8b9113d8c2",
+      "extraction": "Unmodified leading source comment and following blank lines from the cached registry source."
+    }
+  ],
+  "crate_authors": [
+    "The AccessKit contributors"
+  ],
+  "scope": "Immutable upstream root license/authors bytes at the cached crate VCS revision, plus verbatim cached source copyright and attribution headers. No crate, dependency, or compiled product source changes."
+}

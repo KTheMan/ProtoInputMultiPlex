@@ -1,0 +1,351 @@
+{
+  "judgment": "PASS within the expressly limited virtual-input/cooperative-owned-application scope",
+  "date": "2026-10-14",
+  "independent_gate_owner": "acceptance subagent",
+  "accepted_evidence": [
+    {
+      "role": "native_prefix",
+      "canonical": "docs/advanced-replication-native-prefix-2026-10-14.json",
+      "runtime_original": "runtime/acceptance-advanced-replication-20261014-053513/evidence.json",
+      "artifact_sha256": "301ce4a1e8f3471bbdcfbbdf141faf6ad6e979dd14ebc22f9b70750956859759",
+      "original_result": "NOT ACCEPTED",
+      "accepted_scope": "Only its nine passed groups accepted (one setup, eight behavior). Genuine omitted-options v1 defaults, native component and all-five symmetric button filters, key/text unaffected, SourceRelative/mixed chains, stable-ID per-component canonical diamond coordinates/delays, paced native order/coalescing/barrier. Original aggregate NOT ACCEPTED retained for missing initial native hold wait in the later queue case.",
+      "owned_processes_closed": true,
+      "builds": {
+        "x64": "95ee229ca40ad97dbc5bdd4792ff2eec5c003c554c876e7dce25fc629c3c9c29",
+        "x86": "3eedfc1c02dcdd319ce1fe425bdf796f06fe29c06ddff3c3c72b8fa57a6e5a0a"
+      },
+      "grouped_check_ids": [
+        "seventeen-object-schemas-owned-fixtures-stable-identities",
+        "old-v1-default-options-immediate-anchored-native-delivery",
+        "independent-motion-vertical-and-horizontal-wheel-native-filters",
+        "five-button-symmetric-native-filters-key-and-text-unaffected",
+        "actual-native-source-relative-and-mixed-chain-per-hop-coordinates",
+        "stable-id-canonical-per-component-diamond-native-coordinate-and-delay-choice",
+        "paced-discrete-native-order-and-real-time-spacing-completed-tail",
+        "paced-motion-coalesces-bounded-native-progress-final-exact-no-gain",
+        "discrete-barrier-flushes-final-paced-motion-before-native-key"
+      ],
+      "grouped_check_count": 9
+    },
+    {
+      "role": "queue_prefix",
+      "canonical": "docs/advanced-replication-queue-prefix-2026-10-14.json",
+      "runtime_original": "runtime/acceptance-advanced-replication-20261014-053723/evidence.json",
+      "artifact_sha256": "360a653230156c666516396d8a65755011df2a545833a82d8c8b5c2665174d9b",
+      "original_result": "NOT ACCEPTED",
+      "accepted_scope": "Only its seven passed groups accepted (one repeated setup, six behavior). Invalid options/composed path limits/stale Apply and Cancel preserve pending counts/bytes/graph/native holds; replica-only cancel preserves original Manual/Studio/Composite inputs; scoped Studio cancellation keeps another queue live; real4096-cap excess source DOWN rejects before native dispatch, cancels replicas, suspends replication, preserves ordinary holds and routing. Original aggregate NOT ACCEPTED retained for a15s subsequent cleanup-UP setup allowance.",
+      "owned_processes_closed": true,
+      "builds": {
+        "x64": "95ee229ca40ad97dbc5bdd4792ff2eec5c003c554c876e7dce25fc629c3c9c29",
+        "x86": "3eedfc1c02dcdd319ce1fe425bdf796f06fe29c06ddff3c3c72b8fa57a6e5a0a"
+      },
+      "grouped_check_ids": [
+        "seventeen-object-schemas-owned-fixtures-stable-identities",
+        "invalid-options-path-limits-stale-apply-and-cancel-preserve-queue-native-holds",
+        "cancel-replication-preserves-original-manual-and-other-native-owners",
+        "cancel-replication-preserves-original-studio-and-other-native-owners",
+        "cancel-replication-preserves-original-composite-and-other-native-owners",
+        "scoped-program-cancel-removes-own-pending-origin-only-other-queue-delivers",
+        "actual-cap-overflow-rejects-excess-source-down-suspends-replication-keeps-routing"
+      ],
+      "grouped_check_count": 7
+    },
+    {
+      "role": "cleanup_tail",
+      "canonical": "docs/advanced-replication-cleanup-2026-10-14.json",
+      "runtime_original": "runtime/acceptance-advanced-replication-20261014-054106/evidence.json",
+      "artifact_sha256": "108a01c96851b31cc34ac117616ca58ba94285617ecfd8db6216e90b32858832",
+      "original_result": "PASS",
+      "accepted_scope": "Three groups: repeated setup, actual capacity overflow while ManualB releases Forward with another Studio source active, and pending Pause/Stop lifecycle. Cleanup UP delivered, unrelated native hold and active Studio source hold asserted intact before deliberate program cleanup. Saved final overflow snapshot follows explicit Studio cancel; it is not a raw snapshot of that intermediate hold. Pause/Stop clear pending jobs, native holds and overlay HWNDs; no delayed destination button arrives.",
+      "owned_processes_closed": true,
+      "builds": {
+        "x64": "95ee229ca40ad97dbc5bdd4792ff2eec5c003c554c876e7dce25fc629c3c9c29",
+        "x86": "3eedfc1c02dcdd319ce1fe425bdf796f06fe29c06ddff3c3c72b8fa57a6e5a0a"
+      },
+      "grouped_check_ids": [
+        "seventeen-object-schemas-owned-fixtures-stable-identities",
+        "overflow-release-cleanup-keeps-other-source-program-and-native-holds",
+        "pending-queue-pause-stop-native-release-overlays-no-late-delivery"
+      ],
+      "grouped_check_count": 3
+    },
+    {
+      "role": "permutation",
+      "canonical": "docs/advanced-replication-permutation-2026-10-14.json",
+      "runtime_original": "runtime/acceptance-advanced-replication-20261014-054143/evidence.json",
+      "artifact_sha256": "2f15fab29c7b4f45de7d789ba5046784e97ca9eb75751fd8ff0d4817c8bada67",
+      "original_result": "PASS",
+      "accepted_scope": "Two groups: repeated setup and canonical motion/button path proof on fresh owned targets with different dense seat order and reversed edge JSON. Lexically preferred branch differs from earlier dense branch; diamond target receives exactly one pair per enabled component, differing per-button route delay and correct conflicting SourceRelative coordinates.",
+      "owned_processes_closed": true,
+      "builds": {
+        "x64": "95ee229ca40ad97dbc5bdd4792ff2eec5c003c554c876e7dce25fc629c3c9c29",
+        "x86": "3eedfc1c02dcdd319ce1fe425bdf796f06fe29c06ddff3c3c72b8fa57a6e5a0a"
+      },
+      "grouped_check_ids": [
+        "seventeen-object-schemas-owned-fixtures-stable-identities",
+        "stable-id-canonical-per-component-diamond-native-coordinate-and-delay-choice"
+      ],
+      "grouped_check_count": 2
+    },
+    {
+      "role": "eof",
+      "canonical": "docs/advanced-replication-eof-2026-10-14.json",
+      "runtime_original": "runtime/acceptance-advanced-replication-20261014-054155/evidence.json",
+      "artifact_sha256": "00880f3bd293bd5dc2d83c2b8fbaca7cb56efc24e105119078bb70437f7af221",
+      "original_result": "PASS",
+      "accepted_scope": "Two groups: repeated setup and actual normal stdio EOF with pending replication. Native holds release, owned overlay HWNDs disappear, and no delayed destination button arrives after deadline.",
+      "owned_processes_closed": true,
+      "builds": {
+        "x64": "95ee229ca40ad97dbc5bdd4792ff2eec5c003c554c876e7dce25fc629c3c9c29",
+        "x86": "3eedfc1c02dcdd319ce1fe425bdf796f06fe29c06ddff3c3c72b8fa57a6e5a0a"
+      },
+      "grouped_check_ids": [
+        "seventeen-object-schemas-owned-fixtures-stable-identities",
+        "pending-queue-eof-native-release-overlays-no-late-delivery"
+      ],
+      "grouped_check_count": 2
+    },
+    {
+      "role": "ui",
+      "canonical": "docs/advanced-replication-ui-2026-10-14.json",
+      "runtime_original": "runtime/acceptance-graph-advanced-queue-20261014-054821/evidence.json",
+      "artifact_sha256": "cdc432ff82f1da2c274e01c90cc144d88b0f3f082ffc9b0b65062be5b3310534",
+      "original_result": "PASS",
+      "accepted_scope": "All34 actual controls accepted. Changed Movement/Vertical wheel/Horizontal wheel/Primary/Middle controls, SourceRelative offset/timing stage values, actual Connect/Apply matched worker ACK, ordinary held F6 plus active Studio cancellation, rejected invalid options preserve graph/history/queue/holds, genuine4096-event overload leaves routing alive and other hold intact, actual Apply resumes queue state and retires holds, Stop cleanup, actual stopped Profile Save/reload preserves all options. Its original overflow PNG is scrolled below the caption, so no caption visibility is claimed from this run.",
+      "owned_processes_closed": true,
+      "builds": {
+        "x64": "95ee229ca40ad97dbc5bdd4792ff2eec5c003c554c876e7dce25fc629c3c9c29",
+        "x86": "3eedfc1c02dcdd319ce1fe425bdf796f06fe29c06ddff3c3c72b8fa57a6e5a0a"
+      },
+      "actual_clicked_control_count": 34,
+      "accepted_control_ids": [
+        "input-page",
+        "start",
+        "select-a",
+        "drop-a",
+        "select-b",
+        "drop-b",
+        "graph-page",
+        "movement-control",
+        "vertical-control",
+        "horizontal-control",
+        "primary-control",
+        "middle-control",
+        "connect",
+        "apply",
+        "ordinary-input",
+        "ordinary-b-hold",
+        "studio-page",
+        "studio-select",
+        "load-holding",
+        "play-holding",
+        "pending-page",
+        "bad-options",
+        "cancel-pending",
+        "studio-cancel-page",
+        "cancel-source",
+        "load-overflow",
+        "play-overflow",
+        "overflow-page",
+        "apply-resume",
+        "stop",
+        "reload-profiles",
+        "save-profile",
+        "reload-profile",
+        "reload-graph"
+      ]
+    },
+    {
+      "role": "visible_caption",
+      "canonical": "docs/advanced-replication-caption-2026-10-14.json",
+      "runtime_original": "runtime/acceptance-graph-advanced-caption-20261014-055923/evidence.json",
+      "artifact_sha256": "f7d3c1319f718542184e5102a11a09f7554dd2b563c4fed8af600d055535cb97",
+      "original_result": "PASS",
+      "accepted_scope": "All15 actual controls accepted on fresh owned x64/x86 targets. Actual saved profile used with only new owned PIDs/anchors, real4097-event source overload, top real Cancel preserves suspension, second same-target Cancel holds top scroll during fresh PNG sample, actual Apply recovery and Stop cleanup. Independent visual inspection confirms explicit suspension/apply-resume warning and capacity error with0pending bytes/events and4096cancelled.",
+      "owned_processes_closed": true,
+      "builds": {
+        "x64": "95ee229ca40ad97dbc5bdd4792ff2eec5c003c554c876e7dce25fc629c3c9c29",
+        "x86": "3eedfc1c02dcdd319ce1fe425bdf796f06fe29c06ddff3c3c72b8fa57a6e5a0a"
+      },
+      "actual_clicked_control_count": 15,
+      "accepted_control_ids": [
+        "input-page",
+        "start",
+        "select-a",
+        "drop-a",
+        "select-b",
+        "drop-b",
+        "studio-page",
+        "studio-select",
+        "load-overflow",
+        "play-overflow",
+        "overflow-page",
+        "caption-cancel",
+        "caption-hold",
+        "apply-resume",
+        "stop"
+      ]
+    }
+  ],
+  "counting": {
+    "accepted_native_group_occurrences": 23,
+    "native_setup_discovery_occurrences": 5,
+    "native_behavior_occurrences": 18,
+    "distinct_native_group_ids": 18,
+    "distinct_native_behavior_ids": 17,
+    "accepted_actual_gui_control_events": 49,
+    "distinct_observed_gui_button_labels": 26,
+    "gui_events_by_phase": [
+      34,
+      15
+    ],
+    "explanation": "Native metadata repeated for fresh owned fixtures; canonical proof deliberately repeated under index/JSON permutation. Native prefix aggregates remain NOT ACCEPTED and only listed passed checks are accepted. Failed GUI prefix and first14-control nonvisible-caption attempt excluded from totals. Events and labels are not distinct feature counts."
+  },
+  "build_scope": {
+    "x64": "95ee229ca40ad97dbc5bdd4792ff2eec5c003c554c876e7dce25fc629c3c9c29",
+    "x86": "3eedfc1c02dcdd319ce1fe425bdf796f06fe29c06ddff3c3c72b8fa57a6e5a0a",
+    "all_accepted_and_retained_current_group_runs_used_same_frozen_images": true,
+    "native_runtime": "Previously staged native DLLs unchanged; only explicitly selected owned PIDs injected.",
+    "producer_checks": "Parent final bundle42781 exit0: fmt check, strict workspace/all-targets Clippy,79 workspace tests (55core+2windows+3ABI+2hit+17binary) and x64/i686 builds. Separate producer evidence docs/advanced-replication-rust-checks-2026-10-14.json; these checks are not independent native proof."
+  },
+  "criterion_matrix": [
+    {
+      "criterion": "Additive v1 defaults and independent component filters",
+      "result": "PASS",
+      "roles": [
+        "native_prefix"
+      ],
+      "scope": "Omitted-options old graph retains immediate anchored delivery; motion/vertical/horizontal filters independently exercised with actual horizontal-to-vertical conversion so filtering is observable. Five symmetric paired button filters delivered/rejected real native edges; key/text unaffected."
+    },
+    {
+      "criterion": "SourceRelative and per-hop mixed coordinates; deterministic component paths",
+      "result": "PASS",
+      "roles": [
+        "native_prefix",
+        "permutation"
+      ],
+      "scope": "Actual processed source motion drives relative/mixed chain native+worker positions. Conflicting diamond chooses lexically preferred stable-ID path independent of dense/JSON order; Back filter selects different route and delay from Primary; each destination receives one pair. Relative positioning is tested for motion, not unpromised automatic button repositioning."
+    },
+    {
+      "criterion": "Temporal pacing and bounded coalesced motion",
+      "result": "PASS",
+      "roles": [
+        "native_prefix"
+      ],
+      "scope": "250ms discrete cadence produced observed243/272/227ms gaps with180ms lower and3s finite upper tolerance; first discrete is immediate.50-point burst retained one bounded motion stream, half-step progress reached exact final50px displacement without motion gain; discrete barrier flushed final goal before key."
+    },
+    {
+      "criterion": "Pending queue atomicity and origin-specific cancellation",
+      "result": "PASS",
+      "roles": [
+        "queue_prefix"
+      ],
+      "scope": "Invalid scalar/composed options and stale Apply/Cancel preserve graph/revision/pending counts/bytes/ordinary native holds. Active Studio and Composite mutation rejected. Replica cancel keeps graph/revision/original owner holds; scoped Studio cancellation removes only own queued origin and another queue delivers. Composite originals in A/B are used because legacy start/override cannot coexist with newly added ordinary manual holds."
+    },
+    {
+      "criterion": "Actual count-cap overflow and cleanup release",
+      "result": "PASS",
+      "roles": [
+        "queue_prefix",
+        "cleanup_tail",
+        "ui"
+      ],
+      "scope": "Real4096 cap filled without fake hooks or lowered limits. Excess Forward DOWN never appears at source; pending replicas cancel, suspension/error visible in state, routing and unrelated F5 hold remain, ordinary source input still delivers without replication while suspended. Separate4095 StudioA copies plus ManualB slot test confirms overflowing ManualB Forward UP cleans up while another source/ordinary hold remain until deliberate cleanup. Valid Apply resets suspension/error and retires holds."
+    },
+    {
+      "criterion": "Actual GUI, persisted options, queue/error visibility and recovery",
+      "result": "PASS",
+      "roles": [
+        "ui",
+        "visible_caption"
+      ],
+      "scope": "34 changed-workflow controls plus15 focused caption controls. Actual Apply ACK, rejected staged options preserve queue/history/holds, Cancel during Studio activity, genuine overflow preserves another ordinary hold, actual Apply recovery/Stop, stopped Save/reload exact options. Final PNG visibly shows suspension/apply-resume warning and capacity error; original main/first-tail PNGs do not establish caption visibility."
+    },
+    {
+      "criterion": "Lifecycle and owned cleanup",
+      "result": "PASS",
+      "roles": [
+        "cleanup_tail",
+        "eof",
+        "ui",
+        "visible_caption"
+      ],
+      "scope": "Pending Pause/Stop/normal stdin EOF release global virtual holds, remove overlays and prevent late destination delivery. All owned processes closed; final read-only CIM audit found no advanced acceptance executable paths."
+    }
+  ],
+  "retained_attempts": [
+    {
+      "canonical": "docs/advanced-replication-native-prefix-2026-10-14.json",
+      "runtime_original": "runtime/acceptance-advanced-replication-20261014-053513/evidence.json",
+      "artifact_sha256": "301ce4a1e8f3471bbdcfbbdf141faf6ad6e979dd14ebc22f9b70750956859759",
+      "original_result": "NOT ACCEPTED",
+      "explanation": "Later queue assertion lacked an eventual actual-native baseline after posted input. Prefix groups preserved; added baseline wait and remaining queue checks passed without production changes.",
+      "owned_processes_closed": true
+    },
+    {
+      "canonical": "docs/advanced-replication-queue-prefix-2026-10-14.json",
+      "runtime_original": "runtime/acceptance-advanced-replication-20261014-053723/evidence.json",
+      "artifact_sha256": "360a653230156c666516396d8a65755011df2a545833a82d8c8b5c2665174d9b",
+      "original_result": "NOT ACCEPTED",
+      "explanation": "Cleanup-UP prefill exceeded15s setup allowance. Failure observation showed pending3456/events_emitted3456, no queue error, source stillplaying; no product defect. Fresh remaining-only case used30s prefill allowance and distant120s final release, explicitly cancelled before that final time; no actual120s wait.",
+      "owned_processes_closed": true
+    },
+    {
+      "canonical": "docs/advanced-replication-ui-category-attempt-2026-10-14.json",
+      "runtime_original": "runtime/acceptance-graph-advanced-queue-20261014-054257/evidence.json",
+      "artifact_sha256": "26a759e0d4623ee3ed73da128b31cd995061934f6b33553a80ac99982218d149",
+      "original_result": "NOT ACCEPTED",
+      "explanation": "Harness omitted explicit keyboard/text category fields while expecting them true. Actual advanced options were correct; initial GUI category defaults are off. Corrected explicit staged fields; final complete GUI proof supersedes this attempt.",
+      "owned_processes_closed": true
+    },
+    {
+      "canonical": "docs/advanced-replication-ui-save-attempt-2026-10-14.json",
+      "runtime_original": "runtime/acceptance-graph-advanced-queue-20261014-054449/evidence.json",
+      "artifact_sha256": "943f9022269a7d87292f64277f618a3918c55503a84e52a0b9ebd5f84a8a8a99",
+      "original_result": "NOT ACCEPTED",
+      "explanation": "Harness requested Save profile during routing although Profiles edits are intentionally disabled. Actual visible disabled response observed. Moved actual Save after Stop; final complete GUI proof directly verifies acknowledged options are saved/reloaded.",
+      "owned_processes_closed": true
+    },
+    {
+      "canonical": "docs/advanced-replication-caption-scroll-attempt-2026-10-14.json",
+      "runtime_original": "runtime/acceptance-graph-advanced-caption-20261014-055518/evidence.json",
+      "artifact_sha256": "d677c04a4c7d0518fe2c2e59748c256debff43e3a137a379370905dc0d6e9475",
+      "original_result": "PASS",
+      "explanation": "Its14 controls passed, but pixel-caption criterion was NOT ACCEPTED: observation of next Apply auto-scrolled before fresh PNG. Original PASS status retained; this redundant attempt excluded from accepted totals. Final15-control same-target Cancel hold exposes actual warning in pixels.",
+      "owned_processes_closed": true
+    }
+  ],
+  "screenshots": [
+    {
+      "role": "advanced_controls",
+      "canonical": "docs/advanced-replication-control-center.png",
+      "runtime_original": "runtime/acceptance-graph-advanced-queue-20261014-054821/graph-canvas.png",
+      "artifact_sha256": "f6451905fed229da811bb9ff8ae5f09d74f3e00c9da9e9a34c61d4bdd7b5840e",
+      "scope": "Owned app-local image without unrelated title inventory; controls image inspected by parent, overflow caption independently inspected by acceptance and parent."
+    },
+    {
+      "role": "overflow_caption",
+      "canonical": "docs/advanced-replication-overflow.png",
+      "runtime_original": "runtime/acceptance-graph-advanced-caption-20261014-055923/overflow-caption.png",
+      "artifact_sha256": "17d5e29e42ad0b0ed48ca880a9ba66e2b91f96a9210f6c6b8e8effcc76197cf1",
+      "scope": "Owned app-local image without unrelated title inventory; controls image inspected by parent, overflow caption independently inspected by acceptance and parent."
+    }
+  ],
+  "cleanup": {
+    "all_evidence_owned_processes_closed": true,
+    "final_read_only_cim_audit": "No paths matching acceptance-advanced-replication-* or acceptance-graph-advanced-* remained.",
+    "exclusive_live_slot_released": true
+  },
+  "limits": [
+    "Only virtual seats and disposable explicitly scoped cooperative Win32 x64/x86 targets; no hardware or RustDesk input used for control/validation and no OS input injection. Application passive discovery is not claimed disabled.",
+    "No full Ultra parity, arbitrary application compatibility, desktop-wide or same-process independent isolation claim; no remote-control/clone behavior tested.",
+    "Only4096 event-count overflow is exercised live.8MiB byte capacity is observed and accounting bounded, but byte-only overrun and sequence-counter exhaustion are unexercised.",
+    "Timing proof uses selected400/440/160ms delays and250ms cadence on this host; no general scheduling precision, throughput or blocking-provider guarantee. Valid60000ms delay is persisted/queued and cancelled before due, not waited out for a latency proof.",
+    "Ranges/path validation also have producer portable tests; independent live invalid composed delay rejection and GUI invalid single-edge options were exercised. Exhaustive graph sizes/paths/parameter combinations not repeated.",
+    "Default anchored baseline uses ordinary default transform settings; custom unequal source/destination motion gains were not separately retested here.",
+    "Replica cancel is distinct from Pause; original programs/graph retained. Future program-event re-replication after Cancel and new native delivery after reset Apply were not separately sampled beyond state recovery and earlier active graph delivery.",
+    "Node dragging/position persistence, assigned-routing expansion, annotation/magnifier behavior, power API failure, crash/power-loss persistence and forced native-provider failure remain outside this gate."
+  ],
+  "scope_and_retest_decision": "Finite changed-behavior native prefixes plus only required remaining tails/permutation/EOF; justified GUI replay for omitted categories and disabled Save ordering; caption-only real queue tail repeated once to hold the actual top target for PNG. No product defects were established in the final frozen build and no producer change was requested to force tests passing. Prior broad graph/macro/annotation/magnifier suites were not rerun."
+}

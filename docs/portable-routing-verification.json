@@ -1,0 +1,153 @@
+{
+  "result": "PASS",
+  "date_local": "2026-10-14",
+  "scope": "Actual standalone routing from unchanged portable ZIP, virtual devices only, fresh owned x64/x86 ordinary-pump probe targets",
+  "archive": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux-0.1.0-windows-x64-portable.zip",
+  "archive_sha256": "59f66e2fea9ec7c0517c9b90fe028a2d5cd68c6ec8ed994af7201339e1e68a2e",
+  "manifest_sha256": "ff834e1c9daa923963a3250797dc6e02634812f92c35c6b1330b38898cfb377c",
+  "application_sha256": "886da0c7b7ba2468f700446a976f4372d86d5d09721b55f40fd0a9e2e562d344",
+  "external_x86_fixture": {
+    "source": "E:\\.cargo\\target\\i686-pc-windows-msvc\\debug\\protoinputmux.exe",
+    "sha256": "a92fe912958b69c8c573e11cb320e7d2e326f01a09f81e7b45a165c13db10f52",
+    "scope": "Disposable target only; never host/runtime or bundle payload"
+  },
+  "launch_context": {
+    "archive_extracted_to_fresh_disposable_directory_with_spaces": true,
+    "unrelated_cwd": true,
+    "developer_PATH_removed": true,
+    "bundled_mcp_launcher": true,
+    "explicit_owned_allowed_pids_only": true,
+    "main_checkout_or_shared_target_written_by_this_validation": false
+  },
+  "native_runtime_provenance": [
+    {
+      "phase": "explicit-stop",
+      "pid": 78132,
+      "name": "ProtoInputHooks64.dll",
+      "path": "\\\\?\\E:\\Temp\\ProtoInputMux portable routing 9zldbjqr\\ProtoInputMux\\runtime\\ProtoInputHooks64.dll",
+      "expected": "E:\\Temp\\ProtoInputMux portable routing 9zldbjqr\\ProtoInputMux\\runtime\\ProtoInputHooks64.dll",
+      "sha256": "b9e6b84e71d0e595aa62bf92125518b7aed83c66b27b4df8ddc3f5ddab9fbec1"
+    },
+    {
+      "phase": "explicit-stop",
+      "pid": 104176,
+      "name": "ProtoInputHooks32.dll",
+      "path": "\\\\?\\E:\\Temp\\ProtoInputMux portable routing 9zldbjqr\\ProtoInputMux\\runtime\\ProtoInputHooks32.dll",
+      "expected": "E:\\Temp\\ProtoInputMux portable routing 9zldbjqr\\ProtoInputMux\\runtime\\ProtoInputHooks32.dll",
+      "sha256": "4c1458e7ab495bed9a21ea53eb32dec991a291b12d2345d48381cbb826c73a77"
+    },
+    {
+      "phase": "explicit-stop",
+      "worker_pid": 100892,
+      "name": "ProtoInputLoader64.dll",
+      "path": "\\\\?\\E:\\Temp\\ProtoInputMux portable routing 9zldbjqr\\ProtoInputMux\\runtime\\ProtoInputLoader64.dll",
+      "sha256": "f6eb1cb4aa44f1bc37f8f39a74aab27215a8d4b14ce80aff7d1814d8b3841ab9"
+    },
+    {
+      "phase": "eof-with-held-input",
+      "pid": 99480,
+      "name": "ProtoInputHooks64.dll",
+      "path": "\\\\?\\E:\\Temp\\ProtoInputMux portable routing 9zldbjqr\\ProtoInputMux\\runtime\\ProtoInputHooks64.dll",
+      "expected": "E:\\Temp\\ProtoInputMux portable routing 9zldbjqr\\ProtoInputMux\\runtime\\ProtoInputHooks64.dll",
+      "sha256": "b9e6b84e71d0e595aa62bf92125518b7aed83c66b27b4df8ddc3f5ddab9fbec1"
+    },
+    {
+      "phase": "eof-with-held-input",
+      "pid": 95728,
+      "name": "ProtoInputHooks32.dll",
+      "path": "\\\\?\\E:\\Temp\\ProtoInputMux portable routing 9zldbjqr\\ProtoInputMux\\runtime\\ProtoInputHooks32.dll",
+      "expected": "E:\\Temp\\ProtoInputMux portable routing 9zldbjqr\\ProtoInputMux\\runtime\\ProtoInputHooks32.dll",
+      "sha256": "4c1458e7ab495bed9a21ea53eb32dec991a291b12d2345d48381cbb826c73a77"
+    },
+    {
+      "phase": "eof-with-held-input",
+      "worker_pid": 105292,
+      "name": "ProtoInputLoader64.dll",
+      "path": "\\\\?\\E:\\Temp\\ProtoInputMux portable routing 9zldbjqr\\ProtoInputMux\\runtime\\ProtoInputLoader64.dll",
+      "sha256": "f6eb1cb4aa44f1bc37f8f39a74aab27215a8d4b14ce80aff7d1814d8b3841ab9"
+    }
+  ],
+  "checks_by_phase": [
+    {
+      "phase": "explicit-stop",
+      "result": "PASS",
+      "allowed_pids": [
+        78132,
+        104176
+      ],
+      "checks": [
+        "targets_ready",
+        "native_selection_clicks",
+        "bundled_native_modules_loaded",
+        "switched_arbitration_independent_keyboard",
+        "release_all_while_hooks_active",
+        "concurrent_distinct_key_and_button_delivery",
+        "native_motion_drag_no_crossover",
+        "native_wheel_no_crossover",
+        "pause_releases_native_holds",
+        "native_holds_before_explicit_stop",
+        "explicit_stop_acknowledged",
+        "post_shutdown_release_and_overlay_removal",
+        "only_owned_targets_remain_after_session"
+      ],
+      "mcp_exit_code": 0,
+      "probe_exit_codes": [
+        0,
+        0
+      ]
+    },
+    {
+      "phase": "eof-with-held-input",
+      "result": "PASS",
+      "allowed_pids": [
+        99480,
+        95728
+      ],
+      "checks": [
+        "targets_ready",
+        "native_selection_clicks",
+        "bundled_native_modules_loaded",
+        "concurrent_distinct_key_and_button_delivery",
+        "post_shutdown_release_and_overlay_removal",
+        "only_owned_targets_remain_after_session"
+      ],
+      "mcp_exit_code": 0,
+      "probe_exit_codes": [
+        0,
+        0
+      ]
+    }
+  ],
+  "termination_scope": {
+    "explicit_stop": "PASS: held-input routing_stop returned running=false, users=[], last_error=null; EventStopped follows successful shutdown/fence in the current source contract for these ordinary probe pumps. Stop was idempotent. Per-recipient fence counts are not exposed.",
+    "eof_with_held_input": "PASS: native holds observed before EOF, target release/overlay removal/worker exit observed afterward. EOF exit0 does not independently prove fence acknowledgement; no such claim is made.",
+    "post_shutdown_cursor": "Not used as an oracle; unhooked target APIs return to OS behavior.",
+    "active_hook_release": "release_all and pause required fresh native reports with held buttons/test keys zero while hooks were still active."
+  },
+  "cleanup": {
+    "forced_termination_in_accepted_run": false,
+    "remaining_owned_processes": [],
+    "disposable_directory_removed": true,
+    "native_slot": "Coordinated with main session; explicitly released after accepted run. No further native launches."
+  },
+  "payload_hashes_after_match": true,
+  "hardware_or_rustdesk_input_used": false,
+  "retained_failed_attempt": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux-portable-routing-verification-20261014\\verification.json",
+    "result": "FAIL",
+    "reason": "Textual loaded-module path assertion; actual path not recorded in first attempt. Retry recorded extended Windows path form and verified samefile+SHA256; bundle/runtime unchanged.",
+    "cleanup": "Only two owned disposable probes required forced cleanup; MCP/worker closed, zero survivors, disposable root removed."
+  },
+  "raw_evidence": "portable-routing-evidence.json",
+  "harness_sha256": {
+    "test-portable-routing.py": "fe8b422d94924bba883102949926e50440b2bae9bd314111957945042174aa99",
+    "test-portable.py": "08d8326b6dbee78624c499e59db21ed586c899a003ac324a6848882db5e37689",
+    "test-portable-gui.py": "e2bcb9e8eb1cdceccec92307ca15143e7660290a229c087c99035402e8194a5e"
+  },
+  "limits": [
+    "One virtual mouse/keyboard pair per owned target PID; no same-process multiuser claim",
+    "x64 portable host and runtime tested against x64 bundled probe and copied external x86 probe fixture",
+    "No physical devices, arbitrary third-party apps, GUI-connected routing, or broad desktop isolation acceptance",
+    "Bundle and historical launch-only verification were not rewritten"
+  ]
+}

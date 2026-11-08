@@ -1,0 +1,254 @@
+{
+  "decision": "MAPPER_TYPE_TEXT_ACCEPTED",
+  "date": "2026-11-07",
+  "scope": "Explicit actor-private Pulse plus Text to a selected virtual user's retained keyboard recipient.",
+  "independent_acceptance": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-text-output-20261107\\independent-acceptance.json",
+    "sha256": "36b3ac36bc3a3ec2062e2ebcca6382470bbc9f0605417ebf5bd6ea0c20986d59"
+  },
+  "verification": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-text-output-20261107\\checks-004\\verification.json",
+    "sha256": "fa275dafdbbe3796019abeab3eae5e5893594f4c615d276af780df0c7401c5d2"
+  },
+  "native": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-text-output-20261107\\native-run-caac32c68402\\evidence.json",
+    "sha256": "24075731ee5bd58897d26037ec71f9b2aa8e628f7bebba1785d53086ee9e91df"
+  },
+  "source_publication": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-text-output-20261107\\publication.json",
+    "sha256": "83b17b472d9c8c4715db93c95976d1a27b5dac4e357874bdc9de429b056daa87"
+  },
+  "design_review": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-text-output-20261107\\notes\\design-review.json",
+    "sha256": "c0df9bfd808b803c6bc2f9582e7942464805380c9b28ccbd8c19b51394fb9c83"
+  },
+  "skill_validation": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-text-output-20261107\\notes\\skill-validation.json",
+    "sha256": "fb03461dc1cd6d7b7ea6a252ff01f89a4ced9092b245a54377b12bfe5c099ddb"
+  },
+  "documentation_renderer": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-text-output-20261107\\record-v2.py",
+    "sha256": "df51c5af4c205dd75710b3daf5cbe2cae67ff339f99adb60ad1cc677e549df85"
+  },
+  "contract": {
+    "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\docs\\mapper-type-text-contract.md",
+    "sha256": "45859a24cce7f8aacfe3ece2b154b9c824f4dc194e0974de13ee4e6a0c21e44c"
+  },
+  "skill": {
+    "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\skills\\protoinputmultiplex\\SKILL.md",
+    "sha256": "a0f2e177184b405f1fa8d8d19546121b6a39ec68e350cd7e6292875cc3d88d30"
+  },
+  "checks": {
+    "passed": 938,
+    "failed": 0,
+    "ignored": 19
+  },
+  "qualified_source_inputs": 159,
+  "producers": {
+    "checks_original_session": 57377,
+    "native_original_session": 20674
+  },
+  "native_captures": {
+    "TypeText-normal-user-picker.png": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-text-output-20261107\\native-run-caac32c68402\\TypeText-normal-user-picker.png",
+      "sha256": "50443bba7ca26cc9284e9e1a2f40ec8a09b7c2b3bd13182264fd35e3ed07c8ca"
+    },
+    "TypeText-normal-two-ports.png": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-text-output-20261107\\native-run-caac32c68402\\TypeText-normal-two-ports.png",
+      "sha256": "7bf55897a2864af031a9c8ad56ed94f20760becfa1cfd65dd79a00a2f136439c"
+    },
+    "TypeText-compact-user-picker.png": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-text-output-20261107\\native-run-caac32c68402\\TypeText-compact-user-picker.png",
+      "sha256": "4d1f95c79fcbd90ac10f2865b23c339ff905050a71358141f9bef3aa88bb46d0"
+    },
+    "TypeText-compact-two-ports.png": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-text-output-20261107\\native-run-caac32c68402\\TypeText-compact-two-ports.png",
+      "sha256": "b5cbdd2af4910aea3bf3ad3aaa13893ff7b7d1cc9065d382b9c192fd8d1f9d07"
+    }
+  },
+  "qualification_attempts": [
+    {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-text-output-20261107\\checks-001\\verification.json",
+      "sha256": "981c5ed5b39a192e6ed7f3cbdc80e3c946e43661c60bdefb8e02c77fb2573633"
+    },
+    {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-text-output-20261107\\checks-002\\verification.json",
+      "sha256": "d4589fe28b5aca2d42056eca5a1b3fce58f042fc22584eaf76fd4e4290a14e48"
+    },
+    {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-text-output-20261107\\checks-003\\verification.json",
+      "sha256": "9c0adb9fc2e918a87e26aa9a12c289a7a4698082c572226f3c4740a177e93caf"
+    },
+    {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-text-output-20261107\\checks-004\\verification.json",
+      "sha256": "fa275dafdbbe3796019abeab3eae5e5893594f4c615d276af780df0c7401c5d2"
+    }
+  ],
+  "native_attempts": [
+    {
+      "attempt_fence": {
+        "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-text-output-20261107\\notes\\native-go-002.attempted.json",
+        "sha256": "c2020ae8a5c5d42cc083be0cad606e4cbeb3000ee9a5738f252861607bbbefe9"
+      },
+      "native": {
+        "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-text-output-20261107\\native-run-0e2568760557\\evidence.json",
+        "sha256": "0a6ff3cd984177f66719ade88d42cbe4188f1c2198e04731b41147e6d3ddacc6"
+      },
+      "raw_result": "NOT_ACCEPTED",
+      "current_accepted_native": false,
+      "target_python_diagnostics": {}
+    },
+    {
+      "attempt_fence": {
+        "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-text-output-20261107\\notes\\native-go-004.attempted.json",
+        "sha256": "897c5bac924b907002070ede4c783c995698f358b35b93a6a9e971afa9559faf"
+      },
+      "native": {
+        "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-text-output-20261107\\native-run-3bbedd1acac3\\evidence.json",
+        "sha256": "52378a3f499c585d2f8a3a67df71a93139c69e5a700424c0865bcbbd20e52c84"
+      },
+      "raw_result": "NOT_ACCEPTED",
+      "current_accepted_native": false,
+      "target_python_diagnostics": {}
+    },
+    {
+      "attempt_fence": {
+        "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-text-output-20261107\\notes\\native-go-006.attempted.json",
+        "sha256": "054a52f47ac2c13140bae968a5c26b572e357547ebd3d135b26ad6896b461a41"
+      },
+      "native": {
+        "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-text-output-20261107\\native-run-4d19402a444c\\evidence.json",
+        "sha256": "197f98b872b777847cfdcef181e7df4a991205024a5fc2e5e6379deafec15b7d"
+      },
+      "raw_result": "NOT_ACCEPTED",
+      "current_accepted_native": false,
+      "target_python_diagnostics": {}
+    },
+    {
+      "attempt_fence": {
+        "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-text-output-20261107\\notes\\native-go-007.attempted.json",
+        "sha256": "41a5b79c727a56a21ae27f04935d9e1f5d88db77a3b886ed8bb617f5dd20fb08"
+      },
+      "native": {
+        "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-text-output-20261107\\native-run-fd4e9cf72839\\evidence.json",
+        "sha256": "bc6555550ee21397ba69140743673cb9dcb36fd497e885a0a29d14249ba27a52"
+      },
+      "raw_result": "MAPPER_TEXT_OUTPUT_NATIVE_PASSED_PENDING_INDEPENDENT_REVIEW",
+      "current_accepted_native": false,
+      "target_python_diagnostics": {
+        "a": {
+          "log": {
+            "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-text-output-20261107\\native-run-fd4e9cf72839\\target-a.python-diagnostics.log",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "bytes": 0
+        },
+        "b": {
+          "log": {
+            "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-text-output-20261107\\native-run-fd4e9cf72839\\target-b.python-diagnostics.log",
+            "sha256": "8507be981fac67b5ba4be1cf4afe55aa9ed63197d1731e57f152d329571081f8"
+          },
+          "bytes": 1085
+        }
+      },
+      "independent_rejections": [
+        {
+          "review": {
+            "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-text-output-20261107\\notes\\native-004-rejection.json",
+            "sha256": "f5d3458fef02078a6cf7c79994db5d52450d747e399e867ef7ffd618a4c40600"
+          },
+          "native": {
+            "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-text-output-20261107\\native-run-fd4e9cf72839\\evidence.json",
+            "sha256": "bc6555550ee21397ba69140743673cb9dcb36fd497e885a0a29d14249ba27a52"
+          },
+          "target_diagnostic_log": {
+            "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-text-output-20261107\\native-run-fd4e9cf72839\\target-b.python-diagnostics.log",
+            "sha256": "8507be981fac67b5ba4be1cf4afe55aa9ed63197d1731e57f152d329571081f8"
+          }
+        }
+      ],
+      "independent_disposition": "NOT_ACCEPTED"
+    },
+    {
+      "attempt_fence": {
+        "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-text-output-20261107\\notes\\native-go-008.attempted.json",
+        "sha256": "8d73dbd4d73e8c719ceae8b12de9c1c79003331e453160d8b943d709e4d24041"
+      },
+      "native": {
+        "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-text-output-20261107\\native-run-caac32c68402\\evidence.json",
+        "sha256": "24075731ee5bd58897d26037ec71f9b2aa8e628f7bebba1785d53086ee9e91df"
+      },
+      "raw_result": "MAPPER_TEXT_OUTPUT_NATIVE_PASSED_PENDING_INDEPENDENT_REVIEW",
+      "current_accepted_native": true,
+      "target_python_diagnostics": {
+        "a": {
+          "log": {
+            "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-text-output-20261107\\native-run-caac32c68402\\target-a.python-diagnostics.log",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "bytes": 0
+        },
+        "b": {
+          "log": {
+            "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-text-output-20261107\\native-run-caac32c68402\\target-b.python-diagnostics.log",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "bytes": 0
+        }
+      }
+    }
+  ],
+  "independent_native_rejections": {
+    "native-004-rejection.json": {
+      "review": {
+        "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-text-output-20261107\\notes\\native-004-rejection.json",
+        "sha256": "f5d3458fef02078a6cf7c79994db5d52450d747e399e867ef7ffd618a4c40600"
+      },
+      "native": {
+        "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-text-output-20261107\\native-run-fd4e9cf72839\\evidence.json",
+        "sha256": "bc6555550ee21397ba69140743673cb9dcb36fd497e885a0a29d14249ba27a52"
+      },
+      "target_diagnostic_log": {
+        "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-text-output-20261107\\native-run-fd4e9cf72839\\target-b.python-diagnostics.log",
+        "sha256": "8507be981fac67b5ba4be1cf4afe55aa9ed63197d1731e57f152d329571081f8"
+      }
+    }
+  },
+  "compatibility_observation": {
+    "status": "OPEN_P3_TARGET_STDIO_PRESERVATION",
+    "observation": "A failed fixture attempt received two pre-attachment empty replies; its first post-attachment query was processed but stdout closed. Actual application text was UNVERIFIED.",
+    "source_correlation": {
+      "repository_path": "vendor/ProtoInput/src/ProtoInput/ProtoInputHooks/dllmain.cpp",
+      "sha256": "93830a3dd42dea8f922298c1d68746154ace584eb7f735d190acd497007b1ca9",
+      "lines": [
+        35,
+        38
+      ],
+      "behavior": "AllocConsole and freopen_s of target stdout/stderr"
+    },
+    "limit": "Correlation only, not a demonstrated failure mechanism or P1 cause. This group does not fix target standard-stream preservation.",
+    "accepted_readback": "Dedicated authenticated out-of-band AF_PIPE; no stdout oracle"
+  },
+  "accepted_behavior": [
+    "Only a changed true Pulse types current cached Text. Text updates, seeds, validation, Apply, Arm and false pulses do not type; explicit later pulses may repeat it.",
+    "A real authorized OCR read typed the owned fixture phrase into the selected standard EDIT child. Supplementary Unicode was verified through actual EDIT contents and UTF-16 length.",
+    "Capture-denied input produced no typed target text. A peer actor did not receive the other actor's private Monitor values.",
+    "Normal and 320x360 GUI authoring exercised actual user-picker visibility/focus, both text/trigger connections and Undo without Apply or Arm.",
+    "The GUI prototype remained on its default user. Runtime B output was authored through MCP; GUI picker option-changing is not claimed.",
+    "Native Stop/EOF/ordinary owned-window closure completed with GUI0, MCP[0,0,0], targets a0/b0 and no live owned jobs."
+  ],
+  "limits": [
+    "Each UTF-16 unit is one instantaneous WM_CHAR sink-output effect. Text and all combined sink outputs must fit 128; the original source action is outside that budget.",
+    "Overflow/control rejection, retained-recipient faults, irreversible prefix reporting and saved-release cleanup are chiefly deterministic core/runtime evidence.",
+    "Typing is not rollback-capable; a delivery failure may leave a prefix. No automatic replay, truncation or text removal is promised.",
+    "Target stdio preservation under the pinned backend remains OPEN; accepted EDIT readback uses a separate authenticated pipe and does not fix this ordinary-application compatibility issue.",
+    "Native picker evidence proves visibility/focus, not selection of another user. Static literals are shared configuration; live text stays actor-private until explicitly output.",
+    "The compact two-port PNG is scrolled to the final Disconnect/Delete controls; it does not establish simultaneous visibility of both port labels or the whole form. Actual control ACKs and typed-edge JSON prove both reachable connections.",
+    "No physical/global/RustDesk input, arbitrary-app support, same-process isolation, broad OCR quality, P1 cause/fix, full Ultra/UI parity or release readiness is established."
+  ],
+  "constraints": {
+    "folder_rename": "USER_DEFERRED",
+    "external_chats": "KEEP_SEPARATE",
+    "active_owned_jobs": []
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "result": "NOT ACCEPTED",
+  "date": "2026-10-14",
+  "scope": "Root visual review of status-column alignment only; the separate 15-control offline navigation result remains PASS.",
+  "images": [
+    {
+      "path": "runtime\\acceptance-graph-control-center-offline-20261014-152010\\home-default.png",
+      "sha256": "4b0c71470c123847197d11aa7efb08a486187c7b243fa73959d8efa04f16e564"
+    },
+    {
+      "path": "runtime\\acceptance-graph-control-center-offline-20261014-152010\\home-minimum.png",
+      "sha256": "5111750c622ff05447cfca322ea5ae37212253f5826e38e79ece2c458ab0a97c"
+    }
+  ],
+  "observation": "R/P/K values followed short names instead of lining up beneath the right-hand column header. Default/minimum footer visibility and left-aligned names passed.",
+  "source_correction": "Reserve an exact name rectangle and paint bounded text at its left edge; align status values against the row right edge. No action, navigation, permission or routing changes.",
+  "separate_corrected_visual_tail": "runtime/acceptance-graph-control-center-visual-tail-20261014-152456/evidence.json",
+  "original_result_retained": true
+}

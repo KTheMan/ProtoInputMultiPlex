@@ -1,0 +1,132 @@
+{
+  "date": "2026-10-14",
+  "byte_exact_evidence": [
+    {
+      "original": "runtime/acceptance-graph-control-center-offline-20261014-151538/evidence.json",
+      "archive": "docs/control-center-setup-failure-2026-10-14.json",
+      "sha256": "24b6a18df30f9b2a2c1e62f53a3c98cab1d30695e7196a58d6714c9c4f8a5e26",
+      "original_result": "NOT ACCEPTED",
+      "accepted_control_occurrences": 0
+    },
+    {
+      "original": "runtime/acceptance-graph-control-center-offline-20261014-151609/evidence.json",
+      "archive": "docs/control-center-minimum-defect-2026-10-14.json",
+      "sha256": "a211d06ad30f1d84a1524f49c51e9e283d6905c3e33e9bb9df1b66b366937108",
+      "original_result": "NOT ACCEPTED",
+      "accepted_control_occurrences": 0
+    },
+    {
+      "original": "runtime/acceptance-graph-control-center-offline-20261014-152010/evidence.json",
+      "archive": "docs/control-center-navigation-2026-10-14.json",
+      "sha256": "bf31bab85dda6f0e35ac68e9a2a123956db6c04277df667ed72cb67d68eeabdc",
+      "original_result": "PASS",
+      "accepted_control_occurrences": 15
+    },
+    {
+      "original": "runtime/acceptance-graph-control-center-live-20261014-152104/evidence.json",
+      "archive": "docs/control-center-pause-resume-prefix-2026-10-14.json",
+      "sha256": "720487dc430df47a0df51d510e15039637a79d506cba554e1bbe5c495a1098f3",
+      "original_result": "NOT ACCEPTED",
+      "accepted_control_occurrences": 20
+    },
+    {
+      "original": "runtime/acceptance-graph-control-center-visual-tail-20261014-152456/evidence.json",
+      "archive": "docs/control-center-visual-tail-2026-10-14.json",
+      "sha256": "08eed9e79e432e202efdfeef078a82bb140d6fa3d7a7d39959791f8f41c7b81e",
+      "original_result": "PASS",
+      "accepted_control_occurrences": 1
+    },
+    {
+      "original": "runtime/acceptance-graph-control-center-stop-tail-20261014-152612/evidence.json",
+      "archive": "docs/control-center-stop-tail-2026-10-14.json",
+      "sha256": "7fa2c566580a0db643de5f373cb15b1a9955d143b144e5b3adc500d75b5c4fd4",
+      "original_result": "PASS",
+      "accepted_control_occurrences": 11
+    },
+    {
+      "original": "runtime/acceptance-graph-control-center-routing-options-20261014-153053/evidence.json",
+      "archive": "docs/control-center-routing-options-2026-10-14.json",
+      "sha256": "6f9a7b5bb26089cdd37fca5dee583910ed0aa74f260ebfee1940075a5418c519",
+      "original_result": "PASS",
+      "accepted_control_occurrences": 4
+    }
+  ],
+  "byte_exact_sidecars": [
+    {
+      "original": "runtime/acceptance-graph-control-center-offline-20261014-151609/home.review.json",
+      "archive": "docs/control-center-minimum-visual-review-2026-10-14.json",
+      "sha256": "de648afe18fe395713ad72fa594d88668682bcbaa9ce3c60ce0527a06ca8ee0e"
+    },
+    {
+      "original": "runtime/acceptance-graph-control-center-offline-20261014-152010/home.review.json",
+      "archive": "docs/control-center-navigation-visual-review-2026-10-14.json",
+      "sha256": "0598e762dffa499610bd48724341c23cfc7fb14fff0fbf2c8c5c4bddf51f7e91"
+    },
+    {
+      "original": "runtime/acceptance-graph-control-center-live-20261014-152104/interruption.json",
+      "archive": "docs/control-center-live-interruption-2026-10-14.json",
+      "sha256": "182086c41f775a27c1212ef018e0b38012875f499c33162611a266c14b53ff8f"
+    },
+    {
+      "original": "runtime/acceptance-graph-control-center-visual-tail-20261014-152456/home.review.json",
+      "archive": "docs/control-center-alignment-visual-review-2026-10-14.json",
+      "sha256": "aa9221489d5d201a1fe64c2e89a1a45ab6b9be817f1fd48a8acd0b3bcd84e59f"
+    },
+    {
+      "original": "runtime/acceptance-graph-control-center-routing-options-20261014-153053/visual-review.json",
+      "archive": "docs/control-center-footer-review-error-2026-10-14.json",
+      "sha256": "c240272333014d7a0c0c435fd7f441815a6f34de8c2efbfaf427e799628e9f7b"
+    },
+    {
+      "original": "runtime/acceptance-graph-control-center-routing-options-20261014-153053/visual-review-corrected.json",
+      "archive": "docs/control-center-footer-review-corrected-2026-10-14.json",
+      "sha256": "4fcbe281d87232b6df5bbaa7fd63d7ef4d36e4df64d06903d2b4017b7caf544f"
+    }
+  ],
+  "byte_exact_owned_images": [
+    {
+      "original": "runtime/acceptance-graph-control-center-routing-options-20261014-153053/home-current.png",
+      "archive": "docs/control-center-home.png",
+      "sha256": "ef59d451c7a8904dc05019cf6d50e6b6438e4db168c8477f488e4d697de4e611"
+    },
+    {
+      "original": "runtime/acceptance-graph-control-center-routing-options-20261014-153053/routing-options-on.png",
+      "archive": "docs/control-center-routing-options.png",
+      "sha256": "b42282f32154d41d5d32924da8d8f82e86aff11e915c3aa38c00ea2399d65c22"
+    },
+    {
+      "original": "runtime/acceptance-graph-control-center-visual-tail-20261014-152456/home-default.png",
+      "archive": "docs/control-center-default.png",
+      "sha256": "3c31821c107690b4fe6bfcc9e7e6f4d3157b0195b7ae1527735220e91ecdd72a"
+    },
+    {
+      "original": "runtime/acceptance-graph-control-center-visual-tail-20261014-152456/home-minimum.png",
+      "archive": "docs/control-center-minimum.png",
+      "sha256": "8249fa59274ed11679f827985a5b9ef0868582a6a63f902a6325ea67cd3b3ccf"
+    },
+    {
+      "original": "runtime/acceptance-graph-control-center-offline-20261014-152010/selected-user-12.png",
+      "archive": "docs/control-center-selected-user.png",
+      "sha256": "4ed6d9ebf31f904d1cd98aabd75e1a22f8ad7da33c906df7faf197818a0578ba"
+    },
+    {
+      "original": "runtime/acceptance-graph-control-center-stop-tail-20261014-152612/home-live.png",
+      "archive": "docs/control-center-live-home.png",
+      "sha256": "4eae2ad53fe2b4571ad611bbcdefb8a9464b350237a81b0d6df82ee40beea2bc"
+    },
+    {
+      "original": "runtime/acceptance-graph-control-center-offline-20261014-151609/home-minimum.png",
+      "archive": "docs/control-center-minimum-defect.png",
+      "sha256": "5a56ed12de7385dd2413e9633b36d649b6211dfa866d9e59936b25c5d2f55c06"
+    },
+    {
+      "original": "runtime/acceptance-graph-control-center-offline-20261014-152010/home-default.png",
+      "archive": "docs/control-center-columns-before.png",
+      "sha256": "4b0c71470c123847197d11aa7efb08a486187c7b243fa73959d8efa04f16e564"
+    }
+  ],
+  "root_column_finding": {
+    "path": "docs/control-center-column-review-2026-10-14.json",
+    "sha256": "79cdd75a951d6b3565592cad9a202d2127368ac0880384b765d101009234c30f"
+  }
+}

@@ -1,0 +1,172 @@
+{
+  "decision": "APPROVED \u2014 BOUNDED RETIRED-CLIENT CLEANUP AND VISIBLE STATUS",
+  "date": "2026-10-15",
+  "scope": "Authenticated connected raw bridge; virtual users and explicitly owned x64 targets only. Combine accepted053751 two-client functional data with060150 pinned-status GUI visual evidence.",
+  "functional_evidence": {
+    "raw": {
+      "path": "runtime/acceptance-graph-orphan-client-cleanup-20261015-053751/evidence.json",
+      "sha256": "35e437f74d8d2a391aebc07b06cd7138c462c4d40ae9802a68e04cd29cbaec69"
+    },
+    "independent_review": {
+      "path": "runtime/acceptance-graph-orphan-client-cleanup-20261015-053751/independent-review.json",
+      "sha256": "6c8f25872b2a9d0551368a8009007f66aba89ab7b74dfa0d48114e9793fbf4e5"
+    },
+    "producer": {
+      "path": "runtime/producer-orphan-client-cleanup-20261015-053312/verification.json",
+      "sha256": "0407e61bc7b04efd0516b4baa2a2ab60653dc37a534b268f6a797ea79cfa058c"
+    },
+    "terminal": {
+      "session_id": 53167,
+      "exit_code": 0
+    },
+    "actual_counts": {
+      "gui_clicks": 8,
+      "raw_execute": 15,
+      "raw_connects": 2
+    },
+    "outcomes": [
+      "Disconnected X revoked and failed saved-UP obligation retained; healthy B F8 release continued while Y shared F7 remained held and Y F5 pairs continued.",
+      "Original A parent exit automatically cleared pending cleanup without reconnecting X; Y final F7 release and normal Stop had exact native edges."
+    ]
+  },
+  "visual_evidence": {
+    "raw": {
+      "path": "runtime/acceptance-graph-orphan-client-cleanup-visual-20261015-060150/evidence.json",
+      "sha256": "a392b4b3f4d0d60a89adf61867b6769e258955c6353b50d17b79930a8540a189"
+    },
+    "independent_review": {
+      "path": "runtime/acceptance-graph-orphan-client-cleanup-visual-20261015-060150/independent-review.json",
+      "sha256": "bdc85d1e182a4c5710b73e6f55af9aa281901499c5013cac6d36f40fb00e2e7c"
+    },
+    "terminal": {
+      "session_id": 78548,
+      "exit_code": 0
+    },
+    "actual_counts": {
+      "gui_clicks": 8,
+      "raw_execute": 4,
+      "raw_connects": 1
+    },
+    "originals": [
+      {
+        "path": "runtime/acceptance-graph-orphan-client-cleanup-visual-20261015-060150/client-cleanup-pending.png",
+        "sha256": "4ae8fce2b59c89b9641abfb4388259c4f3f40c1723c18caa065aea2a6b28006d",
+        "dimensions": [
+          680,
+          620
+        ]
+      },
+      {
+        "path": "runtime/acceptance-graph-orphan-client-cleanup-visual-20261015-060150/client-cleanup-recovered.png",
+        "sha256": "7de7321652c1c0b103313f40283820a3cd6ecdc8a4fa997326ec3546463f6fd3",
+        "dimensions": [
+          680,
+          620
+        ]
+      }
+    ],
+    "outcomes": [
+      "Real pending state while original parent alive: client/count/remaining owner/retry caption and expanded error visibly readable.",
+      "After original parent exit: passive completion clears state and visibly shows No agent cleanup pending."
+    ]
+  },
+  "current_producer": {
+    "path": "runtime/producer-orphan-client-cleanup-20261015-060023/verification.json",
+    "sha256": "3817d315cabf49e365bf273785b2ec9fd5da20787fb58083282801b344928cee"
+  },
+  "current_build_sha256": {
+    "x64": "3e8b96792d5347c5fac7a5e42a0192b59c5845bf5c36a9ab92d8642bcde750b8",
+    "i686": "d1fa26093d6eda3e0f3f717e3923d6c3e1d2057f44a0fb9e42da7b79c3ef0536"
+  },
+  "current_sources": {
+    "crates\\protoinputmux\\src\\agent_ui.rs": "62eeddddd911a1635508b02a06dcd49fbe8cf1e16b94a867bf305e64b1cf7248",
+    "crates\\protoinputmux\\src\\gui.rs": "af71024bb704fecb63d15a48fa902649b8952983d98ba90dc6d2b49c03d08ebe"
+  },
+  "combination_guard": "Only gui.rs sole-scroll dispatch and agent_ui.rs pinned layout differ from053312; other80 source inputs and all10 runtime files unchanged. Functional coordinator/claim logic identical.",
+  "source_reviews": [
+    {
+      "path": "docs/orphan-client-cleanup-source-review-2026-10-15.json",
+      "sha256": "748e113559e0edadec995525e968c4865b31339848ab6062d94a5c5f4b6afb41"
+    },
+    {
+      "path": "docs/orphan-client-cleanup-postcondition-source-review-2026-10-15.json",
+      "sha256": "d695f9b35ae9c7e8dbc07a8b1e1c16eaa6c7879df6e247c347c657adc13d4269"
+    },
+    {
+      "path": "docs/orphan-client-cleanup-scroll-source-review-2026-10-15.json",
+      "sha256": "fce0d0c94a2b1ff9fa007f8c889240bfdebae10318fcdf48f44f0fdf864ea2d4"
+    },
+    {
+      "path": "docs/orphan-client-cleanup-pinned-status-source-review-2026-10-15.json",
+      "sha256": "fb14c1f6ce2a1c2326717a65e68c594e83d653dcd4a1606610b1b5232ab82d0b"
+    }
+  ],
+  "runner": {
+    "path": "scripts/test-orphan-client-cleanup-visual.py",
+    "sha256": "dbf6453e3328c228e1d27304bcd692d41d16dc6edab79de8d4e758d839ff7556"
+  },
+  "plan": {
+    "path": "runtime/orphan-client-cleanup-visual-plan.md",
+    "sha256": "2857f76f82d699ca1c3c0934e0c32f04483bc254ff8b84e65d5c318bbce519d6"
+  },
+  "retained_original_outcomes": [
+    {
+      "raw": {
+        "path": "runtime/acceptance-graph-orphan-client-cleanup-20261015-052447/evidence.json",
+        "sha256": "ce23576308500504a7852581f6450c88914cc078da38396f979fe08ae9748759"
+      },
+      "review": {
+        "path": "runtime/acceptance-graph-orphan-client-cleanup-20261015-052447/independent-failure-review.json",
+        "sha256": "82aea2ecf3651e226773a3e8fb260ddec146ab4264dcb22c37a05439827ea330"
+      },
+      "status": "Original statuses preserved; initial functional failure or unaccepted pixels remain unchanged."
+    },
+    {
+      "raw": {
+        "path": "runtime/acceptance-graph-orphan-client-cleanup-20261015-053751/evidence.json",
+        "sha256": "35e437f74d8d2a391aebc07b06cd7138c462c4d40ae9802a68e04cd29cbaec69"
+      },
+      "review": {
+        "path": "runtime/acceptance-graph-orphan-client-cleanup-20261015-053751/independent-review.json",
+        "sha256": "6c8f25872b2a9d0551368a8009007f66aba89ab7b74dfa0d48114e9793fbf4e5"
+      },
+      "status": "Original statuses preserved; initial functional failure or unaccepted pixels remain unchanged."
+    },
+    {
+      "raw": {
+        "path": "runtime/acceptance-graph-orphan-client-cleanup-visual-20261015-054546/evidence.json",
+        "sha256": "7633476f9ac166774ae866d4f72427e5e025235c68fc841eeaa0335b0d244aa0"
+      },
+      "review": {
+        "path": "runtime/acceptance-graph-orphan-client-cleanup-visual-20261015-054546/independent-review.json",
+        "sha256": "d8578ae45639cab952820de0ca327183375b3ecedda032caaad5615edf5a4cbf"
+      },
+      "status": "Original statuses preserved; initial functional failure or unaccepted pixels remain unchanged."
+    },
+    {
+      "raw": {
+        "path": "runtime/acceptance-graph-orphan-client-cleanup-visual-20261015-055511/evidence.json",
+        "sha256": "390fcd3a1d3b7e1c5aef742984079eced4572a8c265620678b40b4751990ce24"
+      },
+      "review": {
+        "path": "runtime/acceptance-graph-orphan-client-cleanup-visual-20261015-055511/independent-review.json",
+        "sha256": "2674f60395cef208370b83b0ea7060a987f8dcd5fc71cd96e1aa29b6e3593ae0"
+      },
+      "status": "Original statuses preserved; initial functional failure or unaccepted pixels remain unchanged."
+    }
+  ],
+  "cleanup": {
+    "path": "runtime/acceptance-graph-orphan-client-cleanup-visual-20261015-060150/cleanup-audit.json",
+    "sha256": "712d62e8129bb4fe38203ef1ec6fc3910eab506f22f441ff6bebfc25e24c5223"
+  },
+  "slot": "Returned; no live owned resources or further native work.",
+  "limits": [
+    "No overall Ultra/full UX/general-app/physical-device claim. i686 built only; x64 executed.",
+    "Public authenticated raw bridge used; no new MCPstdio routed-tool call claim. Retired-client denial source/unit only; no impersonation attempted.",
+    "Process-exit fixture does not prove live-target transient release recovery; production-engine regression covers Ok-but-still-held retention and retry.",
+    "No native pending-capacity/policy-revocation matrix. Source/unit evidence covers those contracts.",
+    "Normal680x620 critical-status pixels only. Eight-row/minimum scroll reachability and lower Connection scroll retention are not pixel-certified.",
+    "Previous pixel mismatches remain unexplained; the pinned UX change and successful new originals do not establish their cause.",
+    "Raw successful runs remain PENDING review; canonical approval is separate. Historical failed aggregate/pixel outcomes remain immutable."
+  ]
+}

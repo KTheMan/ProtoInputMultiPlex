@@ -1,0 +1,103 @@
+{
+  "review": "Connected-GUI Annotation integration source review",
+  "reviewed_at": "2026-10-14",
+  "scope": "Eight requested source files compared to runtime/agent-annotation-base snapshots; source-only",
+  "result": "approved",
+  "native_acceptance": "not reviewed or claimed",
+  "checks": [
+    "All eight baseline snapshots match the accepted source-baseline.json SHA-256 entries.",
+    "Configure/ClearUser/ClearAll authorization requires session-control and the corresponding permitted active user scope; Configure validates and checks idle/held input before settings mutation.",
+    "Global clear shortcuts are checked after output translation at final Agent packet delivery, and require session-control plus permission for every active user; the same guard is applied to routed replica delivery.",
+    "Annotation Inspect remains read-only; Export is explicitly rejected through a live GUI connection.",
+    "Connected Agent annotation events are downgraded to telemetry in the local GUI and cannot consume a pending local annotation command; authoritative settings synchronize into the local profile/editor.",
+    "Generated user add/remove updates the active-user authorization set."
+  ],
+  "findings": [
+    {
+      "finding": "Initial review found that Snapshot.profile projected live annotation settings but Event::VirtualUsers still used the stale users.state() copy.",
+      "resolution": "Root corrected snapshot construction to project authoritative annotation settings into a mutable VirtualUsers state before deriving both profile.seats and Event::VirtualUsers.",
+      "status": "fixed before final review"
+    }
+  ],
+  "files": [
+    {
+      "path": "crates/protoinputmux/src/agent_runtime.rs",
+      "baseline_sha256": "dd42e5d7afc15a3debd52b15ecdf966df29bdd175ab747e1469d9eba730a39ce",
+      "current_sha256": "49b2a3d2027477b9628a049474bb42d948c3ec736727326819858a2116fec134",
+      "baseline_snapshot_sha256": "dd42e5d7afc15a3debd52b15ecdf966df29bdd175ab747e1469d9eba730a39ce",
+      "baseline_matches_manifest": true
+    },
+    {
+      "path": "crates/protoinputmux/src/agent_ui.rs",
+      "baseline_sha256": "a617955d80eeea7ed6f3c8a9c48bf9a7b44b1b529acbddc96f1f4f6173332a8a",
+      "current_sha256": "b52d2fdc1ccb52f2db3f138c141f9b580ca2df341d1ab65b5fe48147c82584e7",
+      "baseline_snapshot_sha256": "a617955d80eeea7ed6f3c8a9c48bf9a7b44b1b529acbddc96f1f4f6173332a8a",
+      "baseline_matches_manifest": true
+    },
+    {
+      "path": "crates/protoinputmux/src/annotation_runtime.rs",
+      "baseline_sha256": "00478f19fdb7540e606121f233de8174142d4d6b3233fca3a919a8be73e205a5",
+      "current_sha256": "0d93eb0e59ffa3358c3f0c71fe51a114772d927463cdc5ba21eb0c52bde41813",
+      "baseline_snapshot_sha256": "00478f19fdb7540e606121f233de8174142d4d6b3233fca3a919a8be73e205a5",
+      "baseline_matches_manifest": true
+    },
+    {
+      "path": "crates/protoinputmux/src/annotation_ui.rs",
+      "baseline_sha256": "403a507fcff5b6b3e439b0a56814c1d29e6721fce90cfb1eb205ec6450bb4114",
+      "current_sha256": "d6bf5a48e3af7df7bef0be23ea55dc528ece382f3fcb9f13ff88e6adf3234e0a",
+      "baseline_snapshot_sha256": "403a507fcff5b6b3e439b0a56814c1d29e6721fce90cfb1eb205ec6450bb4114",
+      "baseline_matches_manifest": true
+    },
+    {
+      "path": "crates/protoinputmux/src/gui.rs",
+      "baseline_sha256": "c5ff51f4ed79025e0ee2fa3def5927e6432151c4c3f586a8cb5b2c64a94b2fe7",
+      "current_sha256": "05d120d1fb28f2e852cae6f25be14c33025cf043435d96fb1f2b15a14cd493b8",
+      "baseline_snapshot_sha256": "c5ff51f4ed79025e0ee2fa3def5927e6432151c4c3f586a8cb5b2c64a94b2fe7",
+      "baseline_matches_manifest": true
+    },
+    {
+      "path": "crates/protoinputmux/src/macro_studio.rs",
+      "baseline_sha256": "58f10c2906184424d2e13fc5bd582d39ef962d91763b8c56eb311fe3fb86498d",
+      "current_sha256": "d9e8ccf8143a23c5a7fcc79bee449439b606eb4a728ad7ca526ec89a07c40802",
+      "baseline_snapshot_sha256": "58f10c2906184424d2e13fc5bd582d39ef962d91763b8c56eb311fe3fb86498d",
+      "baseline_matches_manifest": true
+    },
+    {
+      "path": "crates/protoinputmux/src/magnifier_runtime.rs",
+      "baseline_sha256": "c72f369eeecedddf10c5d889d2ff797ff04c9db56c937b842d0efea8a4936790",
+      "current_sha256": "a4e1f111532156b7a2a9c5f7196d19366c8431c08ea56aff929662f05d253d83",
+      "baseline_snapshot_sha256": "c72f369eeecedddf10c5d889d2ff797ff04c9db56c937b842d0efea8a4936790",
+      "baseline_matches_manifest": true
+    },
+    {
+      "path": "crates/protoinputmux/src/routing_engine.rs",
+      "baseline_sha256": "55ca9c1003d9d2a585b6575573a98026472f3ce7e17d87e8ae811573c93f012c",
+      "current_sha256": "f4b1a0d1540530b470c45976f28c580baa72aeceffd772f8f51fcd2e4af88353",
+      "baseline_snapshot_sha256": "55ca9c1003d9d2a585b6575573a98026472f3ce7e17d87e8ae811573c93f012c",
+      "baseline_matches_manifest": true
+    }
+  ],
+  "validation": {
+    "producer": "runtime/producer-connected-annotation-20261014-220846",
+    "verification_sha256": "9a48e6ad017b38c897305ab9aa8f0b1d7bc0c2e89f6b0c0b7235d8c4fbd5b97b",
+    "producer_status": "PASS; five recorded checks exit 0 (fmt, strict Clippy, workspace tests, x64 build, i686 build); 144 tests",
+    "recorded_checks_exit_codes": [
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "workspace_tests": 144,
+    "source_after_file_count": 63,
+    "source_after_current_mismatch_count": 0,
+    "source_after_current_mismatches": [],
+    "build_hashes_recorded": {
+      "x64": "ed07efad77ecb2385c4d93c7d90c000be3d33a65d588ee80bc539cdbcaf019e4",
+      "i686": "317f658eee1e2a2b0ad30bc7a13adba958a311936a02ddfed925bb50b1c2014f"
+    },
+    "actual_executable_hashes_rechecked": false,
+    "independently_run_cargo": false,
+    "integrity_scope": "Recorded verification manifest and current source hashes only; no Cargo rerun and no native acceptance claim"
+  }
+}

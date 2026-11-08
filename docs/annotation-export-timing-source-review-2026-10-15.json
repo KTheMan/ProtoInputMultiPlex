@@ -1,0 +1,61 @@
+{
+  "decision": "APPROVED SOURCE ONLY; REQUIRED PRODUCER AND NATIVE/PIXEL ACCEPTANCE PENDING",
+  "date": "2026-10-15",
+  "reviewer": "independent acceptance agent",
+  "baseline": {
+    "path": "runtime\\producer-annotation-open-budget-20261015-131610\\verification.json",
+    "sha256": "380358b115466146ee030b20b27547f650409604073b7ccba200502352f3b7f3"
+  },
+  "current_sha256": {
+    "crates/protoinputmux/src/agent_export.rs": "53153cb652ff6a5f8e57f7ec6c79a188c095c902ee193e89cf0fcf8666783740",
+    "crates/protoinputmux/src/agent_runtime/annotation_export.rs": "46e077cced21929d194f86fa83504ef7d5ec85ef04e23fd734b2f03dd6653f68",
+    "crates/protoinputmux/src/annotation_ui.rs": "aa026e418adb256db25ee74c4040bf0d3caf3c3439e8ccc643ec4f8a1e8578fa"
+  },
+  "before_files": {
+    "crates/protoinputmux/src/agent_export.rs": {
+      "path": "runtime\\annotation-timing-before\\agent_export.rs",
+      "sha256": "12b116bfda427ff9a5ca891d4fd914479ab498c3722e59d078a74bbe9376f6e9"
+    },
+    "crates/protoinputmux/src/agent_runtime/annotation_export.rs": {
+      "path": "runtime\\annotation-timing-before\\annotation_export.rs",
+      "sha256": "c773043838324eef080017968fa4c5d0a8515b508250686d85ead53a87e04c22"
+    },
+    "crates/protoinputmux/src/annotation_ui.rs": {
+      "path": "runtime\\annotation-timing-before\\annotation_ui.rs",
+      "sha256": "ec00c940c1dc9fccb0bab71f1320b521e366a7dfd9eb8dd6a77797f60e70bb09"
+    }
+  },
+  "protected_prior_inputs": 829,
+  "protected_inputs_match": true,
+  "native_runtime_sha256": {
+    "ProtoInputHooks32.dll": "9fcc2e0602d15ba1ba0c2433217c9868fef6ea039b05fd29c53b35a43ee4e4bb",
+    "ProtoInputIJ32.exe": "73c10f7397d22ed9a9f9b1ee804f17853a2c9f96d495a83f9448201b97f27a86",
+    "ProtoInputIJP32.dll": "d593e4b4f304f55743c6bbb680cf3c81f2be97392980c29367639859ffdccc3e",
+    "ProtoInputLoader32.dll": "f8e0a573a42b948f099ccd8cfd5ce3427d3eabef4de25302cb6fa1e9e4e9e7be",
+    "ProtoInputHooks64.dll": "3a67717f8711fa7d310c4c679ec51b8f994b08839eadb58c67519ae85ec7addc",
+    "ProtoInputIJ64.exe": "e11a9fd0f14902f0c749781a42a8f912fb3eb876a54454f4cb5eddea5fa5636d",
+    "ProtoInputIJP64.dll": "8daf63d2c87a150e0928f0b6d359ea503b6180538faf14bc3c66fa8228a49172",
+    "ProtoInputLoader64.dll": "e4e3889472761337de4bd232863b84a319833fc0104c2062ae553239910f5f11",
+    "protoinputmux_cursor_observer32.dll": "bc2b2fbd2655e3324fcea2f41dc54a493bbd3120dd48daf92bb08ecfb5d20069",
+    "protoinputmux_cursor_observer64.dll": "3ade9c71977c87340daae545295cbea11aba3347ee84171aab189814d03f2212"
+  },
+  "helper": {
+    "path": "runtime\\verify-annotation-export-timing.py",
+    "sha256": "3af09cf77da2bbfc3ceae81bd76261d9844b9dd276c95ca245379337d5918a61",
+    "ast": "PASS; parsed only, not executed"
+  },
+  "findings": [],
+  "review": [
+    "Preparation completion is stamped after raster preparation, pixel validation and PNG encoding. Annotation drains queued readiness before elapsed-preparation cancellation, requires its actual completion stamp within five seconds, and rechecks current client/policy/stable user/roster/selection/bounds authority before permitting publication.",
+    "Annotation alone uses the nine-second permit wait. Generic start_prepared and magnifier poll_ready retain their five-second wrapper behavior. Annotation bounds pending publication by four seconds from approval or nine seconds from request at polling; these are reply/cancellation deadlines, not a promise to interrupt committed filesystem IO.",
+    "An approved or cancelled job retains its sole annotation slot until actual done. Post-timeout completion is unacknowledged telemetry; already authorized publication may finish later. Denied jobs never receive a positive filesystem permit.",
+    "Four added deterministic tests exercise the production poll transition with supplied ready/done channels: timely ready observed late; late preparation/request expiration; identity revocation ahead of queued readiness; approved publication/request timeout with retained capacity and telemetry. Existing real blocked-worker/no-file capacity test remains. Tests have been read, not run by this reviewer.",
+    "UI diff uses the genuine Ouroboros Save response directly, retaining enablement, observer label, consume guard and Export command. Only duplicate explanation/completion wording and Save layout change; no painted substitute control.",
+    "Producer helper pins the previous producer, protects all 829 non-allowed prior inputs, guards unchanged ten native files before/after, records current source before/after, executes five required Rust commands and Doctor, and records both build hashes."
+  ],
+  "limits": [
+    "Actual cause of the 133829 timeout is unproven; this approval establishes the corrected observable source edge, not historical causality or performance.",
+    "New builds and native selected-user/connected export results and updated Save pixels are still required; no apps, tests, Cargo or producer was launched by the reviewer.",
+    "Previously accepted native setup/default all-users decoded PNG evidence retains its original build provenance; no overall annotation feature acceptance is granted here."
+  ]
+}

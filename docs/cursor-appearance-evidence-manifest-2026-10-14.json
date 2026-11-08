@@ -1,0 +1,200 @@
+{
+  "date": "2026-10-14",
+  "byte_exact_evidence": [
+    {
+      "original": "runtime/acceptance-cursor-layout-20261014-142331/evidence.json",
+      "archive": "docs/cursor-appearance-native-setup-failure-2026-10-14.json",
+      "sha256": "0f8571e50a2317a86e24887e65031d65d13b592507685ad3c2bc993f09b9c0f0",
+      "original_result": "NOT ACCEPTED",
+      "accepted_control_occurrences": 0,
+      "accepted_clicks": 0,
+      "accepted_disabled_observations": 0
+    },
+    {
+      "original": "runtime/acceptance-cursor-layout-20261014-142357/evidence.json",
+      "archive": "docs/cursor-appearance-native-readback-failure-2026-10-14.json",
+      "sha256": "a4e5205316c890b82a8d988337396a660e22e6d882ac805a90afb761dc63dc4e",
+      "original_result": "NOT ACCEPTED",
+      "accepted_control_occurrences": 0,
+      "accepted_clicks": 0,
+      "accepted_disabled_observations": 0
+    },
+    {
+      "original": "runtime/acceptance-cursor-layout-20261014-143912/evidence.json",
+      "archive": "docs/cursor-appearance-native-rendered-prefix-2026-10-14.json",
+      "sha256": "15dfedbd9689d26d9787d78925a226ebf9235eb755270af53ca42ea867a5ea20",
+      "original_result": "NOT ACCEPTED",
+      "accepted_control_occurrences": 0,
+      "accepted_clicks": 0,
+      "accepted_disabled_observations": 0
+    },
+    {
+      "original": "runtime/acceptance-cursor-layout-20261014-144008/evidence.json",
+      "archive": "docs/cursor-appearance-native-hidden-prefix-2026-10-14.json",
+      "sha256": "906758055450b83cd884d8787a53f32f7cc987001b476d08890f7d96333b07c6",
+      "original_result": "NOT ACCEPTED",
+      "accepted_control_occurrences": 0,
+      "accepted_clicks": 0,
+      "accepted_disabled_observations": 0
+    },
+    {
+      "original": "runtime/acceptance-cursor-layout-20261014-144106/evidence.json",
+      "archive": "docs/cursor-appearance-native-tail-2026-10-14.json",
+      "sha256": "e1c6474b867cecb1de0e0ac7cee9793ba8a52e84cc64a53180af90d85dbd48be",
+      "original_result": "PASS",
+      "accepted_control_occurrences": 0,
+      "accepted_clicks": 0,
+      "accepted_disabled_observations": 0
+    },
+    {
+      "original": "runtime/acceptance-graph-cursor-layout-ui-20261014-144137/evidence.json",
+      "archive": "docs/cursor-appearance-ui-setup-failure-2026-10-14.json",
+      "sha256": "9a80d11fef401e05c4aec02ff0f95a1f6c6d7c93cec4ee6314a4c3f4521ac15f",
+      "original_result": "NOT ACCEPTED",
+      "accepted_control_occurrences": 0,
+      "accepted_clicks": 0,
+      "accepted_disabled_observations": 0
+    },
+    {
+      "original": "runtime/acceptance-graph-cursor-layout-ui-20261014-144238/evidence.json",
+      "archive": "docs/cursor-appearance-ui-long-name-defect-2026-10-14.json",
+      "sha256": "7884b99b1f221b5894325b8706c4ac3af24c19848fa54ddc371a8762ffa54045",
+      "original_result": "NOT ACCEPTED",
+      "accepted_control_occurrences": 0,
+      "accepted_clicks": 0,
+      "accepted_disabled_observations": 0
+    },
+    {
+      "original": "runtime/acceptance-graph-cursor-layout-ui-20261014-145936/evidence.json",
+      "archive": "docs/cursor-appearance-ui-menu-prefix-2026-10-14.json",
+      "sha256": "2d7ecf868018ce6e1b2528cf1db14339e4cf7c69f95abfd3cf4bbe1b79197074",
+      "original_result": "NOT ACCEPTED",
+      "accepted_control_occurrences": 16,
+      "accepted_clicks": 16,
+      "accepted_disabled_observations": 0
+    },
+    {
+      "original": "runtime/acceptance-graph-cursor-layout-ui-tail-20261014-150100/evidence.json",
+      "archive": "docs/cursor-appearance-ui-tail-2026-10-14.json",
+      "sha256": "67e8d71986bf2dd7ce5a129cff90bdb95ce2bac61b5507c5d9d42751574d4748",
+      "original_result": "PASS",
+      "accepted_control_occurrences": 20,
+      "accepted_clicks": 20,
+      "accepted_disabled_observations": 0
+    },
+    {
+      "original": "runtime/acceptance-graph-cursor-layout-fixed-20261014-150201/evidence.json",
+      "archive": "docs/cursor-appearance-fixed-prefix-2026-10-14.json",
+      "sha256": "4fce02925e265e6986ecaa8073f82383c4f0aaffc4025f893d179aec22120fec",
+      "original_result": "NOT ACCEPTED",
+      "accepted_control_occurrences": 10,
+      "accepted_clicks": 4,
+      "accepted_disabled_observations": 6
+    },
+    {
+      "original": "runtime/acceptance-graph-cursor-layout-fixed-tail-20261014-150313/evidence.json",
+      "archive": "docs/cursor-appearance-fixed-tail-2026-10-14.json",
+      "sha256": "e0e5a93721a8be92d42e7002213686f9d3dd030ab954dfc384070683b59f937f",
+      "original_result": "PASS",
+      "accepted_control_occurrences": 4,
+      "accepted_clicks": 4,
+      "accepted_disabled_observations": 0
+    }
+  ],
+  "owned_gui_image": {
+    "original": "runtime/acceptance-graph-cursor-layout-ui-tail-20261014-150100/cursor-layout-controls.png",
+    "archive": "docs/cursor-appearance-control-center.png",
+    "sha256": "0230f7126f81256b0ac84806e5f7d645df81662617e5ee6cf149fe21934f08aa"
+  },
+  "owned_pixel_archive": {
+    "path": "docs/cursor-appearance-owned-pixels-2026-10-14.zip",
+    "sha256": "ec13b748468689f438b702d1604cb480b9bd534f071a3a42d6da6bb80734e92b",
+    "entries": [
+      {
+        "original": "runtime/acceptance-cursor-layout-20261014-143912/overlay-above.png",
+        "entry": "overlay-above.png",
+        "sha256": "cb75ff2f253039e6b0c960a724ad31ebb77425552665102a235d0e55855acc06"
+      },
+      {
+        "original": "runtime/acceptance-cursor-layout-20261014-143912/overlay-badge-box.png",
+        "entry": "overlay-badge-box.png",
+        "sha256": "f60c006d9a9c6317964e11816742651e0ea8add8b094d78494f23ecf1b8d344f"
+      },
+      {
+        "original": "runtime/acceptance-cursor-layout-20261014-143912/overlay-badge-circle.png",
+        "entry": "overlay-badge-circle.png",
+        "sha256": "9c559765394d04f1098ed85c3388008f205db75be29915ed53b2b6a2585a7811"
+      },
+      {
+        "original": "runtime/acceptance-cursor-layout-20261014-143912/overlay-badge-rounded.png",
+        "entry": "overlay-badge-rounded.png",
+        "sha256": "62370a46dc312e8e66f2e9b9171afb3fdc01bba93e15189eb61f8d367b46c6a2"
+      },
+      {
+        "original": "runtime/acceptance-cursor-layout-20261014-143912/overlay-badge-without-label.png",
+        "entry": "overlay-badge-without-label.png",
+        "sha256": "76b585986ddf9f580190e40111f01130c8a812716c042a4b19d6918c60fdc000"
+      },
+      {
+        "original": "runtime/acceptance-cursor-layout-20261014-143912/overlay-below.png",
+        "entry": "overlay-below.png",
+        "sha256": "3d5bb10f009eef8dd369c27a0155af98bd0ba89089bafc3024ca26f1f2ff2e91"
+      },
+      {
+        "original": "runtime/acceptance-cursor-layout-20261014-143912/overlay-font48.png",
+        "entry": "overlay-font48.png",
+        "sha256": "ff5ce3bba28fec4e963ac4e15f8f8628436064de17bce840d4f97ba35a5f713f"
+      },
+      {
+        "original": "runtime/acceptance-cursor-layout-20261014-143912/overlay-font8.png",
+        "entry": "overlay-font8.png",
+        "sha256": "619ba59c212cd67ca53aec555b23b959417027604aa0a388bf28ca758139a5ff"
+      },
+      {
+        "original": "runtime/acceptance-cursor-layout-20261014-143912/overlay-left.png",
+        "entry": "overlay-left.png",
+        "sha256": "a498fdb80dbb4bbffb4a0b036e521ab4d9ee470a20bfd45204898def0eb33f26"
+      },
+      {
+        "original": "runtime/acceptance-cursor-layout-20261014-143912/overlay-maximum-wide-inline.png",
+        "entry": "overlay-maximum-wide-inline.png",
+        "sha256": "b06ef50dc7ce13a79b03f11ab1743db05423b3ea7f1ec85cfdd2b2c97177fc26"
+      },
+      {
+        "original": "runtime/acceptance-cursor-layout-20261014-143912/overlay-position-bottom_left.png",
+        "entry": "overlay-position-bottom_left.png",
+        "sha256": "2b69a997d12fd464bb13f9493b590273522ec81bd9380b5b48cdbc1eee3c1570"
+      },
+      {
+        "original": "runtime/acceptance-cursor-layout-20261014-143912/overlay-position-bottom_right.png",
+        "entry": "overlay-position-bottom_right.png",
+        "sha256": "1d510b4470e0905bf1169ad6304708a2e72eaf7d092fabe50699446688856bb1"
+      },
+      {
+        "original": "runtime/acceptance-cursor-layout-20261014-143912/overlay-position-inline.png",
+        "entry": "overlay-position-inline.png",
+        "sha256": "62370a46dc312e8e66f2e9b9171afb3fdc01bba93e15189eb61f8d367b46c6a2"
+      },
+      {
+        "original": "runtime/acceptance-cursor-layout-20261014-143912/overlay-position-top_left.png",
+        "entry": "overlay-position-top_left.png",
+        "sha256": "5550e1c712bb570b377dca1b67de7a80548a0664b413427589df71f16a5292a1"
+      },
+      {
+        "original": "runtime/acceptance-cursor-layout-20261014-143912/overlay-position-top_right.png",
+        "entry": "overlay-position-top_right.png",
+        "sha256": "03c2e6349e243d02ef8b3955d36926c80d16666518c8e40564d910ae44b7c962"
+      },
+      {
+        "original": "runtime/acceptance-cursor-layout-20261014-143912/overlay-right.png",
+        "entry": "overlay-right.png",
+        "sha256": "62370a46dc312e8e66f2e9b9171afb3fdc01bba93e15189eb61f8d367b46c6a2"
+      },
+      {
+        "original": "runtime/acceptance-cursor-layout-20261014-143912/overlay-x86-owner.png",
+        "entry": "overlay-x86-owner.png",
+        "sha256": "19de5b2718267bcaf3aafc9abd0abc598c954f0ce527d4624721f29cb3059f58"
+      }
+    ]
+  }
+}

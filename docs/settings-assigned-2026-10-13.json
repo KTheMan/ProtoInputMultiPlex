@@ -1,0 +1,2269 @@
+{
+  "samples": {
+    "defaults-page": {
+      "probes": [
+        {
+          "pid": 763308,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 22,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 685084,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 16,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [],
+      "button": "Profiles"
+    },
+    "save-defaults": {
+      "probes": [
+        {
+          "pid": 763308,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 30,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 685084,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 24,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [],
+      "button": "Save profile",
+      "saved_profile": {
+        "version": 1,
+        "concurrent": true,
+        "desktop": null,
+        "seats": [
+          {
+            "name": "UI64",
+            "mouse": "virtual://mouse/1",
+            "keyboard": "virtual://keyboard/1",
+            "target_pid": 763308,
+            "desktop_start": [
+              158,
+              171
+            ],
+            "cursor": {
+              "color": [
+                45,
+                212,
+                191
+              ],
+              "size": 28.0,
+              "visible": true,
+              "label": true,
+              "speed_x": 1.0,
+              "speed_y": 1.0,
+              "motion_curve": "linear",
+              "invert_x": false,
+              "invert_y": false,
+              "button_mapping": [
+                "primary",
+                "secondary",
+                "middle",
+                "x1",
+                "x2"
+              ],
+              "swap_buttons": false,
+              "wheel_scale": 1.0,
+              "invert_wheel": false,
+              "horizontal_wheel": "ignore",
+              "horizontal_wheel_scale": 1.0,
+              "invert_horizontal_wheel": false,
+              "lock_window": false
+            }
+          },
+          {
+            "name": "UI32",
+            "mouse": "virtual://mouse/2",
+            "keyboard": "virtual://keyboard/2",
+            "target_pid": 685084,
+            "desktop_start": [
+              618,
+              171
+            ],
+            "cursor": {
+              "color": [
+                45,
+                212,
+                191
+              ],
+              "size": 28.0,
+              "visible": true,
+              "label": true,
+              "speed_x": 1.0,
+              "speed_y": 1.0,
+              "motion_curve": "linear",
+              "invert_x": false,
+              "invert_y": false,
+              "button_mapping": [
+                "primary",
+                "secondary",
+                "middle",
+                "x1",
+                "x2"
+              ],
+              "swap_buttons": false,
+              "wheel_scale": 1.0,
+              "invert_wheel": false,
+              "horizontal_wheel": "ignore",
+              "horizontal_wheel_scale": 1.0,
+              "invert_horizontal_wheel": false,
+              "lock_window": false
+            }
+          }
+        ]
+      }
+    },
+    "setup-lab": {
+      "probes": [
+        {
+          "pid": 763308,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 38,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 685084,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 32,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [],
+      "button": "Input lab"
+    },
+    "start": {
+      "probes": [
+        {
+          "pid": 763308,
+          "cursor": [
+            240,
+            231
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 89,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 685084,
+          "cursor": [
+            498,
+            71
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 83,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 763308,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 38,
+            "top": 71,
+            "right": 442,
+            "bottom": 392
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 2360896,
+            "x": 240,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 763308,
+          "mode": null
+        },
+        {
+          "name": "UI32",
+          "pid": 685084,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 498,
+            "top": 71,
+            "right": 902,
+            "bottom": 392
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 6819000,
+            "x": 700,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 685084,
+          "mode": null
+        }
+      ],
+      "button": "Start routing"
+    },
+    "select-0": {
+      "probes": [
+        {
+          "pid": 763308,
+          "cursor": [
+            240,
+            231
+          ],
+          "buttons": 1,
+          "test_keys": 0,
+          "frames": 109,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 685084,
+          "cursor": [
+            700,
+            231
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 103,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 763308,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 38,
+            "top": 71,
+            "right": 442,
+            "bottom": 392
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [],
+          "overlay": {
+            "hwnd": 2360896,
+            "x": 240,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 763308,
+          "mode": null
+        },
+        {
+          "name": "UI32",
+          "pid": 685084,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 498,
+            "top": 71,
+            "right": 902,
+            "bottom": 392
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 6819000,
+            "x": 700,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 685084,
+          "mode": null
+        }
+      ],
+      "button": "1 Hold click"
+    },
+    "drop-0": {
+      "probes": [
+        {
+          "pid": 763308,
+          "cursor": [
+            240,
+            231
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 120,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 685084,
+          "cursor": [
+            700,
+            231
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 114,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 763308,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 38,
+            "top": 71,
+            "right": 442,
+            "bottom": 392
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 2360896,
+            "x": 240,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 763308,
+          "mode": null
+        },
+        {
+          "name": "UI32",
+          "pid": 685084,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 498,
+            "top": 71,
+            "right": 902,
+            "bottom": 392
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 6819000,
+            "x": 700,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 685084,
+          "mode": null
+        }
+      ],
+      "button": "1 Release click"
+    },
+    "select-1": {
+      "probes": [
+        {
+          "pid": 763308,
+          "cursor": [
+            240,
+            231
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 138,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 685084,
+          "cursor": [
+            700,
+            231
+          ],
+          "buttons": 1,
+          "test_keys": 0,
+          "frames": 132,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 763308,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 38,
+            "top": 71,
+            "right": 442,
+            "bottom": 392
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 2360896,
+            "x": 240,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 763308,
+          "mode": null
+        },
+        {
+          "name": "UI32",
+          "pid": 685084,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 498,
+            "top": 71,
+            "right": 902,
+            "bottom": 392
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [],
+          "overlay": {
+            "hwnd": 6819000,
+            "x": 700,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 685084,
+          "mode": null
+        }
+      ],
+      "button": "2 Hold click"
+    },
+    "drop-1": {
+      "probes": [
+        {
+          "pid": 763308,
+          "cursor": [
+            240,
+            231
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 146,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 685084,
+          "cursor": [
+            700,
+            231
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 140,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 763308,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 38,
+            "top": 71,
+            "right": 442,
+            "bottom": 392
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 2360896,
+            "x": 240,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 763308,
+          "mode": null
+        },
+        {
+          "name": "UI32",
+          "pid": 685084,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 498,
+            "top": 71,
+            "right": 902,
+            "bottom": 392
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 6819000,
+            "x": 700,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 685084,
+          "mode": null
+        }
+      ],
+      "button": "2 Release click"
+    },
+    "settings-held": {
+      "probes": [
+        {
+          "pid": 763308,
+          "cursor": [
+            240,
+            231
+          ],
+          "buttons": 1,
+          "test_keys": 1,
+          "frames": 154,
+          "text": "",
+          "held_keys": [
+            87
+          ],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 685084,
+          "cursor": [
+            700,
+            231
+          ],
+          "buttons": 1,
+          "test_keys": 1,
+          "frames": 148,
+          "text": "",
+          "held_keys": [
+            87
+          ],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 763308,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 38,
+            "top": 71,
+            "right": 442,
+            "bottom": 392
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [
+            87
+          ],
+          "overlay": {
+            "hwnd": 2360896,
+            "x": 240,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 763308,
+          "mode": null
+        },
+        {
+          "name": "UI32",
+          "pid": 685084,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 498,
+            "top": 71,
+            "right": 902,
+            "bottom": 392
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [
+            87
+          ],
+          "overlay": {
+            "hwnd": 6819000,
+            "x": 700,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 685084,
+          "mode": null
+        }
+      ],
+      "button": "Hold all users"
+    },
+    "invalid-text-held": {
+      "probes": [
+        {
+          "pid": 763308,
+          "cursor": [
+            240,
+            231
+          ],
+          "buttons": 1,
+          "test_keys": 1,
+          "frames": 169,
+          "text": "",
+          "held_keys": [
+            87
+          ],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 685084,
+          "cursor": [
+            700,
+            231
+          ],
+          "buttons": 1,
+          "test_keys": 1,
+          "frames": 163,
+          "text": "",
+          "held_keys": [
+            87
+          ],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 763308,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 38,
+            "top": 71,
+            "right": 442,
+            "bottom": 392
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [
+            87
+          ],
+          "overlay": {
+            "hwnd": 2360896,
+            "x": 240,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 763308,
+          "mode": null
+        },
+        {
+          "name": "UI32",
+          "pid": 685084,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 498,
+            "top": 71,
+            "right": 902,
+            "bottom": 392
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [
+            87
+          ],
+          "overlay": {
+            "hwnd": 6819000,
+            "x": 700,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 685084,
+          "mode": null
+        }
+      ],
+      "button": "Send text"
+    },
+    "motion-user": {
+      "probes": [
+        {
+          "pid": 763308,
+          "cursor": [
+            240,
+            231
+          ],
+          "buttons": 1,
+          "test_keys": 1,
+          "frames": 177,
+          "text": "",
+          "held_keys": [
+            87
+          ],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 685084,
+          "cursor": [
+            700,
+            231
+          ],
+          "buttons": 1,
+          "test_keys": 1,
+          "frames": 171,
+          "text": "",
+          "held_keys": [
+            87
+          ],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 763308,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 38,
+            "top": 71,
+            "right": 442,
+            "bottom": 392
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [
+            87
+          ],
+          "overlay": {
+            "hwnd": 2360896,
+            "x": 240,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 763308,
+          "mode": null
+        },
+        {
+          "name": "UI32",
+          "pid": 685084,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 498,
+            "top": 71,
+            "right": 902,
+            "bottom": 392
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [
+            87
+          ],
+          "overlay": {
+            "hwnd": 6819000,
+            "x": 700,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 685084,
+          "mode": null
+        }
+      ],
+      "button": "Configure user"
+    },
+    "motion-tab": {
+      "probes": [
+        {
+          "pid": 763308,
+          "cursor": [
+            240,
+            231
+          ],
+          "buttons": 1,
+          "test_keys": 1,
+          "frames": 185,
+          "text": "",
+          "held_keys": [
+            87
+          ],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 685084,
+          "cursor": [
+            700,
+            231
+          ],
+          "buttons": 1,
+          "test_keys": 1,
+          "frames": 179,
+          "text": "",
+          "held_keys": [
+            87
+          ],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 763308,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 38,
+            "top": 71,
+            "right": 442,
+            "bottom": 392
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [
+            87
+          ],
+          "overlay": {
+            "hwnd": 2360896,
+            "x": 240,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 763308,
+          "mode": null
+        },
+        {
+          "name": "UI32",
+          "pid": 685084,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 498,
+            "top": 71,
+            "right": 902,
+            "bottom": 392
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [
+            87
+          ],
+          "overlay": {
+            "hwnd": 6819000,
+            "x": 700,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 685084,
+          "mode": null
+        }
+      ],
+      "button": "Motion"
+    },
+    "strong": {
+      "probes": [
+        {
+          "pid": 763308,
+          "cursor": [
+            240,
+            231
+          ],
+          "buttons": 1,
+          "test_keys": 1,
+          "frames": 195,
+          "text": "",
+          "held_keys": [
+            87
+          ],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 685084,
+          "cursor": [
+            700,
+            231
+          ],
+          "buttons": 1,
+          "test_keys": 1,
+          "frames": 189,
+          "text": "",
+          "held_keys": [
+            87
+          ],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 763308,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 38,
+            "top": 71,
+            "right": 442,
+            "bottom": 392
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [
+            87
+          ],
+          "overlay": {
+            "hwnd": 2360896,
+            "x": 240,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 763308,
+          "mode": null
+        },
+        {
+          "name": "UI32",
+          "pid": 685084,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 498,
+            "top": 71,
+            "right": 902,
+            "bottom": 392
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [
+            87
+          ],
+          "overlay": {
+            "hwnd": 6819000,
+            "x": 700,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 685084,
+          "mode": null
+        }
+      ],
+      "button": "Strong response"
+    },
+    "apply-held": {
+      "probes": [
+        {
+          "pid": 763308,
+          "cursor": [
+            240,
+            231
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 203,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 685084,
+          "cursor": [
+            700,
+            231
+          ],
+          "buttons": 1,
+          "test_keys": 1,
+          "frames": 197,
+          "text": "",
+          "held_keys": [
+            87
+          ],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 763308,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 38,
+            "top": 71,
+            "right": 442,
+            "bottom": 392
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 2360896,
+            "x": 240,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 763308,
+          "mode": null
+        },
+        {
+          "name": "UI32",
+          "pid": 685084,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 498,
+            "top": 71,
+            "right": 902,
+            "bottom": 392
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [
+            87
+          ],
+          "overlay": {
+            "hwnd": 6819000,
+            "x": 700,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 685084,
+          "mode": null
+        }
+      ],
+      "button": "Apply cursor settings"
+    },
+    "motion-lab": {
+      "probes": [
+        {
+          "pid": 763308,
+          "cursor": [
+            240,
+            231
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 211,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 685084,
+          "cursor": [
+            700,
+            231
+          ],
+          "buttons": 1,
+          "test_keys": 1,
+          "frames": 205,
+          "text": "",
+          "held_keys": [
+            87
+          ],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 763308,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 38,
+            "top": 71,
+            "right": 442,
+            "bottom": 392
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 2360896,
+            "x": 240,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 763308,
+          "mode": null
+        },
+        {
+          "name": "UI32",
+          "pid": 685084,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 498,
+            "top": 71,
+            "right": 902,
+            "bottom": 392
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [
+            87
+          ],
+          "overlay": {
+            "hwnd": 6819000,
+            "x": 700,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 685084,
+          "mode": null
+        }
+      ],
+      "button": "Input lab"
+    },
+    "strong-motion": {
+      "probes": [
+        {
+          "pid": 763308,
+          "cursor": [
+            337,
+            231
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 220,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 685084,
+          "cursor": [
+            700,
+            231
+          ],
+          "buttons": 1,
+          "test_keys": 1,
+          "frames": 214,
+          "text": "",
+          "held_keys": [
+            87
+          ],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 763308,
+          "client": [
+            299,
+            160
+          ],
+          "bounds": {
+            "left": 38,
+            "top": 71,
+            "right": 442,
+            "bottom": 392
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 2360896,
+            "x": 337,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 763308,
+          "mode": null
+        },
+        {
+          "name": "UI32",
+          "pid": 685084,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 498,
+            "top": 71,
+            "right": 902,
+            "bottom": 392
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [
+            87
+          ],
+          "overlay": {
+            "hwnd": 6819000,
+            "x": 700,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 685084,
+          "mode": null
+        }
+      ],
+      "button": "1 Right"
+    },
+    "settings-stop": {
+      "probes": [
+        {
+          "pid": 763308,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 228,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 685084,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 222,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 763308,
+          "client": [
+            299,
+            160
+          ],
+          "bounds": {
+            "left": 38,
+            "top": 71,
+            "right": 442,
+            "bottom": 392
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 2360896,
+            "x": 337,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 763308,
+          "mode": null
+        },
+        {
+          "name": "UI32",
+          "pid": 685084,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 498,
+            "top": 71,
+            "right": 902,
+            "bottom": 392
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [
+            87
+          ],
+          "overlay": {
+            "hwnd": 6819000,
+            "x": 700,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 685084,
+          "mode": null
+        }
+      ],
+      "button": "Stop routing"
+    },
+    "configured-page": {
+      "probes": [
+        {
+          "pid": 763308,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 236,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 685084,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 230,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 763308,
+          "client": [
+            299,
+            160
+          ],
+          "bounds": {
+            "left": 38,
+            "top": 71,
+            "right": 442,
+            "bottom": 392
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 2360896,
+            "x": 337,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 763308,
+          "mode": null
+        },
+        {
+          "name": "UI32",
+          "pid": 685084,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 498,
+            "top": 71,
+            "right": 902,
+            "bottom": 392
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [
+            87
+          ],
+          "overlay": {
+            "hwnd": 6819000,
+            "x": 700,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 685084,
+          "mode": null
+        }
+      ],
+      "button": "Profiles"
+    },
+    "save-configured": {
+      "probes": [
+        {
+          "pid": 763308,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 244,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 685084,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 238,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 763308,
+          "client": [
+            299,
+            160
+          ],
+          "bounds": {
+            "left": 38,
+            "top": 71,
+            "right": 442,
+            "bottom": 392
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 2360896,
+            "x": 337,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 763308,
+          "mode": null
+        },
+        {
+          "name": "UI32",
+          "pid": 685084,
+          "client": [
+            202,
+            160
+          ],
+          "bounds": {
+            "left": 498,
+            "top": 71,
+            "right": 902,
+            "bottom": 392
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [
+            87
+          ],
+          "overlay": {
+            "hwnd": 6819000,
+            "x": 700,
+            "y": 231,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "",
+          "status": "Assigned application",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 685084,
+          "mode": null
+        }
+      ],
+      "button": "Save profile",
+      "saved_profile": {
+        "version": 1,
+        "concurrent": true,
+        "desktop": null,
+        "seats": [
+          {
+            "name": "UI64",
+            "mouse": "virtual://mouse/1",
+            "keyboard": "virtual://keyboard/1",
+            "target_pid": 763308,
+            "desktop_start": [
+              158,
+              171
+            ],
+            "cursor": {
+              "color": [
+                45,
+                212,
+                191
+              ],
+              "size": 28.0,
+              "visible": true,
+              "label": true,
+              "speed_x": 1.0,
+              "speed_y": 1.0,
+              "motion_curve": "strong",
+              "invert_x": false,
+              "invert_y": false,
+              "button_mapping": [
+                "primary",
+                "secondary",
+                "middle",
+                "x1",
+                "x2"
+              ],
+              "swap_buttons": false,
+              "wheel_scale": 1.0,
+              "invert_wheel": false,
+              "horizontal_wheel": "ignore",
+              "horizontal_wheel_scale": 1.0,
+              "invert_horizontal_wheel": false,
+              "lock_window": false
+            }
+          },
+          {
+            "name": "UI32",
+            "mouse": "virtual://mouse/2",
+            "keyboard": "virtual://keyboard/2",
+            "target_pid": 685084,
+            "desktop_start": [
+              618,
+              171
+            ],
+            "cursor": {
+              "color": [
+                45,
+                212,
+                191
+              ],
+              "size": 28.0,
+              "visible": true,
+              "label": true,
+              "speed_x": 1.0,
+              "speed_y": 1.0,
+              "motion_curve": "linear",
+              "invert_x": false,
+              "invert_y": false,
+              "button_mapping": [
+                "primary",
+                "secondary",
+                "middle",
+                "x1",
+                "x2"
+              ],
+              "swap_buttons": false,
+              "wheel_scale": 1.0,
+              "invert_wheel": false,
+              "horizontal_wheel": "ignore",
+              "horizontal_wheel_scale": 1.0,
+              "invert_horizontal_wheel": false,
+              "lock_window": false
+            }
+          }
+        ]
+      }
+    }
+  },
+  "result": "PASS",
+  "scope": "Bounded assigned-process smoke: native curve, per-user held release, profile save and stop cleanup.",
+  "clicked_events": [
+    {
+      "button": "Profiles",
+      "clicked": true
+    },
+    {
+      "button": "Save profile",
+      "clicked": true
+    },
+    {
+      "button": "Input lab",
+      "clicked": true
+    },
+    {
+      "button": "Start routing",
+      "clicked": true
+    },
+    {
+      "button": "1 Hold click",
+      "clicked": true
+    },
+    {
+      "button": "1 Release click",
+      "clicked": true
+    },
+    {
+      "button": "2 Hold click",
+      "clicked": true
+    },
+    {
+      "button": "2 Release click",
+      "clicked": true
+    },
+    {
+      "button": "Hold all users",
+      "clicked": true
+    },
+    {
+      "button": "Send text",
+      "clicked": true
+    },
+    {
+      "button": "Configure user",
+      "clicked": true
+    },
+    {
+      "button": "Motion",
+      "clicked": true
+    },
+    {
+      "button": "Strong response",
+      "clicked": true
+    },
+    {
+      "button": "Apply cursor settings",
+      "clicked": true
+    },
+    {
+      "button": "Input lab",
+      "clicked": true
+    },
+    {
+      "button": "1 Right",
+      "clicked": true
+    },
+    {
+      "button": "Stop routing",
+      "clicked": true
+    },
+    {
+      "button": "Profiles",
+      "clicked": true
+    },
+    {
+      "button": "Save profile",
+      "clicked": true
+    }
+  ],
+  "owned_processes_closed": true
+}

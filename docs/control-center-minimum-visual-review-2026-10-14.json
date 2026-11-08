@@ -1,0 +1,4 @@
+{
+  "accepted": false,
+  "reason": "Actual 360x480 Home clips the Configure user / Settings / Minimize footer below the viewport; only a thin top edge is visible under Advanced routing options. Default420x600 is compact/readable, but minimum must keep primary footer visible without outer scrolling. CJK name glyph boxes remain separately unclaimed."
+}

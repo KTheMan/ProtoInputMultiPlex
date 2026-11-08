@@ -1,0 +1,256 @@
+{
+  "decision": "APPROVED SOURCE AND BOUNDED HARNESS ONLY; NATIVE ACCEPTANCE PENDING",
+  "date": "2026-10-15",
+  "material_findings": [],
+  "scope": "Independent current-source inspection of publication-only coalescing, integration, additive settings/GUI and draft contract; not native acceptance.",
+  "baseline": {
+    "producer": "runtime\\producer-keyboard-configuration-20261015-062334\\verification.json",
+    "sha256": "dba45378089d98d004e98a9f39f6d18a918422599b5e752921ce29fdcb133b78",
+    "source_count": 83,
+    "limit": "Baseline manifest supplies hashes, not preserved source bytes. No invented byte-diff or complete baseline source comparison claimed. Root prior inspection confirms fixed zero-effective movement already submitted no packets."
+  },
+  "current_producer": {
+    "path": "runtime/producer-motion-coalescing-20261015-070832/verification.json",
+    "sha256": "e6be400792fcb1e7ae07a36d09ef69933ce46e7db992a7b8d5625a6d12875a05",
+    "result": "PASS",
+    "workspace_tests": 226,
+    "checks": [
+      {
+        "command": [
+          "cargo",
+          "fmt",
+          "--all",
+          "--check"
+        ],
+        "exit_code": 0
+      },
+      {
+        "command": [
+          "cargo",
+          "clippy",
+          "--config",
+          "build.rustc-wrapper=\"\"",
+          "--workspace",
+          "--all-targets",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "exit_code": 0
+      },
+      {
+        "command": [
+          "cargo",
+          "test",
+          "--config",
+          "build.rustc-wrapper=\"\"",
+          "--workspace"
+        ],
+        "exit_code": 0
+      },
+      {
+        "command": [
+          "cargo",
+          "build",
+          "--config",
+          "build.rustc-wrapper=\"\"",
+          "--workspace"
+        ],
+        "exit_code": 0
+      },
+      {
+        "command": [
+          "cargo",
+          "build",
+          "--config",
+          "build.rustc-wrapper=\"\"",
+          "--workspace",
+          "--target",
+          "i686-pc-windows-msvc"
+        ],
+        "exit_code": 0
+      }
+    ],
+    "terminal": {
+      "session_id": 92095,
+      "exit_code": 0
+    },
+    "build_sha256": {
+      "x64": "6027d5263003d0622973e6451e50a7ff85d9e50fde54838f26f9e815e0338911",
+      "i686": "45629b0c5524e7d4a4bddb0f4cc5a59d1156cc3eb2bac47db3c153b03a3b8272"
+    },
+    "runtime_sha256": {
+      "ProtoInputHooks32.dll": "1f6ce1a3f690b9c93566a23d51d91ae450f70fb2d1f857d3e502b9189b4c0b72",
+      "ProtoInputHooks64.dll": "31b3436421ed0a64bd7b66f7fc41295739017caad3e7605513d00d51868d44c3",
+      "ProtoInputIJ32.exe": "73c10f7397d22ed9a9f9b1ee804f17853a2c9f96d495a83f9448201b97f27a86",
+      "ProtoInputIJ64.exe": "e11a9fd0f14902f0c749781a42a8f912fb3eb876a54454f4cb5eddea5fa5636d",
+      "ProtoInputIJP32.dll": "d593e4b4f304f55743c6bbb680cf3c81f2be97392980c29367639859ffdccc3e",
+      "ProtoInputIJP64.dll": "8daf63d2c87a150e0928f0b6d359ea503b6180538faf14bc3c66fa8228a49172",
+      "ProtoInputLoader32.dll": "0eaa05d49dd43dca41dba7457ca814f5599981746994078d81ce59d0f126d590",
+      "ProtoInputLoader64.dll": "08ecac0469fdd8e33106ac0bd5eddf759c948a86e3540f3f60d6a00cdd218f9c",
+      "protoinputmux_cursor_observer64.dll": "9f086fdd62e0e7f29056f4a38723266c03a22182b2a0875d6bd104b98f77603a",
+      "protoinputmux_cursor_observer32.dll": "a5d6d6db1e7318dc401caec1923ae90c678d5c1389ca913bd57aaf68fb042d48"
+    },
+    "all_current_source_and_runtime_and_images_match": true,
+    "note": "Checks owned/run by root; independently read exact terminal record and matched current bytes. No Cargo/native app run by acceptance reviewer."
+  },
+  "manifest_identity": {
+    "current_count": 84,
+    "changed_or_new": 12,
+    "protected_unchanged": 72,
+    "no_removed_paths": true,
+    "all_current_bytes_match_source_before": true,
+    "source_manifest_sha256": "693efdb00fc4289c5fb16a922a9847855aeef0e9c8fe693303fc3428dc5179be"
+  },
+  "changed_sources": {
+    "crates/mux-core/src/desktop.rs": {
+      "baseline_sha256": "17993abdc721c73be6fbc9d30fc39a50b1b3b36b99b4fe85ef8d7592fa4fcfba",
+      "current_sha256": "d88deadeb6663bec438bd49a6bd0fb814d178ba30ccf32007b1e9d338f990be5"
+    },
+    "crates/mux-core/src/lib.rs": {
+      "baseline_sha256": "7f5388984e4020f9c004ed4387eb76eb4530258df83c9af67b0d4ce3442ee24e",
+      "current_sha256": "6151d3d2b6a6f523e7db2481ec81d32163f252f03c953c3f0ff643842f9e16be"
+    },
+    "crates/mux-core/src/motion_coalescing.rs": {
+      "baseline_sha256": null,
+      "current_sha256": "2164b12ce2a5987ade2aeed992fc5900cd74037c1c32ddfaa9d2d1f42c7aebaa"
+    },
+    "crates/mux-windows/src/protoinput.rs": {
+      "baseline_sha256": "761d71769e3b06d1f4c733aae08c170489481d6c0177aeefa8cc0a605a11ad71",
+      "current_sha256": "fe3483c45233f712da581a3089769bf65082b9419a29cd5222ab1ec0f36b6a9b"
+    },
+    "crates/protoinputmux/src/annotation_runtime.rs": {
+      "baseline_sha256": "0d93eb0e59ffa3358c3f0c71fe51a114772d927463cdc5ba21eb0c52bde41813",
+      "current_sha256": "62c926205341a7017d087819d76e4e35e6f0151e10c1af5053c70ee7ae2e90b3"
+    },
+    "crates/protoinputmux/src/desktop_router.rs": {
+      "baseline_sha256": "1bce53f4c83e14b9154a0bb574b07891de9a846676e975198f99034f7ad4ac25",
+      "current_sha256": "b9e986c3484bbb6fa5b62d499289c8e686978f6ae73b13b89c52bab5c3f21113"
+    },
+    "crates/protoinputmux/src/gui.rs": {
+      "baseline_sha256": "d66a8be6d51b7594d0bed7e46c31a9469c8245c58102b763e35098d3d2dbed17",
+      "current_sha256": "da7b789a0fc46307e68b879ad8d3c940ee35927fee04ebfe92ce68321c579ab0"
+    },
+    "crates/protoinputmux/src/macro_studio.rs": {
+      "baseline_sha256": "b669a1af960af2e46d91140b873fda5ba5472a16079dd9afbb62e6646d6ecefe",
+      "current_sha256": "c77faaaee27c7a9f37f88ae35626a9f06eae45b429b18c968441e4d188cef13b"
+    },
+    "crates/protoinputmux/src/magnifier_runtime.rs": {
+      "baseline_sha256": "f20f745773314de55a88a78f5f79d4b73de0dcf6313d2eac6d804db6609c543b",
+      "current_sha256": "9d58201db36ebd1045ba27a01b281d7945f2a0df4f3e46b1e3879affe92f1244"
+    },
+    "crates/protoinputmux/src/router.rs": {
+      "baseline_sha256": "1f1c0357fe9d5ea4df93c4ddefedf2e8ad6921106cb407d4149e28913914b778",
+      "current_sha256": "fe4a21b69c79d2f716811ee831d9e1e8de93305aff733700a386e24739ee1555"
+    },
+    "crates/protoinputmux/src/routing_engine.rs": {
+      "baseline_sha256": "ba9ed5acfd43fb68476febd26541be58acd0abadec15d8955ae4d6e1f3955371",
+      "current_sha256": "5a6357689c00460565fbbc02339b82a989ba3ed28237044c4b613139d330c80a"
+    },
+    "crates/protoinputmux/src/session.rs": {
+      "baseline_sha256": "30125886b8773dca0e34aad3499bfd05a71fbc933a7b18c3c83b0ca8a8c968e3",
+      "current_sha256": "0f3fac8967686ebbf198dc669df51cb12cc41570804f15ea9b0923d0f260c6ea"
+    }
+  },
+  "protected_sources": {
+    "Cargo.lock": "92c6e4ffde632e1c81c9a691db8308e6e07719377c1a86fe543f885f89ef1444",
+    "Cargo.toml": "8eb49454a36406555a7976c49f54c3b940a82cb6707e2f32144121e9dfdf14e3",
+    "crates/cursor-observer/Cargo.toml": "bb64cbb0c8230c3fca20712a34827b219dcca281cb5a6ce6744b18d4f9c3ce22",
+    "crates/cursor-observer/src/lib.rs": "b77d5b13cc65fd84efe7263e5c245c260aa65e9087efb308f5d10d496d228e4a",
+    "crates/cursor-snapshot-protocol/Cargo.toml": "1cc75298ef4872d3616563883f44c0046bf96eb2d48e3c3ff5596e8fbd14ef9c",
+    "crates/cursor-snapshot-protocol/src/lib.rs": "44c56dbe9eb48c5d544eff989f6ba427af98530c78ce76888b9f8af53af28000",
+    "crates/mux-core/Cargo.toml": "35e6eaffb196ad68dda00c3f7eafdac1ae6319eb95cc7f1b43b7d32765eb78d3",
+    "crates/mux-core/src/annotation.rs": "a85264dda59bd33099188e1654134762255ab2611f0c62042f296f9f647ec621",
+    "crates/mux-core/src/automation.rs": "873fdfe4a85825a3cb6873e148d8060d4928ce1c9df607a020dc911f40018932",
+    "crates/mux-core/src/emulated.rs": "a6187fce299845323279c74ae0c5caee1425200e319da4e37aef05e2ad63097a",
+    "crates/mux-core/src/macro_authoring.rs": "c09b42995c31d0615e49096e97698e070cdda29f43c25cb33b581317dfe09d5e",
+    "crates/mux-core/src/magnifier.rs": "ef7748bb3a4d42e246c2075606183d31a83c44bf96f141aa535c0b5f06b1cfc7",
+    "crates/mux-core/src/output.rs": "d45e10811d40a70131a7d08233aab872af293948fc2583edf4c31552a133b6a6",
+    "crates/mux-core/src/replication.rs": "6eaaf07a5896991f085f5f4098532961afcf99d41fa1e59aeb91e12282bd24fb",
+    "crates/mux-core/src/routing.rs": "02d053e0e2f2dcbd25cae30e89752be0d4784701e497d1915f66041b1a851479",
+    "crates/mux-windows/Cargo.toml": "595bf9c476cf9f57b7897252ebd44947450bfef9bd91557a913480b69b393807",
+    "crates/mux-windows/src/annotation_overlay.rs": "4d3c43e407cd8f156f225a82d857464c705b2bd98d0723bb2b990389532f4c79",
+    "crates/mux-windows/src/app_cursor.rs": "41f5cdff6a548e2788822e2384322188f4cc9b94c3186299e6035956422eb87e",
+    "crates/mux-windows/src/desktop_capture.rs": "089b938874cfe58e70056187c39cae02f2d76df2273f5f372835874b8bb25fc7",
+    "crates/mux-windows/src/job.rs": "a2bef8f5ebe0a480b095390b43424553eff5211cc6024a6de9d4fc8f263faa50",
+    "crates/mux-windows/src/keyboard.rs": "73cb54fdf4a8fc52e85fb8e51da2e745929ac58aeb360c5be435855114407980",
+    "crates/mux-windows/src/lib.rs": "a791cfe62111d79ccb85c686d3260f412491868ec9c1691feb620c63fb81b9f9",
+    "crates/mux-windows/src/magnifier_overlay.rs": "003fe89185bd4ea2b3c87874c743af61ba2e899e0237c0735ffaeac4dd43d34f",
+    "crates/mux-windows/src/monitors.rs": "4dfba0cb54be0160d86fc612715071ad7a57e63af3abaae65aed30edb7c67313",
+    "crates/mux-windows/src/overlay.rs": "5efb41d52e238f6c62a9d58e8ab3a4b3772dba6356e1da7493818d94c47d52f7",
+    "crates/mux-windows/src/power.rs": "52fb49291b307c820ad791df493c3bd84be955a23512b9fc66e21deffce52c09",
+    "crates/mux-windows/src/queue_fence.rs": "bc975dc8900ded4c9816ec1241a551b3b2bc32862dc92a797e488e2f60414cef",
+    "crates/mux-windows/src/raw_input.rs": "0e45fe6821827ca993642902e089b9e20efc4cbbe8ee6633d7fef100ef3f8a42",
+    "crates/mux-windows/src/target_capture.rs": "1d638e53f02c13a07fad3389f026c9db9955fabb4df62efaec491b0ce8af1534",
+    "crates/mux-windows/src/targets.rs": "20150219d093cfb7daa84a09c801737b230807271d007f4f5227e8d5fb4f9dc8",
+    "crates/mux-windows/src/wheel.rs": "ddcbaf591658aaf9d840348ec8335f72b2c82cf6a1c69dbe726fa36f6a4d0aff",
+    "crates/mux-windows/tests/abi.rs": "dca8df9f0675ad6260d90046bd8bd0079d5811bf2992f594bce1447dff2343ce",
+    "crates/mux-windows/tests/fixtures/loader.rs": "804c3f854418446d590a28dc6e64f1a9a1a75abf41d99a333a807531c61874d8",
+    "crates/mux-windows/tests/hit_test.rs": "8710d72c552d57f6180962eaa98f38907686663e8f3838d90d01294f9d5384eb",
+    "crates/protoinputmux/Cargo.toml": "2a8f0a1da182ce0bb0edbcf7256f48792702382dc48377ab6c236b8bb72db192",
+    "crates/protoinputmux/src/agent_export.rs": "4c0ec1f7befe5bb42ea080d4a5c4949894ff89d10a670fff67df1fbb1b362780",
+    "crates/protoinputmux/src/agent_runtime.rs": "736aa3e2482ee0fea6ad09d600b58a91f8eeeb7c77848985f5adc8cc70869c7a",
+    "crates/protoinputmux/src/agent_ui.rs": "62eeddddd911a1635508b02a06dcd49fbe8cf1e16b94a867bf305e64b1cf7248",
+    "crates/protoinputmux/src/annotation_ui.rs": "46d7c4e752d1bbb80aee24a8378fb8de8915058dbe0d8507ccb1a83287144759",
+    "crates/protoinputmux/src/app_lifecycle.rs": "8ceb83f48ab571efed752fdbfc341f6aba9a4bfdb18f84df01bde4715e1aac61",
+    "crates/protoinputmux/src/app_preferences.rs": "6aba587084f8b8c7fafbe89f5ee3c2f33ea7c6bd8697a3ecefd077e7a3bc222a",
+    "crates/protoinputmux/src/app_preferences_ui.rs": "58bc0a688529c3d437f8a73854d224a6342810fc45fe7777213060db5f87f8df",
+    "crates/protoinputmux/src/automation_probe.rs": "8084dca7d0fd0587984697eee206d574bae6e350b7b91439d7d5f8baf024bb66",
+    "crates/protoinputmux/src/automation_runtime.rs": "2304623a3845b04c2684364f82eab9a7c153f0da865b121932a6ee1ef1c1010b",
+    "crates/protoinputmux/src/gui_bridge.rs": "aa6e7f27358d7d280e0583e39385dbcb6219694ec0b576327a49c6a1078d74df",
+    "crates/protoinputmux/src/keyboard_slider.rs": "0676c5feb2eb5294abbc172e8cba65082fa80fb25efd1d23879e7d0e25989e6f",
+    "crates/protoinputmux/src/macro_studio_ui.rs": "bc3b785f58c2b3728a6dcde1d77707dd0be7de480a642cc2b2dd50ea88d214ed",
+    "crates/protoinputmux/src/magnifier_ui.rs": "ae87b13b6565c5991af4a52d1a7c47fc02d3324553446f969b145328bc65861c",
+    "crates/protoinputmux/src/main.rs": "88cd6f32e1fc97ccd93ce56fe9c79b52867642ec1ea1fbcfc1ead2249e771a73",
+    "crates/protoinputmux/src/mcp.rs": "a9d629bffbff28ecdd769dacf3f25cf1211f2fc29572d2cdc1a59f0bd936e967",
+    "crates/protoinputmux/src/output_runtime.rs": "0eebe45232a438a8efa08055803421c1fa0fabed686bba9f933df45982ef92fb",
+    "crates/protoinputmux/src/output_ui.rs": "adeb61621a1711da1b685033e8a15994bb77c5e81bc466693a1cd2ae8e093053",
+    "crates/protoinputmux/src/probe.rs": "f45043c5a6cf76c640b770c0d584608ae3621d9ae4362ef93bfd5cebb53ef1db",
+    "crates/protoinputmux/src/profile_store.rs": "75a65e86b10bf7f9e207971045777ae9a86b77de6785cc921f4904659cfa380f",
+    "crates/protoinputmux/src/replication_queue.rs": "644627fcef504615b5aeef744be343a22c7759b078a645a5e271c48e022c20a5",
+    "crates/protoinputmux/src/replication_ui.rs": "7e112747b822ba1eaeb8d7efc16e8e6682bef316a2248fa7cd09e8a6c798605a",
+    "crates/protoinputmux/src/session_recovery.rs": "aa8776e5639b3db567ac838a4e9d0b6e3e0ec70525a34a8667a464f4c6f6abce",
+    "crates/protoinputmux/src/ui_script.rs": "879817ff8284f88f56d62caf022b0b1719ce0d9e51f971dc9c9974bca87d7c75",
+    "crates/protoinputmux/src/virtual_users.rs": "437f12b3154425bd2eaccfa8e7e76417880af86046599fc377d3a3ac30eeed06",
+    "crates/protoinputmux/src/virtual_users_ui.rs": "4739ce824ee7ace42c432cc588052f840524702925cae3c0faf732731e1da142",
+    "patches/0001-backend.patch": "63c6860060675a2e6789dbaa50f0bb4c758319b4a3f2464e2989c4ade403663a",
+    "patches/cursor-observer/0003-cursor-observer.patch": "edaf6513cac3377d2cf9ff232b52d0f352d72c25d447c42dd54344d1212813dc",
+    "scripts/package-portable.ps1": "7116c24278a245ae5bc152d37c38b3dacf6bda0b63bd47834e25400f288612ee",
+    "scripts/package-portable.py": "dbc6f9b8abce78cb750370376d5ea84d8dfe45fc00421910bd1652283dfb0f2a",
+    "vendor/ProtoInput/src/ProtoInput/ProtoInputHooks/CursorVisibilityHook.cpp": "5951de3a811f957c3d4b2376fa95b71e467d9ab6413c2c895d07eb8919d19d0a",
+    "vendor/ProtoInput/src/ProtoInput/ProtoInputHooks/FakeCursor.h": "d4b956be601ea6929f73eb06c4de9c7e6e8ab59874ae4f047580405a839119f3",
+    "vendor/ProtoInput/src/ProtoInput/ProtoInputHooks/MuxCursorObserverBridge.h": "112e8e49aef62293cf046a3d1286eed7aa465e24c11477084c78f4f2339c99c2",
+    "vendor/ProtoInput/src/ProtoInput/ProtoInputHooks/PipeCommunication.cpp": "ff540142cd01a4d7ce954de2b82c3f0adf6eb7d78b7728a4a3e526ddd6b7f7ee",
+    "vendor/ProtoInput/src/ProtoInput/ProtoInputHooks/pipeinclude/pipeinclude.h": "f73b1e1ae9f3a5057d5bfdbb9f72632218cfa81c80465482e8bbd730648f0559",
+    "vendor/ProtoInput/src/ProtoInput/ProtoInputHooks/RawInput.cpp": "a92cbf75920e363f4cbbe492fc13dda2df0a464cef37dc664a8dd93f14d62330",
+    "vendor/ProtoInput/src/ProtoInput/ProtoInputLoader/include/protoloader.h": "1d6e037b8d13c24d9b52a4100df0e0b1a3f32d43c75c4dad4bcda2a5a55dcc04",
+    "vendor/ProtoInput/src/ProtoInput/ProtoInputLoader/Inject.cpp": "86caead410dc990de7aed9945d8d5b2195bf21b740c20c4fb142ab13ec623cb2"
+  },
+  "review": [
+    "Nested defaulted deny-unknown coalescing settings validate count2..64/time1..16; None/None preserves immediate default. High-DPI/foreground mode visibly unavailable, no fabricated packet provenance.",
+    "PendingMotion holds original user/device/PID/HWND/client geometry and settings, latest transformed absolute position or checked i64 delta sum; oldest deadline/count safety bounded. Desktop pending slots are per mouse within each target, and a device changing target/geometry drains original slot before accepting new identity.",
+    "Fixed delta publication validates widened effective motion and splits to bounded native packets; chunk logic inspected, not independently unit/native exercised. Automatic/concurrent logical clipping remains per packet; fixed relative intermediate native clipping/hover equivalence is not claimed.",
+    "Flushing takes each pending segment before publication and wraps errors over the whole actual closure; all slots/targets are attempted and typed errors collected. Failed work is not replayed to a later target.",
+    "Router settings/position/mode/pause/lifecycle/discrete boundaries drain earlier publications. Automatic poll failures become per-user status, and failed barriers withhold only affected new non-release input; every key/button UP and unrelated input still attempts routing. Fixed assigned loss remains fatal.",
+    "Engine layers forward poll/deadline; worker idle timeout wakes at oldest queue deadline (10ms maximum wait). Per-packet transform/logical cursor, annotation and graph consumers remain before backend publication buffering.",
+    "Typed stale resize publication is discarded, reported and current clamped goal retried once. Shutdown attempts publication/release cleanup and existing queue fences; no vendor/native ABI change.",
+    "GUI uses actual existing Ouroboros controls/keyboard adapter, stable selected-user context and same additive settings payload. Contract accurately leaves native/scheduling/physical/general-app and fixed-boundary limits open."
+  ],
+  "unit_evidence_scope": [
+    "Production PendingMotion tests cover latest absolute, widened sum, oldest clock/count safety, geometry identity and checked overflow/no mutation.",
+    "Production motion_failure_blocks_input regression covers all5button-UP/key-UP and unrelated input.",
+    "Exact native target/window/pending lifecycle interleavings and relative chunk ABI remain source-only unless later bounded native traces establish them."
+  ],
+  "harness": {
+    "path": "scripts\\test-motion-coalescing-acceptance.py",
+    "sha256": "860a96c422b4e2893bfafa20aa4d0b1a88957dba2e7a9bee6ff7d47e5b6ae292",
+    "ast": "PASS",
+    "plan": "runtime\\coalescing-acceptance-plan.md",
+    "plan_sha256": "02b9ef6407fd1419173f74e1af18ec4ade8f9a19241f60978693573ed0f0ae1b",
+    "contract": "docs\\motion-coalescing-contract.md",
+    "contract_sha256": "7f415a86dbca7d5980fca893367f678ca82c1262eaa9481de18b725ad3f19c08",
+    "budget": "Native<=64mutationcalls/96sourcevirtualpackets; GUI14semantic/48localkeypairs/2originals; twoownedx64/oneMCP then stoppedGUI.",
+    "oracles": "Actual native motion counts+endpoint versus default-off; full discrete barrier trace references default-off per-packet displacement. Timer requires one nonzero transformed move/new native endpoint trace, exactlyone sourcepacket below64 and no other mutation before readonly settle. No public pending telemetry claim; lifecycle exact pending precondition source/unit unless naturally evidenced.",
+    "limits": "No apps/Cargo/native run by this reviewer; frozen runtime/build checks and root READY required. Periodic PNGs have no request-associated freshness claim."
+  }
+}

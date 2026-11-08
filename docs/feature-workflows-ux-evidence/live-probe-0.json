@@ -1,0 +1,132 @@
+{
+  "cursor_selection_count": 0,
+  "cursor_selection_events": [],
+  "cursor_fixture_kind": null,
+  "keyboard_focus_fixture": null,
+  "pid": 264424,
+  "cursor": [
+    662,
+    1213
+  ],
+  "buttons": 0,
+  "test_keys": 0,
+  "frames": 930,
+  "text": "",
+  "held_keys": [],
+  "key_events": [],
+  "key_event_count": 0,
+  "text_events": 0,
+  "mouse_events": [
+    {
+      "button": 0,
+      "pressed": true
+    },
+    {
+      "button": 0,
+      "pressed": false
+    }
+  ],
+  "mouse_event_count": 2,
+  "wheel_events": 0,
+  "wheel_delta": 0,
+  "horizontal_wheel_events": 0,
+  "horizontal_wheel_delta": 0,
+  "capture_color": null,
+  "capture_delay_ms": 0,
+  "capture_hwnd": 52101214,
+  "wm_print_count": 0,
+  "wm_printclient_count": 0,
+  "wm_paint_count": 0,
+  "last_print_flags": 0,
+  "last_print_hdc_non_null": false,
+  "capture_delay_applied_count": 0,
+  "capture_delay_total_ms": 0,
+  "native_events": [
+    {
+      "hwnd": 52101214,
+      "kind": "motion",
+      "at_us": 9022760,
+      "code": 0,
+      "pressed": null,
+      "client": [
+        98,
+        68
+      ],
+      "delta": null
+    },
+    {
+      "hwnd": 52101214,
+      "kind": "motion",
+      "at_us": 9022779,
+      "code": 0,
+      "pressed": null,
+      "client": [
+        98,
+        68
+      ],
+      "delta": null
+    },
+    {
+      "hwnd": 52101214,
+      "kind": "motion",
+      "at_us": 9022781,
+      "code": 0,
+      "pressed": null,
+      "client": [
+        98,
+        68
+      ],
+      "delta": null
+    },
+    {
+      "hwnd": 52101214,
+      "kind": "button",
+      "at_us": 9022784,
+      "code": 0,
+      "pressed": true,
+      "client": [
+        98,
+        68
+      ],
+      "delta": null
+    },
+    {
+      "hwnd": 52101214,
+      "kind": "motion",
+      "at_us": 9024376,
+      "code": 0,
+      "pressed": null,
+      "client": [
+        98,
+        68
+      ],
+      "delta": null
+    },
+    {
+      "hwnd": 52101214,
+      "kind": "button",
+      "at_us": 9697015,
+      "code": 0,
+      "pressed": false,
+      "client": [
+        98,
+        68
+      ],
+      "delta": null
+    },
+    {
+      "hwnd": 52101214,
+      "kind": "motion",
+      "at_us": 9697468,
+      "code": 0,
+      "pressed": null,
+      "client": [
+        98,
+        68
+      ],
+      "delta": null
+    }
+  ],
+  "native_event_count": 7,
+  "clock_us": 111595956
+}

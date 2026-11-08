@@ -1,0 +1,42 @@
+{
+  "date": "2026-10-14",
+  "result": "PASS source review; no material source findings",
+  "reviewed_gui_sha256": "faef99f73d9f96fe532e79ebeabd2b5f0cf0deec38be3661abf17ab363186f99",
+  "guarded_transform": {
+    "path": "runtime/apply-hidden-logic-fix.py",
+    "sha256": "23c43754c317ea015e3dde1165cf3703d6d412040b23fae6de9b260d6b393d44",
+    "declared_base_sha256": "8152de0323d32a9cc7e2d0e06c3ca9ba2c686aac3fcfe6dfd4c385b588169959"
+  },
+  "pinned_api_basis": [
+    {
+      "path": "E:\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\eframe-0.34.3\\src\\epi.rs",
+      "sha256": "1abfd82a79fc14b7b081df37f4d854f22aafb6ba7275a86b6ba269df5075502c",
+      "lines": "149-166",
+      "finding": "App::logic runs before visible UI and may also run while hidden after repaint requests; it may not paint or show UI."
+    },
+    {
+      "path": "E:\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\eframe-0.34.3\\src\\native\\epi_integration.rs",
+      "sha256": "a5a40cec62498cb5c117fb8787ff260a21cf8c18d8f859cac5f9203fa0b64924",
+      "lines": "264-302",
+      "finding": "Root update calls App::logic unconditionally, then gates App::update and App::ui on is_visible."
+    },
+    {
+      "path": "E:\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\egui-0.34.3\\src\\context.rs",
+      "sha256": "23bc6467f47cdd5b90846321544010104137e2ad478adda634b736359b27fb5f",
+      "lines": "1793-1840",
+      "finding": "request_repaint_after schedules a repaint of the current viewport, supporting a bounded hidden poll cadence."
+    }
+  ],
+  "review": {
+    "hidden_state_polls": "Pass: poll_session, poll_failed_cleanup, poll_lifecycle_actions, and drain_app_requests each have one call site, all in logic.",
+    "hidden_close_stop_quit_restore": "Pass: the existing close latch, CancelClose, failed-cleanup visibility, Stop/Quit acknowledgment, minimize-to-tray, and restore frame latch are moved into logic and use only context viewport commands/state updates.",
+    "rendering_and_script_state": "Pass: page sizing, appearance sync, script fields/profile snapshots, and every panel/layout remain in visible ui; raw_input_hook remains separate.",
+    "capture_and_disconnect_refresh": "Pass: bounded capture queue draining and periodic device/target/monitor refresh move with logic; refresh mutates cached state and requests Stop on assigned-device loss, with no UI painting or OS pointer/input injection.",
+    "duplicate_polling": "Pass: source search finds one call site for each moved poll/drain and one capture-event drain."
+  },
+  "limits": [
+    "Source review only; no Cargo/compiler or GUI/native run.",
+    "The reported minimized HWND diagnostic proves prior UI starvation, not post-fix behavior. Independent hidden lifecycle/native acceptance remains pending.",
+    "No general device or application compatibility claim."
+  ]
+}

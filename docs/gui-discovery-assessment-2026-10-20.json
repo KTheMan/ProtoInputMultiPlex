@@ -1,0 +1,108 @@
+{
+  "decision": "GUI_DISCOVERY_BOUNDED_ACCEPTED",
+  "date": "2026-10-20",
+  "scope": "Asynchronous Dashboard discovery/readiness/picker caching and GUI-connected read-only MCP discovery freshness. Two virtual user pairs, two owned x64 probes, no input or attachment.",
+  "product_source_review": {
+    "path": "runtime/gui-discovery-source-review.json",
+    "sha256": "d219b709e57fdfb75452555fd22a300e6c487374055b7864a788d7c4285674e1"
+  },
+  "product_source_v2_review": {
+    "path": "runtime/gui-discovery-source-v2-review.json",
+    "sha256": "e2b30b160df5b7e894b0a84fd0b291e330f11b3ec8ad81f4803d4f92bac4545e"
+  },
+  "producer": {
+    "path": "runtime/producer-gui-discovery-20261020-attempt002/verification.json",
+    "sha256": "05642d83c6cd4d68a275fc28b1369f25e7614a36574bb2ce7404d9b6c786472d"
+  },
+  "producer_review": {
+    "path": "runtime/gui-discovery-producer-review.json",
+    "sha256": "f77763a314e30bff3aede38c19352abfee9cfe1ab932321ca7e93c1125bcb160"
+  },
+  "runner_source_review": {
+    "path": "runtime/gui-discovery-ui-source-v2-review.json",
+    "sha256": "d0b250ce8b06c571b71e48d73de5e13af5d1a4ebc2442f4fc1e3e228d2b95d21"
+  },
+  "actual_evidence": {
+    "path": "runtime/gui-discovery-ui-attempt002/evidence.json",
+    "sha256": "7a5e0e63cce5fe03a9a49c36de04f82426cf1f1ea428bc2ec8d1acdfb2d60bc7"
+  },
+  "independent_acceptance": {
+    "path": "runtime/gui-discovery-ui-attempt002-review.json",
+    "sha256": "4124e3c50cdf2c8db8b4c879d8dac121b387f3a33c252e8a06117f6cf2d5ee7a"
+  },
+  "checks": {
+    "formatting": "PASS",
+    "strict_clippy": "PASS",
+    "workspace_tests": {
+      "passed": 402,
+      "failed": 0,
+      "ignored": 3
+    },
+    "builds": [
+      "x86_64-pc-windows-msvc app/observer",
+      "i686-pc-windows-msvc app/observer"
+    ],
+    "backend": "Unchanged pinned native8 plus matching Rust observer2; no C++ rebuild."
+  },
+  "implemented": [
+    "A single background worker performs device/window/monitor/readiness/picker queries; latest-only bounded mailbox coalesces work and rejects superseded results.",
+    "GUI applies current-generation/current-seat/current-policy snapshots; Start and picker selection fail closed while required discovery is unknown or stale. Existing authoritative attach/identity validation remains.",
+    "Ouroboros inventory refresh/pending controls remain responsive; Stop and normal close do not wait for delayed discovery.",
+    "Optional read-only metadata appears at agent_session.connection.discovery and routing_state.agent_session.discovery. Age advances from last scan completion; sample_age advances since last GUI publish. Legacy missing metadata clears to null."
+  ],
+  "actual": {
+    "ui_actions": 20,
+    "initial_pending_frames": [
+      13,
+      183
+    ],
+    "later_requested_generation": 2,
+    "later_completed_generation": 1,
+    "mcp_last_scan_age_ms": [
+      6228,
+      6322
+    ],
+    "mcp_sample_age_ms": [
+      4,
+      6
+    ],
+    "gui_close_ms": 264,
+    "later_scan_delay_ms": 6000,
+    "close_after_refresh_ms": 5108,
+    "family_elapsed_ms": 16139,
+    "owned_png_sizes": [
+      [
+        360,
+        360
+      ],
+      [
+        360,
+        360
+      ]
+    ],
+    "probe_native_events": 0,
+    "cleanup_errors": [],
+    "owned_processes_after": "All four original PIDs and private executable/worker absent per independent review."
+  },
+  "preserved_failures": [
+    {
+      "artifact": {
+        "path": "runtime/producer-gui-discovery-20261020-attempt001/verification.json",
+        "sha256": "eb0bd00dd9cb27fb23784d62d89017f2f86fa1d0957f4336ab6aabccdf4a1ee7"
+      },
+      "reason": "Test initializer strict-Clippy failure; repaired without product behavior change."
+    },
+    {
+      "artifact": {
+        "path": "runtime/gui-discovery-ui-attempt001/evidence.json",
+        "sha256": "625b46f233615e09f515992350466e1db25765384e3a783d1c67f80b5596342c"
+      },
+      "reason": "Runner expected nonexistent ACK fields; actual GUI policy ACK existed. Raw aggregate remains FAIL; corrected actual-schema assertion used for fresh attempt002."
+    }
+  ],
+  "limits": [
+    "Controller Start still synchronously performs fresh device/target checks and Recovery identity capture; Raw Input capture startup and other fresh validation remain outside this group.",
+    "The historical GUI stall cause is not identified; this does not close P1 reliability.",
+    "No hardware/RustDesk input, arbitrary application compatibility, desktop-wide or same-process isolation, latency/resource benchmark, mixed-DPI, full UX or Ultra parity claim."
+  ]
+}

@@ -1,0 +1,14 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- EasyHook's native static library does not need its legacy managed packaging projects. -->
+  <ItemGroup>
+    <ProjectReference Remove="..\EasyHookSvc\EasyHookSvc.csproj;..\EasyHook\EasyHook.csproj" Condition="'$(MSBuildProjectName)' == 'EasyHookDll'" />
+  </ItemGroup>
+  <ItemDefinitionGroup Condition="'$(MuxAtlInclude)' != ''">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(MuxAtlInclude);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(MuxAtlLib);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+</Project>

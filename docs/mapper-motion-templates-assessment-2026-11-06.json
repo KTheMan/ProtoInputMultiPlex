@@ -1,0 +1,109 @@
+{
+  "date": "2026-11-06",
+  "decision": "MAPPER_MOTION_TEMPLATES_ACCEPTED",
+  "scope": "Three editable motion starter flows, a categorized Ouroboros Templates browser, and template-specific MCP destination requirements.",
+  "verification": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-motion-templates-20261106\\checks-001\\verification.json",
+    "sha256": "e6b74aab76da4e72b30c7dccbc7a1f9805c271178499cdc6691ee84d326782eb"
+  },
+  "review": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-motion-templates-20261106\\independent-acceptance.json",
+    "sha256": "1450272cea3f6e8cfc38ff4acb3a61453e33195c5a630127838980a948fe6e0d"
+  },
+  "publication": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-motion-templates-20261106\\publication.json",
+    "sha256": "75b3ddb0e946c14a31e707c9cd5cae7c018e9d213f9ed2cc4090af6b4b2a372e"
+  },
+  "workspace_tests": {
+    "passed": 784,
+    "failed": 0,
+    "ignored": 19
+  },
+  "x64_image": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-motion-templates-20261106\\checks-001\\x64\\protoinputmultiplex.exe",
+    "sha256": "31cd6f86f806035c960db986550ac938f089c42cabd0eda16605048e00993f02"
+  },
+  "checks": {
+    "fmt": 0,
+    "clippy": 0,
+    "workspace-tests": 0,
+    "build-gui": 0
+  },
+  "producer": {
+    "original_session": 19258,
+    "original_exit_code": 0
+  },
+  "native": {
+    "evidence": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mt-2ae38048468f\\evidence.json",
+      "sha256": "4a860c3272d3c201059d8dc9b5b8172fc8553210d43a4f43dc18f096575b0dea"
+    },
+    "driver": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-motion-templates-20261106\\native.py",
+      "sha256": "ff1297ba002ebf074bfe7ad541e3bc7379c6a39ae7a2b8077821b18f1f7db871"
+    },
+    "original_session": 5533,
+    "original_exit_code": 0,
+    "scope": {
+      "virtual_pairs": 1,
+      "GUI": 1,
+      "targets": 0,
+      "MCP": 1,
+      "hardware_input": 0,
+      "routing_or_injection": 0
+    },
+    "browser_captures": {
+      "normal": {
+        "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mt-2ae38048468f\\native\\normal-monitor-templates.png",
+        "sha256": "30a8b7054efd5258714c2118ec34e465d882b6704d1b7b355c2838cbdece7bda",
+        "geometry": {
+          "hwnd": 662962,
+          "dpi": 96,
+          "client_pixels": [
+            680,
+            620
+          ],
+          "client_logical": [
+            680.0,
+            620.0
+          ],
+          "window_rect": [
+            338,
+            338,
+            1034,
+            997
+          ]
+        }
+      },
+      "minimum": {
+        "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mt-2ae38048468f\\native\\minimum-monitor-templates.png",
+        "sha256": "cd48fa850c356fb8d92777984274956b913e6bcf17af5cac35fe48f40264876d",
+        "geometry": {
+          "hwnd": 662962,
+          "dpi": 96,
+          "client_pixels": [
+            320,
+            360
+          ],
+          "client_logical": [
+            320.0,
+            360.0
+          ],
+          "window_rect": [
+            338,
+            338,
+            674,
+            737
+          ]
+        }
+      }
+    },
+    "gui_exit": 0,
+    "mcp_exit": 0
+  },
+  "accepted_observations": [
+    "Compact and normal Templates views show the selected Monitor flow, source, and load action, without a destination picker.",
+    "The compact GUI loads Pointer trail as the exact draft returned by standalone MCP. Undo restores the empty draft, and the applied definition, revision, and armed state are preserved.",
+    "MCP discovery exposes six starters. Both Monitor starters instantiate without a destination. Smooth pointer requires a destination, extraneous Pointer trail destinations are rejected, and the prior Remap a key request still succeeds."
+  ]
+}

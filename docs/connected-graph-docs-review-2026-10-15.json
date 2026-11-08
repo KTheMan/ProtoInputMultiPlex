@@ -1,0 +1,38 @@
+{
+  "review": "independent-document-review",
+  "approved": true,
+  "scope": "Eight canonical documents describing the connected stable-ID graph feature and its bounded independent acceptance.",
+  "documents": {
+    "README.md": "8FF3858A309404C47AF55DEF83EFFA6A05926CCE84B09920E7A479D0876D8D62",
+    "docs/agents.md": "6A03EB159B42F6E4C89E56EC6875D2702FE5989E52070AD4450B24527AE73E57",
+    "docs/connected-graph-contract.md": "BD67D2C49DDE830CA266EDAEC95C7C46A361553CDE3AF2A353CD23BE77E98CA3",
+    "skills/protoinputmux/SKILL.md": "7C5DEA5DDF03CAFF89EDB00B51D984CB89A1CACA891831AD73694E53FBCFACA3",
+    "docs/validation.md": "474979D4903C9DC73F6758DB261DA0CE9269314041B60525D0590D92C20104CA",
+    "docs/ultra-parity.md": "F134C032B5DC0C494E50139CD755D153A0C8E986F4B24E42113488007254E0D6",
+    "docs/roadmap.md": "233BE41F92EE61199149027712CA2C45B000FD88836AF4CCC9952A8AFD26F6D0",
+    "docs/gui-agent-plan.md": "059AE5098CD647E38892CD0D3C661011EC0D285E0DE23BE55910F9C11892D1D0"
+  },
+  "assessment": {
+    "path": "docs/connected-graph-assessment-2026-10-15.json",
+    "sha256": "14C6B1F7588AE909B79CA3093365976C4745FF606C090100E928560DB1D791F4",
+    "outcome": "PASS",
+    "scope": "Five bounded groups; 21 prefix observations plus 12 focused fresh Apply-to-Save continuation observations; three original frames; two owned x64 targets per phase; no i686 execution. The original navigation-failure aggregate and raw continuation status remain unchanged."
+  },
+  "source_review": {
+    "path": "docs/connected-graph-source-review-2026-10-15.json",
+    "sha256": "9295B0B79C4940837AFCEF124C04953CAF71DDCF7D8E3CF1AC2B42FAA9F909BE",
+    "producer": "176 workspace tests, formatting, strict Clippy, x64/i686 builds passed."
+  },
+  "findings": [],
+  "verified_corrections": [
+    "A user without a selected target is permitted; out-of-scope selected recipients and routing-query errors are rejected.",
+    "Apply cleanup failure may leave the old graph in place after some holds were released; no rollback is promised.",
+    "Cancel does not resume an overflow-suspended queue; valid Apply is required to resume it.",
+    "The old 20-tool GUI-agent mutation limitation is explicitly labeled historical, and the standalone virtual-replica acceptance is no longer described as pending."
+  ],
+  "installed_skill": {
+    "path": "C:/Users/Archform CAD Station/.codex/skills/protoinputmux/SKILL.md",
+    "sha256": "5C03EA018E28D2C60802718BF78BA5D29448A4E80CEB0725529B0D777694B3A8",
+    "status": "unchanged during document review"
+  }
+}

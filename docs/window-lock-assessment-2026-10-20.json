@@ -1,0 +1,62 @@
+{
+  "date": "2026-10-20",
+  "feature": "Window Lock workflow",
+  "decision": "GUI_WINDOW_LOCK_UI_BOUNDED_ACCEPTED",
+  "scope": "One owned x64 GUI, two original disposable x64 probes, two virtual user pairs, automatic routing, and existing worker validation and recovery guards.",
+  "actual_acceptance": {
+    "path": "../runtime/window-lock-ui-attempt002/evidence.json",
+    "sha256": "3c376d1ad16788084cc15777f820e9207dd24b3dec28c06a01083d1c15399dbc",
+    "family_elapsed_ms": 22312,
+    "gui_actions": 43,
+    "accepted_behavior": [
+      "Stopped per-user Window-bound stages and profile save without HWND, creation token, or staged identity persistence.",
+      "Serial exact-identity startup acknowledgments gate Ready; live target selection and Window settings Apply are independently acknowledged.",
+      "Moving and resizing A changes its live client and movement bounds; the first planned virtual motion establishes attachment inside A, and the second requests motion beyond the resized client and clamps at its right-1/bottom-1 edge while B remains unchanged.",
+      "Closing A clears its current target and rejects a stale selection; staging B then closing it before Start is rejected without Ready, controller, or queued selection.",
+      "Normal Stop, MCP EOF, GUI exit, and owned-process cleanup complete without fallback termination or cleanup errors."
+    ],
+    "scope_counters": {
+      "authorized_virtual_motion_calls": 2,
+      "expected_stale_selection_rejections": 1,
+      "routing_input_calls_including_denial": 3,
+      "probe_native_key_mouse_events": 0,
+      "capture": false,
+      "app_preferences": false,
+      "session_control": true
+    },
+    "original_screenshots": [
+      {"view": "staged", "size": "540x520", "sha256": "64f5dafd2fe1f491b4f4d990b0d62662bc2ea5f8f5ff87e49b1fca16835b131a"},
+      {"view": "ready", "size": "360x360", "sha256": "ba530a5cbc09e6ab415dd48c03ed6332b522b2f1e5cfb18ece13aca7a1ee1b08"},
+      {"view": "window-follow", "size": "680x620", "sha256": "a23047c165466b2138c0d2427459661d9b0c94b8f32b75bde950a39a95c37c9d"}
+    ]
+  },
+  "independent_actual_review": {
+    "path": "../runtime/window-lock-ui-attempt002-review.json",
+    "sha256": "959b034b7c04ecc30b77060fdc823d84bcc4fb2e0f886b2627a59763f392479c",
+    "decision": "GUI_WINDOW_LOCK_UI_BOUNDED_ACCEPTED",
+    "findings": []
+  },
+  "provenance": {
+    "runner_sha256": "3803345b2a4f97f1464fae52d3e6c4fd2a1af745ca4cfdecd77973614dbc913d",
+    "source_review_path": "../runtime/window-lock-ui-source-v2-review.json",
+    "source_review_sha256": "8a8e7938ee045c7fb2ffd9aa2c862dbbf2ecf875128784e94a6cfe6f3bbd038d",
+    "product_review_sha256": "fa5204326d4bdfee24b586ab124c718b9a713df74f5763b5533720b371aad638",
+    "producer_path": "../runtime/producer-window-lock-20261020-attempt001/verification.json",
+    "producer_sha256": "7fa86d9aae7b8c0a8d7788759d3fa548e7c0046af8409a3edf3873953ced6a8c",
+    "producer_review_path": "../runtime/window-lock-producer-review.json",
+    "producer_review_sha256": "7b13a4e3e47d5223aa4b26a94a9f2ad475d38b215abbb77a20d2d9147d28b5df",
+    "producer_checks": "Formatting and strict workspace/all-target Clippy passed; 409 tests passed, zero failed, three ignored; x64 and i686 app/observer builds passed. No C++ backend rebuild. Frozen source/runtime pins remained unchanged."
+  },
+  "preserved_failure": {
+    "path": "../runtime/window-lock-ui-attempt001/evidence.json",
+    "sha256": "4b3042c8f27dd30a60870f4fad03310b1a8b76f6d8bd0937e8e08d82b985c800",
+    "result": "FAIL",
+    "reason": "The stale-identity expected-error text predicate failed; the original aggregate remains failed and incomplete."
+  },
+  "limits": [
+    "The screenshots establish sampled controls only, not a complete compact Window Lock layout or minimum/full-page acceptance.",
+    "Automatic routing, virtual devices, independent keyboards and explicitly owned x64 probes only; B remains passive. No physical-device, arbitrary-application, same-process or desktop-wide isolation claim.",
+    "Close-to-tray was disabled. Monitor reconnect, mixed-DPI, performance, general P1 reliability, historical stall cause, native i686 execution, and full UX/Ultra parity remain open.",
+    "No new MCP tool or permission was added; existing worker scope, identity, held-input, cleanup and quarantine guards remain authoritative."
+  ]
+}

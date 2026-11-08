@@ -1,0 +1,11 @@
+{
+  "result": "NOT ACCEPTED",
+  "phase": "cursor-layout-ui",
+  "samples": {},
+  "build_sha256": {
+    "runtime\\acceptance-graph-cursor-layout-ui-20261014-144137\\control64.exe": "f5d8b759fa35d6fb1884e3adc2a262170c0317e646f24777642ea05bac5c785d",
+    "runtime\\acceptance-graph-cursor-layout-ui-20261014-144137\\probe32.exe": "3567bddfe46f7ed583aeb75700eb717cdf515f1e8e2534606a45bb19878fa195"
+  },
+  "failure": "Fixture helper AttributeError: args.assigned missing before GUI launch; zero control criteria executed",
+  "owned_processes_closed": true
+}

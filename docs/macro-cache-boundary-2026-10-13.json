@@ -1,0 +1,712 @@
+{
+  "samples": {
+    "start": {
+      "probes": [
+        {
+          "pid": 793316,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 34,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 469744,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 29,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 0,
+          "client": [
+            158,
+            171
+          ],
+          "bounds": {
+            "left": 0,
+            "top": 0,
+            "right": 2560,
+            "bottom": 1440
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 8654826,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "",
+          "status": "Click a window to route input",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 0,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 0,
+          "client": [
+            618,
+            171
+          ],
+          "bounds": {
+            "left": 0,
+            "top": 0,
+            "right": 2560,
+            "bottom": 1440
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 36440186,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "",
+          "status": "Click a window to route input",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 0,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Start routing"
+    },
+    "boundary-page": {
+      "probes": [
+        {
+          "pid": 793316,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 42,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 469744,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 37,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 0,
+          "client": [
+            158,
+            171
+          ],
+          "bounds": {
+            "left": 0,
+            "top": 0,
+            "right": 2560,
+            "bottom": 1440
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 8654826,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "",
+          "status": "Click a window to route input",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 0,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 0,
+          "client": [
+            618,
+            171
+          ],
+          "bounds": {
+            "left": 0,
+            "top": 0,
+            "right": 2560,
+            "bottom": 1440
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 36440186,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "",
+          "status": "Click a window to route input",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 0,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Macros & replication"
+    },
+    "boundary-valid-load": {
+      "probes": [
+        {
+          "pid": 793316,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 54,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 469744,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 49,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 0,
+          "client": [
+            158,
+            171
+          ],
+          "bounds": {
+            "left": 0,
+            "top": 0,
+            "right": 2560,
+            "bottom": 1440
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 8654826,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "",
+          "status": "Click a window to route input",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 0,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 0,
+          "client": [
+            618,
+            171
+          ],
+          "bounds": {
+            "left": 0,
+            "top": 0,
+            "right": 2560,
+            "bottom": 1440
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 36440186,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "",
+          "status": "Click a window to route input",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 0,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Load macro"
+    },
+    "boundary-invalid-load": {
+      "probes": [
+        {
+          "pid": 793316,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 62,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 469744,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 57,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 0,
+          "client": [
+            158,
+            171
+          ],
+          "bounds": {
+            "left": 0,
+            "top": 0,
+            "right": 2560,
+            "bottom": 1440
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 8654826,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "",
+          "status": "Click a window to route input",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 0,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 0,
+          "client": [
+            618,
+            171
+          ],
+          "bounds": {
+            "left": 0,
+            "top": 0,
+            "right": 2560,
+            "bottom": 1440
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 36440186,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "",
+          "status": "Click a window to route input",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 0,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Load macro"
+    },
+    "boundary-save": {
+      "probes": [
+        {
+          "pid": 793316,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 70,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 469744,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 65,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 0,
+          "client": [
+            158,
+            171
+          ],
+          "bounds": {
+            "left": 0,
+            "top": 0,
+            "right": 2560,
+            "bottom": 1440
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 8654826,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "",
+          "status": "Click a window to route input",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 0,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 0,
+          "client": [
+            618,
+            171
+          ],
+          "bounds": {
+            "left": 0,
+            "top": 0,
+            "right": 2560,
+            "bottom": 1440
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 36440186,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "",
+          "status": "Click a window to route input",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 0,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Save macro",
+      "saved_clip": {
+        "version": 1,
+        "events": [
+          {
+            "at_micros": 0,
+            "action": {
+              "type": "text",
+              "user": 0,
+              "text": "retain prior valid clip"
+            }
+          }
+        ]
+      }
+    },
+    "boundary-stop": {
+      "probes": [
+        {
+          "pid": 793316,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 79,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 469744,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 74,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 0,
+          "client": [
+            158,
+            171
+          ],
+          "bounds": {
+            "left": 0,
+            "top": 0,
+            "right": 2560,
+            "bottom": 1440
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 8654826,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "",
+          "status": "Click a window to route input",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 0,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 0,
+          "client": [
+            618,
+            171
+          ],
+          "bounds": {
+            "left": 0,
+            "top": 0,
+            "right": 2560,
+            "bottom": 1440
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 36440186,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "",
+          "status": "Click a window to route input",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 0,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Stop routing"
+    }
+  },
+  "result": "PASS",
+  "scope": "Six actual controls: rejected unknown-user clip preserves acknowledged GUI cache and live session.",
+  "clicked_events": [
+    {
+      "button": "Start routing",
+      "clicked": true
+    },
+    {
+      "button": "Macros & replication",
+      "clicked": true
+    },
+    {
+      "button": "Load macro",
+      "clicked": true
+    },
+    {
+      "button": "Load macro",
+      "clicked": true
+    },
+    {
+      "button": "Save macro",
+      "clicked": true
+    },
+    {
+      "button": "Stop routing",
+      "clicked": true
+    }
+  ],
+  "owned_processes_closed": true
+}

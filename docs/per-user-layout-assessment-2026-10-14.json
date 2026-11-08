@@ -1,0 +1,218 @@
+{
+  "date": "2026-10-14",
+  "reviewer": "independent acceptance agent",
+  "result": "PASS within bounded per-user layout scope",
+  "scope": "Nine existing tabs and seat-local draft preservation, affected normal/minimum chrome, explicit moved cursor Apply and visible active assignment/remove guards. Not nine feature algorithm revalidation or full UX parity.",
+  "current_build": {
+    "x64": "2da5eb721a8593fab196cc5fdf9c31683cdfc9d3b62ed6bf6c90678240cf61f3",
+    "i686": "f130048a8f3040703a0cb7238b4e98bd7c84c75cb9a74d2320f4d6b76ec3f4fb",
+    "producer": {
+      "path": "runtime/producer-per-user-compact-chrome-20261014-205722/verification.json",
+      "sha256": "7423ca6a40e6f8081af6b18c52805cbab43e70cf8bd2b6f25c2760d654b6a754"
+    },
+    "checks": "Formatting, strict Clippy,135workspace tests,x64+i686 builds PASS; producer checks are separate from independent GUI evidence.",
+    "gui_sha256": "08e1641a17b8d52a194e48e4bc2cae2d39c527be87b29efe9a4a7adbb9a71e11",
+    "ui_script_sha256": "5134ea2ff1258c8286fc8545eeba9783606b574e6e8113e68d26fbad6fb8e0fb",
+    "i686_executed": false
+  },
+  "accepted_evidence": [
+    {
+      "evidence": {
+        "path": "runtime/acceptance-graph-per-user-layout-offline-20261014-200815/evidence.json",
+        "sha256": "ace37b284cb973976c730c7c63e22f694ffbb41f674068dda768bf9e608fa800"
+      },
+      "original_status": "NOT ACCEPTED",
+      "accepted_receipts": 10,
+      "scope": "Configure, eight actual tab labels and Preserve choice; all profile fields preserved except intended selected-seat choice. Initial minimum geometry rejected. Lock not claimed from this prefix.",
+      "builds": [
+        "4480f1a6814f60b856cbe55766ae25d53e1c3e427d009a32d5ae0babdcd98287",
+        "434582973d7e3d04d521e3ef2f20050ada0f5f25ad98160d9a1817e00b1d19c5"
+      ]
+    },
+    {
+      "evidence": {
+        "path": "runtime/acceptance-graph-per-user-layout-offline-20261014-204912/evidence.json",
+        "sha256": "1e33b95622e143cab6727ee4cf451b708ba3e0e2a97c1d188f64c1758f182066"
+      },
+      "original_status": "PENDING INDEPENDENT VISUAL REVIEW",
+      "observations": 17,
+      "clicks": 16,
+      "disabled": 1,
+      "scope": "Corrected Script ACK continuation: representative navigation, idle5000, remaining Lock, cursor-validation reason and disabled footer, two-seat switch/return with full profile equality; completes nine-tab union without replaying accepted other tabs. Original normal680x620 views retained; later compact chrome pixel approval comes only from current affected tail.",
+      "builds": [
+        "26498d1d8d73fbb549f99b5a490ea02cad51095e3b7304b15ed9269f0e26ca27",
+        "b29d0865c6dd770dc17bb0cc7d658bd7845048804eb96ad26c505647d2edc316"
+      ]
+    },
+    {
+      "evidence": {
+        "path": "runtime/acceptance-graph-per-user-layout-offline-20261014-205858/evidence.json",
+        "sha256": "995d510729d22d9a60a59bcdf1eb231c97650b6d875d9e7a7b163610f47ffd63"
+      },
+      "original_status": "PENDING INDEPENDENT VISUAL REVIEW",
+      "observations": 10,
+      "clicks": 9,
+      "disabled": 1,
+      "scope": "Actual initial540x520 without resize,320x360 affected frames, three same-value body choices preserve complete profile; temporary monitor-validation draft restored exactly. Whole usable rows and complete Apply/footer accepted from actual original pixels."
+    },
+    {
+      "evidence": {
+        "path": "runtime/acceptance-graph-per-user-layout-live-20261014-210103/evidence.json",
+        "sha256": "08a8ad9e47d2e25afd9b550ddc9ef01ab56080a9ca9e86a6ab4f808aac31d24e"
+      },
+      "original_status": "PENDING INDEPENDENT VISUAL REVIEW",
+      "observations": 10,
+      "clicks": 9,
+      "disabled": 1,
+      "scope": "One own virtual x64 target. Crosshair real button then moved Apply updates worker overlay state and existing own native overlay HWND; actual Remove disabled receipt and visible gray assignment content/warning; only intended cursor shape changes; Stop destroys owned overlay."
+    }
+  ],
+  "pixel_review": {
+    "result": "PASS bounded whole usable row/action visibility",
+    "actual_initial": "540x520 product-selected, never resized to manufacture initial-size pass",
+    "minimum": "320x360 actual owned-client geometry recorded with originals",
+    "whole_rows": {
+      "Input": "Whole Name input",
+      "Wheel": "Whole Ignore horizontal wheel button",
+      "Overlay": "Whole idle checkbox/slider row",
+      "Lock": "Whole Legacy and Desktop bounds buttons"
+    },
+    "footer": "Complete Apply on all affected frames; invalid cursor warning visible with ellipsis. Stopped Apply is already disabled, so this is warning/layout evidence, not worker invalid-request rejection.",
+    "quality": "Cohesive two-row navigation, framed scrolling content and compact identity/chrome are clearer than old configure-full-width.png. Normal Input retains a sizable blank gap; secondary labels are dim; CJK glyph boxes remain. Nine tabs only; no fake OK/Cancel or imported assets.",
+    "reference_limit": "Prior own configure screenshot directly compared. Public MouseMux user-input.png structural reference was independently viewed by root; this agent web/IAB could not display it, so no direct public pixel or exact-asset parity claim.",
+    "clicked_target_limit": "Minimum frames may show a different whole usable control than the clicked Preserve/Show action. Target full-rectangle visibility is not claimed for those actions.",
+    "originals": {
+      "compact/configure-initial540.png": {
+        "path": "runtime/acceptance-graph-per-user-layout-offline-20261014-205858/configure-initial540.png",
+        "sha256": "0d7ca5ab540f1e759a58b1909246d26ac0f8f0fa852f70356642df330f65260c"
+      },
+      "compact/reveal-start.png": {
+        "path": "runtime/acceptance-graph-per-user-layout-offline-20261014-205858/reveal-start.png",
+        "sha256": "870ad2315d809b4083367fc1f70af4ba6f0f7fabbf9622d1fa8b587a39178849"
+      },
+      "compact/reveal-wheel-minimum.png": {
+        "path": "runtime/acceptance-graph-per-user-layout-offline-20261014-205858/reveal-wheel-minimum.png",
+        "sha256": "c7c4c68b7d0b0dbc5368883f63328e3a54625d131d118bf4f53bceecc0a1e793"
+      },
+      "compact/reveal-overlay-minimum.png": {
+        "path": "runtime/acceptance-graph-per-user-layout-offline-20261014-205858/reveal-overlay-minimum.png",
+        "sha256": "67918bff093a5b8834baea3303c7a8f01436e3edc6cffb7487b2d9b56d09741b"
+      },
+      "compact/reveal-lock-minimum.png": {
+        "path": "runtime/acceptance-graph-per-user-layout-offline-20261014-205858/reveal-lock-minimum.png",
+        "sha256": "3cd8db229c20e3b8e0f6e1271d0195501f398cf54264a3b86daec7d22903ebe5"
+      },
+      "compact/validation-footer-minimum.png": {
+        "path": "runtime/acceptance-graph-per-user-layout-offline-20261014-205858/validation-footer-minimum.png",
+        "sha256": "1a8e4c286f16ca8f8a5e4d159e2f0574947afc42bfefb6fccd1d7dc9d9096ec6"
+      },
+      "live/live-applied-footer.png": {
+        "path": "runtime/acceptance-graph-per-user-layout-live-20261014-210103/live-applied-footer.png",
+        "sha256": "783dd92224af7c81bd6fc4d15cfe3403ebe4e17c00ac8276e85b793bf58d4b4f"
+      },
+      "live/live-remove-disabled.png": {
+        "path": "runtime/acceptance-graph-per-user-layout-live-20261014-210103/live-remove-disabled.png",
+        "sha256": "0e73c71adb5ab691bfad40c322d57e57e99d15aed818de10051c2fed2c1fd19d"
+      },
+      "live/live-keyboard.png": {
+        "path": "runtime/acceptance-graph-per-user-layout-live-20261014-210103/live-keyboard.png",
+        "sha256": "4b7661a06ec95b77037e0377e5259ce4efe7ff3b71ff8e767c5b2b9e80d6567e"
+      },
+      "flow/seat-2-values.png": {
+        "path": "runtime/acceptance-graph-per-user-layout-offline-20261014-204912/seat-2-values.png",
+        "sha256": "af0ff56d6a47baf33b32b060225730a3798801f4c6a5123a8f3afdca4621baa7"
+      },
+      "flow/seat-1-restored-values.png": {
+        "path": "runtime/acceptance-graph-per-user-layout-offline-20261014-204912/seat-1-restored-values.png",
+        "sha256": "6893b63279fe0a8cfafca2a93baaee71c6fb54b6f9489a900d3e01584fabb5d4"
+      }
+    }
+  },
+  "retained_failures_and_pending": {
+    "original_aggregates": [
+      {
+        "path": "runtime/acceptance-graph-per-user-layout-offline-20261014-200815/evidence.json",
+        "sha256": "ace37b284cb973976c730c7c63e22f694ffbb41f674068dda768bf9e608fa800",
+        "result": "NOT ACCEPTED",
+        "accepted_observations": 10
+      },
+      {
+        "path": "runtime/acceptance-graph-per-user-layout-offline-20261014-202524/evidence.json",
+        "sha256": "fc72908ba3fbde2559ced7f0b92aab6d36d2d96d0dde25d37d59b4ce3c18925b",
+        "result": "NOT ACCEPTED",
+        "accepted_observations": 4
+      },
+      {
+        "path": "runtime/acceptance-graph-per-user-layout-offline-20261014-204912/evidence.json",
+        "sha256": "1e33b95622e143cab6727ee4cf451b708ba3e0e2a97c1d188f64c1758f182066",
+        "result": "PENDING INDEPENDENT VISUAL REVIEW",
+        "accepted_observations": 17
+      },
+      {
+        "path": "runtime/acceptance-graph-per-user-layout-offline-20261014-205225/evidence.json",
+        "sha256": "cf32e0ef856590da164dc0d101831717fd879e84d10875b9eb0153ab5690371c",
+        "result": "PENDING INDEPENDENT VISUAL REVIEW",
+        "accepted_observations": 7
+      },
+      {
+        "path": "runtime/acceptance-graph-per-user-layout-offline-20261014-205858/evidence.json",
+        "sha256": "995d510729d22d9a60a59bcdf1eb231c97650b6d875d9e7a7b163610f47ffd63",
+        "result": "PENDING INDEPENDENT VISUAL REVIEW",
+        "accepted_observations": 10
+      },
+      {
+        "path": "runtime/acceptance-graph-per-user-layout-live-20261014-210103/evidence.json",
+        "sha256": "08a8ad9e47d2e25afd9b550ddc9ef01ab56080a9ca9e86a6ab4f808aac31d24e",
+        "result": "PENDING INDEPENDENT VISUAL REVIEW",
+        "accepted_observations": 10
+      }
+    ],
+    "reviews": [
+      {
+        "path": "runtime/acceptance-graph-per-user-layout-offline-20261014-200815/independent-visual-review.json",
+        "sha256": "fa28da68c8d55099e5c1d7d70987a86376aeacc3db12a77b92358ccf75311887"
+      },
+      {
+        "path": "runtime/acceptance-graph-per-user-layout-offline-20261014-202524/independent-visual-review.json",
+        "sha256": "da4ca0b4e4c5fb63deb90352adf889a61eedc7a31de8597aaf245735454f5c39"
+      },
+      {
+        "path": "runtime/acceptance-graph-per-user-layout-offline-20261014-202524/diagnostic-interpretation-correction.json",
+        "sha256": "d3afe508c43c17648d4022fd6a9389d44fe3d54f872625aa7b7e2b2eee9bf045"
+      },
+      {
+        "path": "runtime/acceptance-graph-per-user-layout-offline-20261014-205225/independent-visual-review.json",
+        "sha256": "714b5a67ec10e787ae83ae092f4df7dd04127a912db1ae84fe46800d567e558c"
+      },
+      {
+        "path": "runtime/acceptance-graph-per-user-layout-offline-20261014-205858/independent-visual-review.json",
+        "sha256": "d71c917bfa1a21f8916d9749671baae25189448c81dee7a8d6ba92d7b8baac94"
+      }
+    ],
+    "interpretation": "200815 and202524 remain NOT ACCEPTED.205225 remains PENDING with separate visual rejection; initial clipped captures did not prove unreachable scroll. Private diagnostic established first idle click committed5000, post-layout Script ACK was missed, retry undid it; this was not an idle algorithm defect. Corrected ACK and compact chrome passed affected continuations. No original is relabeled PASS.",
+    "diagnostic": {
+      "path": "runtime/acceptance-graph-idle-checkbox-diagnostic-20261014-204643/evidence.json",
+      "sha256": "3441f0825d75d249edc09e25d2557bd794455ec848611282a7a023ac645d920a"
+    },
+    "ack_source_review": {
+      "path": "docs/ui-script-click-ack-review-2026-10-14.json",
+      "sha256": "52ddd2779d187872632d1c1c0333975380fc4cf2368625092ca90cfd049dacfd"
+    }
+  },
+  "limits": [
+    "Only own virtual fixtures and app-local input; no hardware/RustDesk input, OS input injection or private pixels.",
+    "GUI controller and live target x64; copied i686 image unused by this layout gate.",
+    "No new routed-input delivery or plain-UP cleanup claim; zero-held probe is not release evidence. Existing native delivery gates stand.",
+    "Individual assignment dropdowns/name input were not clicked while disabled; visible gray content and stop-before-editing reason plus exact unchanged assignments supplement the actual Remove disabled receipt.",
+    "No full UX/MouseMux Ultra parity,16-tab parity,CJK legibility,general-device or general-application compatibility claim."
+  ],
+  "cleanup": {
+    "all_six_owned_run_processes_closed": true,
+    "own_executable_prefix_CIM_matches": 0,
+    "all_six_GUID_test_registry_keys_absent": true,
+    "normal_live_Stop_overlay_destroyed": true,
+    "no_additional_apps_or_tests_required": true
+  },
+  "counting": "Counts are actual observations including necessary setup/navigation; do not sum repeated setup as distinct feature coverage. Existing prefixes reused after narrowly scoped source fixes; no feature-family replay.",
+  "approval": "Independent bounded approval after actual original-pixel review; all original results retained. Root separately reviewed compact initial/minimum pixels. Source/native slot released after owned cleanup."
+}

@@ -1,0 +1,42 @@
+[workspace]
+members = ["crates/mux-core", "crates/mux-windows", "crates/protoinputmultiplex", "crates/cursor-snapshot-protocol", "crates/cursor-observer", "crates/mux-sdk-client"]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+rust-version = "1.92"
+
+[workspace.dependencies]
+anyhow = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+schemars = "1.2"
+mux-core = { path = "crates/mux-core" }
+mux-windows = { path = "crates/mux-windows" }
+
+# Keep local OCR inference usable in development without changing the GUI profile.
+[profile.dev.package.ocrs]
+opt-level = 3
+
+[profile.dev.package.rten]
+opt-level = 3
+
+[profile.dev.package.rten-base]
+opt-level = 3
+
+[profile.dev.package.rten-gemm]
+opt-level = 3
+
+[profile.dev.package.rten-imageproc]
+opt-level = 3
+
+[profile.dev.package.rten-tensor]
+opt-level = 3
+
+[profile.dev.package.rten-simd]
+opt-level = 3
+
+[profile.dev.package.rten-vecmath]
+opt-level = 3

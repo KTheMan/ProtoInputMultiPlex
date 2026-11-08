@@ -1,0 +1,166 @@
+{
+  "date": "2026-11-06",
+  "decision": "MAPPER_TEMPLATES_ACCEPTED",
+  "reference": "https://www.mousemux.com/pages/apps/webapp-input-mapper-beta/",
+  "scope": "Three original validated starter graphs shared by the Ouroboros draft browser and existing MCP Mapper commands.",
+  "verification": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-templates-20261106\\checks-006\\verification.json",
+    "sha256": "dfef05bad6bc8957ef214a76cd1004ad7c2841d6a8cc372ebfba775222c06ee9"
+  },
+  "review": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-templates-20261106\\independent-acceptance.json",
+    "sha256": "998684f8637dbb982ef5375589560bc1acdafa3f2fc3cc45f7cd34bee28ab8a3"
+  },
+  "publication": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-templates-20261106\\publication.json",
+    "sha256": "89ae79a1053138082baa3243d693c03ba35f1ebc2512568ee36e35b9df951124"
+  },
+  "workspace_tests": {
+    "passed": 763,
+    "failed": 0,
+    "ignored": 19
+  },
+  "x64_image": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-templates-20261106\\checks-006\\x64\\protoinputmultiplex.exe",
+    "sha256": "f06ca544e559378e739a490af707a3e707c3f121f2b0683de89fb1332d66e751"
+  },
+  "checks": {
+    "fmt": 0,
+    "clippy": 0,
+    "workspace-tests": 0,
+    "build-gui": 0
+  },
+  "native": {
+    "original_session": 14977,
+    "original_exit_code": 0,
+    "raw": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mf-3b4bc2a1605b\\evidence.json",
+      "sha256": "51025308fd3dd316fe1bd36864e6464588459dda7e31ed81139d53d0649b65a7"
+    },
+    "driver": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-templates-20261106\\native.py",
+      "sha256": "fa99bd645d5c6f1ae2ac062bc656eae3b9a52ed31ecda5d01ce32616a90f9315"
+    },
+    "readiness": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-templates-20261106\\native-ready-v2.json",
+      "sha256": "4ac50914cdc6b0e095678b214a2ded16a88ef1f346e50ed66ef367d70299935d"
+    },
+    "exit_codes": {
+      "GUI": 0,
+      "MCP": [
+        0
+      ],
+      "targets": {
+        "a": 0,
+        "b": 0
+      }
+    },
+    "UI_actions": 19,
+    "captures": {
+      "template-browser-normal": {
+        "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mf-3b4bc2a1605b\\template-browser-normal.png",
+        "sha256": "32ca41db848caca4a77b933a239218fe579474ab23ec1513d30803b1b90227bf",
+        "geometry": {
+          "hwnd": 4458874,
+          "dpi": 96,
+          "client_pixels": [
+            680,
+            620
+          ],
+          "client_logical": [
+            680.0,
+            620.0
+          ],
+          "window_rect": [
+            78,
+            78,
+            774,
+            737
+          ]
+        }
+      },
+      "template-browser-minimum": {
+        "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mf-3b4bc2a1605b\\template-browser-minimum.png",
+        "sha256": "bd09d8b552be9e5167cac8c587dfc8851745cc42c52412c4b1106d18689cc6a8",
+        "geometry": {
+          "hwnd": 4458874,
+          "dpi": 96,
+          "client_pixels": [
+            320,
+            360
+          ],
+          "client_logical": [
+            320.0,
+            360.0
+          ],
+          "window_rect": [
+            78,
+            78,
+            414,
+            477
+          ]
+        }
+      }
+    }
+  },
+  "prior_attempts": [
+    {
+      "verification": {
+        "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-templates-20261106\\checks-001\\verification.json",
+        "sha256": "6adccc59dc084bdfe9f6c821348ddac35d811e9550370d381affe107f8d4aa3b"
+      },
+      "original_session": 40946,
+      "original_exit_code": 1,
+      "reason": "The Activity tab and a long template binding selector exceeded a 320-pixel viewport."
+    },
+    {
+      "verification": {
+        "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-templates-20261106\\checks-002\\verification.json",
+        "sha256": "8f0f98a2922ace2fa0472d23149ff41559ff5dcaa73dec7d689db7dff766c7fa"
+      },
+      "original_session": 72626,
+      "original_exit_code": 1,
+      "reason": "After fixing horizontal overflow, Load still exceeded the visible body. The next candidate places bindings on compact rows and displays Load before its help."
+    },
+    {
+      "verification": {
+        "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-templates-20261106\\checks-003\\verification.json",
+        "sha256": "ec72f067ccdb45412439c89f4e5a545ff884625abea71866f7745837bfa0e717"
+      },
+      "original_session": 60150,
+      "original_exit_code": 1,
+      "reason": "Inline bindings restored most of the available height. Load still clipped by ten pixels, so the final layout moved the description below it."
+    },
+    {
+      "verification": {
+        "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-templates-20261106\\checks-005\\verification.json",
+        "sha256": "d63cbb7343844e3e950954acb2eb94ea9c0c26ecb8adf6bee2060f5cf45a2786"
+      },
+      "original_session": 29036,
+      "original_exit_code": 1,
+      "reason": "The updated Template controls test passed. An existing script test failed removing its temporary directory with DirectoryNotEmpty. The final candidate also tightened compact browser row spacing."
+    }
+  ],
+  "prior_native": {
+    "original_session": 94870,
+    "original_exit_code": 0,
+    "verification": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-templates-20261106\\checks-004\\verification.json",
+      "sha256": "a653ab57730774f032e7bbdadbcfd992e3240f81b72d7f55fb5fc92ea4b2243c"
+    },
+    "raw": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mf-cc25f9ab9291\\evidence.json",
+      "sha256": "6990887a3a8b91ae8b599d043f71e5def346b3f89e66dcbbd48917e5e69ba0d6"
+    },
+    "reason": "The functional route passed, but the real minimum window showed only starter choices. The final browser hides Apply and Arm while disarmed and retains Disarm during active or pending work."
+  },
+  "coverage": [
+    "MCP listed three templates and built validated cross-user graphs without changing the worker state.",
+    "The browser loaded the same-user Remap a key graph as an editable draft. Undo and Redo preserved the applied graph. Explicit Apply committed it disarmed. After Arm, A received an F10 down/up pair from F7, B recorded no key events, and both targets and all owners closed normally after Disarm, Stop and EOF.",
+    "Rendered controls cover normal/minimum sizes, long user labels and available Disarm during active browsing. The native minimum window confirms both bindings and Load are wholly visible. Portable tests cover stable bindings and all three template definitions. The native run preserves original browser captures at both sizes."
+  ],
+  "open": [
+    "Native mirror and Timer template actuation, native GUI cross-user picker interaction, additional flows and broader Mapper UX remain outside this acceptance.",
+    "Historical intermittent GUI stall and full Ultra parity remain open."
+  ]
+}

@@ -1,0 +1,160 @@
+{
+  "date": "2026-11-07",
+  "decision": "SCREEN_ANALYSIS_ACCEPTED",
+  "scope": "Selected-client-window pixel inspection and exhaustive RGB image matching, with a local Ouroboros workflow and optional MCP capture analysis.",
+  "verification": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\screen-analysis-20261106\\checks-008\\verification.json",
+    "sha256": "cb77f91e23c6bbdaeee404f1fcbfec2239a35f2248184faa0d5bb8ab67b10e8a"
+  },
+  "review": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\screen-analysis-20261106\\independent-acceptance-002.json",
+    "sha256": "4c14d3ad9e226a35c1bad45bbb83df32e5ce65f3ef1d30c0992c2b165d7fadbb"
+  },
+  "publication": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\screen-analysis-20261106\\publication.json",
+    "sha256": "92b9208b8158e1b580dc60021603c00c19acc2dde8477bbb309797bb7cb97407"
+  },
+  "workspace_tests": {
+    "passed": 853,
+    "failed": 0,
+    "ignored": 19
+  },
+  "checks": {
+    "fmt": 0,
+    "clippy": 0,
+    "workspace-tests": 0,
+    "build-gui": 0
+  },
+  "x64_image": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\screen-analysis-20261106\\checks-008\\x64\\protoinputmultiplex.exe",
+    "sha256": "188470dc88dff0dbba56b1d0472638a8b533cea1572590d1af1af598b12b6340"
+  },
+  "producer": {
+    "original_session": 21313,
+    "original_exit_code": 0
+  },
+  "native": {
+    "evidence": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\sa-9a1ebaeff30e\\evidence.json",
+      "sha256": "468ed9f72317d5186cbacbccd5be8ffe60e6b8879ef4bf0f68eaed0c2ed2afbc"
+    },
+    "driver": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\screen-analysis-20261106\\native.py",
+      "sha256": "04a573d2c33b4b6a8cc69506ce0013061c27c752a4adee9b31dec9f4bb7f1e6a"
+    },
+    "original_session": 53554,
+    "original_exit_code": 0,
+    "scope": {
+      "GUI": 1,
+      "normal_x64_targets": 2,
+      "virtual_pairs": 2,
+      "authenticated_MCP_actors": 2
+    },
+    "exit_codes": {
+      "GUI": 0,
+      "MCP": [
+        0,
+        0
+      ],
+      "targets": {
+        "a": 0,
+        "b": 0
+      }
+    },
+    "UI_actions": 36,
+    "MCP_calls": 27
+  },
+  "accepted": [
+    "Portable validated RGBA pixel/crop operations and exhaustive RGB mean-absolute-error template matching with deterministic row-major ties.",
+    "Templates are PNG only, at most 128x128 pixels and 256 KiB base64; matching ignores alpha, rejects invalid regions and rejects work above 64 million candidate-pixel comparisons.",
+    "Optional routing_capture analysis and return_image=false preserve the existing default PNG behavior and 24-tool MCP surface.",
+    "Capture and analysis finish in the existing detached worker before active-user, exact selected-target and five-second timeout validation; connected MCP additionally rechecks current capture grant, client generation and permitted PID.",
+    "GUI Screen tools use the existing local capture authority; agent capture still requires its separate Agent Access grant and explicit allowed target scope.",
+    "Snapshots/templates remain memory only; per-session/user/window/revision binding rejects stale receipts and clears old data on identity changes.",
+    "No pixel or match operation emits native input or reads the desktop, clipboard, files, providers or another unselected application."
+  ],
+  "limits": [
+    "Only virtual users and disposable owned x64 targets were used; no hardware, RustDesk pointer, global input or broad desktop capture.",
+    "Observed data are captured snapshots, not live subscriptions or authorization to act on later screen state.",
+    "This group is screen-analysis foundation; OCR, LLM nodes, general vision/Mapper integration, hardware/application breadth, historical GUI-stall P1, full Ultra/UI parity and release readiness remain open.",
+    "Native source/permission cases are bounded development evidence, not a broad fault, stress or application compatibility matrix."
+  ],
+  "retained_failed_checks": [
+    {
+      "receipt": {
+        "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\screen-analysis-20261106\\checks-001\\verification.json",
+        "sha256": "1b94c17dddd121e9f09452145f18d19dde4642f224718d693b9493dcd747c5b6"
+      },
+      "error": "RuntimeError('clippy failed')",
+      "checks": {
+        "fmt": 0,
+        "clippy": 101
+      }
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\screen-analysis-20261106\\checks-002\\verification.json",
+        "sha256": "835c9d901ef6e04342ad68c2011cc36d33da63e28d71a1c14e564604459c3993"
+      },
+      "error": "RuntimeError('clippy failed')",
+      "checks": {
+        "fmt": 0,
+        "clippy": 101
+      }
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\screen-analysis-20261106\\checks-003\\verification.json",
+        "sha256": "55c555f0c1b369ff0dc16feb77f2722311e6a74d8177849e33100b7f3269c9c7"
+      },
+      "error": "RuntimeError('clippy failed')",
+      "checks": {
+        "fmt": 0,
+        "clippy": 101
+      }
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\screen-analysis-20261106\\checks-004\\verification.json",
+        "sha256": "9ec7102e725767f8f8bb552efafff174eb8aab08d5608acd2eaf3f5abc851388"
+      },
+      "error": "AssertionError('Frozen input changed')",
+      "checks": {
+        "fmt": 0,
+        "clippy": 0,
+        "workspace-tests": 0,
+        "build-gui": 0
+      }
+    }
+  ],
+  "retained_failed_native": [
+    {
+      "evidence": {
+        "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\sa-c229041a6545\\evidence.json",
+        "sha256": "e1695248318d2f7f7853ce5f393479d8d448309ebf200d7d30145aa94aefa4a4"
+      }
+    },
+    {
+      "evidence": {
+        "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\sa-b6a01d99893f\\evidence.json",
+        "sha256": "a9b9970525065b9fecc5fbc3ddbd36261ff946507e012555a203677ffecb9a64"
+      }
+    },
+    {
+      "evidence": {
+        "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\sa-1d16113ffc16\\evidence.json",
+        "sha256": "947d2c2469be0c6bcd14e47f5b24d4e4200bdff2924a4f82503cae2d2af104e0"
+      }
+    },
+    {
+      "evidence": {
+        "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\sa-e90ae9f1580a\\evidence.json",
+        "sha256": "745305850edb0be32d98417358ecd93f57ea8a950e05998e6659e93fee27a47d"
+      },
+      "ordinary_cleanup": {
+        "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\sa-e90ae9f1580a\\root-ordinary-cleanup.json",
+        "sha256": "b34322cae2b8dc537bf2e68a9dc43b5e83ba04d76d51ed1579ecbf26daecd25a"
+      }
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "decision": "APPROVED BOUNDED BUSY RELOCATION; ROOT READY STILL REQUIRED",
+  "source_approval": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\docs\\clean-restart-source-review-2026-10-15.json",
+    "sha256": "fc7a5b29ed7ae03b21da5c8aac5e7071f3b824e6fdbbe186b9293a22ec16b2f2"
+  },
+  "preserved_failure": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-clean-restart-native-20261015-100540\\evidence.json",
+    "sha256": "c63522ec008267f401cd156a09c1ba435c56a0cec7e959be6c50290f25a3c9de",
+    "review_path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-clean-restart-native-20261015-100540\\independent-review.json",
+    "review_sha256": "8fd354181b93df43a1fff37fe1c85e83fe5987ede37a9b1866a3e432cf6a5407"
+  },
+  "runner": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\scripts\\test-clean-restart-acceptance.py",
+    "sha256": "f3cf69e6f51d85e7c6ac23f1cab6104e33104b77381b4b6a29d71f3978be8a57",
+    "ast": "PASS"
+  },
+  "plan": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\clean-restart-acceptance-plan.md",
+    "sha256": "5e78dc706fb878bbc51ca0d5b0221dbda4536bb7acd20e5aec1581e1d6c4153a"
+  },
+  "semantic_delta": [
+    "Remove concurrent standalone Busy call from native positive; all savedUP/reuse/failure/worker-loss criteria unchanged.",
+    "During first GUI Active sample, execute same real independent standalone Start\u2192MoveTo\u2192buttonDown denied actual Busy\u2192Stop.",
+    "Record unchanged complete native trace including motion, real busy PID/controller cause, GUI profile/prefs intact, competitor worker exit0 and known overlay closure.",
+    "Four GUI Start/Stop receipts/two originals unchanged; no Agent enable/grants/routed accepted packet.",
+    "Once callback wraps all exceptions as RuntimeError, avoiding Base read-retry of imperative operations.",
+    "Native caps56mut/38input + GUI4/2 => combined60/40; expected53+4/37+2."
+  ],
+  "source_feasibility": [
+    "gui.rs3014 StartOptions app_hotkeys true",
+    "session.rs330 DesktopGuard only when !app_hotkeys",
+    "app_lifecycle initial.shortcuts empty registers no F11",
+    "automatic Start potential allowedPID does not itself attach; actual mouseDown triggers eligibility/lease check"
+  ],
+  "scope_limits": [
+    "Multiple simultaneous standalone controllers remain OPEN.",
+    "Busy denied before attachment because of target ownership required; F11 failure cannot substitute.",
+    "No disjoint native ID-set or old-ID rejection claim.",
+    "No native apps run for this revision."
+  ],
+  "findings": []
+}

@@ -1,0 +1,90 @@
+{
+  "decision": "APPROVED — SOURCE ONLY",
+  "scope": "Overall optional application-cursor integration: core setting, GUI/profile/MCP setting path, desktop selection, host observer, Rust target observer/protocol, overlay composition, explicit fixture, isolated optional C++ bridge and packaging paths.",
+  "baseline_producer": {
+    "path": "runtime/producer-p1-target-exit-20261015-024710/verification.json",
+    "sha256": "c44632cd654b2a8d5312fd1a88a232856e38a593fd894a6c4a20012e0a0a55e6"
+  },
+  "frozen_producer_path": "runtime/producer-app-cursor-following-20261015-035509/verification.json",
+  "producer_status_at_review": "PASS",
+  "frozen_manifest_canonical_sha256": "d09e92a02f4e7435699d22c288a3c716fe91094ab9b140648770edfc660e7891",
+  "frozen_file_count": 81,
+  "source_mismatches": [],
+  "original_64_source_comparison": {
+    "protected_unchanged": 53,
+    "declared_modified": 11,
+    "additional_tracked_files": 17
+  },
+  "reviewed_changed_or_added_sha256": {
+    "Cargo.lock": "81b97cf5fc4233bab34b23a6d58af60aa7f772ed79ab58ecc49c4016218fc6e6",
+    "Cargo.toml": "8eb49454a36406555a7976c49f54c3b940a82cb6707e2f32144121e9dfdf14e3",
+    "crates/cursor-observer/Cargo.toml": "bb64cbb0c8230c3fca20712a34827b219dcca281cb5a6ce6744b18d4f9c3ce22",
+    "crates/cursor-observer/src/lib.rs": "1fbb833945ec494682b65153ea914e60f83a8e0518558341e9e833d18c416f67",
+    "crates/cursor-snapshot-protocol/Cargo.toml": "1cc75298ef4872d3616563883f44c0046bf96eb2d48e3c3ff5596e8fbd14ef9c",
+    "crates/cursor-snapshot-protocol/src/lib.rs": "22170dd47626b4175c3874a1486ed0112bd80f026a7e8563ddfd47062ac6cd53",
+    "crates/mux-core/src/desktop.rs": "17993abdc721c73be6fbc9d30fc39a50b1b3b36b99b4fe85ef8d7592fa4fcfba",
+    "crates/mux-windows/Cargo.toml": "595bf9c476cf9f57b7897252ebd44947450bfef9bd91557a913480b69b393807",
+    "crates/mux-windows/src/app_cursor.rs": "ee396be4a9e4f2e9d13d13f1fda3cf5e7297a2a4d4dfc0a640c6d579219c4dec",
+    "crates/mux-windows/src/lib.rs": "a791cfe62111d79ccb85c686d3260f412491868ec9c1691feb620c63fb81b9f9",
+    "crates/mux-windows/src/overlay.rs": "5efb41d52e238f6c62a9d58e8ab3a4b3772dba6356e1da7493818d94c47d52f7",
+    "crates/mux-windows/src/protoinput.rs": "761d71769e3b06d1f4c733aae08c170489481d6c0177aeefa8cc0a605a11ad71",
+    "crates/protoinputmux/src/automation_probe.rs": "fb66845d3982acc734b508e09cc4d3da990aaa96d87d2cacbab4d1a3e39344da",
+    "crates/protoinputmux/src/desktop_router.rs": "1bce53f4c83e14b9154a0bb574b07891de9a846676e975198f99034f7ad4ac25",
+    "crates/protoinputmux/src/gui.rs": "eb04d25413995db3bde14ef3110661d767afb533b9481fc59afcc4f8801a4bb2",
+    "crates/protoinputmux/src/main.rs": "f5ef2ea748f8895dc92c57eb7277f7de5517aa5e94cc73bd8a2b2b84d7561fde",
+    "patches/0001-backend.patch": "63c6860060675a2e6789dbaa50f0bb4c758319b4a3f2464e2989c4ade403663a",
+    "patches/cursor-observer/0003-cursor-observer.patch": "edaf6513cac3377d2cf9ff232b52d0f352d72c25d447c42dd54344d1212813dc",
+    "scripts/package-portable.ps1": "7116c24278a245ae5bc152d37c38b3dacf6bda0b63bd47834e25400f288612ee",
+    "scripts/package-portable.py": "dbc6f9b8abce78cb750370376d5ea84d8dfe45fc00421910bd1652283dfb0f2a",
+    "vendor/ProtoInput/src/ProtoInput/ProtoInputHooks/CursorVisibilityHook.cpp": "5951de3a811f957c3d4b2376fa95b71e467d9ab6413c2c895d07eb8919d19d0a",
+    "vendor/ProtoInput/src/ProtoInput/ProtoInputHooks/FakeCursor.h": "d4b956be601ea6929f73eb06c4de9c7e6e8ab59874ae4f047580405a839119f3",
+    "vendor/ProtoInput/src/ProtoInput/ProtoInputHooks/MuxCursorObserverBridge.h": "112e8e49aef62293cf046a3d1286eed7aa465e24c11477084c78f4f2339c99c2",
+    "vendor/ProtoInput/src/ProtoInput/ProtoInputHooks/PipeCommunication.cpp": "ff540142cd01a4d7ce954de2b82c3f0adf6eb7d78b7728a4a3e526ddd6b7f7ee",
+    "vendor/ProtoInput/src/ProtoInput/ProtoInputHooks/pipeinclude/pipeinclude.h": "f73b1e1ae9f3a5057d5bfdbb9f72632218cfa81c80465482e8bbd730648f0559",
+    "vendor/ProtoInput/src/ProtoInput/ProtoInputHooks/RawInput.cpp": "a92cbf75920e363f4cbbe492fc13dda2df0a464cef37dc664a8dd93f14d62330",
+    "vendor/ProtoInput/src/ProtoInput/ProtoInputLoader/include/protoloader.h": "1d6e037b8d13c24d9b52a4100df0e0b1a3f32d43c75c4dad4bcda2a5a55dcc04",
+    "vendor/ProtoInput/src/ProtoInput/ProtoInputLoader/Inject.cpp": "86caead410dc990de7aed9945d8d5b2195bf21b740c20c4fb142ab13ec623cb2"
+  },
+  "independent_observer_review": {
+    "path": "runtime/acceptance-app-cursor-main-20261015-035118/observer-review-at-launch.json",
+    "sha256": "e8ecfdc4c8f0052605adf37e808459e65d7b0260d6fc1c31405e112059a938e6",
+    "scope": "Historical base observer approval; current receive/retry delta independently covered by source_fix_review."
+  },
+  "resolved_material_findings": [
+    "C++ Start now compares the explicit ObserverSuccess=0 ABI and Stop retains the attachment on failure.",
+    "Stock classification uses the original target-local shared handle before CopyIcon; only custom images own asynchronous copied icons.",
+    "Explicit fixture handles WM_SETCURSOR with the stored virtual region and normalizes child mouse coordinates to its own root client.",
+    "STOPPED publication and clearing the old observer global share the Start lifecycle gate, closing the acknowledged-restart interleaving.",
+    "Selected-target capability is queried with the actual follow flag even while disabled; architecture absence is authoritative before enabling, without allocating an observer.",
+    "The ordinary backend exit tick reaps acknowledged stopped observer bindings for every attached target, including old selections never revisited.",
+    "Native malformed-snapshot failure repaired: post-receive request pairing, retained valid publication retry, and valid missing-data fallback; two focused production-transition regressions reviewed in the linked addendum."
+  ],
+  "reviewed_invariants": [
+    "No new host cursor query/movement; selected PID/HWND/attachment/association/request generations are checked. No foreign cursor handle or custom pixel payload is exposed through routing_state.",
+    "Optional exports and architecture DLL availability retain configured fallback; provider failures remain local status and do not fail ordinary routing. Stopped/disabled mapping ownership remains bounded until acknowledgement or original process exit.",
+    "Fixed header and bounded copied payload reject malformed dimensions, hotspot, reserved/status fields and non-premultiplied bytes before rendering.",
+    "Custom image origin subtracts scaled hotspot; source-over premultiplied composition preserves opaque black and alpha, label/badge placement, and cached same-image metadata updates. Hidden app imagery preserves configured labels/badges.",
+    "Default follow_application=false preserves older JSON. Actual Theme checkbox uses routing_settings/profile state, not routing_output; unavailable runtime capability disables the control without discarding the saved preference.",
+    "Both isolated and consolidated vendor patches reverse-check against the frozen worktree; optional C++ forwarding stays separate from Rust rendering/publication. Portable scripts include both observer DLLs; packaging is not executed by this review.",
+    "Final capability/reaping delta: cursor_available is checked before the !enabled no-allocation branch; only active previous selection is disabled on target changes. Reaping uses zero-timeout coherent STOPPED inspection and releases host references after acknowledgement."
+  ],
+  "checks_performed": [
+    "Read-only source/API/ownership review",
+    "Programmatic 81-file hash comparison",
+    "Read-only reverse application checks for both native patches",
+    "Runner AST/helper callback review; no apps or Cargo"
+  ],
+  "limits": [
+    "No runtime/native/pixel/lifecycle acceptance from this report; final producer and finite native gate remain separate.",
+    "ShowCursor forwards its immediate event rather than full display-counter semantics; animated/all cursor APIs, arbitrary applications, physical devices, mixed DPI and same-process independence are not established.",
+    "High-rate Motion queue pressure is unperformed P6 work, not an added acceptance workload.",
+    "Malformed/out-of-order timing cases have only the specific protocol unit/source evidence; no artificial native fault injection is proposed."
+  ],
+  "open_findings": [],
+  "producer_sha256": "be78a819586cda97d6e40a70fa03aef9749303eea996c4e91db3cf0691190ddb",
+  "final_producer_evidence": "Parent-owned frozen producer reports formatting, strict Clippy, 193 workspace tests and x64/i686 builds PASS. This reviewer did not rerun Cargo/native.",
+  "source_fix_review": {
+    "path": "docs/app-cursor-following-source-fix-review-2026-10-15.json",
+    "sha256": "c692d69d01b813328b8678439dd26743d1ad13fd2b11680437ee529ab343eef1"
+  }
+}

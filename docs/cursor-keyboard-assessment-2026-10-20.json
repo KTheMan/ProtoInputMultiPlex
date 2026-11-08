@@ -1,0 +1,110 @@
+{
+  "decision": "BOUNDED_WINDOWS_CURSOR_AND_COMPACT_KEYBOARD_ACCEPTED",
+  "date": "2026-10-20",
+  "windows_cursor": {
+    "evidence": {
+      "path": "runtime/windows-cursor-native-attempt003/acceptance-windows-cursor-20261020-160323/evidence.json",
+      "sha256": "70554ae27eaf2a1e2cae329e0c1c3a5772d7f574ebaf8d3cc7ad8a84a64dacd9"
+    },
+    "independent_review": {
+      "path": "runtime/windows-cursor-native-attempt003-review.json",
+      "sha256": "ba2ffe2a6c7a1e558d5c23fe74987948e948fc6ef1060e99d693596ca94a26ba"
+    },
+    "scope": "Two distinct owned x64 processes, two virtual users, 16 retained owned-overlay PNGs, configured Windows arrows with distinct glows, followed hand/IBeam/custom/hidden cursor, glyph-only IBeam24/48, hotspot geometry, three position-only cache checks, ordinary Stop/EOF/WM_CLOSE cleanup",
+    "normalization": "Destination-inverting stock pixels preserve Windows glyph geometry as solid white, with an explicit system_cursor_fallback status note. This is not destination inversion fidelity.",
+    "images": {
+      "configured-arrow-0": {
+        "path": "docs/windows-cursor-configured-arrow-0.png",
+        "sha256": "85b782af1f547a03a4e9d010d36ee227e843f4bd05fb1fd32c0b7ca4740a3f0a",
+        "canvas_size": [
+          142,
+          40
+        ],
+        "hotspot": [
+          6,
+          6
+        ],
+        "conversion_or_fallback": null,
+        "glyph_nonblack_pixels": null
+      },
+      "configured-arrow-1": {
+        "path": "docs/windows-cursor-configured-arrow-1.png",
+        "sha256": "78cca1c789614079d8f24ba6d9386be0d8a60d797343c8b5f7f66d9659b222cf",
+        "canvas_size": [
+          164,
+          64
+        ],
+        "hotspot": [
+          6,
+          6
+        ],
+        "conversion_or_fallback": null,
+        "glyph_nonblack_pixels": null
+      },
+      "ibeam-glyph-only-24": {
+        "path": "docs/windows-cursor-ibeam-glyph-only-24.png",
+        "sha256": "6a8b539d717c88943a2f8857d3dd62f2176bed30cbdbc2541aaeceda44cf3830",
+        "canvas_size": [
+          40,
+          40
+        ],
+        "hotspot": [
+          12,
+          13
+        ],
+        "conversion_or_fallback": "Windows cursor inverting pixels rendered solid to preserve the Windows glyph geometry.",
+        "glyph_nonblack_pixels": 216
+      },
+      "ibeam-glyph-only-48": {
+        "path": "docs/windows-cursor-ibeam-glyph-only-48.png",
+        "sha256": "c618854c62f54587c4e97c7aa2cc5cf3ebe5ffacba9a7c3e42f6ca54c34ea8bf",
+        "canvas_size": [
+          64,
+          64
+        ],
+        "hotspot": [
+          18,
+          20
+        ],
+        "conversion_or_fallback": "Windows cursor inverting pixels rendered solid to preserve the Windows glyph geometry.",
+        "glyph_nonblack_pixels": 384
+      }
+    }
+  },
+  "compact_keyboard": {
+    "evidence": {
+      "path": "runtime/keyboard-compact-ui-attempt004/evidence.json",
+      "sha256": "f58635e59559bfc7acaf1a79270c621fc55e5c44831b446906a8f429f9f6d855"
+    },
+    "independent_review": {
+      "path": "runtime/keyboard-compact-ui-attempt004-review.json",
+      "sha256": "6f25526815898b67a68966c264213533c5cc3688fa326ba6736d1ca82b709f3e"
+    },
+    "scope": "Stopped private virtual profile; all27 ordered UI actions/profile checks and six owned320x360/360x360 images accepted, including full recipient popups and disabled unpaired-user controls. Ordinary close and final integrity passed.",
+    "build": "Parent producer f106048f...; same x64 host executable as the observer-only successor. Observer is not loaded by this stopped UI cohort."
+  },
+  "producer": {
+    "report": {
+      "path": "runtime/producer-observer-busy-repair-20261020-attempt001/verification.json",
+      "sha256": "618994f9acefe202d6b9b6026012f456a8a434b650e4278f082ed4121b251ea5"
+    },
+    "independent_review": {
+      "path": "runtime/observer-busy-repair-producer-attempt001-review.json",
+      "sha256": "6387e719e3eb21ee33d4e7d1ec9eb56263cc3292477a6ca1d98e10e7be68d7ce"
+    },
+    "checks": "cargo fmt --all --check; strict workspace/all-target Clippy; cargo test --workspace:384passed,3ignored; defaultx64+i686 app/observer builds PASS"
+  },
+  "limits": [
+    "Virtual devices and explicitly selected owned applications only; hardware and RustDesk input untouched.",
+    "Windows Theme control is source-reviewed; this native cursor cohort configures through MCP. The separately accepted Keyboard UI is not full Theme/Ultra UI acceptance.",
+    "Animated Windows cursors render framezero; cached system-theme artwork refresh requires restart. Unsupported pixels use a disclosed compatible vector fallback.",
+    "Observer busy-admission regressions pass, but native002's exact unsupported publication branch remains unproven; native003 does not establish a causal diagnosis.",
+    "Earlier GUI responsiveness/P1 and WordPad Ctrl+S compatibility remain open. The opt-in accelerator fixture has source/build coverage only.",
+    "No performance benchmark, broad application/mixed-DPI qualification, native i686 execution, same-process or desktop-wide isolation, full UX or Ultra parity claim."
+  ],
+  "preserved_failures": [
+    "runtime/windows-cursor-native-attempt001-review.json",
+    "runtime/windows-cursor-native-attempt002-review.json",
+    "runtime/keyboard-compact-ui-attempt003-review.json"
+  ]
+}

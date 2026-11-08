@@ -1,0 +1,80 @@
+{
+  "decision": "APPROVED FOR FINITE TWO-PHASE GATE; explicit ROOT READY required",
+  "runner": {
+    "path": "scripts\\test-startup-shortcut-recovery.py",
+    "sha256": "6542dd5dbfc954ea47a725bf03dc39dce1bf6274b840bb3ca2f0a980ca18ff31",
+    "AST": "PASS"
+  },
+  "plan": {
+    "path": "docs/startup-shortcut-recovery-plan.md",
+    "sha256": "2433e3bd56329e58d3a18ac77130a1684188148bdcccbe7804429cd1fe9a9998"
+  },
+  "source_review": {
+    "path": "docs\\startup-shortcut-recovery-source-review-2026-10-15.json",
+    "sha256": "36b85bceb20302868c921ca0e09df145eebf4b73e8e07e562c95872becb897d6",
+    "six_current_source_hashes_match": true
+  },
+  "producer": {
+    "path": "runtime\\producer-startup-shortcut-recovery-20261015-113145\\verification.json",
+    "sha256": "e6810bcdf78837d3f9dece8b83bc88b379941bc6a9c56e5ddcc2c32c05a62f23",
+    "result": "PASS",
+    "workspace_tests": 273,
+    "checks5_and_doctor": "exit0",
+    "current_inputs": 831,
+    "all_current_match": true,
+    "runtime10_match": true,
+    "build2_match": true,
+    "build_sha256": {
+      "x64": "02d78df4cfcff88f849b68c6d78d9a8ae006a9ea8dbc59e6accf7e45822572c0",
+      "i686": "87b6a28b2835db681f843e91f29daf79a6a86ccfc6dcae9d8f19d8299f84db4c"
+    }
+  },
+  "phase_budget": {
+    "custom": {
+      "GUI_observations": 10,
+      "actual_clicks": 9,
+      "disabled_observation": 1,
+      "originals": 2,
+      "one_connected_MCP_readonly_inspect": 1,
+      "routing_input_calls": 0
+    },
+    "default": {
+      "GUI_observations": 7,
+      "actual_clicks": 6,
+      "disabled_observation": 1,
+      "originals": 3,
+      "MCP_calls": 0,
+      "routing_input_calls": 0
+    },
+    "total": {
+      "GUI_observations": 17,
+      "actual_clicks": 15,
+      "disabled_observations": 2,
+      "originals": 5,
+      "owned_GUI": 2,
+      "owned_probes": 2,
+      "sequential": true
+    }
+  },
+  "review": [
+    "Owned fixture acquires exact custom/default chord before GUI; abort on external conflict, never actuates chord or changes foreground. Probe/GUI use exact copied run image and only explicit virtual assigned target.",
+    "Exact input preference bytes and SHA captured before Base.execute/GUI launch using the same deterministic writer; inactive and Retry checks cannot adopt an accidental startup rewrite as baseline.",
+    "Custom phase verifies visible/non-iconic inactive launch, both Home sizes, rollback availability, failed Retry terminal status before conflict release, successful Retry full policy and one zero-input Start/Stop. Actual settings category Agent access navigation present before destination; connected app_preferences inspect uses existing readonly permission after recovery.",
+    "Default phase verifies opposite registration order rollback, inactive Revert and unchanged Apply rejection, then explicit F11-to-F10 Stop edit plus actual Apply; expected full saved settings compare by action and preserve unrelated fields. No stopped-GUI MCP access claimed.",
+    "Imperative once attempts recorded before dispatch and never replayed on sampling retry. Health/Apply terminal waits are readonly under existing finite deadline.",
+    "All changed profile snapshots must remain equal; startup private GUID value stays absent. No startup-registration write or routing packet.",
+    "Exact final GUI/probe/client close, scoped unique run-image CIM inventory, descriptor/GUID absence, registration release probes and overlay closure required. Worker Stop evidence is stopped recovery/no worker/closed overlay, not a directly retained exit-code sample.",
+    "Original captures are owned-window only. mtime capture timing is not request-associated freshness; independent direct original judgment remains required."
+  ],
+  "resolved_harness_findings": [
+    "Missing Settings category Agent access navigation fixed.",
+    "Readonly terminal Retry/Apply waits avoid premature fixed-delay assertions.",
+    "Cold-start preference baseline moved before GUI launch."
+  ],
+  "findings": [],
+  "limits": [
+    "No native/data/pixel acceptance yet. Reviewer ran no apps, tests, Cargo, native input or validators.",
+    "Standalone null health and inactive connected reply compatibility are source/unit scope; native connected inspect is healthy recovered GUI only.",
+    "Live registry-deactivation/forced rollback, tray/native-window failure, real logon/reboot, malformed preference file and broad hardware/P1/UX/Ultra remain unvalidated."
+  ]
+}

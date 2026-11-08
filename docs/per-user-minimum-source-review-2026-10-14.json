@@ -1,0 +1,13 @@
+{
+  "result": "APPLIED; rendered acceptance pending",
+  "source_review": "Independent automation_core approved d3855b43 source correction; no visual claim",
+  "baseline_sha256": "b18ec8c3ab348a5a919c55575b6aba293503da029680d2f6a8eddafaa35cbc8e",
+  "applied_sha256": "d3855b432ab6039a44d42c8d2ddcc80a3a5c0547f010322e1d6000da3cc62f5e",
+  "patch_sha256": "bcb7ce0c150cd996ce9de06c3f45a2a3b8f0c7a4546be255465211255a4c663f",
+  "backup": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\per-user-minimum-baseline-20261014-202029\\gui.rs",
+  "app_logic_byte_exact": true,
+  "scope": "User identity in existing header; assignment reason in existing footer row. No setting, routing or permission changes.",
+  "formatted_source_sha256": "31ce022533d314700d3b1cc5d692fb605c7b5cac222dc38b037385cf06db0b2a",
+  "formatter_change": "Only wraps layout_no_wrap arguments and indents max(0.0); root directly reviewed the complete two-hunk difference.",
+  "producer": "runtime/producer-per-user-minimum-20261014-202035/verification.json"
+}

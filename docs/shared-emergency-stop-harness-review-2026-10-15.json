@@ -1,0 +1,126 @@
+{
+  "decision": "APPROVED FOR FINITE NATIVE GATE; execution requires ROOT READY",
+  "producer": {
+    "path": "runtime\\producer-shared-emergency-stop-20261015-105014\\verification.json",
+    "sha256": "bbc2b23dd915fbe42531d78a2e6d614a7253c1a0973caa242337ba0beb0d0358",
+    "checks": [
+      {
+        "command": [
+          "cargo",
+          "fmt",
+          "--all",
+          "--check"
+        ],
+        "exit_code": 0,
+        "log": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-shared-emergency-stop-20261015-105014\\1.log"
+      },
+      {
+        "command": [
+          "cargo",
+          "clippy",
+          "--config",
+          "build.rustc-wrapper=\"\"",
+          "--workspace",
+          "--all-targets",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "exit_code": 0,
+        "log": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-shared-emergency-stop-20261015-105014\\2.log"
+      },
+      {
+        "command": [
+          "cargo",
+          "test",
+          "--config",
+          "build.rustc-wrapper=\"\"",
+          "--workspace"
+        ],
+        "exit_code": 0,
+        "log": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-shared-emergency-stop-20261015-105014\\3.log"
+      },
+      {
+        "command": [
+          "cargo",
+          "build",
+          "--config",
+          "build.rustc-wrapper=\"\"",
+          "--workspace"
+        ],
+        "exit_code": 0,
+        "log": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-shared-emergency-stop-20261015-105014\\4.log"
+      },
+      {
+        "command": [
+          "cargo",
+          "build",
+          "--config",
+          "build.rustc-wrapper=\"\"",
+          "--workspace",
+          "--target",
+          "i686-pc-windows-msvc"
+        ],
+        "exit_code": 0,
+        "log": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-shared-emergency-stop-20261015-105014\\5.log"
+      }
+    ],
+    "doctor": {
+      "command": [
+        "E:\\.cargo\\target\\debug\\protoinputmux.exe",
+        "doctor",
+        "--runtime",
+        "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime"
+      ],
+      "exit_code": 0,
+      "log": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-shared-emergency-stop-20261015-105014\\doctor.log"
+    },
+    "workspace_tests": 269,
+    "current_input_count": 831,
+    "all_current_inputs_match": true,
+    "runtime10_match": true,
+    "build_sha256": {
+      "x64": "0427476383c974d951dbf2c6bb99da4b92f7bfe1d0689d4a924d1e2567f807ad",
+      "i686": "f93b892a4710193406aebbf2c62355af1302e5b8abaca9be313949684c5fdc07"
+    }
+  },
+  "references_sha256": {
+    "scripts/test-shared-emergency-stop-native.py": "92c97f484fd353d6309a7bb593fad2dcd58619fc0b2b3357ca4e47a393b002e7",
+    "scripts/test-shared-emergency-stop-gui.py": "a4bddf9d41ba9097a3f7e0deb14550e0b20bf96264b36c0f0ce07d4f2d7c163e",
+    "docs/shared-emergency-stop-plan.md": "2cb7b1d5e927e5ef5fffe1134bffd9113fb4e505f174b4340adabe67115e5060",
+    "docs/shared-emergency-stop-source-review-2026-10-15.json": "b8a170c265e075d4cf3dc89086441a8b3318a882fd9d56a1a441b3a5e459a58f",
+    "docs/shared-emergency-stop-source-addendum-2026-10-15.json": "0a018a0ea34d375c901a3a24f5d077027c0bfbdfbaf8075c9d9fd796b0637a32"
+  },
+  "ast": "PASS for both runners; no native apps/tests launched by reviewer",
+  "expected_budget": {
+    "native_mutations": 26,
+    "native_routing_input_calls": 16,
+    "gui_peer_mutations": 12,
+    "gui_peer_routing_input_calls": 8,
+    "combined_mutation_cap": 40,
+    "combined_routing_input_cap": 24,
+    "gui_actual_clicks": 4,
+    "gui_disabled_observations": 1,
+    "gui_originals": 2
+  },
+  "harness_review": [
+    "Producer/source/runtime/current EXEs bound before launch; same private copied image path for every participant within each phase.",
+    "All mutating callbacks run once, with imperative attempts recorded before action; readonly sampling may repeat.",
+    "Retained broker handle image and FILETIME, repeated exact scoped CIM command/creation, broker message-only HWND owner/class and alive checks constrain deliberate termination. Native finally termination uses the same identity guard.",
+    "Owned target click coordinates bounds-checked; nonzero/live overlays at Start; exact native DOWN/UP recipient traces are authoritative after unhook. No broad post-unhook physical-key-state oracle.",
+    "Native refusal before worker, actual shared coexistence, exact Busy/no-output, first participant Stop/EOF isolation, fresh participant plus B broadcast, last lease/chord release.",
+    "GUI two peers plus assigned GUI, actual owned broker loss, ordinary stops/retained MCP notice, disabled Start, explicit Retry/restart/Stop, two error-state originals only.",
+    "Cleanup retains worker/broker terminal handles, closes exact owned targets/clients/GUI, checks overlays/scoped CIM/private GUID/descriptor; forced cleanup cannot become accepted clean Stop."
+  ],
+  "resolved_findings": [
+    "Native and GUI owned-broker termination identity checks strengthened.",
+    "GUI target bounds/nonzero overlays made explicit.",
+    "Post-unhook broad physical state assertions replaced by owned native UP trace witnesses."
+  ],
+  "findings": [],
+  "limits": [
+    "No native/data/pixel acceptance yet; no physical shortcut actuation, arbitrary apps/desktops/logons, hardware or full Ultra claim.",
+    "Protocol/timing/rollback/quarantine-on-forced-failure edges are source/unit only for this group.",
+    "Periodic PNG capture is not request-associated freshness; independently inspect exact originals after resource closure."
+  ]
+}

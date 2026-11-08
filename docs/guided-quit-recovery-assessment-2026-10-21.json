@@ -1,0 +1,159 @@
+{
+  "status": "ACCEPTED_BOUNDED_GUIDED_QUIT_RECOVERY",
+  "date_local": "2026-10-21",
+  "independent_acceptance": {
+    "path": "runtime/producer-guided-quit-recovery-20261021-attempt002/private-runtime/acceptance-graph-guided-quit-recovery-20261021-170916/actual-acceptance.json",
+    "sha256": "c0c35e3cd99a0af83a5faed5253a79b9e35bbec2d2307a75fe68e44ae92252c9"
+  },
+  "raw_evidence": {
+    "path": "runtime/producer-guided-quit-recovery-20261021-attempt002/private-runtime/acceptance-graph-guided-quit-recovery-20261021-170916/evidence.json",
+    "sha256": "60ae0245faf08edc90b16830e2cec8152b1d69ed58e8b0e4be484b41a9dded30",
+    "result_preserved": "PENDING_INDEPENDENT_CAPTURE_REVIEW"
+  },
+  "behavior": "When cleanup quarantine blocks GUI Quit or native close, reveal the existing Routing recovery dialog; restore product-hidden or minimized windows. Keep Start and exit blocked until the original affected process exits. Dismissal does not clear quarantine.",
+  "accepted_cases": [
+    "visible Quit",
+    "product-hidden Quit",
+    "minimized Quit",
+    "native window close"
+  ],
+  "producer": {
+    "path": "runtime/producer-guided-quit-recovery-20261021-attempt002/verification.json",
+    "sha256": "5301515fd4ed90d4876b523fe85b5399dacaf634010865e608a517c7d0acbe81"
+  },
+  "required_checks": {
+    "report_sha256": "5301515fd4ed90d4876b523fe85b5399dacaf634010865e608a517c7d0acbe81",
+    "result": "PASS",
+    "checks": 5,
+    "all_exit_codes": 0,
+    "tests": {
+      "passed": 494,
+      "failed": 0,
+      "ignored": 3
+    },
+    "stable_source_paths": 866
+  },
+  "native_scope": {
+    "gui": 1,
+    "owned_queue_pump_target": 1,
+    "virtual_pairs": 1,
+    "script_controls_observed": 17,
+    "accepted_samples": 17,
+    "actual_Close_recovery_clicks": 4,
+    "visible_disabled_Start_observations": 4,
+    "mcp_clients": 0,
+    "mcp_routing_input_rpcs": 0,
+    "virtual_input_lab_click_pairs": 1,
+    "virtual_input_lab_f6_holds": 1,
+    "virtual_cleanup_f6_releases": 1,
+    "fresh_guided_case_captures": 4,
+    "phase_diagnostic_receipts_required": 0
+  },
+  "visual_coverage": {
+    "hidden-Quit-recovery": {
+      "png_sha256": "b43d7a5db07defe5b88d6aa025640cb5d3cfb3af512e987d40b471e422c35335",
+      "client_pixels": [
+        680,
+        620
+      ],
+      "independently_inspected": true,
+      "observed": "Recovery title, failure reason, exact affected PID and Still running state, Check recovery and Close recovery visible."
+    },
+    "visible-Quit-recovery": {
+      "png_sha256": "8f5645b12037628dc1e8397a7f20ad37582b05dff98027b4995fcfc44d8ffe64",
+      "client_pixels": [
+        680,
+        620
+      ],
+      "independently_inspected": true,
+      "observed": "Recovery title, failure reason, exact affected PID and Still running state, Check recovery and Close recovery visible."
+    },
+    "minimized-Quit-recovery": {
+      "png_sha256": "8f5645b12037628dc1e8397a7f20ad37582b05dff98027b4995fcfc44d8ffe64",
+      "client_pixels": [
+        680,
+        620
+      ],
+      "independently_inspected": true,
+      "observed": "Recovery title, failure reason, exact affected PID and Still running state, Check recovery and Close recovery visible."
+    },
+    "native-close-recovery": {
+      "png_sha256": "8f5645b12037628dc1e8397a7f20ad37582b05dff98027b4995fcfc44d8ffe64",
+      "client_pixels": [
+        680,
+        620
+      ],
+      "independently_inspected": true,
+      "observed": "Recovery title, failure reason, exact affected PID and Still running state, Check recovery and Close recovery visible."
+    }
+  },
+  "recovery_and_cleanup": {
+    "late_virtual_f6_up_did_not_clear_quarantine": true,
+    "after_original_target_exit": {
+      "phase": "stopped",
+      "error": "Target cleanup was not acknowledged; restart the affected target applications: queue-fence timed out for PID 19924 HWND 0x175100A",
+      "targets": [
+        {
+          "pid": 19924,
+          "status": "exited",
+          "affected": true
+        }
+      ],
+      "can_start": true
+    },
+    "cleanup": {
+      "forced": false,
+      "errors": [],
+      "target": {
+        "pid": 19924,
+        "exit_code": 0,
+        "original_handle_signaled": true,
+        "known_hwnd_absent": true
+      },
+      "gui": {
+        "pid": 130612,
+        "exit_code": 0,
+        "original_handle_signaled": true,
+        "known_hwnd_absent": true
+      },
+      "owned_processes_closed": true,
+      "known_windows_absent": true,
+      "known_overlays_absent": true
+    },
+    "final_integrity": {
+      "passed": true,
+      "source_producer_executables": true,
+      "staged_executables": true,
+      "private_runtime_files": 10,
+      "consumed_ROOT_runtime_files": 10
+    }
+  },
+  "preserved_prior_evidence": {
+    "normal_close_to_tray_Open_baseline": {
+      "actual_NOT_ACCEPTED_sha256": "35efdf2d7c303fdf1120d338c39f82891ed0867ab0616a11644c57c300597977",
+      "raw_sha256": "2aa3f5317649f7fd1d832457c744f21d3e5962d37200dc72c6bbe4947f3f0f30",
+      "status": "OPEN/excluded; notreplayed/fixed/acceptedbythisreceipt"
+    },
+    "external_SW_HIDE_fixture": {
+      "actual_NOT_ACCEPTED_sha256": "a6a0e6a84bd869c8e026ffc57d0963247206f4dddb7a527362264f0d4318a008",
+      "raw_sha256": "521d4384ce2fcd1201cef57560f82e8232d7b133a65bb67b653976d6a1ace9c0",
+      "status": "RawNOT_ACCEPTEDpreserved; sourceauditidentifiedfixturecachemismatch, notproductfix"
+    },
+    "plain_Stop_visible_modal_closed": {
+      "image_sha256": "21d49704632867404f10f5b05e615f18389f041bf3d5d54b1b8e512b275d9555",
+      "raw_sha256": "521d4384ce2fcd1201cef57560f82e8232d7b133a65bb67b653976d6a1ace9c0",
+      "status": "Priorpositiveobservationonly, independentlyinspectedpreviously. CurrentcohortinvokedplainStopwhilehiddenbutdoesnotclaimfreshplainStopPNGcoverage."
+    },
+    "visibility_fixture_source_audit_sha256": "13ad12382d2360b5229f5b4f7d5b51cbe44b8a8a7b1e371b060dae7817f22670"
+  },
+  "limits": [
+    "Bounded x64 GUI/virtual-device workflow and four 680x620 states; no full compact-layout or broad application/hardware acceptance.",
+    "Ordinary close-to-tray/Open baseline 35EF remains OPEN and excluded. The invalid external SW_HIDE fixture A6A0 remains NOT_ACCEPTED; no product visibility workaround or Rust timer patch was made.",
+    "Raw successful automation remains PENDING_INDEPENDENT_CAPTURE_REVIEW; the separate independent receipt completes its visual gate. Previous failures are not relabeled.",
+    "No fresh plain-Stop PNG in the accepted product-hidden cohort; the earlier positive observation is separate.",
+    "No MCP tool/grant, force-clear, automatic restart or recovery-lifecycle expansion.",
+    "The harness uses virtual routed devices and owned targets, with no hardware/RustDesk pointer operation. Existing winit Focus can internally use Alt SendInput; branch execution was not recorded, so absence of dependency-level OS input is not claimed.",
+    "Only retained owned process handles and known windows/overlays were checked; no worker-handle or OS-wide overlay audit.",
+    "Historical GUI-stall P1 cause/fix, general reliability, full UX/Ultra parity and distribution remain open."
+  ]
+}

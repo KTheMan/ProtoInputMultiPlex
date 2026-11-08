@@ -1,0 +1,20 @@
+{
+  "result": "PASS",
+  "source_and_installed_sha256": "71aeb3a120014d9961cd5ade3ffcd2f3d61d4c27e05babb218a126ab7d79ce92",
+  "previous_installed_sha256": "fe7fba65739fba05ba1a5aee31f76ab5e120040d6bde32d2966cb83581d6283a",
+  "reviewer": "/root/parity_catalog",
+  "review": "Independent skill field/default/metadata/fallback/explicit-scope scenarios approved before guarded install; no claim of pending full native acceptance.",
+  "checks": [
+    {
+      "folder": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\skills\\protoinputmux",
+      "exit_code": 0,
+      "output": "Skill is valid!"
+    },
+    {
+      "folder": "C:\\Users\\Archform CAD Station\\.codex\\skills\\protoinputmux",
+      "exit_code": 0,
+      "output": "Skill is valid!"
+    }
+  ],
+  "agent_yaml_unchanged_sha256": "61c08546d1fafc09287f36c34a74766769d7462034a3eeabd33c999eb0fc16c3"
+}

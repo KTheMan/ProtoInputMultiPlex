@@ -1,0 +1,108 @@
+{
+  "result": "PASS",
+  "group": "draw_magnifier_form_hierarchy",
+  "date": "2026-10-14",
+  "judgment": "Bounded stopped form hierarchy, disclosure behavior, invalid-draft visibility and scroll reachability accepted. This separate independent review completes raw PENDING evidence without changing its original status.",
+  "counts": {
+    "observed_controls": 28,
+    "actual_click_receipts": 18,
+    "disabled_observations": 10,
+    "original_frames": 8,
+    "accepted_initial_attempt_observations": 0
+  },
+  "build_sha256": {
+    "x64": "1be01a39e45913cfbe721c0bf3407e9976f16a5873c24e426c830c20f3b905fd",
+    "i686": "6670ec42960f599303c01293ed3017cd164be7d796e9511b9f7661f28972e75e"
+  },
+  "source_integrity": {
+    "rehashed_files": 64,
+    "mismatches": 0
+  },
+  "provenance": {
+    "raw": {
+      "path": "runtime\\acceptance-graph-draw-magnifier-hierarchy-20261014-231630\\evidence.json",
+      "sha256": "526e55e5a8b7911eeed3938a65cf42ea11915a9d58ea36dc35be7edfa83d3099"
+    },
+    "initial_callback_failure": {
+      "path": "runtime\\acceptance-graph-draw-magnifier-hierarchy-20261014-231604\\evidence.json",
+      "sha256": "b792419fdbc9bd522cd88b17da2cde51e69a649be802ea4290bbf69b468b2e1c"
+    },
+    "producer": {
+      "path": "runtime\\producer-draw-magnifier-ux-20261014-231444\\verification.json",
+      "sha256": "50c87e15d370c0eb5a30edbef474bc553ea394458450e0a836b4ba9611d68e2f"
+    },
+    "source_review": {
+      "path": "docs\\draw-magnifier-ux-source-review-2026-10-14.json",
+      "sha256": "68f65cffc01010427f2f96ce9901bdc4ca0076e56441944b6d404e88870ecd0a"
+    },
+    "executed_runner": {
+      "path": "runtime\\acceptance-graph-draw-magnifier-hierarchy-20261014-231630\\runner-source\\test-draw-magnifier-hierarchy-ui.py",
+      "sha256": "8bb0322beca20b4be1b1556e4c804401e02156e42e57ae6380894c4a70d0875c"
+    }
+  },
+  "accepted": [
+    "Real Home selection carries Beta into Draw/Magnifier; no recipient script fields. Complete normalized profile unchanged at all28 observations, preferences byte-exact; Alpha revisited without mutation.",
+    "Layer details and Capture details each actually open and close. Disabled Apply/Clear/Refresh/PNG observations preserve stopped availability. Invalid clear-key and missing-display drafts produce visible errors while details remain closed, then restore exact prior draft values.",
+    "No worker state or nonempty annotation/magnifier ACK stream is created. No drawing, capture, export, routing or permission algorithm is replayed."
+  ],
+  "independent_pixel_review": {
+    "result": "PASS",
+    "method": "Direct view_image of all eight immutable own product originals after GUI closed.",
+    "findings": [
+      "Normal540x520 pages prioritize setup. Detail-open lower views show actions and export controls before the disclosures, reducing the routine diagnostic clutter visible in the prior connected-magnifier screenshot.",
+      "Draw320x360 view shows whole Apply, Clear selected user and Clear all controls, with selected identity and pinned tab context. Magnifier320x360 shows whole Apply and Refresh. Lower PNG control reachability is a truthful separate disabled observation, not a claim that its whole rectangle was pixel-reviewed at minimum or simultaneous with upper actions.",
+      "Error frames visibly show the unsupported key-name guidance and disconnected-display guidance before actions, without opening diagnostics. Detail-open stopped frames correctly show no-running-state placeholders; populated runtime diagnostics were not sampled.",
+      "Upper normal frames still require scrolling for the long setup forms. This gate accepts ordering and reachability, not complete simultaneous visibility or full UX parity.",
+      "Broader inherited UI gaps remain: Draw Off/Brush/Eraser share the same primary visual treatment, and RGB setup is tall and stacked. These are not new regressions or full cleanliness/parity claims in this ordering-only scope."
+    ],
+    "frames": [
+      {
+        "path": "runtime\\acceptance-graph-draw-magnifier-hierarchy-20261014-231630\\draw-normal.png",
+        "sha256": "0aba285e07edc7b8b9384d821531d4b0fdfa7ce69088256b9c6d7a73ce7ca87b"
+      },
+      {
+        "path": "runtime\\acceptance-graph-draw-magnifier-hierarchy-20261014-231630\\draw-layer-open.png",
+        "sha256": "c6d30aed647979c8e9ae1eb29acda419b11d58b38ed6c8b1bbbb35da639e28cf"
+      },
+      {
+        "path": "runtime\\acceptance-graph-draw-magnifier-hierarchy-20261014-231630\\draw-minimum-actions.png",
+        "sha256": "3ece3210c48b75cd16c07e3d9878db1cd749f64bb3d72e7257074649db9aa9ae"
+      },
+      {
+        "path": "runtime\\acceptance-graph-draw-magnifier-hierarchy-20261014-231630\\draw-error-details-closed.png",
+        "sha256": "ede3c24b66f45dc8a229fe2e15f5ec5c51d67efa1ef036b4ca574be48e25322e"
+      },
+      {
+        "path": "runtime\\acceptance-graph-draw-magnifier-hierarchy-20261014-231630\\magnifier-normal.png",
+        "sha256": "5dcd5776a393dd0513cfbd2fdbaaa484b8c28d18c4083bcd8bcf5f6056540a56"
+      },
+      {
+        "path": "runtime\\acceptance-graph-draw-magnifier-hierarchy-20261014-231630\\magnifier-capture-open.png",
+        "sha256": "36da2ada0ce2e6e3d5e75a2a05ff869ed569874b4e655fce3e6851d120519592"
+      },
+      {
+        "path": "runtime\\acceptance-graph-draw-magnifier-hierarchy-20261014-231630\\magnifier-minimum-actions.png",
+        "sha256": "ff0c6c13df5024a3524db9b05edb558e2363b8508081b3412f68fee76c3d0ed9"
+      },
+      {
+        "path": "runtime\\acceptance-graph-draw-magnifier-hierarchy-20261014-231630\\magnifier-error-details-closed.png",
+        "sha256": "d0efc8f6c589f7414c0d2006fdee8fe5af752ddf4f47359b8312719f805a4867"
+      }
+    ]
+  },
+  "original_statuses": {
+    "initial": "NOT ACCEPTED",
+    "corrected": "PENDING INDEPENDENT VISUAL REVIEW"
+  },
+  "limits": [
+    "Stopped/DLL-free only; i686 image copied but never executed. No native routed-input, worker command, PNG export, drawing/capture algorithm, hardware/RustDesk/global input, private desktop pixels or full UX/Ultra parity claim.",
+    "Populated runtime detail values, pending-recipient locking, worker/authorization failures and live action guards are source-reviewed and supported by historical acceptance only; this gate adds no live evidence for them.",
+    "Initial231604 failed solely because the Python callback signature mismatched Base.execute before any observation was accepted. Its original NOT ACCEPTED aggregate and copied runner remain unchanged; corrected run contains the exact unstarted28 scope."
+  ],
+  "cleanup": {
+    "owned_processes_closed": true,
+    "scoped_process_survivors": 0,
+    "own_guid_keys_absent": true,
+    "exclusive_slot_returned": true
+  }
+}

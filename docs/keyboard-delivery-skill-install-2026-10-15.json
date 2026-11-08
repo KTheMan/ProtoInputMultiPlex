@@ -1,0 +1,26 @@
+{
+  "result": "PASS GUARDED APPROVED SKILL INSTALL",
+  "source": "skills\\protoinputmux\\SKILL.md",
+  "installed": "C:\\Users\\Archform CAD Station\\.codex\\skills\\protoinputmux\\SKILL.md",
+  "previous_installed_sha256": "c1bacfc4c4a5d87644dd808084aff1177e121b31da351ea215b1b12ebdb7af38",
+  "backup": "runtime\\keyboard-delivery-skill-before.md",
+  "backup_sha256": "c1bacfc4c4a5d87644dd808084aff1177e121b31da351ea215b1b12ebdb7af38",
+  "approved_source_and_installed_sha256": "aa8be5483c45e8a48121d12cff92c36a1bc2d89706eb502aea8fcbe257ccc728",
+  "doc_review": "docs\\keyboard-delivery-doc-review-2026-10-15.json",
+  "doc_review_sha256": "bb4b16ea201dcdf1c690371789f002b9e7bab4dadd41e0e6313044db59b4727a",
+  "all_reviewed_files_still_match": true,
+  "atomic_replace": true,
+  "temporary_absent": true,
+  "validators": [
+    {
+      "directory": "skills\\protoinputmux",
+      "exit_code": 0,
+      "stdout": "Skill is valid!"
+    },
+    {
+      "directory": "C:\\Users\\Archform CAD Station\\.codex\\skills\\protoinputmux",
+      "exit_code": 0,
+      "stdout": "Skill is valid!"
+    }
+  ]
+}

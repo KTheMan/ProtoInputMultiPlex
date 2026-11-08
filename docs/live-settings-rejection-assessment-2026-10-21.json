@@ -1,0 +1,54 @@
+{
+  "status": "BOUNDED_CORE_ACCEPTED_AGGREGATE_NOT_ACCEPTED",
+  "date": "2026-10-21",
+  "scope": "One i686 development controller/worker on this AMD64 Windows host, two allowed owned i686 EDIT targets, excluded i686 C, and read-only AMD64 D discovery. No full Ultra or historical GUI-stall resolution claim.",
+  "change": "Read-only live-settings validation emits the existing nonfatal InputRejected response before effects; successful changes retain InputSent. Effectful failure handling is unchanged. The i686 backend chooses Loader32 and shares architecture checks with readiness.",
+  "producer": {
+    "path": "runtime/producer-live-settings-rejection-20261021-attempt001/verification.json",
+    "sha256": "7d972506561c4987b9555d5e275175d2acf5832ea6df3c0359a48f9ba9e10fbb",
+    "checks": 5,
+    "workspace_tests": {
+      "passed": 477,
+      "failed": 0,
+      "ignored": 3
+    },
+    "builds": [
+      "x64 application/observer",
+      "i686 application/observer"
+    ],
+    "source_paths": 865,
+    "runtime_files_unchanged": 10
+  },
+  "native_aggregate": {
+    "path": "runtime/native-i686-worker-attempt009/evidence.json",
+    "sha256": "ef5ac2637b5bd2cb07ed68dd54b28f45da8ccfa05084dd174871f5f8cb630a71",
+    "original_session": 59488,
+    "exit_code": 1,
+    "status": "NOT_ACCEPTED",
+    "review": {
+      "path": "runtime/native-i686-worker-attempt009-review.json",
+      "sha256": "d2118fe50b2f798c93ad95d7b6b38c164c14eebe28bb623c98e1323f69a48bf7"
+    },
+    "failure": "The post-Stop zero-polled-key assertion inspected A after unhook; it then sampled ambient Space state with no native Space event. The later A-reusable/C-fresh query was not run."
+  },
+  "independent_core_acceptance": {
+    "path": "runtime/native-i686-worker-bounded-core-review.json",
+    "sha256": "5768dc5da0764df2c8b594973fd2c62504d95f9be9b7093c76d0e29021b1aee0",
+    "full_replay_required": false
+  },
+  "accepted_observations": [
+    "Exact live I386 standalone controller, direct-child I386 worker and two owned overlays.",
+    "All 24 virtual input calls and 30 native characters: independent A/B typing, retained focus, Tab navigation and unchanged excluded C target-local input state.",
+    "Live application-focus rejection preserved accepted settings and B Control; the original UP reached the same recipient and cleared the hold.",
+    "Simultaneous native EDIT captures, independent releases, and both targets with zero virtual holds/capture before terminal operations.",
+    "Ordinary B close with A unchanged, normal Stop with clean recovery, worker exit 0 and overlays absent, MCP EOF exit 0, all four owned targets ordinary-close exit 0, no forced cleanup and no private images remaining.",
+    "AMD64 D was read-only unavailable discovery only; no D input or dynamic attach-denial claim."
+  ],
+  "limits": [
+    "The original native009 aggregate remains NOT_ACCEPTED; earlier failed attempts remain unchanged. This separate acceptance covers the measured core only.",
+    "Post-Stop A-reusable/C-fresh readiness was not observed. Same-target reuse is not accepted by this gate.",
+    "Ambient OS-polled cursor/key/button fields and long-span foreground readings are context, not virtual-routing noninterference evidence. Immediate owned placement no-activation guards and target-local input/focus/capture checks passed.",
+    "The generic MCP wrapper still says input release incomplete for this known settings rejection; last_error retains the rejection while the session remains running. Unrelated errors must follow normal cleanup/recovery guidance.",
+    "No native 32-bit OS, i686 GUI-connected workflow, arbitrary application/hardware, desktop-wide/same-process isolation, distribution, global foreground noninterference, historical GUI-stall fix, or complete Ultra parity claim."
+  ]
+}

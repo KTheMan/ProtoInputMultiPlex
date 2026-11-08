@@ -1,0 +1,90 @@
+{
+  "date": "2026-10-14",
+  "group": "live GUI agent connections and selected-target capture",
+  "kind": "producer verification; independent acceptance remains separate",
+  "status": "PASS",
+  "checks": [
+    {
+      "command": [
+        "cargo",
+        "fmt",
+        "--all",
+        "--check"
+      ],
+      "exit_code": 0,
+      "log": "runtime\\producer-connected-agents-20261014-082228\\1.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": [
+        "cargo",
+        "clippy",
+        "--workspace",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit_code": 0,
+      "log": "runtime\\producer-connected-agents-20261014-082228\\2.log",
+      "sha256": "1a0cde2af032f6b2823e870c34ec76e35e572a9c22054466c87096dc107ef6bd"
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--workspace"
+      ],
+      "exit_code": 0,
+      "log": "runtime\\producer-connected-agents-20261014-082228\\3.log",
+      "sha256": "fdaaeafa94d36ae64eb49dd601e82e59045deb20852fc022893dd6b547f0db47"
+    },
+    {
+      "command": [
+        "cargo",
+        "build",
+        "-p",
+        "protoinputmux"
+      ],
+      "exit_code": 0,
+      "log": "runtime\\producer-connected-agents-20261014-082228\\4.log",
+      "sha256": "7fba784777c0a4d5d924b8a6403d10f62c81542f4e3e9dd79593aea5efb7936d"
+    },
+    {
+      "command": [
+        "cargo",
+        "build",
+        "-p",
+        "protoinputmux",
+        "--target",
+        "i686-pc-windows-msvc"
+      ],
+      "exit_code": 0,
+      "log": "runtime\\producer-connected-agents-20261014-082228\\5.log",
+      "sha256": "7f61c6144190a14127db34c485100c97228c182e34951145ac9de398bf5d01ff"
+    }
+  ],
+  "tool_count": 20,
+  "repair": "NOWAIT pipe availability distinguishes idle from EOF; fixed routing without cursors visibly unavailable; automatic mode required before global mutation",
+  "test_groups": [
+    57,
+    2,
+    3,
+    2,
+    30,
+    0,
+    0
+  ],
+  "total_tests": 94,
+  "builds": {
+    "x64": {
+      "path": "E:\\.cargo\\target\\debug\\protoinputmux.exe",
+      "sha256": "636825d26c47a15b50e00b685be55d90a90dfca16027c290af4c48dc8d39d106"
+    },
+    "i686": {
+      "path": "E:\\.cargo\\target\\i686-pc-windows-msvc\\debug\\protoinputmux.exe",
+      "sha256": "b933a1c31108d15b2d7fdbd772b24ac6a78de33a20ec65dbecdf88fbfa90a343"
+    }
+  },
+  "scope": "Source/build checks only; virtual-only GUI connection, actor claims/PID grants and real capture need independent native/UI acceptance. No new backend source patch. Hardware, same-process isolation and broad Ultra parity remain unverified."
+}

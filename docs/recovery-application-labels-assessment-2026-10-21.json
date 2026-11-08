@@ -1,0 +1,55 @@
+{
+  "assessment": "recovery-application-labels-assessment-2026-10-21",
+  "status": "ACCEPTED_BOUNDED_RECOVERY_APPLICATION_LABELS_DISCLOSURE",
+  "accepted": true,
+  "scope": {
+    "gui": 1,
+    "owned_queue_pump_target": 1,
+    "virtual_device_pairs": 1,
+    "script_controls": 16,
+    "mcp_clients": 0,
+    "mcp_routing_input_rpcs": 0
+  },
+  "outcome": "Original captured python.exe name and PID remained paired through quarantine and after the original target exited; status changed from Still running to Exited and the existing snapshot allowed Start only after exit. The raw cleanup error was collapsed in the Routing recovery modal's default-closed Technical details disclosure. Check and Close remained available; target and GUI Quit returned zero without fallback and final integrity passed.",
+  "captures": [
+    { "file": "normal-initially-collapsed.png", "sha256": "ef931aa9838e1b43a0c988a72c9a1c7b204efbd91b064a51c1d9992002f3a7a7", "client_pixels": [680, 620] },
+    { "file": "normal-technical-expanded.png", "sha256": "335ac85e8f50d3e838b014f6217a83375032bd6e9d71dbc98fe93ca3f78ec68b", "client_pixels": [680, 620] },
+    { "file": "compact-technical-collapsed.png", "sha256": "077eb55126d974ebcf676db5cbf9ebbfec7f9041165cb8b8c7e13530c233185c", "client_pixels": [320, 360] },
+    { "file": "compact-original-label-Exited.png", "sha256": "c2b49b0869a410398e67406595eb3c398c3973824e73adb30198ff19aab10bd2", "client_pixels": [320, 360] }
+  ],
+  "producer": {
+    "path": "runtime/producer-recovery-application-labels-20261021-attempt002/verification.json",
+    "sha256": "59fd0b1500c75842f2be7bcf14b03a206ce1c2856c6ce3e182c97b63bb32addc",
+    "required_check_exit_codes": [0, 0, 0, 0, 0],
+    "tests": { "passed": 501, "failed": 0, "ignored": 3 },
+    "stable_source_paths": 866
+  },
+  "reviews_and_raw_evidence": {
+    "independent_producer_review_sha256": "8b0f77fff7386fc0240d8de07c1d81a96a3e0b018b116d24e84ff345aa896d4f",
+    "product_source_go": { "path": "runtime/recovery-application-labels-candidate/source-review.json", "sha256": "b74e6c729aa1ca0a7f7089f84368e2eae3f8bfc0f13a6ea7ed86c9b73636d153" },
+    "native_source_go": { "path": "runtime/recovery-application-labels-native-candidate/source-review.json", "sha256": "667e3354922dc380f5ffc243fef6f7c82a858e9868ad3550e2088cafa3479053" },
+    "raw_evidence": { "path": "runtime/producer-recovery-application-labels-20261021-attempt002/private-runtime/acceptance-graph-recovery-application-labels-20261021-175242/evidence.json", "sha256": "f7b9e2c9cebc3f794583c62774440b56b64cb5760fa1666018ec296eb401cce8" },
+    "actual_acceptance": { "path": "runtime/producer-recovery-application-labels-20261021-attempt002/private-runtime/acceptance-graph-recovery-application-labels-20261021-175242/actual-acceptance.json", "sha256": "3d5bbd6514841f05bd953d0d55929383ec5d2f3f6c5eb7ff024206722a21463f" }
+  },
+  "mcp_and_metadata_limits": [
+    "Optional application_name serialization, omitted-None behavior, old missing-field compatibility, and PID fallback have source/unit coverage only; no native MCP client or routing_input RPC was run.",
+    "GUI-connected recovery remains null. No MCP tool, permission, grant, lifecycle, or routing behavior was added.",
+    "The modal error disclosure is closed by default, but the existing global status footer may still display cleanup diagnostics behind the modal.",
+    "Query-denied/missing-name behavior and old JSON are covered by source/unit tests; no protected-process or PID-reuse native scenario was run. The observed target's original name remained after exit."
+  ],
+  "preserved_workspace_test_history": {
+    "initial_full_attempt": {
+      "producer_record_sha256": "15ba35450abd444ff926229d1226876b4638e2bcb94397f2844787774aed3c1a",
+      "workspace_tests_log_sha256": "a67bd736d938209c63606d5216b302a3f5404bd65e77571dfadea53e3b6643bd",
+      "result": "One held-sample wait exceeded its five-second deadline; cause unknown."
+    },
+    "isolated_unchanged_test_result_sha256": "a40252a7c15279d286726ff6931c5d183883862c6211cd8867dcda2aa5fff00d",
+    "unchanged_full_retry_producer_sha256": "59fd0b1500c75842f2be7bcf14b03a206ce1c2856c6ce3e182c97b63bb32addc",
+    "source_changed_between_attempts": false
+  },
+  "limits": [
+    "One bounded virtual-only target/GUI cohort; no broad reliability claim.",
+    "Historical GUI-stall P1 cause/fix remains unproven and open.",
+    "Full MouseMux Ultra parity remains open."
+  ]
+}

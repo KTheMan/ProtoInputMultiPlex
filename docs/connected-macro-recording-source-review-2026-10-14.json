@@ -1,0 +1,39 @@
+{
+  "review": "Independent source review of connected Macro Studio recording",
+  "result": "approved",
+  "scope": [
+    "crates/protoinputmux/src/agent_runtime.rs",
+    "crates/protoinputmux/src/agent_ui.rs",
+    "crates/protoinputmux/src/macro_studio_ui.rs",
+    "crates/protoinputmux/src/mcp.rs",
+    "crates/protoinputmux/src/macro_studio.rs",
+    "crates/mux-core/src/automation.rs"
+  ],
+  "current_sha256": {
+    "crates/protoinputmux/src/macro_studio_ui.rs": "f1168eb75f60028c8f56f32a48eb23775aeec52a3dee20d4f788aa8551d2854a",
+    "crates/protoinputmux/src/agent_runtime.rs": "dc0b8bbb183fe84376a8b021285db425656f7f844bca58591b4c474d693bd2d2",
+    "crates/protoinputmux/src/mcp.rs": "6f4be86e624db21fa09e4b9815d6259cc4934bd3cd80eb3b0169a0e2ed95025c",
+    "crates/protoinputmux/src/agent_ui.rs": "e006eeec138407ada3873da08915616ddede795a9bd8c4496ea7fc810a35357e",
+    "crates/protoinputmux/src/macro_studio.rs": "cb8ddda61759c0bb105023b0212f86ec81ec5c18bdb05fef58ac868addbcec9d",
+    "crates/mux-core/src/automation.rs": "873fdfe4a85825a3cb6873e148d8060d4928ce1c9df607a020dc911f40018932"
+  },
+  "baseline_sha256": {
+    "crates/protoinputmux/src/macro_studio_ui.rs": "fef4c769672d47e1bac64482bd8a39c1460127e7b98b3366eb78412f9a5701ed",
+    "crates/protoinputmux/src/agent_runtime.rs": "927de02ae3a77ab808bb025ba064e4e72ff585fd940db3683832bc91dbbde121",
+    "crates/protoinputmux/src/mcp.rs": "717e03e75b0a5af0a9bd3352ba7e7f3d038f595bdb6677ecaac827c5fbe55d3c",
+    "crates/protoinputmux/src/agent_ui.rs": "b52d2fdc1ccb52f2db3f138c141f9b580ca2df341d1ab65b5fe48147c82584e7",
+    "crates/protoinputmux/src/macro_studio.rs": "0edc8ad080bb58ad312cb7838be699d6b5fbe5522714d98735d384adc2d51021",
+    "crates/mux-core/src/automation.rs": "af3d7437f8974d729957b6324aa5969ae2da1f86f4eecc43861a34f512eb5521"
+  },
+  "findings": [],
+  "resolved_finding": "Settings interruption now rejects while a connected recording is active, before cancellation or router/settings side effects; a focused regression verifies recording state/count, committed clip, packet history, and held input are unchanged, then verifies interruption succeeds after explicit local discard.",
+  "notes": [
+    "Connected recording belongs to one client and records only that client accepted logical actions. Capacity is checked before delivery; failed delivery is not appended. Partial text delivery does not falsely record a complete Text action.",
+    "Owner stop commits only after validation; empty or invalid recording preserves the prior clip and records an error. Disconnect, revocation, and global cancel paths discard the temporary candidate without replacing the committed clip.",
+    "The final source adds retryable claim retention when a routed release fails, so failed Tap-up cleanup can be retried.",
+    "recording_client remains inspectable protocol attribution metadata, not a secret or credential; user-facing labels do not display the numeric client ID.",
+    "Source review only; no native acceptance claim. ReleaseAll is treated by the implementation as an explicit global cancel/release action."
+  ],
+  "producer": "runtime/producer-connected-macro-recording-20261014-235859/verification.json",
+  "producer_status": "Final producer235859 passed fmt, strict Clippy, 171 workspace tests, and x64/i686 builds."
+}

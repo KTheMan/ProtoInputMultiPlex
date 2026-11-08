@@ -1,0 +1,135 @@
+{
+  "decision": "TARGET_STDIO_PRESERVATION_ACCEPTED",
+  "date": "2026-11-07",
+  "scope": "Release supported Rust virtual routing into owned x64/i686 Rust UCRT targets; no-console and own-visible console, ordinary Stop/reattach.",
+  "independent_acceptance": {
+    "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMux\\stdio-20261107\\notes\\independent-acceptance.json",
+    "sha256": "cf75532292141e8f7ba7daf3e8d24c6c2dcafac25abbf16e14a40405a3352655"
+  },
+  "source_runtime_publication": {
+    "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMux\\stdio-20261107\\publication.json",
+    "sha256": "3995fa704519f4783aed81e59a31432f9358f79e5eac8fbc05d2eee255bc818c"
+  },
+  "rust_qualification": {
+    "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMux\\stdio-20261107\\checks-001\\verification.json",
+    "sha256": "710fb6e93fe769476a059f7624c32db64ade1a4961e36eca869c89675bdb3f38"
+  },
+  "native_build_qualification": {
+    "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMux\\stdio-20261107\\candidate\\runtime\\native-build-006\\result.json",
+    "sha256": "fb0010554bdc94a38fef84c7ba64ed9bd5521a22290126ac1452a87f3d975be3"
+  },
+  "probe_qualification": {
+    "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMux\\stdio-20261107\\probe-checks-003\\verification.json",
+    "sha256": "8786068cff9eb6b18ce543aebd0ce7f05bf9dd3c480c6665cc39fffeab9a51c5"
+  },
+  "baseline": {
+    "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMux\\stdio-20261107\\red-001\\evidence.json",
+    "sha256": "14368ba053a068a83df59811c3f34112f54eac4154f3d15f8b3a2abc9c720e26"
+  },
+  "fixed_matrix": {
+    "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMux\\stdio-20261107\\fixed-001\\evidence.json",
+    "sha256": "db1f148c1545318ccc2ec035826546a6d450c931c4e06c56e2ae63d01b6bf61b"
+  },
+  "source_go": {
+    "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMux\\stdio-20261107\\notes\\source-go-006.json",
+    "sha256": "39afaf70b702dae44adc56ccd0da0be321af005675dc7a8290e391b4d6e07d20"
+  },
+  "fixed_native_go": {
+    "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMux\\stdio-20261107\\notes\\fixed-001-go.json",
+    "sha256": "40f6d687996c3f26bbbdbc4177b422bc489145827c3717c71a57a40e305d676c"
+  },
+  "baseline_native_go": {
+    "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMux\\stdio-20261107\\notes\\red-001-go.json",
+    "sha256": "d920159acf9718bfff89d66364e7937fe567bc4893215d7b7848bf689935bcb1"
+  },
+  "implementation": {
+    "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMux\\stdio-20261107\\notes\\overlay-implementation.json",
+    "sha256": "f2d6e72af90ca7027669e8b88416ed9347f32ad8c2dccdf7b439b22d9eaf30f5"
+  },
+  "netfx_reuse": {
+    "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMux\\stdio-20261107\\candidate\\.native-tools\\netfx\\freeze.json",
+    "sha256": "7761c1e3cad1a127dcb02ed0211066b34abc8bcdb3cd2dc5a4abcf3213642b0b"
+  },
+  "incident": {
+    "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMux\\stdio-20261107\\notes\\native-build-003-incident.json",
+    "sha256": "1a2e54bb8adf7fac9613c3cfbf3da16eff0cc3b573a0572519c5c0205dce0cd0"
+  },
+  "contract": "docs/target-stdio-contract.md",
+  "checks": {
+    "workspace_passed": 938,
+    "failed": 0,
+    "ignored": 19,
+    "probe_pure_tests_passed": 2,
+    "native_build_commands_passed": 128,
+    "published_source_paths": 25,
+    "published_runtime_images": 10
+  },
+  "native": {
+    "targets": 4,
+    "architectures": [
+      "x64",
+      "i686"
+    ],
+    "console_modes": [
+      "none",
+      "own-visible"
+    ],
+    "controller": "x64",
+    "routing": "automatic concurrent, multi_keyboard, clicked/native_controls",
+    "phases_per_target": [
+      "baseline",
+      "attached",
+      "stopped",
+      "reattached"
+    ],
+    "stdout_bytes_per_target": 512,
+    "stderr_bytes_per_target": 512,
+    "actual_final_text": "Mux7319Mux7319",
+    "actual_text_utf16_units": 14,
+    "mouse_and_F6_pairs_per_target": 2,
+    "all_exit_codes": 0,
+    "live_owned_PIDs": [],
+    "cleanup_errors": []
+  },
+  "preserved_attempts": [
+    {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMux\\stdio-20261107\\candidate\\runtime\\native-build-001",
+      "scope": "prepare only; duplicate E/UNC tlog records rejected before compiler"
+    },
+    {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMux\\stdio-20261107\\candidate\\runtime\\native-build-002",
+      "scope": "compiler command000 D8004; response serialization failure"
+    },
+    {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMux\\stdio-20261107\\candidate\\runtime\\native-build-003",
+      "scope": "TAINTED unapproved reviewer tool invocation; never accepted; all12 partial files pinned by incident"
+    },
+    {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMux\\stdio-20261107\\candidate\\runtime\\native-build-004",
+      "scope": "response roundtrip assertion before compiler; no command log"
+    },
+    {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMux\\stdio-20261107\\candidate\\runtime\\native-build-005",
+      "scope": "command000 pass, command001 C1083 cor.h; corrected SDK supplement only"
+    },
+    {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMux\\stdio-20261107\\probe-checks-001",
+      "scope": "two private fixture Clippy findings; exact source archived before correction"
+    },
+    {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMux\\stdio-20261107\\probe-checks-002",
+      "scope": "passed before fixture-only PMv2 geometry correction; exact source archived"
+    }
+  ],
+  "limitations": [
+    "Probe UCRT only, no Hook-private /MT FILE inspection or every CRT model",
+    "C++ Loader DLLs compile/ABI only; native matrix used Rust dispatcher",
+    "Stale resident rejection source/guard evidence, no separate native rejection attempt",
+    "No arbitrary applications/hardware/assigned/fixed-relative/same-process isolation claim",
+    "NETFX prior channel/catalog digest discrepancy retained; no new acquisition or signature claim",
+    "P1 GUI stall, full Ultra/UI parity and release readiness remain open"
+  ],
+  "folder_rename": "USER_DEFERRED",
+  "external_chats": "KEEP_SEPARATE",
+  "active_owned_jobs": []
+}

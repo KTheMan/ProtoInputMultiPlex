@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-14",
+  "scope": "Bounded source-only review of the per-user settings layout patch; no compilation or visual/native acceptance performed by reviewer.",
+  "patch_sha256": "9064ba31b69d569f66e3a4af3230a674f26457f6edaaced223f9cc3a074440c1",
+  "baseline_sha256": "faef99f73d9f96fe532e79ebeabd2b5f0cf0deec38be3661abf17ab363186f99",
+  "approved_draft_sha256": "b18ec8c3ab348a5a919c55575b6aba293503da029680d2f6a8eddafaa35cbc8e",
+  "applied_source_sha256": "b18ec8c3ab348a5a919c55575b6aba293503da029680d2f6a8eddafaa35cbc8e",
+  "result": "APPROVED_FOR_APPLICATION_SOURCE_REVIEW_ONLY",
+  "findings_resolved": [
+    "A single Page::User dispatch calls user_settings before the generic outer vertical ScrollArea, allowing the bottom Apply/error footer to remain in the finite page viewport.",
+    "The nine tab labels, original tab mapping, per-button Script.observe and consume_action guards are retained.",
+    "The Apply candidate is validated after tab edits are saved to the seat; name editing and Remove this user retain stopped-session guards.",
+    "The horizontal tab scroller uses pinned egui 0.34.3 Spacing.scroll.bar_width; footer height uses public Ouroboros core::Size::Md.height matching Button::new default size.",
+    "Patch application proof reconstructs the draft exactly; App::logic bytes remain unchanged."
+  ],
+  "limits": [
+    "Source review only; no visual pixel approval at minimum window size.",
+    "No native lifecycle, device, or runtime acceptance is claimed."
+  ],
+  "producer_status_at_review": "Formatting, strict Clippy, 135 workspace tests, and x64 build passed; i686 build was still running."
+}

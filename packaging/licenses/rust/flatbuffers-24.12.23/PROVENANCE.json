@@ -1,0 +1,15 @@
+{
+  "status": "FETCHED_PLAIN_TEXT_NOT_EXECUTED",
+  "package": "flatbuffers",
+  "version": "24.12.23",
+  "upstream_tag": "v24.12.23",
+  "upstream_commit": "a2cd1ea3b6d3fee220106b5fed3f7ce8da9eb757",
+  "repository": "https://github.com/google/flatbuffers",
+  "url": "https://raw.githubusercontent.com/google/flatbuffers/a2cd1ea3b6d3fee220106b5fed3f7ce8da9eb757/LICENSE",
+  "git_blob_sha1": "d645695673349e3947e8e5ae42332d0ac3164cd7",
+  "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+  "bytes": 11358,
+  "root_notice_names": [
+    "LICENSE"
+  ]
+}

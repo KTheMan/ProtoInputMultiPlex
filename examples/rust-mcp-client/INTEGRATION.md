@@ -13,7 +13,7 @@ requests; the existing product workflow stays separate. From this directory,
 use the explicit separate local build directory:
 
 ```powershell
-$env:CARGO_TARGET_DIR = 'E:\Kenny\Documents\GitHub\ProtoInputMux-client-build-20261014'
+$env:CARGO_TARGET_DIR = 'E:\Kenny\Documents\GitHub\ProtoInputMultiPlex-client-build'
 $env:RUSTC_WRAPPER = '' # process-local workaround for this host's broken cache
 cargo fmt --all --check
 cargo clippy --workspace --all-targets --locked -- -D warnings
@@ -39,11 +39,12 @@ requires the workflow and crate to be committed and pushed.
 The integration source is `ProtoInputMux-rust-mcp-client-gui-validated-20261014.zip`,
 SHA-256 `736de1777c06428a9d26b156376034bab5ac677fd1f77f25e2463baee2c025f1`.
 Its original file manifest is retained as
-`evidence/accepted-artifact-MANIFEST.sha256`. Rust source, test source, coordinator,
-Cargo files and historical acceptance evidence are copied without changes.
-Only the README and workflow's location/provenance text are adapted for the
-repository; this integration note and the independent integration report are new.
-`MANIFEST.sha256` records the final integrated tree, excluding itself.
+`evidence/accepted-artifact-MANIFEST.sha256`. At the original integration, Rust
+source, test source, coordinator, Cargo files and acceptance evidence were copied
+without changes. Current package, source
+identifiers and executable paths now use ProtoInputMultiPlex.
+`MANIFEST.sha256` records that historical integrated tree, excluding itself;
+it is not a manifest of the current renamed sources.
 
 `BASELINE.json` and the earlier review reports describe the historical isolated
 acceptance environment. They do not claim that the current product checkout

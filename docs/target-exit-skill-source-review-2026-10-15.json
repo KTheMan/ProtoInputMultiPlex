@@ -1,0 +1,46 @@
+{
+  "decision": "APPROVED_SOURCE_ONLY",
+  "date": "2026-10-15",
+  "scope": "Changed connected release_all wording and automatic target-exit recovery paragraph only; no installation or broad skill audit.",
+  "skill": {
+    "path": "skills\\protoinputmux\\SKILL.md",
+    "sha256": "fe7fba65739fba05ba1a5aee31f76ab5e120040d6bde32d2966cb83581d6283a"
+  },
+  "reviewed_sources": [
+    {
+      "path": "crates/protoinputmux/src/mcp.rs",
+      "sha256": "7b3ac245fdd8b5ce53193d284800029be6cda38f031ecbdf16f62e9e53c1b899"
+    },
+    {
+      "path": "crates/protoinputmux/src/agent_runtime.rs",
+      "sha256": "0e06f07166c377b0cf800b9dda6013c76b6eec92ee1363c9b1ed0029962e580e"
+    },
+    {
+      "path": "crates/protoinputmux/src/macro_studio.rs",
+      "sha256": "ada309fa7cd7cbc330d90dfe2c96ff01b2eca4ee303298a0d23ba7f04c237bc2"
+    },
+    {
+      "path": "crates/protoinputmux/src/desktop_router.rs",
+      "sha256": "5af01b65801151ec53c4721c764dd5a45cc8645decd5ad0e881637d00389876b"
+    },
+    {
+      "path": "crates/protoinputmux/src/session.rs",
+      "sha256": "df0ec1555ff97cbd574b1e7c52981ed2b2f001060b3618e727e63c1cebf1757e"
+    }
+  ],
+  "findings": [],
+  "verified": [
+    "MCP Input::ReleaseAll maps to Request::ReleaseAll. Connected handling calls cancel_agent(client), not the standalone/global automation.cancel path.",
+    "cancel_agent discards that client recording candidate, stops its owned Agent Studio lane, cancels its origin jobs and releases only its direct and replica claims across users. Other client/GUI ownership is not globally cancelled by this request.",
+    "Automatic DesktopRouter tick forgets exited PID focus, clears matching native held/keyboard/capture state and continues other users. This does not establish that all higher-level logical claims have vanished; explicit same-client cleanup is appropriate before a fresh down.",
+    "Fixed-target ProcessWatch supervises seat target PIDs only when profile.desktop is None and terminates the session on exit. The paragraph correctly excludes fixed-target recovery.",
+    "Current selected recipients and candidate input targets remain policy-checked; a worker allowlist entry alone does not grant the connected client permission. Agent policy Apply revokes all clients and cancels their claims; the existing skill already states reconnect/Inspect."
+  ],
+  "scenario_response": {
+    "initial_action": "Inspect A on its still-valid connection for selected PID, keyboard PID, capture and status. Send routing_input action release_all on A and await a successful acknowledgement. This clears A ownership across its users and may discard its recording/playback; B-owned F7 survives this scoped cleanup. Do not use global Pause, Mode, GUI ReleaseAll or Stop merely to clear A.",
+    "prestarted_C": "C is in the worker allowlist but excluded from the Agent policy, so do not click/type into C or try to self-grant through MCP. The GUI owner must explicitly include C in Agent Access. Applying the policy revokes all existing client IDs and releases their owned input, including B F7; coordinate that interruption instead of promising B remains held. After approved policy application, reconnect and Inspect the new policy, explicitly select C with a permitted virtual click, then inspect the actual recipient before further input. If B must remain held without interruption, defer this policy change/recovery.",
+    "new_D": "D was created after Start and is absent from the fixed running worker allowlist. An Agent policy change alone cannot expand that base scope. Arrange an explicit session configuration change/new session including D, with planned session-wide release and fresh target handling as required. Until then do not inject into D or silently expand the allowlist.",
+    "limit": "These are source-derived allowed actions, not a native target-exit acceptance result. No guarantee of target application consumption, all-user isolation or recovery completion."
+  },
+  "execution": "Read-only source/hash review. No app, Cargo, native test, policy change, file installation or startup registry action."
+}

@@ -1,0 +1,115 @@
+{
+  "result": "PASS",
+  "group": "connected_stable_id_replication_graph",
+  "date": "2026-10-15",
+  "judgment": "Bounded connected graph authorization, Apply/Cancel ownership, ACK/draft/profile integration and cleanup accepted. Original failed aggregate and continuation raw visual-review status remain unchanged.",
+  "counts": {
+    "substantive_groups": 5,
+    "prefix_accepted_gui_receipts": 21,
+    "focused_save_continuation_receipts": 12,
+    "total_phase_observations": 33,
+    "note": "Repeated setup/navigation in the continuation are not distinct feature claims. Prefix has16 named subchecks; continuation has2 ACK/Save outcomes.",
+    "original_frames": 3,
+    "x64_targets_per_phase": 2,
+    "i686_executions": 0
+  },
+  "build_sha256": {
+    "x64": "8b4811319d0c1239c91f8e9e212b36bd8dba205954c694acfcedd247be556309",
+    "i686": "21c46434d714cc45604ad89ac5209370ebbdfcc5055b355c31d86ac9d6c0b6e8"
+  },
+  "source_integrity": {
+    "rehashed_files": 64,
+    "mismatches": 0
+  },
+  "provenance": {
+    "prefix": {
+      "path": "runtime\\acceptance-graph-connected-graph-20261015-002547\\evidence.json",
+      "sha256": "cc8c74d941f7398a5dbece2f8ae1a1d16e18641cabac86cc9df7ec1f6f67259e"
+    },
+    "save_continuation": {
+      "path": "runtime\\acceptance-graph-connected-graph-20261015-002846\\evidence.json",
+      "sha256": "2061221ae4be895011fe6544a9fe981e80261ce31d1a511be212db300588904a"
+    },
+    "producer": {
+      "path": "runtime\\producer-connected-graph-20261015-002223\\verification.json",
+      "sha256": "451f958cad11aa80ababfb158133737638306a408993ceea0c18e6d34d5f871c"
+    },
+    "independent_source_review": {
+      "path": "docs\\connected-graph-source-review-2026-10-15.json",
+      "sha256": "9295b0b79c4940837afcef124c04953caf71ddcf7d8e3cf1ac2b42faa9f909be"
+    },
+    "prefix_runner": {
+      "path": "runtime\\acceptance-graph-connected-graph-20261015-002547\\runner-source\\test-connected-graph-acceptance.py",
+      "sha256": "8cb8015dce7fb2fb57254434585590e9170f5679ef0f63187725a27ae974f694"
+    },
+    "continuation_runner": {
+      "path": "runtime\\acceptance-graph-connected-graph-20261015-002846\\runner-source\\test-connected-graph-acceptance.py",
+      "sha256": "4ba30ae5511d09a6b49efa195a1d8011261a8c07441427ec772e1f4517b6b179"
+    },
+    "saved_gui_profile": {
+      "path": "runtime\\acceptance-graph-connected-graph-20261015-002846\\committed-connected-graph.json",
+      "sha256": "c4f508d5ee44c77917cdbb168d4cfd27f66c75e0da9bbd9db08d15440664a78e"
+    }
+  },
+  "accepted": [
+    "Grant-off/partial-user requests reject; the early Apply cases reject at MCP endpoint visibility, while Cancel exercises session-control/all-user denial. Partial-PID Apply and Cancel reject the incomplete configured allowlist. Missing revision and unsupported raw numeric Automation mutation reject. Each rejection preserves graph/revision, recorder, ordinary native owners and queue conservation/cancellation counters.",
+    "With both existing virtual users and both explicit automatic PIDs permitted, actual MCP Apply acknowledges revision1 and projects only the intended graph change. Actual A F5 and B F7 DOWN/UP traces prove its documented global release; no held key/button remains.",
+    "During an empty client recording, stale revision, cyclic definition and busy-recording Apply reject without releasing direct Back/key owners or cancelling work. Real delayed replica Back DOWN is observed. MCP Cancel then removes pending replica UP/releases replica Back while preserving A/B ordinary keys, recording/count, graph and revision. Subsequent Back DOWN/UP copies again.",
+    "Owner EOF removes its source hold and pending copy while another actor B key and graph survive. That actor releases normally. Actual GUI Clear changes only the unsent draft; external MCP Apply advances applied graph/profile to revision2 while the empty dirty draft remains intact.",
+    "Original Stop removes known overlays/descriptor and leaves no holds. After correcting only the harness navigation category, a fresh worker MCP Apply in the continuation updates GUI profile; real Stop then real Save profile writes the exact acknowledged graph and otherwise unchanged complete current profile. Fresh probe PIDs replace old attachment identities; the old graph is not reconstructed as a cache substitute."
+  ],
+  "pixel_review": {
+    "result": "PASS",
+    "method": "Direct view_image of all three unchanged own originals after prefix GUI cleanup.",
+    "findings": [
+      "Permission frame shows session changes enabled, capture/app-preferences disabled and revised explanation; user/PID grants are established by actual receipts and state, not this scrolled frame.",
+      "Applied canvas shows directed A(right) to B(left) wire. Both From/To editor selectors showing A are local staging values, not a claim about the applied edge.",
+      "After Clear/external ACK, visible Draft0 / Applied1 / revision2 and empty draft canvas agree with telemetry. Inherited Preparing application footer remains a broader stale-copy gap."
+    ],
+    "frames": [
+      {
+        "path": "runtime\\acceptance-graph-connected-graph-20261015-002547\\whole-session-graph-grant.png",
+        "sha256": "3b15a190638eeaed5c5203020b714f7884b5d877dd94aaf2d815bf6fe9d8ca4c"
+      },
+      {
+        "path": "runtime\\acceptance-graph-connected-graph-20261015-002547\\connected-applied-graph.png",
+        "sha256": "f3eeabe5ce06b6985b8db4dccce72e9e0fd53abc343923f1dbb135e64f485c9b"
+      },
+      {
+        "path": "runtime\\acceptance-graph-connected-graph-20261015-002547\\external-applied-unsent-draft.png",
+        "sha256": "9cd7e99ac60e85e23e9aeb9978587f8ca52eb4db863c5dd886b2992e04a2e927"
+      }
+    ]
+  },
+  "retained_failure": {
+    "path": "runtime\\acceptance-graph-connected-graph-20261015-002547\\evidence.json",
+    "result": "NOT ACCEPTED",
+    "accepted_receipts": 21,
+    "cause": "Harness selected Application before Profiles & backend; actual destination belongs to Users & devices. No product defect inferred. Original session34490 exited1. Only missing ACK-to-Save criterion continued with necessary fresh setup."
+  },
+  "limits": [
+    "Two owned x64 disposable targets, standalone connected MCP and raw actor bridge, explicit automatic PID scope and virtual seats only. i686 image built/copied but not executed. No hardware/RustDesk input used for control or validation; no OS input injection or private desktop capture.",
+    "No graph algorithm/filter/geometry/capacity matrix, physical/fixed routing, arbitrary application, same-process isolation or full UX parity claim. Delay is real graph behavior, not a timing benchmark.",
+    "Empty/unrestricted base scope, selected-recipient and prior-held-recipient combinations, generated/retired endpoints and translated/queued scope variants were not exercised natively; their predicates remain source/unit coverage as applicable.",
+    "Native GUI test covers an ordinary dirty unsent draft, not a forced local-pending/external-ACK race. Pending ACK/revision ordering remains deterministic unit/source coverage. Recording preservation was native; playback-preserving Cancel was not separately run."
+  ],
+  "cleanup": {
+    "prefix_exec": {
+      "session": 34490,
+      "exit_code": 1
+    },
+    "continuation_exec": {
+      "session": 3165,
+      "exit_code": 0
+    },
+    "all_owned_processes_and_mcp_closed": true,
+    "all_raw_handles_closed": true,
+    "scoped_cim_survivors": 0,
+    "test_registry_keys_absent": [
+      "Software\\ProtoInputMux\\Tests\\9f8d0f21-15ae-4b3f-a4c2-f6b9e2d90a68",
+      "Software\\ProtoInputMux\\Tests\\0674b68d-88fc-42d7-a6e0-a72f194b5877"
+    ],
+    "known_overlays_and_descriptors_removed": true,
+    "exclusive_native_slot_returned": true
+  }
+}

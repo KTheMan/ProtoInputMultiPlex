@@ -1,0 +1,15 @@
+{
+  "date": "2026-10-21",
+  "status": "bounded_gui_script_io_accepted",
+  "claim": "The opt-in UI Script path moves ongoing event, phase, ACK and snapshot file I/O and sampled-file polling off the GUI callback. One virtual-seat, configuration-only GUI run completed six actual control clicks, held sample count 3 while progress frames advanced and the fourth click stayed durably acknowledged, then resumed and closed normally. A fresh app-owned 540×520 PNG followed the Native controls event.",
+  "validation": "Required Rust format, strict Clippy, workspace tests (463 passed, 0 failed, 3 ignored), and x64/i686 app and observer builds passed. Seven focused worker/Script tests cover bounded coalescing and fairness, durable critical ACK and fail-closed errors, held samples, request-time publication, nonjoining shutdown, and an in-flight virtual release. The bounded native run recorded six click events and six sample ACK phases, final critical sequence 30 acknowledged with no pending critical work, and ordinary GUI exit code 0 with the original window and staged process absent.",
+  "evidence": {
+    "source_review": "runtime/gui-script-io-source-review.json",
+    "producer": "runtime/producer-gui-script-io-20261021-attempt002/verification.json",
+    "native_source_review": "runtime/gui-script-io-ui-candidate/source-review.json",
+    "native_run": "runtime/gui-script-io-ui-attempt001/evidence.json",
+    "independent_acceptance": "runtime/gui-script-io-ui-attempt001-review.json"
+  },
+  "observed_limit": "One 160-byte temporary snapshot file remained in the retained test directory on ordinary exit; no complete temporary-file cleanup claim is made. No ProtoInput DLL was staged in this configuration-only run.",
+  "limits": "Historical native-controls attempt004 remains OPEN/P1; its cause and fix are unproven. This cohort does not prove liveness of other telemetry writers or renderer paths, normal-mode behavior, backend injection, physical input, RustDesk, desktop-wide or same-process isolation, shipping readiness, or full Ultra parity."
+}

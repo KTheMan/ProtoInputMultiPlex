@@ -1,0 +1,11 @@
+{
+  "result": "PASS",
+  "canonical_json_archives_verified": 12,
+  "retained_original_failure_hashes_verified": 5,
+  "owned_png_archives_verified": 2,
+  "current_binary_hashes_verified": 6,
+  "assessment_sha256": "ceb4c2c8343fe50e4f305c68b47a1a17454bd68a4472880fdce3d3b645dfc302",
+  "manifest_sha256": "e75a254d6eb2d31cea8772b9719c372659bd9f8d038b058bfae536c918d921d6",
+  "root_owned_fixture_cim_count": 0,
+  "root_owned_png_visual_review": "Both images inspected: key rules/Apply/Restore and physical-seat read-only restriction; no claim that scrolled mouse rows are shown."
+}

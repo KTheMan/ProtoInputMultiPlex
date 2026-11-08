@@ -1,0 +1,212 @@
+{
+  "schema": {
+    "name": "native-controls-assessment",
+    "version": 1,
+    "evidence_paths": "Relative to repository root. Hashes bind artifacts without expanding scope."
+  },
+  "decision": "BOUNDED_COMPOSED_FUNCTIONAL_WORKFLOW_ACCEPTED",
+  "date": "2026-10-19",
+  "producer": {
+    "path": "runtime/producer-native-focus-20261019-attempt003/verification.json",
+    "sha256": "5bdc5dc404cca2b2ead14e0f09f92805a1c59e2233e5fc3103a03795a720c46e",
+    "review": {
+      "path": "runtime/native-focus-producer-attempt003-review.json",
+      "sha256": "a94dc8d60b5f5d43b09c9f7baf1b9f3db216f735723ede475bec1482f5eb82e5"
+    },
+    "checks": {
+      "format": "PASS",
+      "strict_clippy": "PASS",
+      "workspace_tests": {
+        "passed": 372,
+        "failed": 0,
+        "ignored": 3
+      },
+      "required_exact_regressions": 43,
+      "default_app_observer_builds": [
+        "x64",
+        "i686"
+      ],
+      "native_execution": [
+        "x64"
+      ]
+    }
+  },
+  "functional_cohort": {
+    "path": "runtime/acceptance-native-focus-attempt006/acceptance-graph-native-focus-20261019-125110/evidence.json",
+    "sha256": "374030f2362592d1a80c4ef1720040fd08cb4a4ae95e09356b2a1e94ab48b95a",
+    "raw_result": "PASS_PENDING_INDEPENDENT_REVIEW",
+    "review": {
+      "path": "runtime/native-focus-native-attempt006-review.json",
+      "sha256": "5e0d171355ef5b9c65a1900487a41f2ef8d28fefc093f6fbff73967b35137957"
+    },
+    "UX_review_receipt": {
+      "path": "runtime/native-focus-ux-attempt006-review-receipt.json",
+      "sha256": "b803f381292caef89638b77dc09a26e4c8dfc88915de8b7ba255c740c09090ee"
+    },
+    "plan": {
+      "path": "runtime/native-focus-native-plan-attempt006.json",
+      "sha256": "a773d60099089efaba742f33206a27ff9fe127546fcae0d7142c4caa9d0433aa"
+    },
+    "harness": {
+      "path": "runtime/test-native-focus-smoke-v10.py",
+      "sha256": "e9e5c40ed546acce58b0aa70af34e7e72e70615e495e03cf072af210dd940c16"
+    },
+    "harness_review": {
+      "path": "runtime/native-focus-harness-v10-source-review.json",
+      "sha256": "337c94da1923e2f9a3dd9061d55876c46d3afe0aa126127e0a586973415ff667"
+    },
+    "native_samples": 29,
+    "exact_text_proofs": 10,
+    "MCP_calls": 62
+  },
+  "configuration_prefix": {
+    "producer_sha256": "5bdc5dc404cca2b2ead14e0f09f92805a1c59e2233e5fc3103a03795a720c46e",
+    "evidence": {
+      "path": "runtime/gui-stall-diagnostic-attempt001/evidence.json",
+      "sha256": "1b186e740039612c914cdcd8b0b08159678e8e5780aaea16509cc76c9f9e6bf1"
+    },
+    "review": {
+      "path": "runtime/gui-stall-diagnostic-attempt001-review.json",
+      "sha256": "a3f6da07e97116850451b0e8f0ac161c72eb597bd13f0daa02962d20de32988d"
+    },
+    "frames": [
+      {
+        "path": "runtime/gui-stall-diagnostic-attempt001/native-A.png",
+        "sha256": "77ea09979b36bd18a4f74f1224f84da70df436c367f5740f9ac14ad5b6d273f5"
+      },
+      {
+        "path": "runtime/gui-stall-diagnostic-attempt001/native-B.png",
+        "sha256": "e2343b4244b20ecddc8ca79e2bedf6322ec7ba839ff11d878a8e0157ecb64900"
+      }
+    ],
+    "gui_source": {
+      "path": "crates/protoinputmux/src/gui.rs",
+      "sha256": "ed5d70f9c27ab514199ad2b5e8745b15ba65daa52bf4dbac88e434aaed9e0250"
+    },
+    "ui_script_source": {
+      "path": "crates/protoinputmux/src/ui_script.rs",
+      "sha256": "cd04b779ab4e635bd978a76d3cdd88a66db34f3a011e019562a5b50bbc0e1118"
+    },
+    "gui_origin": [
+      312,
+      312
+    ],
+    "scope": "separatelyacceptedcurrentproducerconfigurationprefix; notuninterruptedfunctionalcohort",
+    "reliability": "ThreeWM_NULLtimeouts and historical004stallOPEN/P1; notfeaturecompletion"
+  },
+  "publication_originals": [
+    {
+      "path": "docs/native-controls-A-320.png",
+      "sha256": "77ea09979b36bd18a4f74f1224f84da70df436c367f5740f9ac14ad5b6d273f5"
+    },
+    {
+      "path": "docs/native-controls-B-320.png",
+      "sha256": "e2343b4244b20ecddc8ca79e2bedf6322ec7ba839ff11d878a8e0157ecb64900"
+    }
+  ],
+  "fixture_qualification": {
+    "evidence": {
+      "path": "runtime/native-tab-qualification-attempt002/evidence.json",
+      "sha256": "d12f862b795aea9bc284167cdcbd2438f0e4f171ef2eb024e28f9cb47af40281"
+    },
+    "review": {
+      "path": "runtime/native-tab-qualification-attempt002-review.json",
+      "sha256": "a2a0c5e6bf8d43d90eb96a88b06b2dbc7d156c7b049b2defacdbd4f4ff46ee7f"
+    },
+    "scope": "Uninjected singlelinefixture actualTabnavigation+foreground+ordinaryclose only"
+  },
+  "evidence_composition": "Separately accepted exact current producer configuration originals plus one fresh GUI and standalone functional cohort; not an uninterrupted configuration-to-Stop run.",
+  "accepted_cases": [
+    "Separate ordinary single-line EDIT focus in two owned processes; 2.047s idle/full trace and focus stability with advancing native frames; independent second text actions",
+    "Native application Tab navigation and following focused recipient for each user",
+    "Live application-focus policy rejection before held F5 release/settings change; other-user continuity and original-recipient UP",
+    "Actual simultaneous per-GUI-thread mouse captures, A release preserves B trace/focus/capture/hold, then both clean; foreground unchanged",
+    "Actual loaded configuration, genuine profile Save/Start/access grant/Stop, canonical saved baseline and unchanged final raw profile bytes",
+    "GUI worker normal exit0, overlays absent, stopped recovery and same-original reusable targets",
+    "Standalone wrong initial_keyboard arity leaves stopped state unchanged and creates no worker; valid ordered initial keyboard configuration",
+    "A enabled delivery/B disabled exclusion, B re-enable under same application policy and independent delivery",
+    "Standalone normal Stop, worker exit0, overlays absent, reusable targets, all owned processes and private descriptor absent; cleanup_errors empty/final_integrity PASS"
+  ],
+  "preserved_failed_attempts": [
+    {
+      "evidence": {
+        "path": "runtime/acceptance-native-focus-attempt001/acceptance-graph-native-focus-20261019-104410/evidence.json",
+        "sha256": "11de8874bac3abe3705f89fdf2522efa3db590f90d6dbf2c6763fc8882f28259"
+      },
+      "review": {
+        "path": "runtime/native-focus-native-attempt001-failure-review.json",
+        "sha256": "81d5e73c67a28306a1aff5761870bb2a443afd5062597207194fb2b121bfc007"
+      }
+    },
+    {
+      "evidence": {
+        "path": "runtime/acceptance-native-focus-attempt002/acceptance-graph-native-focus-20261019-115110/evidence.json",
+        "sha256": "74d2063f95b56991d6fe24c78cad10478ff52ac6ced6737f91670b5dd2f9c53b"
+      },
+      "review": {
+        "path": "runtime/native-focus-native-attempt002-failure-review.json",
+        "sha256": "58570dcec6f2c6013d2ffe9e89bdc8359f4901975c244100143bceeb4633debd"
+      }
+    },
+    {
+      "evidence": {
+        "path": "runtime/acceptance-native-focus-attempt003/acceptance-graph-native-focus-20261019-115408/evidence.json",
+        "sha256": "e605c2f6fd615ac5b995e3ce836d860b541fa5b8b8a580849943ff0697972231"
+      },
+      "review": {
+        "path": "runtime/native-focus-native-attempt003-review.json",
+        "sha256": "f1b3d35b19dc94506db5f5f788a1411865985971b295aa632ddd62adba279918"
+      }
+    },
+    {
+      "evidence": {
+        "path": "runtime/acceptance-native-focus-attempt004/acceptance-graph-native-focus-20261019-122805/evidence.json",
+        "sha256": "df1150061a1c9f3065a1b1c62bf92f5fb14261e82683128ce927a0d3df876741"
+      },
+      "review": {
+        "path": "runtime/native-focus-native-attempt004-review.json",
+        "sha256": "516672e5a31ddfdc8eedbb9af7263390a172ded45ad83850c67c35d9304d224a"
+      }
+    },
+    {
+      "evidence": {
+        "path": "runtime/acceptance-native-focus-attempt005/acceptance-graph-native-focus-20261019-124359/evidence.json",
+        "sha256": "274d0b4092fdf3991f43f4ebe76a75b86c59ca8f0dfc6929884a4419eb70aa95"
+      },
+      "review": {
+        "path": "runtime/native-focus-native-attempt005-review.json",
+        "sha256": "c3f2766db14299a0498c4f9ea985f085f73d98646a67934d8080083d8ccd607f"
+      }
+    }
+  ],
+  "known_open_findings": [
+    {
+      "priority": "P1",
+      "finding": "Historical attempt004 GUI progress/fresh-PNG failure and normal-close timeout requiring forced owned cleanup. Later GUI-only diagnostic completed but had three transient WM_NULL timeouts. Cause remains unresolved.",
+      "failure_review": {
+        "path": "runtime/native-focus-native-attempt004-review.json",
+        "sha256": "516672e5a31ddfdc8eedbb9af7263390a172ded45ad83850c67c35d9304d224a"
+      },
+      "diagnostic_review": {
+        "path": "runtime/gui-stall-diagnostic-attempt001-review.json",
+        "sha256": "a3f6da07e97116850451b0e8f0ac161c72eb597bd13f0daa02962d20de32988d"
+      },
+      "source_assessment": {
+        "path": "runtime/gui-stall-source-assessment-20261019.md",
+        "sha256": "8db66e69670fe0279d560940dd682176754a3dd48bc1e891fbe4830c20f4fc7d"
+      }
+    }
+  ],
+  "limits": [
+    "Opt-in Native controls only; Compatibility remains default",
+    "Automatic desktop routing with virtual mouse and paired virtual keyboard; assigned and physical routes unsupported",
+    "Two owned x64 ordinary Windows single-line EDIT fixture processes only; no native i686 run",
+    "320x640 original choices only; no full footer/Apply or complete minimum-layout/UX acceptance",
+    "No arbitrary-application, hardware/RustDesk, desktop-wide, same-process, real monitor/mixed-DPI or GPU PrintWindow claim",
+    "Frozen329 source predates NativeControls; shipping qualification remains separate"
+  ],
+  "reliability_GO": false,
+  "overall_feature_complete": false,
+  "full_UX_complete": false,
+  "Ultra_parity_complete": false
+}

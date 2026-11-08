@@ -1,0 +1,54 @@
+{
+  "decision": "APPROVED SOURCE ONLY",
+  "scope": "Narrow three-file silent-loss repair and coherent provider-status observability; native diagnostic and feature acceptance pending",
+  "baseline_producer": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-app-cursor-following-20261015-040628\\verification.json",
+    "sha256": "25e56f59c84645874fb577ebdf2b289c9c880ddc91eafa83c2f0e35cc35e6fcf"
+  },
+  "source_sha256": {
+    "crates/cursor-observer/src/lib.rs": "98cb6a08d8b07cb7aa1fde21f02a0295e340d75eee6f2efe8b0cf987ca37f8fb",
+    "crates/cursor-snapshot-protocol/src/lib.rs": "44c56dbe9eb48c5d544eff989f6ba427af98530c78ce76888b9f8af53af28000",
+    "crates/mux-windows/src/app_cursor.rs": "41f5cdff6a548e2788822e2384322188f4cc9b94c3186299e6035956422eb87e"
+  },
+  "protected_inputs_unchanged": 78,
+  "native_cpp_runtime_sha256_unchanged": {
+    "ProtoInputHooks32.dll": "1f6ce1a3f690b9c93566a23d51d91ae450f70fb2d1f857d3e502b9189b4c0b72",
+    "ProtoInputHooks64.dll": "31b3436421ed0a64bd7b66f7fc41295739017caad3e7605513d00d51868d44c3",
+    "ProtoInputIJ32.exe": "73c10f7397d22ed9a9f9b1ee804f17853a2c9f96d495a83f9448201b97f27a86",
+    "ProtoInputIJ64.exe": "e11a9fd0f14902f0c749781a42a8f912fb3eb876a54454f4cb5eddea5fa5636d",
+    "ProtoInputIJP32.dll": "d593e4b4f304f55743c6bbb680cf3c81f2be97392980c29367639859ffdccc3e",
+    "ProtoInputIJP64.dll": "8daf63d2c87a150e0928f0b6d359ea503b6180538faf14bc3c66fa8228a49172",
+    "ProtoInputLoader32.dll": "0eaa05d49dd43dca41dba7457ca814f5599981746994078d81ce59d0f126d590",
+    "ProtoInputLoader64.dll": "08ecac0469fdd8e33106ac0bd5eddf759c948a86e3540f3f60d6a00cdd218f9c"
+  },
+  "prior_material_review": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\app-cursor-silent-loss-preflight-review.json",
+    "sha256": "b404f600ae819c821aac6677f103ec67d15cf02474300e4d64a4af8a8a11ebf4",
+    "decision_preserved": "CHANGES REQUIRED"
+  },
+  "resolved_findings": [
+    "request_selected_shape now owns a short lifecycle gate across current HWND/PID/TID/cookie validation and queue reservation, releasing it before PostMessage. All three callers enter without retaining that gate. The actual production admission helper rejects stale requests, coalesces only the current same cookie and replaces defensive stale slots. An old post/failure cannot clear a newer cookie."
+  ],
+  "reviewed_behavior": [
+    "Associate/Motion release their outer gate before requesting a wake; native handler/Notify callbacks never execute under the queue-admission gate.",
+    "DROPPED_BUSY retries are current-context/generation only, deferred to worker and bounded to three. Exhaustion/post failure publishes a conditional new CAPTURE_FAILED generation. Unhandled WM_SETCURSOR publishes conditional UNSUPPORTED.",
+    "Protocol advance_if CAS operates on packed generation+status. A later intercepted Notify wins; header layout/version/status ABI unchanged.",
+    "Host provider_status is copied only from a coherent current header. Generic fallback clears it; EMPTY, UNSUPPORTED, CAPTURE_FAILED and STOPPED are distinguishable. No payload or host pointer input is added."
+  ],
+  "tests_reviewed_not_executed_by_reviewer": [
+    "Production queue-admission regression exercises stale old request rejection, same-cookie coalescing, stale-message rejection and stale queued-slot replacement.",
+    "Production advance_if regression proves later Notify generation is retained; native busy helper test proves retry eligibility. These are deterministic helper transitions, not an actual USER32 race reproduction."
+  ],
+  "diagnostic_preflight": {
+    "runner": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\scripts\\test-app-cursor-following-acceptance.py",
+    "sha256": "94c0adbfbfc55345f655c4b57b785fe23f9a2543553390546e58cd282327adee",
+    "plan_sha256": "26737e149721a137a2a089934d1768d60ed647ca5a84f3b5eb6e5e5eac82342c",
+    "ast": "PASS",
+    "scope": "One nonfixture owned EDIT target, one virtual user, six mutations, zero images, metadata/native pair/Stop/cleanup; diagnostic result only"
+  },
+  "limits": [
+    "Actual041029 failure cause remains unproven; old sequence1 did not establish EMPTY because provider status was previously hidden.",
+    "No native launch or Cargo execution by this review. Mandatory final producer/source hashes and ROOT READY still required.",
+    "Prior six renderer originals remain their original provider-build evidence; source approval is not a current native/pixel acceptance."
+  ]
+}

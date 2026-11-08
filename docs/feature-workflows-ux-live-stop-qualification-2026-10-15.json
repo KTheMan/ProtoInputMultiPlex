@@ -1,0 +1,50 @@
+{
+  "run": "runtime/acceptance-graph-feature-workflows-ux-live-20261015-145712",
+  "executed_harness_sha256": "b1d70cb76280e775ae37d0464b56b845e1474bd62795fd3db441d1a1677b0752",
+  "raw_runner_result": "NOT ACCEPTED",
+  "raw_failure": "AssertionError('No accepted lifecycle control/sample after 46/46')",
+  "raw_process_exit_code": 1,
+  "accepted_prior_live_observations": 45,
+  "total_real_ui_events": 46,
+  "final_ui_event": {
+    "button": "Stop routing",
+    "clicked": true
+  },
+  "final_stop_observation": "The raw runner did not accept a live-stop sample. Its verifier short-circuited on persistent historical ui.state.json written by the last Event::State; the state event log has no clearing record.",
+  "independent_stop_qualification": {
+    "recovery_snapshot": {
+      "phase": "stopped",
+      "error": null,
+      "targets": [],
+      "can_start": true
+    },
+    "recovery_read_after_stop_click_before_runner_timeout": true,
+    "probes": [
+      {
+        "pid": 264424,
+        "held_keys": [],
+        "buttons": 0
+      },
+      {
+        "pid": 265048,
+        "held_keys": [],
+        "buttons": 0
+      }
+    ],
+    "owned_overlay_hwnds_from_live_start": [
+      {
+        "hwnd": 54397794,
+        "IsWindow_after_cleanup": false
+      },
+      {
+        "hwnd": 28379860,
+        "IsWindow_after_cleanup": false
+      }
+    ],
+    "agent_descriptors_remaining": 0,
+    "owned_processes_closed": true,
+    "remaining_processes_with_owned_image_paths": [],
+    "private_startup_key_present": false
+  },
+  "qualification_limit": "The full raw live gate remains NOT ACCEPTED; it has no accepted live-stop sample, and HWND absence was independently measured after GUI cleanup rather than at the instant of Stop. Stop is semantically qualified from the clicked Stop receipt, fresh stopped/error-free recovery snapshot read before timeout, cleared probe inputs, descriptor/process/startup-key cleanup, and matching stop source behavior."
+}

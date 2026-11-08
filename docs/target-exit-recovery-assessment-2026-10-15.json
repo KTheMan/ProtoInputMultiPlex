@@ -1,0 +1,137 @@
+{
+  "decision": "APPROVED_BOUNDED",
+  "date": "2026-10-15",
+  "scope": "Automatic-desktop target exit and explicit recovery among preauthorized cooperative owned processes; not full P1 completion.",
+  "accepted_run": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-target-exit-recovery-fixed-20261015-025101\\evidence.json",
+    "sha256": "1e0b480721604b37416d9f9ae86d68ee9bbe83eba77c8e14f14f0c33ecd6f56b",
+    "independent_data_review": {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-target-exit-recovery-fixed-20261015-025101\\independent-data-review.json",
+      "sha256": "bcf0815917c2ae1f4909dd86789513d82da4896681024bc1d3ecbf8eb4727a70"
+    },
+    "terminal_exec": 98476,
+    "exit_code": 0,
+    "groups": 4,
+    "GUI_clicks": 9,
+    "fixture": "Three prestarted owned x64 probes, two virtual users and two authenticated raw public-protocol clients; fixed three-PID worker and Agent allowlists."
+  },
+  "accepted_outcomes": [
+    "A exits normally; its selected/keyboard PID and capture clear with target-exited status while routing remains usable.",
+    "B retains F7 and receives an exact F5 pair. A client-scoped ReleaseAll ACK preserves B ownership; explicit selection of preauthorized C yields an exact fresh F6 pair.",
+    "Real GUI Stop delivers exactly one plain native B F7 UP, destroys two known overlays and removes the Agent descriptor before clients close."
+  ],
+  "producer": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-p1-target-exit-20261015-024710\\verification.json",
+    "sha256": "c44632cd654b2a8d5312fd1a88a232856e38a593fd894a6c4a20012e0a0a55e6",
+    "checks": "fmt, strict workspace/all-target Clippy,186 tests including production release-table regression,x64/i686 builds",
+    "build_sha256": {
+      "x64": "b997f872799f13966cd5ffd5a176e7a69d9bf00429f0a644b875b98ee054e9b7",
+      "i686": "3854e339266c96cb36c37a945ac679f0c33544c5d465bba8c63a5ee08c17a677"
+    },
+    "all64_current_sources_match": true
+  },
+  "references": [
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\docs\\target-exit-fix-source-review-2026-10-15.json",
+      "sha256": "5ea2cce555ad20f67a01ec52a65e58b0ee237a521324d03dcb24df19d93cecbc"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\docs\\target-exit-fixed-harness-source-review-2026-10-15.json",
+      "sha256": "ba56f2a3efab10fab824aa81781df566d249978e1736a2027359469c21421641"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\scripts\\test-target-exit-recovery-acceptance.py",
+      "sha256": "ed13289c20af567f4c77fe191c3f629ca056c613055057a0465f853ed9d3cdb2"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\p1-target-exit-acceptance-plan.md",
+      "sha256": "3f8e440723fc0ca4265ded8c39df71efb6c2ce1a177e28b34d5ddb999eb71e3a"
+    }
+  ],
+  "retained_attempts": [
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-target-exit-recovery-20261015-023057\\evidence.json",
+      "sha256": "552bc44d8b36b918f35f0ccc9463eb3ff232c70798beb7c1cac5bbb340f1b8e0",
+      "raw_status_preserved": "NOT ACCEPTED",
+      "actual_GUI_clicks": 8,
+      "accepted_GUI_samples": 7,
+      "terminal_exec": 31909,
+      "exit_code": 1,
+      "build_sha256": {
+        "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-target-exit-recovery-20261015-023057\\control64.exe": "8988f3d15e2512f84f16f5de4edc986519959bc1b9cffd803202541a9dcbe5a7",
+        "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-target-exit-recovery-20261015-023057\\probe32.exe": "554fb46e006597bdb955df525ce1e774acd57c012823fddd0ef5dc3c13df8b52"
+      },
+      "retained_review": {
+        "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-target-exit-recovery-20261015-023057\\independent-failure-review.json",
+        "sha256": "391e07ba4604272830a7d7f97b2358985d7ffae139b405f0b86bd50ae3592dcf"
+      }
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-target-exit-recovery-20261015-023635\\evidence.json",
+      "sha256": "b0eb90ae9f466adc466ec481a299ed3ccaab4f9cb95e88b5910d8a0cc6eb3554",
+      "raw_status_preserved": "NOT ACCEPTED",
+      "actual_GUI_clicks": 8,
+      "accepted_GUI_samples": 7,
+      "terminal_exec": 88951,
+      "exit_code": 1,
+      "build_sha256": {
+        "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-target-exit-recovery-20261015-023635\\control64.exe": "8988f3d15e2512f84f16f5de4edc986519959bc1b9cffd803202541a9dcbe5a7",
+        "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-target-exit-recovery-20261015-023635\\probe32.exe": "554fb46e006597bdb955df525ce1e774acd57c012823fddd0ef5dc3c13df8b52"
+      },
+      "retained_review": {
+        "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-target-exit-recovery-20261015-023635\\independent-failure-review.json",
+        "sha256": "49d0aa88bd32f158e0d72b9818ce594c0d3a4a4069015bb714d40a4bd68d9c89"
+      }
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-target-exit-isolated-diagnostic-20261015-024258\\evidence.json",
+      "sha256": "343810fdf58d431bf6cb18a6da769ad381b702dfb18814c65577b2ff5eedfd9e",
+      "raw_status_preserved": "NOT ACCEPTED",
+      "actual_GUI_clicks": 8,
+      "accepted_GUI_samples": 8,
+      "terminal_exec": 2947,
+      "exit_code": 0,
+      "build_sha256": {
+        "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-target-exit-isolated-diagnostic-20261015-024258\\control64.exe": "8988f3d15e2512f84f16f5de4edc986519959bc1b9cffd803202541a9dcbe5a7",
+        "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-target-exit-isolated-diagnostic-20261015-024258\\probe32.exe": "554fb46e006597bdb955df525ce1e774acd57c012823fddd0ef5dc3c13df8b52"
+      },
+      "retained_review": {
+        "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-target-exit-isolated-diagnostic-20261015-024258\\independent-diagnostic-review.json",
+        "sha256": "caf0d93294c4cb70facdcb2589f493b9581b38fbfafa332b3e35f229477e97a9"
+      }
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-target-exit-recovery-fixed-20261015-025101\\evidence.json",
+      "sha256": "1e0b480721604b37416d9f9ae86d68ee9bbe83eba77c8e14f14f0c33ecd6f56b",
+      "raw_status_preserved": "PENDING INDEPENDENT DATA REVIEW",
+      "actual_GUI_clicks": 9,
+      "accepted_GUI_samples": 9,
+      "terminal_exec": 98476,
+      "exit_code": 0,
+      "build_sha256": {
+        "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-target-exit-recovery-fixed-20261015-025101\\control64.exe": "b997f872799f13966cd5ffd5a176e7a69d9bf00429f0a644b875b98ee054e9b7",
+        "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-target-exit-recovery-fixed-20261015-025101\\probe32.exe": "3854e339266c96cb36c37a945ac679f0c33544c5d465bba8c63a5ee08c17a677"
+      }
+    }
+  ],
+  "phase_count_note": "33 phase clicks (8+8+8+9),31 accepted GUI samples. Only final9 belong to fixed-image acceptance; earlier3 raw outcomes remain NOT ACCEPTED on185-test images. These are not33 distinct controls.",
+  "optional_images": {
+    "metadata_samples": 4,
+    "saved_copies": 4,
+    "claim": "Optional owned Home copies only; no pixel or phase-freshness acceptance."
+  },
+  "cleanup": {
+    "all_owned_processes_closed": true,
+    "connected_handles_closed": true,
+    "known_overlays_and_descriptor_removed": true,
+    "scoped_product_CIM_remaining": 0,
+    "private_GUID_absent": true,
+    "exclusive_native_slot": "returned"
+  },
+  "limits": [
+    "Only cooperative owned x64 processes in automatic desktop mode; i686 built/copied but never executed. No hardware/RustDesk/global input, arbitrary apps, assigned recovery, dynamic PID grants or unrestricted-scope claim.",
+    "No UP expected at dead A. Worker keys do not establish automatic higher-level claim deletion; source-scoped ReleaseAll plus the fresh C pair proves this continuation.",
+    "The focused unit covers duplicate-VK suppression, failed-owner retention and successful retry through the production release-table helper. Native acceptance does not force every window-destroy/process-alive interleaving. Other bounds/provider failures remain outside this gate.",
+    "Normal Stop uses an ordinary cooperative message pump, not filtered/blocked pumps. Raw clients are not fresh MCP stdio tool coverage. Full P1 and Ultra parity remain open; prior failures are unchanged."
+  ]
+}

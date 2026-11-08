@@ -1,0 +1,375 @@
+diff --git a/src/ProtoInput/ProtoInputHooks/pipeinclude/MuxLifecycleProtocol.h b/src/ProtoInput/ProtoInputHooks/pipeinclude/MuxLifecycleProtocol.h
+--- a/src/ProtoInput/ProtoInputHooks/pipeinclude/MuxLifecycleProtocol.h
++++ b/src/ProtoInput/ProtoInputHooks/pipeinclude/MuxLifecycleProtocol.h
+@@ -6,7 +6,7 @@
+ namespace ProtoMuxLifecycle
+ {
+ constexpr uint32_t Version = 1;
+-constexpr uint64_t Build = 0x2026102000000001ULL;
++constexpr uint64_t Build = 0x2026102900000002ULL;
+ constexpr uint32_t ReadyMagic = 0x4D585244;
+ constexpr uint32_t CommitMagic = 0x4D58434D;
+ constexpr uint32_t ReplyMagic = 0x4D585250;
+diff --git a/src/ProtoInput/ProtoInputHooks/pipeinclude/pipeinclude.h b/src/ProtoInput/ProtoInputHooks/pipeinclude/pipeinclude.h
+--- a/src/ProtoInput/ProtoInputHooks/pipeinclude/pipeinclude.h
++++ b/src/ProtoInput/ProtoInputHooks/pipeinclude/pipeinclude.h
+@@ -1,6 +1,7 @@
+ #pragma once
+ #include <cstdint>
+ #include "MuxLifecycleProtocol.h"
++#include "MuxSetupAckProtocol.h"
+ 
+ // This file needs to be used in both ProtoInputHooks and ProtoInputLoader for pipe communication
+ 
+@@ -41,7 +42,9 @@
+ 	MuxCursorObserverStop,
+ 	MuxLifecycleBegin,
+ 	MuxLifecyclePrepareRetire,
+-	MuxKeyboardStateCommand
++	MuxKeyboardStateCommand,
++	MuxLifecycleBeginV2,
++	MuxInstallMessageFilterV1
+ };
+ 
+ // Fixed-width adapter for Rust-generated application-local devices (not OS HID).
+diff --git a/src/ProtoInput/ProtoInputHooks/MuxLifecycleNative.h b/src/ProtoInput/ProtoInputHooks/MuxLifecycleNative.h
+--- a/src/ProtoInput/ProtoInputHooks/MuxLifecycleNative.h
++++ b/src/ProtoInput/ProtoInputHooks/MuxLifecycleNative.h
+@@ -1,5 +1,6 @@
+ #pragma once
+ #include "pipeinclude/MuxLifecycleProtocol.h"
++#include "pipeinclude/MuxSetupAckProtocol.h"
+ #include <atomic>
+ #include <cstring>
+ 
+@@ -13,6 +14,10 @@
+ inline Ready current{};
+ inline HANDLE commitMapping = nullptr;
+ inline const Commit* commitView = nullptr;
++inline HANDLE setupMapping = nullptr;
++inline HANDLE setupEvent = nullptr;
++inline ProtoMuxSetupAck::Reply* setupView = nullptr;
++inline ProtoMuxSetupAck::Ledger setupLedger{};
+ 
+ inline bool NativeHandle(uint64_t value)
+ {
+@@ -42,6 +47,7 @@
+     current.bits = sizeof(uintptr_t) * 8;
+     current.creation = static_cast<uint64_t>(created.dwHighDateTime) << 32 | created.dwLowDateTime;
+     current.build = Build;
++    current.reserved[0] = ProtoMuxSetupAck::Capability;
+     const auto name = std::wstring(L"Local\\ProtoInputMultiPlex.Lifecycle.")
+         + std::to_wstring(GetCurrentProcessId()) + L"." + std::to_wstring(current.creation);
+     readyMapping = CreateFileMappingW(INVALID_HANDLE_VALUE, nullptr, PAGE_READWRITE, 0, sizeof(Ready), name.c_str());
+@@ -88,6 +94,29 @@
+     }
+     CloseHandle(mapping);
+     CloseHandle(event);
++}
++inline void CloseSetupChannel()
++{
++    if (setupView) UnmapViewOfFile(setupView);
++    if (setupMapping) CloseHandle(setupMapping);
++    if (setupEvent) CloseHandle(setupEvent);
++    setupView = nullptr;
++    setupMapping = setupEvent = nullptr;
++    setupLedger = ProtoMuxSetupAck::Ledger{};
++}
++inline bool PublishSetup(const ProtoMuxSetupAck::Install& body, ProtoMuxSetupAck::Outcome outcome)
++{
++    if (!setupView || !setupEvent) return false;
++    const ProtoMuxSetupAck::Reply reply{ProtoMuxSetupAck::ReplyMagic, ProtoMuxSetupAck::Version,
++        sizeof(ProtoMuxSetupAck::Reply), 0, body.creation, body.generation, body.session,
++        body.request, outcome.result, outcome.native_status, body.hook, 0};
++    auto words = reinterpret_cast<LONG*>(setupView);
++    const auto source = reinterpret_cast<const uint32_t*>(&reply);
++    InterlockedIncrement(words + 3);
++    for (size_t i = 0; i < sizeof(reply) / sizeof(uint32_t); ++i)
++        if (i != 3) InterlockedExchange(words + i, static_cast<LONG>(source[i]));
++    InterlockedIncrement(words + 3);
++    return SetEvent(setupEvent) != FALSE;
+ }
+ inline void ResetSessionState()
+ {
+@@ -182,6 +211,76 @@
+     ReplyTo(body.remote_reply_mapping, body.remote_event, result, body.generation, body.session);
+     return result == Ok;
+ }
++inline bool BeginChecked(HANDLE pipe, const ProtoMuxSetupAck::BeginV2& body)
++{
++    const uint64_t handles[]{body.base.remote_commit_mapping, body.base.remote_reply_mapping,
++        body.base.remote_event, body.mapping, body.event};
++    bool valid = true;
++    for (size_t i = 0; i < 5; ++i)
++    {
++        valid = valid && NativeHandle(handles[i]);
++        for (size_t j = 0; j < i; ++j) valid = valid && handles[i] != handles[j];
++    }
++    auto view = valid ? static_cast<ProtoMuxSetupAck::Reply*>(MapViewOfFile(Handle(body.mapping),
++        FILE_MAP_WRITE, 0, 0, sizeof(ProtoMuxSetupAck::Reply))) : nullptr;
++    valid = valid && view && view->magic == ProtoMuxSetupAck::ReplyMagic
++        && view->abi == ProtoMuxSetupAck::Version && view->bytes == sizeof(ProtoMuxSetupAck::Reply)
++        && view->creation == body.base.creation && view->generation == body.base.generation
++        && view->session == body.base.session && view->request == 0 && view->sequence == 0;
++    if (!valid)
++    {
++        if (view) UnmapViewOfFile(view);
++        // The complete frame transferred each distinct target-local handle once.
++        // ReplyTo consumes the base reply pair; never close aliases twice.
++        for (size_t i = 0; i < 5; ++i)
++        {
++            if (i == 1 || i == 2 || !NativeHandle(handles[i])
++                || handles[i] == handles[1] || handles[i] == handles[2]) continue;
++            bool first = true;
++            for (size_t j = 0; j < i; ++j) if (handles[j] == handles[i]) first = false;
++            if (first) CloseHandle(Handle(handles[i]));
++        }
++        ReplyTo(body.base.remote_reply_mapping, body.base.remote_event, Invalid,
++            body.base.generation, body.base.session);
++        return false;
++    }
++    if (!Begin(pipe, body.base))
++    {
++        UnmapViewOfFile(view);
++        CloseHandle(Handle(body.mapping));
++        CloseHandle(Handle(body.event));
++        return false;
++    }
++    CloseSetupChannel();
++    setupMapping = Handle(body.mapping);
++    setupEvent = Handle(body.event);
++    setupView = view;
++    return true;
++}
++inline bool InstallMessageFilterChecked(const ProtoMuxSetupAck::Install& body)
++{
++    if (!setupView) return false;
++    const auto outcome = setupLedger.Run(body, current.creation, current.generation, current.session,
++        []() { return HookManager::InstallMessageFilterChecked(); });
++    const bool applied = outcome.result == ProtoMuxSetupAck::Applied
++        || outcome.result == ProtoMuxSetupAck::AlreadyApplied;
++    if (!applied)
++    {
++        // A partial native install cannot be rolled back into a reusable claim.
++        RawInput::rawInputState.externalFreezeInput = true;
++        RawInput::rawInputState.sendMouseMoveMessages = false;
++        RawInput::rawInputState.sendMouseButtonMessages = false;
++        RawInput::rawInputState.sendMouseWheelMessages = false;
++        RawInput::rawInputState.sendKeyboardPressMessages = false;
++        FocusMessageLoop::PauseMessageLoop();
++        FakeCursor::EnableDisableFakeCursor(false);
++        current.state = Poisoned;
++        current.error = outcome.native_status ? outcome.native_status : ERROR_INVALID_DATA;
++        Publish();
++    }
++    const bool replied = PublishSetup(body, outcome);
++    return applied && replied;
++}
+ inline bool Prepare(const RetirePacket& body)
+ {
+     if (current.state != Active || body.generation != current.generation || body.session != current.session)
+@@ -227,6 +326,7 @@
+     if (clean)
+     {
+         ResetSessionState();
++        CloseSetupChannel();
+         current.state = Prepared;
+         current.error = 0;
+     }
+@@ -247,6 +347,8 @@
+     switch (header.messageType)
+     {
+     case T::MuxLifecycleBegin: return header.messageSize == sizeof(BeginPacket);
++    case T::MuxLifecycleBeginV2: return header.messageSize == sizeof(ProtoMuxSetupAck::BeginV2);
++    case T::MuxInstallMessageFilterV1: return header.messageSize == sizeof(ProtoMuxSetupAck::Install);
+     case T::MuxLifecyclePrepareRetire: return header.messageSize == sizeof(RetirePacket);
+     case T::SetupHook:
+         if (header.messageSize != sizeof(ProtoPipe::PipeMessageSetupHook)) return false;
+diff --git a/src/ProtoInput/ProtoInputHooks/PipeCommunication.cpp b/src/ProtoInput/ProtoInputHooks/PipeCommunication.cpp
+--- a/src/ProtoInput/ProtoInputHooks/PipeCommunication.cpp
++++ b/src/ProtoInput/ProtoInputHooks/PipeCommunication.cpp
+@@ -122,6 +122,7 @@
+ 			std::lock_guard<std::recursive_mutex> packetLock(RawInput::packetMutex);
+ 			if (lifecycle && (!MuxLifecycleNative::ValidVirtualCommand(msgHeader, messageBuffer)
+ 				|| (msgHeader.messageType != ProtoPipe::PipeMessageType::MuxLifecycleBegin
++					&& msgHeader.messageType != ProtoPipe::PipeMessageType::MuxLifecycleBeginV2
+ 					&& msgHeader.messageType != ProtoPipe::PipeMessageType::MuxLifecyclePrepareRetire
+ 					&& MuxLifecycleNative::current.state != ProtoMuxLifecycle::Active))) goto endPipe;
+ 			switch(msgHeader.messageType)
+@@ -135,6 +136,23 @@
+ 				if (!lifecycle || msgHeader.messageSize != sizeof(ProtoMuxLifecycle::RetirePacket)) goto endPipe;
+ 				MuxLifecycleNative::Prepare(*reinterpret_cast<const ProtoMuxLifecycle::RetirePacket*>(messageBuffer));
+ 				break;
++			case ProtoPipe::PipeMessageType::MuxLifecycleBeginV2:
++			{
++				if (!lifecycle || msgHeader.messageSize != sizeof(ProtoMuxSetupAck::BeginV2)) goto endPipe;
++				ProtoMuxSetupAck::BeginV2 body{};
++				std::memcpy(&body, messageBuffer, sizeof(body));
++				if (MuxLifecycleNative::BeginChecked(pipe, body))
++					claimed = true;
++				break;
++			}
++			case ProtoPipe::PipeMessageType::MuxInstallMessageFilterV1:
++			{
++				if (!lifecycle || msgHeader.messageSize != sizeof(ProtoMuxSetupAck::Install)) goto endPipe;
++				ProtoMuxSetupAck::Install body{};
++				std::memcpy(&body, messageBuffer, sizeof(body));
++				if (!MuxLifecycleNative::InstallMessageFilterChecked(body)) goto endPipe;
++				break;
++			}
+ 			case ProtoPipe::PipeMessageType::MuxInput:
+ 			{
+ 				if (msgHeader.messageSize != sizeof(ProtoPipe::MuxInputPacket)) goto endPipe;
+@@ -618,6 +636,7 @@
+ 	}
+ 
+ 	printf("End of pipe thread\n");
++	MuxLifecycleNative::CloseSetupChannel();
+ 	
+ 	CloseHandle(pipe);
+ 	if (lifecycle) goto connectPipe;
+diff --git a/src/ProtoInput/ProtoInputHooks/MessageFilterHook.h b/src/ProtoInput/ProtoInputHooks/MessageFilterHook.h
+--- a/src/ProtoInput/ProtoInputHooks/MessageFilterHook.h
++++ b/src/ProtoInput/ProtoInputHooks/MessageFilterHook.h
+@@ -35,6 +35,18 @@
+ 	void UninstallImpl() override;
+ 
+ 	static bool IsKeyboardButtonFilterEnabled();
++	bool AnyNativeDetourInstalled() const
++	{
++		return hookInfoGetMessageW.hasHook || hookInfoGetMessageA.hasHook
++			|| hookInfoPeekMessageW.hasHook || hookInfoPeekMessageA.hasHook;
++	}
++	bool AllNativeDetoursInstalled() const
++	{
++		return hookInfoGetMessageW.hasHook && hookInfoGetMessageW.info.Link
++			&& hookInfoGetMessageA.hasHook && hookInfoGetMessageA.info.Link
++			&& hookInfoPeekMessageW.hasHook && hookInfoPeekMessageW.info.Link
++			&& hookInfoPeekMessageA.hasHook && hookInfoPeekMessageA.info.Link;
++	}
+ 	static bool RegisterQueueFence(HWND hwnd, HANDLE event, uint64_t cookie);
+ 	static bool HasPendingFences();
+ 	static void WakeLifecycleRecipients();
+diff --git a/src/ProtoInput/ProtoInputHooks/HookManager.h b/src/ProtoInput/ProtoInputHooks/HookManager.h
+--- a/src/ProtoInput/ProtoInputHooks/HookManager.h
++++ b/src/ProtoInput/ProtoInputHooks/HookManager.h
+@@ -3,6 +3,7 @@
+ #include "Hook.h"
+ #include "InstallHooks.h"
+ #include "protoloader.h"
++#include "pipeinclude/MuxSetupAckProtocol.h"
+ 
+ namespace Proto
+ {
+@@ -38,6 +39,7 @@
+ 	static void InstallHook(ProtoHookIDs hookID);
+ 	static void UninstallHook(ProtoHookIDs hookID);
+ 	static bool IsInstalled(ProtoHookIDs hookID);
++	static ProtoMuxSetupAck::Outcome InstallMessageFilterChecked();
+ };
+ 
+ }
+diff --git a/src/ProtoInput/ProtoInputHooks/HookManager.cpp b/src/ProtoInput/ProtoInputHooks/HookManager.cpp
+--- a/src/ProtoInput/ProtoInputHooks/HookManager.cpp
++++ b/src/ProtoInput/ProtoInputHooks/HookManager.cpp
+@@ -81,4 +81,15 @@
+ 	}
+ }
+ 
++ProtoMuxSetupAck::Outcome HookManager::InstallMessageFilterChecked()
++{
++	static_assert(ProtoHookIDs::MessageFilterHookID == 2, "checked setup hook ID");
++	// Constructor registration fixes this index to MessageFilterHook. Inspect
++	// actual trace ownership, not Hook::Install's optimistic isInstalled flag.
++	auto& hook = static_cast<MessageFilterHook&>(*hookManagerInstance.hooks[ProtoHookIDs::MessageFilterHookID]);
++	return ProtoMuxSetupAck::CheckInstall([&hook]() { hook.Install(); },
++		[&hook]() { return ProtoMuxSetupAck::Detours{hook.AnyNativeDetourInstalled(), hook.AllNativeDetoursInstalled()}; },
++		[]() { return static_cast<uint32_t>(HookLifecycleError()); });
+ }
++
++}
+diff --git a/src/ProtoInput/ProtoInputHooks/pipeinclude/MuxSetupAckProtocol.h b/src/ProtoInput/ProtoInputHooks/pipeinclude/MuxSetupAckProtocol.h
+new file mode 100644
+--- /dev/null
++++ b/src/ProtoInput/ProtoInputHooks/pipeinclude/MuxSetupAckProtocol.h
+@@ -0,0 +1,80 @@
++#pragma once
++#include <cstdint>
++#include "MuxLifecycleProtocol.h"
++
++// Narrow compatibility shim: the only checked operation is installing all four
++// MessageFilter detours. Rust retains authorization, deadlines and final commit.
++namespace ProtoMuxSetupAck
++{
++constexpr uint64_t Capability = 1;
++constexpr uint32_t Version = 1;
++constexpr uint32_t ReplyMagic = 0x4D585341;
++constexpr uint32_t MessageFilterHook = 2;
++enum Result : uint32_t { Applied = 1, AlreadyApplied, Invalid, StaleGeneration,
++    DuplicateConflict, NativeFailure, Dirty };
++struct BeginV2
++{
++    ProtoMuxLifecycle::BeginPacket base;
++    uint64_t mapping, event;
++};
++struct Install
++{
++    uint64_t creation, generation, session, request;
++    uint32_t hook, operation;
++    uint64_t reserved;
++};
++struct Reply
++{
++    uint32_t magic, abi, bytes, sequence;
++    uint64_t creation, generation, session, request;
++    uint32_t result, native_status, hook, reserved;
++};
++struct Outcome { uint32_t result, native_status; };
++struct Detours { bool any, all; };
++static_assert(sizeof(BeginV2) == 64, "setup BeginV2 ABI");
++static_assert(sizeof(Install) == 48, "setup install ABI");
++static_assert(sizeof(Reply) == 64, "setup reply ABI");
++
++// No reset of the sticky lifecycle error is allowed between Begin and retirement.
++template<class InstallFn, class DetoursFn, class ErrorFn>
++Outcome CheckInstall(InstallFn install, DetoursFn detours, ErrorFn error)
++{
++    const auto previousError = error();
++    if (previousError) return { Dirty, previousError };
++    const auto previous = detours();
++    if (previous.all) return { AlreadyApplied, 0 };
++    if (previous.any) return { Dirty, 0 };
++    install();
++    const auto after = detours();
++    const auto status = error();
++    return status || !after.all
++        ? Outcome{ NativeFailure, status ? status : 0xC0000001u }
++        : Outcome{ Applied, 0 };
++}
++
++// Frames carry no handles. An identical duplicate can safely republish its
++// cached result; a conflicting duplicate never invokes native installation.
++class Ledger
++{
++    Install last{};
++    Outcome cached{};
++public:
++    template<class Apply>
++    Outcome Run(const Install& body, uint64_t creation, uint64_t generation,
++        uint64_t session, Apply apply)
++    {
++        if (body.creation != creation || body.generation != generation || body.session != session)
++            return { StaleGeneration, 0 };
++        if (!body.request) return { Invalid, 0 };
++        if (body.request == last.request)
++            return body.hook == last.hook && body.operation == last.operation && body.reserved == last.reserved
++                ? cached : Outcome{ DuplicateConflict, 0 };
++        if (body.hook != MessageFilterHook || body.operation != 1 || body.reserved)
++            return { Invalid, 0 };
++        if (body.request != last.request + 1) return { Invalid, 0 };
++        last = body;
++        cached = apply();
++        return cached;
++    }
++};
++}

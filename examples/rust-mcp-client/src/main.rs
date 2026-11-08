@@ -1,4 +1,4 @@
-use protoinputmux_mcp_example::{
+use protoinputmultiplex_mcp_example::{
     Client, Failure, Result, Scope, reconnect_after_approval,
     transport::{Config, StdioRpc},
 };

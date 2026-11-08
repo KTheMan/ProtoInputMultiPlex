@@ -1,0 +1,20 @@
+{
+  "result": "PASS",
+  "date": "2026-10-14",
+  "assessment_sha256": "945e3a9a74205993a2ead63639bbd6840a6027772ee753cf7a845e140c48624f",
+  "manifest_sha256": "65816ff2262942f67828a568831de9934f5cbbfe223a2c8254fe786362aa426b",
+  "byte_exact_original_evidence_json": 7,
+  "original_not_accepted_aggregates_retained": 3,
+  "byte_exact_sidecars": 6,
+  "byte_exact_owned_pngs": 8,
+  "root_column_rejection_preserved": true,
+  "frozen_current_source_hashes_verified": 57,
+  "current_binary_hashes_verified": 2,
+  "producer_build_pairs_verified": 4,
+  "only_source_delta_from_accepted_appearance": [
+    "crates\\protoinputmux\\src\\gui.rs"
+  ],
+  "accepted_control_occurrences": 51,
+  "root_visual_review": "Personally inspected final ASCII Home and routing-options originals: footer visible, left-aligned bounded names and fixed right status columns. Also inspected default/minimum column-tail images and the original clipped minimum. Latin typography and quiet compact structure are improved; CJK boxes, broader UX and accessibility remain outside acceptance.",
+  "scope": "Archive/provenance verification supplements independent bounded acceptance. Existing accepted navigation, Pause/Resume and Stop scopes retain their actual historical image hashes; no broad replay."
+}

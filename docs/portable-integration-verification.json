@@ -1,0 +1,173 @@
+{
+  "result": "APPROVED",
+  "date_local": "2026-10-14",
+  "main_checkout": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux",
+  "integration_type": "Working-tree import only; no staging or commit",
+  "accepted_source": {
+    "snapshot": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux-portable-20261014",
+    "commit": "de0a34c86e98be8db52acddc4e80818057c53490",
+    "baseline": "ff142942421215a7ae910cec99923d461dabe4a3",
+    "combined_patch": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux-accepted-integration.patch"
+  },
+  "accepted_imported_file_count": 79,
+  "accepted_sha256": {
+    ".gitattributes": "0387da735666411a3db4643d3b0230828ffb6343d3c738d9a68b09b43113b845",
+    ".gitignore": "c12d01a2e598a1355a0ca23f015168594b04f7abf556129bf6cc8f5313264e04",
+    "docs/portable-bundle-manifest.sample.json": "ff834e1c9daa923963a3250797dc6e02634812f92c35c6b1330b38898cfb377c",
+    "docs/portable-packaging-review.json": "9bdc76f174d467b5687c305a35388a2e5e3cd8f792ee274ddc1c521c06160aae",
+    "docs/portable-packaging-verification.json": "0430ac5133ecc99ab16c3d7c5c72d154cd33cb56442f339c658b8952a86a78ca",
+    "docs/portable-packaging.md": "45e4246cd8d7c54b10b22919e602460665bd567a7c8f10bf83396644693ff099",
+    "docs/portable-routing-evidence.json": "00020716d6e3c5f3f2e3d11467b274390e063af0d4f811a02961354f72a43ccd",
+    "docs/portable-routing-review.json": "65571d40f4bf423655eaf62fb51635a55c9c4e8cc8b0c07ca50bcf70cc5ff9a5",
+    "docs/portable-routing-verification.json": "114ffa03c8cb178fcf615d7669efca4307b200a6a6e1c65ec839efc8e6542e75",
+    "packaging/README-portable.txt": "e5e33c577fc832b5c0eb2da4e0933890fc92486c9249248c02d0b3ca488a705e",
+    "packaging/launch-gui.cmd": "3aa5c6b2829e466161851b6f0b957041118ee30f757785fdcbe978ad2d3bde51",
+    "packaging/launch-mcp.cmd": "93c230f8eb7418ad570c681bf8e89051b44841eaa300aa91cdb7f431639c1784",
+    "packaging/licenses/COPYING-GPL-3.0.txt": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+    "packaging/licenses/README.txt": "7dce50c6a42f2331f86efb7c6168af68be312071dc602288fc933d2627758e42",
+    "packaging/licenses/rust/accesskit-0.24.1/AUTHORS-NOTICE.txt": "3bab8c36f6a85657504aaefb37c7ff34e29b8c917290f3d28a1f0920c992e502",
+    "packaging/licenses/rust/accesskit-0.24.1/LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+    "packaging/licenses/rust/accesskit-0.24.1/LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3",
+    "packaging/licenses/rust/accesskit-0.24.1/LICENSE.chromium": "845022e0c1db1abb41a6ba4cd3c4b674ec290f3359d9d3c78ae558d4c0ed9308",
+    "packaging/licenses/rust/accesskit-0.24.1/NOTICE-PROVENANCE.json": "723e25e1f6920708a2c52cc79c5c060119a459014332ce06a75654fd2ede294a",
+    "packaging/licenses/rust/clipboard-win-5.4.1/LICENSE": "c9bff75738922193e67fa726fa225535870d2aa1059f91452c411736284ad566",
+    "packaging/licenses/rust/clipboard-win-5.4.1/NOTICE-PROVENANCE.json": "ddedbf29c50ad8a2c9593662a0b9e4cbfbc9038b6babe0e98bcfcc597da2c01e",
+    "packaging/licenses/rust/ecolor-0.34.3/LICENSE-APACHE": "8173d5c29b4f956d532781d2b86e4e30f83e6b7878dce18c919451d6ba707c90",
+    "packaging/licenses/rust/ecolor-0.34.3/LICENSE-MIT": "95ca92f5f8ea5231f1580b3a2a799e8260af3114b900e1def5355a7f44bcf60c",
+    "packaging/licenses/rust/ecolor-0.34.3/NOTICE-PROVENANCE.json": "0dcb6bfbd5be490809942baa91fad30f14dcab81f164565973dcdc79a42f364d",
+    "packaging/licenses/rust/eframe-0.34.3/LICENSE-APACHE": "8173d5c29b4f956d532781d2b86e4e30f83e6b7878dce18c919451d6ba707c90",
+    "packaging/licenses/rust/eframe-0.34.3/LICENSE-MIT": "95ca92f5f8ea5231f1580b3a2a799e8260af3114b900e1def5355a7f44bcf60c",
+    "packaging/licenses/rust/eframe-0.34.3/NOTICE-PROVENANCE.json": "a1be76c6e7491a19ae65373df4bd3109e76301fd2eccf7baef48ecff8d27a430",
+    "packaging/licenses/rust/egui-0.34.3/LICENSE-APACHE": "8173d5c29b4f956d532781d2b86e4e30f83e6b7878dce18c919451d6ba707c90",
+    "packaging/licenses/rust/egui-0.34.3/LICENSE-MIT": "95ca92f5f8ea5231f1580b3a2a799e8260af3114b900e1def5355a7f44bcf60c",
+    "packaging/licenses/rust/egui-0.34.3/NOTICE-PROVENANCE.json": "ec704d42f570774cc9a442171603e1f542f55b53ed6e9f66809f447a2e353159",
+    "packaging/licenses/rust/egui-winit-0.34.3/LICENSE-APACHE": "8173d5c29b4f956d532781d2b86e4e30f83e6b7878dce18c919451d6ba707c90",
+    "packaging/licenses/rust/egui-winit-0.34.3/LICENSE-MIT": "95ca92f5f8ea5231f1580b3a2a799e8260af3114b900e1def5355a7f44bcf60c",
+    "packaging/licenses/rust/egui-winit-0.34.3/NOTICE-PROVENANCE.json": "4abe20271b1168850c5f2eec02cd97bfe26a75b2118911501b9c67e63ee78272",
+    "packaging/licenses/rust/egui_extras-0.34.3/LICENSE-APACHE": "8173d5c29b4f956d532781d2b86e4e30f83e6b7878dce18c919451d6ba707c90",
+    "packaging/licenses/rust/egui_extras-0.34.3/LICENSE-MIT": "95ca92f5f8ea5231f1580b3a2a799e8260af3114b900e1def5355a7f44bcf60c",
+    "packaging/licenses/rust/egui_extras-0.34.3/NOTICE-PROVENANCE.json": "c1335de526e24938134f33dd1fa0239f60994a82cdc8c3903127eb01039d8a54",
+    "packaging/licenses/rust/egui_glow-0.34.3/LICENSE-APACHE": "8173d5c29b4f956d532781d2b86e4e30f83e6b7878dce18c919451d6ba707c90",
+    "packaging/licenses/rust/egui_glow-0.34.3/LICENSE-MIT": "95ca92f5f8ea5231f1580b3a2a799e8260af3114b900e1def5355a7f44bcf60c",
+    "packaging/licenses/rust/egui_glow-0.34.3/NOTICE-PROVENANCE.json": "3ef0e1c5560c9339de95698c369e1425c652e9c0d961a6cff5e4208f86a30202",
+    "packaging/licenses/rust/emath-0.34.3/LICENSE-APACHE": "8173d5c29b4f956d532781d2b86e4e30f83e6b7878dce18c919451d6ba707c90",
+    "packaging/licenses/rust/emath-0.34.3/LICENSE-MIT": "95ca92f5f8ea5231f1580b3a2a799e8260af3114b900e1def5355a7f44bcf60c",
+    "packaging/licenses/rust/emath-0.34.3/NOTICE-PROVENANCE.json": "3cb7b381c439ef9f4606bfdc46d6c11d70aba932a470969cc721af27865f7388",
+    "packaging/licenses/rust/enum-map-2.7.3/LICENSE-APACHE.txt": "074e6e32c86a4c0ef8b3ed25b721ca23aca83df277cd88106ef7177c354615ff",
+    "packaging/licenses/rust/enum-map-2.7.3/LICENSE-MIT.txt": "b85dcd3e453d05982552c52b5fc9e0bdd6d23c6f8e844b984a88af32570b0cc0",
+    "packaging/licenses/rust/enum-map-2.7.3/NOTICE-PROVENANCE.json": "19a94c72d3579c4858bec44cc73ff00724bc3986e509d9c2f928d2cbff0bf972",
+    "packaging/licenses/rust/enum-map-2.7.3/source-notices/src/arbitrary.rs.NOTICE.txt": "3bb2125a45f7a128246fb5946b48ff20b6226ad4b190c6fa36198e45896ec063",
+    "packaging/licenses/rust/enum-map-2.7.3/source-notices/src/enum_map_impls.rs.NOTICE.txt": "77fa957223570b4a857559dd78dc2e8743a76c4f4855461ec36f7365fed5e483",
+    "packaging/licenses/rust/enum-map-2.7.3/source-notices/src/internal.rs.NOTICE.txt": "4503a234e7576afbaacc4d58b2d981f1956091554603ad955dfcc905203d5c7e",
+    "packaging/licenses/rust/enum-map-2.7.3/source-notices/src/iter.rs.NOTICE.txt": "8518f618b95e04959f0c4b2e1d46101255c834e0b73eda79909e29df084403f8",
+    "packaging/licenses/rust/enum-map-2.7.3/source-notices/src/lib.rs.NOTICE.txt": "df24c632293fbfad49344efbbb53a82393b58e406be5f32ba116b62e6289b317",
+    "packaging/licenses/rust/enum-map-2.7.3/source-notices/src/serde.rs.NOTICE.txt": "1aaad0637aa28cfaff7c13a5adbe8af4fa0e1ff8c4e932dfbb370e907371befc",
+    "packaging/licenses/rust/enum-map-derive-0.17.0/LICENSE-APACHE.txt": "074e6e32c86a4c0ef8b3ed25b721ca23aca83df277cd88106ef7177c354615ff",
+    "packaging/licenses/rust/enum-map-derive-0.17.0/LICENSE-MIT.txt": "b85dcd3e453d05982552c52b5fc9e0bdd6d23c6f8e844b984a88af32570b0cc0",
+    "packaging/licenses/rust/enum-map-derive-0.17.0/NOTICE-PROVENANCE.json": "15bb438323e9c0674e58ed4da8b2cbd4af5f28f80d7f9e2160757f2f79dd3bd6",
+    "packaging/licenses/rust/enum-map-derive-0.17.0/source-notices/src/derive_enum.rs.NOTICE.txt": "3f1d722aff649f5508b0464c453c347bb8b06e2b07ff339b585b44a0b746f67c",
+    "packaging/licenses/rust/enum-map-derive-0.17.0/source-notices/src/derive_struct.rs.NOTICE.txt": "b34582a608a72785cc46e27e9d130e8922d4d9f3c4ec08a38e5994f874841251",
+    "packaging/licenses/rust/enum-map-derive-0.17.0/source-notices/src/lib.rs.NOTICE.txt": "c02aaebec9986faea6519f997e971d4237c6383bc59fa162353370cef3ff39c6",
+    "packaging/licenses/rust/epaint-0.34.3/LICENSE-APACHE": "8173d5c29b4f956d532781d2b86e4e30f83e6b7878dce18c919451d6ba707c90",
+    "packaging/licenses/rust/epaint-0.34.3/LICENSE-MIT": "95ca92f5f8ea5231f1580b3a2a799e8260af3114b900e1def5355a7f44bcf60c",
+    "packaging/licenses/rust/epaint-0.34.3/NOTICE-PROVENANCE.json": "c711418db222a62892dfde42b8fb139d11d425f0b0d6114d2a1cce5d8319f534",
+    "packaging/licenses/rust/gl_generator-0.14.0/LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "packaging/licenses/rust/gl_generator-0.14.0/NOTICE-PROVENANCE.json": "8b30307076313b6f2cdff1479710ec253309d031d3450a22663e677fbda8944d",
+    "packaging/licenses/rust/gl_generator-0.14.0/SOURCE-LICENSE-NOTICE.txt": "7eb15307bafc2e83b48490a5a4f1024f860d00c98b173fb5b8fa11e4e6692a31",
+    "packaging/licenses/rust/khronos_api-3.1.0/LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "packaging/licenses/rust/khronos_api-3.1.0/NOTICE-PROVENANCE.json": "44ae6f43b4bcccad33fb9c4788d88ca7b5ff3105ce3585bebaf6d019b6f1097e",
+    "packaging/licenses/rust/khronos_api-3.1.0/SOURCE-LICENSE-NOTICE.txt": "7eb15307bafc2e83b48490a5a4f1024f860d00c98b173fb5b8fa11e4e6692a31",
+    "packaging/licenses/rust/profiling-1.0.18/LICENSE-APACHE": "10d30a673cd5e9349bdc02aeb48f14b3386d27d0da32df8f0a555d4aa16aa551",
+    "packaging/licenses/rust/profiling-1.0.18/LICENSE-MIT": "c8167fdeeed46d3f244d3f85c5bf998ce889343691c32be2c61a8bc4b5c08333",
+    "packaging/licenses/rust/profiling-1.0.18/NOTICE-PROVENANCE.json": "6075da5b9fb2c00531ba8bb36985f01ce2d1402b247d59a5f88b7b60cece25c8",
+    "packaging/licenses/rust/rmcp-3.5.1/LICENSE": "0382b0057770ca05e9c350a50aa3b1c1fea84da0bc81d723bf00b9aa841be58a",
+    "packaging/licenses/rust/rmcp-3.5.1/NOTICE-PROVENANCE.json": "71fdd43cb6cdadd48421a5cf0e192738518a7056b6eed57ff112ee368c5fccf2",
+    "packaging/licenses/rust/rmcp-macros-3.5.1/LICENSE": "0382b0057770ca05e9c350a50aa3b1c1fea84da0bc81d723bf00b9aa841be58a",
+    "packaging/licenses/rust/rmcp-macros-3.5.1/NOTICE-PROVENANCE.json": "a4690a5f7fd1e78730e95d367fac2bcf25fa12eda3f4133cf15175a882892a67",
+    "scripts/build-backend.ps1": "0ef189b87b07901ecf28809c1e80feaaad53f3f6455bf50298303b7cbeb21b74",
+    "scripts/package-portable.ps1": "3f24f9d29c467f6b467d44275ca70866b80770914ce250d90c2595ce408f26e4",
+    "scripts/package-portable.py": "125d137ee46200fd9130d9fffc5c34b812e43dfa8b1d73b08e06020853290095",
+    "scripts/test-portable-gui.py": "e2bcb9e8eb1cdceccec92307ca15143e7660290a229c087c99035402e8194a5e",
+    "scripts/test-portable-routing.py": "fe8b422d94924bba883102949926e50440b2bae9bd314111957945042174aa99",
+    "scripts/test-portable.py": "08d8326b6dbee78624c499e59db21ed586c899a003ac324a6848882db5e37689"
+  },
+  "byte_comparison": "PASS: all79 main files match accepted snapshot byte-for-byte",
+  "notice_provenance": "PASS: independent review checked all17 fallback groups and text attribute unset",
+  "existing_file_changes": [
+    ".gitignore: add __pycache__/",
+    "scripts/build-backend.ps1: optional PrepareOnly switch; default build unchanged"
+  ],
+  "main_index_unchanged": true,
+  "protected_file_check": {
+    "count": 346,
+    "at_import": [],
+    "later_authorized_concurrent_changes": [
+      "docs/validation.md"
+    ],
+    "classification": "docs/validation.md was edited by the main session independently; preserved and not restored. Other unrelated main/agent work remains outside integration scope."
+  },
+  "focused_checks": {
+    "result": "PASS",
+    "python_checks": [
+      {
+        "name": "package-portable.py",
+        "python_ast": "PASS",
+        "help_exit_code": 0
+      },
+      {
+        "name": "test-portable.py",
+        "python_ast": "PASS",
+        "help_exit_code": 0
+      },
+      {
+        "name": "test-portable-gui.py",
+        "python_ast": "PASS",
+        "help_exit_code": 0
+      },
+      {
+        "name": "test-portable-routing.py",
+        "python_ast": "PASS",
+        "help_exit_code": 0
+      }
+    ],
+    "powershell_ast": "PASS (earlier main PowerShell parser check)",
+    "shared_cargo_target_guard": "PASS rejected before build",
+    "existing_output_guard": "PASS rejected before build",
+    "license_attribute": "packaging/licenses/rust/accesskit-0.24.1/NOTICE-PROVENANCE.json: text: unset",
+    "main_index_unchanged": true,
+    "current_protected_changes": [
+      "docs/validation.md"
+    ],
+    "protected_change_classification": "Only explicitly coordinated main-session concurrent edits allowed; none overwritten or restored",
+    "native_launches": 0,
+    "cargo_or_backend_builds": 0,
+    "main_commit_or_stage": false,
+    "historical_release_note": "Accepted ZIP/report hashes describe the prior isolated snapshot. No release certification is asserted for current main code."
+  },
+  "independent_review": {
+    "result": "APPROVED",
+    "reviewer": "Independent packaging_review agent",
+    "material_findings_remaining": [],
+    "verified": [
+      "79 exact imported file hashes",
+      "17 license provenance groups and Git text attributes",
+      "Main Git index unchanged",
+      "Protected product work unchanged; concurrent docs edit classified",
+      "PrepareOnly optional/defaultfalse flow",
+      "Historical report scope preserved"
+    ]
+  },
+  "historical_release_scope": {
+    "zip_sha256": "59f66e2fea9ec7c0517c9b90fe028a2d5cd68c6ec8ed994af7201339e1e68a2e",
+    "manifest_sha256": "ff834e1c9daa923963a3250797dc6e02634812f92c35c6b1330b38898cfb377c",
+    "build_source_commit": "fbf535927521d25f258ae823766be5b664e8b0b2",
+    "meaning": "Existing ZIP, sample manifest, GUI and routing evidence certify only the prior isolated snapshot. Integration did not build or certify current-main binaries."
+  },
+  "current_main_build_example": {
+    "cwd": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux",
+    "command": ".\\scripts\\package-portable.ps1 -CargoTargetDir E:\\Kenny\\Documents\\GitHub\\ProtoInputMux-current-portable-target -OutputDir E:\\Kenny\\Documents\\GitHub\\ProtoInputMux-current-portable-dist",
+    "note": "Example only, not run; output must be fresh. Native GUI/routing verification requires coordinating the main native slot."
+  },
+  "native_launches_during_integration": 0,
+  "cargo_or_native_builds_during_integration": 0
+}

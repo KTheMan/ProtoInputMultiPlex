@@ -1,0 +1,113 @@
+{
+  "decision": "SOURCE APPROVED; mandatory producer, harness, native/data and pixel acceptance pending",
+  "reviewer": "independent acceptance agent",
+  "baseline": {
+    "path": "runtime/producer-startup-shortcut-recovery-20261015-113145/verification.json",
+    "sha256": "e6810bcdf78837d3f9dece8b83bc88b379941bc6a9c56e5ddcc2c32c05a62f23"
+  },
+  "plan": {
+    "path": "docs/annotation-export-workflow-plan.md",
+    "sha256": "ca2baee43755a66b64f5e71893c7c5ef557cd959bb03a83d4fa74c9e355b8a2d"
+  },
+  "reviewed_nine_existing_files": {
+    "crates/mux-core/src/annotation.rs": {
+      "before_path": "runtime/annotation-export-before/crates/mux-core/src/annotation.rs",
+      "before_sha256": "a85264dda59bd33099188e1654134762255ab2611f0c62042f296f9f647ec621",
+      "current_sha256": "b678f44970df44d8af1294aee8cf45f7f52fe5d60b05ad193cfa9ec1ec5af4d3"
+    },
+    "crates/protoinputmux/src/annotation_runtime.rs": {
+      "before_path": "runtime/annotation-export-before/crates/protoinputmux/src/annotation_runtime.rs",
+      "before_sha256": "8e3199335318fdbc981e56340fae54d1b97331f1cacd248ace4bf2daf8312e10",
+      "current_sha256": "b5ffaa928686538dfa656d5202c83740571efeb95365fdd44d86d433edc028f9"
+    },
+    "crates/protoinputmux/src/agent_export.rs": {
+      "before_path": "runtime/annotation-export-before/crates/protoinputmux/src/agent_export.rs",
+      "before_sha256": "4c0ec1f7befe5bb42ea080d4a5c4949894ff89d10a670fff67df1fbb1b362780",
+      "current_sha256": "12b116bfda427ff9a5ca891d4fd914479ab498c3722e59d078a74bbe9376f6e9"
+    },
+    "crates/protoinputmux/src/magnifier_runtime.rs": {
+      "before_path": "runtime/annotation-export-before/crates/protoinputmux/src/magnifier_runtime.rs",
+      "before_sha256": "4b3ef5d7253aa4b783d2aae8c06ca8efbe7ba8000f11be3abe48252d043dd55a",
+      "current_sha256": "283627440a9b4f6e20ee5bb3ca0ca5e979bcd832cf841221fa707bd1bc0fcc98"
+    },
+    "crates/protoinputmux/src/annotation_ui.rs": {
+      "before_path": "runtime/annotation-export-before/crates/protoinputmux/src/annotation_ui.rs",
+      "before_sha256": "46d7c4e752d1bbb80aee24a8378fb8de8915058dbe0d8507ccb1a83287144759",
+      "current_sha256": "ec00c940c1dc9fccb0bab71f1320b521e366a7dfd9eb8dd6a77797f60e70bb09"
+    },
+    "crates/protoinputmux/src/agent_ui.rs": {
+      "before_path": "runtime/annotation-export-before/crates/protoinputmux/src/agent_ui.rs",
+      "before_sha256": "62eeddddd911a1635508b02a06dcd49fbe8cf1e16b94a867bf305e64b1cf7248",
+      "current_sha256": "742f4fbd369c4b07d0edad01ebeb26b581d122bd13cb488801c9f498777cac94"
+    },
+    "crates/protoinputmux/src/agent_runtime.rs": {
+      "before_path": "runtime/annotation-export-before/crates/protoinputmux/src/agent_runtime.rs",
+      "before_sha256": "bfa803694526ed270561fecdacab4cf009f776f5683132dc244b3167bd0d501f",
+      "current_sha256": "ac4f4ead67a0b45afe27329266764b554d9a88afd3acc5e7fd76965aff245832"
+    },
+    "crates/protoinputmux/src/session.rs": {
+      "before_path": "runtime/annotation-export-before/crates/protoinputmux/src/session.rs",
+      "before_sha256": "e52411698ffb5e52562a715421a9aa081843433c2e3f38009419cd01e0cadcb3",
+      "current_sha256": "b35ce60d3d5523c057b6312a2f7e779f5e1e0e77a77f2034b95826e0f09f50aa"
+    },
+    "crates/protoinputmux/src/mcp.rs": {
+      "before_path": "runtime/annotation-export-before/crates/protoinputmux/src/mcp.rs",
+      "before_sha256": "d399a10430553c4311c03a43405631124796d7937fb490168c3541cdf0797644",
+      "current_sha256": "2e090e6eacffe51983d7bd9ae9b685c1530fc728d7cc109225bac062da5f076b"
+    }
+  },
+  "reviewed_new_module": {
+    "path": "crates/protoinputmux/src/agent_runtime/annotation_export.rs",
+    "sha256": "c773043838324eef080017968fa4c5d0a8515b508250686d85ead53a87e04c22"
+  },
+  "protected_baseline_inputs": 822,
+  "all_protected_inputs_match": true,
+  "current_producer_snapshot": {
+    "path": "runtime/producer-annotation-export-20261015-120757/verification.json",
+    "source_input_count": 832,
+    "all_current_inputs_match_source_before": true,
+    "note": "Producer was running at review; its mutable verification file is not claimed as a terminal immutable PASS reference. Native acceptance must bind the terminal producer hash."
+  },
+  "manifest_accounting": "831 prior inputs: nine changed and 822 unchanged. Current producer replaces its prior helper and adds the new child module: nine changed, 821 shared protected inputs, new child module and new producer helper = 832. The prior helper remains byte-identical on disk.",
+  "main_backup_matches_unchanged_current": true,
+  "runtime10_unchanged": {
+    "ProtoInputHooks32.dll": "9fcc2e0602d15ba1ba0c2433217c9868fef6ea039b05fd29c53b35a43ee4e4bb",
+    "ProtoInputIJ32.exe": "73c10f7397d22ed9a9f9b1ee804f17853a2c9f96d495a83f9448201b97f27a86",
+    "ProtoInputIJP32.dll": "d593e4b4f304f55743c6bbb680cf3c81f2be97392980c29367639859ffdccc3e",
+    "ProtoInputLoader32.dll": "f8e0a573a42b948f099ccd8cfd5ce3427d3eabef4de25302cb6fa1e9e4e9e7be",
+    "ProtoInputHooks64.dll": "3a67717f8711fa7d310c4c679ec51b8f994b08839eadb58c67519ae85ec7addc",
+    "ProtoInputIJ64.exe": "e11a9fd0f14902f0c749781a42a8f912fb3eb876a54454f4cb5eddea5fa5636d",
+    "ProtoInputIJP64.dll": "8daf63d2c87a150e0928f0b6d359ea503b6180538faf14bc3c66fa8228a49172",
+    "ProtoInputLoader64.dll": "e4e3889472761337de4bd232863b84a319833fc0104c2062ae553239910f5f11",
+    "protoinputmux_cursor_observer32.dll": "bc2b2fbd2655e3324fcea2f41dc54a493bbd3120dd48daf92bb08ecfb5d20069",
+    "protoinputmux_cursor_observer64.dll": "3ade9c71977c87340daae545295cbea11aba3347ee84171aab189814d03f2212"
+  },
+  "findings": [],
+  "reviewed_invariants": [
+    "Connected Export is intercepted before the unconditional session-control mutation gate. Capture plus active permitted requested user is required; all_users additionally requires all current active users. Configure/Clear permissions remain unchanged.",
+    "Request-time Document clone and revision are immutable; selected-user rendering filters actual stroke owners and retains original order, clipping, alpha and work/pixel bounds. Later live ink edits intentionally do not invalidate the snapshot.",
+    "Typed prepared metadata pins request user, stable identity, exact all-user identity set, kind, scope, revision, path, dimensions and composition HWND/PID/bounds; retained original process watch and current selection/permissions/bounds are checked before approval and at completion.",
+    "Preparation, owned-target capture, rasterization, PNG encoding and filesystem work execute off the routing thread. The single annotation slot is retained after timeout, revocation or EOF until actual worker completion. No filesystem writes precede a positive permit.",
+    "Atomic publication retains existing create-new temporary file, sync and replace semantics. Invalid paths/pixels or denied permits do not publish. A granted permit is irreversible authorization; post-approval timeout/revocation can report a file may already exist.",
+    "Local/standalone tags are trusted local authority and are not invalidated by unrelated Agent policy. Preapproval local Stop drops permit; whole-session stop/crash after approval may interrupt publication or leave a temporary file, explicitly limited in the plan.",
+    "Matching connected client/sequence receives the deferred export ACK. Late completion after an earlier timeout/error is unacknowledged telemetry. External export ACK cannot consume a pending GUI Configure; authoritative export_pending None clears progress.",
+    "Public GUI/standalone Request::Annotation Export and connected Execute use the shared async path. The retained internal annotation_command Export fallback remains synchronous and is outside that async public-path claim.",
+    "Omitted ink_scope preserves all_users, explicit null is rejected, and historical ExportInfo defaults are unknown metadata fallbacks rather than evidence of a particular request.",
+    "Existing magnifier Export wrapper retains typed ExportInfo, pixel/path validation, permit gating and atomic writer; native magnifier smoke remains required because the generic PNG worker changed."
+  ],
+  "source_reviewed_test_cases": [
+    "Portable owner filtering, clipping, transparency, original paint order and independent cloned snapshot.",
+    "Legacy omitted scope / explicit null rejection / explicit scope round trip and historical metadata defaults.",
+    "Malformed path rejection before preparation, typed metadata before approval and decoded output equality, invalid prepared pixels preserving an existing destination.",
+    "Capture-only export authorization without session_control, all-user grant enforcement, stable-user and roster invalidation.",
+    "Blocked preparation timeout retaining capacity, denied destination remaining absent, and late unacknowledged completion.",
+    "External export pending/completion telemetry preserving pending local Configure."
+  ],
+  "limitations": [
+    "Source review only; no apps, tests, Cargo, routing or native capture were launched by this reviewer.",
+    "The earlier failed producer records are preserved; a terminal final producer must pass every mandatory check and match these source bytes before native launch.",
+    "No guarantee of completed publication or temporary-file cleanup when the routing worker is stopped/crashes after permit approval.",
+    "Timing-specific policy/window/roster races, blocked provider and atomic-writer failure need accurately separated source/unit/native evidence; no native claim follows from source review.",
+    "No desktop screenshot, real hardware, arbitrary application compatibility, full Unicode, full P1/UX or full Ultra parity claim."
+  ]
+}

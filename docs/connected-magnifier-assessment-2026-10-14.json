@@ -1,0 +1,94 @@
+{
+  "result": "PASS",
+  "group": "connected_selected_target_magnifier",
+  "date": "2026-10-14",
+  "judgment": "Bounded connected GUI magnifier permission, authoritative settings, actual asynchronous export and cleanup accepted. Original raw PENDING visual-review status is retained; this independent review completes its bounded approval.",
+  "counts": {
+    "actual_gui_receipts": 24,
+    "named_suboutcomes": 22,
+    "grouped_permission_state_export_cases": 15,
+    "own_gui_originals": 3,
+    "successful_decoded_exports": 2,
+    "owned_x64_targets": 2,
+    "i686_executions": 0
+  },
+  "build_sha256": {
+    "x64": "ae5e088b3c2f98acb5883ed429196cefe1fbd2183a281804ab71640ff553cdae",
+    "i686": "4d7a58ab4afb78e0f968efc10f7cf5f0e2be60a9de5b0f22632e85db59d340e7"
+  },
+  "source_integrity": {
+    "source_files_rehashed": 64,
+    "mismatches": []
+  },
+  "provenance": {
+    "raw": {
+      "path": "runtime\\acceptance-graph-connected-magnifier-20261014-230149\\evidence.json",
+      "sha256": "bddb9afe1cfb1b12479d5cf9e659443cf19a02fd8a70b2f400e756f2c3559be3"
+    },
+    "producer": {
+      "path": "runtime\\producer-connected-magnifier-20261014-225837\\verification.json",
+      "sha256": "6d9f7cfdbded81a1b1f7ac2858d1e2578288cf46494a18ac65e3c01d94e8f3fd"
+    },
+    "source_review": {
+      "path": "docs\\connected-magnifier-source-review-2026-10-14.json",
+      "sha256": "97e2ba7729c964cf8951b159ea9c008b14efa72fe81ccf493e0e79f9ac7a52e3"
+    },
+    "executed_runner": {
+      "path": "runtime\\acceptance-graph-connected-magnifier-20261014-230149\\runner-source\\test-connected-magnifier-acceptance.py",
+      "sha256": "35e4649a74c06efe44a29c9435c4ef84173703c905cc3411998a9c3238888f0e"
+    }
+  },
+  "accepted": [
+    "Inspect and denied operations preserve complete profile. Session-only permits Off Configure but denies enabled capture configuration/Refresh/Export; capture-only permits Refresh/Export but denies Configure. Excluded/unknown users, invalid settings and enabled Desktop source reject without capture/write.",
+    "Actual MCP Configure and GUI roster-selected Magnifier Docked Apply preserve all carried settings and unrelated user. Runtime Magnifier settings equal authoritative profile and VirtualUsers slots after success/Inspect; no recipient script fields were staged.",
+    "Actual MCP Export produces owned96x64 RGBA target pixels. Capture-only Refresh follows an actual owned fixture color change. A deny-delete handle causes real atomic replacement failure with byte-exact old PNG and no export temp remnants; subsequent raw export returns the exact client/sequence with an actual deferred acknowledged Magnifier event and changed pixels.",
+    "Own minimized target invalidates source before missing-frame export denial. NOACTIVATE restoration and virtual selection reacquire it. Selecting own B then narrowing policy to A rejects Refresh/Export against actual selected PID. Policy reconnects, Disable revocation, GUI-owned magnifier persistence and prior completed files are verified.",
+    "Actual Stop destroys known cursor/magnifier HWNDs and descriptor; owned probes report no remaining holds. Connected MCP processes, raw handles and GUI/probes close; scoped CIM audit is empty and the own GUID registry key is absent."
+  ],
+  "independent_pixel_review": {
+    "result": "PASS",
+    "method": "Direct view_image of all three immutable own product frames and both exported originals after cleanup. PNG pixels also independently decoded by runner.",
+    "findings": [
+      "Both-grant Agent page visibly selects only Alpha and the two own PIDs, capture/session changes on and app-preference changes off. Restricted frame visibly retains capture with session changes off and only Alpha target PID checked.",
+      "Magnifier frame visibly shows selected Alpha, Magnifier tab, Ready own source PID/HWND, capture sequence and acknowledged command. It is scrolled to telemetry/actions; exact configuration carry-in is established by profile/state equality rather than an assertion that all draft fields are visible.",
+      "Exported originals are opaque blue (45,105,165,255) then green (65,165,95,255), both96x64. These samples prove own selected-target pixels, not the full rendering algorithm matrix."
+    ],
+    "originals": [
+      {
+        "path": "runtime\\acceptance-graph-connected-magnifier-20261014-230149\\permission-both.png",
+        "sha256": "46f6936f3d68bab5e7d9edca14bbff27d3f896025f717e148c339b4f635ad799"
+      },
+      {
+        "path": "runtime\\acceptance-graph-connected-magnifier-20261014-230149\\magnifier-committed-draft.png",
+        "sha256": "82b43f2fb1ef0d6d0621c20e64b08af02fb24c3995e9e7cb64366731ad637bed"
+      },
+      {
+        "path": "runtime\\acceptance-graph-connected-magnifier-20261014-230149\\permission-capture-only-restricted.png",
+        "sha256": "e0f01f6b1413bc8a06cfdf1a5971d2d9d3cb9017c26f2dc8301e5c5ec443f751"
+      },
+      {
+        "path": "runtime\\acceptance-graph-connected-magnifier-20261014-230149\\owned-a-original.png",
+        "sha256": "464e943fbe5adb602fdf3a1c52299231752c4c27ef20428d0824d2ecbc672ec0"
+      },
+      {
+        "path": "runtime\\acceptance-graph-connected-magnifier-20261014-230149\\owned-a-refreshed.png",
+        "sha256": "a71c37aa0e7f7983a61cbc8fcc2dccf775494f1425cd169cd10be0e539a2de10"
+      }
+    ]
+  },
+  "limits": [
+    "Precommit worker denial/drop is unit-covered. Exact runtime policy/window/settings races, pending-capacity collisions, blocked-provider and large/network I/O timing cases were not exercised natively and have source review only; this small native workload does not establish responsiveness bounds.",
+    "New asynchronous export acceptance applies to connected export only; existing local legacy Export remains synchronous. A valid cached frame may export during newer refresh. An already authorized commit may publish later and cannot undo a completed authorized file.",
+    "No Desktop source capture, hardware/RustDesk input, global input injection, private desktop pixels, i686 execution, broad magnifier family replay, general-application compatibility or full UX/Ultra parity.",
+    "Positive connected operations targeted permitted original user A only. Retired-user and generated-clone native cases were not run; stored-slot synchronization was source-reviewed."
+  ],
+  "cleanup": {
+    "owned_processes_closed": true,
+    "connected_mcp_closed": true,
+    "raw_handles_closed": true,
+    "scoped_process_audit_survivors": 0,
+    "guid_key_absent": true,
+    "exclusive_slot_returned": true
+  },
+  "original_status_preserved": "PENDING INDEPENDENT VISUAL REVIEW"
+}

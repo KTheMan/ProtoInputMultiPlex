@@ -1,0 +1,63 @@
+{
+  "result": "PASS",
+  "date": "2026-10-14",
+  "checks": [
+    {
+      "command": [
+        "cargo",
+        "fmt",
+        "--all",
+        "--check"
+      ],
+      "exit_code": 0,
+      "log": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-horizontal-wheel-20261014-090906\\1.log"
+    },
+    {
+      "command": [
+        "cargo",
+        "clippy",
+        "--workspace",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit_code": 0,
+      "log": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-horizontal-wheel-20261014-090906\\2.log"
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--workspace"
+      ],
+      "exit_code": 0,
+      "log": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-horizontal-wheel-20261014-090906\\3.log"
+    },
+    {
+      "command": [
+        "cargo",
+        "build",
+        "--workspace"
+      ],
+      "exit_code": 0,
+      "log": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-horizontal-wheel-20261014-090906\\4.log"
+    },
+    {
+      "command": [
+        "cargo",
+        "build",
+        "--workspace",
+        "--target",
+        "i686-pc-windows-msvc"
+      ],
+      "exit_code": 0,
+      "log": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-horizontal-wheel-20261014-090906\\5.log"
+    }
+  ],
+  "build_sha256": {
+    "x64": "3a66de2d4bc39fc3dc2b97cca94a013766a48664e2aef3dbb9f818360e0a2434",
+    "i686": "4cca95006bba8a225279d7cf9f4a7120287b661a0ae6aa4a742e07fbe7db4501"
+  },
+  "workspace_tests": 96
+}

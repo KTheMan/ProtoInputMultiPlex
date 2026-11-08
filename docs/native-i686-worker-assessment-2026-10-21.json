@@ -1,0 +1,14 @@
+{
+  "date": "2026-10-21",
+  "status": "not_accepted",
+  "claim": "The i686 standalone MCP controller and direct-child worker path remains unvalidated. In the first bounded virtual cohort, three owned i686 EDIT fixtures and the i686 controller launched, but routing_start returned an MCP error before any worker or routed input was observed.",
+  "diagnosis": "The unchanged Rust backend source in crates/mux-windows/src/protoinput.rs rejects non-x64 hosts in Backend::load and selects ProtoInputLoader64.dll. The harness did not retain the sanitized MCP error text, so the native receipt establishes the failed start while the specific backend explanation comes from source inspection.",
+  "cleanup": "The failure path acknowledged normal Stop, the MCP controller reached EOF and exit 0, and all three owned fixtures closed through ordinary WM_CLOSE with exit 0. Read-only review found the original HWNDs and staged private processes absent. The runner recorded NOT_ACCEPTED and a final-integrity error because the planned successful cohort steps were not reached.",
+  "evidence": {
+    "producer": "runtime/producer-gui-script-io-20261021-attempt002/verification.json",
+    "source_review": "runtime/native-i686-worker-candidate/source-review.json",
+    "failed_run": "runtime/native-i686-worker-attempt001/evidence.json",
+    "independent_failure_review": "runtime/native-i686-worker-attempt001-review.json"
+  },
+  "limits": "No direct-child i686 worker, routing input, target compatibility, or i686 backend success was demonstrated. The earlier x64-controller/i686-target acceptance remains separate. A Rust compatibility change and new independent producer/native gates would be required before any success claim. Historical GUI-stall P1 remains OPEN; no hardware, desktop-wide, same-process, distribution, or full Ultra-parity claim is made."
+}

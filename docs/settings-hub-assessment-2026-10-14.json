@@ -1,0 +1,113 @@
+{
+  "result": "PASS",
+  "group": "settings_progressive_disclosure",
+  "date": "2026-10-14",
+  "judgment": "Bounded stopped Settings navigation and independent visual hierarchy accepted. Candidate is cleaner than the matched baseline; no full UX/Ultra parity or page-algorithm claim.",
+  "counts": {
+    "baseline_actual_receipts": 1,
+    "candidate_actual_receipts": 21,
+    "original_frames": 7,
+    "representative_destination_entries": 5
+  },
+  "baseline_build_sha256": {
+    "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-settings-hub-baseline-20261014-223750\\control64.exe": "76cc3cab281563ffa2bae93ef8a0b3a0732725ff289c8a2e4454eed692ed741f",
+    "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-settings-hub-baseline-20261014-223750\\probe32.exe": "cd8b33179e0f9fa14dd74ebeff7fa403f48937963389394cd270d60281f2fb7a"
+  },
+  "candidate_build_sha256": {
+    "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-settings-hub-candidate-20261014-223801\\control64.exe": "74e7f1f4223c895b160f6db4e97aa56256c8ff4faef2e09e7ab415b4ba19808b",
+    "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-settings-hub-candidate-20261014-223801\\probe32.exe": "cd8b33179e0f9fa14dd74ebeff7fa403f48937963389394cd270d60281f2fb7a"
+  },
+  "gui_source_sha256": "b762aa6bfc3890360991efb0ff3c27660718b76b05855c178d9daf32153369fb",
+  "accepted": [
+    "Baseline Settings resized to matched540x480; candidate initial Settings actually reached540x480 without test resizing and visibly defaulted to Application.",
+    "Four other real category controls plus five representative destination center-clicks/BackHome/Settings returns completed. Repeated Tools guard preserves upper sampling before existing Output Rules target requests lower reveal.",
+    "Entire normalized profile and preferences unchanged at every receipt; baseline/candidate final profiles equal. No worker state file. Actual Agent page snapshot has policy/capture/session_control/app_preferences off, no clients/pending.",
+    "Final actual BackHome→Settings frame visibly retains Agent access. AppPreferences committed/draft telemetry and Agent snapshot support page-specific entry; other three representative entries are guarded center receipts matched to reviewed original page dispatch, not feature-algorithm revalidation."
+  ],
+  "independent_pixel_review": {
+    "result": "PASS",
+    "method": "Direct view_image of all seven immutable own GUI originals after both GUIs closed.",
+    "findings": [
+      "Baseline540x480 exposes multiple groups/buttons with Tools below clipping. Candidate category rail plus one destination pane substantially reduces simultaneous clutter.",
+      "Tools normal shows all five destinations. At320x360 the compact category chooser is readable; upper and actual Output Rules-driven lower scroll views together show complete Live preview, Input lab, Annotation, Magnifier and Output Rules rows above the footer. BackHome stays pinned.",
+      "Automation minimum shows selected category and complete long Macros & replication destination label. Other three Automation labels were not independently pixel-inspected.",
+      "Agent access remains selected on return. Full-width destination geometry is source-supported and visually coherent; actual right-edge clicks were not sampled. Repeated headings and normal blank space remain."
+    ],
+    "frames": [
+      {
+        "path": "runtime\\acceptance-graph-settings-hub-baseline-20261014-223750\\settings-baseline.png",
+        "sha256": "ced3ac7f828ce3971638b3092a10eccd5d105dffe7780d53ac3f2941445b27ed"
+      },
+      {
+        "path": "runtime\\acceptance-graph-settings-hub-candidate-20261014-223801\\settings-application.png",
+        "sha256": "5a3287ed246b44de1e4c113bd19af9e638c76e54d6d41d8647f00d76bc0a6ba0"
+      },
+      {
+        "path": "runtime\\acceptance-graph-settings-hub-candidate-20261014-223801\\automation-minimum.png",
+        "sha256": "085d18da965682cd3039c24dc90a25174f56675f9a85e09ae4c0000ac9da5ad7"
+      },
+      {
+        "path": "runtime\\acceptance-graph-settings-hub-candidate-20261014-223801\\tools-normal.png",
+        "sha256": "018f530ba957a7907d83bc8bd26d060dde312c2fa34dcac625d79ecd7d74a057"
+      },
+      {
+        "path": "runtime\\acceptance-graph-settings-hub-candidate-20261014-223801\\tools-minimum-upper.png",
+        "sha256": "736fc294f3ef375b8faee319c9ebd240653ddb53369b24e06392ef0b7883d43e"
+      },
+      {
+        "path": "runtime\\acceptance-graph-settings-hub-candidate-20261014-223801\\tools-minimum-lower.png",
+        "sha256": "6f79bac2ee172b0db3e298aaea4224c9428e469c5159fa7710200ce4a0c34ea1"
+      },
+      {
+        "path": "runtime\\acceptance-graph-settings-hub-candidate-20261014-223801\\settings-remembered-agent.png",
+        "sha256": "bbda47fb4e32e96db824e2e23c75094bb13282dc947efa05c4fa6bca33d1073a"
+      }
+    ]
+  },
+  "limits": [
+    "Five representative actual destination entries: Application preferences, Users & devices, Macros & replication, Output Rules, Agent Access. Other eight routes are reviewed-source/render-presence scope only.",
+    "Minimum all-five Tools visibility is across scroll frames, not all destinations and chooser simultaneously. Guarded center receipts do not claim right-edge hit testing.",
+    "Unchanged footer text says Desktop input is active even while top status is Stopped. This known broader copy gap does not establish that routing ran; this gate created no worker.",
+    "No worker/routing actions, DLL attachment, MCP, probes, permission changes, old feature-family replay, hardware/RustDesk/global input, private desktop pixels or physical/general-app isolation. Synthetic own-profile PID allowlist excluded unrelated Agent-page titles.",
+    "x64 baseline/candidate stopped GUIs only. Candidate i686 copied metadata unused; not baseline i686 or native execution proof."
+  ],
+  "references": [
+    {
+      "path": "runtime\\acceptance-graph-settings-hub-baseline-20261014-223750\\evidence.json",
+      "sha256": "bba77cc5258beb0a6e7439e58040798ed0528c21e4847402bfd2a79d0733edec"
+    },
+    {
+      "path": "runtime\\acceptance-graph-settings-hub-candidate-20261014-223801\\evidence.json",
+      "sha256": "38084ad85ec1a152100743f516be49884bcaf7fb466f6614e1e4e8a8adaa8fbf"
+    },
+    {
+      "path": "runtime\\producer-settings-hub-20261014-223609\\verification.json",
+      "sha256": "ea49ace47b0f26cb68884d644611d06d51a1e9c212c343d0da408ce871b11867"
+    },
+    {
+      "path": "docs\\settings-hub-source-review-2026-10-14.json",
+      "sha256": "a7cb2b6af8508d40ddba22d03f6191720a22973478b1609a74e55b45fd8c27d2"
+    },
+    {
+      "path": "runtime\\acceptance-graph-settings-hub-candidate-20261014-223801\\runner-source\\test-settings-hub-ui.py",
+      "sha256": "599c24859b4ffec0dcdac5f52345f0d5fd6f84b844fecee430d5754428122bc9"
+    },
+    {
+      "path": "runtime\\acceptance-graph-settings-hub-candidate-20261014-223801\\ui.app-preferences.json",
+      "sha256": "9107096bb737cecbdd0c5d27af20dc6a2d5cc2b62e895e39d1c3a0f3046a7d37"
+    },
+    {
+      "path": "runtime\\acceptance-graph-settings-hub-candidate-20261014-223801\\ui.agent.json",
+      "sha256": "615f1449042a47aeae1bebedf800d8a0d904dccbdbe576694017b611d1c8adc1"
+    }
+  ],
+  "provenance_note": "Source-review hash is programmatically computed from the reviewed file. READY message hand-transcribed a different hash; this metadata mismatch caused no product/test failure or rerun.",
+  "original_statuses": "Both raw aggregates retain PENDING INDEPENDENT VISUAL REVIEW and control/profile PASS. This separate assessment supplies direct-original visual approval.",
+  "cleanup": {
+    "both_owned_GUIs_closed_normally": true,
+    "own_executable_prefix_CIM_survivors": 0,
+    "both_private_GUID_registry_keys_absent": true,
+    "worker_state_files_absent": true
+  },
+  "slot": "Returned to root; no further apps/Cargo/native launches."
+}

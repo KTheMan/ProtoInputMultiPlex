@@ -1,0 +1,25 @@
+{
+  "review_date": "2026-10-14",
+  "result": "source_review_approved",
+  "scope": "source only; no Cargo or native UI acceptance",
+  "files": {
+    "crates/protoinputmux/src/gui.rs": "f050cf3ab4a8065175207eacf245269f0439a34c1dee6101e826a759f52594d0",
+    "crates/protoinputmux/src/app_preferences.rs": "6aba587084f8b8c7fafbe89f5ee3c2f33ea7c6bd8697a3ecefd077e7a3bc222a",
+    "crates/protoinputmux/src/app_preferences_ui.rs": "58bc0a688529c3d437f8a73854d224a6342810fc45fe7777213060db5f87f8df",
+    "crates/protoinputmux/src/agent_runtime.rs": "dd42e5d7afc15a3debd52b15ecdf966df29bdd175ab747e1469d9eba730a39ce"
+  },
+  "review_correction": "The first pass missed that the pinned Ouroboros ButtonVariant has no Primary variant. The source was corrected to use Default; this focused follow-up checked the new appearance button variants against the pinned API.",
+  "observed_invariants": [
+    "Appearance updates use the existing application-preferences transaction and become committed only after its success path.",
+    "Older MCP Configure payloads that omit appearance_mode and zoom_percent preserve the current values; supplied values merge into the current preferences and are validated.",
+    "A runtime zoom change reapplies the logical minimum size on the following egui pass and does not explicitly resize the open window. The operating system may enlarge the window when enforcing the new minimum.",
+    "Home Configure uses an interactive Ouroboros Surface with the existing script observation and action-consumption guards.",
+    "The new appearance UI uses supported Ouroboros button variants Default and Secondary; the Home controls use the pinned Ouroboros components and supported variants.",
+    "Home roster scrolling is separate from routing and footer actions; initial Home sizing follows optional CLI profile loading, and page sizing changes only on navigation.",
+    "Restore, close, quit, routing-start, and cleanup-failure guards remain present in the reviewed source."
+  ],
+  "limitations": [
+    "This is a source review only, not a build result or independent native/UI acceptance.",
+    "Zoom and minimum-size behavior still depends on egui and operating-system viewport handling."
+  ]
+}

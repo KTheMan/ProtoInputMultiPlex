@@ -1,0 +1,44 @@
+{
+  "decision": "STARTUP-SETUP HARNESS CORRECTION APPROVED; fresh custom phase requires ROOT READY",
+  "initial_failed_raw": {
+    "path": "runtime\\acceptance-graph-startup-shortcuts-custom-20261015-113600\\evidence.json",
+    "sha256": "afa37e33e9e7a9174912f03880b61d0ef94265d72b6a780fb0d89482cb8084a1",
+    "preserved_result": "NOT ACCEPTED",
+    "accepted_samples": 0,
+    "Script_events": 0
+  },
+  "original_review": {
+    "path": "docs/startup-shortcut-recovery-harness-review-2026-10-15.json",
+    "sha256": "e5e4d22677fcbab235c0848d48bd9d2e629c9d37f038ba55e282b0fc514721f3"
+  },
+  "runner_before": {
+    "path": "runtime\\acceptance-graph-startup-shortcuts-custom-20261015-113600\\runner-source\\test-startup-shortcut-recovery.py",
+    "sha256": "6542dd5dbfc954ea47a725bf03dc39dce1bf6274b840bb3ca2f0a980ca18ff31"
+  },
+  "runner_after": {
+    "path": "scripts\\test-startup-shortcut-recovery.py",
+    "sha256": "cd698e7fe3e8765cf3b50483150a060442f455d7a83821fe84c2d88b266685c0",
+    "AST": "PASS"
+  },
+  "review": "Exact diff changes premature IsWindowVisible/non-iconic assertion into readonly polling under the original finite timeout, and tolerates only missing/in-flight health JSON reads. It still requires a truly visible/non-iconic owned window, actual inactive health/error, unchanged prelaunch preference bytes and rollback availability before capture/acceptance. No focus mutation, input, new action or relaxed successful criterion.",
+  "finding_classification": "Native HWND existence can precede the first visible GUI frame; no product defect established from this setup failure. If visibility never converges the original deadline still fails.",
+  "cleanup": {
+    "owned_exit_codes": {
+      "190768": 0,
+      "148664": 1
+    },
+    "forced_GUI_cleanup_exit1_not_normal_Quit_acceptance": true,
+    "cleanup_errors": [],
+    "scoped_CIM_survivors": [],
+    "GUID_absent": true,
+    "descriptor_absent": true
+  },
+  "source_unchanged": {
+    "six_reviewed_files_match": true,
+    "review_path": "docs\\startup-shortcut-recovery-source-review-2026-10-15.json",
+    "review_sha256": "36b85bceb20302868c921ca0e09df145eebf4b73e8e07e562c95872becb897d6",
+    "producer_sha256": "e6810bcdf78837d3f9dece8b83bc88b379941bc6a9c56e5ddcc2c32c05a62f23"
+  },
+  "remaining": "No substantive native/UI group accepted; original custom phase may run anew after explicit authorization, same finite cases. Default phase remains separately pending. No product/Cargo/test rerun by reviewer.",
+  "findings": []
+}

@@ -1,0 +1,115 @@
+{
+  "result": "PASS",
+  "group": "connected_virtual_user_lifecycle",
+  "date": "2026-10-15",
+  "judgment": "Bounded connected creation/grant/Stop authority, native ownership preservation, GUI-owned EOF persistence and roster integration accepted. The original raw PENDING visual-review result is unchanged; this independent review completes approval.",
+  "counts": {
+    "substantive_groups": 5,
+    "actual_gui_receipts": 18,
+    "named_suboutcomes": 19,
+    "original_frames": 3,
+    "owned_x64_targets": 3,
+    "i686_executions": 0
+  },
+  "build_sha256": {
+    "x64": "19d5a2d6ce128e7445c27a66e3f3a66a09e18eaba62a12aba5c018f1a4bb73ed",
+    "i686": "ffafe077e1299683ba0bb00cb07cd68e0930a0ea681eddb8cd7eaa672e9fc595"
+  },
+  "source_integrity": {
+    "producer_files_rehashed": 64,
+    "reviewed_current_and_baseline_files_rehashed": 14,
+    "mismatches": 0
+  },
+  "provenance": {
+    "raw": {
+      "path": "runtime\\acceptance-graph-connected-virtual-users-20261015-005142\\evidence.json",
+      "sha256": "f67ec4446eac9b24a6aa193d3380abb8479abcd78cf6a309ea8a5176d590eb97"
+    },
+    "producer": {
+      "path": "runtime\\producer-connected-virtual-users-20261015-004642\\verification.json",
+      "sha256": "49acbe36c725c07daa49b818304bd6e4d0382ed503e6d687d30c1b4b0083e404"
+    },
+    "independent_source_review": {
+      "path": "docs\\connected-virtual-users-source-review-2026-10-15.json",
+      "sha256": "fc249a2a1b9be4ae825374614ce3a35658f01a894562571dcf075f6314067c80"
+    },
+    "executed_runner": {
+      "path": "runtime\\acceptance-graph-connected-virtual-users-20261015-005142\\runner-source\\test-connected-virtual-users-acceptance.py",
+      "sha256": "bf6a10a6da2a0bdd9050d40a5a787de6412553fd3a80107b8e3a320f5b023ed8"
+    },
+    "plan": {
+      "path": "runtime/per-user-ux-acceptance/connected-virtual-users-acceptance-plan.md",
+      "sha256": "ea3fa2b771e61101f34b1b0d3434230475bf2b023543fe8de7376e3fc32cf821"
+    },
+    "final_originals_only_profile": {
+      "path": "runtime\\acceptance-graph-connected-virtual-users-20261015-005142\\final-profile.json",
+      "sha256": "ff8032a7a16ec767172d32cff8134afed7ab12cb7a5018ad9fa3cd9e52a277fc"
+    }
+  },
+  "accepted": [
+    "Actual MCP Inspect works with session-control off; Start is denied without native or roster changes. With the real permission checkbox/Apply and reconnect, missing/stale roster revision and original-user Stop are denied. Functional comparisons cover profile, slots/revision, graph revision, actual held bits and native edge counts.",
+    "Actual MCP Start creates slot2 C with unique stable ID/device paths and explicit third target PID, while direct actor A F5 and B F7 remain held. Full authoritative profile/slots and the source edge agree with GUI projection. The new identity is absent from policy. Direct clone input, source fanout crossing it, and another actor Stop reject before native source/destination edges. The same still-live creator can abort only its own ungranted C; both ordinary holds survive.",
+    "A second Start appends slot3 D, with new devices/identity rather than recycled C. Real Agent user4 checkbox plus Apply grants D and revokes old clients; fresh reconnect sees that explicit identity. One source Back DOWN/UP yields exactly one native source pair on A and one replica pair on C, then neither button is held.",
+    "With another actor B F7 held, a permitted direct D Back DOWN is observed on C. Normal MCP Stop D delivers Back UP, preserves B F7, tombstones D and removes its edge. Stopped slot input rejects. The next Start appends E in slot4, ungranted, reusing the third PID only after D has stopped.",
+    "Creator EOF leaves E and its graph edge GUI-owned and preserves the other actor B F7. That actor cannot inherit the private creation receipt to Stop ungranted E. Actual Virtual Replicas Select replica5/Stop selected virtual replica tombstones E locally; B F7 survives until its ordinary release. Parent Stop removes known overlays/descriptor, restores the exact two original seats without generated edges, and all owned resources close."
+  ],
+  "generated_slots": [
+    {
+      "user": 2,
+      "id": "seat-00020b74-000000000000000018dea4a222dc4b7c-0000000000000001",
+      "mouse": "virtual://mouse/3",
+      "keyboard": "virtual://keyboard/3"
+    },
+    {
+      "user": 3,
+      "id": "seat-00020b74-000000000000000018dea4a2a9497b44-0000000000000002",
+      "mouse": "virtual://mouse/4",
+      "keyboard": "virtual://keyboard/4"
+    },
+    {
+      "user": 4,
+      "id": "seat-00020b74-000000000000000018dea4a3a489441c-0000000000000003",
+      "mouse": "virtual://mouse/5",
+      "keyboard": "virtual://keyboard/5"
+    }
+  ],
+  "independent_pixel_review": {
+    "result": "PASS",
+    "method": "Direct view_image of all three unchanged own product originals after runner exit and GUI cleanup.",
+    "findings": [
+      "Permission original visibly shows A/B checked, removed C unavailable, D unchecked, all three owned PIDs checked, session changes on and capture/app-preferences off. The explanatory text describes the required grant/reconnect and private creator Stop.",
+      "EOF roster original shows revision5/five slots, C/D stopped and E active, with the real Select/Stop controls. This agrees with authoritative state after client EOF.",
+      "Final roster original shows revision6 and E stopped alongside retained tombstones. The last full stable-ID line and lower action are outside this scrolled frame; no simultaneous full-row/all-controls claim is made."
+    ],
+    "frames": [
+      {
+        "path": "runtime\\acceptance-graph-connected-virtual-users-20261015-005142\\ungranted-generated-user.png",
+        "sha256": "813e4593aa53297bf2f0d85e709664ff7752fcef5cb0462f7ad3488e991bd585"
+      },
+      {
+        "path": "runtime\\acceptance-graph-connected-virtual-users-20261015-005142\\eof-gui-owned-replica.png",
+        "sha256": "0cbf0f3b5a0c8300b49f0ee9ed07ffae6f9027a1d07eb3366579e24e070e63e9"
+      },
+      {
+        "path": "runtime\\acceptance-graph-connected-virtual-users-20261015-005142\\gui-stopped-tombstones.png",
+        "sha256": "a5f490ad332e3ad56b787d2052af7c4b07edc70cea457d923243b4c578846140"
+      }
+    ]
+  },
+  "limits": [
+    "Three distinct owned x64 probes and virtual original/generated devices only. No hardware/RustDesk input used for control or validation; no OS input injection, desktop capture or unrelated pixels. i686 was built/copied but not executed. No arbitrary-application, physical-device, same-process isolation or full Ultra/UX parity claim.",
+    "Existing generated edges enable keyboard/text when the source has a paired keyboard; those fields were structurally checked, while native copying sampled Back only. No old clone/graph filter, chain, timing, capacity or attachment-failure matrix was replayed.",
+    "Partial/empty base PID scope combinations, original/retired/generated endpoint permutations, GUI-local-pending/external ACK races, policy revocation timing and creation-receipt clearing on revocation remain source/unit coverage as applicable; native private-receipt clearing was sampled through EOF and a distinct actor.",
+    "The retired-device pending-tap scheduler guard is source-reviewed only in this group. No specific forced-timer test or native race coverage is claimed."
+  ],
+  "cleanup": {
+    "exec_session": 14962,
+    "terminal_exit_code": 0,
+    "owned_processes_and_mcp_closed": true,
+    "raw_handles_closed": true,
+    "scoped_cim_survivors": 0,
+    "test_registry_key_absent": "Software\\ProtoInputMux\\Tests\\1487cda8-23cc-4f13-b900-e630c1b8742f",
+    "known_overlays_and_descriptor_removed": true,
+    "exclusive_native_slot_returned": true
+  }
+}

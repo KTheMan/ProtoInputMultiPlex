@@ -1,0 +1,18 @@
+{
+  "date": "2026-10-14",
+  "review": "APPROVED_SOURCE_ONLY",
+  "baseline": "crates/protoinputmux/src/gui.rs",
+  "baseline_sha256": "31ce022533d314700d3b1cc5d692fb605c7b5cac222dc38b037385cf06db0b2a",
+  "candidate": "runtime/per-user-compact-chrome-draft/gui.rs",
+  "candidate_sha256": "08e1641a17b8d52a194e48e4bc2cae2d39c527be87b29efe9a4a7adbb9a71e11",
+  "patch": "runtime/per-user-compact-chrome-draft/per-user-compact-chrome.patch",
+  "patch_sha256": "d665cf83c2a9df062c452712abeff56e6258c8c513747abbd60ad127988b8071",
+  "patch_apply_check": "PASS",
+  "app_logic_byte_exact": true,
+  "app_logic_sha256_base": "ef4519767adb34ec8e0184c8ff063a18088ce23ab3caad21e8c8afad6942f1ad",
+  "app_logic_sha256_candidate": "ef4519767adb34ec8e0184c8ff063a18088ce23ab3caad21e8c8afad6942f1ad",
+  "review_scope": "Page::User compact chrome only: initial size on entry, compact Back to Home control without redundant breadcrumb/divider, and suppression of only the default informational status while retaining nondefault statuses and dropped-packet warning.",
+  "home_button_review": "Uses existing Ouroboros Button::sm, script.observe(label,response), and consume_action guard; Back to Home remains an actual interactive response and go_to_page performs the existing navigation/resize behavior.",
+  "layout_review": "Page::User gets 540x520 only when navigation changes viewport_page; manual resize is otherwise preserved. Other page branches and App::logic are unchanged.",
+  "validation": "Source/patch review only; no Cargo, UI launch, native, or visual acceptance."
+}

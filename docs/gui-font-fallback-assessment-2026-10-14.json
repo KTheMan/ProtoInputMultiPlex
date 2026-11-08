@@ -1,0 +1,156 @@
+{
+  "result": "PASS",
+  "group": "installed_gui_cjk_fallback",
+  "date": "2026-10-14",
+  "judgment": "Bounded installed Windows CJK fallback accepted by direct original-pixel baseline/candidate comparison. Emoji coverage remains incomplete; no full Unicode/locale or UX parity claim.",
+  "counts": {
+    "baseline_actual_observations": 1,
+    "candidate_actual_observations": 9,
+    "representative_original_frames": 6
+  },
+  "baseline_build_sha256": {
+    "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-gui-cjk-baseline-20261014-222649\\control64.exe": "ed07efad77ecb2385c4d93c7d90c000be3d33a65d588ee80bc539cdbcaf019e4",
+    "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-gui-cjk-baseline-20261014-222649\\probe32.exe": "25d6e9ab50449fb46b4e0026cf5996db15203dab8d98e263d5dcfa57688f2e60"
+  },
+  "candidate_build_sha256": {
+    "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-gui-cjk-candidate-20261014-222658\\control64.exe": "76cc3cab281563ffa2bae93ef8a0b3a0732725ff289c8a2e4454eed692ed741f",
+    "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-gui-cjk-candidate-20261014-222658\\probe32.exe": "25d6e9ab50449fb46b4e0026cf5996db15203dab8d98e263d5dcfa57688f2e60"
+  },
+  "executed_architecture": "x64 stopped baseline and candidate GUI sequentially; i686 copied metadata only, never run",
+  "gui_source_sha256": "e299e788894bb9fc4ac0e0ff1ee11ddab80203411878793adca86c995e23136d",
+  "direct_original_pixel_review": [
+    "Baseline DarkHome renders representative Han/kana/Hangul names as missing-glyph boxes; candidate renders distinct legible Han/kana and Hangul names in both Dark and Light.",
+    "Same DarkHome profile/selection/360x540 geometry retains identical RGB Latin row/name and existing Phosphor header icons within recorded owned-image regions. Existing Primary Select dropdown caret remains recognizable at320x360.",
+    "Long twenty-character Han/kana name is fully exposed in the existing540x520 Input field; exact full name/emoji data and complete normalized profile remain unchanged. Header/roster truncation stays bounded; full Apply and Home footers visible.",
+    "MinimumHome320x360 shows representative first CJK rows with readable glyphs and pinned actions. Lower roster rows may be clipped/scrolled; simultaneous all-five/selected-row full visibility or max-scroll interaction is not claimed.",
+    "The 🙂 code point remains a missing-glyph box in the actual Input/header image; 🖱 renders. This is an explicitly retained emoji gap, not accepted emoji glyph coverage."
+  ],
+  "owned_image_identical_regions": [
+    {
+      "region": "Latin row",
+      "owned_PNG_pixel_rect": [
+        8,
+        60,
+        340,
+        87
+      ],
+      "RGB_byte_identical": true,
+      "RGB_sha256": "be362725f7b2340097f340a58827455b5db6236e6faf602f00ad56e71e20fd5a"
+    },
+    {
+      "region": "Latin name",
+      "owned_PNG_pixel_rect": [
+        170,
+        65,
+        300,
+        83
+      ],
+      "RGB_byte_identical": true,
+      "RGB_sha256": "cbd40e98ab283417dc868d0d5bfa1fdce7e3a6019c856be27bef02808dc10f7c"
+    },
+    {
+      "region": "Phosphor header",
+      "owned_PNG_pixel_rect": [
+        78,
+        27,
+        162,
+        53
+      ],
+      "RGB_byte_identical": true,
+      "RGB_sha256": "d1e9dc08476bcad9f113ef14c018a490892fb2a775ac44b80f69211fc148839b"
+    }
+  ],
+  "original_frames": [
+    {
+      "path": "runtime\\acceptance-graph-gui-cjk-baseline-20261014-222649\\home-dark-normal.png",
+      "sha256": "463783854ba7f11151b911762bdb66d8d4cd6d0fb85d389683daaa669e8315c3"
+    },
+    {
+      "path": "runtime\\acceptance-graph-gui-cjk-candidate-20261014-222658\\home-dark-normal.png",
+      "sha256": "d8c24ad154e1ac8d64ea00e54dec61bdfead46611e1a76ac87b5aded286fea36"
+    },
+    {
+      "path": "runtime\\acceptance-graph-gui-cjk-candidate-20261014-222658\\home-dark-minimum.png",
+      "sha256": "90d9d00a7903cf5f911f18333298cf9f8516f0ca6d0deec7b4981a416928f410"
+    },
+    {
+      "path": "runtime\\acceptance-graph-gui-cjk-candidate-20261014-222658\\input-long-normal.png",
+      "sha256": "5cb9f14f7757562d7cd9d3a6082639deb5c33453f0ddb69906eac0cd16b073d2"
+    },
+    {
+      "path": "runtime\\acceptance-graph-gui-cjk-candidate-20261014-222658\\buttons-caret-minimum.png",
+      "sha256": "8fc894484d574acd883d549838cd980d99079c7f39a70e0e183327c82ed518c7"
+    },
+    {
+      "path": "runtime\\acceptance-graph-gui-cjk-candidate-20261014-222658\\home-light-normal.png",
+      "sha256": "7d15d2db26d37869204423954259ed14bd1b16ccd2ba99394f955f2199663db2"
+    }
+  ],
+  "informational_fresh_process_samples": {
+    "baseline": {
+      "pid": 107832,
+      "process_creation_to_first_observed_complete_product_png_ms": 3669.55,
+      "working_set_bytes": 110407680,
+      "private_bytes": 155262976,
+      "scope": "One fresh-process observed sample; cache state unknown; includes screenshot generation/observation delay, not exact first presentation or statistical performance"
+    },
+    "candidate": {
+      "pid": 101276,
+      "process_creation_to_first_observed_complete_product_png_ms": 3908.85,
+      "working_set_bytes": 137150464,
+      "private_bytes": 183263232,
+      "scope": "One fresh-process observed sample; cache state unknown; includes screenshot generation/observation delay, not exact first presentation or statistical performance"
+    },
+    "interpretation": "One fresh process per image; cache state unknown. Process-creation to first observed complete product PNG includes rendering/screenshot/poll delay, not exact presentation latency. Memory counters and timing are observations only, not statistical/causal performance guarantees or regression thresholds."
+  },
+  "installed_font": {
+    "path": "C:\\WINDOWS\\Fonts\\malgun.ttf",
+    "exists": true,
+    "bytes": 13457164,
+    "sha256": "0086c19e81d293a542e7d75564c645fb58070cc850aefebf8fa1c397858e510c"
+  },
+  "limits": [
+    "Requires readable ordinary installed Windows malgun.ttf. Generic Korean Han forms plus representative kana/Hangul only; not all locales, Unicode, fonts or color emoji. Native desktop cursor label rendering unchanged and untested here.",
+    "Missing-font behavior is producer unit evidence only. Readable malformed/replaced font robustness is not guaranteed; source review documents possible parser panic. No font files copied or redistributed.",
+    "Only actual existing Input field was used to expose full long text; no hover test is claimed. Dark/Light readability representative, no contrast certification.",
+    "No worker, ProtoInput DLL attachment, MCP, targets/probes, routing, algorithms, hardware/RustDesk/global input, private desktop pixels or broad old-form/feature suite replay."
+  ],
+  "references": [
+    {
+      "path": "runtime\\acceptance-graph-gui-cjk-baseline-20261014-222649\\evidence.json",
+      "sha256": "a2fee5ac15ac202bae83dfbf34e141e38648febbcd09e549ca92bc347370d036"
+    },
+    {
+      "path": "runtime\\acceptance-graph-gui-cjk-candidate-20261014-222658\\evidence.json",
+      "sha256": "db6841aff5695025771e7175fbd6cc5647fdb51c3cbe0f5cc7776cec144f3094"
+    },
+    {
+      "path": "runtime\\producer-gui-font-fallback-20261014-222410\\verification.json",
+      "sha256": "f1298015437fd914ac8796f549eb6b48b12ddf031980edbfaac288b93b0888ef"
+    },
+    {
+      "path": "docs\\gui-font-fallback-source-review-2026-10-14.json",
+      "sha256": "77f678cc8489d67f565cc51ac82e3b907614757492d9569f215d8e1d8e5d753d"
+    },
+    {
+      "path": "runtime\\acceptance-graph-gui-cjk-candidate-20261014-222658\\runner-source\\test-gui-cjk-font-ui.py",
+      "sha256": "9f9f0944beae3922ea29006efd3476be890a60f0674d290765c7a5571cc6a442"
+    },
+    {
+      "path": "runtime\\acceptance-graph-gui-cjk-baseline-20261014-222649\\final-profile.json",
+      "sha256": "1642048b73747651b0e8fe68bae5db5438e7844698afc0dd189cfaf0a4837560"
+    },
+    {
+      "path": "runtime\\acceptance-graph-gui-cjk-candidate-20261014-222658\\final-profile.json",
+      "sha256": "1642048b73747651b0e8fe68bae5db5438e7844698afc0dd189cfaf0a4837560"
+    }
+  ],
+  "original_statuses": "Both raw aggregates remain PENDING INDEPENDENT VISUAL REVIEW with control/profile PASS; this separate canonical assessment supplies independent direct-original visual approval.",
+  "cleanup": {
+    "both_owned_GUIs_closed_normally": true,
+    "own_executable_prefix_CIM_survivors": 0,
+    "both_private_GUID_registry_keys_absent": true,
+    "worker_state_files_absent": true
+  },
+  "slot": "Returned to root; no further apps/Cargo/native tests."
+}

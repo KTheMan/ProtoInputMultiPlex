@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "crate": "khronos_api",
+  "version": "3.1.0",
+  "declared_license": "Apache-2.0",
+  "repository": "https://github.com/brendanzab/gl-rs/",
+  "repository_root": "https://github.com/brendanzab/gl-rs",
+  "cargo_vcs_info": {
+    "git": {
+      "sha1": "f150967b1c44ae888e6676f93f639ebc82771bdc"
+    }
+  },
+  "files": [
+    {
+      "path": "LICENSE",
+      "upstream_path": "LICENSE",
+      "url": "https://raw.githubusercontent.com/brendanzab/gl-rs/f150967b1c44ae888e6676f93f639ebc82771bdc/LICENSE",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "SOURCE-LICENSE-NOTICE.txt",
+      "upstream_path": "khronos_api/src/lib.rs",
+      "url": "https://raw.githubusercontent.com/brendanzab/gl-rs/f150967b1c44ae888e6676f93f639ebc82771bdc/khronos_api/src/lib.rs",
+      "bytes": 621,
+      "sha256": "7eb15307bafc2e83b48490a5a4f1024f860d00c98b173fb5b8fa11e4e6692a31",
+      "upstream_file_sha256": "befbc0e187097e6c9da1ecbd79e0e1af462b6f6466108247745f6aa38abe0673",
+      "extraction": "Exact leading source license/copyright comment block."
+    }
+  ],
+  "crate_authors": [
+    "Brendan Zabarauskas <bjzaba@yahoo.com.au>",
+    "Corey Richardson",
+    "Arseny Kapoulkine",
+    "Pierre Krieger <pierre.krieger1708@gmail.com>"
+  ]
+}

@@ -1,0 +1,1775 @@
+{
+  "5": {
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764624,
+        "client": [
+          305,
+          215
+        ],
+        "bounds": {
+          "left": 86,
+          "top": 109,
+          "right": 616,
+          "bottom": 539
+        },
+        "buttons": [
+          1
+        ],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 33885288,
+          "x": 391,
+          "y": 324,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Assigned application",
+        "root": false,
+        "captured": true,
+        "keyboard_pid": 764624,
+        "mode": null
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 766612,
+        "client": [
+          265,
+          275
+        ],
+        "bounds": {
+          "left": 190,
+          "top": 213,
+          "right": 720,
+          "bottom": 643
+        },
+        "buttons": [
+          4
+        ],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 55578470,
+          "x": 455,
+          "y": 488,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Assigned application",
+        "root": false,
+        "captured": true,
+        "keyboard_pid": 766612,
+        "mode": null
+      }
+    ],
+    "button": "1 Wheel",
+    "a": {
+      "pid": 764624,
+      "cursor": [
+        391,
+        324
+      ],
+      "test_keys": 1,
+      "buttons": 1,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 1924
+    },
+    "b": {
+      "pid": 766612,
+      "cursor": [
+        455,
+        488
+      ],
+      "test_keys": 1,
+      "buttons": 2,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 1918
+    }
+  },
+  "16": {
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764624,
+        "client": [
+          265,
+          215
+        ],
+        "bounds": {
+          "left": 86,
+          "top": 109,
+          "right": 616,
+          "bottom": 539
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 33885288,
+          "x": 351,
+          "y": 324,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Assigned application",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 764624,
+        "mode": null
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 766612,
+        "client": [
+          265,
+          275
+        ],
+        "bounds": {
+          "left": 190,
+          "top": 213,
+          "right": 720,
+          "bottom": 643
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 55578470,
+          "x": 455,
+          "y": 488,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Assigned application",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 766612,
+        "mode": null
+      }
+    ],
+    "button": "Apply cursor settings",
+    "a": {
+      "pid": 764624,
+      "cursor": [
+        351,
+        324
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 3,
+      "mouse_clicks": 2,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 3927
+    },
+    "b": {
+      "pid": 766612,
+      "cursor": [
+        455,
+        488
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": -2.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 2,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 3982
+    }
+  },
+  "7": {
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764624,
+        "client": [
+          305,
+          215
+        ],
+        "bounds": {
+          "left": 86,
+          "top": 109,
+          "right": 616,
+          "bottom": 539
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 33885288,
+          "x": 391,
+          "y": 324,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Assigned application",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 764624,
+        "mode": null
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 766612,
+        "client": [
+          265,
+          275
+        ],
+        "bounds": {
+          "left": 190,
+          "top": 213,
+          "right": 720,
+          "bottom": 643
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 55578470,
+          "x": 455,
+          "y": 488,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Assigned application",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 766612,
+        "mode": null
+      }
+    ],
+    "button": "Pause",
+    "a": {
+      "pid": 764624,
+      "cursor": [
+        391,
+        324
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 2278
+    },
+    "b": {
+      "pid": 766612,
+      "cursor": [
+        455,
+        488
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": -2.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 2281
+    }
+  },
+  "8": {
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764624,
+        "client": [
+          305,
+          215
+        ],
+        "bounds": {
+          "left": 86,
+          "top": 109,
+          "right": 616,
+          "bottom": 539
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 33885288,
+          "x": 391,
+          "y": 324,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Assigned application",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 764624,
+        "mode": null
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 766612,
+        "client": [
+          265,
+          275
+        ],
+        "bounds": {
+          "left": 190,
+          "top": 213,
+          "right": 720,
+          "bottom": 643
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 55578470,
+          "x": 455,
+          "y": 488,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Assigned application",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 766612,
+        "mode": null
+      }
+    ],
+    "button": "1 Right",
+    "a": {
+      "pid": 764624,
+      "cursor": [
+        391,
+        324
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 2465
+    },
+    "b": {
+      "pid": 766612,
+      "cursor": [
+        455,
+        488
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": -2.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 2470
+    }
+  },
+  "13": {
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764624,
+        "client": [
+          265,
+          215
+        ],
+        "bounds": {
+          "left": 86,
+          "top": 109,
+          "right": 616,
+          "bottom": 539
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 33885288,
+          "x": 351,
+          "y": 324,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Assigned application",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 764624,
+        "mode": null
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 766612,
+        "client": [
+          265,
+          275
+        ],
+        "bounds": {
+          "left": 190,
+          "top": 213,
+          "right": 720,
+          "bottom": 643
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 55578470,
+          "x": 455,
+          "y": 488,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Assigned application",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 766612,
+        "mode": null
+      }
+    ],
+    "button": "Release all users",
+    "a": {
+      "pid": 764624,
+      "cursor": [
+        351,
+        324
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 3,
+      "mouse_clicks": 2,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 3336
+    },
+    "b": {
+      "pid": 766612,
+      "cursor": [
+        455,
+        488
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": -2.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 2,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 3386
+    }
+  },
+  "1": {
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764624,
+        "client": [
+          265,
+          215
+        ],
+        "bounds": {
+          "left": 86,
+          "top": 109,
+          "right": 616,
+          "bottom": 539
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 33885288,
+          "x": 351,
+          "y": 324,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Assigned application",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 764624,
+        "mode": null
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 766612,
+        "client": [
+          265,
+          215
+        ],
+        "bounds": {
+          "left": 190,
+          "top": 213,
+          "right": 720,
+          "bottom": 643
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 55578470,
+          "x": 455,
+          "y": 428,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Assigned application",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 766612,
+        "mode": null
+      }
+    ],
+    "button": "Start routing",
+    "a": {
+      "pid": 764624,
+      "cursor": [
+        351,
+        324
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 1,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 974
+    },
+    "b": {
+      "pid": 766612,
+      "cursor": [
+        455,
+        428
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 1,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 927
+    }
+  },
+  "3": {
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764624,
+        "client": [
+          305,
+          215
+        ],
+        "bounds": {
+          "left": 86,
+          "top": 109,
+          "right": 616,
+          "bottom": 539
+        },
+        "buttons": [
+          1
+        ],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 33885288,
+          "x": 391,
+          "y": 324,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Assigned application",
+        "root": false,
+        "captured": true,
+        "keyboard_pid": 764624,
+        "mode": null
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 766612,
+        "client": [
+          265,
+          215
+        ],
+        "bounds": {
+          "left": 190,
+          "top": 213,
+          "right": 720,
+          "bottom": 643
+        },
+        "buttons": [
+          4
+        ],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 55578470,
+          "x": 455,
+          "y": 428,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Assigned application",
+        "root": false,
+        "captured": true,
+        "keyboard_pid": 766612,
+        "mode": null
+      }
+    ],
+    "button": "1 Right",
+    "a": {
+      "pid": 764624,
+      "cursor": [
+        391,
+        324
+      ],
+      "test_keys": 1,
+      "buttons": 1,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 1547
+    },
+    "b": {
+      "pid": 766612,
+      "cursor": [
+        455,
+        428
+      ],
+      "test_keys": 1,
+      "buttons": 2,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 1,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 1539
+    }
+  },
+  "10": {
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764624,
+        "client": [
+          265,
+          215
+        ],
+        "bounds": {
+          "left": 86,
+          "top": 109,
+          "right": 616,
+          "bottom": 539
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 33885288,
+          "x": 351,
+          "y": 324,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Assigned application",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 764624,
+        "mode": null
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 766612,
+        "client": [
+          265,
+          275
+        ],
+        "bounds": {
+          "left": 190,
+          "top": 213,
+          "right": 720,
+          "bottom": 643
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 55578470,
+          "x": 455,
+          "y": 488,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Assigned application",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 766612,
+        "mode": null
+      }
+    ],
+    "button": "1 Left",
+    "a": {
+      "pid": 764624,
+      "cursor": [
+        351,
+        324
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 3,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 2823
+    },
+    "b": {
+      "pid": 766612,
+      "cursor": [
+        455,
+        488
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": -2.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 2833
+    }
+  },
+  "4": {
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764624,
+        "client": [
+          305,
+          215
+        ],
+        "bounds": {
+          "left": 86,
+          "top": 109,
+          "right": 616,
+          "bottom": 539
+        },
+        "buttons": [
+          1
+        ],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 33885288,
+          "x": 391,
+          "y": 324,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Assigned application",
+        "root": false,
+        "captured": true,
+        "keyboard_pid": 764624,
+        "mode": null
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 766612,
+        "client": [
+          265,
+          275
+        ],
+        "bounds": {
+          "left": 190,
+          "top": 213,
+          "right": 720,
+          "bottom": 643
+        },
+        "buttons": [
+          4
+        ],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 55578470,
+          "x": 455,
+          "y": 488,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Assigned application",
+        "root": false,
+        "captured": true,
+        "keyboard_pid": 766612,
+        "mode": null
+      }
+    ],
+    "button": "2 Down",
+    "a": {
+      "pid": 764624,
+      "cursor": [
+        391,
+        324
+      ],
+      "test_keys": 1,
+      "buttons": 1,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 1736
+    },
+    "b": {
+      "pid": 766612,
+      "cursor": [
+        455,
+        488
+      ],
+      "test_keys": 1,
+      "buttons": 2,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 1729
+    }
+  },
+  "17": {
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764624,
+        "client": [
+          265,
+          215
+        ],
+        "bounds": {
+          "left": 86,
+          "top": 109,
+          "right": 616,
+          "bottom": 539
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 33885288,
+          "x": 351,
+          "y": 324,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Assigned application",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 764624,
+        "mode": null
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 766612,
+        "client": [
+          265,
+          275
+        ],
+        "bounds": {
+          "left": 190,
+          "top": 213,
+          "right": 720,
+          "bottom": 643
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 55578470,
+          "x": 455,
+          "y": 488,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Assigned application",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 766612,
+        "mode": null
+      }
+    ],
+    "button": "Stop routing",
+    "a": {
+      "pid": 764624,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 3,
+      "mouse_clicks": 2,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 4193
+    },
+    "b": {
+      "pid": 766612,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": -2.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 2,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 4248
+    }
+  },
+  "2": {
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764624,
+        "client": [
+          265,
+          215
+        ],
+        "bounds": {
+          "left": 86,
+          "top": 109,
+          "right": 616,
+          "bottom": 539
+        },
+        "buttons": [
+          1
+        ],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 33885288,
+          "x": 351,
+          "y": 324,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Assigned application",
+        "root": false,
+        "captured": true,
+        "keyboard_pid": 764624,
+        "mode": null
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 766612,
+        "client": [
+          265,
+          215
+        ],
+        "bounds": {
+          "left": 190,
+          "top": 213,
+          "right": 720,
+          "bottom": 643
+        },
+        "buttons": [
+          4
+        ],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 55578470,
+          "x": 455,
+          "y": 428,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Assigned application",
+        "root": false,
+        "captured": true,
+        "keyboard_pid": 766612,
+        "mode": null
+      }
+    ],
+    "button": "Hold all users",
+    "a": {
+      "pid": 764624,
+      "cursor": [
+        351,
+        324
+      ],
+      "test_keys": 1,
+      "buttons": 1,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 1,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 1368
+    },
+    "b": {
+      "pid": 766612,
+      "cursor": [
+        455,
+        428
+      ],
+      "test_keys": 1,
+      "buttons": 2,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 1,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 1352
+    }
+  },
+  "11": {
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764624,
+        "client": [
+          265,
+          215
+        ],
+        "bounds": {
+          "left": 86,
+          "top": 109,
+          "right": 616,
+          "bottom": 539
+        },
+        "buttons": [
+          1
+        ],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 33885288,
+          "x": 351,
+          "y": 324,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Assigned application",
+        "root": false,
+        "captured": true,
+        "keyboard_pid": 764624,
+        "mode": null
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 766612,
+        "client": [
+          265,
+          275
+        ],
+        "bounds": {
+          "left": 190,
+          "top": 213,
+          "right": 720,
+          "bottom": 643
+        },
+        "buttons": [
+          4
+        ],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 55578470,
+          "x": 455,
+          "y": 488,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Assigned application",
+        "root": false,
+        "captured": true,
+        "keyboard_pid": 766612,
+        "mode": null
+      }
+    ],
+    "button": "Hold all users",
+    "a": {
+      "pid": 764624,
+      "cursor": [
+        351,
+        324
+      ],
+      "test_keys": 1,
+      "buttons": 1,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 3,
+      "mouse_clicks": 2,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 2975
+    },
+    "b": {
+      "pid": 766612,
+      "cursor": [
+        455,
+        488
+      ],
+      "test_keys": 1,
+      "buttons": 2,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": -2.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 2,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 3026
+    }
+  },
+  "9": {
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764624,
+        "client": [
+          305,
+          215
+        ],
+        "bounds": {
+          "left": 86,
+          "top": 109,
+          "right": 616,
+          "bottom": 539
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 33885288,
+          "x": 391,
+          "y": 324,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Assigned application",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 764624,
+        "mode": null
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 766612,
+        "client": [
+          265,
+          275
+        ],
+        "bounds": {
+          "left": 190,
+          "top": 213,
+          "right": 720,
+          "bottom": 643
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 55578470,
+          "x": 455,
+          "y": 488,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Assigned application",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 766612,
+        "mode": null
+      }
+    ],
+    "button": "Resume",
+    "a": {
+      "pid": 764624,
+      "cursor": [
+        391,
+        324
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 2652
+    },
+    "b": {
+      "pid": 766612,
+      "cursor": [
+        455,
+        488
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": -2.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 2645
+    }
+  },
+  "12": {
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764624,
+        "client": [
+          265,
+          215
+        ],
+        "bounds": {
+          "left": 86,
+          "top": 109,
+          "right": 616,
+          "bottom": 539
+        },
+        "buttons": [
+          1
+        ],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 33885288,
+          "x": 351,
+          "y": 324,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Assigned application",
+        "root": false,
+        "captured": true,
+        "keyboard_pid": 764624,
+        "mode": null
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 766612,
+        "client": [
+          265,
+          275
+        ],
+        "bounds": {
+          "left": 190,
+          "top": 213,
+          "right": 720,
+          "bottom": 643
+        },
+        "buttons": [
+          4
+        ],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 55578470,
+          "x": 455,
+          "y": 488,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Assigned application",
+        "root": false,
+        "captured": true,
+        "keyboard_pid": 766612,
+        "mode": null
+      }
+    ],
+    "button": "1 Tap W",
+    "a": {
+      "pid": 764624,
+      "cursor": [
+        351,
+        324
+      ],
+      "test_keys": 1,
+      "buttons": 1,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 3,
+      "mouse_clicks": 2,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 3145
+    },
+    "b": {
+      "pid": 766612,
+      "cursor": [
+        455,
+        488
+      ],
+      "test_keys": 1,
+      "buttons": 2,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": -2.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 2,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 3198
+    }
+  },
+  "6": {
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764624,
+        "client": [
+          305,
+          215
+        ],
+        "bounds": {
+          "left": 86,
+          "top": 109,
+          "right": 616,
+          "bottom": 539
+        },
+        "buttons": [
+          1
+        ],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 33885288,
+          "x": 391,
+          "y": 324,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Assigned application",
+        "root": false,
+        "captured": true,
+        "keyboard_pid": 764624,
+        "mode": null
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 766612,
+        "client": [
+          265,
+          275
+        ],
+        "bounds": {
+          "left": 190,
+          "top": 213,
+          "right": 720,
+          "bottom": 643
+        },
+        "buttons": [
+          4
+        ],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 55578470,
+          "x": 455,
+          "y": 488,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Assigned application",
+        "root": false,
+        "captured": true,
+        "keyboard_pid": 766612,
+        "mode": null
+      }
+    ],
+    "button": "2 Wheel",
+    "a": {
+      "pid": 764624,
+      "cursor": [
+        391,
+        324
+      ],
+      "test_keys": 1,
+      "buttons": 1,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 2106
+    },
+    "b": {
+      "pid": 766612,
+      "cursor": [
+        455,
+        488
+      ],
+      "test_keys": 1,
+      "buttons": 2,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": -2.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 2108
+    }
+  },
+  "15": {
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764624,
+        "client": [
+          265,
+          215
+        ],
+        "bounds": {
+          "left": 86,
+          "top": 109,
+          "right": 616,
+          "bottom": 539
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 33885288,
+          "x": 351,
+          "y": 324,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Assigned application",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 764624,
+        "mode": null
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 766612,
+        "client": [
+          265,
+          275
+        ],
+        "bounds": {
+          "left": 190,
+          "top": 213,
+          "right": 720,
+          "bottom": 643
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 55578470,
+          "x": 455,
+          "y": 488,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Assigned application",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 766612,
+        "mode": null
+      }
+    ],
+    "button": "Theme",
+    "a": {
+      "pid": 764624,
+      "cursor": [
+        351,
+        324
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 3,
+      "mouse_clicks": 2,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 3705
+    },
+    "b": {
+      "pid": 766612,
+      "cursor": [
+        455,
+        488
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": -2.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 2,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 3747
+    }
+  },
+  "14": {
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764624,
+        "client": [
+          265,
+          215
+        ],
+        "bounds": {
+          "left": 86,
+          "top": 109,
+          "right": 616,
+          "bottom": 539
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 33885288,
+          "x": 351,
+          "y": 324,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Assigned application",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 764624,
+        "mode": null
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 766612,
+        "client": [
+          265,
+          275
+        ],
+        "bounds": {
+          "left": 190,
+          "top": 213,
+          "right": 720,
+          "bottom": 643
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 55578470,
+          "x": 455,
+          "y": 488,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Assigned application",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 766612,
+        "mode": null
+      }
+    ],
+    "button": "Configure user",
+    "a": {
+      "pid": 764624,
+      "cursor": [
+        351,
+        324
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 3,
+      "mouse_clicks": 2,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 3521
+    },
+    "b": {
+      "pid": 766612,
+      "cursor": [
+        455,
+        488
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": -2.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 2,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 3574
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "result": "APPROVED",
+  "reviewer": "Independent packaging_review agent",
+  "date_local": "2026-10-14",
+  "archive_sha256": "59f66e2fea9ec7c0517c9b90fe028a2d5cd68c6ec8ed994af7201339e1e68a2e",
+  "manifest_sha256": "ff834e1c9daa923963a3250797dc6e02634812f92c35c6b1330b38898cfb377c",
+  "evidence": "portable-routing-evidence.json",
+  "verified": [
+    "Actual target-side virtual click and distinct-key delivery to separate x64 and x86 probes",
+    "Fresh-peer observations and exact click/key increments",
+    "Switched arbitration with independent keyboard and concurrent routing",
+    "Motion and wheel isolation without event crossover",
+    "Release-all while hooks are active and pause/resume",
+    "Native hook and loader identities/hashes match bundled runtime",
+    "Held-input explicit stop acknowledged cleanup; EOF cleanup reported separately",
+    "All owned MCP/worker/probe processes exited, overlays disappeared, temporary root removed",
+    "No product or portable bundle changes, hardware input, or RustDesk pointer control"
+  ],
+  "material_findings_remaining": [],
+  "limits": "Separate owned ordinary-pump targets and virtual devices only; no same-process, hardware, arbitrary-application or broad desktop-isolation acceptance"
+}

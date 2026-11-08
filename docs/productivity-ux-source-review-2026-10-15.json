@@ -1,0 +1,161 @@
+{
+  "review": "Independent six-file source review: compact utility pages and attachment status",
+  "date": "2026-10-15",
+  "result": "approved_source_only",
+  "files": [
+    {
+      "path": "crates\\protoinputmux\\src\\virtual_users_ui.rs",
+      "baseline": "runtime\\productivity-ux-base\\virtual_users_ui.rs",
+      "baseline_sha256": "d94b5908134c12521403ca60e10ce5627058bc1d0a3e4993c0fc333308e5cc5a",
+      "current_sha256": "4739ce824ee7ace42c432cc588052f840524702925cae3c0faf732731e1da142"
+    },
+    {
+      "path": "crates\\protoinputmux\\src\\macro_studio_ui.rs",
+      "baseline": "runtime\\productivity-ux-base\\macro_studio_ui.rs",
+      "baseline_sha256": "f1168eb75f60028c8f56f32a48eb23775aeec52a3dee20d4f788aa8551d2854a",
+      "current_sha256": "bc3b785f58c2b3728a6dcde1d77707dd0be7de480a642cc2b2dd50ea88d214ed"
+    },
+    {
+      "path": "crates\\protoinputmux\\src\\replication_ui.rs",
+      "baseline": "runtime\\productivity-ux-base\\replication_ui.rs",
+      "baseline_sha256": "3c7c726b111f7f48b6e22520ac3211d8f493fd99da4a08507d90061260d857b1",
+      "current_sha256": "91f10d1f23258884b747a7e53b97502112d0edf31f658425262465cc31cd4b93"
+    },
+    {
+      "path": "crates\\protoinputmux\\src\\gui.rs",
+      "baseline": "runtime\\productivity-ux-base\\gui.rs",
+      "baseline_sha256": "687068dc345d8d38efc282ab94de782032731da1428b493c72962ca08e28b91a",
+      "current_sha256": "2781889d8ab535856dafee640fcd818f676ff25382cee6f0f420ea328acc5d6f"
+    },
+    {
+      "path": "crates\\protoinputmux\\src\\session.rs",
+      "baseline": "runtime\\productivity-ux-base\\session.rs",
+      "baseline_sha256": "32d6e7df5049f01470ff46f27fa0485aa4667fe7a083ba25178b99d513d27514",
+      "current_sha256": "df0ec1555ff97cbd574b1e7c52981ed2b2f001060b3618e727e63c1cebf1757e"
+    },
+    {
+      "path": "crates\\protoinputmux\\src\\desktop_router.rs",
+      "baseline": "runtime\\productivity-ux-base\\desktop_router.rs",
+      "baseline_sha256": "b95d7e7bbe2b18da29aa4b945f86b98945e31b86265967b9fbbf080b74281ed6",
+      "current_sha256": "5af01b65801151ec53c4721c764dd5a45cc8645decd5ad0e881637d00389876b"
+    }
+  ],
+  "findings": [],
+  "resolved_findings": [
+    "Route options Script observer was inside its own initializer closure; final observer is after Collapsible.show, like every other disclosure.",
+    "Unsupported ButtonVariant::Primary/unused imports were corrected by owner to pinned Default/valid imports; no dependency change required.",
+    "Accidental GUI Unicode mojibake was restored from the UTF-8 baseline; final GUI diff is limited to intended status, initial sizes and focused notice test.",
+    "Connect/Update endpoint-active checks are now derived outside the Connect users body, so closing the disclosure does not disable valid still-visible actions.",
+    "Blocking staged-options validation now renders outside the closed Connect users disclosure."
+  ],
+  "reviewed": [
+    "Three UI files reorganize existing forms into default-closed pinned Ouroboros Collapsible sections with stable ID sources. Normal header Script observers are outside show initializers; disclosure clicks dispatch no worker command.",
+    "Virtual replica source/PID/options validation, selected stable slot, Start/Stop pending/revision guards and worker command construction are preserved. Compact row selection still uses exact Select replica N semantic label; stable identities remain available in details.",
+    "Macro errors, recording error and pending notice remain above disclosures. Per-user focus/pending retarget and recording/playback guards remain; closure-local file/timeline/generator command holders propagate the original worker action without losing it. Primary record/playback controls are on the first screen.",
+    "Graph unresolved/error/pending/queue suspension remain outside details. Apply retains explicit resolve/revision/pending guards and is distinct from queue Cancel. Connection categories, staged options, history, file operations and canvas hit labels retain command semantics; canvas height reduces320to220 without altering normalized node positions.",
+    "A new backend open emits Attaching and exactly one AttachmentFinished success/failure result; cached open/failure handling is retained. EventBus removes only matching retained progress, broadcasts completion without replaying it, and supervisor treats completion as telemetry rather than a command ACK.",
+    "GUI AttachmentNotice is independent of global command result and page controllers. Matching completion clears progress or stores its own failure notice; wrong-PID completion cannot clear it. Terminal events/new session clear it. Footer tooltip retains full failure detail; Script status mirrors displayed notice plus persistent result."
+  ],
+  "references": {
+    "contract": {
+      "path": "runtime/productivity-ux-contract.md",
+      "sha256": "1eda4e17e84297307ad596765bb1628b12b148105eeb10d743366f925f623049"
+    },
+    "root_status_review": {
+      "path": "docs\\productivity-ux-status-source-review-2026-10-15.json",
+      "sha256": "da7f810f2cf885cabe29ad7973cc9eb800ddeda3d622be3d1194c05eaae46372"
+    },
+    "gate_plan": {
+      "path": "runtime/per-user-ux-acceptance/productivity-ux-acceptance-plan.md",
+      "sha256": "3f4dbc4424e16cf5d550c3dedfd9f1dab14f13a6a5ce7e50e817111815eb0ae1"
+    },
+    "prepared_runner": {
+      "path": "runtime/acceptance-graph-productivity-ux-20261015-011951/runner-source/test-productivity-ux-ui.py",
+      "sha256": "3ebbeec08d3b67a63d4d77ea8cbcf2f4a5bd1168188bda542e418b618fc750c3"
+    },
+    "correction_plan": {
+      "path": "runtime/per-user-ux-acceptance/productivity-ux-correction-acceptance-plan.md",
+      "sha256": "f7ac62ea8e5776cc37dd6682384b01852984ebc8db3b44f323cd441d5fd44cfc"
+    },
+    "correction_runner": {
+      "path": "scripts/test-productivity-ux-visual-tail.py",
+      "sha256": "ca4109b35cb8969ee290c9d289a8af48b41097baaec9d6cbbd4509554813feae"
+    },
+    "replica_correction_plan": {
+      "path": "runtime/per-user-ux-acceptance/productivity-vu-responsive-acceptance-plan.md",
+      "sha256": "b2edba92c8ea0ebdaaa5cd0c54771a9c0e3215a9a5f7d1f6de92dd2fe3f990be"
+    },
+    "replica_correction_runner": {
+      "path": "scripts/test-productivity-vu-visual-tail.py",
+      "sha256": "8f94f02a583fe7f6f915d431dd9a68cec0b2b25589602f83f42fce11908c1056"
+    }
+  },
+  "limits": [
+    "Source-only approval, no Cargo/native/apps were run by this review. Producer checks/builds and independent native/pixel acceptance remain required before group completion.",
+    "Synthetic status/EventBus tests cover matching, failed and mismatched completion. Outstanding page-pending isolation is source-reviewed only, not directly simulated by those tests. Failed native open/pending races are not to be forced for this gate.",
+    "Density, contrast, actual whole-control visibility and primary/secondary action clarity remain actual-pixel judgment; source organization alone does not establish full UX/Ultra parity. No old algorithm, permissions or input-family acceptance is replaced."
+  ],
+  "macro_visual_correction": {
+    "review": "approved_source_only",
+    "previous_six_file_review": {
+      "path": "runtime\\productivity-ux-first-source-review.json",
+      "sha256": "ae1b7b65b9a348c6f002124b1764b4f5a14d8952c7f921f857c996a7d7b8d7dd"
+    },
+    "baseline": {
+      "path": "runtime\\productivity-ux-macro-correction-base.rs",
+      "sha256": "0d0c9ae7779d80d0d5c93ff56b9cecac71ccb5c45038f2cd125942b12ef31fbe"
+    },
+    "current_sha256": "bc3b785f58c2b3728a6dcde1d77707dd0be7de480a642cc2b2dd50ea88d214ed",
+    "other_five_files_unchanged": true,
+    "findings": [],
+    "verified": [
+      "Agent recording summary includes current owner client and count with less redundant identity/prose. Idle actions emphasize Start; local recording exposes Stop, agent recording exposes Discard/Inspect, playback exposes Cancel. Existing rendered command predicates, pending assignment, recipient and worker actions remain.",
+      "Root follow-up leaves active power notices visible even during recording and only collapses the non-recording playback summary conditional. No routing/clip/permission behavior changes.",
+      "Macro state-dependent button helpers use valid pinned Default/Destructive/Outline variants and existing label/frame guards. Pixel fit, readability and action hierarchy remain independently unaccepted until corrected native originals are reviewed."
+    ]
+  },
+  "replica_visual_correction": {
+    "review": "approved_source_only",
+    "previous_six_file_review": {
+      "path": "runtime/productivity-ux-macro-corrected-source-review.json",
+      "sha256": "3122171952864e6c47319d4e3e346df5f1c19e184d3926429d7ca4729927d71f"
+    },
+    "baseline": {
+      "path": "runtime\\productivity-ux-replica-correction-base.rs",
+      "sha256": "9a0b332e87f9f2734a020f44a3fa54955b4f34f24bfb888e0803c2fa2dc1ed48"
+    },
+    "current_sha256": "4739ce824ee7ace42c432cc588052f840524702925cae3c0faf732731e1da142",
+    "protected_other_five": [
+      {
+        "path": "crates\\protoinputmux\\src\\macro_studio_ui.rs",
+        "sha256": "bc3b785f58c2b3728a6dcde1d77707dd0be7de480a642cc2b2dd50ea88d214ed"
+      },
+      {
+        "path": "crates\\protoinputmux\\src\\replication_ui.rs",
+        "sha256": "91f10d1f23258884b747a7e53b97502112d0edf31f658425262465cc31cd4b93"
+      },
+      {
+        "path": "crates\\protoinputmux\\src\\gui.rs",
+        "sha256": "2781889d8ab535856dafee640fcd818f676ff25382cee6f0f420ea328acc5d6f"
+      },
+      {
+        "path": "crates\\protoinputmux\\src\\session.rs",
+        "sha256": "df0ec1555ff97cbd574b1e7c52981ed2b2f001060b3618e727e63c1cebf1757e"
+      },
+      {
+        "path": "crates\\protoinputmux\\src\\desktop_router.rs",
+        "sha256": "5af01b65801151ec53c4721c764dd5a45cc8645decd5ad0e881637d00389876b"
+      }
+    ],
+    "findings": [],
+    "reviewed": [
+      "Only VU UI code changes against the Macro-accepted producer. Start/Stop commands, stable selection, revision/pending guards, indices and target PID values remain unchanged.",
+      "Body width is capped to the actual clipped parent width after resize. Source/PID display strings are measured at Unicode scalar boundaries with a bounded 256-scalar prefix; underlying option ordering/selection and full labels retained for tooltip/widget metadata.",
+      "Replica state/PID/selection is a separate wrapping caption. Full identity and source identity are selectable break-anywhere text jobs at the visible width; label contents are not truncated.",
+      "No new observer, routing action, permission, schema or worker behavior; actual minimum readability and full ID access remain native original-pixel criteria."
+    ],
+    "limits": [
+      "Source-only review; no app/Cargo launched. Hover/accessibility metadata and arbitrary long names are not part of the nine-observation native continuation."
+    ]
+  }
+}

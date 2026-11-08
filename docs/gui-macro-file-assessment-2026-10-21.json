@@ -1,0 +1,16 @@
+{
+  "date": "2026-10-21",
+  "status": "bounded_gui_macro_file_accepted",
+  "claim": "One development-build GUI cohort completed actual Load, Save, invalid Load, and second Save controls in an opt-in UI Script. The first Load acknowledged a two-event macro clip; the first Save atomically replaced a preexisting sentinel with the exact 185-byte canonical clip. The invalid Load was rejected without replacing the clip, and the second Save produced identical bytes. Routing then stopped and the GUI and both owned target windows closed normally.",
+  "validation": "Required Rust format, strict Clippy, workspace tests (470 passed, 0 failed, 3 ignored), and x64/i686 app and observer builds passed. The bounded native run recorded 11 real GUI clicks, 11 drained sample barriers, four sequential macro file operation tickets, one matching automation ACK, no native input events in either virtual target, ordinary Stop, worker absence, exit code 0 for all three owned processes, and no remaining staged-image process. Native attempts 001 and 002 remain NOT_ACCEPTED; failed producer attempts 001 through 003 remain preserved.",
+  "evidence": {
+    "actual_source_review": "runtime/gui-macro-file-actual-source-review.json",
+    "source_review_addendum": "runtime/gui-macro-file-actual-source-review-addendum.json",
+    "producer": "runtime/producer-gui-macro-file-20261021-attempt004/verification.json",
+    "native_source_review": "runtime/gui-macro-file-ui-candidate/source-review.json",
+    "native_run": "runtime/gui-macro-file-ui-attempt003/evidence.json",
+    "independent_acceptance": "runtime/gui-macro-file-ui-attempt003-review.json"
+  },
+  "observed_limit": "The original command exited 0, but its post-completion terminal output included three ignored Python subprocess.Handle.Close WinError 6 tracebacks from duplicate runner handle closing. Product and fixture stderr were empty, and the staged-path process audit was clear. A 273-byte UI Script temporary file remained in the run folder; complete temporary-file cleanup was not established. The invalid-load error prefix was checked by the reviewed runner and retained as a boolean receipt, while its transient error snapshot was later replaced by the second Save state.",
+  "limits": "This one bounded workflow used app-local virtual devices and two owned EDIT targets. It did not test macro playback or routed input, physical-device isolation, general filesystem latency, historical GUI-stall P1 resolution, same-process multi-user isolation, shipping readiness, or full MouseMux Ultra parity. The historical GUI-stall P1 remains OPEN."
+}

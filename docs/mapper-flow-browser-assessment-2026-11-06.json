@@ -1,0 +1,130 @@
+{
+  "date": "2026-11-06",
+  "decision": "MAPPER_FLOW_BROWSER_ACCEPTED",
+  "scope": "Searchable structural preview cards for templates and saved Mapper flows, paged library browsing, and MCP browse support.",
+  "verification": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-flow-browser-20261106\\checks-006\\verification.json",
+    "sha256": "9215471be1d12bd97c4cf21da9b16529f3228e9665f4a3a5406a16951980967a"
+  },
+  "review": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-flow-browser-20261106\\independent-acceptance.json",
+    "sha256": "f17b32362a4228769626e96f627ca2585db19e76ca518551cb571f2b6b4639f7"
+  },
+  "publication": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-flow-browser-20261106\\publication.json",
+    "sha256": "9cc74a9b4797cb12e0abfbb81942ae45d522a6a298a1cf1403de014ad0b9c000"
+  },
+  "workspace_tests": {
+    "passed": 799,
+    "failed": 0,
+    "ignored": 19
+  },
+  "checks": {
+    "fmt": 0,
+    "clippy": 0,
+    "workspace-tests": 0,
+    "build-gui": 0
+  },
+  "x64_image": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-flow-browser-20261106\\checks-006\\x64\\protoinputmultiplex.exe",
+    "sha256": "70429d23ffd28cd58e57408d16a9e316f3e30a99c8e43efc9623949a40e1168e"
+  },
+  "producer": {
+    "original_session": 78060,
+    "original_exit_code": 0
+  },
+  "native": {
+    "evidence": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mt-7811b45a47b6\\evidence.json",
+      "sha256": "bd024a7321ef60bd3dde94003aa3ec2e53d4575da243a1000a228a11230ed1e8"
+    },
+    "driver": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-flow-browser-20261106\\native.py",
+      "sha256": "1cf2c81a7ce153a2f1059c7186e9fc7f4f682324ceeafd5cdcb3bf3154acb935"
+    },
+    "original_session": 44315,
+    "original_exit_code": 0,
+    "scope": {
+      "virtual_pairs": 1,
+      "GUI": 1,
+      "targets": 0,
+      "MCP": 1,
+      "hardware_input": 0,
+      "routing_or_injection": 0
+    },
+    "gui_exit": 0,
+    "mcp_exit": 0,
+    "template_capture": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mt-7811b45a47b6\\native\\template-search.png",
+      "sha256": "6aa5b0d3eb924aaac0ed41549b2b18cc2c96f1019de6f519a72fb766acdbf0ec",
+      "geometry": {
+        "hwnd": 4005012,
+        "dpi": 96,
+        "client_pixels": [
+          680,
+          620
+        ],
+        "client_logical": [
+          680.0,
+          620.0
+        ],
+        "window_rect": [
+          104,
+          104,
+          800,
+          763
+        ]
+      }
+    },
+    "saved_capture": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mt-7811b45a47b6\\native\\saved-search.png",
+      "sha256": "4a53227cb34bcf9eaeedfb5c8c560bc428a46a0e2c7e6a97655951d3e1f9840c",
+      "geometry": {
+        "hwnd": 4005012,
+        "dpi": 96,
+        "client_pixels": [
+          680,
+          620
+        ],
+        "client_logical": [
+          680.0,
+          620.0
+        ],
+        "window_rect": [
+          104,
+          104,
+          800,
+          763
+        ]
+      }
+    },
+    "paged_capture": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mt-7811b45a47b6\\native\\next-page.png",
+      "sha256": "82e94ed4c0ed5ecbee0044b20312a613c214c29fba7268771b5ce61f341c1909",
+      "geometry": {
+        "hwnd": 4005012,
+        "dpi": 96,
+        "client_pixels": [
+          680,
+          620
+        ],
+        "client_logical": [
+          680.0,
+          620.0
+        ],
+        "window_rect": [
+          104,
+          104,
+          800,
+          763
+        ]
+      }
+    }
+  },
+  "accepted_observations": [
+    "MCP browsed a library containing thirteen valid grouped flows and one corrupt entry, with deterministic search, paging and bounded argument errors.",
+    "Template selection at the minimum window width did not change the draft. Explicit Load produced the same Pointer trail definition as MCP, and Undo restored the baseline.",
+    "The saved browser displayed the corrupt entry as unavailable. A second-page card selected Flow13 before separate Load and Undo.",
+    "Preview projections preserve structural counts and collapsed group connectivity without carrying node parameters, virtual-user bindings or live samples."
+  ]
+}

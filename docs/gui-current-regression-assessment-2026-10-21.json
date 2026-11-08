@@ -1,0 +1,32 @@
+{
+  "status": "BOUNDED_REGRESSION_ACCEPTED",
+  "date": "2026-10-21",
+  "scope": "One virtual app-local no-Start historical-position GUI configuration flow; historical GUI-stall P1 remains OPEN.",
+  "producer": {
+    "path": "runtime/producer-i686-host-support-20261021-attempt002/verification.json",
+    "sha256": "c7ff141b6d043c0eef399a2027a9d65051fd369a31edf0e355b4a913805d323e"
+  },
+  "evidence": {
+    "path": "runtime/gui-stall-current-attempt001/evidence.json",
+    "sha256": "9a6b7ffa5abe3e39bf12a7160c36967c6954046ba8a0e173977e8eb8f9d8f68d",
+    "original_session": 9160,
+    "exit_code": 0
+  },
+  "independent_review": {
+    "path": "runtime/gui-stall-current-attempt001-review.json",
+    "sha256": "1dbc5d57bd94484d96b6c1e7e9a84c6a870fe929b275ae85f0e5eaa8e2c919f4"
+  },
+  "observed": [
+    "12 actual A/B configuration clicks and sample barriers in the original order.",
+    "Two independently decoded, fresh owned 320x640 RGBA Native controls frames.",
+    "One original qualified HWND/thread at (2224,0); frame counter 585 to 2702.",
+    "Stopped recovery, ordinary WM_CLOSE exit 0 in 140 ms, no CDB or forced cleanup, exact owned process/HWND/image absence.",
+    "All 865 compiled source files and ten staged runtime hashes unchanged."
+  ],
+  "limits": [
+    "One early 204 ms WM_NULL timeout (error1460) recovered; 68 later probes responsive. No general latency bound or reliability claim.",
+    "A private 31826-byte .ui-capture temporary remained; complete temporary-file cleanup is not claimed.",
+    "No routing Start, injected input, physical devices, RustDesk pointer use, or desktop capture.",
+    "The historical failure is preserved. This sequence passing does not establish its cause or resolution."
+  ]
+}

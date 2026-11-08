@@ -1,0 +1,48 @@
+{
+  "decision": "APPROVED_SOURCE_ONLY",
+  "date": "2026-10-15",
+  "scope": "Shared secondary-page Ghost Back/category breadcrumb and replication queue presentation only",
+  "files": [
+    {
+      "path": "crates\\protoinputmux\\src\\gui.rs",
+      "baseline": "runtime\\shared-utility-chrome-base\\gui.rs",
+      "baseline_sha256": "2781889d8ab535856dafee640fcd818f676ff25382cee6f0f420ea328acc5d6f",
+      "current_sha256": "e92b007dcdb1338c9c4b71eef580f751d95ead9f4fde034cf6ddf882dddfbb33"
+    },
+    {
+      "path": "crates\\protoinputmux\\src\\replication_ui.rs",
+      "baseline": "runtime\\shared-utility-chrome-base\\replication_ui.rs",
+      "baseline_sha256": "91f10d1f23258884b747a7e53b97502112d0edf31f658425262465cc31cd4b93",
+      "current_sha256": "7e112747b822ba1eaeb8d7efc16e8e6682bef316a2248fa7cd09e8a6c798605a"
+    }
+  ],
+  "manifest": {
+    "path": "runtime\\shared-utility-chrome-base\\source-manifest.json",
+    "sha256": "7b756f2fd679197f675deec8dc1d65fa3671840320c12f88605b8fba7434b3df",
+    "entries": 64,
+    "changed_files": 2,
+    "protected_unchanged_files": 62
+  },
+  "findings": [],
+  "reviewed": [
+    "SettingsCategory::for_page searches the existing destinations mapping without changing category memory, labels or page routes. Application, Users & devices, Automation, Tools and Agent access are derived from those original destinations; special per-user navigation is untouched.",
+    "The existing sm Ghost home_button retains the same Script observer, clicked check and consume_action dispatch guard. Wrapping affects only navigation row geometry.",
+    "Graph summary retains pending events and motion counts, with inactive status derived from session active/ready/suspended. Default-closed Queue diagnostics retains pending bytes, event/byte capacities, emitted/coalesced/cancelled; no queue values or snapshot fields change.",
+    "Diagnostics is below the canvas and above Connect users. Suspension warning, queue error/recovery instruction, staged/unresolved errors and pending ACK notice remain outside the disclosure; Apply/Cancel enablement and command paths are byte-equivalent outside the moved presentation.",
+    "Disclosure observer is after Collapsible.show and dispatches no product command. No runtime/model/MCP/vendor change."
+  ],
+  "native_plan": {
+    "path": "runtime/per-user-ux-acceptance/shared-utility-chrome-acceptance-plan.md",
+    "sha256": "5f350564c4fa6acc04453274c8c93872193820aabace37a84d6eac91e58f69f9"
+  },
+  "runner": {
+    "path": "scripts/test-shared-utility-chrome-ui.py",
+    "sha256": "29c726861e2da6105e2ff8ad77057acdef1dd08c6c4c01c5949154b0b679b433",
+    "ast": "PASS; verify2args/after1arg"
+  },
+  "limits": [
+    "Source-only review. Native stopped16-control/four-original visual gate and required producer checks remain prerequisites to completion.",
+    "Only representative three category breadcrumb routes are planned natively; other destination mapping is source-only.",
+    "No native queue suspension/overflow, warning state injection, delivery algorithm replay or live permissions claim. Actual density, full control visibility, contrast and scroll geometry require original-pixel review."
+  ]
+}

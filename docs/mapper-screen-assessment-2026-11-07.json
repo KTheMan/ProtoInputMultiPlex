@@ -1,0 +1,129 @@
+{
+  "date": "2026-11-07",
+  "decision": "MAPPER_SCREEN_ACCEPTED",
+  "scope": "Triggered Pixel Color and Image Match nodes in the Rust typed Input Mapper, with Ouroboros authoring and existing MCP graph operations.",
+  "verification": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-screen-20261107\\checks-002\\verification.json",
+    "sha256": "1996a27a968d78c5641f6aff5ce000ecaf2f162deac12d58f755df4858d4027d"
+  },
+  "review": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-screen-20261107\\independent-acceptance.json",
+    "sha256": "e65ecdd4a7fee154e6683b6bff988a19f439637aa055018999f009149e06f56e"
+  },
+  "publication": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-screen-20261107\\publication.json",
+    "sha256": "7e0c51ed6f95d158f2a31b7c7cc183aa84813b42752bad2a3c52b4a6e7015d31"
+  },
+  "workspace_tests": {
+    "passed": 883,
+    "failed": 0,
+    "ignored": 19
+  },
+  "checks": {
+    "fmt": 0,
+    "clippy": 0,
+    "workspace-tests": 0,
+    "build-gui": 0
+  },
+  "x64_image": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-screen-20261107\\checks-002\\x64\\protoinputmultiplex.exe",
+    "sha256": "9262ed12fd1c249efc3262d772ab6db580265b478ade4666a15e228920a8cbfc"
+  },
+  "producer": {
+    "original_session": 34467,
+    "original_exit_code": 0
+  },
+  "native": {
+    "evidence": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\ms-04327e8ccc63\\evidence.json",
+      "sha256": "f6a573ab873c994370e10a42816e8986b665b63f61468a855f76a0dfb63e0709"
+    },
+    "driver": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-screen-20261107\\native.py",
+      "sha256": "649afdffedecad9f13aaacaf424b43d898f062e9ea0a734fa218319e13b4cf2d"
+    },
+    "original_session": 37641,
+    "original_exit_code": 0,
+    "scope": {
+      "GUI": 1,
+      "normal_x64_targets": 2,
+      "virtual_pairs": 2,
+      "authenticated_MCP_actors": 3
+    },
+    "exit_codes": {
+      "GUI": 0,
+      "MCP": [
+        0,
+        0,
+        0
+      ],
+      "targets": {
+        "a": 0,
+        "b": 0
+      }
+    },
+    "UI_actions": 59,
+    "MCP_calls": 72
+  },
+  "accepted": [
+    "Only admitted true trigger pulses request asynchronous observations; Apply validates and caches bounded templates, while Apply and Arm never capture or emit autonomous input.",
+    "Pixel Color emits red/green/blue/alpha scalar States and a completion Pulse. Image Match emits matched Hold, accepted-match score (zero on no match), last successful desktop-center Position only on a match, and a completion Pulse on match or no match.",
+    "Image templates are deliberately authored shared graph/profile/flow configuration; live frames, queued payloads and committed observation values remain actor-private.",
+    "Capture authorization is separate from output authorization and binds actual source origin/ancestry, explicit capture_user, active client/generation/capture grant, exact selected window/PID/lifetime and downstream recipients.",
+    "Completion evaluates the current actor state, reserves effects and delivers through saved Mapper owners before committing; duplicate, stale or canceled continuations cannot emit input.",
+    "Bounds are eight screen nodes, eight pending reads per actor and 32 per session, at most one outstanding request per actor/node. Excess triggers drop only the new read and increment metadata counters while otherwise-valid original input/effects commit.",
+    "The earliest accepted trigger is retained in bounded FIFO order. Queued waits have no age expiry; the five-second capture timeout starts at actual dispatch. There is no real-time delivery guarantee.",
+    "One physical Mapper capture worker is separate from the existing GUI/MCP worker. Canceled physical work retains its slot; Apply/Arm remain unavailable until it drains. EOF/disarm/Stop cancel logical work and preserve saved-release cleanup.",
+    "Mapper uses bounded raw RGBA capture/analysis without PNG encoding or the MCP image transport budget; existing GUI/MCP PNG behavior remains separately bounded.",
+    "Ouroboros controls expose capture-user and ROI parameters, template-copy staging with Update/Undo, ordinary pending/completed/dropped counters and retiring-worker state; MCP uses the existing 24-tool surface."
+  ],
+  "limits": [
+    "Only virtual devices, one owned x64 GUI, three MCP processes (at most two active) and two disposable x64 target processes with four owned roots were used.",
+    "Native evidence covers real pixel/match reads, private actors, capture permission, gated input and hold release, selected-root invalidation before a later trigger, GUI authoring and normal cleanup. Delayed completion, queued DROP-NEW bursts, delayed EOF, stale-ticket, tombstone, reservation and wider failure cases are fake-provider/source evidence only; no native late-result race, broad stress or application/device matrix is claimed.",
+    "No hardware/RustDesk/global pointer input, broad desktop capture, clipboard or vision/LLM provider was used.",
+    "Full desktop vision, OCR, LLM nodes, broader Mapper operators, hardware/application breadth, historical GUI-stall P1, full Ultra/UI parity and release readiness remain open."
+  ],
+  "retained_failed_checks": [
+    {
+      "receipt": {
+        "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-screen-20261107\\checks-001\\verification.json",
+        "sha256": "9a9da7fbd8162f5741580ef22ab4fa15e44127c7a006eb785642c4dcb7dd5192"
+      },
+      "error": "RuntimeError('clippy failed')",
+      "checks": {
+        "fmt": 0,
+        "clippy": 101
+      }
+    }
+  ],
+  "retained_failed_native": [
+    {
+      "evidence": {
+        "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\ms-0371b850ca2c\\evidence.json",
+        "sha256": "b1944ef73c958d9fb81931b97ddb2a2d0d6fd63b3ebafd999031e508dc547897"
+      }
+    },
+    {
+      "evidence": {
+        "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\ms-314d82c0730d\\evidence.json",
+        "sha256": "54ad69baff2eef6b46111e4c45559bc05e05a40a663f98fdb2e66ac85b746069"
+      }
+    },
+    {
+      "evidence": {
+        "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\ms-d009ba6d3e92\\evidence.json",
+        "sha256": "5ee0beb35aaac3dba8f9fbc62b4ac88752444a43f7a99dec2baded17a1ee5a4f"
+      }
+    },
+    {
+      "evidence": {
+        "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\ms-4cdd99c0ce09\\evidence.json",
+        "sha256": "92f3fd60bd0ad9b11427f02f2045e38f787f3ffc65633650ddfa068bec049e55"
+      },
+      "ordinary_cleanup": {
+        "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\ms-4cdd99c0ce09\\root-ordinary-cleanup.json",
+        "sha256": "2daf0085bdcc22a301dfed5896ed53817e4f607317b6daaa4a32163d5f6b7d1a"
+      }
+    }
+  ]
+}

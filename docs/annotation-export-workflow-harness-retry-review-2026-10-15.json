@@ -1,0 +1,56 @@
+{
+  "decision": "HARNESS APPROVED for one bounded missing-only hypothesis retry after root READY; no causal diagnosis or native acceptance inferred",
+  "runner": {
+    "path": "scripts/test-annotation-export-workflow.py",
+    "sha256": "e7321dc1e16948454ca5a79af23345ebd1c80bdb72377a9ebe5bf22cd86a010f",
+    "ast": "PASS; parsed only"
+  },
+  "launch_requirement": "Root sole launcher, quiet exclusive slot, same frozen producer, --resume-prefix exact124053 directory. No automatic further retry after a material failure.",
+  "producer": {
+    "path": "runtime/producer-annotation-export-20261015-120757/verification.json",
+    "sha256": "471088527bed806679963e78e5ecc1c8f96fb677926fc0d32f07f213d7ab04c5",
+    "result": "PASS",
+    "workspace_tests": 282,
+    "all832current_inputs_match": true
+  },
+  "prior_harness_review": {
+    "path": "docs/annotation-export-workflow-harness-review-2026-10-15.json",
+    "sha256": "5acc7437d4d633114bb6824e13d4466147669a10c970dc2dd0783a30a854ab5d"
+  },
+  "preserved_prefix": {
+    "raw_path": "runtime/acceptance-graph-annotation-export-workflow-20261015-124053/evidence.json",
+    "raw_sha256": "f8bf8592b71109fa88e10b495877193b3f4aab34ce317e10443dc84fb3d2fc17",
+    "review_path": "runtime/acceptance-graph-annotation-export-workflow-20261015-124053/independent-failure-review.json",
+    "review_sha256": "180ecf39b2b75166eda748bca5d436540539f96a0795d7b89f26628d299d08fe",
+    "verdict": "NOT ACCEPTED overall; reuse capture-off denial only"
+  },
+  "manual_cleanup": {
+    "path": "runtime/acceptance-graph-annotation-export-workflow-20261015-124053/manual-cleanup.json",
+    "sha256": "8db7ee4665908a2a0dded20757686e50b8c0fe45642ffa03fc33e74b8ce2e917",
+    "scope": "Original GUI205648 absent, exact run-image CIM empty, three recorded HWNDs closed, private startup key absent and exact stale descriptor removed. This supplements cleanup without changing original raw failure."
+  },
+  "reviewed_delta": [
+    "Explicit physical-pixel context uses the existing typed helper; probe CWD matches accepted ROOT fixture behavior. These are bounded normalization hypotheses, not proof of the earlier failure cause.",
+    "Before any ink, each fresh primary selection now requires exact target PID and the source-confirmed Concurrent status; after matching Up it read-waits the actual native primary down/up pair. Failure aborts before strokes rather than accepting local ink as delivered input.",
+    "Failure cleanup first attempts one ordinary own-GUI close before existing owned-process termination and audits.",
+    "--resume-prefix pins exact failed raw hash, verifies the completed capture-off error and skips only that denial. Original raw, archived runner and independent review remain immutable.",
+    "No product source, native runtime, additional family, new tool, provider hook, input or acceptance criterion was added."
+  ],
+  "finite_scope": {
+    "gui_observations": 22,
+    "owned_fresh_targets": 2,
+    "new_expected_routing_inputs": 14,
+    "new_expected_connected_annotation_exports": 8,
+    "new_expected_magnifier_exports": 1,
+    "gui_annotation_exports": 2,
+    "owned_gui_originals": 2,
+    "rationale": "Both fresh selections and strokes are necessary setup; no prior export family passed. Earlier capture-off denial is retained without replay."
+  },
+  "findings": [],
+  "limits": [
+    "The earlier bounded lifecycle-open cause remains unproven even if this retry succeeds. A single authorized quiet hypothesis retry is appropriate without weakening delivery or export criteria.",
+    "Current source/producer approval is unchanged. Functional, decoded file and exact owned-original pixel review remain required after terminal cleanup.",
+    "420x520 remains a representative compact GUI size; no absolute minimum, screenshot request-freshness, real hardware, arbitrary apps or full parity claim.",
+    "No apps, native input, tests, Cargo or product writes were performed by this reviewer."
+  ]
+}

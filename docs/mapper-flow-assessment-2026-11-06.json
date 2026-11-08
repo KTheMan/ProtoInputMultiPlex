@@ -1,0 +1,72 @@
+{
+  "date": "2026-11-06",
+  "decision": "MAPPER_FLOW_ACCEPTED",
+  "reference": "https://www.mousemux.com/pages/apps/webapp-input-mapper-beta/",
+  "scope": "Mapper Counter and typed Switch using the Rust graph, existing Ouroboros schema-driven editor and authenticated live MCP with two explicitly selected x64 virtual targets.",
+  "verification": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-flow-20261106\\checks-001\\verification.json",
+    "sha256": "1a6e28d37ea3fbf17054653077df5fb267fd4eba22a0e7f0cc1685d232834f92"
+  },
+  "review": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-flow-20261106\\independent-acceptance.json",
+    "sha256": "d9e40b575544abd1a757dcad7b47c03895927b7bec6a69120d947fcd17184b5d"
+  },
+  "publication": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-flow-20261106\\publication.json",
+    "sha256": "be1b4231eeb8c7d34f5b47bc7612fb639e8824b6699911a39dd3f20c3fd7de35"
+  },
+  "workspace_tests": {
+    "passed": 751,
+    "failed": 0,
+    "ignored": 19
+  },
+  "x64_image": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-flow-20261106\\checks-001\\x64\\protoinputmultiplex.exe",
+    "sha256": "38a1cf848ac6c50ea5263fd22ffab41979a1478d40933cd4b2a72e88556918b1"
+  },
+  "checks": {
+    "fmt": 0,
+    "clippy": 0,
+    "workspace-tests": 0,
+    "build-gui": 0
+  },
+  "native": {
+    "original_session": 69886,
+    "original_exit_code": 0,
+    "raw_result": "BOUNDED_WORKFLOW_PASSED_PENDING_INDEPENDENT_REVIEW",
+    "raw": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mf-b879775777b7\\evidence.json",
+      "sha256": "521b35720e533a24fce9bce5d43b1e6f04fa03cf7f4924659141ae1bdd2b1bd6"
+    },
+    "driver": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-flow-20261106\\native.py",
+      "sha256": "0e0749882ee525e525568f7fd7438f9ddd82f280bd3d90f01dfa61416bfd8213"
+    },
+    "exit_codes": {
+      "GUI": 0,
+      "MCP": [
+        0
+      ],
+      "targets": {
+        "a": 0,
+        "b": 0
+      }
+    },
+    "cleanup_errors": []
+  },
+  "prior_attempt": {
+    "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\docs\\mapper-flow-pending-2026-11-06.json",
+    "sha256": "acfd4a6843a09482916c70caa6f38244499d5255a6b81f717687d65f0a55b2f0"
+  },
+  "coverage": [
+    "Counter actor-local initialization, saturation, reset precedence and retirement. The native trace verifies two distinct counts, UP and repeat suppression, reset and a second threshold crossing.",
+    "Switch typed selection, rejection of unseeded numeric branches, and no replay of inactive transient inputs. The native Hold trace verifies selector-off release and selector-on restoration.",
+    "The Ouroboros 680x620 control test adds both catalogue nodes and changes the Counter reset port. Native graph validation, Apply, Arm and Disarm run over MCP.",
+    "Disarm releases the mapped B hold while preserving A's unrelated hold. Stop releases A, and both owned targets, the GUI and the authenticated MCP client exit normally."
+  ],
+  "open": [
+    "Full Mapper and Ultra parity, including timers, feedback and visual providers.",
+    "Native coverage for every Switch signal type and direct native Mapper authoring at minimum size.",
+    "Historical GUI-stall P1."
+  ]
+}

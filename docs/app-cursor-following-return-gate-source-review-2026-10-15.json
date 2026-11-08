@@ -1,0 +1,39 @@
+{
+  "decision": "APPROVED SOURCE ONLY",
+  "scope": "Evidence-driven ordinary EDIT native-return eligibility correction plus test-only export-fixture uniqueness",
+  "baseline_producer": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-app-cursor-following-20261015-042639\\verification.json",
+    "sha256": "0546a8d1e5e39989785f54bdd9ab48180522ee9a495c6d18023669913e4fcb40"
+  },
+  "changed_since_baseline_sha256": {
+    "crates/cursor-observer/src/lib.rs": "b77d5b13cc65fd84efe7263e5c245c260aa65e9087efb308f5d10d496d228e4a",
+    "crates/protoinputmux/src/agent_export.rs": "4c0ec1f7befe5bb42ea080d4a5c4949894ff89d10a670fff67df1fbb1b362780"
+  },
+  "other_baseline_inputs_unchanged": 79,
+  "full_continuation_allowlist_sha256": {
+    "crates/cursor-observer/src/lib.rs": "b77d5b13cc65fd84efe7263e5c245c260aa65e9087efb308f5d10d496d228e4a",
+    "crates/cursor-snapshot-protocol/src/lib.rs": "44c56dbe9eb48c5d544eff989f6ba427af98530c78ce76888b9f8af53af28000",
+    "crates/mux-windows/src/app_cursor.rs": "41f5cdff6a548e2788822e2384322188f4cc9b94c3186299e6035956422eb87e",
+    "crates/protoinputmux/src/agent_export.rs": "4c0ec1f7befe5bb42ea080d4a5c4949894ff89d10a670fff67df1fbb1b362780",
+    "crates/protoinputmux/src/automation_probe.rs": "8084dca7d0fd0587984697eee206d574bae6e350b7b91439d7d5f8baf024bb66"
+  },
+  "other035509_inputs_unchanged": 76,
+  "native_diagnosis": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-app-cursor-ordinary-diagnostic-20261015-042759\\independent-diagnostic-review.json",
+    "sha256": "9b0033037fdacd0c864acb420b71eedf00171b6f37bf8b269c09700c6ffcf4d9"
+  },
+  "review": [
+    "WM_SETCURSOR is still synchronously sent only to validated selected owned target UI thread; actual target-thread GetCursor sampled afterward regardless native LRESULT.",
+    "Current association/HWND/PID/TID and unchanged request-clock guards remain; intercepted Notify precedence, CAS generation reservation, queue admission, bounded busy retry and cleanup unchanged. No new stock guess or host pointer access.",
+    "Production may_sample_native_cursor regression now exercises current-context/unchanged-clock eligibility without a handled boolean. Native diagnostic independently established result0 with actual IBeam; future focused native gate remains required.",
+    "agent_export changes are fully under cfg(test): static AtomicU64 fixture counter, added filename placeholder and fetch_add. Reversing exactly these edits reproduces baseline file SHA d8c5fac6e459e98d3f9c1390b7421c50a84d714f162787c6812c2dd2c9cf13b4; production export bytes/algorithm unchanged."
+  ],
+  "limits": [
+    "Prior043010 test failure path collision is plausible, not proven because exact path was not retained. Original producer failure must remain unchanged.",
+    "No native/Cargo execution in this review. New mandatory producer and ROOT READY required before any main-tail/legacy/GUI.",
+    "Prior six renderer originals keep old-provider provenance; current-build metadata and remaining two native originals are separately required."
+  ],
+  "runner_sha256": "544755d63daa1dac17374ad4010862202178164433a3d0d1fdd647363ab17197",
+  "plan_sha256": "154eb342f086c48a606214437c8c53a46bb174318be1d07d1d365d4b19d654ca",
+  "runner_ast": "PASS"
+}

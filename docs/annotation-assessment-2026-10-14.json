@@ -1,0 +1,85 @@
+{
+  "assessment": "PASS within owned virtual x64/x86 cooperative application scope",
+  "independent_gate_owner": "/root/acceptance",
+  "date": "2026-10-14",
+  "build": {
+    "parent_required_checks": "Bundle 98810: cargo fmt --all --check, strict workspace Clippy, 36 workspace tests, x64 and i686 builds passed",
+    "shared_x64_sha256": "23b2f61de2223b9fdb6914a0e74739608bd4a85543e4789363e4e48210c0f479",
+    "native_runtime": "Unchanged from previously accepted staged runtime",
+    "same_copied_build_in_six_original_evidence_artifacts": true,
+    "additional_offline_boundary_bundle": "65458: fmt/check, strict Clippy, 36 workspace tests, both Windows builds passed; successful GUI profile load resets AnnotationPage",
+    "offline_boundary_x64_sha256": "ccae96f88122af8c49e92ec15562999b08a0b5e280c1577ed689b826d0f8f74f"
+  },
+  "evidence": [
+    {
+      "path": "acceptance-annotation-20261014-005340/evidence.json",
+      "artifact_result": "NOT ACCEPTED",
+      "accepted_recorded_prefix": "7 grouped checks: 2 setup plus 5 behavior groups",
+      "covers": "14-tool schema/default discovery; both architectures' five source activators consumed before disabled mapping; ordinary native key/button delivery; actual opaque-black/straight-alpha128/alpha0 transparent PNG pixels; partial eraser tails/other owner preservation; ClearMine and explicit clear-key-all; destination Off versus Brush fanout; paired UP after Off and pause/release/settings stroke end; exact selected EDIT child capture and RGBA composition beneath unrelated owned overlap; invalid configuration/user/path/minimized rejection preserving live state and unrelated held F5",
+      "excluded_failure": "Runner attempted native movement delivery after minimizing/restoring a fixture without a virtual click to reacquire its forgotten focus. The product's existing focus policy requires reacquisition. The complete artifact remains NOT ACCEPTED; it is not relabeled PASS.",
+      "completed_by": "005928 focused lifecycle supplement and subsequent independent gates"
+    },
+    {
+      "path": "acceptance-annotation-20261014-005928/evidence.json",
+      "artifact_result": "PASS",
+      "grouped_checks": 4,
+      "covers": "No-activate own-window restoration plus explicit virtual target reacquisition; actual EDIT child to root target change independently proved with selected-root export HWND and changed client bounds; stroke ends and later motion does not extend; eraser crossing another user's stroke preserves it; replication destination Eraser removes only its own middle while source Brush draws; Stop releases normal native F5 and destroys annotation/cursor HWNDs"
+    },
+    {
+      "path": "acceptance-annotation-20261014-005955/evidence.json",
+      "artifact_result": "PASS",
+      "grouped_checks": 3,
+      "covers": "Fresh owned fixtures: stdin EOF during an open stroke and held native F5 releases normal holds and destroys all annotation/cursor HWNDs"
+    },
+    {
+      "path": "acceptance-annotation-20261014-010200/evidence.json",
+      "artifact_result": "PASS",
+      "grouped_checks": 5,
+      "covers": "SelectedTarget before any focus rejects without file/settings/ink/revision/session mutation; actual annotation HWND WM_NCHITTEST returns HTTRANSPARENT and WM_MOUSEACTIVATE returns MA_NOACTIVATE; actual foreground HWND preserved through draw; Stop cleanup"
+    },
+    {
+      "path": "acceptance-annotation-ui-20261014-005459/evidence.json",
+      "artifact_result": "PASS",
+      "actual_controls": 60,
+      "covers": "Real Ouroboros buttons with app-local clicks, all five activator choices, Off/Brush/Eraser and selected-user Apply; independent native x64/x86 consumed drawing edges; Pillow RGBA exports; ClearMine/ClearAll; exact child PrintWindow composition; genuine invalid-parent-path export acknowledged failure retains committed settings/ink/revision/session/other user's held F5; pause/resume ends open stroke; Stop HWND/held-input cleanup; omitted annotation fields load Off defaults; profile save/load exact round-trip"
+    },
+    {
+      "path": "acceptance-assigned-annotation-ui-20261014-010010/evidence.json",
+      "artifact_result": "PASS",
+      "actual_controls": 25,
+      "covers": "Bounded assigned-process smoke: both architectures' selected-user Brush settings, native consumed activator events, decoded RGBA ink, composition metadata equals exact assigned root HWND/PID and client dimensions, known child registration/color pattern inside root capture, ClearAll/Off and Stop destruction"
+    },
+    {
+      "path": "acceptance-annotation-profile-ui-20261014-010628/evidence.json",
+      "artifact_result": "PASS",
+      "actual_controls": 10,
+      "build_scope": "Later bundle 65458 offline GUI-only correction; no native/protocol change or broad suite rerun",
+      "covers": "Profile A user2 Brush draft width43/color17,73,129/F8 staged without Apply; real Load of equal-seat-count/default-policy Profile B resets selected user and all draft fields; new Brush and Save annotation settings commits B user1 Brush with width6/default color/keyNone and leaves B user2 fully Off defaults; exact B names/device paths preserved. No MCP, native probes, worker, DLL injection or routing session was started."
+    }
+  ],
+  "real_defect_found_and_fixed": {
+    "evidence": "acceptance-annotation-20261014-004907/mcp.stderr.log",
+    "defect": "MCP startup panicked because the tagged annotation Command schema omitted the required root type object",
+    "fix": "AnnotationRequest object wrapper with flattened Command; parent added actual ToolRouter startup/schema unit test; independently verified discoverability and use in all later gates"
+  },
+  "runner_corrections": [
+    "MCP intentionally gives each user a distinct default palette; only user1 uses base default color, while policy defaults remain Off for every user.",
+    "MCP waits for an acknowledged Annotation event and subsequent State tick; periodic telemetry can replace the transient acknowledged flag. Exact committed settings/error/export are checked, and GUI raw acknowledged-only event logs are retained.",
+    "State has no selected HWND field, and State.root denotes the switched click-arbitration owner, not window-root identity. Target change is independently verified with selected capture HWND metadata and changed client bounds.",
+    "After minimized focus is forgotten, a virtual click must reacquire the restored eligible target before native cursor alignment is expected. Owned fixture restoration remains no-activate."
+  ],
+  "scope_limits": [
+    "Only app-local virtual seats and explicitly owned disposable x64/x86 fixtures were controlled. No hardware input, RustDesk, SendInput, SetCursorPos, or display-setting changes.",
+    "Selected-target capture is validated for cooperative Win32 EDIT child and assigned root PrintWindow clients with opt-in known patterns. Universal third-party, minimized-content recovery, noncooperative PrintWindow, protected or GPU-only application capture is not claimed.",
+    "Single host monitor and fixture DPI contract; general mixed-DPI/hot-unplug/HID behavior, desktop-wide isolation, and same-process multi-user isolation remain unvalidated.",
+    "Invalid configuration rejection was exercised via public MCP validation; genuine runtime GUI failure used filesystem export rejection. No GUI worker-Configure rejection or forced PrintWindow-zero override is claimed.",
+    "Assigned routing coverage is a bounded 25-control annotation/capture smoke, not a full repetition of every automatic-route case."
+  ],
+  "scope_and_testing_review": "Tests remain finite and feature-focused. Earlier accepted keyboard/settings/appearance suites were not rerun. Failed runner assumptions remain in original artifacts and are explicitly separated from verified behavior. No production files were edited by the independent acceptance owner.",
+  "cleanup": {
+    "all_seven_evidence_artifacts_owned_processes_closed": true,
+    "exact_path_cim_process_audit": "No live runtime/acceptance-* executable process found",
+    "exclusive_live_slot_released": true,
+    "artifacts_preserved": true
+  }
+}

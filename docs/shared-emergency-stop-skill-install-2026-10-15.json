@@ -1,0 +1,37 @@
+{
+  "decision": "PASS REVIEWED SKILL INSTALLED",
+  "date": "2026-10-15T18:21:01.457494+00:00",
+  "source": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\skills\\protoinputmux\\SKILL.md",
+  "source_sha256": "5275bbe87cfaac5743ee264c3b69aafefbdf6ea1fdebd85b83d2d4d907bc1a9a",
+  "installed": "C:\\Users\\Archform CAD Station\\.codex\\skills\\protoinputmux\\SKILL.md",
+  "installed_sha256": "5275bbe87cfaac5743ee264c3b69aafefbdf6ea1fdebd85b83d2d4d907bc1a9a",
+  "previous_installed_sha256": "a7bb279fdd8f04db8c37925d415e8295068fd1a8d1be37d594c6c3741ea1528f",
+  "backup": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\shared-stop-skill-before.md",
+  "backup_sha256": "a7bb279fdd8f04db8c37925d415e8295068fd1a8d1be37d594c6c3741ea1528f",
+  "doc_review": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\docs\\shared-emergency-stop-doc-review-2026-10-15.json",
+  "doc_review_sha256": "1f9bb48b215b81709b609884fb3bfa82f65f7ebee2bc7d4d105a0b73c7ccb842",
+  "validators": [
+    {
+      "command": [
+        "C:\\Users\\Archform CAD Station\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "C:\\Users\\Archform CAD Station\\.codex\\skills\\.system\\skill-creator\\scripts\\quick_validate.py",
+        "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\skills\\protoinputmux"
+      ],
+      "exit_code": 0,
+      "stdout": "Skill is valid!",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "C:\\Users\\Archform CAD Station\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "C:\\Users\\Archform CAD Station\\.codex\\skills\\.system\\skill-creator\\scripts\\quick_validate.py",
+        "C:\\Users\\Archform CAD Station\\.codex\\skills\\protoinputmux"
+      ],
+      "exit_code": 0,
+      "stdout": "Skill is valid!",
+      "stderr": ""
+    }
+  ],
+  "atomic_replace": true,
+  "compiled_source_changed": false
+}

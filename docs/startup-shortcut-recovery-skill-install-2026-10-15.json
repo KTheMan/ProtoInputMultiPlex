@@ -1,0 +1,27 @@
+{
+  "result": "PASS",
+  "source": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\skills\\protoinputmux\\SKILL.md",
+  "source_sha256": "fca13a68d5e6f3f9769871061bb9b814e323d82e5e24dd062f76d27116372577",
+  "installed": "C:\\Users\\Archform CAD Station\\.codex\\skills\\protoinputmux\\SKILL.md",
+  "installed_sha256": "fca13a68d5e6f3f9769871061bb9b814e323d82e5e24dd062f76d27116372577",
+  "backup": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\startup-shortcut-installed-skill-before.md",
+  "previous_installed_sha256": "5275bbe87cfaac5743ee264c3b69aafefbdf6ea1fdebd85b83d2d4d907bc1a9a",
+  "source_validation": {
+    "exit_code": 0,
+    "output": "Skill is valid!",
+    "evidence": "Root tool invocation quick_validate.py skills/protoinputmux after source freeze"
+  },
+  "installed_validation": {
+    "command": [
+      "python",
+      "-X",
+      "utf8",
+      "C:\\Users\\Archform CAD Station\\.codex\\skills\\.system\\skill-creator\\scripts\\quick_validate.py",
+      "C:\\Users\\Archform CAD Station\\.codex\\skills\\protoinputmux"
+    ],
+    "exit_code": 0,
+    "stdout": "Skill is valid!\n",
+    "stderr": ""
+  },
+  "publication": "Guarded atomic replace; no changed external installation overwritten"
+}

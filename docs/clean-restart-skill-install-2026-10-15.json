@@ -1,0 +1,37 @@
+{
+  "decision": "PASS REVIEWED SKILL INSTALLED",
+  "date": "2026-10-15T17:29:24.396739+00:00",
+  "source": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\skills\\protoinputmux\\SKILL.md",
+  "source_sha256": "a7bb279fdd8f04db8c37925d415e8295068fd1a8d1be37d594c6c3741ea1528f",
+  "installed": "C:\\Users\\Archform CAD Station\\.codex\\skills\\protoinputmux\\SKILL.md",
+  "installed_sha256": "a7bb279fdd8f04db8c37925d415e8295068fd1a8d1be37d594c6c3741ea1528f",
+  "previous_installed_sha256": "aa8be5483c45e8a48121d12cff92c36a1bc2d89706eb502aea8fcbe257ccc728",
+  "backup": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\clean-restart-skill-before.md",
+  "backup_sha256": "aa8be5483c45e8a48121d12cff92c36a1bc2d89706eb502aea8fcbe257ccc728",
+  "doc_review": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\docs\\clean-restart-doc-review-2026-10-15.json",
+  "doc_review_sha256": "a748e1995d982376328fdfb493188010e1efce7b9ba69a4cb57a2e54f7c8c8ab",
+  "validators": [
+    {
+      "command": [
+        "C:\\Users\\Archform CAD Station\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "C:\\Users\\Archform CAD Station\\.codex\\skills\\.system\\skill-creator\\scripts\\quick_validate.py",
+        "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\skills\\protoinputmux"
+      ],
+      "exit_code": 0,
+      "stdout": "Skill is valid!",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "C:\\Users\\Archform CAD Station\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "C:\\Users\\Archform CAD Station\\.codex\\skills\\.system\\skill-creator\\scripts\\quick_validate.py",
+        "C:\\Users\\Archform CAD Station\\.codex\\skills\\protoinputmux"
+      ],
+      "exit_code": 0,
+      "stdout": "Skill is valid!",
+      "stderr": ""
+    }
+  ],
+  "atomic_replace": true,
+  "compiled_source_changed": false
+}

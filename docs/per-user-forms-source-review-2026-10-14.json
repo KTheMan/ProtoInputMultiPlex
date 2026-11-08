@@ -1,0 +1,39 @@
+{
+  "review": "APPROVED_SOURCE_ONLY",
+  "initial_forms": {
+    "baseline": "crates/protoinputmux/src/gui.rs",
+    "baseline_sha256": "6241b807eed5f27c45250868d5a157254227a55f4e1fa46c42f447f6e08a42db",
+    "reviewed_candidate": "runtime/per-user-forms-candidate/gui.rs",
+    "reviewed_candidate_sha256": "7af95b3a66e4892af71aa5bd995eda47c975a3d43ef2e763d1d4c3cf98345e76",
+    "scope": "Pointer, Motion, Buttons, and Wheel form hierarchy and responsive layout."
+  },
+  "minimum_correction": {
+    "baseline": "runtime/per-user-forms-minimum-base/gui.rs",
+    "baseline_sha256": "7af95b3a66e4892af71aa5bd995eda47c975a3d43ef2e763d1d4c3cf98345e76",
+    "reviewed_source": "crates/protoinputmux/src/gui.rs",
+    "reviewed_source_sha256": "c5ff51f4ed79025e0ee2fa3def5927e6432151c4c3f586a8cb5b2c64a94b2fe7",
+    "scope": "Remove duplicate Motion/Buttons/Wheel headings, shorten and wrap the button-mapping caption, and use compact Select controls."
+  },
+  "findings": [],
+  "review_notes": [
+    "The minimum correction matches the approved forms candidate exactly as its baseline; changes are limited to the requested tab rendering.",
+    "Only presentational text/layout changed. Mapping choices, validation, settings values, Script.observe/consume guards, control identities, requests, and click behavior remain unchanged. The compact Select builder is part of the pinned Ouroboros component API.",
+    "The earlier source approval covered Pointer/Motion/Buttons/Wheel form layout; this review extends it through the minimum correction. Earlier visual evidence found the fifth Buttons row and some slider samples incomplete at minimum size; this report does not treat those pixels as accepted."
+  ],
+  "validation": {
+    "producer_status": "The parent-owned producer 215445 is in progress; not independently run here.",
+    "visual_acceptance": "NOT ACCEPTED pending corrected independent minimum-size visual acceptance.",
+    "scope_limit": "Source review only; no claims about rendered pixels or accessibility beyond source controls."
+  },
+  "mapping_caption_reorder": {
+    "review": "APPROVED_SOURCE_ONLY",
+    "baseline": "runtime/per-user-forms-mapping-base/gui.rs",
+    "baseline_sha256": "9fd1aaf86d6ad44660291cd20ff5414c452e976ebbac2e9d8af30e51a61bc06b",
+    "reviewed_source": "crates/protoinputmux/src/gui.rs",
+    "reviewed_source_sha256": "c5ff51f4ed79025e0ee2fa3def5927e6432151c4c3f586a8cb5b2c64a94b2fe7",
+    "scope": "Moves the unchanged four-line button-mapping caption from above the five-row grid to immediately after it.",
+    "findings": [],
+    "behavior": "No settings, validation, ID, dispatch, or action changes; source/layout review only.",
+    "visual_acceptance": "Still pending the bounded missing-row visual tail."
+  }
+}

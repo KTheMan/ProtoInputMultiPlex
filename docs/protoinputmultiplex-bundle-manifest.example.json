@@ -1,0 +1,25 @@
+{
+  "example_only": "Illustrative format. Replace this with generated packaging output; placeholder hashes are not installable.",
+  "schema_version": 1,
+  "application": "ProtoInputMultiPlex",
+  "version": "0.1.0",
+  "platform": "windows-x64",
+  "files": [
+    {
+      "path": "protoinputmultiplex.exe",
+      "sha256": "<generated SHA-256>",
+      "bytes": 0
+    },
+    {
+      "path": "runtime/protoinputmultiplex_cursor_observer32.dll",
+      "sha256": "<generated SHA-256>",
+      "bytes": 0
+    },
+    {
+      "path": "runtime/protoinputmultiplex_cursor_observer64.dll",
+      "sha256": "<generated SHA-256>",
+      "bytes": 0
+    }
+  ],
+  "runtime_note": "A real bundle also includes all eight pinned ProtoInput runtime images, licenses, sources, and launchers. This abbreviated example is not a complete payload."
+}

@@ -1,0 +1,34 @@
+{
+  "decision": "SOURCE APPROVED; fresh mandatory producer and bounded export continuation still pending",
+  "baseline": {
+    "path": "runtime/producer-annotation-export-20261015-120757/verification.json",
+    "sha256": "471088527bed806679963e78e5ecc1c8f96fb677926fc0d32f07f213d7ab04c5"
+  },
+  "reviewed_change": {
+    "path": "crates/mux-windows/src/lifecycle.rs",
+    "before_path": "runtime/annotation-open-budget-before/lifecycle.rs",
+    "before_sha256": "4fe3efbd680964706f09b086869488358b1eca17f44345eedc04092f1aadc056",
+    "current_sha256": "cabbd0ca524c08c6364efefd501458625c1f2a9de6bc175e2f015999c31fd4d3",
+    "diff": "Two explanatory comment lines, private OPEN_TIMEOUT=5000, native Api.open argument TIMEOUT -> OPEN_TIMEOUT; no other content change."
+  },
+  "producer_helper": {
+    "path": "runtime/verify-annotation-open-budget.py",
+    "sha256": "f38656f1574e2d191968ba11fd5be9659fe7aac44ce27bc33373d10d001a9f53",
+    "ast": "PASS; parsed only",
+    "guard": "Only lifecycle.rs allowed;831 prior compiled inputs including all annotation workflow files and prior helper match baseline;832 current inputs after producer helper replacement. Native10 checked before/after; source-before==after required; five Rust checks plusDoctor must all pass."
+  },
+  "all831_protected_inputs_match": true,
+  "runtime10_unchanged": true,
+  "findings": [],
+  "deadline_review": "The five-second native Open allows up to250ms helper termination grace plus unchanged1500ms Begin reply, below ordinary10s request budget;45s tagged agent/50s bridge-MCP and45s-per-seat Start bounds remain compatible. Prepare remains4000ms; no other deadline, retry loop, wire ABI or native/vendor source changed.",
+  "evidence_basis": {
+    "diagnostic_review": "runtime/attachment-diagnostic/run-215592-1792095017302/independent-review.json",
+    "sha256": "38019ee49d7e9334e914d5baecc0f933d96e836a6314a069850de252c2d495b2",
+    "scope": "One healthy1066ms Open plus observed earlier1500ms-bound failures supports adding bounded startup margin; exact earlier failure cause remains unproven."
+  },
+  "limits": [
+    "Source approval only; no tests/apps/Cargo/helper execution by this reviewer.",
+    "Existing annotation source approval2de89 remains valid for its unchanged files, layered with this lifecycle-only review.",
+    "No new native family, timeout reliability statistic, arbitrary application compatibility, hardware, full UX/P1/Ultra claim."
+  ]
+}

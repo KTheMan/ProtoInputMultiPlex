@@ -1,0 +1,50 @@
+{
+  "decision": "APPROVED GUI-ONLY SOURCE AND FINITE TAIL; NEW PIXELS PENDING",
+  "baseline": {
+    "gui_path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\assigned-release-recovery-gui-before-polish.rs",
+    "gui_sha256": "35547068700f9872faef31ca1b6bb7efcb38328123731b969902a3a72eaaa3f8",
+    "accepted_functional_producer": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-assigned-release-recovery-20261015-080115\\verification.json",
+    "producer_sha256": "8d57dd3e4f94646caaf49927c08982478b959ce6d087bded28f432db4cdb614b",
+    "genuine_gui_byte_diff_review": true
+  },
+  "current_gui": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\crates\\protoinputmux\\src\\gui.rs",
+    "sha256": "c42f40c86b184a4bf8d9fd1aefdf93d00bf2109b3da3ccc31e68c20e3d4e7d6f"
+  },
+  "protected_inputs": {
+    "identical": 83,
+    "total": 84,
+    "only_changed": "crates/protoinputmux/src/gui.rs",
+    "full_current_manifest_sha256": "ecd1f4c0ed73bd37b65658d207152e43971596ec9c22d454ac5fae70397070bc"
+  },
+  "reviewed_changes": [
+    "Remove extra Home pending-details row. Replace Name header text only while pending with compact Ghost count button, keep semantic Script/accessibility/hover label Input release details and same consume_action guard/open-dialog field.",
+    "Dialog width subtracts80 from viewport before Ouroboros padding instead of32; body viewport reserves230 for heading/copy/wrapped footer. Whole outer geometry and readable cause/actions still require actual320 owned pixels.",
+    "Plural count wording and single-line truncated cause remove only own exact redundant release-count prefix; full unchanged status remains hover text. No release-data mutation.",
+    "Releaseall request, session_ready/session_present/busy/stopping enablement, close/dismiss handlers, pending-user enumeration, source status and all routing/cleanup/permissions unchanged apart from formatting. No vendor/hook/schema/dataflow change."
+  ],
+  "finite_tail": {
+    "runner_path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\scripts\\test-assigned-release-recovery-ux-tail.py",
+    "runner_sha256": "81231f61a592921f6cd7abfc58e211530de470e024b22ac6ec977e044c9f0ad8",
+    "plan_path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\assigned-release-recovery-ux-tail-plan.md",
+    "plan_sha256": "bf7afe41b82d9af0e9ea7dc652fae402c6070032f33cc1ad28f302d842c615af",
+    "ast": "PASS",
+    "gui_clicks": 9,
+    "mutating_mcp_calls": 5,
+    "source_packet_actions": 4,
+    "moveto_calls": 1,
+    "originals": 2,
+    "original_size": [
+      320,
+      360
+    ],
+    "other_geometry": [
+      360,
+      360
+    ],
+    "architecture": "x64owned2probes only"
+  },
+  "invariants": "Original080418functional raw/review/9811runner unchanged; not replaying Binput/globalcleanup/Resume/restart/recovery algorithms. Fresh producer/bothimages/all84source/10reusedruntime binding and ROOT READY required. No apps/Cargo/native run by reviewer.",
+  "limits": "Source approval is not pixel acceptance. No360pixelclaim; mandatory320containedmodal/fulltwoRosterRows+countaction/readablecause/wholefooter direct review. No fullerror/hover/scroll/allrosterfamily/fullUltraUX claim. Grace/twowrites do not establish request-associated freshness.",
+  "producer_status": "Root producer081426 in progress; final mandatorycheck result/image hashes await before native READY."
+}

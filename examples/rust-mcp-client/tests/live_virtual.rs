@@ -1,6 +1,6 @@
 //! Explicitly gated native acceptance using one fresh disposable probe only.
 //! Coordinate the native slot before enabling this test. No capture or hardware.
-use protoinputmux_mcp_example::{
+use protoinputmultiplex_mcp_example::{
     Client, Result, Rpc, Scope, tool_value,
     transport::{Config, StdioRpc},
 };

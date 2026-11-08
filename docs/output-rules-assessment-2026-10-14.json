@@ -1,0 +1,122 @@
+{
+  "result": "PASS",
+  "date": "2026-10-14",
+  "reviewer": "Independent acceptance subagent",
+  "scope": "Mouse-to-key and keyboard remapping through virtual-only automatic concurrent routing to disposable x64/x86 applications; actor ownership/scope, actual Ouroboros controls, persistence, and corrected ordinary-pump shutdown.",
+  "builds": {
+    "accepted_feature_prefix": {
+      "x64": "16a6b2fb781b623534502b9eb41766de45258accef896048ca6104ccefeec2f6",
+      "i686": "0f8ea500e557a10143fdb62a0b0f44d15641d68837bf5949d419412672a373b0",
+      "scope": "Seven native feature groups and original UI workflow, before the queue-fence repair."
+    },
+    "accepted_cleanup_and_remaining_boundaries": {
+      "x64": "9fdae302ca0f0d3d52ed36c4ccd77b9ae2819d25d48a908676180d137359f88c",
+      "i686": "b44aeb943ba98040b00dc8d0b26a4e38924864a06f88b6d8c291ae7a68cac5db",
+      "scope": "Stop 9 controls, two timeout cases, connected prefix/tail, offline boundary."
+    },
+    "native_v3": {
+      "ProtoInputLoader64.dll": "d5e55cffcfe5b9b911609d40b39167556cad38cffda42e34026ae87f081ca88e",
+      "ProtoInputLoader32.dll": "18bbcc6e520023113b3f63142d3c8b7a0141215b7a3ef49d651e5e5971df3372",
+      "ProtoInputHooks64.dll": "e22087e79fb900fc61bcb6dc77d0686ce20f8de286f02acc99d6d03088b9e3f3",
+      "ProtoInputHooks32.dll": "5fac477e9ed5b0901ecd947cf7b01b8a97ea117affb89e90ce36514496e57658"
+    }
+  },
+  "accepted_native_groups": [
+    {
+      "group": "Key conversion/remap/Disabled and Legacy swap on x64/x86",
+      "evidence": "native-prefix"
+    },
+    {
+      "group": "Two mouse aliases, remapped key and ordinary key first-down/last-up union",
+      "evidence": "native-prefix"
+    },
+    {
+      "group": "Rule change releases changed pairs only; unrelated holds survive; old UP uses saved identity",
+      "evidence": "live-change"
+    },
+    {
+      "group": "Studio scoped cancellation, Composite global cancellation and other-seat shared-keyboard ownership",
+      "evidence": "origins-recording"
+    },
+    {
+      "group": "Raw mouse recording/replay, destination-local graph mapping and source-category filtering",
+      "evidence": "origins-recording"
+    },
+    {
+      "group": "Invalid settings/user rejection preserves settings, active program and ordinary holds",
+      "evidence": "five-buttons"
+    },
+    {
+      "group": "All five source buttons map to distinct F5 through F9 on both targets: ten taps/twenty key edges and no leaked mouse edges",
+      "evidence": "five-buttons"
+    }
+  ],
+  "controls": {
+    "original_ui": {
+      "recorded_result": "PASS",
+      "recorded_controls": 35,
+      "accepted_feature_controls": 34,
+      "qualification": "Original Stop plain-UP criterion is NOT ACCEPTED: B received private-tagged 0x10000075 instead of F6 UP. Original bytes/status remain unchanged; corrected Stop tail closes this criterion."
+    },
+    "corrected_stop": 9,
+    "connected_accepted_prefix": 27,
+    "connected_tail": 20,
+    "offline_physical": 5,
+    "count_note": "These are actual accepted step occurrences per artifact, with repeated setup/navigation. They are not summed as distinct product controls or message families."
+  },
+  "connected_scope": "Actual default-denied then allowed Output configure ACK; permitted-user rejection, two aliases plus GUI Manual union, raw ReleaseAll/disconnect and a unique F7 MCP EOF native UP, actual keyboard-recipient PID rejection, keyboardless key/disable rejection, delayed converted graph copy rejected after operator changes recipient to out-of-scope PID. Manual source hold survives async actor cleanup.",
+  "shutdown": {
+    "positive": "Current x64 converted F5 and x86 ordinary F6 each deliver exact plain DOWN/UP before successful Stop; overlays destroyed.",
+    "timeouts": [
+      {
+        "mode": "none",
+        "seconds": 1.031,
+        "evidence": "timeout-none"
+      },
+      {
+        "mode": "PM_NOREMOVE",
+        "seconds": 1.14,
+        "actual_hidden_fence_observations": 152,
+        "evidence": "timeout-peek-no-remove"
+      }
+    ],
+    "truthfulness": "Both own x64 Python targets retain actual application-held F5 during failed Stop; error requests restart. Plain UP arrives after normal pumping resumes. This proves retained normalization for these late deliveries, not safe session reattachment."
+  },
+  "corrections": [
+    "Real tagged/flattened JSON key-map decoding defect fixed with canonical string-key deserialization; valid mapping delivered in accepted native/UI runs.",
+    "Real shutdown race let private-tagged UP escape after unhook. Current native v3 queue fence and fallible shutdown validated by actual window messages and truthful timeout cases.",
+    "F10 menu freeze, same-user Studio manual override assumption, and asynchronous Manual UP/Studio DOWN baseline were fixture/expectation corrections; affected aggregates retain NOT ACCEPTED.",
+    "Apply access policy intentionally revokes clients. Connected prefix stays NOT ACCEPTED; focused tail establishes a fresh actor and proves the remaining delayed scope boundary.",
+    "Own Python fixture preparation was corrected with app-owned mode configuration, bounded unfiltered message batches, and a bounded retry for the recorded report-file replacement race; product timeout assertions were unchanged."
+  ],
+  "limits": [
+    "No hardware/RustDesk input used for control or validation; no OS input injection; only owned application pixels were captured.",
+    "No desktop-wide or independent same-process multi-user isolation, full MouseMux Ultra parity, arbitrary application/message-pump compatibility, or complete VK-range claim.",
+    "Fixed-process assigned output conversion is not exercised by this group; native feature coverage is automatic concurrent routing.",
+    "Fence success is accepted only for ordinary unfiltered message retrieval. Selected-range PM_REMOVE can overtake earlier UP messages; marker receipt alone does not prove their normalization or processing.",
+    "Non-pumping and PM_NOREMOVE timeout truthfulness tested on an owned x64 Python target. x86 positive plain-UP Stop tested; x86 timeout and forced native API failures are not tested.",
+    "Shared-process keyboard ownership tests prove first-down/last-up accounting, not independent same-process application isolation.",
+    "Historical groups were not broadly replayed. Current cleanup/connected boundaries target the changed transport and output behavior; earlier accepted feature evidence remains explicitly tied to its earlier image hashes."
+  ],
+  "producer_checks": "docs/output-rules-rust-checks-2026-10-14.json (108 tests, fmt/strict Clippy/both builds); docs/queue-fence-native-build-2026-10-14.json are producer build evidence, not independent native acceptance.",
+  "cleanup": {
+    "all_recorded_owned_processes_closed": true,
+    "final_owned_native_and_python_fixture_cim_audit": "empty",
+    "exclusive_slot_returned_to_root": true
+  },
+  "evidence_manifest": "docs/output-rules-evidence-manifest-2026-10-14.json",
+  "images": [
+    {
+      "archive": "docs\\output-rules-control-center.png",
+      "original": "runtime\\acceptance-graph-output-rules-20261014-105901\\output-controls.png",
+      "sha256": "78e49d680c43f54f7dd8d0b98c27ec03f1a70b9fb586b1cbdbca6b2f45ed84bd",
+      "independent_visual_review": "Actual F7 to F8 and F9 Disabled rows, Apply and Restore buttons; five mouse selector rows are outside this scrolled viewport."
+    },
+    {
+      "archive": "docs\\output-rules-physical-readonly.png",
+      "original": "runtime\\acceptance-graph-output-physical-offline-20261014-120014\\physical-readonly.png",
+      "sha256": "b200167f93f06bbcc84fe8b804dfaed587c0fd4d82c03898468bb8aae58455eb",
+      "independent_visual_review": "Actual physical-seat unavailable/read-only explanation; no DLLs, probes or native session."
+    }
+  ]
+}

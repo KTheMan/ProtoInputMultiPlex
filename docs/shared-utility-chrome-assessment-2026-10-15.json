@@ -1,0 +1,121 @@
+{
+  "decision": "APPROVED_BOUNDED",
+  "date": "2026-10-15",
+  "scope": "Quiet Back navigation, category breadcrumbs and compact Graph queue diagnostics; stopped owned GUI only.",
+  "observations": {
+    "phase_receipts": 25,
+    "breakdown": [
+      16,
+      9
+    ],
+    "accepted_originals": 4,
+    "note": "25 phase observations are not 25 distinct controls. The original 16 control/state outcomes remain accepted; only missing Graph pixels were completed."
+  },
+  "phases": [
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-shared-utility-chrome-20261015-015944\\evidence.json",
+      "sha256": "cb7054003c97f10ec8bc5973e40d22a7f5e7233e93dad3585b94f404956cc419",
+      "raw_status_preserved": "PENDING INDEPENDENT VISUAL REVIEW",
+      "control_profile_result": "PASS",
+      "actual_receipts": 16,
+      "terminal_exec": 2843,
+      "exit_code": 0,
+      "separate_visual_review": {
+        "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-shared-utility-chrome-20261015-015944\\independent-visual-review.json",
+        "sha256": "f7995f13766a4df45e05212d109e23d7d08d362224f9e61ac5260eb6b16625d9"
+      }
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-shared-utility-chrome-graph-tail-20261015-021118\\evidence.json",
+      "sha256": "77f92f8e4e51ee7c68c8d8736b03b650d9f3f7e58e3098d8bc31a45d88aec4e4",
+      "raw_status_preserved": "PENDING INDEPENDENT VISUAL REVIEW",
+      "control_profile_result": "PASS",
+      "actual_receipts": 9,
+      "terminal_exec": 14573,
+      "exit_code": 0,
+      "separate_visual_review": {
+        "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-shared-utility-chrome-graph-tail-20261015-021118\\independent-visual-review.json",
+        "sha256": "83e8d559ed7fe4283294361351e89f32256586d5fb853b7451e18989c7869d4f"
+      }
+    }
+  ],
+  "accepted_outcomes": [
+    "Application, Agent access and Automation breadcrumbs match the destination category. Ghost Back is visually quieter; actual navigation works. Other category mappings are source-reviewed only.",
+    "Queue diagnostics opens and closes without profile or graph mutation. All eight counter values remain visible across the short summary and open details.",
+    "A real duplicate connection error remains readable and preserves one staged edge, no applied edge and no pending command. The whole profile and exact preferences bytes remain unchanged.",
+    "The final minimum error, summary and whole Apply button are visible after ordinary window resize normalization. This does not prove automatic error reveal or maximum scroll reachability."
+  ],
+  "accepted_originals": [
+    {
+      "name": "application-chrome-normal",
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-shared-utility-chrome-20261015-015944\\application-chrome-normal.png",
+      "sha256": "7afe760145203baa76cdc824232e3a2cf8bb61fe9c2cfa8b7954ce4cfcd836bb",
+      "direct_original_pixels_reviewed": true
+    },
+    {
+      "name": "agent-chrome-minimum",
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-shared-utility-chrome-20261015-015944\\agent-chrome-minimum.png",
+      "sha256": "6c8ed24e241242d6958c7bca59c78644203b03dc31132d112b77e67d064034ef",
+      "direct_original_pixels_reviewed": true
+    },
+    {
+      "name": "graph-queue-open-normal",
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-shared-utility-chrome-graph-tail-20261015-021118\\graph-queue-open-normal.png",
+      "sha256": "ddad5c921b1fc5edc2f766fb35b0cc0e2698bc156695193483986c372bc8f959",
+      "direct_original_pixels_reviewed": true
+    },
+    {
+      "name": "graph-closed-diagnostics-error-minimum",
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-shared-utility-chrome-graph-tail-20261015-021118\\graph-closed-diagnostics-error-minimum.png",
+      "sha256": "c7e3ebf9f21208efde6d36ab4e4ea7a831b87996f6f1663e754d2e34a7aaf480",
+      "direct_original_pixels_reviewed": true
+    }
+  ],
+  "producer": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-shared-utility-chrome-20261015-015712\\verification.json",
+    "sha256": "e8acc1d5d99c7ac93182c2a3b7e595b4e3fa9421a18cc18158ea0a3d3a7108a4",
+    "result": "PASS",
+    "checks": "fmt, strict workspace/all-target Clippy, 185 workspace tests, x64 and i686 builds",
+    "build_sha256": {
+      "x64": "8988f3d15e2512f84f16f5de4edc986519959bc1b9cffd803202541a9dcbe5a7",
+      "i686": "554fb46e006597bdb955df525ce1e774acd57c012823fddd0ef5dc3c13df8b52"
+    },
+    "all64current_sources_match": true
+  },
+  "source_review": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\docs\\shared-utility-chrome-source-review-2026-10-15.json",
+    "sha256": "a26bd50b3a674ff7c4a0c6d46a8950e33b23ebb1ea4a7a571e37261e4c242c9f"
+  },
+  "runners": [
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\scripts\\test-shared-utility-chrome-ui.py",
+      "sha256": "29c726861e2da6105e2ff8ad77057acdef1dd08c6c4c01c5949154b0b679b433"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\scripts\\test-shared-utility-chrome-graph-tail.py",
+      "sha256": "77b1c0a398215cf2485ddeaaf030e8d55720f6e6ff44fae6f8e94ee87a310cf5"
+    }
+  ],
+  "plans": [
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\per-user-ux-acceptance\\shared-utility-chrome-acceptance-plan.md",
+      "sha256": "5f350564c4fa6acc04453274c8c93872193820aabace37a84d6eac91e58f69f9"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\per-user-ux-acceptance\\shared-utility-chrome-graph-tail-plan.md",
+      "sha256": "5038b9cf26e94cf0d410263d980d681f1ccfefd4e3db296dc3a88715f50d0c2f"
+    }
+  ],
+  "cleanup": {
+    "both_owned_GUIs_closed": true,
+    "scoped_product_CIM_remaining": 0,
+    "both_private_GUID_keys_absent": true,
+    "worker_state_files_created": false,
+    "exclusive_native_slot": "returned"
+  },
+  "limits": [
+    "No routing worker, target apps, MCP, Agent enable, permission mutation, native input delivery or queue algorithm replay. i686 was built/copied but not executed. Virtual profile fixtures, private GUID provider and owned product pixels only; no hardware, RustDesk, global pointer or private desktop capture.",
+    "Suspension, error and recovery warnings outside the disclosure are source-reviewed, not newly exercised with live overflow. Other category destination mappings are source-only.",
+    "The first raw remains PENDING with its separate NOT ACCEPTED visual review for incomplete Graph captures. The new raw also remains PENDING. No full UX/Ultra parity, accessibility or performance claim."
+  ]
+}

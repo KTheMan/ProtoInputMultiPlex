@@ -1,0 +1,103 @@
+{
+  "review_date": "2026-10-15",
+  "decision": "APPROVED_SOURCE_ONLY_FOR_BOUNDED_PERSISTENCE_TAIL",
+  "material_findings": [],
+  "scope": "Read-only review of the five-step offline Save/Load continuation and exact profile comparator; no apps or Cargo commands run by reviewer.",
+  "tail_runner_sha256": "965a4af37f4c94f2ed0ca91e99d0de27dc703c49530281287ac0c6b195e2eb96",
+  "tail_plan_sha256": "884412611a6e5e27a915f2267ea19de4f7c82b23bc35d853438ac40ac39094a8",
+  "previous_source_review_sha256": "f9c403e577cd26efa0e04639e9534a0fc379882c9c6cfbad71b557468d4591d0",
+  "product_source_sha256": {
+    "Cargo.lock": "92c6e4ffde632e1c81c9a691db8308e6e07719377c1a86fe543f885f89ef1444",
+    "crates/protoinputmux/Cargo.toml": "2a8f0a1da182ce0bb0edbcf7256f48792702382dc48377ab6c236b8bb72db192",
+    "crates/protoinputmux/src/gui.rs": "d66a8be6d51b7594d0bed7e46c31a9469c8245c58102b763e35098d3d2dbed17",
+    "crates/protoinputmux/src/keyboard_slider.rs": "0676c5feb2eb5294abbc172e8cba65082fa80fb25efd1d23879e7d0e25989e6f",
+    "crates/protoinputmux/src/main.rs": "88cd6f32e1fc97ccd93ce56fe9c79b52867642ec1ea1fbcfc1ead2249e771a73",
+    "crates/protoinputmux/src/ui_script.rs": "879817ff8284f88f56d62caf022b0b1719ce0d9e51f971dc9c9974bca87d7c75"
+  },
+  "prefix": {
+    "path": "runtime/acceptance-graph-keyboard-configuration-20261015-062722",
+    "artifact_sha256": {
+      "evidence.json": "e948224a515d0be6ca0de2ae40b1c41dfba4946634fe2296bf108977717801b8",
+      "independent-review.json": "8b0e71d6e9c1844144b4a3392f8611fcfea3912f7a19cf2a1be49789a3e5bc43",
+      "ui.profile.json": "bb41fcaeb623cf31992265b2bf868e8fa225f88b550ab0d2775a45fe04c71d85",
+      "home-keyboard-selection.png": "2c120fce4052c6b0a30bcac436eda39024203c105ad551f94f6c62d4c2623a02",
+      "motion-native-range.png": "a2aa25dd197f2164d1d791efe1de1e5cf355e423f7cbc2b72ed18100366fe6d4"
+    },
+    "raw_status": "NOT ACCEPTED aggregate; 22 accepted observations; prior Save click and eventual Save outcome remain unproven",
+    "usage": "The new tail is separate Save/Load evidence and does not relabel or mutate the failed prefix."
+  },
+  "producer": {
+    "path": "runtime/producer-keyboard-configuration-20261015-062334/verification.json",
+    "sha256": "dba45378089d98d004e98a9f39f6d18a918422599b5e752921ce29fdcb133b78",
+    "result": "PASS",
+    "source_file_count": 83,
+    "source_hashes_unchanged": true,
+    "rust_checks": [
+      {
+        "command": "cargo fmt --all --check",
+        "exit_code": 0
+      },
+      {
+        "command": "cargo clippy --config build.rustc-wrapper=\"\" --workspace --all-targets -- -D warnings",
+        "exit_code": 0
+      },
+      {
+        "command": "cargo test --config build.rustc-wrapper=\"\" --workspace",
+        "exit_code": 0
+      },
+      {
+        "command": "cargo build --config build.rustc-wrapper=\"\" --workspace",
+        "exit_code": 0
+      },
+      {
+        "command": "cargo build --config build.rustc-wrapper=\"\" --workspace --target i686-pc-windows-msvc",
+        "exit_code": 0
+      }
+    ],
+    "workspace_tests": 219,
+    "executable_sha256": {
+      "x64": "33d45accb79866bac4c5ab247dc7538e0a13bab9597b921c647a7225d9b6b40d",
+      "i686": "92481c21cc0256722e63fca5686894916ee76a5860e74060eb1607865e711d48"
+    },
+    "runtime_sha256": {
+      "ProtoInputHooks32.dll": "1f6ce1a3f690b9c93566a23d51d91ae450f70fb2d1f857d3e502b9189b4c0b72",
+      "ProtoInputHooks64.dll": "31b3436421ed0a64bd7b66f7fc41295739017caad3e7605513d00d51868d44c3",
+      "ProtoInputIJ32.exe": "73c10f7397d22ed9a9f9b1ee804f17853a2c9f96d495a83f9448201b97f27a86",
+      "ProtoInputIJ64.exe": "e11a9fd0f14902f0c749781a42a8f912fb3eb876a54454f4cb5eddea5fa5636d",
+      "ProtoInputIJP32.dll": "d593e4b4f304f55743c6bbb680cf3c81f2be97392980c29367639859ffdccc3e",
+      "ProtoInputIJP64.dll": "8daf63d2c87a150e0928f0b6d359ea503b6180538faf14bc3c66fa8228a49172",
+      "ProtoInputLoader32.dll": "0eaa05d49dd43dca41dba7457ca814f5599981746994078d81ce59d0f126d590",
+      "ProtoInputLoader64.dll": "08ecac0469fdd8e33106ac0bd5eddf759c948a86e3540f3f60d6a00cdd218f9c",
+      "protoinputmux_cursor_observer64.dll": "9f086fdd62e0e7f29056f4a38723266c03a22182b2a0875d6bd104b98f77603a",
+      "protoinputmux_cursor_observer32.dll": "a5d6d6db1e7318dc401caec1923ae90c678d5c1389ca913bd57aaf68fb042d48"
+    },
+    "historical_reused_native_backend_build": {
+      "path": "runtime/app-cursor-native-build-result.json",
+      "sha256": "a663e1dfeaf3171c01f314bed36849bde594b4d63def0decc3a4b4974bae04b6",
+      "exit_code": 0,
+      "current_group_build": "NOT RUN",
+      "scope": "Historical native build metadata reused by the producer; no C++ backend build was run for this keyboard group."
+    }
+  },
+  "tail_contract": {
+    "steps": [
+      "Settings",
+      "Settings category Users & devices",
+      "Profiles & backend",
+      "Save profile to a fresh absent owned output path",
+      "Load profile"
+    ],
+    "maximum_pointer_observations": 5,
+    "workers_probes_keyboard_pairs_uia_writes": 0,
+    "commit_barrier": "Wait for status to change from exact pre-save status to exact successful Saved status for the selected output path; require active_path match and nonempty committed bytes with no temp.",
+    "float_exception": "Only B.cursor.speed_x is compared by IEEE-754 f32 bit pattern; bool is explicitly excluded.",
+    "other_fields": "Recursive JSON comparison requires matching Python JSON scalar types, dict key sets, list lengths/order and scalar values for all remaining fields.",
+    "load_barrier": "Require exact Profile loaded terminal status, same active path, exact typed profile state under the narrow comparator, and byte-identical saved output after Load.",
+    "fresh_ui": "One fresh offline owned GUI and output path; no native routing worker or UIA/key injection."
+  },
+  "review_limits": [
+    "Approval covers source and bounded tail plan only; native execution and final evidence remain pending ROOT READY.",
+    "No claim about a successful Save in the old failed prefix; only a new tail commit can establish persistence.",
+    "The one final periodic GUI original is for readability only and has no request-associated capture guarantee."
+  ]
+}

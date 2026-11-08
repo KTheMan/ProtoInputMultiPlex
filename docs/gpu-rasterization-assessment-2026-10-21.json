@@ -1,0 +1,278 @@
+{
+  "schema": 1,
+  "decision": "ACCEPTED_BOUNDED_GROUP",
+  "group": "gpu_cursor_rasterization",
+  "independent_group_approval": true,
+  "reviewed_at_utc": "2026-10-22T04:44:14.394388+00:00",
+  "acceptance_kind": "Composed independent acceptance of source/required checks, one native engine, completed live renderer component and a missing-only stopped persistence component.",
+  "evidence": {
+    "source_review": {
+      "path": "runtime/gpu-rasterization-source-review.json",
+      "sha256": "472d00b20f3542a4d727f69bdf6dc6618e35d13a63c92d1c7c2115a2ab73ea08"
+    },
+    "producer": {
+      "path": "runtime/producer-gpu-rasterization-20261021-attempt002/verification.json",
+      "sha256": "d66b5453e1e06ca8a55e67231213f17921a67f8533f04a80d02e70a6f3b6c656"
+    },
+    "independent_producer_review": {
+      "path": "runtime/gpu-rasterization-producer-review.json",
+      "sha256": "59d3781ddcc2df4ee025624c71757c7d4976c099c0093f18f2c9fb0d730ebd6e"
+    },
+    "optional_feature_clippy": {
+      "path": "runtime/gpu-rasterization-feature-clippy.json",
+      "sha256": "d388940d20f35f74c31b1d313eb581cc11d140e43b3658ba22266babd8927528"
+    },
+    "native_engine_execution": {
+      "path": "runtime/gpu-rasterization-engine-attempt001/execution.json",
+      "sha256": "c90b904e922e0f0e69d07b879ea608ea10cf8402085d949a574a8722a57acc4f"
+    },
+    "native_engine_receipt": {
+      "path": "runtime/gpu-rasterization-engine-attempt001/owned-overlays/gpu-rasterization.json",
+      "sha256": "bc186496ea7e27d9754db08c61a6cf22d6030cb125a8a93eb3870a87035f7b63"
+    },
+    "live_renderer_raw": {
+      "path": "runtime/producer-gpu-rasterization-20261021-attempt002/private-runtime/acceptance-graph-gpu-rasterization-ui-20261021-213207/evidence.json",
+      "sha256": "15c7ec72c734ceb4e84e02480c6a66d1b24df8b9daedde431e1055d11af9d616"
+    },
+    "live_component_assessment": {
+      "path": "runtime/producer-gpu-rasterization-20261021-attempt002/private-runtime/acceptance-graph-gpu-rasterization-ui-20261021-213207/actual-assessment.json",
+      "sha256": "6595a54ae8d9ce58cd0160c759718fc56d878ba2e39049b6a9e0b97944f9bc12"
+    },
+    "stopped_tail_source_review": {
+      "path": "runtime/gpu-rasterization-stopped-save-tail-review.json",
+      "sha256": "a8418910544dfdbc3e921cfd8c1ee5ec700adddd431c959cf4416525d5f5861b"
+    },
+    "stopped_tail_raw": {
+      "path": "runtime/producer-gpu-rasterization-20261021-attempt002/private-runtime/acceptance-graph-gpu-rasterization-ui-20261021-213945/evidence.json",
+      "sha256": "c1e628942ad71f4ebdefa76a8a9d69602543ba1cfd535008bc43d9c56b18080b"
+    },
+    "stopped_tail_assessment": {
+      "path": "runtime/producer-gpu-rasterization-20261021-attempt002/private-runtime/acceptance-graph-gpu-rasterization-ui-20261021-213945/actual-assessment.json",
+      "sha256": "1eb618e2f9ec9e6f8b0810ccd5fe9f883345b509770414f75a0e9e1000e56bba"
+    },
+    "saved_profile": {
+      "path": "runtime/producer-gpu-rasterization-20261021-attempt002/private-runtime/acceptance-graph-gpu-rasterization-ui-20261021-213945/gpu-profile-saved.json",
+      "sha256": "6a9f0336d19ec65533b8d2682154d1db757b942e58a214e57b492bdaf02f0fec"
+    },
+    "profile_seed": {
+      "path": "runtime/producer-gpu-rasterization-20261021-attempt002/private-runtime/acceptance-graph-gpu-rasterization-ui-20261021-213207/ui.profile.json",
+      "sha256": "f77b15956322fbb11a326a04d0438af023a85acb17b4243124e8b4376b75a218"
+    }
+  },
+  "required_checks": {
+    "original_producer_session": 6650,
+    "all_five_exit_codes": 0,
+    "workspace_tests": {
+      "passed": 519,
+      "failed": 0,
+      "ignored": 1
+    },
+    "source_paths_before_after_current": 867,
+    "reviewed_changed_files": 13,
+    "x64_and_i686_app_observer_PE_and_PDB_pins_verified": true,
+    "private_runtime_files": 10,
+    "optional_feature_strict_clippy_exit": 0,
+    "native_backend_rebuilt": false
+  },
+  "accepted_outcomes": [
+    "Hardware Direct2D/D3D11 final cursor rasterization on NVIDIA Quadro P620; normal GPU drawing has no completed CPU raster or final-canvas upload. CPU source glyph extraction and shared GDI layout measurement remain permitted work.",
+    "Actual same-generation pre-Present GPU staging/readback after commit acknowledgement, seven independently decoded and visually inspected captures: original arrow with Unicode label and rounded A1 badge, ring with circular B2 badge, premultiplied custom glyph/halo, paused tint, native stock cross, Crosshair and IBeam.",
+    "Production engine assertions cover movement without draw/present, two-surface cache bound/reuse, fully transparent application-hidden glyph, unpause restoration, lazy PRINT-only CPU replay, same-generation lazy GDI fallback on an owned injected cached-health failure, renderer detach/reinitialize, owned HWND style/no-activation/hotspot/capture-affinity and owner-thread destruction.",
+    "Two virtual users in the real GUI worker report Auto/Direct2D. One authenticated scoped MCP settings mutation makes only user0 GDI. Real Ouroboros UI Auto/GDI/Auto Apply restores/reselects GPU while user1 remains Auto/Direct2D; final successful GPU draw counters are [3,1] and final CPU-canvas uploads [0,0].",
+    "Real Stop click, virtual holds/known overlay absence and original worker handle exit0 are supported; authenticated client EOF/disconnect and ordinary GUI/target exits0 complete bounded cleanup without forced fallback. Descriptor retention until client EOF is intentional terminal-continuation behavior.",
+    "Separate stopped-only12-control cohort observes user0 GDI draft with disabled Apply and saves the exact full captured profile with only user0.renderer changed to gdi, leaving user1 Auto. Its sole GUI exits0 with no target/Start/MCP/worker or forced cleanup."
+  ],
+  "visual_evidence": {
+    "GPU_raw_decodes": [
+      {
+        "raw": {
+          "path": "runtime/gpu-rasterization-engine-attempt001/owned-overlays/gpu-original-a.bgra",
+          "sha256": "f78d98b688c8b6c2b444f2c97e2cf7bd335fcc0a881acacba6023be15cf49641"
+        },
+        "decoded_PNG": {
+          "path": "runtime/gpu-rasterization-engine-attempt001/owned-overlays/visual-inspection/gpu-original-a.png",
+          "sha256": "54104c061f2d0662f3e764a94807b6f1fbed1b0c4dbf77fac648ab39ac61885d"
+        },
+        "dimensions": [
+          177,
+          39
+        ],
+        "straight_alpha_decode_verified": true
+      },
+      {
+        "raw": {
+          "path": "runtime/gpu-rasterization-engine-attempt001/owned-overlays/gpu-original-b.bgra",
+          "sha256": "3b5379e7b0bba21e4362e1459a6bd4346efa0a5cf4ca767a79ab6514fb605296"
+        },
+        "decoded_PNG": {
+          "path": "runtime/gpu-rasterization-engine-attempt001/owned-overlays/visual-inspection/gpu-original-b.png",
+          "sha256": "d7220c10463769f8e3967f515639786b905d8fc855a2ad234dd7e1526aacb248"
+        },
+        "dimensions": [
+          165,
+          35
+        ],
+        "straight_alpha_decode_verified": true
+      },
+      {
+        "raw": {
+          "path": "runtime/gpu-rasterization-engine-attempt001/owned-overlays/gpu-custom-halo.bgra",
+          "sha256": "eb90080db6c072e7738cbb0b8fca459c170bc7c73be3103064283b4877a50fe3"
+        },
+        "decoded_PNG": {
+          "path": "runtime/gpu-rasterization-engine-attempt001/owned-overlays/visual-inspection/gpu-custom-halo.png",
+          "sha256": "c664a2629f3aca9341df63afe388656325eaa8b0d0fd39465ecb96b22ef8985d"
+        },
+        "dimensions": [
+          48,
+          32
+        ],
+        "straight_alpha_decode_verified": true
+      },
+      {
+        "raw": {
+          "path": "runtime/gpu-rasterization-engine-attempt001/owned-overlays/gpu-paused-a.bgra",
+          "sha256": "f5e163735eea3c4beb8d2c8324c4cfbdbac88fbb18d7d95ae6c35600c3c084f0"
+        },
+        "decoded_PNG": {
+          "path": "runtime/gpu-rasterization-engine-attempt001/owned-overlays/visual-inspection/gpu-paused-a.png",
+          "sha256": "4d80f735af4b0849f67b60273e7eb747ba5e99efea7bb23ce54dd2357aaa8bf3"
+        },
+        "dimensions": [
+          177,
+          39
+        ],
+        "straight_alpha_decode_verified": true
+      },
+      {
+        "raw": {
+          "path": "runtime/gpu-rasterization-engine-attempt001/owned-overlays/gpu-stock-follow.bgra",
+          "sha256": "9be33b40908ddf1b4e90b628d00a028853e9fee86c545ec5a4773d6cb6018666"
+        },
+        "decoded_PNG": {
+          "path": "runtime/gpu-rasterization-engine-attempt001/owned-overlays/visual-inspection/gpu-stock-follow.png",
+          "sha256": "8806b5a064f7ddc12ca251f13be0f0ea1d0145876f340d791dff85db3938550f"
+        },
+        "dimensions": [
+          37,
+          37
+        ],
+        "straight_alpha_decode_verified": true
+      },
+      {
+        "raw": {
+          "path": "runtime/gpu-rasterization-engine-attempt001/owned-overlays/gpu-crosshair.bgra",
+          "sha256": "16977cbec391fe0c10fc65dca93fdcbed82cbcf3b57e9f60b1156fed78c27711"
+        },
+        "decoded_PNG": {
+          "path": "runtime/gpu-rasterization-engine-attempt001/owned-overlays/visual-inspection/gpu-crosshair.png",
+          "sha256": "ee0d5b716668c774b42a48e2d473fe7bffa44b37ec4c29f166de852c18928d4d"
+        },
+        "dimensions": [
+          32,
+          32
+        ],
+        "straight_alpha_decode_verified": true
+      },
+      {
+        "raw": {
+          "path": "runtime/gpu-rasterization-engine-attempt001/owned-overlays/gpu-ibeam.bgra",
+          "sha256": "07a23009345d046fe35f54014a8f45d52e5f46e5ddc66f3c0c524a89705ad805"
+        },
+        "decoded_PNG": {
+          "path": "runtime/gpu-rasterization-engine-attempt001/owned-overlays/visual-inspection/gpu-ibeam.png",
+          "sha256": "7898c6cb6c157f4574058e8e558a7d7c968602c4a94201f69f21605597e0be6a"
+        },
+        "dimensions": [
+          32,
+          32
+        ],
+        "straight_alpha_decode_verified": true
+      }
+    ],
+    "live_GUI_controls": {
+      "file": {
+        "path": "runtime/producer-gpu-rasterization-20261021-attempt002/private-runtime/acceptance-graph-gpu-rasterization-ui-20261021-213207/gpu-renderer-controls.png",
+        "sha256": "d77e6890b2aab82f553912588d08995546645311561a7af1159e466dfa8ed2ed"
+      },
+      "size": [
+        540,
+        520
+      ],
+      "independently_viewed": true,
+      "observation": "Live Overlay selector shows Auto GPU drawing, explanatory fallback text and enabled Apply."
+    },
+    "stopped_GUI_controls": {
+      "file": {
+        "path": "runtime/producer-gpu-rasterization-20261021-attempt002/private-runtime/acceptance-graph-gpu-rasterization-ui-20261021-213945/stopped-gdi-controls.png",
+        "sha256": "5b67ad8269c9dacb703877e4839443bfbc25ec42f5a8977c27bf59f95c073567"
+      },
+      "size": [
+        540,
+        520
+      ],
+      "independently_viewed": true,
+      "observation": "Stopped Overlay selector shows GDI compatibility and clearly disabled Apply; actual disabled event matches."
+    },
+    "contact_sheet": {
+      "path": "runtime/gpu-rasterization-engine-attempt001/owned-overlays/visual-inspection/contact-sheet.png",
+      "sha256": "e22fb0615eca3a2a1fae4dd2650981f50be2aeb445e979fbeb27070084f2ca06"
+    }
+  },
+  "original_invocations": {
+    "engine": {
+      "original_tool_chunk": "6f127d",
+      "exit_code": 0,
+      "forced_cleanup": false
+    },
+    "live_UI": {
+      "original_exec_session": 41826,
+      "exit_code": 1,
+      "accepted_samples": 28,
+      "durable_clicks": 29,
+      "raw_result": "NOT ACCEPTED"
+    },
+    "missing_tail": {
+      "original_exec_session": 62286,
+      "exit_code": 0,
+      "controls": 12,
+      "raw_result": "PENDING_INDEPENDENT_ACCEPTANCE"
+    }
+  },
+  "preserved_failures": [
+    {
+      "path": "runtime/producer-gpu-rasterization-20261021-attempt001/verification.json",
+      "sha256": "02f3f375049e080936a0cd1a7a7144c6e45854740aeb01fbcd2e4205e28211ea"
+    },
+    {
+      "path": "runtime/producer-gpu-rasterization-20261021-attempt002/private-runtime/acceptance-graph-gpu-rasterization-ui-20261021-212209/evidence.json",
+      "sha256": "3aa743f6b1b7a8610743163cf26a265793b6cddda1de08c1a6ca1013b38f6d2b"
+    },
+    {
+      "path": "runtime/producer-gpu-rasterization-20261021-attempt002/private-runtime/acceptance-graph-gpu-rasterization-ui-20261021-212828/evidence.json",
+      "sha256": "68f8390a7698b8892c85c9bcaec32a7cd3897562bf953e0d7442fee7b19bd9ec"
+    },
+    {
+      "path": "runtime/producer-gpu-rasterization-20261021-attempt002/private-runtime/acceptance-graph-gpu-rasterization-ui-20261021-213207/evidence.json",
+      "sha256": "15c7ec72c734ceb4e84e02480c6a66d1b24df8b9daedde431e1055d11af9d616"
+    }
+  ],
+  "failure_provenance": [
+    "Producer001 passed formatting/Clippy/workspace-tests before its helper rejected a valid external Cargo target directory; its FAIL remains unchanged.",
+    "Two initial UI cohorts completed no product controls and inherited minimized-to-tray startup preferences. The first also had a concrete overlapping-probe setup confound; occlusion causation was not established. Both raw failures remain unchanged.",
+    "The visible live cohort raw aggregate remains NOT ACCEPTED because the harness waited for descriptor removal before closing its retained terminal client. Its successful live component is adjudicated separately; the missing stopped-save component was executed independently without replaying the completed live mutations."
+  ],
+  "limits": [
+    "No full41-control aggregate PASS is claimed. Live raw NOT ACCEPTED and engine/tail raw PENDING states are not rewritten; this separate receipt supplies bounded independent composition.",
+    "The two540x520 GUI captures establish only the sampled renderer selection and Apply states. Lower form controls and the entire helper line are not proven visible in those viewports; no minimum-size/full-form UX acceptance is claimed.",
+    "No performance improvement, physical scanout, broad contrast/accessibility, mixed-DPI/arbitrary-application, hardware-input isolation or general GPU/device-loss reliability claim.",
+    "Explicit capture exclusion was applied to owned engine-test windows; automatic production exclusion is not established by this gate. Native/custom glyph evidence uses the Windows stock asset path and a controlled premultiplied custom fixture, not arbitrary live application cursor extraction.",
+    "No precise descriptor-removal timestamp or OS-wide process/resource leak absence claim; cleanup scope is the retained known owned targets, GUI, worker handles and overlay HWNDs.",
+    "No new harness global-input/physical-pointer helper was introduced; existing product/dependency Focus behavior limitations remain.",
+    "Historical GUI-stall P1, full P6 and full MouseMux Ultra parity remain open."
+  ],
+  "independent_acceptance": {
+    "path": "runtime/gpu-rasterization-actual-acceptance.json",
+    "sha256": "ebc9e344e1cd284b14d095c5dc2238c2705283b150cf355576503edbf82652b5"
+  }
+}

@@ -1,0 +1,99 @@
+{
+  "date": "2026-11-06",
+  "decision": "PARTIAL_EVIDENCE_AGGREGATE_NOT_ACCEPTED",
+  "reference": "https://www.mousemux.com/pages/apps/webapp-input-mapper-beta/",
+  "publication": "Candidate remains local. Independent reviewer withheld publication approval.",
+  "verification": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-flow-20261106\\checks-001\\verification.json",
+    "sha256": "1a6e28d37ea3fbf17054653077df5fb267fd4eba22a0e7f0cc1685d232834f92"
+  },
+  "workspace_tests": {
+    "passed": 751,
+    "failed": 0,
+    "ignored": 19
+  },
+  "source_scope": [
+    "crates/mux-core/src/mapper.rs",
+    "crates/protoinputmultiplex/src/mapper_ui.rs"
+  ],
+  "x64_image": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-flow-20261106\\checks-001\\x64\\protoinputmultiplex.exe",
+    "sha256": "38a1cf848ac6c50ea5263fd22ffab41979a1478d40933cd4b2a72e88556918b1"
+  },
+  "reviewer": "/root/mapper_flow_accept",
+  "native": {
+    "session": 2142,
+    "exit_code": 1,
+    "raw": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mf-700907a83997\\evidence.json",
+      "sha256": "ed566e5496563516888181621b1c4a8383e08534a9e045177ef27a3cb4597891"
+    },
+    "driver": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-flow-20261106\\native.py",
+      "sha256": "0e0749882ee525e525568f7fd7438f9ddd82f280bd3d90f01dfa61416bfd8213"
+    },
+    "gate": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-flow-20261106\\native-gate.json",
+      "sha256": "7c3ccb2f95819eb99abad4a7be2408263d49abed12e1f085c9995d26763d9d7e"
+    },
+    "scope": "Two disposable x64 targets, virtual mouse and keyboard pairs and an authenticated GUI-connected MCP client.",
+    "feature_trace": "Two distinct pulses crossed the threshold; repeat and release did not count. Selector off and on released and restored B's F10. Reset cleared the threshold and Disarm released B while A's ordinary F6 remained held.",
+    "failure": "The harness hit WinError 5 replacing evidence.json during Disarm observation. Concurrent live reading is a plausible cause. The scripted Stop, EOF and Quit tail was absent."
+  },
+  "cleanup": {
+    "first_close": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mf-700907a83997\\owned-graceful-cleanup.json",
+      "sha256": "2bd9ae9b0e6e61f17248cdec983857d37b204a29a439366ac6abe0f1a97237ca"
+    },
+    "after_root_revalidation": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mf-700907a83997\\owned-recovery-quit.json",
+      "sha256": "88de6690abdc9d4442dae2e87e334a70c8ad2661cd8bdb0849d1176b992a7511"
+    },
+    "last_observation": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mf-700907a83997\\owned-final-observation.json",
+      "sha256": "7499380c2848265350accb54fc17e7d884e130dd6873bd1b1de9e52d18f88d97"
+    },
+    "scope": "The original MCP and both targets were absent. The GUI's direct child list contained only its conhost. The first close invoked Restore in quarantine. A later ordinary close of the current owned root reached one Quit and submitted local preferences shutdown ticket 1. The owned GUI was still open and responding to the window probe.",
+    "latest_quit_trace": {
+      "allow_close": false,
+      "close_ready": false,
+      "preferences_operation": {
+        "artificial_delay_ms": 0,
+        "degraded": false,
+        "error": null,
+        "kind": "shutdown",
+        "origin": "local",
+        "pending": true,
+        "result": null,
+        "retiring": true,
+        "revision": 0,
+        "shutdown_complete": false,
+        "ticket": 1
+      },
+      "preferences_quit_waiting": true,
+      "quit_after_stop": true,
+      "received": {
+        "entries": 2,
+        "last_action": "Quit",
+        "last_action_frame": 16590,
+        "quit_received": 1,
+        "stop_received": 0
+      }
+    },
+    "lifecycle_boundary": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mf-700907a83997\\owned-lifecycle-boundary.json",
+      "sha256": "a4781004636c54e28dfce780085272e363ec843d30cf7bbdca96fec6247775f8"
+    },
+    "minimized_geometry": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mf-700907a83997\\owned-post-quit-geometry.json",
+      "sha256": "385c98f00fe7ba6efae419967bf3c98e14141db858da22c20076ad462a8aedd4"
+    },
+    "normal_exit_after_restore": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mf-700907a83997\\owned-restore-after-quit.json",
+      "sha256": "00b87bfd837c0c3b6cefae49eac6daedb62db7ab450814a09f915e8a6a642d2b"
+    },
+    "result": "Native lifecycle window and thread were gone while the root still answered and was minimized with zero client area. A no-activate restore of that root was followed by GUI exit 0 and HWND absence. This recovery applies to the first run and leaves its original result unchanged."
+  },
+  "next": "The original owned GUI recovered after restore and all original PIDs were absent. One exact gated native retry follows. Keep minimized Quit completion as a separate P1 finding.",
+  "historical_stall": "OPEN_P1; the relationship to the current Quit wait is unproven."
+}

@@ -1,0 +1,33 @@
+{
+  "decision": "APPROVED EXACT BOUNDED KEYBOARD DELIVERY DOCUMENTATION",
+  "date": "2026-10-15",
+  "scope": "Independent review of eight final documentation/skill files and three retained images against the combined acceptance record, source review, contracts and native evidence.",
+  "reviewed_files": {
+    "README.md": "644879051B2974001CC4F23E6F0A54C56CE4FB0E10F4E3C0DD370806197491FA",
+    "docs/ultra-parity.md": "2FB9EA07546D29A81AAD88D73E3784356107027FF84E584B383D121166779D6E",
+    "docs/roadmap.md": "A92833BFC6E1A8D4AFBAF5925ECB29804946EE00C1CEB373D5AF2F1458BABABA",
+    "docs/agents.md": "22A0CE81159910135B260B9ADCC5326412C872ACB1F1E37A021D1168DB997E8D",
+    "docs/validation.md": "49A2E26C5A11E2F321C2DEBA21018CB6ABB8FC819D0E56D740C245783FBC879E",
+    "skills/protoinputmux/SKILL.md": "AA8BE5483C45E8A48121D12CFF92C36A1BC2D89706EB502AEA8FCBE257CCC728",
+    "docs/keyboard-delivery-contract.md": "F7716758215BDF67356CA6DDF83CD573BB37D76189DF3FEAFC3098F9B57DBE96",
+    "docs/keyboard-delivery-assessment-2026-10-15.json": "3A7B7AC400B4B5C2E542FFCE93F5E4A042768D2B16160CF71F17E187B819963C",
+    "docs/keyboard-delivery-focused.png": "C2836EE07FDA9834C38045905B83BDE14D0609E7E22F70B7927C0E0800A7542F",
+    "docs/keyboard-delivery-external-draft.png": "33EBE31658C3F16B8DF6E8A624C84F06D09533AC9F4572F1001E8AD7718BC568",
+    "docs/keyboard-delivery-minimum.png": "22189C4A1D0E0F9F8DA40F3239AC905EE19EEFF69353FB9560AC0A2C53DFD307"
+  },
+  "independent_acceptance_sha256": "7941DA3550067DC271F5488C6481B1482461B7E9C515D70A7CF0CFF0B3434F28",
+  "findings": [
+    "The Focused default wording is now correctly limited to GUI-added and MCP Start virtual pairs in supported automatic or concurrent assigned routing. Legacy profiles and new fixed-relative GUI pairs keep Clicked; generated clones inherit their source settings.",
+    "Recipient query counts/fallbacks, same-PID/root/owned-popup candidate scope, clicked-target GUI-thread reads, no foreground lookup or focus activation, and candidate-versus-delivery limits match the contract and source review.",
+    "Raw-key disablement precedes recording, Escape handling and keyboard replication; mouse-to-key output and saved key-up cleanup remain available. Settings changes cancel queued keyboard paths and release held owners before commit.",
+    "The MCP settings/state path and 23-tool/no-new-grant claims are accurate. Stable-seat GUI synchronization preserves a locally edited draft when external acknowledged settings arrive.",
+    "Native evidence is correctly bounded to owned x64 targets and the custom focus-preserving fixture. Dynamic application focus, Tab behavior under the pinned backend, physical devices and native fixed-relative behavior remain unverified.",
+    "The minimum tail is described as an off-draft checkbox and Apply visible before Apply, followed by an acknowledged settings result. Recipient modes require ordinary scrolling; simultaneous checkbox-plus-mode visibility remains explicitly unproven and excluded.",
+    "The 320x360 minimum image shows only the checkbox/footer claim; the 540x520 images match the reviewed focused and external-draft states. All three published PNGs are byte-identical to the approved source originals.",
+    "Producer and native counts, x64 execution versus i686 build-only scope, preserved failed/pending raw verdicts, and open full Ultra/UX parity match the combined acceptance record. The combined record hash matches the published assessment reference."
+  ],
+  "limits": [
+    "No arbitrary-application, hardware, desktop-wide, same-process isolation, full keyboard accessibility, full compact visual parity, full Ultra or full UX claim is approved.",
+    "The corrected documents/skill are approved for the bounded scope; broader behavior still requires separate evidence."
+  ]
+}

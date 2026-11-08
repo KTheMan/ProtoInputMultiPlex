@@ -1,0 +1,68 @@
+{
+  "decision": "ACCEPTED_BOUNDED_GROUP",
+  "independent_approval": true,
+  "reviewer": "independent preferences_review_oct27",
+  "reviewed_at_utc": "2026-10-27T23:47:34Z",
+  "group": "gui_app_preferences_liveness",
+  "full_goal_complete": false,
+  "raw_driver_result": "NOT ACCEPTED",
+  "raw_driver_exit_code": 1,
+  "raw_failure": "Driver timed out waiting for a new shutdown ticket in the coalesced ui.app-preferences.json snapshot. The last saved snapshot remained at local Configure ticket 4 pending with quit_waiting=true. Raw evidence and its failure remain unchanged.",
+  "raw_evidence_path": "runtime/gui-app-preferences-native-20261027-attempt001/evidence.json",
+  "raw_evidence_sha256": "5b506f96eab61eda035044b948871397f1ae4b27afcb8b83472cba37f3c1ca10",
+  "raw_archive_manifest_path": "runtime/gui-app-preferences-native-20261027-attempt001/archive-manifest.json",
+  "raw_archive_manifest_sha256": "fb8fcd51ad67dc884713d5ab5d52f9e3cf170dd464491aba584ada9a18032590",
+  "raw_archive_file_count": 35,
+  "native_launch_sha256": "3b0c38bed8252e5dee816bd85b8b1ee5bcedbef07786e55504c61555a6a5a45f",
+  "source_review_sha256": "919078c2a68fb7f928d7d64568b8ab14ff7fe604483bf249646d368b2f413d55",
+  "producer_sha256": "94b1b199a555e61b737757a41d3e2d6a926f83bd62a17b6662fc979e0573ca84",
+  "producer_review_sha256": "92257ce95bf467c50f84e9d6fba73046e7343e24f17aaa4c5c61778e9e14e4ce",
+  "driver_review_sha256": "bd3fc97d8a8dbdccf9dc45b8353bebb496f604d76aef3c5a11a452b4792cb4ef",
+  "driver_sha256": "d95c3521a0fa0d28d85c0593bd31a2e73cc0423519858eac9537d0f1bfa74220",
+  "accepted_scope": {
+    "owned_GUI": 1,
+    "owned_probe": 1,
+    "virtual_pair": 1,
+    "session_worker": 1,
+    "connected_MCP": 1,
+    "routed_input_calls": 0,
+    "artificial_delay_ms": 8000,
+    "ui_steps_sampled": 26,
+    "gui_liveness_samples": 11,
+    "startup_command_utf16_units": 184,
+    "startup_key": "disposable Software\\ProtoInputMux\\Tests\\UUID only"
+  },
+  "accepted_observations": [
+    "Local Apply ticket 1 visibly pending while navigation and WM_NULL remained responsive, then committed preferences and test Run-key value were observed.",
+    "Connected Configure ticket 2 committed globally while the local editor retained its complete invalid raw shortcut draft and offered Revert; Revert loaded latest committed values.",
+    "GUI Stop revoked connected Configure ticket 3 before activation; the owner reported clean Cancelled and the private file/test-key raw bytes remained unchanged. The connected client received a generic revoked-bridge error, not a cancellation ACK.",
+    "Final local Apply ticket 4 was pending when one owned tray Quit was invoked; the GUI published quit_waiting while pending, and the driver observed frame progress and WM_NULL responsiveness before awaiting a terminal snapshot.",
+    "The final private preferences file records launch_at_login=false, the owned GUI exited 0 without forced cleanup or action replay, and the original main HWND is no longer a window. The session worker, owned probe and MCP client also exited 0.",
+    "The frozen GUI source initializes allow_close=false and has only one allow_close=true plus ViewportCommand::Close path (gui.rs:3964-3967), reached only after preferences owner shutdown_complete and routing/broker terminal checks. This source-bound close gate plus normal unforced native exit supports bounded graceful Quit behavior despite missing direct terminal snapshot.",
+    "The owned probe recorded zero mouse, key and text events. Two viewed 680x620 DPI96 scrolled screenshots show the initial preferences form and the dirty-draft notice/error; their raw hashes match the archive."
+  ],
+  "quit_evidence_basis": "Composed source-bound behavioral acceptance from universal close gate, one tray Quit, normal owned GUI exit 0, final file state, original HWND absence, worker exit 0 and no forced cleanup. No direct Shutdown ticket/result snapshot was observed.",
+  "direct_shutdown_transition_telemetry_observed": false,
+  "connected_cancellation_ack_received": false,
+  "connected_client_error": "GUI bridge omitted app-preference response; revoked transport leaves client outcome uncertain until reconnect/Inspect. The GUI owner independently showed Cancelled.",
+  "post_cleanup_test_key_absent_observed": true,
+  "post_cleanup_test_key_limit": "The driver removes its disposable key during cleanup; post-cleanup absence is corroboration only, not independent proof of the final local write. Final Apply success is inferred from exact final file plus the frozen close gate.",
+  "visual_scope": "Two owned 680x620 DPI96 scrolled frames viewed; no whole-form, minimum-size or full shortcut-list pixel claim.",
+  "required_checks": {
+    "fmt": 0,
+    "strict_clippy": 0,
+    "workspace_tests": {
+      "passed": 557,
+      "failed": 0,
+      "ignored": 1
+    },
+    "build_x64": 0,
+    "build_i686": 0
+  },
+  "limitations": [
+    "The raw 26-step driver is NOT ACCEPTED; no direct shutdown ticket/result telemetry is claimed, and its one timeout remains in the immutable raw record.",
+    "The artificial worker delay proves scheduling/order, not actual filesystem or registry latency or the historical GUI stall cause.",
+    "No hardware, RustDesk pointer, real Run key, routed input, desktop-wide/same-process isolation or full MouseMux Ultra functional/UI parity is established."
+  ],
+  "next": "Continue the broader Ultra parity and historical GUI-stall investigation as separate open work; avoid replaying this whole native matrix solely to obtain a coalesced post-exit Script snapshot."
+}

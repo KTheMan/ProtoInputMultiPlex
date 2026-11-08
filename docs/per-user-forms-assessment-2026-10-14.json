@@ -1,0 +1,52 @@
+{
+  "result": "NOT ACCEPTED",
+  "group": "per_user_forms",
+  "date": "2026-10-14",
+  "judgment": "Control/profile subgroup accepted; overall pixel gate pending required whole-row/slider and upper-Wheel evidence. Raw original status unchanged.",
+  "observations": {
+    "total": 13,
+    "actual_clicks": 12,
+    "disabled_observations": 1
+  },
+  "build_sha256": {
+    "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-per-user-forms-20261014-214935\\control64.exe": "32c882ee38738ec79f157d80b7aeb6daee2f6a9eb246bd9c7e32c9783d912c70",
+    "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-per-user-forms-20261014-214935\\probe32.exe": "eaccb8521f3eda218feb61b32de55554172ef91bac61ab62c530e0e422c1e578"
+  },
+  "gui_sha256": "7af95b3a66e4892af71aa5bd995eda47c975a3d43ef2e763d1d4c3cf98345e76",
+  "references": [
+    {
+      "path": "runtime\\acceptance-graph-per-user-forms-20261014-214935\\evidence.json",
+      "sha256": "7350d36ce3baac4bccb8fd4f0079199c101eb82127184390bdeca97cd6ec91fd"
+    },
+    {
+      "path": "runtime\\acceptance-graph-per-user-forms-20261014-214935\\independent-visual-review.json",
+      "sha256": "82af0544bc548c91949e471b52818cdf3293d518abf458014f85b99fa62e3cf5"
+    },
+    {
+      "path": "runtime\\producer-per-user-forms-20261014-214801\\verification.json",
+      "sha256": "753e793ab74ccc25be1f8c491344dbe9c257df2551a3070338623fd9b4a11659"
+    },
+    {
+      "path": "runtime\\per-user-forms-candidate\\source-review.json",
+      "sha256": "dff13599e94ba8dd1bce45d4b7342705c2de9045c557bf144b0ae53ead4fbb5f"
+    }
+  ],
+  "accepted_scope": [
+    "13 observations: 12 actual clicks and one genuinely disabled Apply; only B motion_curve=gentle and horizontal_wheel=preserve changed; complete A and other profile fields preserved.",
+    "Normal Motion has clearly paired bounded axis sliders and readable response controls; normal Buttons source/output columns align; Input is simpler with device identity disclosed; complete Apply footer remains visible in all sampled frames."
+  ],
+  "missing": [
+    "Normal Buttons image shows four mappings; Forward is below the clipped body, so required all-five normal proof is missing.",
+    "Minimum Buttons image shows Swap and heading but no whole mapping row. Minimum Motion shows response buttons or a partially clipped upper slider, so full usable slider proof is missing.",
+    "Wheel next-step Preserve target auto-scrolls before initial sample; upper wheel scale/emulation controls were not independently captured."
+  ],
+  "limits": [
+    "Stopped x64 GUI only; copied i686 not executed. No worker, DLL attachment, MCP, routing, algorithms, save/persistence, physical/RustDesk/global input, private pixels, or full UX parity tested.",
+    "Stopped Apply was disabled, so no worker ACK is claimed."
+  ],
+  "owned_cleanup": {
+    "owned_processes_closed": true,
+    "no_worker_state_file": true
+  },
+  "slot": "Returned to root; no further launches pending coordination."
+}

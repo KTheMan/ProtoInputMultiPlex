@@ -1,6 +1,6 @@
 //! Opt-in GUI policy acceptance. The coordinator owns the GUI and disposable
 //! probe; this test starts only MCP transports and never launches a target.
-use protoinputmux_mcp_example::{
+use protoinputmultiplex_mcp_example::{
     Client, Failure, Result, Rpc, Scope, reconnect_after_approval, tool_value,
     transport::{Config, StdioRpc},
     verify,

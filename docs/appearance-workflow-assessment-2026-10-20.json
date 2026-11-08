@@ -1,0 +1,80 @@
+{
+  "decision": "BOUNDED_THEME_OVERLAY_WORKFLOW_ACCEPTED",
+  "date": "2026-10-20",
+  "source_review": {
+    "path": "runtime/appearance-workflow-source-v4-review.json",
+    "sha256": "654e9c88bf2ff84e39ac9357b2ff8fb33b4f9ab6c5457cd174729d603d04391f"
+  },
+  "producer": {
+    "path": "runtime/producer-appearance-workflow-20261020-attempt004/verification.json",
+    "sha256": "c6f1568fa0a995b8871d9a3bf7f5ab8aec307a787f8f74fb05bfa2ac3455e7a6"
+  },
+  "producer_review": {
+    "path": "runtime/appearance-workflow-producer-v4-review.json",
+    "sha256": "394aa78efcadd59a138166eca08b397b8a3b882dbb91dcb4e0ae51e7b5a09c5e"
+  },
+  "evidence": {
+    "path": "runtime/appearance-workflow-ui-attempt004/evidence.json",
+    "sha256": "0ea81efc2e602bee88c3c7656b9ae574531c32f0d76c4e701a251d82f18c8427"
+  },
+  "independent_review": {
+    "path": "runtime/appearance-workflow-ui-attempt004-review.json",
+    "sha256": "b6b627d45841384eff97834fecf5bfaabcfb20e572f1fbea5cf355948469e51c"
+  },
+  "checks": {
+    "required": "cargo fmt --all --check; strict workspace/all-target Clippy; cargo test --workspace; x64/i686 app/observer builds",
+    "tests": {
+      "passed": 394,
+      "failed": 0,
+      "ignored": 3
+    },
+    "native_backend": "Unchanged backend and observers reused; no native C++ rebuild."
+  },
+  "changes": [
+    "Ouroboros Theme groups shape/color/size, cursor visibility and inactivity settings. Overlay groups user name, badge, placement and shared text size; existing availability and draft/apply behavior retained.",
+    "Preview canvas reserves enclosing panel padding, scales cursor/text/badge, preserves Windows arrow artwork and per-user glow, and shows only Cursor hidden when the whole overlay is hidden. Selected-user heading uses the configured color.",
+    "Opt-in GUI script reports current response/frame/viewport and scrolls four named read-only preview observations until their full rectangles are visible. No new routing/MCP tool/grant."
+  ],
+  "accepted": {
+    "scope": "One stopped private x64 GUI, two paired virtual mice/keyboards, no target PIDs, empty runtime/no DLLs,25 actual egui-only actions/profile checks and four original owned product PNGs.",
+    "workflow": "Inactivity5000\u2192300250\u2192off; hidden/visible sample; label-off placement disabled, badge-only shared font16\u219228; name restored and placedAbove; second user unchanged with independent blue48px/below settings.",
+    "full_canvas": "A hidden360, A adorned320/360 and B adorned360: recorded response rectangle equals interaction rectangle, matched current viewport/client dimensions and two fresh frames before PNG. Independent visual review confirms entire rounded canvas and relevant glyph/name/badge.",
+    "cleanup": "Ordinary owned WM_CLOSE exit0; no cleanup errors/fallback; original process and root absent; final integrity PASS.",
+    "images": {
+      "theme-overlay-compact-a.png": {
+        "path": "docs/theme-overlay-compact-a.png",
+        "sha256": "e3eb7183c663fea368835215050a868e69d28e75d64a282a20196247f9a07c99",
+        "source": "runtime/appearance-workflow-ui-attempt004/a-full-320x360.png"
+      },
+      "theme-overlay-compact-b.png": {
+        "path": "docs/theme-overlay-compact-b.png",
+        "sha256": "a7a05d01da9c7df05b158dca8a66481304723cec06354ecc57d81ddd1e05ab7d",
+        "source": "runtime/appearance-workflow-ui-attempt004/b-full-360x360.png"
+      }
+    }
+  },
+  "preserved_failures": [
+    {
+      "path": "runtime/producer-appearance-workflow-20261020-attempt001/verification.json",
+      "sha256": "1cc944ba70b51427feff531010c0274f066d57c4736542ddcb0728815d82ec39"
+    },
+    {
+      "path": "runtime/appearance-workflow-ui-attempt001/evidence.json",
+      "sha256": "c1153f09cf73be4a81867bc8d9ba815051977ea4ed1c726f0cc3fc0849d445fa"
+    },
+    {
+      "path": "runtime/appearance-workflow-ui-attempt002/evidence.json",
+      "sha256": "ca04730da508eadf66b85cb5ab7a16cd7a125c35b65f7f7a1e523c5a673120d2"
+    },
+    {
+      "path": "runtime/appearance-workflow-ui-attempt003/evidence.json",
+      "sha256": "fd3e15a301a64dcf130831864d1f746a0c10d43fa109329488e0b63932239443"
+    }
+  ],
+  "limits": [
+    "Stopped configuration cohort only; live Apply/persistence/native routing not retested by this UI group.",
+    "All shapes/fonts/badge Unicode combinations, live theme refresh, arbitrary applications, mixed DPI, physical devices/RustDesk behavior, GPU/presentation performance, P1 reliability and full Ultra/UX parity remain open.",
+    "Earlier historical glyph-only acceptance retains its original clipped-canvas limitation; this later gate resolves full canvas only for the sampled current configurations."
+  ],
+  "goal_status": "Full MouseMux Ultra parity remains ACTIVE and incomplete."
+}

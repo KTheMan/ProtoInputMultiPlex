@@ -1,0 +1,23 @@
+{
+  "package": "rten-vecmath",
+  "version": "0.24.0",
+  "declared_license_expression": "MIT OR Apache-2.0",
+  "repository": "https://github.com/robertknight/rten",
+  "crate_vcs": {
+    "git": {
+      "sha1": "fc3460b21f627b6c90eb396180d8b261e826ad5c"
+    },
+    "path_in_vcs": "rten-vecmath"
+  },
+  "license_text": {
+    "source_url": "https://www.apache.org/licenses/LICENSE-2.0.txt",
+    "download_url": "https://www.apache.org/licenses/LICENSE-2.0.txt",
+    "content_type": "text/plain",
+    "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "bytes": 11358,
+    "source_kind": "Canonical Apache Software Foundation license text; not a file from the pinned RTen source snapshot",
+    "selection": "Apache-2.0 option of the package-declared MIT OR Apache-2.0 expression",
+    "timing": "Packaging-only supplement composed after original Rust compilation",
+    "pinned_upstream_root_notice_files": []
+  }
+}

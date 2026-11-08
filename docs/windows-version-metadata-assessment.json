@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "decision": "BOUNDED_SOURCE_AND_DEBUG_METADATA_ACCEPTANCE",
+  "source_group_sha256": "703084bf8bf2312caee76031f1a5f15b9a2f297751558d5de2eb2dbb28332938",
+  "verification_sha256": "43dbb7fb9d479d85b4ff0a96dd5efcc0fbd30615ba235e9a1576c7853c89a53b",
+  "frozen_source_input_count": 162,
+  "checks": {
+    "formatting": "PASS",
+    "helper_formatting": "PASS",
+    "clippy": "PASS",
+    "workspace_tests": "PASS",
+    "tests_passed": 955,
+    "tests_failed": 0,
+    "tests_ignored": 19,
+    "x64_msvc_debug_app_and_observer": "PASS",
+    "i686_msvc_debug_app_and_observer": "PASS",
+    "metadata_readback_x64_app_observer": "PASS",
+    "metadata_readback_i686_app_observer": "PASS",
+    "coff_machine_and_dll_bit_readback": "PASS"
+  },
+  "scope": "Three accepted Rust source files embed version resources into the application executable and cursor-observer DLL; native backend is unchanged.",
+  "not_established": [
+    "Product GUI or CLI runtime acceptance",
+    "Static CRT/import closure or release packaging",
+    "Installer execution",
+    "Cryptographic signature or signing-provider acceptance",
+    "Fixed-resource OS, flags, Translation, or complete fixed-version readback",
+    "Login startup, reboot, physical hardware, or general compatibility",
+    "Release readiness or full Ultra parity"
+  ],
+  "evidence_references": [
+    "Independent resource acceptance record",
+    "Pinned verification receipt"
+  ],
+  "raw_private_paths_included": false
+}

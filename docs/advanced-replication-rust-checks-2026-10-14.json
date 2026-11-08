@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-14",
+  "group": "advanced replication filters, positioning, delay, pacing and ownership",
+  "kind": "producer verification; independent acceptance remains separate",
+  "status": "PASS",
+  "exec_session": 42781,
+  "exit_code": 0,
+  "checks": [
+    "cargo fmt --all --check",
+    "cargo clippy --workspace --all-targets -- -D warnings",
+    "cargo test --workspace",
+    "cargo build -p protoinputmux",
+    "cargo build -p protoinputmux --target i686-pc-windows-msvc"
+  ],
+  "tests": {"mux_core":55,"mux_windows":2,"abi":3,"hit_test":2,"binary":17,"total":79},
+  "builds": {
+    "x64_sha256":"95ee229ca40ad97dbc5bdd4792ff2eec5c003c554c876e7dce25fc629c3c9c29",
+    "i686_sha256":"3eedfc1c02dcdd319ce1fe425bdf796f06fe29c06ddff3c3c72b8fa57a6e5a0a"
+  },
+  "scope":"These checks establish source/build verification only. Native filtering, positioning, pacing, timing, ownership, lifecycle and actual Ouroboros controls require independent acceptance. Only virtual devices and owned disposable applications are authorized for testing. Clone lifecycle and broader Ultra features remain separate work."
+}

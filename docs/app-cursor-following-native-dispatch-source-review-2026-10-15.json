@@ -1,0 +1,43 @@
+{
+  "decision": "APPROVED — SOURCE REPAIR ONLY",
+  "scope": "Ordinary selected-target Win32 cursor capture correction; no native rerun by this reviewer.",
+  "producer": {
+    "path": "runtime/producer-app-cursor-following-20261015-040628/verification.json",
+    "sha256": "25e56f59c84645874fb577ebdf2b289c9c880ddc91eafa83c2f0e35cc35e6fcf",
+    "reported_tests": 195
+  },
+  "baseline": {
+    "path": "runtime/producer-app-cursor-following-20261015-035509/verification.json",
+    "sha256": "be78a819586cda97d6e40a70fa03aef9749303eea996c4e91db3cf0691190ddb"
+  },
+  "changed_source": {
+    "path": "crates/cursor-observer/src/lib.rs",
+    "sha256": "6c50ec1aa6ddcb19f07b8158082d0e24d0254d8b29e7331ac2e3c9fef06eb3c7"
+  },
+  "other_inputs_unchanged": 80,
+  "cpp_runtime_files_unchanged": 8,
+  "failure_and_accepted_prefix": {
+    "raw_path": "runtime/acceptance-app-cursor-main-20261015-035728/evidence.json",
+    "raw_sha256": "1d745a4fa5cfc7892f42c0173a825cae431ede609934428185c183a6e9e83baf",
+    "review_path": "runtime/acceptance-app-cursor-main-20261015-035728/independent-prefix-review.json",
+    "review_sha256": "1bde68abfa15c2c823e7eb4ae8ac5f190853c95b432415248d8374cb9164621f"
+  },
+  "reviewed_invariants": [
+    "A selected target-thread WH_GETMESSAGE hook consumes only the private registered wake/cookie path; native command handler and hook chaining execute on the selected GUI thread. No WndProc replacement, class-cursor guess or host cursor query is added.",
+    "The hook processes a wake only on PM_REMOVE; peeks do not clear the queued cookie. Current cookies are coalesced and never wrap/reuse. Selected HWND, process, thread, attachment, association and cookie are revalidated around the native handler.",
+    "SendMessageW invokes the selected window native WM_SETCURSOR handler without holding lifecycle/pending locks. Only handled, unchanged-generation/current-context completion reads target-thread GetCursor. Explicit intercepted Notify changes the generation and wins, including hidden/failed states.",
+    "Native sampling reserves a new request only after lifecycle try-lock/context/sequence validation; copied cursor publication retains the already-reviewed bounded stock/custom/hidden and post-receive semantics.",
+    "Stop invalidates cookie/context and removes the thread hook; failed Unhook retains its handle and is retried by the worker before STOPPED acknowledgement/global removal. In-flight callbacks retain Arc ownership and the DLL stays loaded. Normal non-private messages continue through CallNextHookEx."
+  ],
+  "unit_scope": [
+    "private_wake_coalesces_peeks_and_rejects_old_association_cookie tests the production atomic cookie transition; not actual OS message-pump interleavings.",
+    "native_sample_never_overwrites_intercepted_or_reassociated_cursor tests the production sampling predicate with real RequestClock updates; native handler behavior still needs the ordinary C gate.",
+    "Earlier two receive/fallback regressions remain in the producer; exact scheduling/unhook-failure interleavings have source coverage, not forced native tests."
+  ],
+  "material_findings": [],
+  "limits": [
+    "Source approval and parent-owned 195-test producer are separate from native/pixel acceptance.",
+    "Only the forthcoming owned ordinary EDIT case may establish its runtime path; no arbitrary app/API, animation, same-process multi-user, mixed-DPI or high-rate queue-pressure claim.",
+    "No host GetCursorInfo/GetCursorPos/SetCursorPos, hardware, RustDesk, screen capture, native apps or Cargo calls were used in this review."
+  ]
+}

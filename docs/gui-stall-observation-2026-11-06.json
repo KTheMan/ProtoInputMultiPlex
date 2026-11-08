@@ -1,0 +1,72 @@
+{
+  "date": "2026-11-06",
+  "decision": "INDEPENDENTLY_REVIEWED_PUBLICATION_DELAY_OBSERVATION",
+  "reviewer": "/root/clone_stop_accept",
+  "raw_result": "NOT_ACCEPTED",
+  "original_session": 32869,
+  "original_exit_code": 1,
+  "raw": {
+    "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\stall-4f19f6da0c\\evidence.json",
+    "sha256": "9825b8884688bf086f77e1f321c2a8cf4163270a252a32445070ed17b74310c6"
+  },
+  "driver": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\clone-retirement-20261106\\stall-observation.py",
+    "sha256": "c13a2932a3c1a324d4d9515ad4ec5ee3d6b8d0cdf698df006280d394ae2eaed9"
+  },
+  "working_scope": "One stopped x64 GUI with two virtual pairs. The executable, profile and private temp location were local. UI script and its sibling files used a new network-share directory. No targets, routing or Setup client were started.",
+  "first_failure": {
+    "phase": "launch",
+    "error": "TimeoutError('script ready')",
+    "unix_ns": 1794001241695672300
+  },
+  "before_close": {
+    "owned_wm_null": {
+      "responsive": true,
+      "winerror": 0,
+      "elapsed_ms": 0.0
+    },
+    "settings_click_frame": 140,
+    "settings_click": {
+      "button": "Settings",
+      "clicked": true
+    },
+    "progress_file_visible": false,
+    "latest_png_request_mtime_ns": 1794001241483757400
+  },
+  "retained_after_observation": {
+    "ready_file": {
+      "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\stall-4f19f6da0c\\ui.ready.json",
+      "sha256": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b"
+    },
+    "progress_file": {
+      "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\stall-4f19f6da0c\\ui.progress.json",
+      "sha256": "e3668d71b95f254ed5554dba7bb0e4aaec32779cc7cbc84675e3ae03eee2bd6e"
+    },
+    "phase_log": {
+      "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\stall-4f19f6da0c\\ui.phases.jsonl",
+      "sha256": "23008f155a1f71b38678aca6f252b1a256b962ca0cc05af3ba672e8f2789a0f7"
+    },
+    "ready": true,
+    "frame": 1666,
+    "io": {
+      "acked_sequence": 4,
+      "active": true,
+      "fault": null,
+      "pending_critical": 0,
+      "pending_snapshots": 13,
+      "sampled": null,
+      "submitted_sequence": 4
+    },
+    "capture": {
+      "active": 4,
+      "failed": null,
+      "pending": null,
+      "published": 3,
+      "rejected": null
+    },
+    "gui_exit": 0
+  },
+  "interpretation": "The GUI processed the Settings action and answered the owned window probe during a delay observing script files. The observer stopped before Setup Activity and the Keyboard transition. Snapshot mtimes encode request time, so later file stats cannot establish when the names became visible. The pending snapshots support a publication backlog without identifying a specific filesystem, reader or writer cause.",
+  "source_followup": "The serial script writer services ready and progress in the same per-path FIFO as page telemetry. Investigate giving these driver barriers bounded priority under snapshot pressure while preserving durable click records and service for other snapshots. Independently verify any scheduler change before a new focused observation.",
+  "historical_stall": "OPEN_P1"
+}

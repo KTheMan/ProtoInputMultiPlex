@@ -1,0 +1,56 @@
+{
+  "date": "2026-11-06",
+  "decision": "CLONE_STOP_RETRY_ACCEPTED",
+  "scope": "Worker clone Stop with a simulated partial native release failure and a retry through the real roster command. Ordinary previous virtual native lifecycle evidence is separate.",
+  "verification": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\clone-retirement-20261106\\checks-004\\verification.json",
+    "sha256": "3ae1d92ab403b33b2c5cb6f646b2bf46c77ef1ce9203f18f77e5bd7e7c9ce8e6"
+  },
+  "review": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\clone-retirement-20261106\\independent-acceptance.json",
+    "sha256": "aa727e8f3df4565cf7aa6943527f2789f59611644bbf4578da82a27adad929bd"
+  },
+  "publication": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\clone-retirement-20261106\\publication.json",
+    "sha256": "7551122b07728e892b8de23287eed8d6a5be7d17f0f088a20becbea2ce87c462"
+  },
+  "workspace_tests": {
+    "passed": 746,
+    "failed": 0,
+    "ignored": 19
+  },
+  "x64_image": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\clone-retirement-20261106\\checks-004\\x64\\protoinputmultiplex.exe",
+    "sha256": "bb466927f46557cc6cec18d0e29ed3084ccc384db4f62eaf509b0f647a26fa03"
+  },
+  "checks": {
+    "fmt": 0,
+    "clippy": 0,
+    "workspace-tests": 0,
+    "build-gui": 0
+  },
+  "observed": [
+    "The first release succeeds, the second fails, and the router, roster, replication graph and output user remain active at the same roster revision.",
+    "Retry releases the remaining virtual hold and commits one stable tombstone and one graph revision. A stale repeat cannot commit again.",
+    "The original user's independent virtual hold survives and there is no global release."
+  ],
+  "prior_native_evidence": [
+    "docs/virtual-users-assessment-2026-10-14.json",
+    "docs/connected-virtual-users-assessment-2026-10-15.json",
+    "docs/rust-port-feature-integration-2026-11-06.json"
+  ],
+  "preserved_attempts": {
+    "checks-002": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\clone-retirement-20261106\\checks-002\\verification.json",
+      "sha256": "c316abc0c6b6d12c8516a90264b82d17b908f0cea3f2f6e35d3d512e6d51289c",
+      "result": "FAIL. One output-rules test still used the old removal method."
+    },
+    "checks-003": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\clone-retirement-20261106\\checks-003\\verification.json",
+      "sha256": "21ca86d259879f583a9049bd20eff7a53ca59675e14034fc8323801525ffb941",
+      "result": "FAIL. The clone test passed. An existing recording test underflowed the Windows monotonic clock by subtracting 25 hours on a recently booted machine."
+    }
+  },
+  "limits": "The native failure was simulated. A real backend fault that cannot be cleared still needs session recovery. The historical GUI stall and full Ultra parity remain open.",
+  "source_review": "Current GUI and MCP error handling retains the roster and connected creator authority during the retry."
+}

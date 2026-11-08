@@ -1,0 +1,259 @@
+{
+  "date": "2026-11-07",
+  "decision": "OCR_TEXT_ACCEPTED",
+  "scope": "Bounded selected-window Latin OCR and private Text predicate-to-KeyPulse virtual workflow; early preview, not general OCR quality.",
+  "verification": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\ocr-text-20261107\\checks-003\\verification.json",
+    "sha256": "6bbdec56691eeb62b6b72d7290ba535a9aaeface073af91ea2622ded4b31b0c6"
+  },
+  "review": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\ocr-text-20261107\\independent-acceptance.json",
+    "sha256": "255f13c02f88f153e321d33563639e4beb098defac3356c9c8bcf799510a1887"
+  },
+  "publication": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\ocr-text-20261107\\publication.json",
+    "sha256": "75ab0a0eba89a97cda21260780704357e7c5a7c569ca990f75f78ea4e5dd3f66"
+  },
+  "workspace_tests": {
+    "passed": 923,
+    "failed": 0,
+    "ignored": 19
+  },
+  "checks": {
+    "fmt": 0,
+    "clippy": 0,
+    "workspace-tests": 0,
+    "build-gui": 0
+  },
+  "source": {
+    "qualified_inputs": 159,
+    "baseline_inputs": 149,
+    "changes": [
+      "Cargo.lock",
+      "Cargo.toml",
+      "crates/mux-core/src/mapper.rs",
+      "crates/protoinputmultiplex/Cargo.toml",
+      "crates/protoinputmultiplex/assets/ocr/ATTRIBUTION.md",
+      "crates/protoinputmultiplex/assets/ocr/LICENSE-CC-BY-SA-4.0.txt",
+      "crates/protoinputmultiplex/assets/ocr/MODEL_CARD.md",
+      "crates/protoinputmultiplex/assets/ocr/provenance.json",
+      "crates/protoinputmultiplex/assets/ocr/text-detection-ssfbcj81.rten",
+      "crates/protoinputmultiplex/assets/ocr/text-rec-checkpoint-s52qdbqt.rten",
+      "crates/protoinputmultiplex/build.rs",
+      "crates/protoinputmultiplex/notices/ocrs-MIT.txt",
+      "crates/protoinputmultiplex/src/agent_runtime.rs",
+      "crates/protoinputmultiplex/src/gui.rs",
+      "crates/protoinputmultiplex/src/macro_studio.rs",
+      "crates/protoinputmultiplex/src/macro_studio/mapper_delivery_tests.rs",
+      "crates/protoinputmultiplex/src/main.rs",
+      "crates/protoinputmultiplex/src/mapper_runtime.rs",
+      "crates/protoinputmultiplex/src/mapper_screen.rs",
+      "crates/protoinputmultiplex/src/mapper_ui.rs",
+      "crates/protoinputmultiplex/src/mcp.rs",
+      "crates/protoinputmultiplex/src/screen_analysis.rs",
+      "crates/protoinputmultiplex/src/screen_ocr.rs",
+      "crates/protoinputmultiplex/src/screen_ui.rs",
+      "crates/protoinputmultiplex/src/ui_script.rs",
+      "crates/protoinputmultiplex/tests/fixtures/ocr-clean-line.png",
+      "scripts/package-portable.py"
+    ]
+  },
+  "x64_image": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\ocr-text-20261107\\checks-003\\x64\\protoinputmultiplex.exe",
+    "sha256": "4cadc2c8e2f15dfab7b01deb41da6d79034cdc6d237281a23690550f01eef00d"
+  },
+  "ocr_assets": {
+    "text-detection-ssfbcj81.rten": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\ocr-text-20261107\\checks-003\\x64\\assets\\ocr\\text-detection-ssfbcj81.rten",
+      "bytes": 2523564,
+      "sha256": "614aafabf27c94d386f7aa036c967c2e47e4b9938fa11531ca8f5698c1ca4c36"
+    },
+    "text-rec-checkpoint-s52qdbqt.rten": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\ocr-text-20261107\\checks-003\\x64\\assets\\ocr\\text-rec-checkpoint-s52qdbqt.rten",
+      "bytes": 9716444,
+      "sha256": "606d9a0414c6b73c99df75b707c11c70d1c8b12e1d4f900922e185fc37bfca65"
+    },
+    "MODEL_CARD.md": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\ocr-text-20261107\\checks-003\\x64\\assets\\ocr\\MODEL_CARD.md",
+      "bytes": 570,
+      "sha256": "dd8758be23f3c41367104b17936afbd4833bffdefccf76d30b010924e99faea1"
+    },
+    "provenance.json": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\ocr-text-20261107\\checks-003\\x64\\assets\\ocr\\provenance.json",
+      "bytes": 2594,
+      "sha256": "21e5dce02fd2be42e79c82a39b39cdbd8bc3755086c1245e11135c7b7f8c60a2"
+    },
+    "LICENSE-CC-BY-SA-4.0.txt": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\ocr-text-20261107\\checks-003\\x64\\assets\\ocr\\LICENSE-CC-BY-SA-4.0.txt",
+      "bytes": 20138,
+      "sha256": "28a9529c7d0bb4dc51f4bf5c116a3d16ef247a052f7591466768ddf563fd1cf5"
+    },
+    "ATTRIBUTION.md": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\ocr-text-20261107\\checks-003\\x64\\assets\\ocr\\ATTRIBUTION.md",
+      "bytes": 1598,
+      "sha256": "37ef71157bd287dc558da93cadabde50c56eecf8c1d80dd682de24de7413a7f8"
+    }
+  },
+  "producers": {
+    "checks_original_session": 48529,
+    "checks_original_exit_code": 0,
+    "native_original_session": 83338,
+    "native_original_exit_code": 0,
+    "source_publication_original_session": 77093
+  },
+  "native": {
+    "evidence": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\ocr-text-20261107\\native-run-1e40630f125d\\evidence.json",
+      "sha256": "dfeac7121abd19421231a57998be2570c8b9b7309fd35aed5c0ad80771776640"
+    },
+    "scope": {
+      "GUI": 1,
+      "target_processes": 2,
+      "target_root_windows": 2,
+      "virtual_pairs": 2,
+      "MCP_processes_total": 3,
+      "MCP_maximum_live": 2
+    },
+    "exit_codes": {
+      "GUI": 0,
+      "MCP": [
+        0,
+        0,
+        0
+      ],
+      "targets": {
+        "a": 0,
+        "b": 0
+      }
+    },
+    "UI_actions": 21,
+    "MCP_calls": 36,
+    "frames": {
+      "ocr-input.png": {
+        "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\ocr-text-20261107\\native-run-1e40630f125d\\ocr-input.png",
+        "sha256": "1a12a6519b056d09e7addae5c4849f81bfbf2e5724051caacecc46a61922e941"
+      },
+      "mapper-text-literal.png": {
+        "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\ocr-text-20261107\\native-run-1e40630f125d\\mapper-text-literal.png",
+        "sha256": "9832b2bb8282f67b527819bd5ccbdc885ba0d56ecd61df6e62d82d12a5a9b9b4"
+      },
+      "screen-read-text.png": {
+        "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\ocr-text-20261107\\native-run-1e40630f125d\\screen-read-text.png",
+        "sha256": "06b7b2ed63856313f57c37a953b7a60b9b6c331915cab9e90b3cf52f32519df3"
+      }
+    }
+  },
+  "accepted": [
+    "Actual bundled models read the retained selected-window phrase with client/desktop boxes; a blank target returns empty text/lines.",
+    "Admitted OCR completion feeds private TextContains, gates done Pulse and delivers the existing KeyPulse to the exact owned receiver; original passthrough wheel remains observable.",
+    "Capture grant denial precedes original/native delivery; the peer actor sees no other actor readings. Ordinary state and structured JSON Script state omit live text/boxes; opted-in GUI PNGs may show visible text.",
+    "GUI literal Update/Apply/Arm remain explicit; Screen Tools Read text uses a fresh authorized snapshot. Normal Stop, client EOF and owned WM_CLOSE cleanup completed.",
+    "Fixed neutral 0.5 mask classification, trusted shape/finite-mask checks and exact unclipped recognition-width guards retain unfiltered recognized text and existing observation authority/cleanup.",
+    "Qualified source retains the six-file offline model closure and separate complete MIT component-adapter notice; this does not qualify a complete portable release."
+  ],
+  "limits": [
+    "Only the recorded two owned normal-pump x64 targets, Latin phrase/blank samples and GUI controls are natively qualified; no broad OCR, dark-theme or arbitrary-application accuracy claim.",
+    "Timeout, queue saturation, late completion, target/grant changes and saved-release faults rely on deterministic Rust coverage, not a new native fault matrix.",
+    "No hardware/global input, RustDesk, external vision/LLM service, desktop-wide or same-process isolation, GUI-stall P1 fix, full Ultra parity or complete portable release is established."
+  ],
+  "retained_model_diagnostics": {
+    "model_red": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\ocr-text-20261107\\model-red-001\\receipt.json",
+      "sha256": "717b75a02b1eacc1a801a18e5a32dc5e5c8d8cb3c0385e622bddaf8f60476bf0"
+    },
+    "failed_white_padding": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\ocr-text-20261107\\model-green-001\\receipt.json",
+      "sha256": "a95a50d0f789f23eb03f2e3df8b8c9d731bfa88643207afeb2663f230c8fac1d"
+    },
+    "focused_model_green": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\ocr-text-20261107\\model-green-002\\receipt.json",
+      "sha256": "e37415b6c249e46b08949015d78965a095cf42853254f7a7640d17678b227c38"
+    },
+    "raw_model_probe": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\ocr-text-20261107\\notes\\model-probe-run-001\\receipt.json",
+      "sha256": "0153b2b9b2394285f8a663a73af63f6010564763342f6b164c3600f2542d273e"
+    },
+    "neutral_boundary_probe": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\ocr-text-20261107\\notes\\model-probe-neutral-run-001\\receipt.json",
+      "sha256": "d77a99f256e46dee1fee578bd46fd380bc2d8deb1d944780bcfb92c83d03640f"
+    }
+  },
+  "retained_failed_native": [
+    {
+      "evidence": {
+        "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\ocr-text-20261107\\native-run-944fc147f331\\evidence.json",
+        "sha256": "786491eff7272a8e4ab7c7a16db8d46bd0652d1040de80914134dd468114e1b6"
+      },
+      "attempt_fence": {
+        "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\ocr-text-20261107\\native-go-002.attempted.json",
+        "sha256": "41343ee8dc47ff06901a27390b4e1d103d4a1ead2fb627d1abe007f9d4577e5a"
+      }
+    },
+    {
+      "evidence": {
+        "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\ocr-text-20261107\\native-run-1e655210c06a\\evidence.json",
+        "sha256": "7b7921ec9118cf61f6858d06d9e82c6ac5c7410a440ba356ea4f339df9c8c5ee"
+      },
+      "attempt_fence": {
+        "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\ocr-text-20261107\\native-go-003.attempted.json",
+        "sha256": "a0e92245ef58895b694264d08c76a267b09e4e7d9ad9cbeeba1339e49b778379"
+      }
+    },
+    {
+      "evidence": {
+        "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\ocr-text-20261107\\native-run-a6507ecdc7fa\\evidence.json",
+        "sha256": "a76cfe77c9098b0ba05d6b1bca9938f30cb530a686a068cbf1455ae1485ac4f4"
+      },
+      "attempt_fence": {
+        "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\ocr-text-20261107\\native-go-004.attempted.json",
+        "sha256": "b4d33a4d8c9e40803695a3057ec8be353e0c7ad9cad8f1a4688bbff110b3b325"
+      }
+    },
+    {
+      "evidence": {
+        "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\ocr-text-20261107\\native-run-4a0d688fdee5\\evidence.json",
+        "sha256": "f704455d4bd3b9a7b6f7216a275fc4bb77de57b97ea7dd56e39fdf4bb4b6c0f4"
+      },
+      "attempt_fence": {
+        "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\ocr-text-20261107\\native-go.attempted.json",
+        "sha256": "a438fcadb060badf93a78a5ac93452baa6dabd3553905aadbf4d6b50a36567d7"
+      }
+    }
+  ],
+  "retained_prior_checks": [
+    {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\ocr-text-20261107\\checks-001\\verification.json",
+      "sha256": "3f8a723dafaaf90cbc10d728bf46073aa489bf8e337f96084b25c0ebe5a65cbf"
+    },
+    {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\ocr-text-20261107\\checks-002\\verification.json",
+      "sha256": "c8681f8c6863e67eb6f6be7e7c5c99ed0c0323947e59a7541bee6ff13a9a7f4c"
+    }
+  ],
+  "documentation_baseline": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\ocr-text-20261107\\docs-base.json",
+    "sha256": "3e73a50b3d6e0464a22c1f27c0d9135beb6509eafb515c85bd21aaf773a05aa3"
+  },
+  "documentation_drafts": {
+    "docs/ocr-text-contract.md": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\ocr-text-20261107\\docs\\docs\\ocr-text-contract.md",
+      "sha256": "26c23b9499f559cff4f8dca3dd31f460c2c0e96bd726ef6528fd41d77aee3455"
+    },
+    "skills/protoinputmultiplex/SKILL.md": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\ocr-text-20261107\\docs\\skills\\protoinputmultiplex\\SKILL.md",
+      "sha256": "eefc4878d711f19186d36e5e360a1eacebf1b9c43c46dde74852eaf89fb19117"
+    },
+    "THIRD_PARTY_NOTICES.md": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\ocr-text-20261107\\docs\\THIRD_PARTY_NOTICES.md",
+      "sha256": "59ea2899050203902586f7680cc2dbfd089b8ff33b34d6fc2883ecb4306e61b7"
+    },
+    "docs/portable-packaging.md": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\ocr-text-20261107\\docs\\docs\\portable-packaging.md",
+      "sha256": "ae56a23ade05cfa7e0aa506b5bda53b395c151bcaf98b1fc8637e5cd3d8c9d5f"
+    }
+  },
+  "record_script": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\ocr-text-20261107\\record.py",
+    "sha256": "8f8b093c14ef17c67758eefcf5dcc826f735e2afd88996c1d1b4f1d0484ee84e"
+  }
+}

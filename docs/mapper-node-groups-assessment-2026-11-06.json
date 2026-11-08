@@ -1,0 +1,108 @@
+{
+  "date": "2026-11-06",
+  "decision": "MAPPER_NODE_GROUPS_ACCEPTED",
+  "scope": "Named, collapsible Mapper node groups in Ouroboros authoring, portable saved flows, and pure MCP group edits.",
+  "verification": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-node-groups-20261106\\checks-005\\verification.json",
+    "sha256": "7f8ea92cf8badb51362e11294c56b6a76af8d502143c6144e97fbbc8b3d0187a"
+  },
+  "review": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-node-groups-20261106\\independent-acceptance.json",
+    "sha256": "e8511373892075de9bdba2634a7bee485079cc54c52462c5c10fc018f0419800"
+  },
+  "publication": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-node-groups-20261106\\publication.json",
+    "sha256": "7a6d0b4cfe969e174a5b4564552a4e00438b21b254b0cf6973e95698cf3671f1"
+  },
+  "workspace_tests": {
+    "passed": 794,
+    "failed": 0,
+    "ignored": 19
+  },
+  "checks": {
+    "fmt": 0,
+    "clippy": 0,
+    "workspace-tests": 0,
+    "build-gui": 0
+  },
+  "x64_image": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-node-groups-20261106\\checks-005\\x64\\protoinputmultiplex.exe",
+    "sha256": "2c22adcbe1b44689f4ab7c0fed9949a12b2e29f0e0e60e1fc1ce09922d819e2b"
+  },
+  "producer": {
+    "original_session": 61235,
+    "original_exit_code": 0
+  },
+  "native": {
+    "evidence": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mt-c8664fd51ef2\\evidence.json",
+      "sha256": "6e247570df62a9f5e8131c9f71c8c051a52545aa735ca66edec8050e03ae189b"
+    },
+    "driver": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-node-groups-20261106\\native-v3.py",
+      "sha256": "9dca3a0b842459e765cd88cfb3bd487a9b526473609bca72c02916273a9dd417"
+    },
+    "original_session": 94598,
+    "original_exit_code": 0,
+    "scope": {
+      "virtual_pairs": 2,
+      "GUI": 1,
+      "targets": 0,
+      "MCP": 1,
+      "hardware_input": 0,
+      "routing_or_injection": 0
+    },
+    "gui_exit": 0,
+    "mcp_exit": 0,
+    "normal_capture": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mt-c8664fd51ef2\\native\\focus-collapsed.png",
+      "sha256": "52f52e0a05839d1ea0b0b9e1e02a83e42311e4ea1c085d18a5e79656e11e7145",
+      "geometry": {
+        "hwnd": 1055974,
+        "dpi": 96,
+        "client_pixels": [
+          680,
+          620
+        ],
+        "client_logical": [
+          680.0,
+          620.0
+        ],
+        "window_rect": [
+          312,
+          312,
+          1008,
+          971
+        ]
+      }
+    },
+    "minimum_capture": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mt-c8664fd51ef2\\native\\focus-compact.png",
+      "sha256": "608834c1e9e5a5cced95be0f490bad5f2a7ccef09146273bef5807e5f5c6fbb2",
+      "geometry": {
+        "hwnd": 1055974,
+        "dpi": 96,
+        "client_pixels": [
+          320,
+          360
+        ],
+        "client_logical": [
+          320.0,
+          360.0
+        ],
+        "window_rect": [
+          312,
+          312,
+          648,
+          711
+        ]
+      }
+    }
+  },
+  "accepted_observations": [
+    "Core group edits preserve nodes and edges. A deterministic evaluator check matched ungrouped, expanded and collapsed definitions.",
+    "Metadata editing works while a draft is incomplete. Apply and runtime validation retain strict graph requirements.",
+    "Ouroboros group creation, rename, collapse, expand, ungroup, Undo and saved-flow persistence were exercised with two virtual pairs in a stopped GUI.",
+    "MCP performed the same metadata edits, reported incomplete draft validity separately, and round-tripped a grouped library document."
+  ]
+}

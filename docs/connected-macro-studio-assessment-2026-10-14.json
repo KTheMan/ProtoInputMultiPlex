@@ -1,0 +1,95 @@
+{
+  "result": "PASS",
+  "group": "connected_macro_studio",
+  "date": "2026-10-14",
+  "judgment": "Bounded virtual connected authoring, playback ownership, target pinning, revocation and GUI clip-cache integration accepted. Original raw PENDING visual-review evidence remains unchanged; this independent review completes its bounded approval.",
+  "counts": {
+    "substantive_native_groups": 8,
+    "named_suboutcomes": 23,
+    "actual_gui_receipts": 24,
+    "own_original_frames": 3,
+    "owned_x64_targets": 2,
+    "i686_executions": 0
+  },
+  "build_sha256": {
+    "x64": "94c6674c61c1d822e74210df85ef12d52859ad2973aaa1ae61f4808d5354ddb9",
+    "i686": "6bd4ceb77d542996ccf291ccb2cf9cada1e9045991415dd774ee8037ee046be8"
+  },
+  "source_integrity": {
+    "rehashed_files": 64,
+    "mismatches": 0
+  },
+  "provenance": {
+    "raw": {
+      "path": "runtime\\acceptance-graph-connected-macro-studio-20261014-233759\\evidence.json",
+      "sha256": "58c7a3a8d500ff7c0adc78b198a566d428d99eb32acbb784554fedbaa6d8ffa0"
+    },
+    "producer": {
+      "path": "runtime\\producer-connected-macro-studio-20261014-233419\\verification.json",
+      "sha256": "bc0b3c2314e4b2305d6a41270575d00f2f779ec9d796754cb53af0d601b4cd84"
+    },
+    "source_review": {
+      "path": "docs\\connected-macro-studio-source-review-2026-10-14.json",
+      "sha256": "a3be95246fb421b6bd6eb8366271e0b2041223d90adbcaa0ba87d9cdc5c456fb"
+    },
+    "executed_runner": {
+      "path": "runtime\\acceptance-graph-connected-macro-studio-20261014-233759\\runner-source\\test-connected-macro-studio-acceptance.py",
+      "sha256": "30df5f9b2fd1165e4fe33847e5248adbb2fd8ec4fa33119caa6e15629d98fda8"
+    },
+    "saved_gui_clip": {
+      "path": "runtime\\acceptance-graph-connected-macro-studio-20261014-233759\\gui-cached-agent-a.json",
+      "sha256": "0d28531dfafc70c9270e888300ec6dd0accded8caf91505ee6e1cc6f68110785"
+    }
+  },
+  "accepted": [
+    "Real Agent Access grant transition controls mutation; Record true/false explicitly reject. Invalid clip, wrong-user inserted event, unknown user and excluded copy source/destination preserve lane metadata, available clips, native holds/text and complete profile.",
+    "Actual MCP Load, Generate, Reset and restore plus a raw correlated Retime command expose acknowledged clip/revision. Tiny generated line is inspected only. Completed permitted A playback delivers exact CM✓ EDIT text, paired F5 and Back edges to own A; B text stays empty.",
+    "Play rejects a pre-existing direct held claim without releasing it. During agent A playback another actor adds the same F5; own Cancel releases the program Back hold while F5 stays held until the last direct owner releases. Native F5 trace is one down/one final up. Own active Reset and foreign Cancel reject. GUI-owned B F6 remains held.",
+    "Second connected actor changes A selection to permitted B; the pinned agent program cancels at delivery before its later F8 can reach B and releases its old A key. Owner MCP EOF independently releases its program while another actor F7 and GUI-owned B lane remain. Authored A clip survives.",
+    "Actual roster-selected A GUI Save user clip JSON writes the exact latest acknowledged connected clip; raw inspection revision/clip agree. No studio_user or selected_user script fields select the recipient.",
+    "Actual policy Apply revokes the active A owner and releases its program while GUI B continues. Reconnect with both-user/PID-B-only policy rejects Play at selected PID A and rejects Load/Play/Cancel of authorized but GUI-owned B. Global revocation intentionally revokes all old connected clients.",
+    "Actual Stop supplies GUI B plain native F6 DOWN/UP, leaves no held key/button, removes descriptor and known overlays. GUI, probes, connected MCP processes and raw handles close; own GUID key absent and scoped CIM audit has zero survivors."
+  ],
+  "independent_pixel_review": {
+    "result": "PASS",
+    "method": "Direct view_image of all three immutable own product originals after cleanup.",
+    "findings": [
+      "Permission frame visibly selects only Alpha, both own target PIDs and session changes, with capture/app-preference grants off.",
+      "Beta frame shows actual Macros page, active Cancel control and disabled Play during the continuing GUI-owned lane. Agent ownership is established by lane.agent_client=None and native hold/ACK evidence, not the generic bottom status string.",
+      "Alpha frame visibly shows playing, four loaded events, revision8, connected-agent ownership and a populated timeline, with inactive keep-awake request. Exact GUI cached JSON equality supplies the clip-content proof.",
+      "The generic Beta status says updated by a connected agent after other-lane activity, and permission explanatory copy does not enumerate every new command family. These broader UI wording gaps remain; no full UX/Ultra parity is claimed."
+    ],
+    "frames": [
+      {
+        "path": "runtime\\acceptance-graph-connected-macro-studio-20261014-233759\\permissions-authoring.png",
+        "sha256": "8980ee50cca7d0b9e776b843438bc4e04eac5b37c44c8ae16e173c1ed9c36afc"
+      },
+      {
+        "path": "runtime\\acceptance-graph-connected-macro-studio-20261014-233759\\gui-owned-b-playback.png",
+        "sha256": "440b49426ffc404431ecf3754afe6822b60f806161019f25e75cc815265704a9"
+      },
+      {
+        "path": "runtime\\acceptance-graph-connected-macro-studio-20261014-233759\\agent-owned-a-cache.png",
+        "sha256": "09968e4c4705110465b37f30dac43c087a76d6fb0331f0e6aa7437aa00f8799b"
+      }
+    ]
+  },
+  "limits": [
+    "Connected Record remains unsupported; no client-attributed recording or physical recording acceptance. Generated geometry, all edit operations, power API behavior, replay family combinations and exhaustive ownership matrices are not repeated.",
+    "Pending-local-command versus external-ACK event ordering, omitted-clip merging, retired/generated seats, queued replication/output translation recipient paths, exact HWND reuse, forced permission/target races and cleanup failure paths have source/unit evidence only; this gate adds no native proof for those paths.",
+    "Native positive lane is original A, independent GUI lane is original B. Pre-existing selected-user direct Agent claim is tested; preservation of pre-existing Manual holds on connected Reset remains deterministic/source coverage. No successful cross-user copy is claimed; scoped copy rejection is exercised.",
+    "No i686 execution, hardware/RustDesk control or validation, global input injection, desktop/private-pixel capture, general-app compatibility or independent same-process multi-user isolation claim. Same-key native union is an agent-program/direct-actor claim test on one virtual user and target.",
+    "Raw Retime client/sequence equality is asserted by the immutable executed runner; the persisted suboutcome stores its actual acknowledged Studio state rather than a complete transport transcript."
+  ],
+  "original_raw_status": "PENDING INDEPENDENT VISUAL REVIEW",
+  "cleanup": {
+    "owned_processes_closed": true,
+    "connected_mcp_closed": true,
+    "raw_handles_closed": true,
+    "guid_key_absent": true,
+    "scoped_process_survivors": 0,
+    "runner_session": 59850,
+    "runner_exit_code": 0,
+    "exclusive_slot_returned": true
+  }
+}

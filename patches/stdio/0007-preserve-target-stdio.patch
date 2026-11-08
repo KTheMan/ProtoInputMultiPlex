@@ -1,0 +1,1028 @@
+--- a/lib/imgui/backends/imgui_impl_opengl3.cpp
++++ b/lib/imgui/backends/imgui_impl_opengl3.cpp
+@@ -496,13 +496,13 @@
+     glGetShaderiv(handle, GL_COMPILE_STATUS, &status);
+     glGetShaderiv(handle, GL_INFO_LOG_LENGTH, &log_length);
+     if ((GLboolean)status == GL_FALSE)
+-        fprintf(stderr, "ERROR: ImGui_ImplOpenGL3_CreateDeviceObjects: failed to compile %s!\n", desc);
++        ((void)0);
+     if (log_length > 1)
+     {
+         ImVector<char> buf;
+         buf.resize((int)(log_length + 1));
+         glGetShaderInfoLog(handle, log_length, NULL, (GLchar*)buf.begin());
+-        fprintf(stderr, "%s\n", buf.begin());
++        ((void)0);
+     }
+     return (GLboolean)status == GL_TRUE;
+ }
+@@ -514,13 +514,13 @@
+     glGetProgramiv(handle, GL_LINK_STATUS, &status);
+     glGetProgramiv(handle, GL_INFO_LOG_LENGTH, &log_length);
+     if ((GLboolean)status == GL_FALSE)
+-        fprintf(stderr, "ERROR: ImGui_ImplOpenGL3_CreateDeviceObjects: failed to link %s! (with GLSL '%s')\n", desc, g_GlslVersionString);
++        ((void)0);
+     if (log_length > 1)
+     {
+         ImVector<char> buf;
+         buf.resize((int)(log_length + 1));
+         glGetProgramInfoLog(handle, log_length, NULL, (GLchar*)buf.begin());
+-        fprintf(stderr, "%s\n", buf.begin());
++        ((void)0);
+     }
+     return (GLboolean)status == GL_TRUE;
+ }
+--- a/src/ProtoInput/ProtoInputHooks/Cleanup.cpp
++++ b/src/ProtoInput/ProtoInputHooks/Cleanup.cpp
+@@ -4,7 +4,7 @@
+ 
+ void Proto::ProtoPerformCleanup()
+ {
+-	printf("Proto Input performing shutdown cleanup\n");
++	((void)0);
+ 
+ 	FocusMessageLoop::Cleanup();
+ }
+--- a/src/ProtoInput/ProtoInputHooks/DinputOrderHook.cpp
++++ b/src/ProtoInput/ProtoInputHooks/DinputOrderHook.cpp
+@@ -526,7 +526,7 @@
+ 	if (!hasSetupDinputDeviceProperties7W)
+ 		SetupDinputDeviceProperties7W(pDev);
+ 
+-	printf("blockDinput= %d, ctrlrFormat7W = %d, cbData = %d, RangeMax=%d, RangeMin=%d\n", blockDinput, ctrlrFormat7W, cbData, dinputRangeMax, dinputRangeMin);
++	((void)0);
+ 
+ 	
+ 	//wanderlust adventure cbData is 60, but sizeof(DIJOYSTATE) is 80
+@@ -620,10 +620,10 @@
+ 	intptr_t* vptrCtrlr7A = *(intptr_t**)pCtrlr7A;
+ 
+ 	// Turns out A/W is identical for controllers, so we'll only hook W
+-	printf("Get device status 8W: %lld\n", vptrCtrlr8W[9]);
+-	printf("(Not hooked) Get device status 8A: %lld\n", vptrCtrlr8A[9]);
+-	printf("Get device status 7W: %lld\n", vptrCtrlr7W[9]);
+-	printf("(Not hooked) Get device status 7A: %lld\n", vptrCtrlr7A[9]);
++	((void)0);
++	((void)0);
++	((void)0);
++	((void)0);
+ 
+ 	DinputOrderHook::hookInfos.push_back(std::get<1>(InstallHook((void*)vptrCtrlr8W[9], Hook_DinputGetDeviceState8W)));
+ 	// hookInfos.push_back(std::get<1>(InstallHook((void*)vptrCtrlr8A[9], Hook_DinputGetDeviceState8A)));
+@@ -678,10 +678,10 @@
+ 	intptr_t* vptrDinput7W = *(intptr_t**)pDinput7W;
+ 	intptr_t* vptrDinput7A = *(intptr_t**)pDinput7A;
+ 
+-	printf("Create device 8W: %lld\n", vptrDinput8W[3]);
+-	printf("Create device 8A: %lld\n", vptrDinput8A[3]);
+-	printf("Create device 7W: %lld\n", vptrDinput7W[3]);
+-	printf("Create device 7A: %lld\n", vptrDinput7A[3]);
++	((void)0);
++	((void)0);
++	((void)0);
++	((void)0);
+ 
+ 	hookInfos.push_back(std::get<1>(InstallHook((void*)vptrDinput8W[3], Hook_DinputCreateDevice8W)));
+ 	hookInfos.push_back(std::get<1>(InstallHook((void*)vptrDinput8A[3], Hook_DinputCreateDevice8A)));
+--- a/src/ProtoInput/ProtoInputHooks/FakeCursor.cpp
++++ b/src/ProtoInput/ProtoInputHooks/FakeCursor.cpp
+@@ -69,7 +69,7 @@
+ 
+ DWORD WINAPI FakeCursorDrawLoopThread(LPVOID lpParameter)
+ {
+-    printf("Fake cursor draw loop thread start\n");
++    ((void)0);
+     Proto::AddThreadToACL(GetCurrentThreadId());
+     FakeCursor::state.StartDrawLoopInternal();
+ 
+@@ -121,7 +121,7 @@
+ 
+     if (!RegisterClass(&wc))
+     {
+-        fprintf(stderr, "Failed to open fake cursor window\n");
++        ((void)0);
+     }
+     else
+     {
+@@ -173,7 +173,7 @@
+ 
+ DWORD WINAPI FakeCursorThreadStart(LPVOID lpParameter)
+ {
+-    printf("Fake Cursor thread start\n");
++    ((void)0);
+     FakeCursor::state.StartInternal();
+     return 0;
+ }
+--- a/src/ProtoInput/ProtoInputHooks/Gui.cpp
++++ b/src/ProtoInput/ProtoInputHooks/Gui.cpp
+@@ -17,7 +17,7 @@
+ namespace Proto
+ {
+ 
+-intptr_t ConsoleHwnd;
++intptr_t ConsoleHwnd = 0;
+ 
+ static void HelpMarker(const char* desc)
+ {
+@@ -238,10 +238,7 @@
+ 	}
+     ShowTooltip("Press right control + right alt + 1/2/3/4/... to open the GUI for instance 1/2/3/4/...");
+ 
+-	if (ImGui::Button("Toggle console"))
+-	{
+-        ToggleConsole();
+-	}
++    ImGui::TextDisabled("Console control unavailable (application console is preserved)");
+ 
+     ImGui::Checkbox("Lock input shortcut", &RawInput::lockInputToggleEnabled);
+     ShowTooltip("If this is enabled, pressing the Home key will lock the keyboard and mouse input. "
+--- a/src/ProtoInput/ProtoInputHooks/GuiImpl.cpp
++++ b/src/ProtoInput/ProtoInputHooks/GuiImpl.cpp
+@@ -14,7 +14,7 @@
+ 
+ //TODO: default to hidden
+ constexpr bool defaultGuiToHidden = true;
+-constexpr bool defaultConsoleToHidden = true;
++
+ 
+ HGLRC   g_GLRenderContext;
+ HDC     g_HDCDeviceContext;
+@@ -129,12 +129,12 @@
+ 
+ void Proto::ToggleConsole()
+ {
+-    SetConsoleVisible(!IsWindowVisible((HWND)ConsoleHwnd));
+-}
+-
+-void Proto::SetConsoleVisible(bool visible)
+-{
+-    ShowWindow((HWND)ConsoleHwnd, visible ? SW_SHOW : SW_HIDE);
++    // Deliberately unavailable: the application owns its console.
++}
++
++void Proto::SetConsoleVisible(bool)
++{
++    // Retained as an internal compatibility no-op; never change an app console.
+ }
+ 
+ int Proto::ShowGuiImpl()
+@@ -192,7 +192,7 @@
+ 
+ 
+     SetWindowVisible(!defaultGuiToHidden);
+-    SetConsoleVisible(!defaultConsoleToHidden);
++
+ 	
+     // Main loop
+     MSG msg;
+--- a/src/ProtoInput/ProtoInputHooks/HookInstaller.cpp
++++ b/src/ProtoInput/ProtoInputHooks/HookInstaller.cpp
+@@ -53,7 +53,7 @@
+ void AddThreadToACL(unsigned long threadID)
+ {
+ 	mutex.lock();
+-	printf("Adding thread ID %d to ACL\n", threadID);
++	((void)0);
+ 	ACLThreads.push_back(threadID);
+ 	aclThreadWatches.emplace_back(threadID, OpenThread(SYNCHRONIZE, FALSE, threadID));
+ 	RefreshACL();
+@@ -109,7 +109,7 @@
+ 
+ 	if (FAILED(result))
+ 	{
+-		std::cerr << "Error installing hook, error string: " << RtlGetLastErrorString() << std::endl;
++		((void)0);
+ 	}
+ 	else
+ 	{
+@@ -122,9 +122,9 @@
+ std::tuple<NTSTATUS, HookInfo> InstallNamedHook(const LPCWSTR moduleHandle, const LPCSTR proc, void* callBack, const bool isOrdinal)
+ {
+ 	if (((DWORD)proc >> 16) == 0) // is ordinal
+-		printf("Installing hook (ordinal) %d in %ws\n", (DWORD)proc, moduleHandle);
++		((void)0);
+ 	else
+-		printf("Installing hook %s in %ws\n", proc, moduleHandle);
++		((void)0);
+ 	
+ 	// Perform hooking
+ 	HOOK_TRACE_INFO hHook = { NULL }; // keep track of our hook
+@@ -142,7 +142,7 @@
+ 
+ 	if (FAILED(result))
+ 	{
+-		std::cerr << "Error installing " << name << " hook, error string: " << RtlGetLastErrorString() << std::endl;
++		((void)0);
+ 	}
+ 	else
+ 	{
+@@ -156,7 +156,7 @@
+ {
+ 	if (hookInfo->hasHook)
+ 	{
+-		std::cout << "Uninstalling an EasyHook hook" << std::endl;
++		((void)0);
+ 		const auto tracked = hookInfo->info;
+ 		const auto result = LhUninstallHook(&hookInfo->info);
+ 		RecordLifecycleError(result);
+--- a/src/ProtoInput/ProtoInputHooks/HookManager.cpp
++++ b/src/ProtoInput/ProtoInputHooks/HookManager.cpp
+@@ -51,7 +51,7 @@
+ void HookManager::InstallHook(ProtoHookIDs hookID)
+ {
+ 	if (hookID < 0 || hookID >= hookManagerInstance.hooks.size())
+-		std::cerr << "Trying to install hook ID " << hookID << " which is out of range" << std::endl;
++		((void)0);
+ 	else
+ 	{
+ 		hookManagerInstance.hooks[hookID]->Install();
+@@ -61,7 +61,7 @@
+ void HookManager::UninstallHook(ProtoHookIDs hookID)
+ {
+ 	if (hookID < 0 || hookID >= hookManagerInstance.hooks.size())
+-		std::cerr << "Trying to uninstall hook ID " << hookID << " which is out of range" << std::endl;
++		((void)0);
+ 	else
+ 	{
+ 		hookManagerInstance.hooks[hookID]->Uninstall();
+@@ -72,7 +72,7 @@
+ {
+ 	if (hookID < 0 || hookID >= hookManagerInstance.hooks.size())
+ 	{
+-		std::cerr << "Trying to check hook ID " << hookID << " which is out of range" << std::endl;
++		((void)0);
+ 		return false;
+ 	}
+ 	else
+--- a/src/ProtoInput/ProtoInputHooks/HookManager.h
++++ b/src/ProtoInput/ProtoInputHooks/HookManager.h
+@@ -21,7 +21,7 @@
+ 	void AddHook(ProtoHookIDs index)
+ 	{
+ 		if (hooks.size() != index)
+-			std::cerr << "Trying to call AddHook with an invalid ID" << std::endl;
++			((void)0);
+ 		else
+ 		{
+ 			hooks.push_back(std::make_unique<T>());
+--- a/src/ProtoInput/ProtoInputHooks/HwndSelector.cpp
++++ b/src/ProtoInput/ProtoInputHooks/HwndSelector.cpp
+@@ -54,9 +54,9 @@
+     if (logOutput)
+     {
+         if (hwnd == 0)
+-            printf("Warning: UpdateMainHwnd didn't find a main window\n");
++            ((void)0);
+         else
+-            printf("UpdateMainHwnd found hwnd %d (0x%X)\n", hwnd, hwnd);
++            ((void)0);
+     }
+ 		
+     if (data.hwnd != nullptr)
+@@ -72,7 +72,7 @@
+         windowHeight = rect.bottom - rect.top;
+     }
+     else
+-        fprintf(stderr, "GetClientRect failed in update main window bounds\n");
++        ((void)0);
+ }
+ 
+ void HwndSelector::SetSelectedHwnd(intptr_t set)
+--- a/src/ProtoInput/ProtoInputHooks/MessageFilterHook.cpp
++++ b/src/ProtoInput/ProtoInputHooks/MessageFilterHook.cpp
+@@ -212,7 +212,7 @@
+ 	if (X::FilterID() == filterID)
+ 	{
+ 		*IsFilterEnabled<X>() = enabled;
+-		printf("Set filter %s to %s\n", X::Name(), enabled ? "enabled" : "disabled");
++		((void)0);
+ 		return;
+ 	}
+ 
+--- a/src/ProtoInput/ProtoInputHooks/PipeCommunication.cpp
++++ b/src/ProtoInput/ProtoInputHooks/PipeCommunication.cpp
+@@ -41,7 +41,7 @@
+ 	// Using printf because cout keeps interleaving with the other threads...
+ 
+ 	const auto pipeName = GetPipeName();
+-	wprintf(L"Started pipe thread, using pipe %s\n", pipeName.c_str());
++	((void)0);
+ 
+ 	AddThreadToACL(GetCurrentThreadId());
+ 
+@@ -75,7 +75,7 @@
+ 	
+ 	if (pipe != INVALID_HANDLE_VALUE)
+ 	{
+-		printf("Successfully connected pipe \"%ws\"\n", pipeName.c_str());
++		((void)0);
+ 		
+ 		ProtoPipe::PipeMessageHeader msgHeader;
+ 		static unsigned char messageBuffer[2048];
+@@ -93,13 +93,13 @@
+ 
+ 			if (success == 0 || numBytesRead != sizeof(ProtoPipe::PipeMessageHeader))
+ 			{
+-				fprintf(stderr, "Failed to read message header from pipe, last error = 0x%X\n", GetLastError());
++				((void)0);
+ 				break;
+ 			}
+ 
+ 			if (msgHeader.messageSize > sizeof(messageBuffer))
+ 			{
+-				fprintf(stderr, "Named pipe message is too large, exiting named pipe (Message size %d, buffer size %d)\n", msgHeader.messageSize, sizeof(messageBuffer));
++				((void)0);
+ 				break;
+ 			}
+ 
+@@ -115,7 +115,7 @@
+ 
+ 			if (success == 0 || numBytesRead != msgHeader.messageSize)
+ 			{
+-				fprintf(stderr, "Failed to read message body from pipe, last error = 0x%X\n", GetLastError());
++				((void)0);
+ 				break;
+ 			}
+ 
+@@ -268,7 +268,7 @@
+ 			case ProtoPipe::PipeMessageType::SetupHook:
+ 				{
+ 					const auto body = reinterpret_cast<ProtoPipe::PipeMessageSetupHook*>(messageBuffer);
+-					printf("Setup hook message: hook ID %d, install = %d\n", body->hookID, body->install);
++					((void)0);
+ 					if (body->install)
+ 						HookManager::InstallHook(body->hookID);
+ 					else
+@@ -279,7 +279,7 @@
+ 			case ProtoPipe::PipeMessageType::SetupMessageFilter:
+ 				{
+ 					const auto body = reinterpret_cast<ProtoPipe::PipeMessageSetupMessageFilter*>(messageBuffer);
+-					printf("Setup message filter message: filter ID %d, enable = %d\n", body->filterID, body->enable);
++					((void)0);
+ 					MessageFilterHook::SetFilterEnabled(body->filterID, body->enable);
+ 
+ 					break;
+@@ -287,21 +287,21 @@
+ 			case ProtoPipe::PipeMessageType::SetupMessageBlock:
+ 				{
+ 					const auto body = reinterpret_cast<ProtoPipe::PipeMessageSetupMessageBlock*>(messageBuffer);
+-					printf("Setup message block message: message ID %d, block = %d\n", body->message, body->block);
++					((void)0);
+ 					auto ptr = MessageList::GetBlocked(body->message);
+ 					if (ptr == nullptr)
+-						fprintf(stderr, "Trying to set message block on message out of range: %d\n", body->message);
++						((void)0);
+ 					else
+ 					{
+ 						*ptr = body->block;
+-						printf("Set message block to %s on message %d\n", body->block ? "enabled" : "disabled", body->message);
++						((void)0);
+ 					}
+ 					
+ 					break;
+ 				}
+ 			case ProtoPipe::PipeMessageType::WakeUpProcess:
+ 			{
+-				printf("Wake up process message\n");
++				((void)0);
+ 					
+ 				// Wake up the threads if they are suspended
+ 				//TODO: we might need to wait (mutex or sleep) for tasks to complete before waking up
+@@ -321,7 +321,7 @@
+ 								{
+ 									if (auto hThread = OpenThread(THREAD_SUSPEND_RESUME, FALSE, te.th32ThreadID); hThread != NULL)
+ 									{
+-										printf("Waking thread %d\n", te.th32ThreadID);
++										((void)0);
+ 
+ 										ResumeThread(hThread);
+ 
+@@ -346,12 +346,12 @@
+ 					
+ 				if (body->hwnd == 0)
+ 				{
+-					printf("Received message to research for the main window handle\n");
++					((void)0);
+ 					HwndSelector::UpdateMainHwnd();
+ 				}
+ 				else
+ 				{
+-					printf("Received message to set main window handle to hwnd %lld (0x%llX)\n", body->hwnd, body->hwnd);
++					((void)0);
+ 					// HwndSelector::selectedHwnd = body->hwnd;
+ 					HwndSelector::SetSelectedHwnd((intptr_t)body->hwnd);
+ 				}
+@@ -363,18 +363,7 @@
+ 				const auto body = reinterpret_cast<ProtoPipe::PipeMessageStartFocusMessageLoop*>(messageBuffer);
+ 				FocusMessageLoop::PauseMessageLoop();
+ 
+-				printf("Received StartFocusMessageLoop, Milliseconds = %d, "
+-					   "wm_activate = %d, "
+-					   "wm_activateapp = %d, "
+-					   "wm_mouseactivate = %d, "
+-					   "wm_ncactivate = %d, "
+-					   "wm_setfocus = %d\n",
+-					   body->milliseconds,
+-					   body->wm_activate,
+-					   body->wm_activateapp,
+-					   body->wm_mouseactivate,
+-					   body->wm_ncactivate,
+-					   body->wm_setfocus);
++				((void)0);
+ 					
+ 				FocusMessageLoop::sleepMilliseconds = body->milliseconds;
+ 				FocusMessageLoop::messagesToSend.wm_activate = body->wm_activate;
+@@ -401,7 +390,7 @@
+ 			{
+ 				const auto body = reinterpret_cast<ProtoPipe::PipeMessageSetupState*>(messageBuffer);
+ 
+-				printf("Received setup state message, instance index = %d\n", body->instanceNumber);
++				((void)0);
+ 					
+ 				StateInfo::info.instanceIndex = body->instanceNumber;
+ 
+@@ -411,8 +400,7 @@
+ 			{
+ 				const auto body = reinterpret_cast<ProtoPipe::PipeMessageSetupMessagesToSend*>(messageBuffer);
+ 
+-				printf("Received setup messages to send, send mouse move = %d, send mouse button = %d, send mouse wheel = %d, send keyboard = %d\n", 
+-					   body->sendMouseMoveMessages ? 1 : 0, body->sendMouseButtonMessages ? 1 : 0, body->sendMouseWheelMessages ? 1 : 0, body->sendKeyboardPressMessages ? 1 : 0);
++				((void)0);
+ 
+ 				RawInput::rawInputState.sendMouseMoveMessages = body->sendMouseMoveMessages;
+ 				RawInput::rawInputState.sendMouseButtonMessages = body->sendMouseButtonMessages;
+@@ -425,7 +413,7 @@
+ 			{
+ 				const auto body = reinterpret_cast<ProtoPipe::PipeMessageSetDrawFakeCursor*>(messageBuffer);
+ 
+-				printf("Received message to %s fake cursor\n", body->enable ? "enable" : "disable");
++				((void)0);
+ 
+ 				FakeCursor::EnableDisableFakeCursor(body->enable);
+ 
+@@ -435,7 +423,7 @@
+ 			{
+ 				const auto body = reinterpret_cast<ProtoPipe::PipeMessageSetExternalFreezeFakeInput*>(messageBuffer);
+ 
+-				printf("Received message to set external freeze fake input to %s\n", body->freezeEnabled ? "enabled" : "disabled");
++				((void)0);
+ 
+ 				RawInput::rawInputState.externalFreezeInput = body->freezeEnabled;
+ 				
+@@ -445,7 +433,7 @@
+ 			{
+ 				const auto body = reinterpret_cast<ProtoPipe::PipeMesasgeAddSelectedMouseOrKeyboard*>(messageBuffer);
+ 
+-				printf("Received message select mouse %d, keyboard %d\n", body->mouse, body->keyboard);
++				((void)0);
+ 
+ 				if (body->mouse != -1)
+ 					RawInput::AddSelectedMouseHandle(body->mouse);
+@@ -459,7 +447,7 @@
+ 			{
+ 				const auto body = reinterpret_cast<ProtoPipe::PipeMessageAddHandleToRename*>(messageBuffer);
+ 
+-				printf("Received handle to rename. Name \"%ws\", named pipe = %d\n", &body->buff[0], body->isNamedPipe);
++				((void)0);
+ 
+ 				if (body->isNamedPipe)
+ 					RenameHandlesHook::AddHandleToNamedPipeRenameList(&body->buff[0]);
+@@ -472,7 +460,7 @@
+ 			{
+ 				const auto body = reinterpret_cast<ProtoPipe::PipeMessageSetControllerIndex*>(messageBuffer);
+ 
+-				printf("Received set controller index, 1st=%d, 2nd=%d, 3rd=%d, 4th=%d\n", body->controllerIndex, body->controllerIndex2, body->controllerIndex3, body->controllerIndex4);
++				((void)0);
+ 
+ 				XinputHook::controllerIndex = body->controllerIndex;
+ 				XinputHook::controllerIndex2 = body->controllerIndex2;
+@@ -485,7 +473,7 @@
+ 			{
+ 				const auto body = reinterpret_cast<ProtoPipe::PipeMessageUseDinput*>(messageBuffer);
+ 
+-				printf("Received set use dinput -> xinput redirection to index to %d\n", body->useDinput);
++				((void)0);
+ 
+ 				XinputHook::SetUseDinput(body->useDinput);
+ 
+@@ -495,7 +483,7 @@
+ 			{
+ 				const auto body = reinterpret_cast<ProtoPipe::PipeMessageSetUseOpenXinput*>(messageBuffer);
+ 
+-				printf("Received set use open xinput %d\n", body->useOpenXinput);
++				((void)0);
+ 
+ 				XinputHook::useOpenXinput = body->useOpenXinput;
+ 
+@@ -507,9 +495,9 @@
+ 
+ 				wchar_t* guidString;
+ 				if (StringFromCLSID(body->guid, &guidString) == S_OK)
+-					printf("Received Dinput device GUID: %ws\n", guidString);
++					((void)0);
+ 				else
+-					printf("Received Dinput device GUID (couldn't parse GUID)\n");
++					((void)0);
+ 
+ 				DinputOrderHook::SetControllerGuid(body->guid);
+ 
+@@ -519,7 +507,7 @@
+ 			{
+ 				const auto body = reinterpret_cast<ProtoPipe::PipeMessageSetDinputHookGetDeviceState*>(messageBuffer);
+ 
+-				printf("Received SetDinputHookGetDeviceState = %d\n", body->enable);
++				((void)0);
+ 
+ 				DinputOrderHook::SetEnableGetDeviceStateHook(body->enable);
+ 
+@@ -529,7 +517,7 @@
+ 			{
+ 				const auto body = reinterpret_cast<ProtoPipe::PipeMessageSetSetWindowPosSettings*>(messageBuffer);
+ 
+-				printf("Received SetSetWindowPosSettings. Pos (%d, %d), Size (%d,%d)\n", body->posx, body->posy, body->width, body->height);
++				((void)0);
+ 
+ 				SetWindowPosHook::posx = body->posx;
+ 				SetWindowPosHook::posy = body->posy;
+@@ -542,7 +530,7 @@
+ 			{
+ 				const auto body = reinterpret_cast<ProtoPipe::PipeMessageSetCreateSingleHIDName*>(messageBuffer);
+ 
+-				printf("Received SetCreateSingleHIDName, Name = %ws\n", body->buff);
++				((void)0);
+ 
+ 				CreateSingleHIDHook::SetRawHidW(body->buff);
+ 
+@@ -552,7 +540,7 @@
+ 			{
+ 				const auto body = reinterpret_cast<ProtoPipe::PipeMessageSetClipCursorHookOptions*>(messageBuffer);
+ 
+-				printf("Received SetClipCursorHookOptions, use fake clip = %d\n", body->useFakeClipCursor);
++				((void)0);
+ 
+ 				ClipCursorHook::SetUseFakeCursorClip(body->useFakeClipCursor);
+ 
+@@ -562,7 +550,7 @@
+ 			{
+ 				const auto body = reinterpret_cast<ProtoPipe::PipeMessageSetAllowFakeCursorOutOfBounds*>(messageBuffer);
+ 
+-				printf("Received SetAllowFakeCursorOutOfBounds, allow out of bounds = %d, extended bounds = %d\n", body->allowOutOfBounds, body->extendBounds);
++				((void)0);
+ 
+ 				FakeMouseKeyboard::SetIgnoreMouseBounds(body->allowOutOfBounds);
+ 				FakeMouseKeyboard::SetExtendMouseBounds(body->extendBounds);
+@@ -573,7 +561,7 @@
+ 			{
+ 				const auto body = reinterpret_cast<ProtoPipe::PipeMessageSetToggleCursorVisibilityShortcut*>(messageBuffer);
+ 
+-				printf("Received SetToggleCursorVisibilityShortcut, enabeld = %d, key = 0x%X\n", body->enabled, body->vkey);
++				((void)0);
+ 
+ 				FakeCursor::GetToggleVisibilityVkey() = body->vkey;
+ 				FakeCursor::GetToggleVisilbityShorcutEnabled() = body->enabled;
+@@ -584,7 +572,7 @@
+ 			{
+ 				const auto body = reinterpret_cast<ProtoPipe::PipeMessageSetRawInputBypass*>(messageBuffer);
+ 
+-				printf("Received SetRawInputBypass, bypass enabled = %d\n", body->bypassEnabled);
++				((void)0);
+ 
+ 				RawInput::rawInputBypass = body->bypassEnabled;
+ 					
+@@ -594,7 +582,7 @@
+ 			{
+ 				const auto body = reinterpret_cast<ProtoPipe::PipeMessageShowCursorWhenImageUpdated*>(messageBuffer);
+ 
+-				printf("Received ShowCursorWhenImageUpdated, enabled = %d\n", body->ShowCursorWhenImageUpdated);
++				((void)0);
+ 
+ 				CursorVisibilityHook::ShowCursorWhenImageUpdated = body->ShowCursorWhenImageUpdated;
+ 
+@@ -602,7 +590,7 @@
+ 			}
+ 			default:
+ 				{
+-					fprintf(stderr, "Unrecongnised message type, exiting pipe\n");
++					((void)0);
+ 					goto endPipe;
+ 				}
+ 			}
+@@ -635,7 +623,7 @@
+ 		}
+ 	}
+ 
+-	printf("End of pipe thread\n");
++	((void)0);
+ 	MuxLifecycleNative::CloseSetupChannel();
+ 	
+ 	CloseHandle(pipe);
+--- a/src/ProtoInput/ProtoInputHooks/ProtoInputHooks.vcxproj
++++ b/src/ProtoInput/ProtoInputHooks/ProtoInputHooks.vcxproj
+@@ -99,7 +99,7 @@
+       <PrecompiledHeader>NotUsing</PrecompiledHeader>
+       <WarningLevel>Level3</WarningLevel>
+       <SDLCheck>true</SDLCheck>
+-      <PreprocessorDefinitions>IMGUI_IMPL_WIN32_DISABLE_GAMEPAD;IMGUI_IMPL_WIN32_DISABLE_LINKING_XINPUT;WIN32;_DEBUG;PROTOINPUTHOOKS_EXPORTS;_WINDOWS;_USRDLL;IMGUI_IMPL_OPENGL_LOADER_GLEW;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions);GLEW_NO_GLU;GLEW_STATIC</PreprocessorDefinitions>
++      <PreprocessorDefinitions>IMGUI_DISABLE_TTY_FUNCTIONS;IMGUI_IMPL_WIN32_DISABLE_GAMEPAD;IMGUI_IMPL_WIN32_DISABLE_LINKING_XINPUT;WIN32;_DEBUG;PROTOINPUTHOOKS_EXPORTS;_WINDOWS;_USRDLL;IMGUI_IMPL_OPENGL_LOADER_GLEW;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions);GLEW_NO_GLU;GLEW_STATIC</PreprocessorDefinitions>
+       <ConformanceMode>true</ConformanceMode>
+       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+       <LanguageStandard>stdcpp17</LanguageStandard>
+@@ -121,7 +121,7 @@
+       <PrecompiledHeader>NotUsing</PrecompiledHeader>
+       <WarningLevel>Level3</WarningLevel>
+       <SDLCheck>true</SDLCheck>
+-      <PreprocessorDefinitions>IMGUI_IMPL_WIN32_DISABLE_GAMEPAD;IMGUI_IMPL_WIN32_DISABLE_LINKING_XINPUT;_DEBUG;PROTOINPUTHOOKS_EXPORTS;_WINDOWS;_USRDLL;IMGUI_IMPL_OPENGL_LOADER_GLEW;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions);GLEW_NO_GLU;GLEW_STATIC</PreprocessorDefinitions>
++      <PreprocessorDefinitions>IMGUI_DISABLE_TTY_FUNCTIONS;IMGUI_IMPL_WIN32_DISABLE_GAMEPAD;IMGUI_IMPL_WIN32_DISABLE_LINKING_XINPUT;_DEBUG;PROTOINPUTHOOKS_EXPORTS;_WINDOWS;_USRDLL;IMGUI_IMPL_OPENGL_LOADER_GLEW;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions);GLEW_NO_GLU;GLEW_STATIC</PreprocessorDefinitions>
+       <ConformanceMode>true</ConformanceMode>
+       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+       <LanguageStandard>stdcpp17</LanguageStandard>
+@@ -145,7 +145,7 @@
+       <FunctionLevelLinking>true</FunctionLevelLinking>
+       <IntrinsicFunctions>true</IntrinsicFunctions>
+       <SDLCheck>true</SDLCheck>
+-      <PreprocessorDefinitions>IMGUI_IMPL_WIN32_DISABLE_GAMEPAD;IMGUI_IMPL_WIN32_DISABLE_LINKING_XINPUT;WIN32;NDEBUG;PROTOINPUTHOOKS_EXPORTS;_WINDOWS;_USRDLL;_CRT_SECURE_NO_WARNINGS;IMGUI_IMPL_OPENGL_LOADER_GLEW;%(PreprocessorDefinitions);GLEW_NO_GLU;GLEW_STATIC</PreprocessorDefinitions>
++      <PreprocessorDefinitions>IMGUI_DISABLE_TTY_FUNCTIONS;IMGUI_IMPL_WIN32_DISABLE_GAMEPAD;IMGUI_IMPL_WIN32_DISABLE_LINKING_XINPUT;WIN32;NDEBUG;PROTOINPUTHOOKS_EXPORTS;_WINDOWS;_USRDLL;_CRT_SECURE_NO_WARNINGS;IMGUI_IMPL_OPENGL_LOADER_GLEW;%(PreprocessorDefinitions);GLEW_NO_GLU;GLEW_STATIC</PreprocessorDefinitions>
+       <ConformanceMode>true</ConformanceMode>
+       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+       <LanguageStandard>stdcpp17</LanguageStandard>
+@@ -170,7 +170,7 @@
+       <FunctionLevelLinking>true</FunctionLevelLinking>
+       <IntrinsicFunctions>true</IntrinsicFunctions>
+       <SDLCheck>true</SDLCheck>
+-      <PreprocessorDefinitions>IMGUI_IMPL_WIN32_DISABLE_GAMEPAD;IMGUI_IMPL_WIN32_DISABLE_LINKING_XINPUT;NDEBUG;PROTOINPUTHOOKS_EXPORTS;_WINDOWS;_USRDLL;_CRT_SECURE_NO_WARNINGS;IMGUI_IMPL_OPENGL_LOADER_GLEW;%(PreprocessorDefinitions);GLEW_NO_GLU;GLEW_STATIC</PreprocessorDefinitions>
++      <PreprocessorDefinitions>IMGUI_DISABLE_TTY_FUNCTIONS;IMGUI_IMPL_WIN32_DISABLE_GAMEPAD;IMGUI_IMPL_WIN32_DISABLE_LINKING_XINPUT;NDEBUG;PROTOINPUTHOOKS_EXPORTS;_WINDOWS;_USRDLL;_CRT_SECURE_NO_WARNINGS;IMGUI_IMPL_OPENGL_LOADER_GLEW;%(PreprocessorDefinitions);GLEW_NO_GLU;GLEW_STATIC</PreprocessorDefinitions>
+       <ConformanceMode>true</ConformanceMode>
+       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+       <LanguageStandard>stdcpp17</LanguageStandard>
+--- a/src/ProtoInput/ProtoInputHooks/RawInput.cpp
++++ b/src/ProtoInput/ProtoInputHooks/RawInput.cpp
+@@ -343,7 +343,7 @@
+ 	{
+ 		static bool locked = false;
+ 		locked = !locked;
+-		printf(locked ? "Locking input\n" : "Unlocking input\n");
++		((void)0);
+ 	
+ 		// Add the looping thread to the ACL so it can still use ClipCursor, etc
+ 		static unsigned int loopThreadId = 0;
+@@ -352,7 +352,7 @@
+ 		if (!alreadyAddToACL && loopThreadId != 0)
+ 		{
+ 			alreadyAddToACL = true;
+-			printf("Adding loop thread %d to ACL\n", loopThreadId);
++			((void)0);
+ 			AddThreadToACL(loopThreadId);
+ 		}
+ 		
+@@ -444,7 +444,7 @@
+ 	// 	break;
+ 	case WM_DESTROY:
+ 	{
+-		printf("Raw input window posting quit message\n");
++		((void)0);
+ 		PostQuitMessage(0);
+ 		return 0;
+ 	}
+@@ -454,7 +454,7 @@
+ 
+ DWORD WINAPI RawInputWindowThread(LPVOID lpParameter)
+ {
+-	printf("Starting Raw Input window thread\n");
++	((void)0);
+ 
+ 	AddThreadToACL(GetCurrentThreadId());
+ 	
+@@ -505,7 +505,7 @@
+ 		}
+ 	}
+ 
+-	printf("End of raw input window thread\n");
++	((void)0);
+ 
+ 	return 0;
+ }
+@@ -524,12 +524,11 @@
+ 	rawInputState.keyboardHandles.clear();
+ 	rawInputState.mouseHandles.clear();
+ 	
+-	std::cout << "Raw input devices:\n";
++	((void)0);
+ 	for (unsigned int i = 0; i < numDevices; ++i)
+ 	{
+ 		auto* device = &deviceArray[i];
+-		std::cout << (device->dwType == RIM_TYPEHID ? "HID" : device->dwType == RIM_TYPEKEYBOARD ? "Keyboard" : "Mouse")
+-			<< ": " << device->hDevice << std::endl;
++		((void)0);
+ 		
+ 		if (device->dwType == RIM_TYPEKEYBOARD)
+ 		{
+@@ -617,7 +616,7 @@
+ {
+ 	if (auto find = std::find(forwardingWindows.begin(), forwardingWindows.end(), hwnd) == forwardingWindows.end())
+ 	{
+-		printf("Adding hwnd 0x%X to forwarding list\n", hwnd);
++		((void)0);
+ 		forwardingWindows.push_back(hwnd);
+ 	}
+ }
+@@ -661,7 +660,7 @@
+ 
+ void RawInput::UnregisterGameFromRawInput()
+ {
+-	printf("Unregistering game from raw input\n");
++	((void)0);
+ 
+ 	std::vector<RAWINPUTDEVICE> devices{};
+ 
+@@ -675,7 +674,7 @@
+ 		devices.push_back(dev);
+ 
+ 		auto res = RegisterRawInputDevices(&dev, 1, sizeof(RAWINPUTDEVICE));
+-		printf("Deregister usage 0x%X: Result 0x%X\n", usage, res);
++		((void)0);
+ 	}
+ }
+ 
+@@ -688,7 +687,7 @@
+ 	{
+ 		if (rawInputHwnd == nullptr)
+ 		{
+-			printf("Trying to register for raw input, but window hasn't opened yet. Waiting 0.5s\n");
++			((void)0);
+ 			Sleep(500);
+ 		}
+ 	}
+@@ -696,7 +695,7 @@
+ 
+ 	if (rawInputHwnd == nullptr)
+ 	{
+-		fprintf(stderr, "Raw input window hasn't opened. Giving up registering raw input\n");
++		((void)0);
+ 		return;
+ 	}
+ 
+@@ -717,10 +716,10 @@
+ 
+ 	if (RegisterRawInputDevices(&devices[0], devices.size(), sizeof(RAWINPUTDEVICE)) == FALSE)
+ 	{
+-		fprintf(stderr, "Failed to register raw input, last error = 0x%X\n", GetLastError());
++		((void)0);
+ 	}
+ 	else
+-		printf("Successfully register raw input\n");
+-}
+-
+-}
++		((void)0);
++}
++
++}
+--- a/src/ProtoInput/ProtoInputHooks/RegisterRawInputHook.cpp
++++ b/src/ProtoInput/ProtoInputHooks/RegisterRawInputHook.cpp
+@@ -16,7 +16,7 @@
+ BOOL WINAPI Hook_RegisterRawInputDevices(PCRAWINPUTDEVICE pRawInputDevices, UINT uiNumDevices, UINT cbSize)
+ {
+ 	if (RegisterRawInputHook::logCallsToRegisterRawInput)
+-		printf("Detected a call to RegisterRawInputDevices\n");
++		((void)0);
+ 	
+ 	HWND targetHWND = NULL;
+ 	
+@@ -31,7 +31,7 @@
+ 		if (targetI != RawInput::rawInputHwnd)
+ 		{
+ 			if (targetHWND != NULL && targetHWND != targetI && RegisterRawInputHook::logCallsToRegisterRawInput)
+-				printf("WARNING: The game appears to have multiple hwnds subscribed to raw input. We are only using one\n");
++				((void)0);
+ 
+ 			if (targetI != NULL)
+ 				targetHWND = targetI;
+@@ -39,10 +39,10 @@
+ 			const auto usage = pRawInputDevices[i].usUsage;
+ 			
+ 			if (RegisterRawInputHook::logCallsToRegisterRawInput)
+-				printf("Detected raw input usage 0x%X\n", usage);
++				((void)0);
+ 			
+ 			if (usage < HID_USAGE_GENERIC_POINTER || usage > HID_USAGE_GENERIC_MULTI_AXIS_CONTROLLER)
+-				fprintf(stderr, "Raw input usUsage out of range\n");
++				((void)0);
+ 			else
+ 			{
+ 				usagesToForward[usage] = true;
+@@ -53,14 +53,14 @@
+ 	if (targetHWND == nullptr)
+ 	{
+ 		if (RegisterRawInputHook::logCallsToRegisterRawInput)
+-			printf("Couldn't find a hwnd subscribed to raw input (The call was probably to unsubscribe). Going to add the main window just in case it was trying to follow keyboard focus. \n");
++			((void)0);
+ 
+ 		registerRawInputHookPtr->AddWindowToForward((HWND)HwndSelector::GetSelectedHwnd(), usagesToForward);
+ 	}
+ 	else
+ 	{
+ 		if (RegisterRawInputHook::logCallsToRegisterRawInput)
+-			printf("Found raw input hwnd: 0x%X\n", targetHWND);
++			((void)0);
+ 		
+ 		registerRawInputHookPtr->AddWindowToForward(targetHWND, usagesToForward);
+ 	}
+@@ -79,8 +79,7 @@
+ 
+ 	if (numDevices == 0 || ret <= 0)
+ 	{
+-		printf("Couldn't find a window that's already subscribed to raw input. numDevices = %d, ret = 0x%X, GetLastError = 0x%X\n",
+-			   numDevices, ret, GetLastError());
++		((void)0);
+ 	}
+ 	else
+ 	{
+@@ -103,14 +102,14 @@
+ 			if (targetI != NULL && targetI != RawInput::rawInputHwnd)
+ 			{
+ 				if (targetHWND != NULL && targetHWND != targetI)
+-					printf("WARNING: The game appears to have multiple hwnds subscribed to raw input. We are only using one\n");
++					((void)0);
+ 
+ 				targetHWND = targetI;
+ 
+ 				const auto usage = devices[i].usUsage;
+ 
+ 				if (usage < HID_USAGE_GENERIC_POINTER || usage > HID_USAGE_GENERIC_MULTI_AXIS_CONTROLLER)
+-					fprintf(stderr, "Raw input usUsage out of range\n");
++					((void)0);
+ 				else
+ 				{
+ 					usagesToForward[usage] = true;
+@@ -119,10 +118,10 @@
+ 		}
+ 
+ 		if (targetHWND == nullptr)
+-			printf("Couldn't find a hwnd subscribed to raw input\n");
++			((void)0);
+ 		else
+ 		{
+-			printf("Found raw input hwnd: 0x%X\n", targetHWND);
++			((void)0);
+ 			AddWindowToForward(targetHWND, usagesToForward);
+ 		}
+ 	}
+--- a/src/ProtoInput/ProtoInputHooks/RenameHandlesHook.cpp
++++ b/src/ProtoInput/ProtoInputHooks/RenameHandlesHook.cpp
+@@ -82,7 +82,7 @@
+ 			// if (wcsstr(inputName->Buffer, pair.first.c_str()) != nullptr)
+ 			if (wcscmp(inputName->Buffer, pair.first.c_str()) == 0) // We have mapped this to something else
+ 			{
+-				printf("Using map of handle \"%ws\" to \"%ws\"\n", inputName->Buffer, pair.second.c_str());
++				((void)0);
+ 				*inputName = stdWStringToUnicodeString(pair.second);
+ 				return;
+ 			}
+@@ -104,11 +104,11 @@
+ 
+ 			if (!namedPipe) // Again, don't use the map for named pipes
+ 			{
+-				printf("Generating map of handle \"%ws\" to \"%ws\"\n", oldName.c_str(), newName.c_str());
++				((void)0);
+ 				originalsToNewNames.insert({ oldName, newName });
+ 			}
+ 			else
+-				printf("Renamed named pipe \"%ws\" to \"%ws\"\n", oldName.c_str(), newName.c_str());
++				((void)0);
+ 			
+ 			*inputName = stdWStringToUnicodeString(newName);
+ 			return;
+--- a/src/ProtoInput/ProtoInputHooks/XinputHook.cpp
++++ b/src/ProtoInput/ProtoInputHooks/XinputHook.cpp
+@@ -210,8 +210,7 @@
+ 		dinputDeviceNames.push_back(lpddi->tszInstanceName);
+ 		added = true;
+ 	}
+-	printf("DirectInput device enumerate, instanceName=%ws, productName=%ws, usage=%d, usagePage=%d, added to dinputGuids list = %s\n",
+-		   lpddi->tszInstanceName, lpddi->tszProductName, lpddi->wUsage, lpddi->wUsagePage, (added ? "true" : "false"));
++	((void)0);
+ 	return DIENUM_CONTINUE;
+ }
+ 
+@@ -244,7 +243,7 @@
+ 
+ 	if (XinputHook::controllerIndex > dinputGuids.size())
+ 	{
+-		fprintf(stderr, "Not enough Dinput controllers (%d) for the selected controller index (%d)\n", dinputGuids.size(), XinputHook::controllerIndex);
++		((void)0);
+ 		MessageBoxA(NULL, "Not enough Dinput controllers for the selected controller index\n", "Error", MB_OK);
+ 	}
+ 
+@@ -252,10 +251,10 @@
+ 	{
+ 		dinputDeviceGuid = dinputGuids[XinputHook::controllerIndex - 1];
+ 		dinputDeviceName = dinputDeviceNames[XinputHook::controllerIndex - 1];
+-		printf("Selected Dinput controller GUID %lu-%u-%u...\n", dinputDeviceGuid.Data1, dinputDeviceGuid.Data2, dinputDeviceGuid.Data3);
++		((void)0);
+ 		const auto createDeviceResult = dinputPtr->CreateDevice(dinputDeviceGuid, &dinputDevice, nullptr);
+ 		if (createDeviceResult != DI_OK)
+-			fprintf(stderr, "Dinput CreateDevice failed: 0x%lX\n", createDeviceResult);
++			((void)0);
+ 		else
+ 		{
+ 			dinputDevice->SetCooperativeLevel(Proto::ProtoGuiHwnd, DISCL_BACKGROUND | DISCL_NONEXCLUSIVE);
+@@ -263,13 +262,13 @@
+ 			DIDEVCAPS caps;
+ 			caps.dwSize = sizeof(DIDEVCAPS);
+ 			auto getCapabilitiesResult = dinputDevice->GetCapabilities(&caps);
+-			printf("Dinput device number of buttons %d, number of axes %d\n", caps.dwButtons, caps.dwAxes);
++			((void)0);
+ 			dinputDevice->EnumObjects(&DIEnumDeviceObjectsCallback, dinputDevice, DIDFT_AXIS);
+ 			const HRESULT acquireResult = dinputDevice->Acquire();
+ 			if (acquireResult == DI_OK)
+-				printf("Successfully acquired Dinput device\n");
++				((void)0);
+ 			else
+-				fprintf(stderr, "Failed to acquire Dinput device\n");
++				((void)0);
+ 		}
+ 	}
+ }
+@@ -284,7 +283,7 @@
+ 	
+ 	if (dinputCreateResult != DI_OK)
+ 	{
+-		fprintf(stderr, "Failed DirectInput8Create: 0x%X\n", dinputCreateResult);
++		((void)0);
+ 	}
+ 	else
+ 	{
+@@ -371,13 +370,13 @@
+ 	{
+ 		if (LoadLibraryW(xinputName) == nullptr)
+ 		{
+-			fprintf(stderr, "Not hooking %ws as failed to load dll\n", xinputName);
++			((void)0);
+ 			continue;
+ 		}
+ 
+ 		if (GetModuleHandleW(xinputName) == nullptr)
+ 		{
+-			fprintf(stderr, "Not hooking %ws as failed get module\n", xinputName);
++			((void)0);
+ 			continue;
+ 		}
+ 
+--- a/src/ProtoInput/ProtoInputHooks/dllmain.cpp
++++ b/src/ProtoInput/ProtoInputHooks/dllmain.cpp
+@@ -21,7 +21,7 @@
+ 
+ DWORD WINAPI GuiThread(LPVOID lpParameter)
+ {
+-    std::cout << "Starting gui thread\n";
++    ((void)0);
+ 
+ 	Proto::AddThreadToACL(GetCurrentThreadId());
+ 
+@@ -32,15 +32,9 @@
+ 
+ DWORD WINAPI StartThread(LPVOID lpParameter)
+ {
+-    AllocConsole();
+-    FILE* f = new FILE();
+-    freopen_s(&f, "CONOUT$", "w", stdout);
+-    freopen_s(&f, "CONOUT$", "w", stderr);
+-    // Proto::ConsoleHwnd = (intptr_t)FindWindowW(L"ConsoleWindowClass", NULL);
+-    Proto::ConsoleHwnd = (intptr_t)GetConsoleWindow();
+-    Proto::SetConsoleVisible(false);
++    // The injected DLL does not own or alter the application's console or streams.
+ 
+-    std::cout << "Hooks DLL loaded\n";
++    ((void)0);
+ 
+ 	// Useful to add a pause if we need to attach a debugger
+     // MessageBoxW(NULL, L"Press OK to start", L"", MB_OK);
+@@ -65,7 +59,7 @@
+     if (hGuiThread != nullptr)
+         CloseHandle(hGuiThread);
+ 		
+-    std::cout << "Reached end of startup thread\n";
++    ((void)0);
+     	
+     return 0;
+ }
+@@ -73,7 +67,7 @@
+ // EasyHook entry point
+ extern "C" __declspec(dllexport) void __stdcall NativeInjectionEntryPoint(REMOTE_ENTRY_INFO * inRemoteInfo)
+ {
+-    printf("EasyHook NativeInjectionEntryPoint called\n");
++    ((void)0);
+ }
+ 
+ EASYHOOK_BOOL_EXPORT EasyHookDllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved);
+--- a/src/ProtoInput/ProtoInputHooks/pipeinclude/MuxLifecycleProtocol.h
++++ b/src/ProtoInput/ProtoInputHooks/pipeinclude/MuxLifecycleProtocol.h
+@@ -6,7 +6,7 @@
+ namespace ProtoMuxLifecycle
+ {
+ constexpr uint32_t Version = 1;
+-constexpr uint64_t Build = 0x2026102900000002ULL;
++constexpr uint64_t Build = 0x2026110700000001ULL;
+ constexpr uint32_t ReadyMagic = 0x4D585244;
+ constexpr uint32_t CommitMagic = 0x4D58434D;
+ constexpr uint32_t ReplyMagic = 0x4D585250;

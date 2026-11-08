@@ -1,0 +1,83 @@
+{
+  "result": "PASS",
+  "date": "2026-10-14",
+  "reviewer": "Independent acceptance subagent",
+  "scope": "Conditional virtual vertical-to-horizontal wheel conversion, raw-source ownership/lifecycle, destination-local queued interpretation and actual Ouroboros configuration/persistence. Bounded automatic and concurrent assigned routes to own x64/x86 probes.",
+  "builds": {
+    "initial_native_prefix": {
+      "x64": "379144212f73e521c081c9637499b14ba1a520ccacc9364be54103fb79ddaae9",
+      "i686": "fc223b19e9cbffc2e92cca0f07cd094903c05e92ffad87d568ef4cf80c63ee79"
+    },
+    "corrected_native_tail_and_all_ui": {
+      "x64": "69e43a573d55dcd360dc3eeba8f12e668dcd52ab0bd87946db4a959f68a5eab3",
+      "i686": "d6d306d4985d7fb630dab5ac79440663dac1c69b1f3e1a219a9821496bbbd9a3"
+    },
+    "correction": "Selected-device raw claims retire only after a successful cursor-settings application. Native V3 runtime unchanged; the initial three accepted native groups are retained without unrelated replay."
+  },
+  "accepted": [
+    "22-tool/schema discovery exposes all seven emulation values with Never default. Actual native wheel messages verify all five raw source-button triggers before/held/after, Never/Always, zero and signed horizontal scale/inversion applied once, independent incoming-horizontal Ignore/Convert behavior and target isolation.",
+    "Raw trigger survives intentional Legacy null mapping, swap and key/Disabled output rules. Two Studio/Manual origins retain destination trigger until last owner releases; unrelated seat F6 survives. Native WPARAM modifiers reflect delivered mouse output.",
+    "Raw vertical packets remain raw in recording/replay and graph category filtering. A genuinely queued paced copy interprets the destination raw trigger at delivery after its owner releases.",
+    "Corrected settings/output changes retire affected raw triggers; Pause/Resume, Mode and release-all clear them. Invalid configuration preserves settings/raw trigger and routing. Native Stop releases input and destroys owned overlays.",
+    "Automatic GUI: actual dropdown trigger and While Back MenuItem clicks, Apply, native H-240 while held versus V-60 after release, incoming H Ignore, other-seat actual F6 DOWN/UP, Stop and exact stopped Save/Load/Save profile roundtrip.",
+    "Concurrent assigned GUI: actual dropdown/Apply and native H-240/V-60 at signed screen coordinates [-80,-59]. Focused child-focus tail verifies other-seat actual F6 DOWN/UP, selected-user Apply retention and Stop cleanup.",
+    "Offline physical and fixed nonconcurrent profiles each render the real selector visible and disabled without clicking it. Invalid Always profile loads preserve the complete draft and subsequent saved full profile with Never; no routing/DLL session starts."
+  ],
+  "counts": {
+    "native_substantive_groups": 5,
+    "native_initial_prefix_groups": 3,
+    "native_corrected_tail_groups": 2,
+    "automatic_ui_clicks": 26,
+    "assigned_prefix_accepted_clicks": 17,
+    "assigned_cleanup_tail_clicks": 11,
+    "unavailable_prefix_accepted_clicks": 8,
+    "unavailable_prefix_disabled_observations": 1,
+    "fixed_tail_clicks": 5,
+    "fixed_tail_disabled_observations": 1,
+    "note": "Navigation/setup and repeated controls are occurrences, not distinct behavior counts. Assigned prefix proves wheel delivery; its tail proves missing child-key/cleanup criteria only."
+  },
+  "retained_failures": [
+    {
+      "artifact": "docs/conditional-wheel-native-prefix-2026-10-14.json",
+      "original_result": "NOT ACCEPTED",
+      "accepted_scope": "First three native groups only.",
+      "cause": "Real settings lifecycle defect: disabled raw Back claim incorrectly survived successful settings application, yielding H240 rather than V120. Corrected build native lifecycle tail verifies retirement and unrelated-owner retention."
+    },
+    {
+      "artifact": "docs/conditional-wheel-ui-assigned-prefix-2026-10-14.json",
+      "original_result": "NOT ACCEPTED",
+      "accepted_scope": "17 recorded passed clicks through incoming-horizontal Ignore.",
+      "cause": "Assigned B was not clicked into the child EDIT before the key oracle; native hook held state alone did not establish actual child key delivery. Tail establishes actual child focus and exact DOWN/UP."
+    },
+    {
+      "artifact": "docs/conditional-wheel-ui-unavailable-prefix-2026-10-14.json",
+      "original_result": "NOT ACCEPTED",
+      "accepted_scope": "Eight clicks and one physical disabled observation; fixed configure/Wheel navigation only.",
+      "cause": "Frames/progress stalled before fixed disabled observation. One fresh bounded fixed tail passed the same unchanged disabled/invalid-load/full-profile-save criteria. Original stall is retained and is not claimed corrected by product code."
+    }
+  ],
+  "limits": [
+    "Only virtual IDs, owned disposable apps/files and own GUI pixels. No hardware/RustDesk input used for control or validation and no OS input injection. No hardware, arbitrary-app wheel compatibility, full parity or same-process multi-user isolation claim.",
+    "Controller/GUI runs x64; own native targets include x64 and x86. All five trigger samples run against x64, with representative Always/math and origin/delayed delivery against x86. This is not an exhaustive architecture-by-option cross product.",
+    "Direct-router native-held fallback is source/producer coverage only, not independently exercised through a bypass. No forced native API failure, filtered-message-pump cleanup, physical device attachment or unrelated historical feature suite replay.",
+    "Offline synthetic PIDs are validation data and never attached. Physical unavailability is tested using an unresolved fixture path, not a hardware device."
+  ],
+  "cleanup": {
+    "all_recorded_owned_processes_closed": true,
+    "final_owned_path_cim_audit": "empty",
+    "exclusive_slot_returned": true
+  },
+  "producer_checks": {
+    "path": "docs/conditional-wheel-rust-checks-2026-10-14.json",
+    "sha256": "a7e17e5c4fd2c40fe5c5f3b371f6b26c34b6a608bd088d39d69ae64ffba3f9eb",
+    "scope": "Producer fmt, strict Clippy, 121 workspace tests and both builds; separate from independent feature acceptance.",
+    "initial_checks": "docs/conditional-wheel-initial-producer-checks-2026-10-14.json"
+  },
+  "evidence_manifest": "docs/conditional-wheel-evidence-manifest-2026-10-14.json",
+  "evidence_manifest_sha256": "a475d74342eb14494e4260d465d53ed1fa42546ac820c6b4fe5172ee50db5bcd",
+  "image": {
+    "path": "docs/conditional-wheel-control-center.png",
+    "sha256": "e83e564d63ed02bd6a5564e919c1d06a6200d7e8f042c0cda5fd7eaab2909249",
+    "independent_visual_review": "Safe owned GUI; actual Wheel page shows all seven popup options, While Back checkmark and source-ownership explanatory text. Vertical scale 0.5/reverse and separate incoming-horizontal section visible. Horizontal math is established by native events, not inferred from this screenshot."
+  }
+}

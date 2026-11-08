@@ -1,0 +1,87 @@
+{
+  "decision": "BOUNDED_NATIVE_KEYBOARD_COMPATIBILITY_ACCEPTED",
+  "date": "2026-10-20",
+  "scope": "Development-source Rust synchronous keyboard provider with isolated ProtoInput facts adapter, existing Ouroboros Native controls workflow and MCP initial_keyboard/routing_input. Virtual input and explicitly owned disposable processes only.",
+  "producer": {
+    "path": "runtime/producer-keyboard-sync-20261020-completion001/verification.json",
+    "sha256": "a9484da6069a57522c2158cd7c8dc3bdf03190a70dc685559b44339cb7c85177"
+  },
+  "producer_review": {
+    "path": "runtime/keyboard-sync-completion001-producer-review.json",
+    "sha256": "b348ba32cb1eebeb9380a630cc096d3abfd9efdc001a735f3bbeec1cc70e58d1"
+  },
+  "build_evidence": {
+    "checks": "cargo fmt --all --check; cargo clippy --workspace --all-targets -- -D warnings; cargo test --workspace; default x64/i686 app+observer builds; x64/x86 native backend builds",
+    "tests": {
+      "passed": 394,
+      "failed": 0,
+      "ignored": 3
+    },
+    "reuse": "All six commands passed in raw attempt002. Its aggregate remains FAIL for one new C++ header LF-to-CRLF normalization. Completion001 separately verifies equivalent source and reused successful outputs, then stages fresh matching private/MAIN runtimes.",
+    "raw_attempt002": {
+      "path": "runtime/producer-keyboard-sync-20261020-attempt002/verification.json",
+      "sha256": "24b74e0fdd730e6230522f9bfcb6e34ca553fec30da19cbee8476786b8ae8b13"
+    }
+  },
+  "owned_accelerator": {
+    "evidence": {
+      "path": "runtime/accelerator-diagnostic-attempt005/evidence.json",
+      "sha256": "5a53f4563b9f55b87db0332318dded2ba8ec75ca6a2fc187bb51bbdf70884e60"
+    },
+    "independent_review": {
+      "path": "runtime/accelerator-diagnostic-attempt005-review.json",
+      "sha256": "5ff12e5041267c84277aba37bc185a85a49bef8a6ab85e9ee375ce043708e50b"
+    },
+    "accepted": "Exactly one Ctrl-down/S-down/S-up/Ctrl-up sequence, consumed TranslateAcceleratorW, one WM_COMMAND 0x7A51 notification1/source0 at owned root, unchanged SEED, clean release/Stop/EOF/WM_CLOSE."
+  },
+  "wordpad": {
+    "evidence": {
+      "path": "runtime/wordpad-routing-attempt005/evidence.json",
+      "sha256": "b89b95ed29cffd265ee06e643447f5ad96d4f9b9b74ab4d393104ce17eb45de5"
+    },
+    "independent_review": {
+      "path": "runtime/wordpad-routing-attempt005-review.json",
+      "sha256": "7fc9d833b7cbd1067da0468b2cc1cdf443ff4fc80e7039019457e370e892099b"
+    },
+    "accepted": "Two original x64 classic WordPad processes: independent A-one/B-one text and native RichEdit focus, idle retention, -two without re-click, one genuine virtual Ctrl+S per user, exact separate persisted A-one-two/B-one-two RTF bodies, clean normal Stop/EOF/WM_CLOSE.",
+    "placement": "Only freshly owned roots were made topmost without activation; exact geometry and owned editor hits acknowledged before input. Foreground invariance is sampled through Stop.",
+    "saved_documents": [
+      {
+        "user": 0,
+        "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\wordpad-routing-attempt005\\owned-a-wordpad-routing-attempt005.rtf",
+        "sha256": "c12195bf6cb81d5d46ca3ec70ab00ec6972fe66bd12d40e3a21c33cedc37b91c",
+        "bytes": 171,
+        "exact_unique_ascii_body": "A-one-two",
+        "proof": "Existing private RTF changed from empty baseline and contains body once; exact live RichEdit readback unchanged; no modal"
+      },
+      {
+        "user": 1,
+        "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\wordpad-routing-attempt005\\owned-b-wordpad-routing-attempt005.rtf",
+        "sha256": "522a83833a59062069a7f6d51d8211e91d0589b92560a437a77b5ed52d3df95a",
+        "bytes": 171,
+        "exact_unique_ascii_body": "B-one-two",
+        "proof": "Existing private RTF changed from empty baseline and contains body once; exact live RichEdit readback unchanged; no modal"
+      }
+    ]
+  },
+  "preserved_failures": [
+    {
+      "path": "runtime/accelerator-diagnostic-attempt004-review.json",
+      "sha256": "e1250904ed80ff017663d37b873e4b2e23dd1215e595f340d744318c389cee41"
+    },
+    {
+      "path": "runtime/wordpad-routing-attempt003-review.json",
+      "sha256": "fb56c485b0c094341c469f333998cd359ec8023be18e446a534c811927eff930"
+    },
+    {
+      "path": "runtime/wordpad-routing-attempt004-review.json",
+      "sha256": "ebaadc7d3478201a6325cd9f46e078a5c87d47fa0878f463eeec712b98d8a237"
+    }
+  ],
+  "limits": [
+    "No separate native Shift, GetKeyboardState or PeekMessage/PM_NOREMOVE acceptance; pure reducer tests are separate from application observations.",
+    "No actual second attachment/reuse cycle in this cohort; reusable eligibility was read while original apps remained alive.",
+    "No hardware/RustDesk input, native i686 execution, same-process multi-user or desktop-wide isolation, arbitrary apps, full P1 reliability, GPU/performance, shipping or Ultra/UI parity claim.",
+    "Accepted source/artifact checks precede documentation-only publication. No new native input or Rust source changes are part of publication."
+  ]
+}

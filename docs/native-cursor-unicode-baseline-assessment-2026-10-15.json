@@ -1,0 +1,106 @@
+{
+  "decision": "APPROVED — BOUNDED NATIVE GLYPH BASELINE",
+  "date": "2026-10-15",
+  "scope": "One standalone MCP session, two owned x64 targets and virtual users; 13 mutation calls, three native overlay originals.",
+  "conclusion": "Existing native rendering produces readable Latin and representative Han/kana/Hangul on this host. These samples do not justify a fallback implementation.",
+  "raw": {
+    "path": "runtime/acceptance-native-cursor-unicode-baseline-20261015-031012/evidence.json",
+    "sha256": "95f945018fd46a72d353a4fe255a591d608fe797261e197d95d539df90678d65"
+  },
+  "raw_status_retained": "PENDING INDEPENDENT GLYPH REVIEW",
+  "producer": {
+    "path": "runtime/producer-p1-target-exit-20261015-024710/verification.json",
+    "sha256": "c44632cd654b2a8d5312fd1a88a232856e38a593fd894a6c4a20012e0a0a55e6"
+  },
+  "build_sha256": {
+    "x64": "b997f872799f13966cd5ffd5a176e7a69d9bf00429f0a644b875b98ee054e9b7",
+    "i686": "3854e339266c96cb36c37a945ac679f0c33544c5d465bba8c63a5ee08c17a677"
+  },
+  "runner": {
+    "path": "scripts/test-native-cursor-unicode-baseline.py",
+    "sha256": "f35c73c30fe1324829fef943f48309668a8e5aa8964bd38377b45aba33cc1897"
+  },
+  "plan": {
+    "path": "runtime/native-cursor-unicode-baseline-plan.md",
+    "sha256": "6397546174fcd6423ac9551faa3c052bcb017e2c1487bf5bb779a00065dda8ec"
+  },
+  "source_audit": {
+    "path": "runtime/native-cursor-unicode-source-audit.md",
+    "sha256": "34af3f3d97e5d4c300a2751de1356b0661ca869229fa1cf3df1b8ccd3ac9858a"
+  },
+  "originals": [
+    {
+      "sample": "latin-14",
+      "text": "Alpha ASCII 123",
+      "font_size": 14,
+      "original": {
+        "path": "runtime/acceptance-native-cursor-unicode-baseline-20261015-031012/overlay-latin-14.png",
+        "sha256": "31c610beb6dd15628b6b046c261dced7f6875067c1bda3aad6def105f2bd5a77"
+      },
+      "canvas_size": [
+        144,
+        41
+      ],
+      "paint_generation": [
+        1,
+        2
+      ],
+      "judgment": "Direct original review: distinct readable glyphs; no visible missing-glyph boxes or clipping."
+    },
+    {
+      "sample": "mixed-14",
+      "text": "漢字 日本語 かな カナ 한글",
+      "font_size": 14,
+      "original": {
+        "path": "runtime/acceptance-native-cursor-unicode-baseline-20261015-031012/overlay-mixed-14.png",
+        "sha256": "d1637139093a5fd485e8a9e64f5343b5a8de511684c38d32c8f96a7b299ae954"
+      },
+      "canvas_size": [
+        202,
+        41
+      ],
+      "paint_generation": [
+        1,
+        2
+      ],
+      "judgment": "Direct original review: distinct readable glyphs; no visible missing-glyph boxes or clipping."
+    },
+    {
+      "sample": "mixed-32",
+      "text": "漢字 日本語 かな カナ 한글",
+      "font_size": 32,
+      "original": {
+        "path": "runtime/acceptance-native-cursor-unicode-baseline-20261015-031012/overlay-mixed-32.png",
+        "sha256": "e5073bd3168acb01846b2957fdeed531f82e99bf709cd3ee7b5f50380e6ecfed"
+      },
+      "canvas_size": [
+        406,
+        57
+      ],
+      "paint_generation": [
+        2,
+        3
+      ],
+      "judgment": "Direct original review: distinct readable glyphs; no visible missing-glyph boxes or clipping."
+    }
+  ],
+  "data_review": "Each sample awaited paint-generation advancement after its settings ACK; full rendered labels, native HWND geometry/hotspot and PNG canvas sizes agreed. Exactly two distinct live overlays were established. Native target reports show ordinary F6/F7 DOWN/UP pairs and no remaining holds after Stop.",
+  "execution": {
+    "exec_chunk": "84e1cc",
+    "exit_code": 0,
+    "running_session_id": null
+  },
+  "cleanup": {
+    "owned_processes_closed": true,
+    "known_overlay_hwnds_destroyed": true,
+    "scoped_cim_survivors": 0,
+    "audit_filter": "ExecutablePath contains acceptance-native-cursor-unicode-baseline-20261015-031012",
+    "preferences_or_registry_actions": false,
+    "exclusive_native_slot_returned": true
+  },
+  "limits": [
+    "Only these two strings at sampled 14/32 font sizes on this host; installed fonts/GDI linking may affect results. No all-Unicode, locale-correct Han-form, emoji or other-host guarantee.",
+    "i686 was built and hash-verified, not executed. No physical devices, hardware input, RustDesk, global pointer injection, screen DC or desktop capture.",
+    "Baseline used existing paired native measurement/drawing; no fallback code, product changes or broader appearance-family replay."
+  ]
+}

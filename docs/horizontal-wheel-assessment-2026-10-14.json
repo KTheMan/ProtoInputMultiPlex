@@ -1,0 +1,114 @@
+{
+  "result": "PASS",
+  "date": "2026-10-14",
+  "judge": "Independent acceptance agent /root/acceptance",
+  "build_sha256": {
+    "x64": "3a66de2d4bc39fc3dc2b97cca94a013766a48664e2aef3dbb9f818360e0a2434",
+    "i686": "4cca95006bba8a225279d7cf9f4a7120287b661a0ae6aa4a742e07fbe7db4501"
+  },
+  "producer_checks": {
+    "artifact": "docs/horizontal-wheel-rust-checks-2026-10-14.json",
+    "workspace_tests": 96,
+    "scope": "Producer fmt, strict workspace/all-target Clippy, workspace tests, and both builds; separate from independent native proof."
+  },
+  "accepted": [
+    {
+      "artifact": "docs/horizontal-wheel-native-2026-10-14.json",
+      "original_status": "PASS",
+      "groups": 6,
+      "scope": "One owned-target setup, four behavior groups, one Stop cleanup. Actual x64/x86 WM_MOUSEHWHEEL messages: sixteen sign/scale/invert/zero-delta/saturation samples; virtual Ctrl/Shift/Back MK bits and holds; unchanged Ignore/Convert/vertical baseline; one recorded horizontal packet replayed through one edge with destination-local transform and exact once delivery."
+    },
+    {
+      "artifact": "docs/horizontal-wheel-ui-2026-10-14.json",
+      "original_status": "PASS",
+      "control_occurrences": 21,
+      "distinct_control_labels": 18,
+      "scope": "Actual Ouroboros Preserve and Apply, Input Lab horizontal/vertical messages, other-seat held F6 retention, Stop destruction, exact stopped profile Save/Load/Save roundtrip."
+    },
+    {
+      "artifact": "docs/horizontal-wheel-assigned-2026-10-14.json",
+      "original_status": "PASS",
+      "control_occurrences": 14,
+      "distinct_control_labels": 12,
+      "scope": "Bounded concurrent assigned-HWND smoke: real relative Left to own partly-offscreen x64 EDIT, horizontal delta -240 with actual signed LPARAM screen coordinates [-80,-59], unchanged other x86 target/held F6, vertical baseline and Stop. Existing capture state retained; wheel does not create a button hold."
+    },
+    {
+      "artifact": "docs/horizontal-wheel-switched-2026-10-14.json",
+      "original_status": "PASS",
+      "groups": 3,
+      "scope": "Focused owned-target setup, two-wheel arbitration behavior, Stop cleanup. A owns switched click root and captured primary hold while B receives +120/-120 horizontal messages; A root/capture/hold and both keyboard PID selections remain unchanged, then normal release/Stop."
+    }
+  ],
+  "counts": {
+    "native_snapshot_occurrences": 9,
+    "distinct_native_snapshot_ids": 7,
+    "gui_control_occurrences": 35,
+    "distinct_gui_control_labels": 19,
+    "planning_count_correction": "Prepared GUI counts were estimated as 23/16; actual unchanged lists contain 21/14. No extra clicks added to meet estimates."
+  },
+  "retained_failed_attempts": [
+    {
+      "artifact": "docs/horizontal-wheel-zero-setup-prefix-2026-10-14.json",
+      "original_status": "NOT ACCEPTED",
+      "cause": "Runner tried multiplier zero despite existing finite 0.1..8 range; correct product rejection. Replaced with zero delta at scale 1 and repeated only the affected finite native phase."
+    },
+    {
+      "artifact": "docs/horizontal-wheel-assigned-setup-prefix-2026-10-14.json",
+      "original_status": "NOT ACCEPTED",
+      "accepted_setup_controls": 2,
+      "cause": "Runner requested automatic-only Move to point in assigned Input Lab. Replaced with actual assigned Left control and owned window placement; repeated assigned phase only."
+    }
+  ],
+  "visual_proof": {
+    "artifact": "docs/horizontal-wheel-control-center.png",
+    "scope": "Owned GUI only, actual Preserve policy, 2.0x multiplier, reverse option and Apply visible with owned target PIDs. Independently inspected."
+  },
+  "cleanup": {
+    "all_owned_processes_closed": true,
+    "scoped_cim_audit": "No processes at the wheel acceptance run paths after all phases. Actual Stop release and old native overlay HWND destruction asserted."
+  },
+  "limits": [
+    "Virtual devices and disposable owned x64/x86 targets only. No hardware/RustDesk input used for control or validation; no OS input injection.",
+    "Assigned smoke injects horizontal messages into the x64 owned target; both architectures receive horizontal messages in the automatic gate. i686 controller not exercised.",
+    "Native window message processing proves delivered axis/delta/coordinates/modifiers; no general application horizontal scrolling compatibility claim.",
+    "Unsupported fixed-mode rejection, invalid HWND/PID and out-of-signed16 helper boundaries are producer/source checks, not independent live cases. No display arrangement changes or beyond-signed16 native test.",
+    "No fresh horizontal EOF/pause/failure lifecycle suite or unrelated historical feature rerun. No same-process/full desktop isolation or complete Ultra parity claim."
+  ],
+  "archive_manifest": [
+    {
+      "source": "runtime\\acceptance-horizontal-wheel-20261014-092300\\evidence.json",
+      "archive": "docs\\horizontal-wheel-native-2026-10-14.json",
+      "sha256": "188702e69ae1c3e50ec2202be225ef6c368bdc52d7fc7e800d64b9393e029db9"
+    },
+    {
+      "source": "runtime\\acceptance-graph-horizontal-wheel-20261014-092319\\evidence.json",
+      "archive": "docs\\horizontal-wheel-ui-2026-10-14.json",
+      "sha256": "d9f0ccddd9b2e0606d6be28c1ebf278cc3e04f5b6c8b73f04073c82718e9f5fa"
+    },
+    {
+      "source": "runtime\\acceptance-graph-assigned-horizontal-wheel-20261014-092525\\evidence.json",
+      "archive": "docs\\horizontal-wheel-assigned-2026-10-14.json",
+      "sha256": "ef206a0d41f75d83bf3d11da5bedb9cd8d989fed4eb111be137b4767c54d0d12"
+    },
+    {
+      "source": "runtime\\acceptance-horizontal-wheel-20261014-092216\\evidence.json",
+      "archive": "docs\\horizontal-wheel-zero-setup-prefix-2026-10-14.json",
+      "sha256": "1d22ced58df2750aa852eb0712a7ea3abef33fec4d19c44a03fb835dc4a698f5"
+    },
+    {
+      "source": "runtime\\acceptance-graph-assigned-horizontal-wheel-20261014-092401\\evidence.json",
+      "archive": "docs\\horizontal-wheel-assigned-setup-prefix-2026-10-14.json",
+      "sha256": "cf1dd7450d1f45cd4640a55d46cf55b85a95f31fbbc29dec239e0be35cfdb2ba"
+    },
+    {
+      "source": "runtime\\acceptance-graph-horizontal-wheel-20261014-092319\\preserve-controls.png",
+      "archive": "docs\\horizontal-wheel-control-center.png",
+      "sha256": "d3d05050a7a2f45ec5389c0bb6bc5fcf1699a673f2bb1bac962c95865d1b615d"
+    },
+    {
+      "source": "runtime\\acceptance-horizontal-wheel-switched-20261014-092806\\evidence.json",
+      "archive": "docs\\horizontal-wheel-switched-2026-10-14.json",
+      "sha256": "24254d663d49a09acb739b766d08caf167128f09bbce8716ce864f0c8c4e7b84"
+    }
+  ]
+}

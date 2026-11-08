@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "crate": "enum-map-derive",
+  "version": "0.17.0",
+  "declared_license": "MIT OR Apache-2.0",
+  "repository": "https://codeberg.org/xfix/enum-map",
+  "cargo_vcs_info": {
+    "git": {
+      "sha1": "2026968c30ad14d268f3d70c618a704e22a3b980"
+    },
+    "path_in_vcs": "enum-map-derive"
+  },
+  "files": [
+    {
+      "path": "LICENSE-MIT.txt",
+      "upstream_path": "LICENSES/MIT.txt",
+      "url": "https://codeberg.org/xfix/enum-map/raw/commit/2026968c30ad14d268f3d70c618a704e22a3b980/LICENSES/MIT.txt",
+      "bytes": 1078,
+      "sha256": "b85dcd3e453d05982552c52b5fc9e0bdd6d23c6f8e844b984a88af32570b0cc0",
+      "upstream_file_sha256": "b85dcd3e453d05982552c52b5fc9e0bdd6d23c6f8e844b984a88af32570b0cc0"
+    },
+    {
+      "path": "LICENSE-APACHE.txt",
+      "upstream_path": "LICENSES/Apache-2.0.txt",
+      "url": "https://codeberg.org/xfix/enum-map/raw/commit/2026968c30ad14d268f3d70c618a704e22a3b980/LICENSES/Apache-2.0.txt",
+      "bytes": 10280,
+      "sha256": "074e6e32c86a4c0ef8b3ed25b721ca23aca83df277cd88106ef7177c354615ff",
+      "upstream_file_sha256": "074e6e32c86a4c0ef8b3ed25b721ca23aca83df277cd88106ef7177c354615ff"
+    },
+    {
+      "path": "source-notices/src/derive_enum.rs.NOTICE.txt",
+      "upstream_path": "enum-map-derive/src/derive_enum.rs",
+      "url": "https://codeberg.org/xfix/enum-map/raw/commit/2026968c30ad14d268f3d70c618a704e22a3b980/enum-map-derive/src/derive_enum.rs",
+      "bytes": 201,
+      "sha256": "3f1d722aff649f5508b0464c453c347bb8b06e2b07ff339b585b44a0b746f67c",
+      "upstream_file_sha256": "fc478b32e580dabfa31f71db2958faf05125e58b17bf420a881930d96e76ce11",
+      "extraction": "Exact source comment lines beginning // SPDX- (all copyright holders and license identifiers); full license terms included separately."
+    },
+    {
+      "path": "source-notices/src/derive_struct.rs.NOTICE.txt",
+      "upstream_path": "enum-map-derive/src/derive_struct.rs",
+      "url": "https://codeberg.org/xfix/enum-map/raw/commit/2026968c30ad14d268f3d70c618a704e22a3b980/enum-map-derive/src/derive_struct.rs",
+      "bytes": 201,
+      "sha256": "b34582a608a72785cc46e27e9d130e8922d4d9f3c4ec08a38e5994f874841251",
+      "upstream_file_sha256": "ec7e4d1f44925713098713c8c77af87142f499999a812687d52306cc9255224f",
+      "extraction": "Exact source comment lines beginning // SPDX- (all copyright holders and license identifiers); full license terms included separately."
+    },
+    {
+      "path": "source-notices/src/lib.rs.NOTICE.txt",
+      "upstream_path": "enum-map-derive/src/lib.rs",
+      "url": "https://codeberg.org/xfix/enum-map/raw/commit/2026968c30ad14d268f3d70c618a704e22a3b980/enum-map-derive/src/lib.rs",
+      "bytes": 389,
+      "sha256": "c02aaebec9986faea6519f997e971d4237c6383bc59fa162353370cef3ff39c6",
+      "upstream_file_sha256": "531dd501eced4ebf2733d525417adc9ef724e1c117ffb20be7453a79200c2988",
+      "extraction": "Exact source comment lines beginning // SPDX- (all copyright holders and license identifiers); full license terms included separately."
+    }
+  ],
+  "crate_authors": [
+    "Kamila Borowska <kamila@borowska.pw>"
+  ]
+}

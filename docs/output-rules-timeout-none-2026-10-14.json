@@ -1,0 +1,200 @@
+{
+  "result": "PASS",
+  "mode": "none",
+  "build_sha256": "9fdae302ca0f0d3d52ed36c4ccd77b9ae2819d25d48a908676180d137359f88c",
+  "scope": "One own x64 Python Win32 target, virtual input only, real message retrieval/absence, bounded queue-fence timeout and late normalized release.",
+  "before_hold": {
+    "pid": 829864,
+    "hwnd": 19599368,
+    "pointer_bits": 64,
+    "pump_mode": "normal",
+    "mode_entered": 0,
+    "frames": 570,
+    "peek_calls": 0,
+    "peek_hits": 0,
+    "hidden_fence_copies": 0,
+    "message_counts": {
+      "799": 1,
+      "15": 1,
+      "275": 1,
+      "512": 6,
+      "513": 1,
+      "6": 13,
+      "28": 13,
+      "134": 13,
+      "7": 13,
+      "33": 13,
+      "514": 1,
+      "256": 1
+    },
+    "key_events": [
+      {
+        "vk": 116,
+        "pressed": true,
+        "at_us": 3295837
+      }
+    ],
+    "held_app_keys": [
+      116
+    ]
+  },
+  "blocked": {
+    "pid": 829864,
+    "hwnd": 19599368,
+    "pointer_bits": 64,
+    "pump_mode": "none",
+    "mode_entered": 1,
+    "frames": 592,
+    "peek_calls": 0,
+    "peek_hits": 0,
+    "hidden_fence_copies": 0,
+    "message_counts": {
+      "799": 1,
+      "15": 1,
+      "275": 1,
+      "512": 6,
+      "513": 1,
+      "6": 15,
+      "28": 15,
+      "134": 15,
+      "7": 15,
+      "33": 15,
+      "514": 1,
+      "256": 1
+    },
+    "key_events": [
+      {
+        "vk": 116,
+        "pressed": true,
+        "at_us": 3295837
+      }
+    ],
+    "held_app_keys": [
+      116
+    ]
+  },
+  "stop_error": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Target cleanup was not acknowledged; restart the affected target applications: queue-fence timed out for PID 829864 HWND 0x12B1008"
+      }
+    ],
+    "isError": true
+  },
+  "stop_state": {
+    "agent_session": null,
+    "annotation": null,
+    "automation": {
+      "acknowledged": false,
+      "clip": null,
+      "edges": [],
+      "error": null,
+      "graph_revision": 0,
+      "loaded_events": 0,
+      "playback": null,
+      "recorded_events": 0,
+      "recording": false,
+      "replication": {
+        "byte_capacity": 8388608,
+        "cancelled": 0,
+        "capacity": 4096,
+        "coalesced": 0,
+        "emitted": 0,
+        "error": null,
+        "pending_bytes": 0,
+        "pending_events": 0,
+        "pending_motion": 0,
+        "suspended": false
+      }
+    },
+    "graph": null,
+    "identities": [],
+    "last_error": "Target cleanup was not acknowledged; restart the affected target applications: queue-fence timed out for PID 829864 HWND 0x12B1008",
+    "macro_studio": null,
+    "magnifier": null,
+    "output": null,
+    "paused": false,
+    "running": false,
+    "user_settings": [],
+    "users": [],
+    "virtual_users": null
+  },
+  "stop_seconds": 1.0310000000172295,
+  "after_timeout": {
+    "pid": 829864,
+    "hwnd": 19599368,
+    "pointer_bits": 64,
+    "pump_mode": "none",
+    "mode_entered": 1,
+    "frames": 773,
+    "peek_calls": 0,
+    "peek_hits": 0,
+    "hidden_fence_copies": 0,
+    "message_counts": {
+      "799": 1,
+      "15": 1,
+      "275": 1,
+      "512": 6,
+      "513": 1,
+      "6": 15,
+      "28": 15,
+      "134": 15,
+      "7": 15,
+      "33": 15,
+      "514": 1,
+      "256": 1
+    },
+    "key_events": [
+      {
+        "vk": 116,
+        "pressed": true,
+        "at_us": 3295837
+      }
+    ],
+    "held_app_keys": [
+      116
+    ]
+  },
+  "after_resume": {
+    "pid": 829864,
+    "hwnd": 19599368,
+    "pointer_bits": 64,
+    "pump_mode": "normal",
+    "mode_entered": 1,
+    "frames": 1162,
+    "peek_calls": 0,
+    "peek_hits": 0,
+    "hidden_fence_copies": 0,
+    "message_counts": {
+      "799": 1,
+      "15": 1,
+      "275": 1,
+      "512": 6,
+      "513": 1,
+      "6": 22,
+      "28": 22,
+      "134": 22,
+      "7": 22,
+      "33": 22,
+      "514": 1,
+      "256": 1,
+      "257": 1,
+      "0": 1
+    },
+    "key_events": [
+      {
+        "vk": 116,
+        "pressed": true,
+        "at_us": 3295837
+      },
+      {
+        "vk": 116,
+        "pressed": false,
+        "at_us": 6861927
+      }
+    ],
+    "held_app_keys": []
+  },
+  "owned_processes_closed": true
+}

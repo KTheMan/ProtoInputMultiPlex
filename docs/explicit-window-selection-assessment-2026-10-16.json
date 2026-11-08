@@ -1,0 +1,144 @@
+{
+  "schema": {
+    "name": "explicit-window-selection-assessment",
+    "version": 1,
+    "evidence_paths": "All paths are relative to the repository workspace root. SHA-256 binds the exact artifact; it does not expand the reviewed scope."
+  },
+  "decision": "NATIVE_ACCEPTED_BOUNDED",
+  "producer": {
+    "path": "runtime/producer-window-selection-20261016-2354-continuation/verification.json",
+    "sha256": "8d62aa54069735699cac57d8b665e035dd566c57e56e941f3c527bc63c6bde2b",
+    "review_path": "runtime/explicit-window-selection-producer-v10-continuation-review.json",
+    "review_sha256": "e4fe593ec78094f5c0260955d68f76a2c1bfe0c45feb23af3d1044bfbefe1572",
+    "result": "PASS",
+    "checks": {
+      "format": "passed",
+      "strict_clippy": "passed",
+      "workspace_tests": {
+        "passed": 368,
+        "failed": 0,
+        "ignored": 3
+      },
+      "default_builds": [
+        "x64",
+        "i686"
+      ]
+    }
+  },
+  "source_bindings": [
+    {
+      "role": "candidate",
+      "path": "runtime/explicit-window-selection-candidate-v10.json",
+      "sha256": "7f5417103648d0a30c99b3ddc67f371b61b03644b80da79bf3a4c31ae00e5c00"
+    },
+    {
+      "role": "source review",
+      "path": "runtime/explicit-window-selection-source-v10-review.json",
+      "sha256": "c6d44926f6839eb0d4596bf523c03cc471bb63309ff025b15c80c0920312f556"
+    },
+    {
+      "role": "native plan",
+      "path": "runtime/explicit-window-selection-native-plan-v10-attempt004.json",
+      "sha256": "c443464436e1428f7e26caa5746964eb09e314cc2592a3201e28d72c6302e19c"
+    },
+    {
+      "role": "helper",
+      "path": "runtime/test-window-selection-smoke-v5.py",
+      "sha256": "9ed11157229003b7eb8207d1c6814b9e0e4db00e2f142aae09be8a94482348f4"
+    },
+    {
+      "role": "helper source review",
+      "path": "runtime/explicit-window-selection-harness-v5-source-review.json",
+      "sha256": "4ab4c9dbd96b93523f548b98a284ce1a737b485c805ddec2e67e14a3314fc912"
+    }
+  ],
+  "native_acceptance": {
+    "status": "NATIVE_ACCEPTED_BOUNDED",
+    "architecture": "x64 native execution only; i686 was build-checked, not natively executed",
+    "raw_evidence": {
+      "path": "runtime/acceptance-window-selection-v10-attempt004/acceptance-graph-window-selection-20261016-180218/evidence.json",
+      "sha256": "8104f8b4d9aab0a66317143a637fe9ffda433ce3799fe404a4c133f7722a6a2e"
+    },
+    "independent_review": {
+      "path": "runtime/explicit-window-selection-native-attempt004-review.json",
+      "sha256": "03cb8e6f7421a1f230789a5600615709a2711f2f282e80cb3cdc0fa91ef2d1d7",
+      "decision": "NATIVE_ACCEPTED_BOUNDED"
+    },
+    "observations": {
+      "gui_control_occurrences": 22,
+      "recorded_tool_calls": 61,
+      "routing_input_calls_including_denials": 14,
+      "non_mutating_denials": 5,
+      "note": "These are recorded GUI/tool observations, not test-case counts."
+    },
+    "accepted_scope": [
+      "Passive per-user selection and inspection without eager attachment, native input, foreground change or virtual-pointer movement; GUI and connected selection plus passive Pause/Resume.",
+      "First A F5 down/up and B text reached their originally seeded EDIT recipients while A held F5 and B remained independent.",
+      "Text characters followed the cached current recipient in order; native positioning/client clamp remained distinct, with no B trace/text change.",
+      "Stale-token, other-owner, unbound shared-keyboard, held-user and current-grant denials left routing/native signatures unchanged.",
+      "Ordinary GUI Stop: worker exited, overlays and descriptor removed, profile unchanged, both original targets reusable, cleanup empty."
+    ],
+    "terminal_integrity": {
+      "result": "PASS",
+      "helper_files": 92,
+      "source_files": 848,
+      "native_files": 10
+    },
+    "original_frames": [
+      {
+        "purpose": "chooser",
+        "sha256_prefix": "ceba78b3",
+        "logical_size": "320x640"
+      },
+      {
+        "purpose": "active GUI",
+        "sha256_prefix": "aa7beecc",
+        "logical_size": "360x360"
+      },
+      {
+        "purpose": "stopped GUI",
+        "sha256_prefix": "342b0675",
+        "logical_size": "360x360"
+      }
+    ],
+    "visual_limits": "Clipped footer excluded; popup-opened visual, full minimum-size behavior and full UX not claimed."
+  },
+  "retained_attempts": [
+    {
+      "attempt": "001",
+      "status": "NOT_ACCEPTED",
+      "review": "runtime/explicit-window-selection-native-attempt-001-failure-review.json",
+      "raw": "runtime/acceptance-window-selection-20261016-2234/acceptance-graph-window-selection-20261016-153328/evidence.json"
+    },
+    {
+      "attempt": "002",
+      "status": "NOT_ACCEPTED_PRODUCT_CORRECTION_REQUIRED",
+      "review": "runtime/explicit-window-selection-native-attempt-002-failure-review.json",
+      "raw": "runtime/acceptance-window-selection-20261016-2240/acceptance-graph-window-selection-20261016-153918/evidence.json"
+    },
+    {
+      "attempt": "003",
+      "status": "NOT_ACCEPTED",
+      "reason": "Harness read through the expected-revoked connection. A bounded prefix review was accepted separately; this does not change the overall attempt result.",
+      "review": "runtime/explicit-window-selection-native-attempt003-review.json",
+      "accepted_prefix_review_sha256": "f302f732c39083c96854348dd8c1430a0bd0d1c09f17c2ab8e1857ceae5200ae",
+      "raw": "runtime/acceptance-window-selection-v10-attempt003/acceptance-graph-window-selection-20261016-175715/evidence.json"
+    },
+    {
+      "attempt": "2256 producer interruption",
+      "status": "INCOMPLETE_NOT_PASS",
+      "raw": "runtime/producer-window-selection-20261016-2256/verification.json",
+      "integrity_review": "runtime/explicit-window-selection-producer2256-interruption-integrity.json"
+    }
+  ],
+  "limits": [
+    "Persistent EDIT focus across separate actions remains open.",
+    "PrintWindow GPU/compositor discrepancy remains open.",
+    "No hardware, desktop-wide, arbitrary-application, same-process isolation or full Ultra parity claim."
+  ],
+  "shipping": {
+    "status": "OPEN",
+    "qualified_build": "V10 development only",
+    "frozen_329_distribution": "Predates worker-transport and selection/Text corrections; this acceptance does not qualify that distribution."
+  }
+}

@@ -1,0 +1,157 @@
+{
+  "decision": "ACCEPTED_BOUNDED_OBSERVATION",
+  "group": "gui_stall_fixed_configuration",
+  "result": "CONFIGURATION_AND_FRAMES_OBSERVED",
+  "reviewer": "/root/sdk_acceptance",
+  "raw_evidence": {
+    "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\gui-stall-multiplex-fixed-20261029-attempt001\\evidence.json",
+    "sha256": "50924bf68cff753a30e08f1c466d0199a3ae79a9e17faf52ed29330d9c21980c"
+  },
+  "gate": {
+    "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\gui-stall-multiplex-fixed-native-gate-20261029.json",
+    "sha256": "6031d2bca004c36d9b64db81ca45ceac3365968edbb236fec23216af23037fd1"
+  },
+  "driver": {
+    "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\gui-stall-multiplex-fixed-20261028.py",
+    "sha256": "623dd5c05a08e0b3eec208328bf67f807779a20600e13784d3dbc98598199849"
+  },
+  "SDK_actual_acceptance": {
+    "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\multiplex-sdk-idle-fixed-v4-attempt001-actual-review-20261029.json",
+    "sha256": "c5452aedaaebd2a886b1cca3735d2caf35e737c49b4be45494202cc2cd33dd5d"
+  },
+  "frozen_candidate": {
+    "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\sdk-idle-fix-checks-20261028-attempt002\\verification.json",
+    "sha256": "2c5473dfbfd3c052540ba20d3b5c7bea00bfbb17494c3efceb03b31d3aa96238"
+  },
+  "candidate_review": {
+    "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\sdk-idle-fix-checks-20261028-attempt002-independent-review-v4.json",
+    "sha256": "13bb87e5a7dc61675a3c2e2621feb7a22fcf4de54f320ba39da39c34e0563b8a"
+  },
+  "image": {
+    "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\sdk-idle-fix-checks-20261028-attempt002\\protoinputmultiplex.exe",
+    "sha256": "bd757b1025ff7fe6bf081a3a6c3b55f3976eba4c4628d68aa23f5e1d2950e817"
+  },
+  "current_checkout_approved": false,
+  "port_feature_accepted": false,
+  "observed": {
+    "configuration_actions": 12,
+    "samples": [
+      "user-A",
+      "configure-A",
+      "keyboard-A",
+      "compatibility-A",
+      "native-A",
+      "home-A",
+      "user-B",
+      "configure-B",
+      "keyboard-B",
+      "compatibility-B",
+      "native-B",
+      "home-B"
+    ],
+    "sample_progress_frames": [
+      186,
+      415,
+      852,
+      1269,
+      1669,
+      1951,
+      2212,
+      2389,
+      2624,
+      2783,
+      3089,
+      3293
+    ],
+    "event_tickets_acked": true,
+    "phase_records": 48,
+    "phase_cap": 64,
+    "full_action_phase_families": 12,
+    "observations": 27,
+    "observed_progress_frame_range": [
+      36,
+      3293
+    ],
+    "warm_WM_NULL_max_ms": 16.00000006146729,
+    "persistent_liveness_failures": 0,
+    "observed_IO_faults": 0,
+    "observed_pending_critical_max": 0,
+    "observed_submitted_minus_acked_max": 1,
+    "fresh_PNGs": {
+      "native-A": {
+        "sha256": "550f04d1b53fdcd2a503b8f32355513b9b9adf7c3d3fc276975c3c234106c761",
+        "size": [
+          320,
+          640
+        ],
+        "fresh_after_corresponding_event": true,
+        "visual_review": "Correct distinct user A/B title, Stopped status, Keyboard tab, Native controls selected; no routing shown."
+      },
+      "native-B": {
+        "sha256": "0a4c9a98768ba9ee555fd8546c15a970c373ec70d5ab3123326d133ad61fbef6",
+        "size": [
+          320,
+          640
+        ],
+        "fresh_after_corresponding_event": true,
+        "visual_review": "Correct distinct user A/B title, Stopped status, Keyboard tab, Native controls selected; no routing shown."
+      }
+    },
+    "configuration_elapsed_seconds": 30.233999999938533,
+    "stopped_scope_counts": {
+      "start": 0,
+      "session_workers": 0,
+      "mcp_clients": 0,
+      "sdk": 0,
+      "target_probes": 0,
+      "routing_input": 0,
+      "clipboard": 0,
+      "staged_dlls": 0
+    },
+    "final_stopped_state": "No controller/ready session; Setup disabled/broker stopped; SDK off/retired. State publication is newer than final action.",
+    "normal_WM_CLOSE": {
+      "wm_close_posted": true,
+      "root": 43253914,
+      "normal_observation_ms": 250,
+      "exit_code": 0
+    },
+    "owned_process_and_observed_HWNDs_absent": true,
+    "postflight_integrity": "PASS"
+  },
+  "checked_artifacts": {
+    "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\gui-stall-multiplex-fixed-20261029-attempt001\\observations.jsonl": "d76b201826aafaecf674e5245ea1b60529881d01e320fe0b9096cafe4d25b5f3",
+    "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\gui-stall-multiplex-fixed-20261029-attempt001\\ui.phases.jsonl": "7173f6ea860078eeb20774f057b68666178ffbb3ac3f1fdb47df8716fc1238c7",
+    "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\gui-stall-multiplex-fixed-20261029-attempt001\\ui.events.jsonl": "4e9e2bcb21a93e44d13fc821336499e10c208cfdc8540d0c4736af254622e8dc",
+    "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\gui-stall-multiplex-fixed-20261029-attempt001\\ui.progress.json": "db277f631d65d102747133380eaf000823de8ff53c3fc45b135e545f30c77e49",
+    "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\gui-stall-multiplex-fixed-20261029-attempt001\\ui.sampled.json": "6b51d431df5d7f141cbececcf79edf3dd861c3b4069f0b11661a3eefacbba918",
+    "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\gui-stall-multiplex-fixed-20261029-attempt001\\ui.launch.json": "b7315416c919cadc25c92fa9a43011bf8758d2153eb9cd7c495393be7a06c2b1",
+    "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\gui-stall-multiplex-fixed-20261029-attempt001\\stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\gui-stall-multiplex-fixed-20261029-attempt001\\stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\gui-stall-multiplex-fixed-20261029-attempt001\\native-A.png": "550f04d1b53fdcd2a503b8f32355513b9b9adf7c3d3fc276975c3c234106c761",
+    "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\gui-stall-multiplex-fixed-20261029-attempt001\\native-B.png": "0a4c9a98768ba9ee555fd8546c15a970c373ec70d5ab3123326d133ad61fbef6"
+  },
+  "terminal_tool_observation": {
+    "root_original_exec_session": 46220,
+    "exit_code": 0,
+    "chunk": "ac47bb",
+    "provenance": "Parent observed the original execution handle; reviewer independently verifies raw cleanup/absence and final integrity, without a process scan."
+  },
+  "P1_gui_stall_fixed": false,
+  "historical_stall_cause_identified": false,
+  "full_Ultra_parity_accepted": false,
+  "limits": [
+    "This single stopped A/B configuration family stayed responsive and retired normally; it does not establish that the historical intermittent GUI stall is fixed.",
+    "Step elapsed_ms values up to several seconds coexist with advancing frame counters and acknowledged file-worker tickets; these fields are not evidence of a blocked frame or a measured UI-thread wait.",
+    "WM_NULL, frame counters, CPU timing, phase records and publication age constrain the observed behavior, but cannot identify an unobserved historical wait cause.",
+    "No routing, native DLL staging, target, MCP/SDK listener/client, hardware, OS/RustDesk pointer/clipboard, debugger or process kill was used. Existing geometry operations targeted only the owned GUI.",
+    "This is acceptance of the bounded diagnostic observation only. Current parallel port checkout and arbitrary application/hardware/desktop-wide isolation remain unapproved."
+  ],
+  "next_discriminating_step": {
+    "recommendation": "SOURCE_ONLY_HISTORICAL_BOUNDARY_COMPARISON",
+    "additional_current_instrumentation_justified_by_this_run": false,
+    "repeat_broad_runtime_sweep": false,
+    "description": "Compare the last reliable historical failing phase/progress/IO publication boundary with current frame ownership and worker handoff paths. Keep P1 open and record the specific remaining causal gap. Only authorize another focused reproduction or narrower instrumentation if that comparison identifies a concrete unobserved boundary; do not repeat this clean family or infer a fix from elapsed/WM_NULL data."
+  },
+  "material_findings": [],
+  "reviewer_actions": "Read/hash receipt, fixture, image, PNG and JSONL; visual PNG review. No compiler, helper/native/GUI/browser/input execution, process/lock query, source edit or cross-chat contact."
+}

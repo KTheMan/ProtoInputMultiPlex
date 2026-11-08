@@ -1,0 +1,26 @@
+{
+  "decision": "APPROVED BY DOCUMENT REVIEW; GUARDED SKILL INSTALL AND VALIDATION PASS",
+  "doc_review": "docs\\assigned-release-recovery-doc-review-2026-10-15.json",
+  "doc_review_sha256": "4a667b145a3b71544a929ec10e29406c38db95fed3ae6eb112b63a4a8609e8ed",
+  "source": "skills\\protoinputmux\\SKILL.md",
+  "installed": "C:\\Users\\Archform CAD Station\\.codex\\skills\\protoinputmux\\SKILL.md",
+  "backup": "runtime\\assigned-release-recovery-skill-before.md",
+  "previous_sha256": "7c46aecd8ea3083afd2b3407f93b4d60192eea13b144574d5f18ea13c46a2ef1",
+  "source_installed_sha256": "c1bacfc4c4a5d87644dd808084aff1177e121b31da351ea215b1b12ebdb7af38",
+  "exact_byte_equality": true,
+  "checks": [
+    {
+      "folder": "skills\\protoinputmux",
+      "exit_code": 0,
+      "stdout": "Skill is valid!",
+      "stderr": ""
+    },
+    {
+      "folder": "C:\\Users\\Archform CAD Station\\.codex\\skills\\protoinputmux",
+      "exit_code": 0,
+      "stdout": "Skill is valid!",
+      "stderr": ""
+    }
+  ],
+  "scratch_absent": true
+}

@@ -1,5 +1,5 @@
 //! Deterministic client contracts. These fixtures do not prove native delivery.
-use protoinputmux_mcp_example::{
+use protoinputmultiplex_mcp_example::{
     Client, Disconnect, Failure, Result, Rpc, Scope, reconnect_after_approval, tool_value, verify,
 };
 use serde_json::{Value, json};

@@ -1,0 +1,114 @@
+{
+  "decision": "ACCEPTED_BOUNDED_USER_PAUSE",
+  "group": "user_pause",
+  "date": "2026-10-29",
+  "independent_actual_review": {
+    "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\user-pause-native-attempt001-actual-review-20261029.json",
+    "sha256": "3fc919ffd6a361a2dd47d844818d6434c77025be4966f04e426c6f6f60b1503b"
+  },
+  "frozen_candidate": {
+    "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\user-pause-checks-20261029-attempt002\\verification.json",
+    "sha256": "c9da3ac57e522bef9c1e11463fd52d4e17d752ca3f4c939a13012dbe83632986"
+  },
+  "source_review": {
+    "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\user-pause-source-independent-review-v2-20261029.json",
+    "sha256": "c3a45bba3dbb2acf56324e326c024901e9c36cd1ad1f70846cb29f444e7d6bcc"
+  },
+  "checks_review": {
+    "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\user-pause-checks-independent-review-20261029.json",
+    "sha256": "58ddce892b4562806dc71db1bd15eaf7f0faf7000292493fddcae27bde01d91a"
+  },
+  "raw_evidence": {
+    "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\user-pause-d033199de73b\\r\\evidence.json",
+    "sha256": "785430337fd4d5dc1f8b5a1eef93a3e17398e12337cb0900bf49685cda5a08b6"
+  },
+  "gui": {
+    "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\user-pause-checks-20261029-attempt002\\x64\\protoinputmultiplex.exe",
+    "sha256": "81f1aad4d0b2b287bb77bb8f8bf6c18b70021befee9776bc90db1a68a29ef58a"
+  },
+  "counts": {
+    "UI_actions": 21,
+    "SDK_calls": 64,
+    "observations": 14,
+    "original_PNGs": 4,
+    "owned_GUI": 1,
+    "owned_targets": 2,
+    "virtual_users": 2,
+    "initial_distinct_SDK_clients": 2,
+    "test_passed": 678,
+    "test_failed": 0,
+    "test_ignored": 1
+  },
+  "captures": {
+    "user-pause-running-normal": {
+      "path": "docs/per-user-pause-running-540x520-2026-10-29.png",
+      "sha256": "2b5f6c1263da02ae9f783acdf5dd1d273ff0cd39652f885c8363afbce0df4ad4",
+      "pixels": [
+        540,
+        520
+      ],
+      "original": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\user-pause-d033199de73b\\r\\user-pause-running-normal.png",
+      "edited": false
+    },
+    "user-pause-paused-normal": {
+      "path": "docs/per-user-pause-paused-540x520-2026-10-29.png",
+      "sha256": "fb317bb19fdbc5f1626a426ab8844768e80059f7f8bbf9b60297513306f881d6",
+      "pixels": [
+        540,
+        520
+      ],
+      "original": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\user-pause-d033199de73b\\r\\user-pause-paused-normal.png",
+      "edited": false
+    },
+    "user-pause-paused-minimum": {
+      "path": "docs/per-user-pause-paused-320x360-2026-10-29.png",
+      "sha256": "94759ab4cb7a7af996c36a7e7a6e2e739a4006933be05b20b9d42e38de37e6d1",
+      "pixels": [
+        320,
+        360
+      ],
+      "original": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\user-pause-d033199de73b\\r\\user-pause-paused-minimum.png",
+      "edited": false
+    },
+    "user-pause-resumed-minimum": {
+      "path": "docs/per-user-pause-resumed-320x360-2026-10-29.png",
+      "sha256": "a38cc91bd39893fa7a399cad5b245b1a395fdf81d715a6ae7b6d4b7469af115c",
+      "pixels": [
+        320,
+        360
+      ],
+      "original": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\user-pause-d033199de73b\\r\\user-pause-resumed-minimum.png",
+      "edited": false
+    }
+  },
+  "accepted_scope": [
+    "Automatic Concurrent routing with two independent virtual pairs in two separately owned x64 targets",
+    "Ouroboros selected-user Pause/Resume at540x520 and320x360 with own correlated acknowledgements",
+    "Pause A preserves B hold and continuing key/Text-message/motion delivery; both clients' A input is suppressed",
+    "Old held source and new second-client paused DOWN stay quarantined across Resume until real UP",
+    "Existing routing_input pause_user/resume_user actions, scoped permissions, global Pause precedence and normal cleanup"
+  ],
+  "unit_and_source_scope_only": [
+    "Concurrent assigned routing",
+    "Provider release failures/retry and queue deadline isolation",
+    "Client EOF quarantine isolation, prior global-cancel ordering, other user's independent program continuity and Mapper Arm readiness"
+  ],
+  "limitations": [
+    "Native fixture does not measure text contents or coordinate/wheel payload magnitudes",
+    "No real provider-fault injection, persistence/reload, arbitrary apps, physical devices, fixed-relative, switched/shared-keyboard or same-process acceptance",
+    "Affected mapper/replication/forwarding/composite work must be stopped before Pause; unsupported controls report reasons"
+  ],
+  "current_checkout_approved": false,
+  "live_port_included": false,
+  "live_integration_pending": true,
+  "P1_gui_stall_fixed": false,
+  "full_Ultra_parity_accepted": false,
+  "release_approved": false,
+  "folder_rename": "User-deferred; no retry",
+  "cross_chat_coordination": "User requested chats remain separate",
+  "prior_failed_checks_preserved": "runtime/user-pause-checks-20261029-attempt001/verification.json",
+  "source_handoff": {
+    "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\user-pause-source-reconciliation-20261029\\record.json",
+    "sha256": "312651fa5f56bfe9461a37b0b8b98e830ca19fbc0bdc52d1c2b270c9dddb70bb"
+  }
+}

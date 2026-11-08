@@ -1,0 +1,17 @@
+{
+  "result": "PASS",
+  "date": "2026-10-14",
+  "previous_skill_sha256": "e821b70a08cb16cf1c380f59d7af2203a8fa30e15d1946b4b5dfac2b2fda429b",
+  "assessment": "docs/conditional-wheel-assessment-2026-10-14.json",
+  "installed_files": [
+    {
+      "path": "C:\\Users\\Archform CAD Station\\.codex\\skills\\protoinputmux\\SKILL.md",
+      "sha256": "a679e12a6eb46d40afa0c1a97ffd7d5ae492e8cfcd66ad3c8603fd743b75709a"
+    },
+    {
+      "path": "C:\\Users\\Archform CAD Station\\.codex\\skills\\protoinputmux\\agents\\openai.yaml",
+      "sha256": "61c08546d1fafc09287f36c34a74766769d7462034a3eeabd33c999eb0fc16c3"
+    }
+  ],
+  "scope": "Updated only this project's existing skill after independent acceptance and source skill validation; global MCP configuration unchanged."
+}

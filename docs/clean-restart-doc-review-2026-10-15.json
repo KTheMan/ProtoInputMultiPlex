@@ -1,0 +1,53 @@
+{
+  "review_date": "2026-10-15",
+  "decision": "APPROVED",
+  "resolved_findings": [
+    {
+      "id": "F1",
+      "initial_priority": "P2",
+      "resolution": "Resolved in docs/agents.md and skills/protoinputmux/SKILL.md: both state that simultaneous standalone MCP sessions collide on app-global Ctrl+Alt+Shift+F11 before attachment and direct multi-agent work to an already authorized GUI bridge while preserving each client grants and ownership."
+    },
+    {
+      "id": "F2",
+      "initial_priority": "P2",
+      "resolution": "Resolved in docs/agents.md and skills/protoinputmux/SKILL.md: target-selection Busy/dirty denial may return isError:false (and running:true) with Routing unavailable status; no held input, capture or native output; agents must inspect route/status and reconcile rather than treating the ACK as delivery or blindly retrying."
+    }
+  ],
+  "initial_review": {
+    "path": "docs/clean-restart-doc-review-initial-2026-10-15.json",
+    "sha256": "c3d2dc8d279036d2dbf29a129e0bc76af24126f714bb6895bc4b1c9b72aebdc1",
+    "decision": "REVISE"
+  },
+  "hashes": {
+    "documents": {
+      "README.md": "a05d90af67ac90625df4510859c27fdea586720a66de8d49edadce5bc8abbbc6",
+      "docs/ultra-parity.md": "1e7357f17a7bce3dc16b00b7a8977bbef68815f80dfa78a0c569d034a2c91c3e",
+      "docs/roadmap.md": "ed16066d7f01d381b9ab99bd70f4576ae0f2c385051a9c897d13314e5476ca3d",
+      "docs/agents.md": "e5f528439f45262d41f211d804110afb761cf4c5b5d890a8a18d27b7aaed10f7",
+      "docs/validation.md": "1e13523b7153f1f8f2d4762885a208f9b82727d489af07d0c52968bc1549d97e",
+      "docs/clean-restart-contract.md": "d6331b91363d49a8ae491cdef5e8edc94021c45a1edd4e5898a6b4d645ba3a05",
+      "skills/protoinputmux/SKILL.md": "a7bb279fdd8f04db8c37925d415e8295068fd1a8d1be37d594c6c3741ea1528f"
+    },
+    "canonical_assessment": {
+      "path": "docs/clean-restart-assessment-2026-10-15.json",
+      "sha256": "0788020a84c0ff78ce511cdd5d77ee0ef49707614d0fd6237b9d86d32c4e443b"
+    },
+    "images": [
+      {
+        "path": "docs/clean-restart-home.png",
+        "sha256": "6a198c643f605c7a3838ea93f96017c099764880e4c3066ac4dc03be9e39f560"
+      },
+      {
+        "path": "docs/clean-restart-minimum.png",
+        "sha256": "002775c347c92968cc0c22e1f81c636ce5d1e210fc4f1cd52580bbe8970ec76f"
+      }
+    ]
+  },
+  "checks": {
+    "all_seven_valid_utf8_crlf_only": true,
+    "all_seven_preserve_exact_backup_line_endings_and_final_newline": true,
+    "all_local_markdown_links_resolve": true,
+    "truthful_limits": "No full Ultra/P1, hardware, desktop-wide or same-process isolation claim; standalone-session F11 collision recorded; footer crop recorded; dirty/quarantine scope remains touched targets, excluding unused allowed PIDs; i686 controller documented built but not run; bounded two clean Stop/restart sessions not inflated.",
+    "no_tests_run": "Documentation review only; no apps or tests run."
+  }
+}

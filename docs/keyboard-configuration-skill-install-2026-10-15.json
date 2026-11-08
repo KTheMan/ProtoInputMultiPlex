@@ -1,0 +1,42 @@
+{
+  "result": "PASS",
+  "date": "2026-10-15",
+  "source": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\skills\\protoinputmux\\SKILL.md",
+  "installed": "C:\\Users\\Archform CAD Station\\.codex\\skills\\protoinputmux\\SKILL.md",
+  "source_and_installed_sha256": "612e341df8908c0eda51fbe3671400027f5681487df7f3f65ae9432799942271",
+  "previous_installed_sha256": "8eb3e67ef753f0a7ac6fb92070d81347faffe127f2982f79a34598cf428f3af6",
+  "guarded_prior_backup": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\keyboard-configuration-skill-before.md",
+  "approval": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\docs\\keyboard-configuration-doc-review-2026-10-15.json",
+    "sha256": "14a6fc552d38e317d224b6ed0397dc3fe4c6b9ffff774f757e6a2a43ab719e30"
+  },
+  "canonical_assessment": {
+    "path": "docs/keyboard-configuration-assessment-2026-10-15.json",
+    "sha256": "80c29de85d717ae87613bd9e2f8d0b77347ab6b6bc4928986c74d4e24732fb7f",
+    "decision": "APPROVED - BOUNDED KEYBOARD CONFIGURATION AND NATIVE UIA"
+  },
+  "checks": [
+    {
+      "command": [
+        "C:\\Users\\Archform CAD Station\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "C:\\Users\\Archform CAD Station\\.codex\\skills\\.system\\skill-creator\\scripts\\quick_validate.py",
+        "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\skills\\protoinputmux"
+      ],
+      "exit_code": 0,
+      "output": "Skill is valid!\n"
+    },
+    {
+      "command": [
+        "C:\\Users\\Archform CAD Station\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "C:\\Users\\Archform CAD Station\\.codex\\skills\\.system\\skill-creator\\scripts\\quick_validate.py",
+        "C:\\Users\\Archform CAD Station\\.codex\\skills\\protoinputmux"
+      ],
+      "exit_code": 0,
+      "output": "Skill is valid!\n"
+    }
+  ],
+  "final_producer_inputs_unchanged": 83,
+  "runtime_artifacts_unchanged": 10,
+  "both_current_executable_hashes_verified": true,
+  "scope": "Installed documentation guidance only, following bounded native keyboard/UIA and separate persistence approval. No new MCP tool, permission or runtime coverage."
+}

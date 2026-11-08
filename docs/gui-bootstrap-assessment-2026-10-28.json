@@ -1,0 +1,33 @@
+{
+  "group": "responsive_gui_startup_bootstrap",
+  "decision": "ACCEPTED_BOUNDED_COMPOSED",
+  "bounded_group_accepted": true,
+  "contract_path": "runtime/gui-bootstrap-native-acceptance-contract-v2-20261028.json",
+  "contract_sha256": "545c047bc041680a879e889ce0a5684ccfe0dbcb352ecde791021709de20a3ad",
+  "source_review_v2_sha256": "d8073acc001e14d4ae81900fa232bdf84198a358d895502bcbf9fc5d255a9c32",
+  "producer_v2_sha256": "36f8805acb44ef7d8193f9ef532884d4ace05001bfc71045ad9ff6996eb0da3f",
+  "driver_sha256": "f68c68cb9e671ec3034b0ec0fbada3a53d4db46eb08eacd69e27f5e8ccddcd2a",
+  "driver_review_sha256": "6cd2f6dc5dc45a26b5adae3b0ff1915359889191d6ea389e54995aa3a8584c52",
+  "current_focused_case_a": {
+    "raw_evidence_path": "runtime/gui-bootstrap-native-20261028-attempt002/evidence.json",
+    "raw_evidence_sha256": "d44d993ba6a8db3c3c6360fe09d3ed361621913a5c8d905764fb46d17ef73b69",
+    "archive_manifest_path": "runtime/gui-bootstrap-native-20261028-attempt002/archive-manifest.json",
+    "archive_manifest_sha256": "492ec9f0351a9172970c3f5a216f01b35b6d87b2865d77bc5233462207450725",
+    "failed_screenshot_path": "runtime/gui-bootstrap-native-20261028-attempt002/a/failed.png",
+    "failed_screenshot_sha256": "8ba18209baec4b69bccc696cf8cb542dd200e7b714be6880676df2bf00a52bac",
+    "raw_result_preserved": "PASS_PENDING_INDEPENDENT_REVIEW",
+    "observations": "At actual 360x360 client size, the fresh failed screenshot visibly wraps the complete private preferences path through preferences.json and the parse cause 'EOF while parsing a value at line 1 column 31'; Retry and Close are fully visible. The fresh initializing shell, public ready=false, disabled Retry sample, WM_NULL and live read-only data lease conflict passed. Malformed bytes stayed unchanged until the journaled private correction. One actual Retry clicked, the same owned GUI reached Ready with the three-seat virtual profile installed, light/125 preferences and source-derived geometry, then a single owned lifecycle Quit increased fresh quit_received 0→1. GUI exited 0 with original windows gone, corrected file/test key integrity, data lease release, no force and empty postflight problems."
+  },
+  "composed_prior_case_b": {
+    "raw_evidence_path": "runtime/gui-bootstrap-native-20261027-attempt001/evidence.json",
+    "raw_evidence_sha256": "91264a3c977859e1c91ff7f37894b69b05b8a4e3a6ef8176986a87405560491c",
+    "archive_manifest_path": "runtime/gui-bootstrap-native-20261027-attempt001/archive-manifest.json",
+    "archive_manifest_sha256": "b6a11e17250195a1fd7bcc1c9637497aeec10296e657a549777984e29fd3ac9b",
+    "independent_review_path": "runtime/gui-bootstrap-actual-review-20261027-attempt001.json",
+    "independent_review_sha256": "fcace00a27fc2e993a335f6732fbec6f1ee6049c18fd14be0c7222ef2dd2b9e8",
+    "raw_and_review_preserved": "Original raw result remains PASS_PENDING_INDEPENDENT_REVIEW; original independent group decision remains NOT_ACCEPTED for clipped failed-state text. Case B itself showed fresh owned Pending shell, public ready=false, disabled Retry, WM_NULL and live data lease conflict, then one checked owned WM_CLOSE, ordinary GUI exit 0, no later Ready adoption/window resurrection after the hold, unchanged private bytes/test key, lease release and no force."
+  },
+  "source_comparability": "SOURCE_GOv2 and the exact gui.rs pre-layout backup prove only the failed-state error Text gained wrapping inside a capped vertical ScrollArea. Pending/Close logic, script controls, worker ownership, leases and lifecycle paths are unchanged; the other nine reviewed Rust files match the prior source gate. Thus prior case B supports this bounded composed decision without a second B native run.",
+  "independent_integrity": "Focused attempt002 original driver process exited 0. All 24 archived file hashes and all 35 prior archived file hashes match their manifests; both evidence JSON hashes match this review. Current producer PASS recorded 580 passed/0 failed/1 ignored, all five required checks exit 0, complete 871-source before-after equality with ten reviewed changes, paired x64/i686 artifacts and empty final problems. Focused native postflight reports source/scripts/private artifact integrity and no problems.",
+  "exclusions": "This is a composed two-run acceptance, not one fully passing two-case native cohort. It covers the virtual-only responsive bootstrap error/Retry/Ready/Quit and Pending Close workflows under the opt-in bounded hold. It does not prove arbitrary Windows-call deadlines, installed-upgrade behavior, physical-device or target compatibility, the historical mid-session GUI stall fix, general GUI reliability or MouseMux Ultra parity."
+}

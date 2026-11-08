@@ -1,0 +1,1571 @@
+{
+  "2": {
+    "a": {
+      "pid": 748644,
+      "cursor": [
+        611,
+        584
+      ],
+      "test_keys": 1,
+      "buttons": 1,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 1,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 1081
+    },
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 748644,
+        "client": [
+          265,
+          215
+        ],
+        "bounds": {
+          "left": 346,
+          "top": 369,
+          "right": 876,
+          "bottom": 799
+        },
+        "buttons": [
+          1
+        ],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 8000314,
+          "x": 611,
+          "y": 584,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        }
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 741000,
+        "client": [
+          265,
+          215
+        ],
+        "bounds": {
+          "left": 86,
+          "top": 109,
+          "right": 616,
+          "bottom": 539
+        },
+        "buttons": [
+          4
+        ],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 6296530,
+          "x": 351,
+          "y": 324,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        }
+      }
+    ],
+    "button": "Hold all users",
+    "b": {
+      "pid": 741000,
+      "cursor": [
+        351,
+        324
+      ],
+      "test_keys": 1,
+      "buttons": 2,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 1,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 1202
+    }
+  },
+  "10": {
+    "a": {
+      "pid": 748644,
+      "cursor": [
+        611,
+        584
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 3,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 1528
+    },
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 748644,
+        "client": [
+          265,
+          215
+        ],
+        "bounds": {
+          "left": 346,
+          "top": 369,
+          "right": 876,
+          "bottom": 799
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 8000314,
+          "x": 611,
+          "y": 584,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        }
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 741000,
+        "client": [
+          265,
+          275
+        ],
+        "bounds": {
+          "left": 86,
+          "top": 109,
+          "right": 616,
+          "bottom": 539
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 6296530,
+          "x": 351,
+          "y": 384,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        }
+      }
+    ],
+    "button": "1 Left",
+    "b": {
+      "pid": 741000,
+      "cursor": [
+        351,
+        384
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": -2.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 2639
+    }
+  },
+  "6": {
+    "a": {
+      "pid": 748644,
+      "cursor": [
+        651,
+        584
+      ],
+      "test_keys": 1,
+      "buttons": 1,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 1298
+    },
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 748644,
+        "client": [
+          305,
+          215
+        ],
+        "bounds": {
+          "left": 346,
+          "top": 369,
+          "right": 876,
+          "bottom": 799
+        },
+        "buttons": [
+          1
+        ],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 8000314,
+          "x": 651,
+          "y": 584,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        }
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 741000,
+        "client": [
+          265,
+          275
+        ],
+        "bounds": {
+          "left": 86,
+          "top": 109,
+          "right": 616,
+          "bottom": 539
+        },
+        "buttons": [
+          4
+        ],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 6296530,
+          "x": 351,
+          "y": 384,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        }
+      }
+    ],
+    "button": "2 Wheel",
+    "b": {
+      "pid": 741000,
+      "cursor": [
+        351,
+        384
+      ],
+      "test_keys": 1,
+      "buttons": 2,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": -2.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 1936
+    }
+  },
+  "16": {
+    "a": {
+      "pid": 748644,
+      "cursor": [
+        611,
+        584
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 3,
+      "mouse_clicks": 2,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 2217
+    },
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 748644,
+        "client": [
+          265,
+          215
+        ],
+        "bounds": {
+          "left": 346,
+          "top": 369,
+          "right": 876,
+          "bottom": 799
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 8000314,
+          "x": 611,
+          "y": 584,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        }
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 741000,
+        "client": [
+          265,
+          275
+        ],
+        "bounds": {
+          "left": 86,
+          "top": 109,
+          "right": 616,
+          "bottom": 539
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 6296530,
+          "x": 351,
+          "y": 384,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        }
+      }
+    ],
+    "button": "Apply cursor settings",
+    "b": {
+      "pid": 741000,
+      "cursor": [
+        351,
+        384
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": -2.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 2,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 3785
+    }
+  },
+  "17": {
+    "a": {
+      "pid": 748644,
+      "cursor": [
+        2195,
+        1100
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 3,
+      "mouse_clicks": 2,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 2388
+    },
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 748644,
+        "client": [
+          265,
+          215
+        ],
+        "bounds": {
+          "left": 346,
+          "top": 369,
+          "right": 876,
+          "bottom": 799
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 8000314,
+          "x": 611,
+          "y": 584,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        }
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 741000,
+        "client": [
+          265,
+          275
+        ],
+        "bounds": {
+          "left": 86,
+          "top": 109,
+          "right": 616,
+          "bottom": 539
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 6296530,
+          "x": 351,
+          "y": 384,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        }
+      }
+    ],
+    "button": "Stop routing",
+    "b": {
+      "pid": 741000,
+      "cursor": [
+        2195,
+        1100
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": -2.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 2,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 4036
+    }
+  },
+  "1": {
+    "a": {
+      "pid": 748644,
+      "cursor": [
+        611,
+        584
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 1,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 906
+    },
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 748644,
+        "client": [
+          265,
+          215
+        ],
+        "bounds": {
+          "left": 346,
+          "top": 369,
+          "right": 876,
+          "bottom": 799
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 8000314,
+          "x": 611,
+          "y": 584,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        }
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 741000,
+        "client": [
+          265,
+          215
+        ],
+        "bounds": {
+          "left": 86,
+          "top": 109,
+          "right": 616,
+          "bottom": 539
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 6296530,
+          "x": 351,
+          "y": 324,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        }
+      }
+    ],
+    "button": "Start routing",
+    "b": {
+      "pid": 741000,
+      "cursor": [
+        351,
+        324
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 1,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 921
+    }
+  },
+  "12": {
+    "a": {
+      "pid": 748644,
+      "cursor": [
+        611,
+        584
+      ],
+      "test_keys": 1,
+      "buttons": 1,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 3,
+      "mouse_clicks": 2,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 1732
+    },
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 748644,
+        "client": [
+          265,
+          215
+        ],
+        "bounds": {
+          "left": 346,
+          "top": 369,
+          "right": 876,
+          "bottom": 799
+        },
+        "buttons": [
+          1
+        ],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 8000314,
+          "x": 611,
+          "y": 584,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        }
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 741000,
+        "client": [
+          265,
+          275
+        ],
+        "bounds": {
+          "left": 86,
+          "top": 109,
+          "right": 616,
+          "bottom": 539
+        },
+        "buttons": [
+          4
+        ],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 6296530,
+          "x": 351,
+          "y": 384,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        }
+      }
+    ],
+    "button": "1 Tap W",
+    "b": {
+      "pid": 741000,
+      "cursor": [
+        351,
+        384
+      ],
+      "test_keys": 1,
+      "buttons": 2,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": -2.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 2,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 2999
+    }
+  },
+  "4": {
+    "a": {
+      "pid": 748644,
+      "cursor": [
+        651,
+        584
+      ],
+      "test_keys": 1,
+      "buttons": 1,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 1266
+    },
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 748644,
+        "client": [
+          305,
+          215
+        ],
+        "bounds": {
+          "left": 346,
+          "top": 369,
+          "right": 876,
+          "bottom": 799
+        },
+        "buttons": [
+          1
+        ],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 8000314,
+          "x": 651,
+          "y": 584,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        }
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 741000,
+        "client": [
+          265,
+          275
+        ],
+        "bounds": {
+          "left": 86,
+          "top": 109,
+          "right": 616,
+          "bottom": 539
+        },
+        "buttons": [
+          4
+        ],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 6296530,
+          "x": 351,
+          "y": 384,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        }
+      }
+    ],
+    "button": "2 Down",
+    "b": {
+      "pid": 741000,
+      "cursor": [
+        351,
+        384
+      ],
+      "test_keys": 1,
+      "buttons": 2,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 1559
+    }
+  },
+  "14": {
+    "a": {
+      "pid": 748644,
+      "cursor": [
+        611,
+        584
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 3,
+      "mouse_clicks": 2,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 1906
+    },
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 748644,
+        "client": [
+          265,
+          215
+        ],
+        "bounds": {
+          "left": 346,
+          "top": 369,
+          "right": 876,
+          "bottom": 799
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 8000314,
+          "x": 611,
+          "y": 584,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        }
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 741000,
+        "client": [
+          265,
+          275
+        ],
+        "bounds": {
+          "left": 86,
+          "top": 109,
+          "right": 616,
+          "bottom": 539
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 6296530,
+          "x": 351,
+          "y": 384,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        }
+      }
+    ],
+    "button": "Configure user",
+    "b": {
+      "pid": 741000,
+      "cursor": [
+        351,
+        384
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": -2.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 2,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 3363
+    }
+  },
+  "13": {
+    "a": {
+      "pid": 748644,
+      "cursor": [
+        611,
+        584
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 3,
+      "mouse_clicks": 2,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 1884
+    },
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 748644,
+        "client": [
+          265,
+          215
+        ],
+        "bounds": {
+          "left": 346,
+          "top": 369,
+          "right": 876,
+          "bottom": 799
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 8000314,
+          "x": 611,
+          "y": 584,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        }
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 741000,
+        "client": [
+          265,
+          275
+        ],
+        "bounds": {
+          "left": 86,
+          "top": 109,
+          "right": 616,
+          "bottom": 539
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 6296530,
+          "x": 351,
+          "y": 384,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        }
+      }
+    ],
+    "button": "Release all users",
+    "b": {
+      "pid": 741000,
+      "cursor": [
+        351,
+        384
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": -2.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 2,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 3173
+    }
+  },
+  "3": {
+    "a": {
+      "pid": 748644,
+      "cursor": [
+        651,
+        584
+      ],
+      "test_keys": 1,
+      "buttons": 1,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 1244
+    },
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 748644,
+        "client": [
+          305,
+          215
+        ],
+        "bounds": {
+          "left": 346,
+          "top": 369,
+          "right": 876,
+          "bottom": 799
+        },
+        "buttons": [
+          1
+        ],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 8000314,
+          "x": 651,
+          "y": 584,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        }
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 741000,
+        "client": [
+          265,
+          215
+        ],
+        "bounds": {
+          "left": 86,
+          "top": 109,
+          "right": 616,
+          "bottom": 539
+        },
+        "buttons": [
+          4
+        ],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 6296530,
+          "x": 351,
+          "y": 324,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        }
+      }
+    ],
+    "button": "1 Right",
+    "b": {
+      "pid": 741000,
+      "cursor": [
+        351,
+        324
+      ],
+      "test_keys": 1,
+      "buttons": 2,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 1,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 1372
+    }
+  },
+  "7": {
+    "a": {
+      "pid": 748644,
+      "cursor": [
+        651,
+        584
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 1322
+    },
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 748644,
+        "client": [
+          305,
+          215
+        ],
+        "bounds": {
+          "left": 346,
+          "top": 369,
+          "right": 876,
+          "bottom": 799
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 8000314,
+          "x": 651,
+          "y": 584,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        }
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 741000,
+        "client": [
+          265,
+          275
+        ],
+        "bounds": {
+          "left": 86,
+          "top": 109,
+          "right": 616,
+          "bottom": 539
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 6296530,
+          "x": 351,
+          "y": 384,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        }
+      }
+    ],
+    "button": "Pause",
+    "b": {
+      "pid": 741000,
+      "cursor": [
+        351,
+        384
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": -2.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 2125
+    }
+  },
+  "15": {
+    "a": {
+      "pid": 748644,
+      "cursor": [
+        611,
+        584
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 3,
+      "mouse_clicks": 2,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 1999
+    },
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 748644,
+        "client": [
+          265,
+          215
+        ],
+        "bounds": {
+          "left": 346,
+          "top": 369,
+          "right": 876,
+          "bottom": 799
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 8000314,
+          "x": 611,
+          "y": 584,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        }
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 741000,
+        "client": [
+          265,
+          275
+        ],
+        "bounds": {
+          "left": 86,
+          "top": 109,
+          "right": 616,
+          "bottom": 539
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 6296530,
+          "x": 351,
+          "y": 384,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        }
+      }
+    ],
+    "button": "Theme",
+    "b": {
+      "pid": 741000,
+      "cursor": [
+        351,
+        384
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": -2.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 2,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 3534
+    }
+  },
+  "9": {
+    "a": {
+      "pid": 748644,
+      "cursor": [
+        651,
+        584
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 1500
+    },
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 748644,
+        "client": [
+          305,
+          215
+        ],
+        "bounds": {
+          "left": 346,
+          "top": 369,
+          "right": 876,
+          "bottom": 799
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 8000314,
+          "x": 651,
+          "y": 584,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        }
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 741000,
+        "client": [
+          265,
+          275
+        ],
+        "bounds": {
+          "left": 86,
+          "top": 109,
+          "right": 616,
+          "bottom": 539
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 6296530,
+          "x": 351,
+          "y": 384,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        }
+      }
+    ],
+    "button": "Resume",
+    "b": {
+      "pid": 741000,
+      "cursor": [
+        351,
+        384
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": -2.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 2481
+    }
+  },
+  "8": {
+    "a": {
+      "pid": 748644,
+      "cursor": [
+        651,
+        584
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 1372
+    },
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 748644,
+        "client": [
+          305,
+          215
+        ],
+        "bounds": {
+          "left": 346,
+          "top": 369,
+          "right": 876,
+          "bottom": 799
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 8000314,
+          "x": 651,
+          "y": 584,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        }
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 741000,
+        "client": [
+          265,
+          275
+        ],
+        "bounds": {
+          "left": 86,
+          "top": 109,
+          "right": 616,
+          "bottom": 539
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 6296530,
+          "x": 351,
+          "y": 384,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        }
+      }
+    ],
+    "button": "1 Right",
+    "b": {
+      "pid": 741000,
+      "cursor": [
+        351,
+        384
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": -2.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 2294
+    }
+  },
+  "5": {
+    "a": {
+      "pid": 748644,
+      "cursor": [
+        651,
+        584
+      ],
+      "test_keys": 1,
+      "buttons": 1,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 1275
+    },
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 748644,
+        "client": [
+          305,
+          215
+        ],
+        "bounds": {
+          "left": 346,
+          "top": 369,
+          "right": 876,
+          "bottom": 799
+        },
+        "buttons": [
+          1
+        ],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 8000314,
+          "x": 651,
+          "y": 584,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        }
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 741000,
+        "client": [
+          265,
+          275
+        ],
+        "bounds": {
+          "left": 86,
+          "top": 109,
+          "right": 616,
+          "bottom": 539
+        },
+        "buttons": [
+          4
+        ],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 6296530,
+          "x": 351,
+          "y": 384,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        }
+      }
+    ],
+    "button": "1 Wheel",
+    "b": {
+      "pid": 741000,
+      "cursor": [
+        351,
+        384
+      ],
+      "test_keys": 1,
+      "buttons": 2,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 1746
+    }
+  },
+  "11": {
+    "a": {
+      "pid": 748644,
+      "cursor": [
+        611,
+        584
+      ],
+      "test_keys": 1,
+      "buttons": 1,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 3,
+      "mouse_clicks": 2,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 1598
+    },
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 748644,
+        "client": [
+          265,
+          215
+        ],
+        "bounds": {
+          "left": 346,
+          "top": 369,
+          "right": 876,
+          "bottom": 799
+        },
+        "buttons": [
+          1
+        ],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 8000314,
+          "x": 611,
+          "y": 584,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        }
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 741000,
+        "client": [
+          265,
+          275
+        ],
+        "bounds": {
+          "left": 86,
+          "top": 109,
+          "right": 616,
+          "bottom": 539
+        },
+        "buttons": [
+          4
+        ],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 6296530,
+          "x": 351,
+          "y": 384,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        }
+      }
+    ],
+    "button": "Hold all users",
+    "b": {
+      "pid": 741000,
+      "cursor": [
+        351,
+        384
+      ],
+      "test_keys": 1,
+      "buttons": 2,
+      "drag_moves": 1,
+      "wheel_events": 1,
+      "wheel_delta": -2.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 2,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 2825
+    }
+  }
+}

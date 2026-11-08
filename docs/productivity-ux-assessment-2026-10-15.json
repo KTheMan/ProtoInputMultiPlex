@@ -1,0 +1,190 @@
+{
+  "decision": "APPROVED_BOUNDED",
+  "date": "2026-10-15",
+  "scope": "Compact Virtual Replicas, Macro Studio and Replication Graph presentation plus successful attachment-completion integration. Full UX/Ultra parity remains incomplete.",
+  "phase_counts": {
+    "actual_observations": 61,
+    "actual_clicks": 59,
+    "disabled_observations": 2,
+    "accepted_receipts": 60,
+    "note": "61 phase observations are not 61 distinct controls; one initial fixture Start failed because a PID lease persisted. Accepted prefixes and corrected image boundaries are retained."
+  },
+  "phases": [
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-productivity-ux-20261015-011951\\evidence.json",
+      "sha256": "786cd42fde2f16e4a781defeb700d7edb727eb04c5cc009303c94527698821a2",
+      "raw_status_preserved": "NOT ACCEPTED",
+      "accepted_receipts": 16,
+      "actual_observations": 17,
+      "clicks": 17,
+      "disabled_observations": 0,
+      "terminal_exec": 16501,
+      "exit_code": 1
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-productivity-ux-20261015-012439\\evidence.json",
+      "sha256": "e07752d90987f3c112c16b0ff6459cdb1c15b552652221321b1a31df5f808fc7",
+      "raw_status_preserved": "PENDING INDEPENDENT VISUAL REVIEW",
+      "accepted_receipts": 17,
+      "actual_observations": 17,
+      "clicks": 17,
+      "disabled_observations": 0,
+      "terminal_exec": 45849,
+      "exit_code": 0,
+      "separate_review": {
+        "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-productivity-ux-20261015-012439\\independent-visual-review.json",
+        "sha256": "da6b99ea3c373ab83cc74d5d90cda359b6bc62fb76c8267dd3e2f7c6f245328b"
+      }
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-productivity-ux-20261015-013410\\evidence.json",
+      "sha256": "e2db3f0d91eb6783575a55001c302500fde40eafa55707506dc0386a83a79a0a",
+      "raw_status_preserved": "PENDING INDEPENDENT VISUAL REVIEW",
+      "accepted_receipts": 18,
+      "actual_observations": 18,
+      "clicks": 17,
+      "disabled_observations": 1,
+      "terminal_exec": 52763,
+      "exit_code": 0,
+      "separate_review": {
+        "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-productivity-ux-20261015-013410\\independent-visual-review.json",
+        "sha256": "e9f66bb015f2dc42c8b9b8eac049210489f77547819a9eaaee9f2d6c2842f731"
+      }
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-productivity-vu-ux-20261015-014507\\evidence.json",
+      "sha256": "848a53047eaec9e01cb75b8486e93f9bac6aefb0c78ec3aa1114077d0c2a48c1",
+      "raw_status_preserved": "PENDING INDEPENDENT VISUAL REVIEW",
+      "accepted_receipts": 9,
+      "actual_observations": 9,
+      "clicks": 8,
+      "disabled_observations": 1,
+      "terminal_exec": 31132,
+      "exit_code": 0,
+      "separate_review": {
+        "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-productivity-vu-ux-20261015-014507\\independent-visual-review.json",
+        "sha256": "427a2cff1713a7af2490fab6a7eada1d12d9eb9634ada5ab35b2065bff6dce83"
+      }
+    }
+  ],
+  "accepted_outcomes": [
+    "Graph staged/applied topology and duplicate error remain distinct; successful connected attachment to owned C completes without stale Preparing footer or clearing the page error. Visible transient progress was not observed.",
+    "VU local Start/Select/Stop ACKs preserve unrelated profile state; final normal/minimum rows are bounded and full stable/source identities wrap readably across vertical views.",
+    "Macro final idle emphasis and agent recording owner/whole Discard at minimum are clear; actual local discard ends the empty agent candidate without unrelated profile mutation.",
+    "Preferences remain byte-identical in focused tails; owned GUI, probes, overlays, transport handles and private registry keys clean up."
+  ],
+  "accepted_originals": [
+    {
+      "name": "graph-staged-normal",
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-productivity-ux-20261015-011951\\graph-staged-normal.png",
+      "sha256": "a433d684209fbbe7aa39df062a15a5f1ec06464f996286233dac81ba06f6fd6e",
+      "producer": "011706",
+      "direct_original_pixels_reviewed": true
+    },
+    {
+      "name": "graph-error-after-attach-minimum",
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-productivity-ux-20261015-011951\\graph-error-after-attach-minimum.png",
+      "sha256": "5d14a77cb06f8d88667c4f589cb9848955c9bd98c830759163c779abcb40642b",
+      "producer": "011706",
+      "direct_original_pixels_reviewed": true
+    },
+    {
+      "name": "macro-idle-normal",
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-productivity-ux-20261015-013410\\macro-idle-normal.png",
+      "sha256": "15cc05653809210ce72dced3d6c4ddedc381bd99582b160b076346c7280d3c75",
+      "producer": "013048",
+      "direct_original_pixels_reviewed": true
+    },
+    {
+      "name": "macro-agent-active-minimum",
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-productivity-ux-20261015-013410\\macro-agent-active-minimum.png",
+      "sha256": "5630cc4bc39b4da7645f4c70f3586ee94ec593003f4e753e240d99f5e077b62b",
+      "producer": "013048",
+      "direct_original_pixels_reviewed": true
+    },
+    {
+      "name": "replica-active-normal",
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-productivity-vu-ux-20261015-014507\\replica-active-normal.png",
+      "sha256": "d9f456c6a12218392799f34cb9d9c1521b84de6eeee1d8d18cc32f937ca39498",
+      "producer": "014251",
+      "direct_original_pixels_reviewed": true
+    },
+    {
+      "name": "replica-selected-tombstone-minimum",
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-productivity-vu-ux-20261015-014507\\replica-selected-tombstone-minimum.png",
+      "sha256": "58d563a5f41e0579408f66a6ef7e25fac47aa771f5c50556910865b0467685c6",
+      "producer": "014251",
+      "direct_original_pixels_reviewed": true
+    },
+    {
+      "name": "replica-identities-bottom-minimum",
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-productivity-vu-ux-20261015-014507\\replica-identities-bottom-minimum.png",
+      "sha256": "72cd502b3a256ff6f7776852e034d44c2904f78fc3d303d8501dd66b98df573b",
+      "producer": "014251",
+      "direct_original_pixels_reviewed": true
+    }
+  ],
+  "producers": [
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-productivity-ux-20261015-011706\\verification.json",
+      "sha256": "0ab053ae5f424b9c950378417c179d1f86bde0954ba56300f3af868cc4df5fc6",
+      "checks": "fmt, strict workspace/all-target Clippy,185 workspace tests,x64+i686 builds",
+      "build_sha256": {
+        "x64": "ae7b32c24662a17df80b16b1f3749e40facb7e081026a0aba311b1a787cb2a2e",
+        "i686": "bcc7b391cbcb8e039267ce8d828518bfdc8a6b7eb8ef9caf05f040cf589aaa2e"
+      }
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-productivity-ux-20261015-013048\\verification.json",
+      "sha256": "2098086d37d62709382d7f95c1249562e7fcadfd8491ffb8b2af774fc28f53a7",
+      "checks": "fmt, strict workspace/all-target Clippy,185 workspace tests,x64+i686 builds",
+      "build_sha256": {
+        "x64": "23b84dcd046c8b7a288671fa5ee9dce5bf0b1fcb515eb34d0ae79374b6801ff3",
+        "i686": "ad4216adbf8ba4b6658f8e8c3c8220902f790a6022937828b3dee5f8f77f5412"
+      }
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-productivity-ux-20261015-014251\\verification.json",
+      "sha256": "ba5aee4ba397c2fa5c946508b6cce2004532edf6d821a9b51a22967b01924dca",
+      "checks": "fmt, strict workspace/all-target Clippy,185 workspace tests,x64+i686 builds",
+      "build_sha256": {
+        "x64": "061f32b88818ec0c9d08a2de4e98eb8cfb850536a8293b0141a43f06d4b809d5",
+        "i686": "55d5863d49b346ee5ca954285b13c1fc06a0301dc3a319aadefd981c2bf5cac4"
+      }
+    }
+  ],
+  "source_review": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\docs\\productivity-ux-source-review-2026-10-15.json",
+    "sha256": "310f3cb2e418f2ef66fd74d0aa0b495829a1fd3372629ffddb62bffe7b48ef42"
+  },
+  "runner_references": [
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\scripts\\test-productivity-ux-ui.py",
+      "sha256": "3ebbeec08d3b67a63d4d77ea8cbcf2f4a5bd1168188bda542e418b618fc750c3"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\scripts\\test-productivity-ux-tail.py",
+      "sha256": "d1517de7b13488486fa75e3a6070001502491ae89d24fd3722bf020a515ae71d"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\scripts\\test-productivity-ux-visual-tail.py",
+      "sha256": "ca4109b35cb8969ee290c9d289a8af48b41097baaec9d6cbbd4509554813feae"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\scripts\\test-productivity-vu-visual-tail.py",
+      "sha256": "8f94f02a583fe7f6f915d431dd9a68cec0b2b25589602f83f42fce11908c1056"
+    }
+  ],
+  "cleanup": {
+    "all_four_phases_owned_resources_closed": true,
+    "final_scoped_product_CIM_remaining": 0,
+    "final_private_GUID_present": false,
+    "exclusive_native_slot": "returned"
+  },
+  "limits": [
+    "i686 was built/copied but never executed. Each native phase used three disposable owned x64 probes and app-local virtual control only; no hardware/RustDesk/OS input injection/private desktop capture.",
+    "Synthetic tests cover failed/mismatched attachment completion and retained EventBus handling; outstanding page-pending isolation is source-reviewed only, not a native forced-failure race.",
+    "Graph minimum frame proves readable error/status, not whole Apply visibility or maximum scroll reach. Full stable identities are proved across separate final minimum views; hover/accessibility labels were source-reviewed, not interaction-tested.",
+    "No old graph/clone/recording algorithm-family replay, benchmark, generic application compatibility, full Unicode, full UI or Ultra parity claim. Earlier raw NOT ACCEPTED/PENDING and visual rejection artifacts remain unchanged."
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "result": "PASS",
+  "date": "2026-10-14",
+  "checks": [
+    {
+      "command": [
+        "cargo",
+        "fmt",
+        "--all",
+        "--check"
+      ],
+      "exit_code": 0,
+      "log": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-output-rules-20261014-104128\\1.log"
+    },
+    {
+      "command": [
+        "cargo",
+        "clippy",
+        "--workspace",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit_code": 0,
+      "log": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-output-rules-20261014-104128\\2.log"
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--workspace"
+      ],
+      "exit_code": 0,
+      "log": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-output-rules-20261014-104128\\3.log"
+    },
+    {
+      "command": [
+        "cargo",
+        "build",
+        "--workspace"
+      ],
+      "exit_code": 0,
+      "log": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-output-rules-20261014-104128\\4.log"
+    },
+    {
+      "command": [
+        "cargo",
+        "build",
+        "--workspace",
+        "--target",
+        "i686-pc-windows-msvc"
+      ],
+      "exit_code": 0,
+      "log": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-output-rules-20261014-104128\\5.log"
+    }
+  ],
+  "workspace_tests": 106,
+  "build_paths": {
+    "x64": "E:\\.cargo\\target\\debug\\protoinputmux.exe",
+    "i686": "E:\\.cargo\\target\\i686-pc-windows-msvc\\debug\\protoinputmux.exe"
+  },
+  "build_sha256": {
+    "x64": "16a6b2fb781b623534502b9eb41766de45258accef896048ca6104ccefeec2f6",
+    "i686": "0f8ea500e557a10143fdb62a0b0f44d15641d68837bf5949d419412672a373b0"
+  },
+  "record_recovery": "All five commands reported exit 0; initial metadata writer failed on a guessed workspace target path. Recovered from completed logs and actual CARGO_TARGET_DIR binaries without rerunning checks."
+}

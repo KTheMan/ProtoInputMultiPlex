@@ -1,0 +1,69 @@
+{
+  "date": "2026-11-06",
+  "decision": "DISPLAY_APPLY_ACCEPTED",
+  "scope": "Cached desktop bounds for per-user cursor validation and a single live Apply forwarded to authoritative routing worker validation.",
+  "verification": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\gui-display-apply-20261106\\checks-001\\verification.json",
+    "sha256": "5230e498bf6c4e8edc6047126679eadf2bb6fe431c34b1f8cc9760aa34669812"
+  },
+  "review": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\gui-display-apply-20261106\\independent-acceptance.json",
+    "sha256": "39eaa4e35f16e7c445cc3df195c4e227e8483b2d7424f3a1b9a9b7a20527e49a"
+  },
+  "publication": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\gui-display-apply-20261106\\publication.json",
+    "sha256": "ce4019cccf16a9da69cfc0e40d442526794f8eedb786a6ca87f3225d33cefc2a"
+  },
+  "workspace_tests": {
+    "passed": 758,
+    "failed": 0,
+    "ignored": 19
+  },
+  "x64_image": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\gui-display-apply-20261106\\checks-001\\x64\\protoinputmultiplex.exe",
+    "sha256": "aa870cd237221d4167a0bfbc3d9f0820d60ef87f78e2f69296509db2cafcb41e"
+  },
+  "checks": {
+    "fmt": 0,
+    "clippy": 0,
+    "workspace-tests": 0,
+    "build-gui": 0
+  },
+  "native": {
+    "original_session": 41770,
+    "original_exit_code": 0,
+    "raw": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\da-007c7e3cedad\\evidence.json",
+      "sha256": "196341c901803b342557fbbe61428e74a69d4bafadf62fc97c60f1af44cfb760"
+    },
+    "driver": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\gui-display-apply-20261106\\native.py",
+      "sha256": "ec26b8f3bb87e77ee23acaf7c07c5d890a7a1e62cfc77f032c88cfc5fcbdddd5"
+    },
+    "readiness": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\gui-display-apply-20261106\\native-ready.json",
+      "sha256": "e6a8ead1e4f0082665f5c21f7cc76c31e19c2956102f9f35611ecbca96408c76"
+    },
+    "exit_codes": {
+      "GUI": 0,
+      "MCP": [
+        0
+      ],
+      "targets": {
+        "a": 0,
+        "b": 0
+      }
+    },
+    "UI_actions": 17
+  },
+  "coverage": [
+    "One owned x64 GUI reached Keyboard and answered a window probe before the initial 12-second discovery delay elapsed.",
+    "One live Ouroboros Apply disabled user A's virtual keyboard. The correlated GUI acknowledgement and MCP readback agreed, and the owned target released its held F6. User B's settings and input trace were unchanged. The GUI, MCP client and two owned x64 target windows closed normally.",
+    "Rust tests cover negative-origin cached bounds, absent/invalid geometry, Region overlap, independent monitor results, and existing routing worker rejection before input effects."
+  ],
+  "open": [
+    "The historical intermittent stall and minimized Quit remain open.",
+    "A pinned Glow screenshot readback can occur after application callbacks return. It is a separate possible diagnostic boundary. This run does not identify the historical cause.",
+    "A Region can be transiently unavailable until the next discovery sample. The live worker still validates current geometry before input ownership changes. No native display removal or arbitrary topology matrix was exercised."
+  ]
+}

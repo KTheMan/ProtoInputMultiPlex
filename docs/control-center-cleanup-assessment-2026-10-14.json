@@ -1,0 +1,115 @@
+{
+  "result": "PASS",
+  "date": "2026-10-14",
+  "reviewer": "Independent acceptance subagent",
+  "scope": "Compact original Home hierarchy, owned-window geometry, roster/secondary-page navigation, default-off Agent Access preservation, one virtual lifecycle prefix plus final Stop, and restored automatic-targeting configuration. No full Ultra UX or visual-equivalence claim.",
+  "builds": {
+    "initial_setup_and_minimum_failure": {
+      "x64": "3b5dcd12767ed84308afa977d11f345d93f82992770953c0c6ebd8ed18711d68",
+      "i686": "3b656cc9abaf73289744d9f8c4512fa01cf96031c5ff08bd3e0bd71275093f2c"
+    },
+    "accepted_navigation_and_pause_resume_prefix": {
+      "x64": "7bd6ee74ac032b4edec3a04882bff357d3fd3b86a3e8f35c67c42a3a6c2c18e1",
+      "i686": "4dad2c7d3294012d366e6d73ca3e70cd989dc628a4b6eddda61208dace042ac6"
+    },
+    "accepted_column_visual_and_stop_tail": {
+      "x64": "d32a169f3af0c40f26665d99f0becab5aa38b7ffd6028560db36fac4c72248c1",
+      "i686": "80695fa408a37a6236861dfd6deaa75f0ba9ad366e7d1926915a0d4383f2e479"
+    },
+    "accepted_restored_routing_options": {
+      "x64": "9689fe947f0906a6bc0d04d278a98caad34af88f6d8244aa0d1eb8271129cc3c",
+      "i686": "816c5960d0e220b1a165e77d29d59575775898b6d23a088080e325d63103df31"
+    },
+    "provenance": "Product changes are gui.rs only. Footer correction precedes navigation/Pause proof; row allocation correction changes only pixels; final correction restores existing automatic-targeting control and adds current-policy summary/observation. Backend, routing engine, MCP schemas/permissions and native V3 runtime remain unchanged. Accepted phases are not recast onto later hashes."
+  },
+  "accepted": [
+    "Real initial Home is rendered without a scripted Lab/page override. Own HWND client geometry is420x600 logical pixels; own-window resize to360x480 and actual product PNGs show bounded long names, readable compact Latin typography, users first, quiet hierarchy, visible route action and full pinned Configure user/Settings/Minimize footer without outer scrolling. Twelve-row roster scrolls and actual Select user12 reaches its independently viewed Owned LAST12 Configure heading.",
+    "Fifteen actual offline controls reach Configure, Settings/Profiles, Input Lab and Agent Access, then Back to Home. Secondary viewport is900x720 and Back returns420x600; complete canonical profile stays unchanged, no worker starts and default-off Agent Access remains off.",
+    "Column-only visual tail independently verifies fixed right-aligned R/P/K values under their headers for short/long names at both supported sizes. Root separately reviewed the same exact saved images before the Stop tail.",
+    "Twenty accepted controls in an intentionally interrupted live prefix establish actual F5/F6 DOWN in own x64/x86 targets, navigation while held without profile/grant changes, Home Pause actual plain UP and Resume with the same overlay HWNDs/session. The original aggregate remains NOT ACCEPTED because its final Stop sequence was interrupted.",
+    "Eleven-control fresh Stop tail establishes actual F5/F6 DOWN again, returns Home, and receives exact paired plain UP before Stop completion with destroyed overlay HWNDs. An existing held Home stage retains a safe ASCII-user active-session image; no extra app launch was made for presentation.",
+    "Four final DLL-free controls open Routing options, enable Automatic window targeting from desktopNone (Switched, multi_keyboardtrue, empty PID scope), disable it and collapse. ON changes only desktop configuration in the seeded concurrenttrue/lockfalse profile; OFF restores the complete original profile. No worker starts. Exact final open/collapsed images show accurate current-policy summary and fully visible footer."
+  ],
+  "counts": {
+    "substantive_groups": 4,
+    "offline_navigation_clicks": 15,
+    "interrupted_live_prefix_accepted_clicks": 20,
+    "column_visual_tail_clicks": 1,
+    "fresh_stop_tail_clicks": 11,
+    "routing_options_tail_clicks": 4,
+    "original_not_accepted_aggregates": 3,
+    "root_column_rejection_records": 1,
+    "note": "Occurrences include setup/repeated navigation; they are not distinct feature counts or a parity percentage. No15-control navigation or20-control Pause/Resume replay was run after pixel-only changes."
+  },
+  "retained_failures_and_corrections": [
+    {
+      "artifact": "docs/control-center-setup-failure-2026-10-14.json",
+      "original_result": "NOT ACCEPTED",
+      "accepted_scope": "None.",
+      "cause": "Observer saw a transient visible16x16 zero-client winit helper before the product frame. Runner now waits for a product PNG and positive client area; actual compact geometry criterion unchanged."
+    },
+    {
+      "artifact": "docs/control-center-minimum-defect-2026-10-14.json",
+      "original_result": "NOT ACCEPTED",
+      "accepted_scope": "Default420x600 image only; no accepted navigation.",
+      "cause": "Actual360x480 Home clipped the footer. Product correction pins footer outside body scrolling and adapts roster height; later actual minimum pixels verify it."
+    },
+    {
+      "artifact": "docs/control-center-pause-resume-prefix-2026-10-14.json",
+      "original_result": "NOT ACCEPTED",
+      "accepted_scope": "Only20 recorded passed controls, including actual input and Pause UP/Resume.",
+      "cause": "Root pixel-review stop request crossed launch. Exact owned GUI was intentionally closed; this was not a spontaneous product crash or no-input setup. Separate interruption record is byte-exact archived."
+    },
+    {
+      "artifact": "docs/control-center-column-review-2026-10-14.json",
+      "original_result": "NOT ACCEPTED",
+      "accepted_scope": "Earlier offline PASS remains its original status and retains navigation/footer evidence, not final column acceptance.",
+      "cause": "Root found R/P/K values following short names rather than fixed columns. Column-only product correction is independently verified in the visual tail."
+    },
+    {
+      "artifact": "docs/control-center-footer-review-error-2026-10-14.json",
+      "accepted_scope": "None; mistaken footer interpretation only.",
+      "cause": "I misread the multi-image output as missing the final footer. Independent re-review of each exact unchanged original at original detail, matching hashes and actual footer RGB region, confirms all three buttons fully visible. Original rejection is retained and the separate corrected review documents the interpretation error. No product/code/app rerun or criterion waiver."
+    }
+  ],
+  "limits": [
+    "Virtual paths, owned files/apps and own product/GUI images only. No hardware/RustDesk input used for control or validation and no OS input injection. Startup device discovery/passive observation is not claimed disabled.",
+    "GUI/controller runs x64; own native targets include x64 and x86. i686 is built/copied/hashed and exercised as target, not as a separate GUI controller. Actual geometry samples are on this96-DPI host; no mixed-DPI or exhaustive platform coverage.",
+    "Minimum/default geometry and column pixels are sampled on d32a/8069; final9689/816c samples restored controls/current policy at420x600. The final GUI-only branch/header correction did not replay the minimum, navigation, Pause/Resume or Stop phases.",
+    "Latin typography and compact hierarchy are independently visually reviewed. CJK fixture glyph boxes persist; Unicode UI glyph readability, exact MouseMux layout cloning, complete UX/accessibility parity and every advanced tool workflow remain unclaimed.",
+    "Agent Access navigation preserves tested default-off grants only; pre-existing enabled grants/connected clients were not re-exercised.22-tool inventory/object schemas are unchanged and checked during fixture discovery; this group is not a fresh full MCP feature acceptance.",
+    "No tray/startup lifecycle, Stop-to-Start hotkey handoff, hardware, arbitrary target applications, same-process multi-user isolation or historical feature suite replay. Synthetic PIDs in offline profiles are validation data and never attached."
+  ],
+  "cleanup": {
+    "all_recorded_owned_processes_closed": true,
+    "final_owned_path_cim_audit": "empty",
+    "exclusive_slot_returned": true
+  },
+  "producer_checks": [
+    {
+      "path": "docs/control-center-initial-producer-checks-2026-10-14.json",
+      "sha256": "3a1323129beb153a4f687a270b2cf26b8d05cc81d5a07ba2503bb3415453f7e2"
+    },
+    {
+      "path": "docs/control-center-footer-producer-checks-2026-10-14.json",
+      "sha256": "57b75ca0b53f61b9ee1c471d3cbeeaa7136408c698fb0ceb216fe42c776ea122"
+    },
+    {
+      "path": "docs/control-center-alignment-producer-checks-2026-10-14.json",
+      "sha256": "d9e3e159323e71b30f439f56b557bd85b57a71cc8bc3e45fc006500a0a289c37"
+    },
+    {
+      "path": "docs/control-center-rust-checks-2026-10-14.json",
+      "sha256": "dcd6cdc4739518ddde56c41e99dfa7dc875d7ee5a0d071cd96583b46c8e7d923"
+    }
+  ],
+  "producer_scope": "Relevant frozen bundles pass fmt, strict Clippy,125 workspace tests and x64/i686 builds. Producer checks are separate from this independent visual/control/native evidence.",
+  "evidence_manifest": "docs/control-center-cleanup-evidence-manifest-2026-10-14.json",
+  "evidence_manifest_sha256": "65816ff2262942f67828a568831de9934f5cbbfe223a2c8254fe786362aa426b",
+  "user_facing_image": {
+    "original": "runtime/acceptance-graph-control-center-routing-options-20261014-153053/home-current.png",
+    "archive": "docs/control-center-home.png",
+    "sha256": "ef59d451c7a8904dc05019cf6d50e6b6438e4db168c8477f488e4d697de4e611"
+  },
+  "visual_review": "All eight archived images were independently inspected as safe own GUI. Final home-current/open-options footer visibility was rechecked from exact originals, not inferred from status metadata or diagnostic crop."
+}

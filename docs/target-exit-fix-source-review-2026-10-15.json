@@ -1,0 +1,32 @@
+{
+  "decision": "APPROVED_SOURCE_ONLY",
+  "date": "2026-10-15",
+  "file": "crates/protoinputmux/src/desktop_router.rs",
+  "current_sha256": "8bf8c1e1cd6a73af90bf6da94bbc15b8baf937142ad5eed91e44a81b2b3ae93f",
+  "baseline": {
+    "path": "runtime\\p1-target-exit-fix-base\\desktop_router.rs",
+    "sha256": "5af01b65801151ec53c4721c764dd5a45cc8645decd5ad0e881637d00389876b"
+  },
+  "protected_manifest": {
+    "path": "runtime\\producer-shared-utility-chrome-20261015-015712\\verification.json",
+    "sha256": "e8acc1d5d99c7ac93182c2a3b7e595b4e3fa9421a18cc18158ea0a3d3a7108a4",
+    "entries": 64,
+    "protected_unchanged_files": 63
+  },
+  "findings": [],
+  "reviewed": [
+    "Production release_held_token reads the stored owner and sends before removal. A failed send exits with the original token retained. Successful, absent or confirmed-dead releases remove only that token.",
+    "The same-target/VK union excludes the current token, preserving the prior first-release/no-UP and last-owner/UP semantics. Saved packet/window/source fields are retained for retry.",
+    "A vanished focused window release failure is handled within its user tick: keyboard recipient clears, held tokens and PID focus/lease remain pending; unrelated users continue. Existing process-exit handling later forgets the PID and removes dead native holds. Policy.release only clears that user root, so failure does not silently erase the selected PID lease.",
+    "The focused test invokes the exact production table transition with liveness/send closures. It proves another owner suppresses UP, the failed last-owner send retains its token, and successful retry emits the saved key-UP and removes ownership. No vendor/provider or product test hook."
+  ],
+  "required_validation": [
+    "Final mandatory producer checks including the focused regression and both builds",
+    "Fixed-image native recovery gate for target-exit continuity, B ownership, A client cleanup, fresh C pair and normal Stop; source approval alone is not native acceptance."
+  ],
+  "limits": [
+    "This reviews the diagnosed dead-HWND release path, not every possible target disappearance, movement-bound/provider failure or full P1 behavior.",
+    "A window can disappear while its process remains alive; pending release may persist until retry or process exit. This is reported rather than declared clean. Retargeting cannot be assumed to discharge an old pending hold without release.",
+    "No apps/native/Cargo were launched by this source review."
+  ]
+}

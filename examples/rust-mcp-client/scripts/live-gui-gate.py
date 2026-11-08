@@ -226,7 +226,7 @@ def main():
         put(run / "profile.json", profile)
         steps = [step("start", "Start routing"), step("settings-input", "Settings"), step("input", "Input lab"), step("move", "1 Move to point", point), step("focus-down", "1 Hold click"), step("focus-up", "1 Release click"), step("home-policy", "Back to Home"), step("settings-policy", "Settings"), step("agent", "Agent Access"), step("user-a", "Agent user 1"), step("target", f"Agent target PID {probe.pid}"), step("enable", "Enable agent access"), step("user-b-draft", "Agent user 2"), step("apply", "Apply access policy"), step("disable", "Disable agent access"), step("home-stop", "Back to Home"), step("stop", "Stop routing")]
         put(run / "ui.json", steps)
-        gui = job.launch([str(controller), "gui", "--profile", str(run / "profile.json"), "--preferences", str(preferences), "--startup-test-key", "Software\\ProtoInputMux\\Tests\\" + str(uuid.uuid4()), "--ui-script", str(run / "ui.json")], cwd=run, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        gui = job.launch([str(controller), "gui", "--profile", str(run / "profile.json"), "--preferences", str(preferences), "--startup-test-key", "Software\\ProtoInputMultiPlex\\Tests\\" + str(uuid.uuid4()), "--ui-script", str(run / "ui.json")], cwd=run, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         result.update(gui_pid=gui.pid, target_pid=probe.pid, expected_ui_controls=len(steps))
         for count, spec in enumerate(steps, 1):
             stage = spec["id"]
@@ -246,7 +246,7 @@ def main():
             if stage == "enable":
                 policy = eventually(lambda: read(run / "ui.agent.json"), lambda v: v["policy_enabled"] and not v["pending"] and v["selected_users"] == IDS[:1] and v["allowed_pids"] == [probe.pid])
                 assert not any(policy[key] for key in ["capture", "session_control", "app_preferences"])
-                matches = eventually(lambda: list(Path(tempfile.gettempdir()).glob(f"protoinputmux-agent-{gui.pid}-*.json")), lambda matches: len(matches) == 1)
+                matches = eventually(lambda: list(Path(tempfile.gettempdir()).glob(f"protoinputmultiplex-agent-{gui.pid}-*.json")), lambda matches: len(matches) == 1)
                 descriptor = matches[0]  # Kept private; never printed or serialized.
                 env = os.environ.copy()
                 env.update(PIM_TEST_SERVER=str(controller), PIM_TEST_RUNTIME=str(runtime), PIM_TEST_PREFERENCES=str(preferences), PIM_GUI_CONNECTION=str(descriptor), PIM_GUI_SLOT_APPROVED="1", PIM_GUI_TEST_PID=str(probe.pid), PIM_GUI_TEST_USER=IDS[0], PIM_GUI_TEST_X=str(point[0]), PIM_GUI_TEST_Y=str(point[1]), PIM_GUI_TEST_SYNC=str(sync), PIM_GUI_TEST_REPORT=str(run / "probe.json"), CARGO_TARGET_DIR=str(args.target_dir.resolve()), RUSTC_WRAPPER="")

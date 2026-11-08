@@ -1,0 +1,19 @@
+{
+  "decision": "INSTALLED reviewed skill; source/installed byte equality and quick validation PASS",
+  "source": "skills\\protoinputmux\\SKILL.md",
+  "installed": "C:\\Users\\Archform CAD Station\\.codex\\skills\\protoinputmux\\SKILL.md",
+  "source_installed_sha256": "7c46aecd8ea3083afd2b3407f93b4d60192eea13b144574d5f18ea13c46a2ef1",
+  "previous_installed_sha256": "612e341df8908c0eda51fbe3671400027f5681487df7f3f65ae9432799942271",
+  "backup": "runtime\\motion-coalescing-skill-before.md",
+  "doc_review": "docs/motion-coalescing-doc-review-2026-10-15.json",
+  "doc_review_sha256": "780e5bac0d25877383683af157ed60d15176e025b896d8068c2421e393dc2ba6",
+  "source_validation": {
+    "exit_code": 0,
+    "output": "Skill is valid!"
+  },
+  "installed_validation": {
+    "exit_code": 0,
+    "output": "Skill is valid!"
+  },
+  "permissions": "Existing skill/update authorization; no MCP tool/grant changes, no product/app execution"
+}

@@ -1,0 +1,84 @@
+{
+  "group": "gui_agent_broker_lifecycle",
+  "date": "2026-10-21",
+  "status": "ACCEPTED_BOUNDED_NORMAL_LIFECYCLE_CORE",
+  "behavior": [
+    "One retained Rust background owner performs broker creation, stop/join and descriptor file cleanup outside GUI callbacks.",
+    "Generation/session-epoch guards reject stale completions; enabling waits for matching broker readiness and policy acknowledgement.",
+    "Disable acknowledges policy before retirement. Home Stop latches session Stop before retirement; ordinary quit waits for both terminal session and broker cleanup."
+  ],
+  "producer": {
+    "path": "runtime/producer-gui-broker-lifecycle-20261021-attempt003/verification.json",
+    "sha256": "fb303dc14cb14453b9ade36e4d72c15126038f91bd4f51c06c6d04d4a5fe96da",
+    "checks": "fmt, strict workspace all-target Clippy, workspace tests, x64 and i686 app/observer builds all passed",
+    "tests": {
+      "passed": 489,
+      "failed": 0,
+      "ignored": 3
+    },
+    "stable_source_paths": 866
+  },
+  "independent_acceptance": {
+    "path": "runtime/native-gui-broker-lifecycle-attempt002/composed-normal-lifecycle-acceptance.json",
+    "sha256": "42a584c0f4e8c40bf3eb98916095573823e438c238c855d83a3c410dce81a78c",
+    "scope": "Reviewed x64 development build: one owned GUI and EDIT target, one virtual mouse/keyboard pair, two serial connected MCP clients; Enable/connect, Disable/cleanup/EOF, re-enable/connect, Home Stop, and owned-process cleanup with later read-only absence confirmation."
+  },
+  "observed_scope": {
+    "architecture": "x64 native; i686 build only",
+    "gui_actions": 11,
+    "serial_clients": 2,
+    "read_only_mcp_calls": 4,
+    "routing_input_calls": 0,
+    "fresh_owned_gui_captures": 5,
+    "wm_null_samples": 213,
+    "maximum_recorded_wm_null_ms": 203,
+    "ancillary_grants": false
+  },
+  "accepted_core_evidence": [
+    "All eleven GUI Script clicks were durably observed, including enable, disable, re-enable and Home Stop.",
+    "Both connected clients returned agent_session and routing_state under the exact sole-user/owned-PID policy with all ancillary grants false; four serial read-only calls, zero routing_input.",
+    "First client was live through disabled ACK, descriptor removal, cleanup-complete UI status and capture, then intentional EOF exited0. Re-enable created a distinct descriptor and client identity.",
+    "Home Stop reached controller_present=false, ready=false, stopping=false, successful generic stopped status, exact second descriptor absence and a fresh stopped Home capture.",
+    "Second MCP remained a live retained child until its cleanup EOF after the oracle timeout; the cleanup function only records that EOF receipt after checking it live. It exited0.",
+    "Five fresh app-owned captures matched recorded hashes; independently inspected enabled selection/grants, disabled cleanup, and stopped Home captures. 213 WM_NULL samples stayed within the approved bound, maximum203ms.",
+    "All four retained owned process handles were signaled with exit0. GUI/target cleanup path uses guarded ordinary WM_CLOSE; no ordinary_close_failures or forced cleanup was recorded. This is source-plus-receipt inference from cleanup, not a rewrite of raw ordinary_* milestone flags."
+  ],
+  "raw_results_preserved": {
+    "runner_result": "FAIL",
+    "original_actual_acceptance": "NOT_ACCEPTED",
+    "reason": "Unsupported empty ui.state Script snapshot oracle failed after Stop; the product does not emit a cleared Script state on SessionEvent::Stopped. These records are unchanged and are not relabelled.",
+    "composed_assessment": "This separate narrower assessment uses observed terminal launch/UI status, exact broker descriptor disappearance, fresh captures, read-only connected-state validation, retained process cleanup receipts and the later absence audit instead of treating the stale state file as live overlay evidence."
+  },
+  "evidence_identity": {
+    "producer": "runtime/producer-gui-broker-lifecycle-20261021-attempt003/verification.json",
+    "producer_sha256": "fb303dc14cb14453b9ade36e4d72c15126038f91bd4f51c06c6d04d4a5fe96da",
+    "source_go_sha256": "536b30b863216667c47ee40cf9327f46c5e49d54bbaee7b5610bc626928a8f5a",
+    "binding_projection_sha256": "3fd715274a5a3fc6ab4448bd750cb1a4bb8fdec9f9f1ec2d364dd788ff78eb38",
+    "raw_evidence_sha256": "07cfd7d7d4cfbddcd394e5d3591fec3a8b138ff54185f976625c4f172da83658",
+    "original_actual_acceptance_sha256": "ec371aba802d240e3f4e677c4e5af313d00200b9576a19c2c5e99614d1030fae",
+    "later_absence_supplement_sha256": "35f69ef346118a06d4c43fdacca8deddc2c89500fced6a3f16ce5232538173ed"
+  },
+  "later_absence_confirmation": {
+    "observation_time_utc": "2026-10-21T22:32:41.746822+00:00",
+    "method": "One separately authorized Python metadata-query subprocess; no GUI or worker launch, input, termination, deletion, or descriptor-content access.",
+    "all_four_original_pid_identities_absent": true,
+    "known_target_root_edit_and_last_overlay_hwnds_absent": true,
+    "complete_pid_scoped_top_level_window_enumeration_empty": true,
+    "both_exact_descriptor_filenames_absent": true,
+    "complete_private_staged_app_helper_image_audit_empty": true,
+    "enumerated_processes": 706,
+    "process_enumeration_end_error": 18,
+    "unknown_matching_basename_processes": [],
+    "source_runtime_integrity": true,
+    "timing_limit": "These absence results are later observations. They do not establish their exact state at the original failure timestamp or Stop click."
+  },
+  "limits": [
+    "No claim that ui.state was cleared or that an OS-wide overlay inventory was performed. Original GUI root HWND was not persisted; later original-process absence and PID-scoped EnumWindows support its absence.",
+    "No worker-process handle proof, blocked filesystem/pipe/OS teardown tests, forced-cleanup success claim, worker-panic claim or hard cleanup-time bound.",
+    "Normal virtual-only lifecycle core only. No historical GUI-stall cause/fix, hardware/RustDesk/global-input/target-injection behavior, same-process isolation, full MouseMux Ultra parity, broad group/product completion or distribution acceptance.",
+    "No replay of the eleven-click cohort was performed to remove the unsupported oracle; native attempt001 failure and attempt002 raw failure/original NOT_ACCEPTED receipts remain preserved.",
+    "The historical intermittent GUI stall remains OPEN/P1.",
+    "Blocked startup/cleanup transitions have deterministic unit coverage; this native cohort does not exercise real blocked OS calls.",
+    "Agent connection-copy UI remains an unintegrated shadow and is not covered here."
+  ]
+}

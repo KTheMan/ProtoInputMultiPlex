@@ -1,0 +1,120 @@
+{
+  "date": "2026-10-14",
+  "reviewer": "independent acceptance agent",
+  "result": "PASS",
+  "scope": "Bounded application preferences, native tray/shortcut lifecycle, scoped connected preferences, isolated startup registration, failed-cleanup quarantine and standalone controller handoff. Virtual input and owned disposable applications only.",
+  "current_build": {
+    "x64_sha256": "6797432a6a13249cdaa44036035a5fe52febd3259504e503ef52a3d28de52317",
+    "i686_sha256": "50d8818b85144a077afe770ac391b91f280edd6630ebeee180f8488def409134",
+    "producer": "runtime/producer-hidden-lifecycle-20261014-192132/verification.json",
+    "producer_checks": "fmt, strict Clippy, 135 workspace tests, x64 and i686 builds PASS; producer checks are separate from native acceptance",
+    "source_review": "docs/hidden-lifecycle-source-review-2026-10-14.json",
+    "native_runtime": "unchanged V3; docs/queue-fence-native-build-2026-10-14.json"
+  },
+  "retained_builds": [
+    {
+      "x64_sha256": "baf03e7cb20112f12f627a9af6bc592153b31bdebe34d56854d1a5907f7800bf",
+      "i686_sha256": "4685eabf1fff01e13fc37f38c034f3786a8c8707afd868637b5f5866c758c15b",
+      "scope": "Standalone document/provider PASS and original shortcut prefix. Later startup length/hidden Restore corrections are accepted only through current-image tails."
+    },
+    {
+      "x64_sha256": "75eb07f965e0d17c18d2bf5ad7d55ffc25493162cb1d2b1f1b7d0f691fb15104",
+      "i686_sha256": "5e3f68e9b29293d536ba0e8d484078cc3151d5fed68f604563ca098e29392f4e",
+      "scope": "26-control profile/conflict/close-to-tray prefix; hidden Home Restore failed and is not accepted on this image."
+    }
+  ],
+  "accepted_groups": [
+    {
+      "group": "1. Preferences documents and atomic save",
+      "evidence": "runtime/acceptance-app-lifecycle-documents-20261014-162631/evidence.json",
+      "coverage": "23-tool discovery/schema, explicit standalone write policy, complete preferences roundtrip, invalid documents/chords/actions, real rename-denying file lock preserving bytes/state and cleaning temps; profile independent."
+    },
+    {
+      "group": "2. Local GUI profile/preferences and shortcut transactions",
+      "evidence": "runtime/acceptance-graph-app-lifecycle-main-20261014-191118/evidence.json",
+      "review": "runtime/acceptance-graph-app-lifecycle-main-20261014-191118/independent-prefix-review.json",
+      "accepted_controls": 26,
+      "aggregate_remains": "NOT ACCEPTED",
+      "coverage": "Import/reset/undo profile independence; seven accepted bindings; actual conflict replacement preserves ordinary F5/F6 holds; WM_CLOSE tray hide and actual MSAA Restore. Unaccepted Home Hide criterion excluded."
+    },
+    {
+      "group": "3. Hidden GUI tray/shortcut/session ownership",
+      "prefix": "runtime/acceptance-graph-app-lifecycle-main-20261014-192509/evidence.json",
+      "review": "runtime/acceptance-graph-app-lifecycle-main-20261014-192509/independent-prefix-review.json",
+      "prefix_accepted_controls": 13,
+      "aggregate_remains": "NOT ACCEPTED",
+      "tail": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/evidence.json",
+      "tail_actual_clicks": 29,
+      "tail_setup_clicks": 12,
+      "coverage": "Same retained HWND Hide/actual MSAA Restore, native holds checked while hidden, Pause plain UP and Resume, six typed mode actions; actual menu Stop releases one plain pair per x64/x86 target, destroys overlays/descriptor, retains GUI F11; fresh target ToggleRouting Start and actual menu Quit releases F5, F11, lifecycle HWND and broker."
+    },
+    {
+      "group": "4. Connected app-preferences permission and correlation",
+      "denial_prefix": "runtime/acceptance-graph-app-lifecycle-main-20261014-193017/evidence.json",
+      "review": "runtime/acceptance-graph-app-lifecycle-main-20261014-193017/independent-prefix-review.json",
+      "prefix_accepted_controls": 12,
+      "aggregate_remains": "NOT ACCEPTED",
+      "positive_tail": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/evidence.json",
+      "coverage": "Session grant alone denies preference mutation; Apply access policy revokes old client; reconnect and observe registered client before Inspect plus two Configures, exactly three correlated current-client ACKs. Light-only merge retains zoom, full prefs restored; startup field forbidden before GUI ACK. Native events/cursor unchanged during preference writes."
+    },
+    {
+      "group": "5. Isolated startup registration and actual cold invocation",
+      "evidence": [
+        "runtime/acceptance-graph-app-lifecycle-startup-long-20261014-193909/evidence.json",
+        "runtime/acceptance-graph-al-20261014-194004/evidence.json",
+        "runtime/acceptance-graph-app-lifecycle-cold-command-20261014-194118/evidence.json"
+      ],
+      "actual_clicks": [
+        4,
+        7,
+        5
+      ],
+      "coverage": "Over-260 UTF16 command rejects before file/REG_EXPAND_SZ mutation; valid 218-unit exact command writes/removes REG_SZ only under own GUID key; exact stored command cold starts minimized with seven bindings, no routing, actual MSAA Restore/Quit and close-to-tray optout."
+    },
+    {
+      "group": "6. Truthful cleanup failure, recovery and standalone handoff",
+      "quarantine": "runtime/acceptance-graph-app-lifecycle-quarantine-20261014-194321/evidence.json",
+      "observations": {
+        "clicks": 19,
+        "disabled_controls": 2
+      },
+      "handoff": "runtime/acceptance-app-lifecycle-handoff-20261014-194512/evidence.json",
+      "coverage": "One genuine PM_NOREMOVE fence timeout produces persistent error and disabled Start; ToggleRouting/profile replacement cannot bypass old-process quarantine; exact process exit clears it and fresh virtual F6 Stop delivers plain UP. Standalone Stop immediately followed by fresh-PID Start without retry/sleep/other RPC, then clean second Stop and F11 availability."
+    }
+  ],
+  "counting": "Control counts are actual occurrences and include explicit setup/navigation; they are not summed as distinct feature tests. Original 163100 shortcut prefix has 12 accepted controls, retained rather than replayed. Quarantine21 is 19 clicks plus two truthful disabled observations.",
+  "failures_retained": {
+    "not_accepted_original_aggregates": 8,
+    "diagnostic": "runtime/acceptance-graph-app-lifecycle-restore-diagnostic-20261014-191815/evidence.json",
+    "diagnostic_result": "DIAGNOSTIC COMPLETE; feature_verdict NOT ACCEPTED",
+    "interpretation": "Original HWND discovery/UIA-environment/async sampler/path oracle and stale label/client assumptions remain recorded. Actual hidden-UI polling defect and overlong startup command boundary were fixed and independently passed current-image tails. No failed aggregate is relabeled PASS.",
+    "exact_statuses_and_hashes": "docs/app-lifecycle-evidence-manifest-2026-10-14.json"
+  },
+  "native_menu": "Actual owned native popup/HMENU item verified by name, index, PID/thread and MSAA role, invoked through IAccessible.accDoDefaultAction. This is MSAA, not UIA or direct WM_COMMAND dispatch.",
+  "cleanup": {
+    "audit": "runtime/app-lifecycle-owned-cleanup-audit-20261014.json",
+    "sha256": "878df30e1c6eecf3a7d13ba40cc66b5ebe52354a9153be9cf9b9e4b3bdcec9af",
+    "all_owned_processes_closed": true,
+    "all_GUID_registry_keys_absent": true,
+    "note": "One descriptor from forced-abort 193017 was removed by the runner only after exact owner identity and exited PID verification. This is not counted as product teardown success; normal Stop/Quit descriptor teardown was separately observed."
+  },
+  "limits": [
+    "GUI controller x64 and owned x64/x86 targets; standalone handoff uses x64 targets only. Each reattach uses fresh target processes.",
+    "No hardware/RustDesk input used for control or validation; no OS input injection, personal pixels or real Windows Run key. Actual login/logoff/reboot not exercised.",
+    "Queue-fence cleanup guarantee accepted for ordinary unfiltered GetMessage/PeekMessage PM_REMOVE only; selected-range PM_REMOVE remains excluded. One PM_NOREMOVE failure/quarantine case is not universal hung-provider compatibility.",
+    "No separate post-Restore/pre-Pause held-key poll; holds were checked while hidden and subsequent Pause delivered exact plain UP. Connected preferences writes were tested with no held keys at that point.",
+    "Partial successful registry-write rollback was not forced; long-command preflight preserves exact prior kind/bytes. Removing the final tray icon restoring a hidden GUI is source-reviewed only.",
+    "No desktop-wide or same-process multi-user isolation, full MouseMux Ultra parity, general app compatibility or full UX parity claim. Presentation approval remains separately bounded in docs/application-presentation-assessment-2026-10-14.json."
+  ],
+  "evidence": {
+    "manifest": "docs/app-lifecycle-evidence-manifest-2026-10-14.json",
+    "manifest_sha256": "d3d5037a3559da4573bf45d016a0a96d4c801a1024680060b5c2f7290416c934",
+    "archive": "docs/app-lifecycle-evidence-2026-10-14.zip",
+    "archive_sha256": "38eb5c9f7a69ec78a9e610ea778d0311cd093423f969b6cae42f2c03c48f6bc5",
+    "safe_images": [
+      "docs/app-lifecycle-control-center.png",
+      "docs/app-lifecycle-quarantine.png"
+    ]
+  },
+  "scope_control": "Accepted prefixes reused after narrowly related source fixes; no historical feature suite replay. No further native cases required for this bounded gate."
+}

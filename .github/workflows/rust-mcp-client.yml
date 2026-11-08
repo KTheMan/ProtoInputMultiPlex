@@ -19,7 +19,7 @@ jobs:
           persist-credentials: false
       - name: Select isolated build directory
         run: |
-          $clientTarget = Join-Path $env:RUNNER_TEMP 'protoinputmux-mcp-client-target'
+          $clientTarget = Join-Path $env:RUNNER_TEMP 'protoinputmultiplex-mcp-client-target'
           Add-Content -LiteralPath $env:GITHUB_ENV -Value "CARGO_TARGET_DIR=$clientTarget" -Encoding utf8
       - uses: dtolnay/rust-toolchain@stable
         with:

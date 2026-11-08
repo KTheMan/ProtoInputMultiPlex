@@ -1,0 +1,94 @@
+{
+  "date": "2026-11-06",
+  "decision": "MAPPER_SIGNAL_CONDITIONING_ACCEPTED",
+  "scope": "Typed scalar Remap, actor-local Smoother, and timed Position Velocity in Mapper.",
+  "verification": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-signal-conditioning-20261106\\checks-001\\verification.json",
+    "sha256": "6ed7fac8aa0913034729b8190c855e7eb601c6ca03b1ab0bf585954d7f85d95b"
+  },
+  "review": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-signal-conditioning-20261106\\independent-acceptance.json",
+    "sha256": "949d58e6088a1fbe127e5f6dfdf59b3c4669231d6e4966ca4ff0bb363f8c9db3"
+  },
+  "publication": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-signal-conditioning-20261106\\publication.json",
+    "sha256": "64c8c33c65427e92a0d4af55007957d1cf01cfaf4d9b14e1059188bd706c2161"
+  },
+  "workspace_tests": {
+    "passed": 783,
+    "failed": 0,
+    "ignored": 19
+  },
+  "x64_image": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-signal-conditioning-20261106\\checks-001\\x64\\protoinputmultiplex.exe",
+    "sha256": "a93ac8daa9b128364b6f7a3556652a6ba2df01dfee82209050c9687bdb26be9d"
+  },
+  "checks": {
+    "fmt": 0,
+    "clippy": 0,
+    "workspace-tests": 0,
+    "build-gui": 0
+  },
+  "producer": {
+    "original_session": 94675,
+    "original_exit_code": 0
+  },
+  "native": {
+    "original_session": 99613,
+    "original_exit_code": 0,
+    "raw": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\ms-6ccb962cbcfa\\evidence.json",
+      "sha256": "7e062cc3c60ec05bd79f07ce88a9caac210f3cb12dac6e3c7e3864ca71032e95"
+    },
+    "driver": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-signal-conditioning-20261106\\native.py",
+      "sha256": "188fb8187086ca4aba10c89c10fc1f9efbc04bd0be1985ccf6a551b0d6258342"
+    },
+    "readiness": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-signal-conditioning-20261106\\native-ready.json",
+      "sha256": "d4fc3a71b0ea7e4559ff7d2b983eb5afbefae39e6758328f92ef4c1aefc9e888"
+    },
+    "ui_actions": 19,
+    "capture": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\ms-6ccb962cbcfa\\conditioning-activity.png",
+      "sha256": "e0401f0f084088cc034960817456a6534640e3901c8045ef4cde2041b8bcf62b",
+      "geometry": {
+        "hwnd": 2956280,
+        "dpi": 96,
+        "client_pixels": [
+          680,
+          620
+        ],
+        "client_logical": [
+          680.0,
+          620.0
+        ],
+        "window_rect": [
+          130,
+          130,
+          826,
+          789
+        ]
+      }
+    },
+    "exit_codes": {
+      "GUI": 0,
+      "MCP": [
+        0,
+        0
+      ],
+      "targets": {
+        "a": 0,
+        "b": 0
+      }
+    }
+  },
+  "coverage": [
+    "One scoped virtual workflow verified a wheel impulse mapped to 50, a two-position Smoother midpoint and scalar speed recomputed from independently inspected Position timestamps.",
+    "The local GUI displayed separate virtual readings. The second client had empty readings, Disarm cleared data, and all owned processes exited normally.",
+    "Rust tests exercise type and parameter validation, filter math and timing boundaries."
+  ],
+  "open": [
+    "Native conditioning coverage is one clamped Impulse Remap and Position Smoother/Velocity graph. Additional processing operators, historical GUI stall and full Ultra parity remain open."
+  ]
+}

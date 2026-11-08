@@ -1,0 +1,1413 @@
+{
+  "date": "2026-10-14",
+  "scope": "Independent app lifecycle gate; original statuses retained. No secret descriptors, executables, generic ui.png or private window inventory screenshots included.",
+  "archive": "docs/app-lifecycle-evidence-2026-10-14.zip",
+  "archive_sha256": "38eb5c9f7a69ec78a9e610ea778d0311cd093423f969b6cae42f2c03c48f6bc5",
+  "original_aggregates": [
+    {
+      "path": "runtime/acceptance-app-lifecycle-documents-20261014-162631/evidence.json",
+      "result": "PASS",
+      "feature_verdict": null,
+      "observed_controls": 0,
+      "sha256": "fdc5c92157e742ec5cdd42a2ad502cf9d062f7cb30ad9e97646b8eb9c25e0b85"
+    },
+    {
+      "path": "runtime/acceptance-app-lifecycle-handoff-20261014-194512/evidence.json",
+      "result": "PASS",
+      "feature_verdict": null,
+      "observed_controls": 0,
+      "sha256": "271eacc4f7651e31d056597a040c67b6a3fdd91c9a1260a73fcc850d470e7ada"
+    },
+    {
+      "path": "runtime/acceptance-graph-al-20261014-194004/evidence.json",
+      "result": "PASS",
+      "feature_verdict": null,
+      "observed_controls": 7,
+      "sha256": "0ba3d43e71618941f866e399ffcda770a02bc2d34b5166a2a3caa60e542cf62d"
+    },
+    {
+      "path": "runtime/acceptance-graph-app-lifecycle-cold-command-20261014-194118/evidence.json",
+      "result": "PASS",
+      "feature_verdict": null,
+      "observed_controls": 5,
+      "sha256": "42ad55ff300bdfd69df57cc6fbb3a658095e5842867ab7d6034c0a24db990f88"
+    },
+    {
+      "path": "runtime/acceptance-graph-app-lifecycle-main-20261014-162641/evidence.json",
+      "result": "NOT ACCEPTED",
+      "feature_verdict": null,
+      "observed_controls": 0,
+      "sha256": "1d642d98a55f8acee872e095a5f02c0dee7aba11b7988431946e995a60a733be"
+    },
+    {
+      "path": "runtime/acceptance-graph-app-lifecycle-main-20261014-162706/evidence.json",
+      "result": "NOT ACCEPTED",
+      "feature_verdict": null,
+      "observed_controls": 0,
+      "sha256": "e105078eb8ace391d32c3321cb46370dccbb0f4844556813e1e62720abe4e7a6"
+    },
+    {
+      "path": "runtime/acceptance-graph-app-lifecycle-main-20261014-162837/evidence.json",
+      "result": "NOT ACCEPTED",
+      "feature_verdict": null,
+      "observed_controls": 4,
+      "sha256": "868c5eeef228a82d0c808cb4aa4aaa4d672f7670b9e0065ebea9b70ea3227a57"
+    },
+    {
+      "path": "runtime/acceptance-graph-app-lifecycle-main-20261014-163100/evidence.json",
+      "result": "NOT ACCEPTED",
+      "feature_verdict": null,
+      "observed_controls": 12,
+      "sha256": "077bbb51daa7eb469a03e8787d301a59de389ffee4e45bf01a6142aee51f76f9"
+    },
+    {
+      "path": "runtime/acceptance-graph-app-lifecycle-main-20261014-163247/evidence.json",
+      "result": "NOT ACCEPTED",
+      "feature_verdict": null,
+      "observed_controls": 0,
+      "sha256": "9f6e84d2c9b013df8f2feb647db5625b5cbe4753e42536d4bdbd46f7125fc2b9"
+    },
+    {
+      "path": "runtime/acceptance-graph-app-lifecycle-main-20261014-191118/evidence.json",
+      "result": "NOT ACCEPTED",
+      "feature_verdict": null,
+      "observed_controls": 26,
+      "sha256": "b9defa73c8a5b55b755c66d3a9c955288e6a3aaec09178a61c605c6982e43cc1"
+    },
+    {
+      "path": "runtime/acceptance-graph-app-lifecycle-main-20261014-192509/evidence.json",
+      "result": "NOT ACCEPTED",
+      "feature_verdict": null,
+      "observed_controls": 13,
+      "sha256": "2d018301ab1369187b63f2d8c648f94ca1136fd43abe0c79ce761ffb4c4e7e0a"
+    },
+    {
+      "path": "runtime/acceptance-graph-app-lifecycle-main-20261014-193017/evidence.json",
+      "result": "NOT ACCEPTED",
+      "feature_verdict": null,
+      "observed_controls": 12,
+      "sha256": "9461f6c688b58ad3b8b488e98cd8d354b150ecfe3b306f0082189eb06c53b498"
+    },
+    {
+      "path": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/evidence.json",
+      "result": "PASS",
+      "feature_verdict": null,
+      "observed_controls": 29,
+      "sha256": "7f7df6e1f19c87343933dd038cc41bc1017c19fd5bf2c0b8af8b21ba9b82fde8"
+    },
+    {
+      "path": "runtime/acceptance-graph-app-lifecycle-quarantine-20261014-194321/evidence.json",
+      "result": "PASS",
+      "feature_verdict": null,
+      "observed_controls": 21,
+      "sha256": "a24a80d7142279dc1db7edc915f1dbdf4d1c250ac6e05f7ed09e1e800b9ca3ce"
+    },
+    {
+      "path": "runtime/acceptance-graph-app-lifecycle-restore-diagnostic-20261014-191815/evidence.json",
+      "result": "DIAGNOSTIC COMPLETE",
+      "feature_verdict": "NOT ACCEPTED",
+      "observed_controls": 1,
+      "sha256": "c59994190b9c30634b16316c2bc7f5a4ddf9fcfed21f92eb61319488a5a106a0"
+    },
+    {
+      "path": "runtime/acceptance-graph-app-lifecycle-startup-long-20261014-193909/evidence.json",
+      "result": "PASS",
+      "feature_verdict": null,
+      "observed_controls": 4,
+      "sha256": "6816b782e962c76afbf016ac749e9221b1cbd851f5df403d9d2b1df63e1ad139"
+    }
+  ],
+  "files": [
+    {
+      "source": "runtime/acceptance-app-lifecycle-documents-20261014-162631/evidence.json",
+      "archive_entry": "runtime/acceptance-app-lifecycle-documents-20261014-162631/evidence.json",
+      "bytes": 1170,
+      "sha256": "fdc5c92157e742ec5cdd42a2ad502cf9d062f7cb30ad9e97646b8eb9c25e0b85"
+    },
+    {
+      "source": "runtime/acceptance-app-lifecycle-documents-20261014-162631/owned preferences.json",
+      "archive_entry": "runtime/acceptance-app-lifecycle-documents-20261014-162631/owned preferences.json",
+      "bytes": 328,
+      "sha256": "2459ff5443c39e01c14811e622b4a6fb35c5636fca2cce4be1e6df4520996bbe"
+    },
+    {
+      "source": "runtime/acceptance-app-lifecycle-handoff-20261014-194512/evidence.json",
+      "archive_entry": "runtime/acceptance-app-lifecycle-handoff-20261014-194512/evidence.json",
+      "bytes": 12570,
+      "sha256": "271eacc4f7651e31d056597a040c67b6a3fdd91c9a1260a73fcc850d470e7ada"
+    },
+    {
+      "source": "runtime/acceptance-app-lifecycle-handoff-20261014-194512/probe-0.json",
+      "archive_entry": "runtime/acceptance-app-lifecycle-handoff-20261014-194512/probe-0.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "runtime/acceptance-app-lifecycle-handoff-20261014-194512/probe-1.json",
+      "archive_entry": "runtime/acceptance-app-lifecycle-handoff-20261014-194512/probe-1.json",
+      "bytes": 2707,
+      "sha256": "9368ec60bbe66424b7a5226038c458804bb88b3939cc25d83d2585dc37c053dc"
+    },
+    {
+      "source": "runtime/acceptance-app-lifecycle-handoff-20261014-194512/runner-source/dependency-hashes.json",
+      "archive_entry": "runtime/acceptance-app-lifecycle-handoff-20261014-194512/runner-source/dependency-hashes.json",
+      "bytes": 4676,
+      "sha256": "e396170e141647add546071f4e7d19ef23f87e444cf33f19dc88b36987448076"
+    },
+    {
+      "source": "runtime/acceptance-app-lifecycle-handoff-20261014-194512/runner-source/owned-app-hotkeys.py",
+      "archive_entry": "runtime/acceptance-app-lifecycle-handoff-20261014-194512/runner-source/owned-app-hotkeys.py",
+      "bytes": 5981,
+      "sha256": "662d24ce605bd43ee908014f271269bef28c3a0daeccb072283eafb1d27b56aa"
+    },
+    {
+      "source": "runtime/acceptance-app-lifecycle-handoff-20261014-194512/runner-source/owned-tray-menu.py",
+      "archive_entry": "runtime/acceptance-app-lifecycle-handoff-20261014-194512/runner-source/owned-tray-menu.py",
+      "bytes": 10440,
+      "sha256": "7c68947ebb35b81bf53270e36e06d4f49ac67c6709fa72d436713d07f50d81f8"
+    },
+    {
+      "source": "runtime/acceptance-app-lifecycle-handoff-20261014-194512/runner-source/test-app-lifecycle-acceptance.py",
+      "archive_entry": "runtime/acceptance-app-lifecycle-handoff-20261014-194512/runner-source/test-app-lifecycle-acceptance.py",
+      "bytes": 15876,
+      "sha256": "1859d8af884c53b71081951e97407b2395deb8d2874fbecda5c89e9865ba01e1"
+    },
+    {
+      "source": "runtime/acceptance-app-lifecycle-handoff-20261014-194512/runner-source/test-app-lifecycle-ui.py",
+      "archive_entry": "runtime/acceptance-app-lifecycle-handoff-20261014-194512/runner-source/test-app-lifecycle-ui.py",
+      "bytes": 60537,
+      "sha256": "e21a4933ce48f1c3f727aa4e9881a6b3cd5861fa67d3166f1e2cc95519c2b23e"
+    },
+    {
+      "source": "runtime/acceptance-graph-al-20261014-194004/evidence.json",
+      "archive_entry": "runtime/acceptance-graph-al-20261014-194004/evidence.json",
+      "bytes": 30245,
+      "sha256": "0ba3d43e71618941f866e399ffcda770a02bc2d34b5166a2a3caa60e542cf62d"
+    },
+    {
+      "source": "runtime/acceptance-graph-al-20261014-194004/profile.json",
+      "archive_entry": "runtime/acceptance-graph-al-20261014-194004/profile.json",
+      "bytes": 345,
+      "sha256": "f68c565cd4aa406e82c7537885e501194e83d7783bacb76f84c152ada424ce3a"
+    },
+    {
+      "source": "runtime/acceptance-graph-al-20261014-194004/runner-source/dependency-hashes.json",
+      "archive_entry": "runtime/acceptance-graph-al-20261014-194004/runner-source/dependency-hashes.json",
+      "bytes": 4538,
+      "sha256": "68e65a459a0411534db9b8f8709dd750096fef077d2b843443389572789f8a59"
+    },
+    {
+      "source": "runtime/acceptance-graph-al-20261014-194004/runner-source/initial-preferences.json",
+      "archive_entry": "runtime/acceptance-graph-al-20261014-194004/runner-source/initial-preferences.json",
+      "bytes": 1002,
+      "sha256": "80ccfdd7f29de8a7116493c13b2f22412bd857054ff50ea8c5d850b4284e6ca2"
+    },
+    {
+      "source": "runtime/acceptance-graph-al-20261014-194004/runner-source/owned-app-hotkeys.py",
+      "archive_entry": "runtime/acceptance-graph-al-20261014-194004/runner-source/owned-app-hotkeys.py",
+      "bytes": 5981,
+      "sha256": "662d24ce605bd43ee908014f271269bef28c3a0daeccb072283eafb1d27b56aa"
+    },
+    {
+      "source": "runtime/acceptance-graph-al-20261014-194004/runner-source/owned-tray-menu.py",
+      "archive_entry": "runtime/acceptance-graph-al-20261014-194004/runner-source/owned-tray-menu.py",
+      "bytes": 10440,
+      "sha256": "7c68947ebb35b81bf53270e36e06d4f49ac67c6709fa72d436713d07f50d81f8"
+    },
+    {
+      "source": "runtime/acceptance-graph-al-20261014-194004/runner-source/test-app-lifecycle-acceptance.py",
+      "archive_entry": "runtime/acceptance-graph-al-20261014-194004/runner-source/test-app-lifecycle-acceptance.py",
+      "bytes": 15876,
+      "sha256": "1859d8af884c53b71081951e97407b2395deb8d2874fbecda5c89e9865ba01e1"
+    },
+    {
+      "source": "runtime/acceptance-graph-al-20261014-194004/runner-source/test-app-lifecycle-ui.py",
+      "archive_entry": "runtime/acceptance-graph-al-20261014-194004/runner-source/test-app-lifecycle-ui.py",
+      "bytes": 60537,
+      "sha256": "e21a4933ce48f1c3f727aa4e9881a6b3cd5861fa67d3166f1e2cc95519c2b23e"
+    },
+    {
+      "source": "runtime/acceptance-graph-al-20261014-194004/runner-source/ui.json",
+      "archive_entry": "runtime/acceptance-graph-al-20261014-194004/runner-source/ui.json",
+      "bytes": 785,
+      "sha256": "8ba6ef874a2146b4238cd2199070948fc1c8033031c7623d836afc903e225737"
+    },
+    {
+      "source": "runtime/acceptance-graph-al-20261014-194004/ui.events.jsonl",
+      "archive_entry": "runtime/acceptance-graph-al-20261014-194004/ui.events.jsonl",
+      "bytes": 360,
+      "sha256": "a6a17450669f187caa7b1429519f55b01b8856f3a21880dd34d903311bafa12f"
+    },
+    {
+      "source": "runtime/acceptance-graph-al-20261014-194004/ui.json",
+      "archive_entry": "runtime/acceptance-graph-al-20261014-194004/ui.json",
+      "bytes": 785,
+      "sha256": "8ba6ef874a2146b4238cd2199070948fc1c8033031c7623d836afc903e225737"
+    },
+    {
+      "source": "runtime/acceptance-graph-al-20261014-194004/ui.profile.json",
+      "archive_entry": "runtime/acceptance-graph-al-20261014-194004/ui.profile.json",
+      "bytes": 5565,
+      "sha256": "3866b2ec8b18b0a4a3effa7ca7d65a756e94b4c782e050fd3d84920b30cc0f9b"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-cold-command-20261014-194118/evidence.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-cold-command-20261014-194118/evidence.json",
+      "bytes": 6379,
+      "sha256": "42ad55ff300bdfd69df57cc6fbb3a658095e5842867ab7d6034c0a24db990f88"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-cold-command-20261014-194118/profile.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-cold-command-20261014-194118/profile.json",
+      "bytes": 345,
+      "sha256": "f68c565cd4aa406e82c7537885e501194e83d7783bacb76f84c152ada424ce3a"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-cold-command-20261014-194118/runner-source/dependency-hashes.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-cold-command-20261014-194118/runner-source/dependency-hashes.json",
+      "bytes": 4538,
+      "sha256": "68e65a459a0411534db9b8f8709dd750096fef077d2b843443389572789f8a59"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-cold-command-20261014-194118/runner-source/initial-preferences.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-cold-command-20261014-194118/runner-source/initial-preferences.json",
+      "bytes": 1500,
+      "sha256": "9f9ca2e461ae7ef3a3198384166392171d3e79e580aea34fb42286a330d71912"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-cold-command-20261014-194118/runner-source/owned-app-hotkeys.py",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-cold-command-20261014-194118/runner-source/owned-app-hotkeys.py",
+      "bytes": 5981,
+      "sha256": "662d24ce605bd43ee908014f271269bef28c3a0daeccb072283eafb1d27b56aa"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-cold-command-20261014-194118/runner-source/owned-tray-menu.py",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-cold-command-20261014-194118/runner-source/owned-tray-menu.py",
+      "bytes": 10440,
+      "sha256": "7c68947ebb35b81bf53270e36e06d4f49ac67c6709fa72d436713d07f50d81f8"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-cold-command-20261014-194118/runner-source/test-app-lifecycle-acceptance.py",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-cold-command-20261014-194118/runner-source/test-app-lifecycle-acceptance.py",
+      "bytes": 15876,
+      "sha256": "1859d8af884c53b71081951e97407b2395deb8d2874fbecda5c89e9865ba01e1"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-cold-command-20261014-194118/runner-source/test-app-lifecycle-ui.py",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-cold-command-20261014-194118/runner-source/test-app-lifecycle-ui.py",
+      "bytes": 60537,
+      "sha256": "e21a4933ce48f1c3f727aa4e9881a6b3cd5861fa67d3166f1e2cc95519c2b23e"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-cold-command-20261014-194118/runner-source/ui.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-cold-command-20261014-194118/runner-source/ui.json",
+      "bytes": 552,
+      "sha256": "3ed17199edeefacb66453e1efe3e256833976eedd6febd689eb5dc7088f4bda0"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-cold-command-20261014-194118/ui.events.jsonl",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-cold-command-20261014-194118/ui.events.jsonl",
+      "bytes": 230,
+      "sha256": "253b6bd5b65993c63df5c13412e9f693d49a1b0f874cd7e7bebfbb6a71b5a102"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-cold-command-20261014-194118/ui.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-cold-command-20261014-194118/ui.json",
+      "bytes": 552,
+      "sha256": "3ed17199edeefacb66453e1efe3e256833976eedd6febd689eb5dc7088f4bda0"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-cold-command-20261014-194118/ui.profile.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-cold-command-20261014-194118/ui.profile.json",
+      "bytes": 371,
+      "sha256": "69615880318b909571ed2141148f2b5e32a66da01401b470906d70d62e22386b"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-162641/evidence.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-162641/evidence.json",
+      "bytes": 45685,
+      "sha256": "1d642d98a55f8acee872e095a5f02c0dee7aba11b7988431946e995a60a733be"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-162641/owned preferences.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-162641/owned preferences.json",
+      "bytes": 242,
+      "sha256": "c25327e3aad3e3e7a93100d4b1d1f098591bf277fb475d2b91d7a65f73eac95c"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-162641/probe-0.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-162641/probe-0.json",
+      "bytes": 707,
+      "sha256": "0cf0cd48b1f314c8929119222b92dfa97182f942292447049bc14dd2e23b6d33"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-162641/probe-1.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-162641/probe-1.json",
+      "bytes": 2931,
+      "sha256": "b8917065db8b797c45f4a7be76b4c6f682f02b643dc7f4a1fba59d588d3bc5af"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-162641/profile-A.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-162641/profile-A.json",
+      "bytes": 531,
+      "sha256": "a4ca7691763c011e530a89a5e03a0b3b43f01dab76aaf3a201dacf8d1444fe2e"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-162641/profile-B.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-162641/profile-B.json",
+      "bytes": 507,
+      "sha256": "43c9e0fce589ab6d66f78f43294a82e53dea2e9e877aa520bfe9cdc06f0d0634"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-162641/profile.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-162641/profile.json",
+      "bytes": 531,
+      "sha256": "a4ca7691763c011e530a89a5e03a0b3b43f01dab76aaf3a201dacf8d1444fe2e"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-162641/ui.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-162641/ui.json",
+      "bytes": 8040,
+      "sha256": "d1b5ee70419160a5c075a2467ccc701dc6dc9d99aa45380f37b55efedbb0f634"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-162706/evidence.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-162706/evidence.json",
+      "bytes": 45859,
+      "sha256": "e105078eb8ace391d32c3321cb46370dccbb0f4844556813e1e62720abe4e7a6"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-162706/owned preferences.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-162706/owned preferences.json",
+      "bytes": 242,
+      "sha256": "c25327e3aad3e3e7a93100d4b1d1f098591bf277fb475d2b91d7a65f73eac95c"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-162706/probe-0.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-162706/probe-0.json",
+      "bytes": 707,
+      "sha256": "4dd2442aaee907ecc4763e5eae01aeaddad456ff54b80865427d937a717e767b"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-162706/probe-1.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-162706/probe-1.json",
+      "bytes": 705,
+      "sha256": "ba1eb860eb66c65f656a20904138ab20043842d7960364fa732ce4d76ca7161d"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-162706/profile-A.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-162706/profile-A.json",
+      "bytes": 531,
+      "sha256": "677716b902130eaeab933566b60b989ddb5fba4ccf88c9d7657aac54b30cc8b8"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-162706/profile-B.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-162706/profile-B.json",
+      "bytes": 507,
+      "sha256": "a3bb1588536bd2297d06f84103ccca16392b314ed39fc8a05c2f29e61f7b462b"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-162706/profile.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-162706/profile.json",
+      "bytes": 531,
+      "sha256": "677716b902130eaeab933566b60b989ddb5fba4ccf88c9d7657aac54b30cc8b8"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-162706/ui.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-162706/ui.json",
+      "bytes": 8040,
+      "sha256": "ef5a5d1f56e7cf35b3474b502a3eabe4f4728c667cf6a3667991a4845440d092"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-162837/evidence.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-162837/evidence.json",
+      "bytes": 67818,
+      "sha256": "868c5eeef228a82d0c808cb4aa4aaa4d672f7670b9e0065ebea9b70ea3227a57"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-162837/owned preferences.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-162837/owned preferences.json",
+      "bytes": 242,
+      "sha256": "c25327e3aad3e3e7a93100d4b1d1f098591bf277fb475d2b91d7a65f73eac95c"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-162837/probe-0.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-162837/probe-0.json",
+      "bytes": 710,
+      "sha256": "e2535d2cd7f7bde2be9bd5ec451590feac0b7cdf7c97c1bd69897c7e44e88fb4"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-162837/probe-1.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-162837/probe-1.json",
+      "bytes": 709,
+      "sha256": "29bf75491f2fc2e299c5e4183d18f513e01d98a78c525921944d832e5aa82de1"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-162837/profile-A.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-162837/profile-A.json",
+      "bytes": 531,
+      "sha256": "5b8c58f30b555b98dc3a4e94b6979e5a7a9aec72d4fa92d6c85933f0d3d7857e"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-162837/profile-B.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-162837/profile-B.json",
+      "bytes": 507,
+      "sha256": "3ca029e4c4f87218342d4a77dc7888a0e08c196144a12c61b5f9fbe0b9d85d45"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-162837/profile.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-162837/profile.json",
+      "bytes": 531,
+      "sha256": "5b8c58f30b555b98dc3a4e94b6979e5a7a9aec72d4fa92d6c85933f0d3d7857e"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-162837/ui.events.jsonl",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-162837/ui.events.jsonl",
+      "bytes": 315,
+      "sha256": "6a92562c6262308935679237e8e73c07a1123f4b5a9f88f48b471db12b4e18e2"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-162837/ui.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-162837/ui.json",
+      "bytes": 8040,
+      "sha256": "25a8dfd67824070eda1c2a2b771db023d5710471d0a4d2d08fa54a8f75b91117"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-162837/ui.profile.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-162837/ui.profile.json",
+      "bytes": 5789,
+      "sha256": "22a096a70ce13ab613ee76c08c8db699610765e0bce348a9b33af21d907952a6"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-163100/evidence.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-163100/evidence.json",
+      "bytes": 110749,
+      "sha256": "077bbb51daa7eb469a03e8787d301a59de389ffee4e45bf01a6142aee51f76f9"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-163100/owned preferences.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-163100/owned preferences.json",
+      "bytes": 1447,
+      "sha256": "de7dc20d4a42c3e2b9f4feb3bfc37db3c8566d6db90572ee73a3ed9f35b0fe00"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-163100/probe-0.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-163100/probe-0.json",
+      "bytes": 707,
+      "sha256": "163432fc29b5ccaa23fdae5fb979e9df30ee8fd09d4e9bbac8409477e147c451"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-163100/probe-1.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-163100/probe-1.json",
+      "bytes": 707,
+      "sha256": "d41941fcb18b8433bfffb96f587462ce24f75ec6be80151878215b3014e847e7"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-163100/profile-A.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-163100/profile-A.json",
+      "bytes": 531,
+      "sha256": "c54259c2475a0eb5c8d7e2d249081966f68b90cd9bde1c87c9a25b4114c3a0ea"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-163100/profile-B.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-163100/profile-B.json",
+      "bytes": 507,
+      "sha256": "ff3e0dbd8d02f067dfead88a6ffb4f18fcc35845cbb465be5ff59f1b3e5cef13"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-163100/profile.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-163100/profile.json",
+      "bytes": 531,
+      "sha256": "c54259c2475a0eb5c8d7e2d249081966f68b90cd9bde1c87c9a25b4114c3a0ea"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-163100/runner-source/dependency-hashes.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-163100/runner-source/dependency-hashes.json",
+      "bytes": 4607,
+      "sha256": "038e14c16c463047bb9f57448819680854a278dfe9f42bd08ac94859aa81147a"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-163100/runner-source/owned-app-hotkeys.py",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-163100/runner-source/owned-app-hotkeys.py",
+      "bytes": 5981,
+      "sha256": "662d24ce605bd43ee908014f271269bef28c3a0daeccb072283eafb1d27b56aa"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-163100/runner-source/owned-tray-menu.py",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-163100/runner-source/owned-tray-menu.py",
+      "bytes": 10440,
+      "sha256": "7c68947ebb35b81bf53270e36e06d4f49ac67c6709fa72d436713d07f50d81f8"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-163100/runner-source/test-app-lifecycle-acceptance.py",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-163100/runner-source/test-app-lifecycle-acceptance.py",
+      "bytes": 15436,
+      "sha256": "e6346a67accf5061fea3db3492f6e456dbfb657563620cb34f8de06011cc18f4"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-163100/runner-source/test-app-lifecycle-ui.py",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-163100/runner-source/test-app-lifecycle-ui.py",
+      "bytes": 43168,
+      "sha256": "54b2d17664162ecb2d2b3344b2a506e1c6096888768a34c7d51f0ee031274092"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-163100/ui.events.jsonl",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-163100/ui.events.jsonl",
+      "bytes": 719,
+      "sha256": "c4eee670d046c238de9a27ab3525573275f2b1ad6e73f767a78fc2c86212536b"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-163100/ui.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-163100/ui.json",
+      "bytes": 7888,
+      "sha256": "90cf45f833287e85b975a0e01e28952a5ab615dd84e0afdc33d31188aefdded1"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-163100/ui.profile.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-163100/ui.profile.json",
+      "bytes": 5772,
+      "sha256": "0c531f86943b8358098de0da2f5a555ca314008e963f115077c14487d3fa8317"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-163247/evidence.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-163247/evidence.json",
+      "bytes": 47267,
+      "sha256": "9f6e84d2c9b013df8f2feb647db5625b5cbe4753e42536d4bdbd46f7125fc2b9"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-163247/owned preferences.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-163247/owned preferences.json",
+      "bytes": 954,
+      "sha256": "b917906358bdd77af79b53c5df25254a0ed12880d5d58f7369601b4e9edfe6e1"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-163247/probe-0.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-163247/probe-0.json",
+      "bytes": 708,
+      "sha256": "0935615b33756316de4848393c73b4db77dab93cf19d67f602bcc32a4e8cf815"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-163247/probe-1.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-163247/probe-1.json",
+      "bytes": 707,
+      "sha256": "709ec3be7de7cbb1c670de3f6f5a7a81b5ba912a13b9a23c2e2b12708ce20bf4"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-163247/profile-A.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-163247/profile-A.json",
+      "bytes": 531,
+      "sha256": "2bb42eecd5789f08f15fd74c0fd57cd14ced8e3a3dab4e742b854496a53167d3"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-163247/profile-B.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-163247/profile-B.json",
+      "bytes": 507,
+      "sha256": "e7ce4688fbb922f57b155eec92a775e71e58d7636ef02f6a7026ca3fb7b49cc6"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-163247/profile.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-163247/profile.json",
+      "bytes": 531,
+      "sha256": "2bb42eecd5789f08f15fd74c0fd57cd14ced8e3a3dab4e742b854496a53167d3"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-163247/runner-source/dependency-hashes.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-163247/runner-source/dependency-hashes.json",
+      "bytes": 4607,
+      "sha256": "01aca77ce1eb82f27a86ba31c57724aa9f5ed1d87220c346721e7b0bce94e2f6"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-163247/runner-source/owned-app-hotkeys.py",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-163247/runner-source/owned-app-hotkeys.py",
+      "bytes": 5981,
+      "sha256": "662d24ce605bd43ee908014f271269bef28c3a0daeccb072283eafb1d27b56aa"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-163247/runner-source/owned-tray-menu.py",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-163247/runner-source/owned-tray-menu.py",
+      "bytes": 10440,
+      "sha256": "7c68947ebb35b81bf53270e36e06d4f49ac67c6709fa72d436713d07f50d81f8"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-163247/runner-source/test-app-lifecycle-acceptance.py",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-163247/runner-source/test-app-lifecycle-acceptance.py",
+      "bytes": 15436,
+      "sha256": "e6346a67accf5061fea3db3492f6e456dbfb657563620cb34f8de06011cc18f4"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-163247/runner-source/test-app-lifecycle-ui.py",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-163247/runner-source/test-app-lifecycle-ui.py",
+      "bytes": 44477,
+      "sha256": "d9604372fcd9ce564e75e79e7a49948c976d36cf24b97b7bc4fe93fb6f245be1"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-163247/ui.events.jsonl",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-163247/ui.events.jsonl",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-163247/ui.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-163247/ui.json",
+      "bytes": 6455,
+      "sha256": "cfac6096742b86bba9dda636f2d856accdfb2e02762eab82cab14db5bee3ff6c"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-163247/ui.profile.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-163247/ui.profile.json",
+      "bytes": 5789,
+      "sha256": "f1082c00049de196983887a366439e11031ed3f03a810398be73ead62fd85cd1"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-191118/evidence.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-191118/evidence.json",
+      "bytes": 231815,
+      "sha256": "b9defa73c8a5b55b755c66d3a9c955288e6a3aaec09178a61c605c6982e43cc1"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-191118/independent-prefix-review.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-191118/independent-prefix-review.json",
+      "bytes": 4354,
+      "sha256": "437d4656af8f13a95d049db46c107e8b6365bc18bdd34b2f3c22b5db34678997"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-191118/owned preferences.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-191118/owned preferences.json",
+      "bytes": 1003,
+      "sha256": "f75f810672ed118a779c7d8e53142d32144f06c4682bc7129fb515693a9f3727"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-191118/probe-0.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-191118/probe-0.json",
+      "bytes": 2470,
+      "sha256": "c0abe0f1a86a651a170b08ec7dd196794c3cfef417cf57f50bce946a1c785a77"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-191118/probe-1.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-191118/probe-1.json",
+      "bytes": 2470,
+      "sha256": "3131f7baad6a47bd561f216e092fc9b31a09db2fe0f357d5244f291f2287a807"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-191118/profile-A.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-191118/profile-A.json",
+      "bytes": 529,
+      "sha256": "afe6e83d8307e06f955d69250b901f5dda66263e3b3c360013e0a1ae0fa92bb1"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-191118/profile-B.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-191118/profile-B.json",
+      "bytes": 505,
+      "sha256": "79f4735e00f83d9bd5e9b36e20d2d37b46ec2474fa2c2850a92d360edd81ae2e"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-191118/profile.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-191118/profile.json",
+      "bytes": 529,
+      "sha256": "afe6e83d8307e06f955d69250b901f5dda66263e3b3c360013e0a1ae0fa92bb1"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-191118/runner-source/dependency-hashes.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-191118/runner-source/dependency-hashes.json",
+      "bytes": 4426,
+      "sha256": "b6ef6d57494584b6308784087ba4e878ae7af1e9b6356d29fe60242f76072b77"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-191118/runner-source/initial-preferences.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-191118/runner-source/initial-preferences.json",
+      "bytes": 1003,
+      "sha256": "f75f810672ed118a779c7d8e53142d32144f06c4682bc7129fb515693a9f3727"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-191118/runner-source/owned-app-hotkeys.py",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-191118/runner-source/owned-app-hotkeys.py",
+      "bytes": 5981,
+      "sha256": "662d24ce605bd43ee908014f271269bef28c3a0daeccb072283eafb1d27b56aa"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-191118/runner-source/owned-tray-menu.py",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-191118/runner-source/owned-tray-menu.py",
+      "bytes": 10440,
+      "sha256": "7c68947ebb35b81bf53270e36e06d4f49ac67c6709fa72d436713d07f50d81f8"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-191118/runner-source/test-app-lifecycle-acceptance.py",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-191118/runner-source/test-app-lifecycle-acceptance.py",
+      "bytes": 15876,
+      "sha256": "1859d8af884c53b71081951e97407b2395deb8d2874fbecda5c89e9865ba01e1"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-191118/runner-source/test-app-lifecycle-ui.py",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-191118/runner-source/test-app-lifecycle-ui.py",
+      "bytes": 54903,
+      "sha256": "68c5e4a0708ae734561c9350284e5901239c193d56ada23b687434529f9eec8f"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-191118/runner-source/ui.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-191118/runner-source/ui.json",
+      "bytes": 5957,
+      "sha256": "5891a6d40ba83d72dd938baf39625656a87edf504f4e7c4bcc41bcb06e43913b"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-191118/ui.events.jsonl",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-191118/ui.events.jsonl",
+      "bytes": 1172,
+      "sha256": "1588d3e40694aa884f031480d839794d6ba99a4c5562b62ea50d547ade7cc2a7"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-191118/ui.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-191118/ui.json",
+      "bytes": 5957,
+      "sha256": "5891a6d40ba83d72dd938baf39625656a87edf504f4e7c4bcc41bcb06e43913b"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-191118/ui.profile.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-191118/ui.profile.json",
+      "bytes": 5983,
+      "sha256": "b4b397363eec1bab0fe6b4ddd12d2955ec22c4c43e530fafeb5d40546fbafe03"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-192509/evidence.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-192509/evidence.json",
+      "bytes": 159327,
+      "sha256": "2d018301ab1369187b63f2d8c648f94ca1136fd43abe0c79ce761ffb4c4e7e0a"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-192509/independent-prefix-review.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-192509/independent-prefix-review.json",
+      "bytes": 4342,
+      "sha256": "4075789bbc297ab8a10c2d085875e42c5e3f35678d1a5dad6f760dbad8cc1515"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-192509/owned preferences.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-192509/owned preferences.json",
+      "bytes": 1003,
+      "sha256": "f75f810672ed118a779c7d8e53142d32144f06c4682bc7129fb515693a9f3727"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-192509/probe-0.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-192509/probe-0.json",
+      "bytes": 2891,
+      "sha256": "7341c9f2581cc2255665ee03e8deb5558b0e4078dcbf2d283eb24729792a28fd"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-192509/probe-1.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-192509/probe-1.json",
+      "bytes": 2891,
+      "sha256": "0d4437bef716b417630e179eae92f3e8ef69902d8df59e0d401c400832821644"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-192509/profile-A.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-192509/profile-A.json",
+      "bytes": 529,
+      "sha256": "7ea3c59667970bbcaa0c7f81d3c3343e1376366be55e8175779ce0e78e6400af"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-192509/profile-B.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-192509/profile-B.json",
+      "bytes": 505,
+      "sha256": "77dd5fcf1a68ef4f9ef3df3087a7650cb1eb2744f6d066ec9994cd8c27a96577"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-192509/profile.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-192509/profile.json",
+      "bytes": 529,
+      "sha256": "7ea3c59667970bbcaa0c7f81d3c3343e1376366be55e8175779ce0e78e6400af"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-192509/runner-source/dependency-hashes.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-192509/runner-source/dependency-hashes.json",
+      "bytes": 4538,
+      "sha256": "12e00debe8caba68664c4ab7e552daeb3e7693ef3863be891ec6ac186f4cfc96"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-192509/runner-source/initial-preferences.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-192509/runner-source/initial-preferences.json",
+      "bytes": 1003,
+      "sha256": "f75f810672ed118a779c7d8e53142d32144f06c4682bc7129fb515693a9f3727"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-192509/runner-source/owned-app-hotkeys.py",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-192509/runner-source/owned-app-hotkeys.py",
+      "bytes": 5981,
+      "sha256": "662d24ce605bd43ee908014f271269bef28c3a0daeccb072283eafb1d27b56aa"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-192509/runner-source/owned-tray-menu.py",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-192509/runner-source/owned-tray-menu.py",
+      "bytes": 10440,
+      "sha256": "7c68947ebb35b81bf53270e36e06d4f49ac67c6709fa72d436713d07f50d81f8"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-192509/runner-source/test-app-lifecycle-acceptance.py",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-192509/runner-source/test-app-lifecycle-acceptance.py",
+      "bytes": 15876,
+      "sha256": "1859d8af884c53b71081951e97407b2395deb8d2874fbecda5c89e9865ba01e1"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-192509/runner-source/test-app-lifecycle-ui.py",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-192509/runner-source/test-app-lifecycle-ui.py",
+      "bytes": 57759,
+      "sha256": "d333741edc448acab80acb1198684a438f7b5ff529b5f342599ff9c46ba8d0ef"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-192509/runner-source/ui.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-192509/runner-source/ui.json",
+      "bytes": 3795,
+      "sha256": "695fda6f2bbf01af4eaca956b78bca84df7e4ec7423b6e8b1d1410fb5104cf5e"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-192509/ui.agent.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-192509/ui.agent.json",
+      "bytes": 276,
+      "sha256": "d7ba2f53a2b05891fa00b09c0cb3144089d29f36d9d7c1bfb965c1f0c3213ab2"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-192509/ui.events.jsonl",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-192509/ui.events.jsonl",
+      "bytes": 513,
+      "sha256": "847091ff773e476ebf59433c4816efaa2aae4e54e993c59819d9b6fec2cefaf3"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-192509/ui.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-192509/ui.json",
+      "bytes": 3795,
+      "sha256": "695fda6f2bbf01af4eaca956b78bca84df7e4ec7423b6e8b1d1410fb5104cf5e"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-192509/ui.profile.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-192509/ui.profile.json",
+      "bytes": 5779,
+      "sha256": "f851d0c8a17b1042fc068936c6cd7c799e1b1776cc0ec0c2adb2d532dcca3bbd"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-193017/evidence.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-193017/evidence.json",
+      "bytes": 142775,
+      "sha256": "9461f6c688b58ad3b8b488e98cd8d354b150ecfe3b306f0082189eb06c53b498"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-193017/independent-prefix-review.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-193017/independent-prefix-review.json",
+      "bytes": 1980,
+      "sha256": "22cc19a635666b830a94ad11089883a85a976e0767e606dd828b24d4a0c92594"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-193017/owned preferences.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-193017/owned preferences.json",
+      "bytes": 1003,
+      "sha256": "f75f810672ed118a779c7d8e53142d32144f06c4682bc7129fb515693a9f3727"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-193017/probe-0.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-193017/probe-0.json",
+      "bytes": 2026,
+      "sha256": "533cdde509a4cb3e3a9f27a2cb4ce40d1b4f635afc8b8e5c6b0f5a08b47658b9"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-193017/probe-1.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-193017/probe-1.json",
+      "bytes": 2026,
+      "sha256": "a7293f91037b955560b756cfae2465a539e7e748657ae2dabc3ac2c516c64c05"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-193017/profile-A.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-193017/profile-A.json",
+      "bytes": 529,
+      "sha256": "996f37e2f223a5c827165ee629eb3d4f5fb50af14bc068c68141b1c018f882a2"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-193017/profile-B.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-193017/profile-B.json",
+      "bytes": 505,
+      "sha256": "45efd6579e9f277b12d95838c53da7cb9657989e05a13aefa4a08421af239816"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-193017/profile.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-193017/profile.json",
+      "bytes": 529,
+      "sha256": "996f37e2f223a5c827165ee629eb3d4f5fb50af14bc068c68141b1c018f882a2"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-193017/runner-source/dependency-hashes.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-193017/runner-source/dependency-hashes.json",
+      "bytes": 4538,
+      "sha256": "7c530c1c9d752b46fbcc1405814cb0393c357e481cf90d5eb62c1cd515aa75d0"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-193017/runner-source/initial-preferences.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-193017/runner-source/initial-preferences.json",
+      "bytes": 1003,
+      "sha256": "f75f810672ed118a779c7d8e53142d32144f06c4682bc7129fb515693a9f3727"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-193017/runner-source/owned-app-hotkeys.py",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-193017/runner-source/owned-app-hotkeys.py",
+      "bytes": 5981,
+      "sha256": "662d24ce605bd43ee908014f271269bef28c3a0daeccb072283eafb1d27b56aa"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-193017/runner-source/owned-tray-menu.py",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-193017/runner-source/owned-tray-menu.py",
+      "bytes": 10440,
+      "sha256": "7c68947ebb35b81bf53270e36e06d4f49ac67c6709fa72d436713d07f50d81f8"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-193017/runner-source/test-app-lifecycle-acceptance.py",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-193017/runner-source/test-app-lifecycle-acceptance.py",
+      "bytes": 15876,
+      "sha256": "1859d8af884c53b71081951e97407b2395deb8d2874fbecda5c89e9865ba01e1"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-193017/runner-source/test-app-lifecycle-ui.py",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-193017/runner-source/test-app-lifecycle-ui.py",
+      "bytes": 58357,
+      "sha256": "a054d8728d6a79f0d1ff67747ab3019577b618a67123d373d08fe43e4fb07f3c"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-193017/runner-source/ui.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-193017/runner-source/ui.json",
+      "bytes": 3427,
+      "sha256": "c8166367648b665f56630664867eb2c69e5fca6d05568c4c6e10ab5f5a0965d4"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-193017/ui.agent.acks.jsonl",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-193017/ui.agent.acks.jsonl",
+      "bytes": 425,
+      "sha256": "8e2fb88a8576710e28508e3a1d98e65bce3736be2d9480c25ef98672276737d6"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-193017/ui.agent.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-193017/ui.agent.json",
+      "bytes": 274,
+      "sha256": "fbcc37c6d11b91d5f246782b769ada9a1671bb242e8e2ac26a2b1076206bbd74"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-193017/ui.app-preferences.acks.jsonl",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-193017/ui.app-preferences.acks.jsonl",
+      "bytes": 972,
+      "sha256": "c526584d3d73bac827c6ec855e05c842b5661561d400f06a7af26294a60661c9"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-193017/ui.events.jsonl",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-193017/ui.events.jsonl",
+      "bytes": 563,
+      "sha256": "ef1daa4616affceb4899e077d1cfcc81df2ac023fbe5b45828daed174f409363"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-193017/ui.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-193017/ui.json",
+      "bytes": 3427,
+      "sha256": "c8166367648b665f56630664867eb2c69e5fca6d05568c4c6e10ab5f5a0965d4"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-193017/ui.profile.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-193017/ui.profile.json",
+      "bytes": 5771,
+      "sha256": "4378eacc61769aa90f03cc16154291db5a4e082e93574b180e4753894ca7a790"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/evidence.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/evidence.json",
+      "bytes": 301258,
+      "sha256": "7f7df6e1f19c87343933dd038cc41bc1017c19fd5bf2c0b8af8b21ba9b82fde8"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/fresh-0.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/fresh-0.json",
+      "bytes": 2721,
+      "sha256": "5c8b73151acc390a71865007f885260bfb91b269a95b1d62de078bfd7cc3957d"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/fresh-1.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/fresh-1.json",
+      "bytes": 710,
+      "sha256": "91f386e984f29b59f289171db812f07deaca88f0ed87ea079f66038edd68a37d"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/fresh-profile.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/fresh-profile.json",
+      "bytes": 3049,
+      "sha256": "f3f7689d1fbccc2b6b175151b6cdb81835914df0c7c8deac3ecff6ea0e20a134"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/owned preferences.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/owned preferences.json",
+      "bytes": 1501,
+      "sha256": "62bb2e7a143f9cecd4ff6dfdce9e1c77bbf9389224e60d17c99e3094cc96a7dd"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/probe-0.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/probe-0.json",
+      "bytes": 2721,
+      "sha256": "d3bc629e198b1507ed26bb69af9dc1c12e251228cdc48f8f59faeb09249cccd4"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/probe-1.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/probe-1.json",
+      "bytes": 2721,
+      "sha256": "005f1d47b50ab4dd7203d46b49ec7eb7f812b0fa23b8bcb24bf6521095d162da"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/profile-A.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/profile-A.json",
+      "bytes": 529,
+      "sha256": "cc6aa1b6a783dd1aa49b70b0f61c24133ff339d9930c2be0986eedf1fea1f5d5"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/profile-B.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/profile-B.json",
+      "bytes": 505,
+      "sha256": "561ae26776c0e42097699de67bfdd4ba4ddcd1ffc77ef5b231826dfea899c7bb"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/profile.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/profile.json",
+      "bytes": 529,
+      "sha256": "cc6aa1b6a783dd1aa49b70b0f61c24133ff339d9930c2be0986eedf1fea1f5d5"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/runner-source/dependency-hashes.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/runner-source/dependency-hashes.json",
+      "bytes": 4538,
+      "sha256": "68e65a459a0411534db9b8f8709dd750096fef077d2b843443389572789f8a59"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/runner-source/initial-preferences.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/runner-source/initial-preferences.json",
+      "bytes": 1003,
+      "sha256": "f75f810672ed118a779c7d8e53142d32144f06c4682bc7129fb515693a9f3727"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/runner-source/owned-app-hotkeys.py",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/runner-source/owned-app-hotkeys.py",
+      "bytes": 5981,
+      "sha256": "662d24ce605bd43ee908014f271269bef28c3a0daeccb072283eafb1d27b56aa"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/runner-source/owned-tray-menu.py",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/runner-source/owned-tray-menu.py",
+      "bytes": 10440,
+      "sha256": "7c68947ebb35b81bf53270e36e06d4f49ac67c6709fa72d436713d07f50d81f8"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/runner-source/test-app-lifecycle-acceptance.py",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/runner-source/test-app-lifecycle-acceptance.py",
+      "bytes": 15876,
+      "sha256": "1859d8af884c53b71081951e97407b2395deb8d2874fbecda5c89e9865ba01e1"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/runner-source/test-app-lifecycle-ui.py",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/runner-source/test-app-lifecycle-ui.py",
+      "bytes": 60537,
+      "sha256": "e21a4933ce48f1c3f727aa4e9881a6b3cd5861fa67d3166f1e2cc95519c2b23e"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/runner-source/ui.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/runner-source/ui.json",
+      "bytes": 3427,
+      "sha256": "8b5b094719f70cd7e2b3abeb48fa5dc24e56f7cf4d30bf6622aa32aa17e19a73"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/ui.agent.acks.jsonl",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/ui.agent.acks.jsonl",
+      "bytes": 425,
+      "sha256": "43b46a9b93f17aecd50c6d719ffd9ebc5b60849d7cdc055874e3f7765e2ba6f2"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/ui.agent.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/ui.agent.json",
+      "bytes": 274,
+      "sha256": "0de1e8008735b26c20e19bc457a08dce6df549b38bb6eb258ec646794cfb973d"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/ui.app-preferences.acks.jsonl",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/ui.app-preferences.acks.jsonl",
+      "bytes": 2918,
+      "sha256": "a93345bb535112b719c98a9472a06c442c9292578cf08eb98f844c4738357d97"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/ui.events.jsonl",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/ui.events.jsonl",
+      "bytes": 1198,
+      "sha256": "9c89b5a88a244c9e2b6776b7c6154e846b315f47c1032240d131a3e33545a538"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/ui.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/ui.json",
+      "bytes": 3427,
+      "sha256": "8b5b094719f70cd7e2b3abeb48fa5dc24e56f7cf4d30bf6622aa32aa17e19a73"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/ui.profile.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-main-20261014-193701/ui.profile.json",
+      "bytes": 5812,
+      "sha256": "9651773520b8fef5dcfdf58ced942d01420cf1928cf7158b784fec5f0085de38"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-quarantine-20261014-194321/compact-home-virtual-held.png",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-quarantine-20261014-194321/compact-home-virtual-held.png",
+      "bytes": 32990,
+      "sha256": "899fe73f63167e42f11129a0b53a122d4247dfa32a233094019dda99d00d224b"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-quarantine-20261014-194321/evidence.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-quarantine-20261014-194321/evidence.json",
+      "bytes": 72776,
+      "sha256": "a24a80d7142279dc1db7edc915f1dbdf4d1c250ac6e05f7ed09e1e800b9ca3ce"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-quarantine-20261014-194321/failed-cleanup-quarantine.png",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-quarantine-20261014-194321/failed-cleanup-quarantine.png",
+      "bytes": 37941,
+      "sha256": "c7fd555b3c6db5859a93a7098d98998006f8fd9cb07290cd6695efec701e6c93"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-quarantine-20261014-194321/fresh-profile.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-quarantine-20261014-194321/fresh-profile.json",
+      "bytes": 286,
+      "sha256": "cf73e8807fcbc9eee3d86afe93ab4a13015cadeedff7aa5ac8a8c3f5fc07ec49"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-quarantine-20261014-194321/owned preferences.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-quarantine-20261014-194321/owned preferences.json",
+      "bytes": 414,
+      "sha256": "cafc12728bc7e745f959ac6b0bbbf567e4e2d42a771a86f69a0feabecfe0990a"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-quarantine-20261014-194321/profile.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-quarantine-20261014-194321/profile.json",
+      "bytes": 286,
+      "sha256": "593fcd683f9a7ddba2a6be39c52d9ca9be66d87925326968b5e6f0a797b0d1c5"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-quarantine-20261014-194321/runner-source/dependency-hashes.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-quarantine-20261014-194321/runner-source/dependency-hashes.json",
+      "bytes": 4538,
+      "sha256": "68e65a459a0411534db9b8f8709dd750096fef077d2b843443389572789f8a59"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-quarantine-20261014-194321/runner-source/initial-preferences.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-quarantine-20261014-194321/runner-source/initial-preferences.json",
+      "bytes": 414,
+      "sha256": "cafc12728bc7e745f959ac6b0bbbf567e4e2d42a771a86f69a0feabecfe0990a"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-quarantine-20261014-194321/runner-source/owned-app-hotkeys.py",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-quarantine-20261014-194321/runner-source/owned-app-hotkeys.py",
+      "bytes": 5981,
+      "sha256": "662d24ce605bd43ee908014f271269bef28c3a0daeccb072283eafb1d27b56aa"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-quarantine-20261014-194321/runner-source/owned-tray-menu.py",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-quarantine-20261014-194321/runner-source/owned-tray-menu.py",
+      "bytes": 10440,
+      "sha256": "7c68947ebb35b81bf53270e36e06d4f49ac67c6709fa72d436713d07f50d81f8"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-quarantine-20261014-194321/runner-source/test-app-lifecycle-acceptance.py",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-quarantine-20261014-194321/runner-source/test-app-lifecycle-acceptance.py",
+      "bytes": 15876,
+      "sha256": "1859d8af884c53b71081951e97407b2395deb8d2874fbecda5c89e9865ba01e1"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-quarantine-20261014-194321/runner-source/test-app-lifecycle-ui.py",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-quarantine-20261014-194321/runner-source/test-app-lifecycle-ui.py",
+      "bytes": 60537,
+      "sha256": "e21a4933ce48f1c3f727aa4e9881a6b3cd5861fa67d3166f1e2cc95519c2b23e"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-quarantine-20261014-194321/runner-source/ui.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-quarantine-20261014-194321/runner-source/ui.json",
+      "bytes": 2419,
+      "sha256": "2fc5cc2b916ad3c0f15e5f66b9f47ef5f17476b9624dd82182034ccbdac56ba6"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-quarantine-20261014-194321/ui.events.jsonl",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-quarantine-20261014-194321/ui.events.jsonl",
+      "bytes": 965,
+      "sha256": "6c63d643336dc1785f5b0ae21c7a04a32183ab2c35c48493f8576eb98d36fe6e"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-quarantine-20261014-194321/ui.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-quarantine-20261014-194321/ui.json",
+      "bytes": 2419,
+      "sha256": "2fc5cc2b916ad3c0f15e5f66b9f47ef5f17476b9624dd82182034ccbdac56ba6"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-quarantine-20261014-194321/ui.profile.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-quarantine-20261014-194321/ui.profile.json",
+      "bytes": 3278,
+      "sha256": "9601b1f3d17f014e4d0ad7253a213b76d111e8a207c21eb73acf0581f57fe2e9"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-restore-diagnostic-20261014-191815/evidence.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-restore-diagnostic-20261014-191815/evidence.json",
+      "bytes": 8559,
+      "sha256": "c59994190b9c30634b16316c2bc7f5a4ddf9fcfed21f92eb61319488a5a106a0"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-restore-diagnostic-20261014-191815/owned preferences.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-restore-diagnostic-20261014-191815/owned preferences.json",
+      "bytes": 1003,
+      "sha256": "f75f810672ed118a779c7d8e53142d32144f06c4682bc7129fb515693a9f3727"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-restore-diagnostic-20261014-191815/profile.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-restore-diagnostic-20261014-191815/profile.json",
+      "bytes": 47,
+      "sha256": "65ed2959b3a195ab59446013fa3fb28a349053fd59faf90dffc622ea49d911bc"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-restore-diagnostic-20261014-191815/runner-source/dependency-hashes.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-restore-diagnostic-20261014-191815/runner-source/dependency-hashes.json",
+      "bytes": 4538,
+      "sha256": "b37df982f00ecbc6d120aba0547fb885ac49f2a3e4b314d44bf24d89e6707164"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-restore-diagnostic-20261014-191815/runner-source/initial-preferences.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-restore-diagnostic-20261014-191815/runner-source/initial-preferences.json",
+      "bytes": 1003,
+      "sha256": "f75f810672ed118a779c7d8e53142d32144f06c4682bc7129fb515693a9f3727"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-restore-diagnostic-20261014-191815/runner-source/owned-app-hotkeys.py",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-restore-diagnostic-20261014-191815/runner-source/owned-app-hotkeys.py",
+      "bytes": 5981,
+      "sha256": "662d24ce605bd43ee908014f271269bef28c3a0daeccb072283eafb1d27b56aa"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-restore-diagnostic-20261014-191815/runner-source/owned-tray-menu.py",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-restore-diagnostic-20261014-191815/runner-source/owned-tray-menu.py",
+      "bytes": 10440,
+      "sha256": "7c68947ebb35b81bf53270e36e06d4f49ac67c6709fa72d436713d07f50d81f8"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-restore-diagnostic-20261014-191815/runner-source/test-app-lifecycle-acceptance.py",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-restore-diagnostic-20261014-191815/runner-source/test-app-lifecycle-acceptance.py",
+      "bytes": 15876,
+      "sha256": "1859d8af884c53b71081951e97407b2395deb8d2874fbecda5c89e9865ba01e1"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-restore-diagnostic-20261014-191815/runner-source/test-app-lifecycle-restore-diagnostic.py",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-restore-diagnostic-20261014-191815/runner-source/test-app-lifecycle-restore-diagnostic.py",
+      "bytes": 5366,
+      "sha256": "59d287af286e06e0d17dfe49c913f5d71b6550f68b9056de092a41be361b60a8"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-restore-diagnostic-20261014-191815/runner-source/test-app-lifecycle-ui.py",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-restore-diagnostic-20261014-191815/runner-source/test-app-lifecycle-ui.py",
+      "bytes": 54903,
+      "sha256": "68c5e4a0708ae734561c9350284e5901239c193d56ada23b687434529f9eec8f"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-restore-diagnostic-20261014-191815/runner-source/ui.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-restore-diagnostic-20261014-191815/runner-source/ui.json",
+      "bytes": 91,
+      "sha256": "83d95404484168a09ef0cbe2cc3b294f8bc6d8740cc78af28a32c10ef9e57c1e"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-restore-diagnostic-20261014-191815/ui.events.jsonl",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-restore-diagnostic-20261014-191815/ui.events.jsonl",
+      "bytes": 33,
+      "sha256": "88b371fc8f0193a05ff68034d2a011f2f7d7457f078605d7969b25eba8d2476b"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-restore-diagnostic-20261014-191815/ui.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-restore-diagnostic-20261014-191815/ui.json",
+      "bytes": 91,
+      "sha256": "83d95404484168a09ef0cbe2cc3b294f8bc6d8740cc78af28a32c10ef9e57c1e"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-restore-diagnostic-20261014-191815/ui.profile.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-restore-diagnostic-20261014-191815/ui.profile.json",
+      "bytes": 616,
+      "sha256": "de719c12b91bfd04c81df99f5b0b1a31a28b1e69cf47d840cc9012de28469565"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-startup-long-20261014-193909/evidence.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-startup-long-20261014-193909/evidence.json",
+      "bytes": 16779,
+      "sha256": "6816b782e962c76afbf016ac749e9221b1cbd851f5df403d9d2b1df63e1ad139"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-startup-long-20261014-193909/owned preferences.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-startup-long-20261014-193909/owned preferences.json",
+      "bytes": 1005,
+      "sha256": "8d2e219f29f773b1cc6901cc62f1613dcb85de04ba89e6a3c34764d1f47988ea"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-startup-long-20261014-193909/profile.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-startup-long-20261014-193909/profile.json",
+      "bytes": 345,
+      "sha256": "f68c565cd4aa406e82c7537885e501194e83d7783bacb76f84c152ada424ce3a"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-startup-long-20261014-193909/runner-source/dependency-hashes.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-startup-long-20261014-193909/runner-source/dependency-hashes.json",
+      "bytes": 4538,
+      "sha256": "68e65a459a0411534db9b8f8709dd750096fef077d2b843443389572789f8a59"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-startup-long-20261014-193909/runner-source/initial-preferences.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-startup-long-20261014-193909/runner-source/initial-preferences.json",
+      "bytes": 1005,
+      "sha256": "8d2e219f29f773b1cc6901cc62f1613dcb85de04ba89e6a3c34764d1f47988ea"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-startup-long-20261014-193909/runner-source/owned-app-hotkeys.py",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-startup-long-20261014-193909/runner-source/owned-app-hotkeys.py",
+      "bytes": 5981,
+      "sha256": "662d24ce605bd43ee908014f271269bef28c3a0daeccb072283eafb1d27b56aa"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-startup-long-20261014-193909/runner-source/owned-tray-menu.py",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-startup-long-20261014-193909/runner-source/owned-tray-menu.py",
+      "bytes": 10440,
+      "sha256": "7c68947ebb35b81bf53270e36e06d4f49ac67c6709fa72d436713d07f50d81f8"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-startup-long-20261014-193909/runner-source/test-app-lifecycle-acceptance.py",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-startup-long-20261014-193909/runner-source/test-app-lifecycle-acceptance.py",
+      "bytes": 15876,
+      "sha256": "1859d8af884c53b71081951e97407b2395deb8d2874fbecda5c89e9865ba01e1"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-startup-long-20261014-193909/runner-source/test-app-lifecycle-ui.py",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-startup-long-20261014-193909/runner-source/test-app-lifecycle-ui.py",
+      "bytes": 60537,
+      "sha256": "e21a4933ce48f1c3f727aa4e9881a6b3cd5861fa67d3166f1e2cc95519c2b23e"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-startup-long-20261014-193909/runner-source/ui.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-startup-long-20261014-193909/runner-source/ui.json",
+      "bytes": 450,
+      "sha256": "735e3f7c16e18f0f1e7045c530ef532999a8c258638e5fd963242f5817642975"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-startup-long-20261014-193909/ui.events.jsonl",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-startup-long-20261014-193909/ui.events.jsonl",
+      "bytes": 204,
+      "sha256": "79e57370fa934d6b91be0bbfd6a482488aa63fd008837de7105592b1dec9ba6e"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-startup-long-20261014-193909/ui.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-startup-long-20261014-193909/ui.json",
+      "bytes": 450,
+      "sha256": "735e3f7c16e18f0f1e7045c530ef532999a8c258638e5fd963242f5817642975"
+    },
+    {
+      "source": "runtime/acceptance-graph-app-lifecycle-startup-long-20261014-193909/ui.profile.json",
+      "archive_entry": "runtime/acceptance-graph-app-lifecycle-startup-long-20261014-193909/ui.profile.json",
+      "bytes": 5723,
+      "sha256": "8637041e61d666f62dc154042e5e30822b4a82b9e1c6ddab8837bc28f9296767"
+    },
+    {
+      "source": "runtime/app-lifecycle-owned-cleanup-audit-20261014.json",
+      "archive_entry": "runtime/app-lifecycle-owned-cleanup-audit-20261014.json",
+      "bytes": 4724,
+      "sha256": "878df30e1c6eecf3a7d13ba40cc66b5ebe52354a9153be9cf9b9e4b3bdcec9af"
+    }
+  ],
+  "byte_exact_verification": "PASS"
+}

@@ -1,0 +1,260 @@
+{
+  "decision": "APPROVED SOURCE AND BOUNDED HARNESS; NATIVE PENDING ROOT READY",
+  "date": "2026-10-15",
+  "producer": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-clean-restart-20261015-095400\\verification.json",
+    "sha256": "2833cd9c02798af00a33fec0bbfacf6c29ebcea1bcb1cc03932a184988badae2",
+    "result": "PASS",
+    "workspace_tests": 261,
+    "input_count": 830,
+    "native_build": {
+      "command": [
+        "powershell",
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "scripts/build-backend.ps1",
+        "-Architecture",
+        "both"
+      ],
+      "exit_code": 0,
+      "log": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-clean-restart-20261015-095400\\native.log"
+    },
+    "doctor": {
+      "command": [
+        "E:\\.cargo\\target\\debug\\protoinputmux.exe",
+        "doctor",
+        "--runtime",
+        "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime"
+      ],
+      "exit_code": 0,
+      "log": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-clean-restart-20261015-095400\\doctor.log"
+    },
+    "checks": [
+      {
+        "command": [
+          "cargo",
+          "fmt",
+          "--all",
+          "--check"
+        ],
+        "exit_code": 0
+      },
+      {
+        "command": [
+          "cargo",
+          "clippy",
+          "--config",
+          "build.rustc-wrapper=\"\"",
+          "--workspace",
+          "--all-targets",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "exit_code": 0
+      },
+      {
+        "command": [
+          "cargo",
+          "test",
+          "--config",
+          "build.rustc-wrapper=\"\"",
+          "--workspace"
+        ],
+        "exit_code": 0
+      },
+      {
+        "command": [
+          "cargo",
+          "build",
+          "--config",
+          "build.rustc-wrapper=\"\"",
+          "--workspace"
+        ],
+        "exit_code": 0
+      },
+      {
+        "command": [
+          "cargo",
+          "build",
+          "--config",
+          "build.rustc-wrapper=\"\"",
+          "--workspace",
+          "--target",
+          "i686-pc-windows-msvc"
+        ],
+        "exit_code": 0
+      }
+    ],
+    "build_sha256": {
+      "x64": "3de655955af19fa871da56886ccc81b6b42adce153bc55cb1d97cfddfc50c9f4",
+      "i686": "ae3756a60068506de87188f88ce59167d456b79d858299f62550185564ed1c6b"
+    },
+    "runtime_sha256": {
+      "ProtoInputHooks32.dll": "9fcc2e0602d15ba1ba0c2433217c9868fef6ea039b05fd29c53b35a43ee4e4bb",
+      "ProtoInputIJ32.exe": "73c10f7397d22ed9a9f9b1ee804f17853a2c9f96d495a83f9448201b97f27a86",
+      "ProtoInputIJP32.dll": "d593e4b4f304f55743c6bbb680cf3c81f2be97392980c29367639859ffdccc3e",
+      "ProtoInputLoader32.dll": "f8e0a573a42b948f099ccd8cfd5ce3427d3eabef4de25302cb6fa1e9e4e9e7be",
+      "ProtoInputHooks64.dll": "3a67717f8711fa7d310c4c679ec51b8f994b08839eadb58c67519ae85ec7addc",
+      "ProtoInputIJ64.exe": "e11a9fd0f14902f0c749781a42a8f912fb3eb876a54454f4cb5eddea5fa5636d",
+      "ProtoInputIJP64.dll": "8daf63d2c87a150e0928f0b6d359ea503b6180538faf14bc3c66fa8228a49172",
+      "ProtoInputLoader64.dll": "e4e3889472761337de4bd232863b84a319833fc0104c2062ae553239910f5f11",
+      "protoinputmux_cursor_observer32.dll": "bc2b2fbd2655e3324fcea2f41dc54a493bbd3120dd48daf92bb08ecfb5d20069",
+      "protoinputmux_cursor_observer64.dll": "3ade9c71977c87340daae545295cbea11aba3347ee84171aab189814d03f2212"
+    }
+  },
+  "source_integrity": {
+    "all_current_inputs_match": true,
+    "prior_accepted_manifest": {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-keyboard-delivery-20261015-090807\\verification.json",
+      "sha256": "fb519cbb1cf2f00fd69841d73842bf8765c98c994467b6846f5837c0c0f1e111"
+    },
+    "common_prior_changed": {
+      "crates/cursor-observer/src/lib.rs": {
+        "before": "b77d5b13cc65fd84efe7263e5c245c260aa65e9087efb308f5d10d496d228e4a",
+        "current": "4488e2ac82914194ee65e317d278801ffebad78cc34b83956a5a94181023832c"
+      },
+      "crates/mux-windows/src/lib.rs": {
+        "before": "acca8144294c289125e891bc5473c0114890579510c78abe56be4407ff6eb60d",
+        "current": "24367001e8494ea96fd24d8dc0a6c582776f9b0e40857e5046cd2fbbd1fa2248"
+      },
+      "crates/mux-windows/src/protoinput.rs": {
+        "before": "5020e70f7ad0cc252da74c93c215c2b2731fbd18f2617ad3b546fbfaf39cef51",
+        "current": "af45dc502a6929ebe302af97b97439d3cf80cb562dae913fbd20d0c4dcc2c858"
+      },
+      "crates/mux-windows/src/targets.rs": {
+        "before": "20150219d093cfb7daa84a09c801737b230807271d007f4f5227e8d5fb4f9dc8",
+        "current": "8c9601d72716dfd307cde28f82e54d2dcfc5e02df76e02533b4ac958eb82f378"
+      },
+      "crates/protoinputmux/src/gui.rs": {
+        "before": "1592477aa2d69b6305ab2bc626c6d1a360d17bc278f09f2d50e5cc7633cc5ce2",
+        "current": "f8851a0d7ecbf7624004096b0b09d62995eb97bd613b13790245d289c8d9b396"
+      },
+      "crates/protoinputmux/src/main.rs": {
+        "before": "cb7dc8215c4a957ec50bc63857b7622c06cfda29cb3e67fe9b2d3eba08311703",
+        "current": "2683a779a5a07f5942d16c02271efbccc71d913840f456b5e674eb1b35adddba"
+      },
+      "crates/protoinputmux/src/mcp.rs": {
+        "before": "ace3e559ad8877478ed64730b5bf536f7e75f037aacf7273a550122ceda678e9",
+        "current": "bd365f5aaa6656ac9ca7506acbe57cbb1c5eaef6d230bbb7000e8633970a51eb"
+      },
+      "crates/protoinputmux/src/session.rs": {
+        "before": "b9646d8668b26d286fed2fae57dccd527be578f2c7d5288ced073ba16681d437",
+        "current": "6f447c701206caeda6814336c16cd171389e330cf70307155affa9c7f171ab73"
+      },
+      "vendor/ProtoInput/src/ProtoInput/ProtoInputHooks/MuxCursorObserverBridge.h": {
+        "before": "112e8e49aef62293cf046a3d1286eed7aa465e24c11477084c78f4f2339c99c2",
+        "current": "f636a2b2e1d3ccff83a4b247864a940bdf5bd8925bd7fa189a7a65b9512b10a3"
+      },
+      "vendor/ProtoInput/src/ProtoInput/ProtoInputHooks/PipeCommunication.cpp": {
+        "before": "ff540142cd01a4d7ce954de2b82c3f0adf6eb7d78b7728a4a3e526ddd6b7f7ee",
+        "current": "7bf9545aa16860f06c4a2714f1a7ea3ecef6307b2a27fcde3a406863aad31fdf"
+      },
+      "vendor/ProtoInput/src/ProtoInput/ProtoInputHooks/pipeinclude/pipeinclude.h": {
+        "before": "f73b1e1ae9f3a5057d5bfdbb9f72632218cfa81c80465482e8bbd730648f0559",
+        "current": "e547c9e0b89b32fbe3c02602d4491ecc57aa93c5a7aa769407cec3b9edbafa32"
+      },
+      "vendor/ProtoInput/src/ProtoInput/ProtoInputHooks/RawInput.cpp": {
+        "before": "a92cbf75920e363f4cbbe492fc13dda2df0a464cef37dc664a8dd93f14d62330",
+        "current": "2ef323497972f0e0ff2ab5f1bf5480a63f4951b9c60c0119dcb9705e050f1be4"
+      },
+      "vendor/ProtoInput/src/ProtoInput/ProtoInputLoader/include/protoloader.h": {
+        "before": "1d6e037b8d13c24d9b52a4100df0e0b1a3f32d43c75c4dad4bcda2a5a55dcc04",
+        "current": "37ddefb8905d379384d0c9ca23fbf56dc47e2e2234c7fc004a1e8b4d6144d4cd"
+      },
+      "vendor/ProtoInput/src/ProtoInput/ProtoInputLoader/Inject.cpp": {
+        "before": "86caead410dc990de7aed9945d8d5b2195bf21b740c20c4fb142ab13ec623cb2",
+        "current": "e3ab091b1f2adb35afac6549ef92046748279ba5eb57a792527b50fb795274c8"
+      }
+    },
+    "common_prior_protected_count": 72,
+    "new_lifecycle_rust": {
+      "path": "crates/mux-windows/src/lifecycle.rs",
+      "sha256": "4fe3efbd680964706f09b086869488358b1eca17f44345eedc04092f1aadc056"
+    },
+    "reviewed_current_files": {
+      "crates/cursor-observer/src/lib.rs": "4488e2ac82914194ee65e317d278801ffebad78cc34b83956a5a94181023832c",
+      "crates/mux-windows/src/lib.rs": "24367001e8494ea96fd24d8dc0a6c582776f9b0e40857e5046cd2fbbd1fa2248",
+      "crates/mux-windows/src/lifecycle.rs": "4fe3efbd680964706f09b086869488358b1eca17f44345eedc04092f1aadc056",
+      "crates/mux-windows/src/protoinput.rs": "af45dc502a6929ebe302af97b97439d3cf80cb562dae913fbd20d0c4dcc2c858",
+      "crates/mux-windows/src/targets.rs": "8c9601d72716dfd307cde28f82e54d2dcfc5e02df76e02533b4ac958eb82f378",
+      "crates/protoinputmux/src/gui.rs": "f8851a0d7ecbf7624004096b0b09d62995eb97bd613b13790245d289c8d9b396",
+      "crates/protoinputmux/src/main.rs": "2683a779a5a07f5942d16c02271efbccc71d913840f456b5e674eb1b35adddba",
+      "crates/protoinputmux/src/mcp.rs": "bd365f5aaa6656ac9ca7506acbe57cbb1c5eaef6d230bbb7000e8633970a51eb",
+      "crates/protoinputmux/src/session.rs": "6f447c701206caeda6814336c16cd171389e330cf70307155affa9c7f171ab73",
+      "docs/clean-restart-contract.md": "103cfd7738f1972fb2cad82f0d44c77be6ad57b9e16e41a2d505e2ec024cb9be",
+      "runtime/verify-clean-restart.py": "75ae11f181fe6b5950a471c44151fe00579c4cbf2963d3bc2ff0da6a1e96fefd",
+      "scripts/build-backend.ps1": "d5d99dfd2eed2219f4b5d3bdf6c766b32e24b84476f183442a4f1fbaac7aea1c",
+      "scripts/native-compat.targets": "fd644dfe5ce0b76cb3a38df7ec0af9b27c24104a4677215a3d75b2033c64b49e",
+      "vendor/ProtoInput/src/ProtoInput/ProtoInputHooks/FakeMouseKeyboard.cpp": "50ad1d109eb66954cd6a4668c75c4affef52cec4e26fccba006b6eeda2311d23",
+      "vendor/ProtoInput/src/ProtoInput/ProtoInputHooks/FakeMouseKeyboard.h": "bd5d4a74cfe44e9085892ef2e7195915cf8b41911142307d72b6e5ab826a8276",
+      "vendor/ProtoInput/src/ProtoInput/ProtoInputHooks/FocusMessageLoop.cpp": "c7dbb4c95b63e3b0d759434baaedf09dcf248a5f7e947126c3d837a8d2458ee1",
+      "vendor/ProtoInput/src/ProtoInput/ProtoInputHooks/HookInstaller.cpp": "4a087fe04a3a44c6fa1979fda553e72153cf83b52256b72fac9241c4e2f62c3e",
+      "vendor/ProtoInput/src/ProtoInput/ProtoInputHooks/InstallHooks.h": "a9fdcb0b0ad0b4dbdb5ccf06c55e7ea6ee149c2df675a064977f0add7280956c",
+      "vendor/ProtoInput/src/ProtoInput/ProtoInputHooks/MessageFilterHook.cpp": "945374ebc3f338391b4d206240c8ec2a89f92c5b3667699bfe0d9d1aabc4cb04",
+      "vendor/ProtoInput/src/ProtoInput/ProtoInputHooks/MessageFilterHook.h": "8a8f2636584904c9bca20a9562f4953def66cdac0588178766f9d0fbbe43c118",
+      "vendor/ProtoInput/src/ProtoInput/ProtoInputHooks/MuxCursorObserverBridge.h": "f636a2b2e1d3ccff83a4b247864a940bdf5bd8925bd7fa189a7a65b9512b10a3",
+      "vendor/ProtoInput/src/ProtoInput/ProtoInputHooks/MuxLifecycleNative.h": "a48fdcfd5ba966297760fd682a2788dfbcd5e8032950b010d5668376ea69ad6c",
+      "vendor/ProtoInput/src/ProtoInput/ProtoInputHooks/PipeCommunication.cpp": "7bf9545aa16860f06c4a2714f1a7ea3ecef6307b2a27fcde3a406863aad31fdf",
+      "vendor/ProtoInput/src/ProtoInput/ProtoInputHooks/RawInput.cpp": "2ef323497972f0e0ff2ab5f1bf5480a63f4951b9c60c0119dcb9705e050f1be4",
+      "vendor/ProtoInput/src/ProtoInput/ProtoInputHooks/RawInput.h": "587f81cedaa7ab437c758319246fddf3f8d3a8388ae449455643ca44a90b5a2f",
+      "vendor/ProtoInput/src/ProtoInput/ProtoInputHooks/pipeinclude/MuxLifecycleProtocol.h": "71271efee4ade2005a5c494192d8942a6fd08b6d0ba3cdfba57465557a098134",
+      "vendor/ProtoInput/src/ProtoInput/ProtoInputHooks/pipeinclude/pipeinclude.h": "e547c9e0b89b32fbe3c02602d4491ecc57aa93c5a7aa769407cec3b9edbafa32",
+      "vendor/ProtoInput/src/ProtoInput/ProtoInputLoader/EasyHookRuntime.cpp": "213c69e59f3a24935234d28e75ccef47cbe38149cc6e18bb6280b415441b9e28",
+      "vendor/ProtoInput/src/ProtoInput/ProtoInputLoader/Inject.cpp": "e3ab091b1f2adb35afac6549ef92046748279ba5eb57a792527b50fb795274c8",
+      "vendor/ProtoInput/src/ProtoInput/ProtoInputLoader/InstanceHandling.cpp": "4e232393cd5f848b270d58c7b48885859a162fe0892d4fa154eee6ae4d5307ee",
+      "vendor/ProtoInput/src/ProtoInput/ProtoInputLoader/TrackedInstances.h": "5ef8bbe788aff6df5869682cf25d0c2883b4ffdb0a2b556da367ac278ea3d9f0",
+      "vendor/ProtoInput/src/ProtoInput/ProtoInputLoader/include/protoloader.h": "37ddefb8905d379384d0c9ca23fbf56dc47e2e2234c7fc004a1e8b4d6144d4cd"
+    },
+    "isolated_native_patch": {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\patches\\lifecycle\\0004-clean-restart.patch",
+      "sha256": "052d7c886511e38db80b304ea710c415777977411ec868c813861f2001d6c7bb"
+    }
+  },
+  "findings": [],
+  "reviewed_invariants": [
+    "Version1 fixed-width sizes/identities/ACKs checked on Rust and C++ sides; creation, bits, build, session and generation fail closed.",
+    "Read-only inventory never waits target mutex; lease retained in target prevents takeover after worker loss. Prepared lease is not mistaken for owner-dead Active.",
+    "Native Prepared remains nonreusable until shared Pending record becomes Committed; only Active unexpected EOF poisons. Both supervisor terminal paths wait worker exit and commit only Stopped+exit0.",
+    "Release failure propagates despite backend retirement; composed production path and terminal tests forbid global commit after failed release or partial prepare. Native partial-Prepare failure remains unperformed.",
+    "All queue fences precede uninstall/prepare; emulated lifecycle install/shutdown skip hook0; ordinary physical/direct CLI stays fresh-only legacy.",
+    "Native reset clears selected devices, raw/fake held state, selected HWND, filters/message blocks; observer Quiescent waits all retired Arc resources before reuse.",
+    "Attachment function-pointer Drops precede owning library unload. Native resident pipe/support threads intentionally remain loaded; clean is quiescent, not DLL unload.",
+    "Home cache clears on Stopped and refreshes from logic every3s; automatic unused allowlist does not itself block Start."
+  ],
+  "focused_unit_evidence": [
+    "ABI sizes and stale ACK rejection",
+    "Commit explicit/exactly once, supervisor drop Pending, changed session denial",
+    "Prepared3+Pending denies vs Ready5 reuse; dirty/busy precedence and legacy inspection fail-closed",
+    "Production commit_terminal four event/exit cases and commit-error propagation"
+  ],
+  "harness": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\scripts\\test-clean-restart-acceptance.py",
+    "sha256": "99431c01db74d74babcec3597b90c7a172e06cae9d475beccb6cf1f2dca83182",
+    "ast": "PASS",
+    "plan_path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\clean-restart-acceptance-plan.md",
+    "plan_sha256": "261167ba82610f78241a57e9a12709746015fcfd1abe16ae17679aa3eb8dbd08",
+    "native_expected_mutations": 57,
+    "native_mutation_cap": 60,
+    "routing_input_expected": 39,
+    "routing_input_cap": 40,
+    "gui_receipts": 4,
+    "gui_originals": 2,
+    "helper_api_checks": [
+      "Current Client actual stdio RPC correlation/error handling/60s timeout/normal close",
+      "Existing own pump fixture mode file and report schema",
+      "Known own HWND geometry before points; own process handles retained for worker exit",
+      "Base execute verify(name,sample)/after(gate) callback shapes and Script sample hold"
+    ],
+    "scope_limits": [
+      "No native apps run by this review.",
+      "Same-PID x64+x86 actual behavior and independent original pixels still pending.",
+      "Reordered user→target IDs are not disjoint native accepted IDs; old-ID rejection native proof remains open.",
+      "No native successful-A-Prepare/failed-B-Prepare or failed-UP-to-commit fault injection; composed source/unit only.",
+      "Failed Stop does not promise late UP delivery/cleanup; actual late events recorded after normal+3 fresh pump frames.",
+      "No physical/hardware/general-application/same-process isolation/full Ultra claim."
+    ]
+  }
+}

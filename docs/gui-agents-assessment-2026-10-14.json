@@ -1,0 +1,73 @@
+{
+  "group": "Authenticated agents connected to a live GUI session",
+  "date": "2026-10-14",
+  "independent_owner": "/root/acceptance",
+  "result": "PASS",
+  "scope": "One x64 GUI-owned automatic routing session, app-local virtual input, three original seats and four explicitly owned disposable x64/x86 target applications. PID permissions restrict actual native recipients, rather than confining virtual overlay coordinates.",
+  "build_sha256": {
+    "x64": "d0a3b625d585427e9bb6605967d7b5981b0f6becde45bdc8256e0da1b6241029",
+    "i686": "3a5045c68028679d4c6201400f807c2f309323e2dc9fba813fab83c7140c1256"
+  },
+  "accepted_counts": {
+    "substantive_evidence_groups": 6,
+    "actual_gui_control_occurrences": 37,
+    "distinct_gui_button_labels": 21,
+    "discovered_object_root_mcp_tools": 20,
+    "failed_prefix_controls_excluded_from_totals": true
+  },
+  "accepted_artifact": {
+    "path": "docs/gui-agents-connected-2026-10-14.json",
+    "original": "runtime/acceptance-graph-connected-agents-20261014-085134/evidence.json",
+    "sha256": "be647ece5128a1a9c01852518d6ec30ef7558f96d686967778f2f371d84ebb6f",
+    "original_status": "PASS"
+  },
+  "coverage": [
+    "Actual descriptor and pipe security descriptors each have one protected full-access logon-SID ACE. Wrong bearer token rejected; two authenticated raw clients have distinct IDs and matching overlapping sequence-1 command acknowledgements.",
+    "GUI/manual F5 remains held through two agents claiming/releasing/disconnecting the same key, with no extra native key edge. Connected MCP's actor-only F7 is released on EOF while another actor's F8 and GUI F5 survive; other seat's F6 remains held and GUI session stays alive. Actor text reaches the actual own EDIT control.",
+    "Unpermitted user, capture permission and settings/mode/pause mutations reject without releasing original holds. Motion over excluded owned D may target allowed existing focus A, while a button hit at D rejects. After the operator genuinely selects D, agent key, absolute motion toward allowed A and speed-8 relative motion all reject before any D native event.",
+    "Actual capture permission controls and matched policy ACK enable selected-target PNG delivery. Decoded small and large RGBA images contain the known owned source color and white registration mark, with exact selected PID/HWND/user metadata. Native B F9 is observed while the large capture reply is outstanding.",
+    "Actual Disable revokes subsequent agent input, releases only agent ownership, preserves original GUI holds, removes descriptor/listener, and permits a fresh descriptor/broker. Final operator Stop releases input, destroys native cursor HWNDs and removes the fresh descriptor/listener; every raw handle and connected MCP process closes.",
+    "After explicit grant for all active users and session control, Settings ACK updates source profile and actual GUI ring/badge cursor telemetry. Mode ACK updates switched/shared-keyboard profile. Agent Pause renders the actual GUI Resume control; agent Resume restores the actual Pause control. Their intentional authorized input releases occur after preservation tests."
+  ],
+  "capture_measurements": {
+    "small_client_dimensions": [339, 236],
+    "small_png_bytes": 2570,
+    "large_client_dimensions": [3979, 3986],
+    "large_client_pixels": 15860294,
+    "large_png_bytes": 321034,
+    "other_seat_native_input_seconds": 0.047,
+    "large_capture_and_reply_seconds": 5.109,
+    "alpha_extrema_both_pngs": [255, 255],
+    "measurement_note": "The original responsiveness-prefix pixels field is requested outer dimensions 4000x3990, not actual client area. Accepted PNG metadata supplies the actual 3979x3986 dimensions above. The runner now obtains client dimensions directly; accepted original evidence remains byte-exact. No rerun was needed for this measurement correction."
+  },
+  "visuals": [
+    {
+      "path": "docs/gui-agents-control-center.png",
+      "sha256": "6745b3a0a53810cd322bcff667a85ce991a44f27750457786833b817f88af3ad",
+      "review": "Independent pixel review shows actual Agent Access process/permission/connection controls, enabled access and connected clients. Only owned names/PIDs and descriptor path are visible; the bearer token and token-bearing pipe name are absent."
+    },
+    {"path": "docs/gui-agents-selected-source.png", "sha256": "a0350b54100f14fa730eec2ccb75e1c16a53a825c82820c02a0d46acba06152f"},
+    {"path": "docs/gui-agents-large-source.png", "sha256": "e1a2408c2fba8558ebd8d22755d8081478212d79783aad122ac57b4bb293bac0"}
+  ],
+  "retained_failed_attempts": [
+    {"path": "docs/gui-agents-idle-pipe-defect-2026-10-14.json", "original": "runtime/acceptance-graph-connected-agents-20261014-080948/evidence.json", "sha256": "f07eb8c494ee285bd87503a184aa244e9aa7e05274ad2bb32f049025888add4e", "status": "NOT ACCEPTED", "accepted_prefix_controls": 15, "reason": "Real empty nonblocking pipe read was treated as disconnect. Repaired with native pipe availability handling; the generic reader retains normal EOF behavior."},
+    {"path": "docs/gui-agents-setup-prefix-2026-10-14.json", "original": "runtime/acceptance-graph-connected-agents-20261014-083016/evidence.json", "sha256": "c7d29de1370f172d96d378336896540912e65bc4761bd345c1a09e3e691be164", "status": "NOT ACCEPTED", "accepted_prefix_controls": 17, "reason": "Harness edited point coordinates but omitted the actual Move to point control before clicking. The product correctly kept its previous cursor location."},
+    {"path": "docs/gui-agents-large-frame-defect-2026-10-14.json", "original": "runtime/acceptance-graph-connected-agents-20261014-083450/evidence.json", "sha256": "bcc94a7bfa080138b675d6c0584ac413ab4972195bf45a39ca674e9f3ebed13d", "status": "NOT ACCEPTED", "accepted_prefix_controls": 22, "reason": "Real large PNG JSON reply stalled when a whole nonblocking write exceeded pipe quota. Repaired with bounded 16KiB chunks; final full gate delivers the actual large PNG within the unchanged 15-second reader deadline."}
+  ],
+  "producer_verification": "docs/gui-agents-rust-checks-2026-10-14.json records fmt, strict Clippy, 95 workspace tests and both builds, including real idle/data/disconnect and large-frame pipe regressions. Producer checks are separate from independent native/UI evidence.",
+  "limits": [
+    "No hardware or RustDesk input used for control or validation; no OS input injection. Passive device discovery is not claimed disabled.",
+    "Only the x64 GUI/controller and same-logon local clients were run, with x64/x86 owned targets. No cross-logon, remote pipe, client-capacity overload or forced provider failure test.",
+    "The responsiveness measurement covers this actual large native/pixel/PNG job. It does not claim blocked PrintWindow behavior, general latency guarantees or arbitrary application capture compatibility.",
+    "Delayed replication scope changes, alternate actors with queued macro programs, full same-process isolation and full MouseMux Ultra parity were not independently exercised here. Historical feature suites were not broadly repeated.",
+    "Forced failed-run GUI termination required runner removal of its stale private descriptor. Successful Disable/Stop cleanup is product-driven; crash recovery is not claimed."
+  ],
+  "cleanup": {
+    "all_owned_fixture_and_gui_processes_closed": true,
+    "all_connected_mcp_processes_closed": true,
+    "all_raw_pipe_handles_closed": true,
+    "final_owned_process_cim_audit": "empty",
+    "final_product_descriptor_inventory": "empty",
+    "exclusive_native_slot_released": true
+  }
+}

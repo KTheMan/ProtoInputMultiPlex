@@ -1,0 +1,124 @@
+{
+  "decision": "ACCEPTED",
+  "group": "loopback_sdk",
+  "acceptance_scope": "VIRTUAL_FIXED_SNAPSHOT_LOOPBACK_SDK_WORKFLOW_ONLY",
+  "mode": "SDK_FIXED_SNAPSHOT_ONLY",
+  "reviewer": "/root/sdk_acceptance",
+  "current_checkout_approved": false,
+  "port_feature_accepted": false,
+  "full_Ultra_parity_accepted": false,
+  "hardware_or_arbitrary_application_isolation_accepted": false,
+  "raw_evidence": {
+    "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\sdk-52bd4440ccde\\r\\evidence.json",
+    "sha256": "eea7146210b6d7cb3d86107b18f3b19af19c76bed64a8d1e4435631aa0aef837"
+  },
+  "terminal_observations": {
+    "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\sdk-idle-fixed-v4-terminal-20261029.json",
+    "sha256": "efed06e217ddd7d5f0c8d3f93958cfa03b44dfad17b7bd324a2e5cb3663ef8db"
+  },
+  "gate": {
+    "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\multiplex-sdk-idle-fixed-native-gate-v4-20261028.json",
+    "sha256": "699dfbb588db8f0ce2311211f0eaf95fd819ca3290c939bdedc9f7869e5917c8"
+  },
+  "driver": {
+    "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\multiplex-sdk-native-driver-idle-fixed-v4-20261028.py",
+    "sha256": "c982aa25e24c108f265a27940b7f5eb6687e6153da85e4c488e853e62a19cb83"
+  },
+  "frozen_candidate": {
+    "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\sdk-idle-fix-checks-20261028-attempt002\\verification.json",
+    "sha256": "2c5473dfbfd3c052540ba20d3b5c7bea00bfbb17494c3efceb03b31d3aa96238"
+  },
+  "candidate_review": {
+    "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\sdk-idle-fix-checks-20261028-attempt002-independent-review-v4.json",
+    "sha256": "13bb87e5a7dc61675a3c2e2621feb7a22fcf4de54f320ba39da39c34e0563b8a"
+  },
+  "fresh_GUI": {
+    "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\sdk-idle-fix-checks-20261028-attempt002\\protoinputmultiplex.exe",
+    "sha256": "bd757b1025ff7fe6bf081a3a6c3b55f3976eba4c4628d68aa23f5e1d2950e817"
+  },
+  "accepted_artifact_producer": {
+    "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\producer-multiplex-sdk-binary-20261028-attempt001\\verification.json",
+    "sha256": "54b5f689b191f2740fab6f5ba343542c9f7c5d02d09737430c50339d14b9606e"
+  },
+  "native_runtime_producer": {
+    "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\native-canonical-20261028-attempt003\\result.json",
+    "sha256": "818bb3afee8e6d93cd261990b7e655b6a866704856a983d1dcff6e1c017e2b00"
+  },
+  "native_review": {
+    "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\native-canonical-20261028-attempt003-actual-review.json",
+    "sha256": "f639318eb23f3a99c75b4bf340c8d0d529bdd83cd383724a24fe8fd432a1b23b"
+  },
+  "cohort": "52bd4440ccde450685d2df148c91b2c0",
+  "checked_evidence": {
+    "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\sdk-52bd4440ccde\\r\\browser-events.jsonl": "416211299508ab8aff6eee040b2cc6ae6232eac6098e2b17493ff269b9b75289",
+    "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\sdk-52bd4440ccde\\r\\browser-fixture.json": "cf0ef23f59f7c5616f64b48be2c90844435f9d9d0dfb9ca22c746d84d7a9b4bc",
+    "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\sdk-52bd4440ccde\\r\\ui.events.jsonl": "2664d13142854fb2b219ffad732b797ff8fef78622c7e399eab78ff6a0c91d26",
+    "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\sdk-52bd4440ccde\\r\\ui.agent.json": "0d40f24242fe68b45f3f72aa9b825f9387ee7f237ce63a8ac2efb49ab97ec164",
+    "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\sdk-52bd4440ccde\\r\\ui.launch.json": "82629cb0c1ea4bcf9e631e83a0d232ed185e22384e4512decf381f0d22a308ec",
+    "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\sdk-52bd4440ccde\\r\\target.json": "e9c0dacd0852e7fcb8253d8befa5013246b9f30c8a100c6d13c4d0bfecafb98b",
+    "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\sdk-52bd4440ccde\\r\\ui.progress.json": "bd44c0ab2416517e131683982979002366d3eb142a22036203f11ab5bdcea586",
+    "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\sdk-52bd4440ccde\\r\\ui.png": "7e23d01d2981a93ba6cacefc25cf9cde377e92442a46ca744d640727d6fb822e"
+  },
+  "verified": {
+    "all_58_UI_steps_acknowledged_with_original56_preserved": true,
+    "real_disclosure_collapse_and_reopen": true,
+    "Rust_setup_tools": [
+      "profile_setup"
+    ],
+    "Rust_live_tools_count": 23,
+    "setup_live_tool_rejected": true,
+    "actual_browser": "Initialize, list23, routing_state success/running true, Disconnect, tab closed; JSONL independently checked and root DOM/terminal observations bound.",
+    "security": "Unlisted Origin and wrong bearer rejected without client growth; ungranted-user input rejected. Policy change acknowledged sdk-spare, retires old listener/endpoint/socket and releases holds. New connection credentials differ; new policy denies old user. Old socket loss is uncertain/no replay, not a successful command claim.",
+    "concurrent_ownership": {
+      "initial_virtual_keys": [
+        117,
+        118,
+        119
+      ],
+      "after_first_EOF": [
+        117,
+        119
+      ],
+      "silent_seconds": 55.0,
+      "SDK_commands_during_interval": 0,
+      "after_silent": [
+        117,
+        119
+      ],
+      "after_policy_revoke": []
+    },
+    "liveness_checks_passed": 103,
+    "lifecycle": "SDK Disable, routing Stop and normal Quit retirement assertions reached; all five endpoint files absent, five credential hashes distinct; final Setup disabled, broker stopped, SDK off/retired, controller absent.",
+    "native_and_source_postflight": "Exact approved c982 driver calls full verify_input_integrity after GUI/target normal exits and before writing PASS_PENDING. Root terminal exit0 plus final marker support pre/post private113/native986/artifact/helper guards; historical full audits reused rather than re-run.",
+    "terminal": {
+      "native_session": 24717,
+      "native_exit_code": 0,
+      "fixture_session": 18129,
+      "fixture_exit_code": 0,
+      "GUI_exit_code": 0,
+      "target_exit_code": 0,
+      "cleanup_errors": [],
+      "forced_cleanup": false
+    }
+  },
+  "limitations": [
+    "Acceptance covers this complete private fixed snapshot and one owned x64 target with two virtual users, Rust client and trusted loopback browser. Current parallel Rust-port checkout is not approved.",
+    "All23 tools are discoverable through the generic SDK, but native acceptance did not execute every tool behavior or prove arbitrary application/hardware isolation, secure desktops, application-cursor following, or full Ultra parity.",
+    "Expanded SDK controls crowd policy at680x620. The tested original UI workflow collapses the visible disclosure before Apply and reopens it later; improved compact layout and expanded compact UX parity remain open.",
+    "GUI stall P1 remains open. The next stopped configuration diagnostic has separate scope and cannot establish a causal fix by passing.",
+    "Prior failed handshake, idle-expiry, initial progress observation and clipped-policy attempts remain NOT_ACCEPTED; this acceptance does not relabel them."
+  ],
+  "docs_review": {
+    "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\docs\\loopback-sdk.md",
+    "sha256": "e0dff8a6828db15e0677a07c829050e43c4ff86fb4b7aec456136b454662ebca",
+    "decision": "ACCEPTED_WORDING_FOR_THIS_SCOPE",
+    "notes": "Idle ownership/first-byte deadline and short-window disclosure guidance agree with source and actual run. Opening remains conservatively in progress with no completed parity claim."
+  },
+  "review_provenance": {
+    "bounded_actual_validation_exec": "7e5fae",
+    "exit_code": 1,
+    "passed_prefix": "All raw/58samples/security/owner55/browser/terminal/endpoint/proof/helper/GUI assertions passed before a PowerShell Unicode-literal documentation check failed. Corrected U+00D7 escaped literal passed; no product or input failure.",
+    "historical_full_audit_repeated": false
+  },
+  "reviewer_actions": "Receipt/JSONL/sample/driver source and hash review only; no compiler, native/GUI/browser/input execution, process query, live port edit or other-chat contact."
+}

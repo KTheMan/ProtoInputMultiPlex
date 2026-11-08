@@ -1,0 +1,48 @@
+{
+  "group": "recovery_ui_native_poll_liveness",
+  "decision": "ACCEPTED_BOUNDED",
+  "actual_cohort": "attempt004",
+  "raw_result_preserved": "PENDING_INDEPENDENT_ACCEPTANCE",
+  "raw_path": "runtime\\recovery-ui-native-poll-20261028-attempt004\\evidence.json",
+  "raw_sha256": "86c5317a43fdf8ec3aca028f8404629f99e1c3f697a81131ab855a43bff4e494",
+  "archive_manifest_path": "runtime\\recovery-ui-native-poll-20261028-attempt004\\archive-manifest.json",
+  "archive_manifest_sha256": "9be74ab4dee43fa84f5eaaee9a2146a30ed10eaefff4df4ce7baa189506e6b45",
+  "archive_file_count": 58,
+  "source_review_sha256": "cc58fa4196ea79514cbd9dce510648c6ca2cba7a104ecf845a6ea518fa2ee67b",
+  "producer_sha256": "b889b8dc3a7d45932a75cd9b1bac457033c2e955ce0c112a306811e1d73708c1",
+  "contract_sha256": "89cb4b394d54566b94e937f8306c028c9c8e1306a8aeabcc9ead88560ca298a2",
+  "driver_sha256": "3f84b65bbfd21cbef607ac4080fa9868d4e3401a6b73a348688565ca774a0330",
+  "driver_review_sha256": "c2ce86f5e3c528d68cd961c972e3b6f7fb0c4b553f6e9cf1b7f753d3654ccc58",
+  "independent_pixel_review": {
+    "path": "runtime\\recovery-ui-native-poll-20261028-attempt004\\pending-stop.png",
+    "sha256": "2c6f04a1e99fe87899bac36dc13cd2533cae7f2a1e74ab4157ae8d5a3f641110",
+    "decision": "VISIBLE_STOPPING",
+    "observed": "The owned 360x360 GUI shows Stopping... beside Stop routing and the footer Stopping routing and releasing virtual input. The image is not the earlier Running state."
+  },
+  "request_time_interval_ns": {
+    "first_stopping": 1793216969815573700,
+    "pending_png": 1793216970477687900,
+    "first_quarantined": 1793216970886533600,
+    "strictly_inside": true,
+    "baseline_age_ns": 102064200,
+    "target_release_offset_ns": 1700000000
+  },
+  "accepted_observations": [
+    "One owned GUI, one virtual mouse/keyboard pair, failing owned A and fresh owned C; no physical input, global pointer or RustDesk action",
+    "Live same-client MCP Inspect certified only A as affected Running after held virtual key; failed Stop showed progressing frames, responsive WM_NULL, visible Stopping pixels, then Quarantined/can_start false and disabled Start while exact A process lived",
+    "Exact A HWND close and process exit preceded a fresh Stopped/can_start true UI snapshot; the same MCP client retained A as Exited and was revoked before a fresh Start",
+    "Same GUI PID/HWND started C, acknowledged C-only agent policy and new connected client, and exact owned virtual mouse down/up reached only C probe",
+    "Planned normal Stop and one journaled owned Quit produced a fresh positive Quit handler count; old/new connected clients ended, GUI/A/C exited 0 with no forced cleanup or cleanup errors",
+    "All 37 GUI Script controls and sample releases, five liveness PNG/frame/WM_NULL observations, archived 58-file integrity and source/producer/private postflight passed"
+  ],
+  "prior_raw_failures": [
+    "attempt001",
+    "attempt002",
+    "attempt003"
+  ],
+  "limits": [
+    "This proves the bounded current virtual and owned-app recovery workflow, not the historical GUI stall cause or general GUI reliability.",
+    "Native run did not hold an OS Registry/OpenProcess call; focused Rust tests cover held-poll/Stop ordering and freshness.",
+    "Physical-device behavior, desktop-wide isolation and full MouseMux Ultra parity remain unvalidated."
+  ]
+}

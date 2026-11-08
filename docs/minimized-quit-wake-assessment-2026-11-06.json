@@ -1,0 +1,111 @@
+{
+  "date": "2026-11-06",
+  "decision": "MIN_QUIT_WAKE_ACCEPTED",
+  "scope": "Application-preferences completion wakes the root viewport. The GUI still owns the Quit decision and verifies shutdown completion.",
+  "verification": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\min-quit-20261106\\checks-002\\verification.json",
+    "sha256": "f211e86d85847188a6c39055aff8794b4a38daa0cbcb63764f8678c84925ca8f"
+  },
+  "review": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\min-quit-20261106\\independent-acceptance.json",
+    "sha256": "e2ca3f1f28a2e9d5a5c3975af5898c8f77da38c82bbd20a2e01f5f21b14cd173"
+  },
+  "publication": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\min-quit-20261106\\publication.json",
+    "sha256": "522d4c6f9c498b1300f175fe72692fa3fb978d467d88f4ec73b5f3a12ca0c88f"
+  },
+  "workspace_tests": {
+    "passed": 752,
+    "failed": 0,
+    "ignored": 19
+  },
+  "x64_image": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\min-quit-20261106\\checks-002\\x64\\protoinputmultiplex.exe",
+    "sha256": "bdd0fa8d5522822394e55b8cb4210c61db997f61364cb47be145138f417fae89"
+  },
+  "checks": {
+    "fmt": 0,
+    "clippy": 0,
+    "workspace-tests": 0,
+    "build-gui": 0
+  },
+  "earlier_build_attempt": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\min-quit-20261106\\checks-001\\verification.json",
+    "sha256": "041cc1105728ae156ece17a1dfbf63b9e0a1804d66b5e87cb7bd623978fca580",
+    "result": "FAIL. The worker module needed its existing eframe egui import."
+  },
+  "native_driver": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\min-quit-20261106\\native.py",
+    "sha256": "3abc34260502db21ea23214ead937677b77ce18b3a8ea5a8da002fd26383e3ca"
+  },
+  "controlled_native": {
+    "baseline": {
+      "original_session": 37682,
+      "original_exit_code": 0,
+      "raw_result": "MINIMIZED_QUIT_PASSED_PENDING_REVIEW",
+      "raw": {
+        "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mq-c6a11b8933\\evidence.json",
+        "sha256": "cde5a9a71e853c1c06284187bd97e26e3e958518c1df0391fac233423c235576"
+      },
+      "delay_ms": 5000,
+      "minimized_client_pixels": [
+        0,
+        0
+      ],
+      "iconic_samples": 289,
+      "terminal_quit_trace_observed": true,
+      "lifecycle": {
+        "hwnd": 983524,
+        "tid": 44332,
+        "hwnd_absent": true,
+        "thread_retired": true
+      },
+      "exit": {
+        "seconds": 9.75,
+        "pid": 46272,
+        "hwnd": 1182886,
+        "hwnd_absent": true,
+        "exit_code": 0,
+        "iconic_samples": 289,
+        "terminal_quit_trace_observed": true
+      }
+    },
+    "candidate": {
+      "original_session": 43613,
+      "original_exit_code": 0,
+      "raw_result": "MINIMIZED_QUIT_PASSED_PENDING_REVIEW",
+      "raw": {
+        "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mq-189dfb0188\\evidence.json",
+        "sha256": "c9d18fa1aa8dfde0c9e9559e7102d728cc7d3adb1b5f811a5d8bc349b5394dae"
+      },
+      "delay_ms": 5000,
+      "minimized_client_pixels": [
+        0,
+        0
+      ],
+      "iconic_samples": 251,
+      "terminal_quit_trace_observed": true,
+      "lifecycle": {
+        "hwnd": 1510648,
+        "tid": 40024,
+        "hwnd_absent": true,
+        "thread_retired": true
+      },
+      "exit": {
+        "seconds": 8.843,
+        "pid": 48196,
+        "hwnd": 5964258,
+        "hwnd_absent": true,
+        "exit_code": 0,
+        "iconic_samples": 251,
+        "terminal_quit_trace_observed": true
+      }
+    }
+  },
+  "source_test": "The real egui callback fires on the root after the matching worker result is available for both successful shutdown and an unconfirmed failure. The failure keeps shutdown unconfirmed.",
+  "limits": "Both builds passed one controlled minimize-during-Quit run with virtual devices configured and no routed input. The runs do not reproduce the intermittent wait from the earlier Mapper attempt or isolate its cause. Historical GUI-stall P1 and full Ultra parity remain open.",
+  "earlier_intermittent_observation": {
+    "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\docs\\mapper-flow-pending-2026-11-06.json",
+    "sha256": "acfd4a6843a09482916c70caa6f38244499d5255a6b81f717687d65f0a55b2f0"
+  }
+}

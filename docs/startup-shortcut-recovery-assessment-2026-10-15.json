@@ -1,0 +1,137 @@
+{
+  "decision": "BOUNDED STARTUP SHORTCUT RECOVERY APPROVED",
+  "full_P1_Ultra_UX": "OPEN",
+  "scope": "Recover initial saved shortcut-registration conflict with visible GUI, fail-closed complete shortcut health, explicit Retry or transactional complete policy correction. No automatic routing, implicit subset or saved-policy rewrite.",
+  "references_sha256": {
+    "runtime\\producer-startup-shortcut-recovery-20261015-113145\\verification.json": "e6810bcdf78837d3f9dece8b83bc88b379941bc6a9c56e5ddcc2c32c05a62f23",
+    "docs/startup-shortcut-recovery-plan.md": "2433e3bd56329e58d3a18ac77130a1684188148bdcccbe7804429cd1fe9a9998",
+    "docs/startup-shortcut-recovery-source-review-2026-10-15.json": "36b85bceb20302868c921ca0e09df145eebf4b73e8e07e562c95872becb897d6",
+    "docs/startup-shortcut-recovery-harness-review-2026-10-15.json": "e5e4d22677fcbab235c0848d48bd9d2e629c9d37f038ba55e282b0fc514721f3",
+    "docs/startup-shortcut-recovery-harness-addendum-2026-10-15.json": "765cc2f2f439000179d58d2280a4452d5c88f4752c6a857e01ed6ad98e21e994",
+    "runtime/producer-startup-shortcut-recovery-20261015-113033/verification.json": "33f00f36c719188512c31c1b69f029ec3d40eed40ce734d746a60e4f4c91cc84",
+    "runtime/acceptance-graph-startup-shortcuts-custom-20261015-113600/evidence.json": "afa37e33e9e7a9174912f03880b61d0ef94265d72b6a780fb0d89482cb8084a1",
+    "runtime\\acceptance-graph-startup-shortcuts-custom-20261015-113714\\evidence.json": "2c0d96e345748eb646c29cd78cc113ffcdfe40988b459b3fcabe035b42ec4ca7",
+    "runtime\\acceptance-graph-startup-shortcuts-custom-20261015-113714\\independent-review.json": "ebe486f9e2d449516fd67208ccd3849ba4864d26d795d48850bd3a4a9c8c9a5f",
+    "runtime\\acceptance-graph-startup-shortcuts-default-20261015-113759\\evidence.json": "35cb643e4c20204b7231f8d74cbf38befba432db100e962975759377a4b56ca3",
+    "runtime\\acceptance-graph-startup-shortcuts-default-20261015-113759\\independent-review.json": "b7e51643f6926d3d661f6c6d2ea50c70aa9d0a02f7dcaf42ec1b99fe46b48a63"
+  },
+  "producer": {
+    "path": "runtime\\producer-startup-shortcut-recovery-20261015-113145\\verification.json",
+    "sha256": "e6810bcdf78837d3f9dece8b83bc88b379941bc6a9c56e5ddcc2c32c05a62f23",
+    "checks": "fmt/strict Clippy/273tests/x64+i686 builds/doctor all exit0",
+    "current_inputs": 831,
+    "all_current_match": true,
+    "runtime10_unchanged": true,
+    "build_sha256": {
+      "x64": "02d78df4cfcff88f849b68c6d78d9a8ae006a9ea8dbc59e6accf7e45822572c0",
+      "i686": "87b6a28b2835db681f843e91f29daf79a6a86ccfc6dcae9d8f19d8299f84db4c"
+    },
+    "copied_accepted_run_builds_match": true
+  },
+  "source_boundary": "Six reviewed Rust files change;825 accepted predecessor inputs and native runtime10 protected unchanged. Registry accepted/staged/orphan cleanup, full policy retry, visibility suppression, health Start recheck and live deactivation ordinary Stop source-approved. Three production-helper transition tests and one reply compatibility test added.",
+  "accepted_phases": [
+    {
+      "run": "runtime\\acceptance-graph-startup-shortcuts-custom-20261015-113714",
+      "terminal": 0,
+      "observations": 10,
+      "actual_clicks": 9,
+      "disabled_Start": 1,
+      "evidence": "Owned custom F8 conflict after default: visible startup despite saved minimized; F11 partial rollback and failed Retry leave exact saved bytes unchanged; release fixture, explicit Retry activates both; one no-input Start/Stop and healthy existing connected app_preferences inspect; normal cleanup."
+    },
+    {
+      "run": "runtime\\acceptance-graph-startup-shortcuts-default-20261015-113759",
+      "terminal": 0,
+      "observations": 7,
+      "actual_clicks": 6,
+      "disabled_Start": 1,
+      "evidence": "Owned default F11 conflict after custom: F8 partial rollback; Revert stays inactive; unchanged Apply fails with saved bytes preserved; explicit Stop\u2192F10 Apply activates full intended F8/F10 set and preserves unrelated fields/profile; normal cleanup."
+    }
+  ],
+  "counts": {
+    "GUI_observations": 17,
+    "actual_clicks": 15,
+    "disabled_Start_observations": 2,
+    "readonly_connected_MCP_inspect": 1,
+    "routing_input_calls": 0,
+    "original_files": 5,
+    "unique_image_byte_sequences": 3,
+    "not_unique_tests_or_controls": true
+  },
+  "originals": [
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-startup-shortcuts-custom-20261015-113714\\inactive-home-normal.png",
+      "sha256": "7954bde3ac35df5a66bfd6644f82bccc7dd4995f9c1677deb644189879bb3bf3",
+      "dimensions": [
+        360,
+        360
+      ]
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-startup-shortcuts-custom-20261015-113714\\inactive-home-minimum.png",
+      "sha256": "ec9885c7ed9840f0e9e640624a5e7ee9c8a30e27fba4eba7d20df5c0c4701481",
+      "dimensions": [
+        320,
+        360
+      ]
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-startup-shortcuts-default-20261015-113759\\inactive-home-normal.png",
+      "sha256": "7954bde3ac35df5a66bfd6644f82bccc7dd4995f9c1677deb644189879bb3bf3",
+      "dimensions": [
+        360,
+        360
+      ]
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-startup-shortcuts-default-20261015-113759\\inactive-home-minimum.png",
+      "sha256": "ec9885c7ed9840f0e9e640624a5e7ee9c8a30e27fba4eba7d20df5c0c4701481",
+      "dimensions": [
+        320,
+        360
+      ]
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-startup-shortcuts-default-20261015-113759\\inactive-preferences.png",
+      "sha256": "dbb60b50d04a50fd67610a515e81093b7db67e261f5a070ddb63e600d33c4064",
+      "dimensions": [
+        480,
+        560
+      ]
+    }
+  ],
+  "pixel_scope": "Direct originals after closure: readable complete sole-user Home row/Shortcuts off/Retry/disabled Start/Configure/Settings at360x360 and320x360 in each phase; inactive preferences error/explanation and whole Apply/Revert at480x560. No full preference-form simultaneous/minimum claim or request-associated PNG freshness.",
+  "preserved_failures": [
+    "Producer113033 failed strict Clippy style checks before native; retained, corrected via test-only constructor cfg and tuple parameter, final273producer passed.",
+    "Custom113600 remains NOT ACCEPTED with0Script events/0samples: harness asserted HWND visibility before first visible frame. Corrected readonly finite startup wait source-approved; forced finally GUI exit1 remains disclosed, probe0/resources closed. No product defect inferred.",
+    "Both accepted raw evidence files retain PENDING labels; independent verdicts are separate artifacts."
+  ],
+  "cleanup": {
+    "custom_owned_exit_codes": {
+      "186260": 0,
+      "147928": 0,
+      "192780": 0
+    },
+    "default_owned_exit_codes": {
+      "184252": 0,
+      "193984": 0
+    },
+    "accepted_cleanup_errors": [],
+    "accepted_run_image_CIM_survivors": [],
+    "independent_all_three_run_image_CIM_survivors": [],
+    "GUI_probe_connected_clients_closed": true,
+    "GUID_and_descriptors_absent": true,
+    "registration_release_probes_pass": true,
+    "custom_worker_boundary": "Live worker observed, then stopped recovery/no worker/closed overlay; no retained direct worker exit-code sample.",
+    "default_overlay_boundary": "No session started; no new overlay cleanup claim."
+  },
+  "remaining_limits": [
+    "Freshly inactive stopped GUI has no Agent Access connection. Native MCP evidence is healthy recovered connected Inspect only; standalone shortcut_status:null and inactive reply compatibility are source/unit evidence. No new tools/grants/stopped bridge.",
+    "Registry helper tests cover partial startup/retry, inactive staging/pending Retry/latest accepted/empty policy, and failed restoration disabling dispatch. GUI ordinary Stop on live deactivation and file-save rollback integration are source-reviewed; no forced native OS-removal, rollback or timing fault was injected.",
+    "Native window/tray creation errors stay fatal; no tray failure, malformed preference-file, real startup Run-key/logon/reboot or physical key actuation validation.",
+    "No routed input/packet family replay, hardware/RustDesk/global pointer/foreground mutation, arbitrary application, same-process isolation or desktop-wide claim.",
+    "x64 GUI/probe/client executed; i686 built only.",
+    "Whole P1/session reliability, full compact UX and full Ultra remain OPEN."
+  ],
+  "findings": [],
+  "resources_and_slot": "All owned resources closed and exact image inventories empty. Bounded group approved; slot released; no further native run needed."
+}

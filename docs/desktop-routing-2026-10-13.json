@@ -1,0 +1,6482 @@
+{
+  "pause": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        798,
+        361
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 2,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 5,
+      "mouse_clicks": 2,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 4300
+    },
+    "button": "Pause",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 510,
+      "x": 768,
+      "right": 1040,
+      "left": 580,
+      "top": 110,
+      "caption_y": 126,
+      "y": 301,
+      "caption_x": 700
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        268,
+        241
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 3,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 4,
+      "mouse_clicks": 3,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 4141
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 4109
+    },
+    "a_alive": true,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764116,
+        "client": [
+          220,
+          160
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 81,
+          "right": 432,
+          "bottom": 402
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 268,
+          "y": 241,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 764116",
+        "status": "Concurrent · ProtoInputMux Routing Test — PID 764116",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 764116,
+        "mode": "concurrent"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 722564,
+        "client": [
+          210,
+          220
+        ],
+        "bounds": {
+          "left": 588,
+          "top": 141,
+          "right": 1032,
+          "bottom": 502
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 798,
+          "y": 361,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 722564",
+        "status": "Concurrent · ProtoInputMux Routing Test — PID 722564",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 722564,
+        "mode": "concurrent"
+      }
+    ]
+  },
+  "key-b": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        688,
+        241
+      ],
+      "test_keys": 1,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 1,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 1481
+    },
+    "button": "2 Hold W",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 410,
+      "x": 688,
+      "right": 900,
+      "left": 500,
+      "top": 50,
+      "caption_y": 66,
+      "y": 241,
+      "caption_x": 620
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        228,
+        241
+      ],
+      "test_keys": 0,
+      "buttons": 1,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 1,
+      "mouse_clicks": 2,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 1506
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 1450
+    },
+    "a_alive": true,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764116,
+        "client": [
+          180,
+          160
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 81,
+          "right": 432,
+          "bottom": 402
+        },
+        "buttons": [
+          1
+        ],
+        "keys": [],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 228,
+          "y": 241,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 764116",
+        "status": "Switched · ProtoInputMux Routing Test — PID 764116",
+        "root": true,
+        "captured": true,
+        "keyboard_pid": 764116,
+        "mode": "switched"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 722564,
+        "client": [
+          180,
+          160
+        ],
+        "bounds": {
+          "left": 508,
+          "top": 81,
+          "right": 892,
+          "bottom": 402
+        },
+        "buttons": [],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 688,
+          "y": 241,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 722564",
+        "status": "Waiting for Virtual Blue to release input",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 722564,
+        "mode": "switched"
+      }
+    ]
+  },
+  "claim-a": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        798,
+        321
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 3,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 6,
+      "mouse_clicks": 3,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 5302
+    },
+    "button": "2 Hold click",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 510,
+      "x": 768,
+      "right": 1040,
+      "left": 580,
+      "top": 110,
+      "caption_y": 126,
+      "y": 301,
+      "caption_x": 700
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        228,
+        241
+      ],
+      "test_keys": 0,
+      "buttons": 1,
+      "drag_moves": 4,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 6,
+      "mouse_clicks": 4,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 5095
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 5060
+    },
+    "a_alive": true,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 722564,
+        "client": [
+          210,
+          180
+        ],
+        "bounds": {
+          "left": 588,
+          "top": 141,
+          "right": 1032,
+          "bottom": 502
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 798,
+          "y": 321,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 722564",
+        "status": "Virtual Coral took this application",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 722564,
+        "mode": "concurrent"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 764116,
+        "client": [
+          180,
+          160
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 81,
+          "right": 432,
+          "bottom": 402
+        },
+        "buttons": [
+          1
+        ],
+        "keys": [],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 228,
+          "y": 241,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 764116",
+        "status": "Concurrent · ProtoInputMux Routing Test — PID 764116",
+        "root": false,
+        "captured": true,
+        "keyboard_pid": 764116,
+        "mode": "concurrent"
+      }
+    ]
+  },
+  "move-b": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        700,
+        126
+      ],
+      "test_keys": 1,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 1889
+    },
+    "button": "2 Move to point",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 470,
+      "x": 768,
+      "right": 980,
+      "left": 580,
+      "top": 110,
+      "caption_y": 126,
+      "y": 301,
+      "caption_x": 700
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        228,
+        241
+      ],
+      "test_keys": 0,
+      "buttons": 1,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 1,
+      "mouse_clicks": 2,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 1912
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 1869
+    },
+    "a_alive": true,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764116,
+        "client": [
+          180,
+          160
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 81,
+          "right": 432,
+          "bottom": 402
+        },
+        "buttons": [
+          1
+        ],
+        "keys": [],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 228,
+          "y": 241,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 764116",
+        "status": "Switched · ProtoInputMux Routing Test — PID 764116",
+        "root": true,
+        "captured": true,
+        "keyboard_pid": 764116,
+        "mode": "switched"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 722564,
+        "client": [
+          112,
+          -15
+        ],
+        "bounds": {
+          "left": 588,
+          "top": 141,
+          "right": 972,
+          "bottom": 462
+        },
+        "buttons": [],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 700,
+          "y": 126,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 722564",
+        "status": "Moving window",
+        "root": false,
+        "captured": true,
+        "keyboard_pid": 722564,
+        "mode": "switched"
+      }
+    ]
+  },
+  "drag-a-over-b": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        1035,
+        505
+      ],
+      "test_keys": 1,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 3,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 2752
+    },
+    "button": "1 Move to point",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 510,
+      "x": 768,
+      "right": 1040,
+      "left": 580,
+      "top": 110,
+      "caption_y": 126,
+      "y": 301,
+      "caption_x": 700
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        798,
+        321
+      ],
+      "test_keys": 0,
+      "buttons": 1,
+      "drag_moves": 2,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 2,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 2745
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 2688
+    },
+    "a_alive": true,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764116,
+        "client": [
+          750,
+          240
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 81,
+          "right": 432,
+          "bottom": 402
+        },
+        "buttons": [
+          1
+        ],
+        "keys": [],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 798,
+          "y": 321,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 764116",
+        "status": "Switched · ProtoInputMux Routing Test — PID 764116",
+        "root": true,
+        "captured": true,
+        "keyboard_pid": 764116,
+        "mode": "switched"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 722564,
+        "client": [
+          447,
+          364
+        ],
+        "bounds": {
+          "left": 588,
+          "top": 141,
+          "right": 1032,
+          "bottom": 502
+        },
+        "buttons": [],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 1035,
+          "y": 505,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 722564",
+        "status": "Resizing window",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 722564,
+        "mode": "switched"
+      }
+    ]
+  },
+  "stop": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 3,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 7,
+      "mouse_clicks": 3,
+      "key_presses": 3,
+      "sampled_test_key_presses": 3,
+      "frames": 7455
+    },
+    "button": "Stop routing",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 510,
+      "x": 768,
+      "right": 1040,
+      "left": 580,
+      "top": 110,
+      "caption_y": 126,
+      "y": 301,
+      "caption_x": 700
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        228,
+        241
+      ],
+      "test_keys": 1,
+      "buttons": 1,
+      "drag_moves": 4,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 6,
+      "mouse_clicks": 5,
+      "key_presses": 3,
+      "sampled_test_key_presses": 3,
+      "frames": 6330
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 3,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 3,
+      "mouse_clicks": 2,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 7098
+    },
+    "a_alive": false,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 0,
+        "client": [
+          228,
+          691
+        ],
+        "bounds": {
+          "left": 0,
+          "top": 0,
+          "right": 2560,
+          "bottom": 1440
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 228,
+          "y": 691,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Virtual Coral took this application",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 0,
+        "mode": "switched"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 766596,
+        "client": [
+          180,
+          160
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 531,
+          "right": 432,
+          "bottom": 852
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 228,
+          "y": 691,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 766596",
+        "status": "Switched · ProtoInputMux Routing Test — PID 766596",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 766596,
+        "mode": "switched"
+      }
+    ]
+  },
+  "drop-claim-b": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        798,
+        321
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 3,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 6,
+      "mouse_clicks": 3,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 5017
+    },
+    "button": "1 Release click",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 510,
+      "x": 768,
+      "right": 1040,
+      "left": 580,
+      "top": 110,
+      "caption_y": 126,
+      "y": 301,
+      "caption_x": 700
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        798,
+        321
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 3,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 5,
+      "mouse_clicks": 3,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 4812
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 4783
+    },
+    "a_alive": true,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 722564,
+        "client": [
+          210,
+          180
+        ],
+        "bounds": {
+          "left": 588,
+          "top": 141,
+          "right": 1032,
+          "bottom": 502
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 798,
+          "y": 321,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 722564",
+        "status": "Concurrent · ProtoInputMux Routing Test — PID 722564",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 722564,
+        "mode": "concurrent"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 0,
+        "client": [
+          798,
+          361
+        ],
+        "bounds": {
+          "left": 0,
+          "top": 0,
+          "right": 2560,
+          "bottom": 1440
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 798,
+          "y": 361,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Virtual Blue took this application",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 0,
+        "mode": "concurrent"
+      }
+    ]
+  },
+  "return-b": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        798,
+        321
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 4,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 3442
+    },
+    "button": "2 Move to point",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 510,
+      "x": 768,
+      "right": 1040,
+      "left": 580,
+      "top": 110,
+      "caption_y": 126,
+      "y": 301,
+      "caption_x": 700
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        228,
+        241
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 2,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 3,
+      "mouse_clicks": 2,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 3351
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 3310
+    },
+    "a_alive": true,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764116,
+        "client": [
+          180,
+          160
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 81,
+          "right": 432,
+          "bottom": 402
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 228,
+          "y": 241,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 764116",
+        "status": "Switched · ProtoInputMux Routing Test — PID 764116",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 764116,
+        "mode": "concurrent"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 722564,
+        "client": [
+          210,
+          180
+        ],
+        "bounds": {
+          "left": 588,
+          "top": 141,
+          "right": 1032,
+          "bottom": 502
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 798,
+          "y": 321,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 722564",
+        "status": "Resizing window",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 722564,
+        "mode": "concurrent"
+      }
+    ]
+  },
+  "concurrent": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        1035,
+        505
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 3,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 3161
+    },
+    "button": "Concurrent",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 510,
+      "x": 768,
+      "right": 1040,
+      "left": 580,
+      "top": 110,
+      "caption_y": 126,
+      "y": 301,
+      "caption_x": 700
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        798,
+        321
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 2,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 2,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 3100
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 3062
+    },
+    "a_alive": true,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764116,
+        "client": [
+          750,
+          240
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 81,
+          "right": 432,
+          "bottom": 402
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 798,
+          "y": 321,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 764116",
+        "status": "Switched · ProtoInputMux Routing Test — PID 764116",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 764116,
+        "mode": "concurrent"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 722564,
+        "client": [
+          447,
+          364
+        ],
+        "bounds": {
+          "left": 588,
+          "top": 141,
+          "right": 1032,
+          "bottom": 502
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 1035,
+          "y": 505,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 722564",
+        "status": "Resizing window",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 722564,
+        "mode": "concurrent"
+      }
+    ]
+  },
+  "grab-b": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        688,
+        241
+      ],
+      "test_keys": 1,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 1,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 1745
+    },
+    "button": "2 Hold click",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 410,
+      "x": 688,
+      "right": 900,
+      "left": 500,
+      "top": 50,
+      "caption_y": 66,
+      "y": 241,
+      "caption_x": 620
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        228,
+        241
+      ],
+      "test_keys": 0,
+      "buttons": 1,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 1,
+      "mouse_clicks": 2,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 1772
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 1729
+    },
+    "a_alive": true,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764116,
+        "client": [
+          180,
+          160
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 81,
+          "right": 432,
+          "bottom": 402
+        },
+        "buttons": [
+          1
+        ],
+        "keys": [],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 228,
+          "y": 241,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 764116",
+        "status": "Switched · ProtoInputMux Routing Test — PID 764116",
+        "root": true,
+        "captured": true,
+        "keyboard_pid": 764116,
+        "mode": "switched"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 722564,
+        "client": [
+          112,
+          -15
+        ],
+        "bounds": {
+          "left": 508,
+          "top": 81,
+          "right": 892,
+          "bottom": 402
+        },
+        "buttons": [],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 620,
+          "y": 66,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 722564",
+        "status": "Moving window",
+        "root": false,
+        "captured": true,
+        "keyboard_pid": 722564,
+        "mode": "switched"
+      }
+    ]
+  },
+  "paused-move": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        798,
+        361
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 2,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 5,
+      "mouse_clicks": 2,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 4436
+    },
+    "button": "1 Right",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 510,
+      "x": 768,
+      "right": 1040,
+      "left": 580,
+      "top": 110,
+      "caption_y": 126,
+      "y": 301,
+      "caption_x": 700
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        268,
+        241
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 3,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 4,
+      "mouse_clicks": 3,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 4262
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 4223
+    },
+    "a_alive": true,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764116,
+        "client": [
+          220,
+          160
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 81,
+          "right": 432,
+          "bottom": 402
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 268,
+          "y": 241,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 764116",
+        "status": "Concurrent · ProtoInputMux Routing Test — PID 764116",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 764116,
+        "mode": "concurrent"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 722564,
+        "client": [
+          210,
+          220
+        ],
+        "bounds": {
+          "left": 588,
+          "top": 141,
+          "right": 1032,
+          "bottom": 502
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 798,
+          "y": 361,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 722564",
+        "status": "Concurrent · ProtoInputMux Routing Test — PID 722564",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 722564,
+        "mode": "concurrent"
+      }
+    ]
+  },
+  "release-key-b": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        1035,
+        505
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 3,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 3020
+    },
+    "button": "2 Release W",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 510,
+      "x": 768,
+      "right": 1040,
+      "left": 580,
+      "top": 110,
+      "caption_y": 126,
+      "y": 301,
+      "caption_x": 700
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        798,
+        321
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 2,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 2,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 2971
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 2928
+    },
+    "a_alive": true,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764116,
+        "client": [
+          750,
+          240
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 81,
+          "right": 432,
+          "bottom": 402
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 798,
+          "y": 321,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 764116",
+        "status": "Switched · ProtoInputMux Routing Test — PID 764116",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 764116,
+        "mode": "switched"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 722564,
+        "client": [
+          447,
+          364
+        ],
+        "bounds": {
+          "left": 588,
+          "top": 141,
+          "right": 1032,
+          "bottom": 502
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 1035,
+          "y": 505,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 722564",
+        "status": "Resizing window",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 722564,
+        "mode": "switched"
+      }
+    ]
+  },
+  "select-a": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 555
+    },
+    "button": "1 Hold click",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 410,
+      "x": 688,
+      "right": 900,
+      "left": 500,
+      "top": 50,
+      "caption_y": 66,
+      "y": 241,
+      "caption_x": 620
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        228,
+        241
+      ],
+      "test_keys": 0,
+      "buttons": 1,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 1,
+      "mouse_clicks": 1,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 602
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 553
+    },
+    "a_alive": true,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764116,
+        "client": [
+          180,
+          160
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 81,
+          "right": 432,
+          "bottom": 402
+        },
+        "buttons": [
+          1
+        ],
+        "keys": [],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 228,
+          "y": 241,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 764116",
+        "status": "Switched · ProtoInputMux Routing Test — PID 764116",
+        "root": true,
+        "captured": true,
+        "keyboard_pid": 764116,
+        "mode": "switched"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 0,
+        "client": [
+          688,
+          241
+        ],
+        "bounds": {
+          "left": 0,
+          "top": 0,
+          "right": 2560,
+          "bottom": 1440
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 688,
+          "y": 241,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Click a window to route input",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 0,
+        "mode": "switched"
+      }
+    ]
+  },
+  "claim-c-after-exit": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        228,
+        691
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 3,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 7,
+      "mouse_clicks": 3,
+      "key_presses": 3,
+      "sampled_test_key_presses": 3,
+      "frames": 7047
+    },
+    "button": "2 Hold click",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 510,
+      "x": 768,
+      "right": 1040,
+      "left": 580,
+      "top": 110,
+      "caption_y": 126,
+      "y": 301,
+      "caption_x": 700
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        228,
+        241
+      ],
+      "test_keys": 1,
+      "buttons": 1,
+      "drag_moves": 4,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 6,
+      "mouse_clicks": 5,
+      "key_presses": 3,
+      "sampled_test_key_presses": 3,
+      "frames": 6330
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        228,
+        691
+      ],
+      "test_keys": 0,
+      "buttons": 1,
+      "drag_moves": 3,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 3,
+      "mouse_clicks": 2,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 6713
+    },
+    "a_alive": false,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 0,
+        "client": [
+          228,
+          691
+        ],
+        "bounds": {
+          "left": 0,
+          "top": 0,
+          "right": 2560,
+          "bottom": 1440
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 228,
+          "y": 691,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Virtual Coral took this application",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 0,
+        "mode": "switched"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 766596,
+        "client": [
+          180,
+          160
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 531,
+          "right": 432,
+          "bottom": 852
+        },
+        "buttons": [
+          1
+        ],
+        "keys": [],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 228,
+          "y": 691,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 766596",
+        "status": "Switched · ProtoInputMux Routing Test — PID 766596",
+        "root": true,
+        "captured": true,
+        "keyboard_pid": 766596,
+        "mode": "switched"
+      }
+    ]
+  },
+  "move-while-key": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        228,
+        691
+      ],
+      "test_keys": 1,
+      "buttons": 0,
+      "drag_moves": 3,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 7,
+      "mouse_clicks": 3,
+      "key_presses": 3,
+      "sampled_test_key_presses": 3,
+      "frames": 5883
+    },
+    "button": "1 Move to point",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 510,
+      "x": 768,
+      "right": 1040,
+      "left": 580,
+      "top": 110,
+      "caption_y": 126,
+      "y": 301,
+      "caption_x": 700
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        228,
+        241
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 4,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 6,
+      "mouse_clicks": 4,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 5664
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 5644
+    },
+    "a_alive": true,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 722564,
+        "client": [
+          -360,
+          550
+        ],
+        "bounds": {
+          "left": 588,
+          "top": 141,
+          "right": 1032,
+          "bottom": 502
+        },
+        "buttons": [],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 228,
+          "y": 691,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 722564",
+        "status": "Virtual Coral took this application",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 722564,
+        "mode": "concurrent"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 764116,
+        "client": [
+          180,
+          160
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 81,
+          "right": 432,
+          "bottom": 402
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 228,
+          "y": 241,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 764116",
+        "status": "Concurrent · ProtoInputMux Routing Test — PID 764116",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 764116,
+        "mode": "concurrent"
+      }
+    ]
+  },
+  "release-c-after-exit": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        228,
+        691
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 3,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 7,
+      "mouse_clicks": 3,
+      "key_presses": 3,
+      "sampled_test_key_presses": 3,
+      "frames": 7190
+    },
+    "button": "2 Release click",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 510,
+      "x": 768,
+      "right": 1040,
+      "left": 580,
+      "top": 110,
+      "caption_y": 126,
+      "y": 301,
+      "caption_x": 700
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        228,
+        241
+      ],
+      "test_keys": 1,
+      "buttons": 1,
+      "drag_moves": 4,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 6,
+      "mouse_clicks": 5,
+      "key_presses": 3,
+      "sampled_test_key_presses": 3,
+      "frames": 6330
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        228,
+        691
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 3,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 3,
+      "mouse_clicks": 2,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 6845
+    },
+    "a_alive": false,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 0,
+        "client": [
+          228,
+          691
+        ],
+        "bounds": {
+          "left": 0,
+          "top": 0,
+          "right": 2560,
+          "bottom": 1440
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 228,
+          "y": 691,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Virtual Coral took this application",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 0,
+        "mode": "switched"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 766596,
+        "client": [
+          180,
+          160
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 531,
+          "right": 432,
+          "bottom": 852
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 228,
+          "y": 691,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 766596",
+        "status": "Switched · ProtoInputMux Routing Test — PID 766596",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 766596,
+        "mode": "switched"
+      }
+    ]
+  },
+  "typing-b": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        798,
+        321
+      ],
+      "test_keys": 1,
+      "buttons": 0,
+      "drag_moves": 3,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 6,
+      "mouse_clicks": 3,
+      "key_presses": 3,
+      "sampled_test_key_presses": 3,
+      "frames": 5597
+    },
+    "button": "1 Hold W",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 510,
+      "x": 768,
+      "right": 1040,
+      "left": 580,
+      "top": 110,
+      "caption_y": 126,
+      "y": 301,
+      "caption_x": 700
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        228,
+        241
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 4,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 6,
+      "mouse_clicks": 4,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 5384
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 5362
+    },
+    "a_alive": true,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 722564,
+        "client": [
+          210,
+          180
+        ],
+        "bounds": {
+          "left": 588,
+          "top": 141,
+          "right": 1032,
+          "bottom": 502
+        },
+        "buttons": [],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 798,
+          "y": 321,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 722564",
+        "status": "Virtual Coral took this application",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 722564,
+        "mode": "concurrent"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 764116,
+        "client": [
+          180,
+          160
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 81,
+          "right": 432,
+          "bottom": 402
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 228,
+          "y": 241,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 764116",
+        "status": "Concurrent · ProtoInputMux Routing Test — PID 764116",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 764116,
+        "mode": "concurrent"
+      }
+    ]
+  },
+  "blocked-b": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        688,
+        241
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 1,
+      "mouse_clicks": 1,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 1309
+    },
+    "button": "2 Hold click",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 410,
+      "x": 688,
+      "right": 900,
+      "left": 500,
+      "top": 50,
+      "caption_y": 66,
+      "y": 241,
+      "caption_x": 620
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        228,
+        241
+      ],
+      "test_keys": 0,
+      "buttons": 1,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 1,
+      "mouse_clicks": 2,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 1333
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 1294
+    },
+    "a_alive": true,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764116,
+        "client": [
+          180,
+          160
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 81,
+          "right": 432,
+          "bottom": 402
+        },
+        "buttons": [
+          1
+        ],
+        "keys": [],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 228,
+          "y": 241,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 764116",
+        "status": "Switched · ProtoInputMux Routing Test — PID 764116",
+        "root": true,
+        "captured": true,
+        "keyboard_pid": 764116,
+        "mode": "switched"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 722564,
+        "client": [
+          180,
+          160
+        ],
+        "bounds": {
+          "left": 508,
+          "top": 81,
+          "right": 892,
+          "bottom": 402
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 688,
+          "y": 241,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 722564",
+        "status": "Waiting for Virtual Blue to release input",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 722564,
+        "mode": "switched"
+      }
+    ]
+  },
+  "hold-a-again": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        228,
+        691
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 3,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 7,
+      "mouse_clicks": 3,
+      "key_presses": 3,
+      "sampled_test_key_presses": 3,
+      "frames": 6478
+    },
+    "button": "2 Hold click",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 510,
+      "x": 768,
+      "right": 1040,
+      "left": 580,
+      "top": 110,
+      "caption_y": 126,
+      "y": 301,
+      "caption_x": 700
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        228,
+        241
+      ],
+      "test_keys": 0,
+      "buttons": 1,
+      "drag_moves": 4,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 6,
+      "mouse_clicks": 5,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 6199
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        228,
+        691
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 1,
+      "mouse_clicks": 1,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 6154
+    },
+    "a_alive": true,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 766596,
+        "client": [
+          180,
+          160
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 531,
+          "right": 432,
+          "bottom": 852
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 228,
+          "y": 691,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 766596",
+        "status": "Concurrent · ProtoInputMux Routing Test — PID 766596",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 766596,
+        "mode": "switched"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 764116,
+        "client": [
+          180,
+          160
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 81,
+          "right": 432,
+          "bottom": 402
+        },
+        "buttons": [
+          1
+        ],
+        "keys": [],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 228,
+          "y": 241,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 764116",
+        "status": "Switched · ProtoInputMux Routing Test — PID 764116",
+        "root": true,
+        "captured": true,
+        "keyboard_pid": 764116,
+        "mode": "switched"
+      }
+    ]
+  },
+  "wheel-b": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        798,
+        361
+      ],
+      "test_keys": 1,
+      "buttons": 1,
+      "drag_moves": 2,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 5,
+      "mouse_clicks": 2,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 4159
+    },
+    "button": "2 Wheel",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 510,
+      "x": 768,
+      "right": 1040,
+      "left": 580,
+      "top": 110,
+      "caption_y": 126,
+      "y": 301,
+      "caption_x": 700
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        268,
+        241
+      ],
+      "test_keys": 1,
+      "buttons": 1,
+      "drag_moves": 3,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 4,
+      "mouse_clicks": 3,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 4015
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 3980
+    },
+    "a_alive": true,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764116,
+        "client": [
+          220,
+          160
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 81,
+          "right": 432,
+          "bottom": 402
+        },
+        "buttons": [
+          1
+        ],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 268,
+          "y": 241,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 764116",
+        "status": "Concurrent · ProtoInputMux Routing Test — PID 764116",
+        "root": false,
+        "captured": true,
+        "keyboard_pid": 764116,
+        "mode": "concurrent"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 722564,
+        "client": [
+          210,
+          220
+        ],
+        "bounds": {
+          "left": 588,
+          "top": 141,
+          "right": 1032,
+          "bottom": 502
+        },
+        "buttons": [
+          1
+        ],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 798,
+          "y": 361,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 722564",
+        "status": "Concurrent · ProtoInputMux Routing Test — PID 722564",
+        "root": false,
+        "captured": true,
+        "keyboard_pid": 722564,
+        "mode": "concurrent"
+      }
+    ]
+  },
+  "release-b": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        688,
+        241
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 1,
+      "mouse_clicks": 1,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 1043
+    },
+    "button": "2 Release click",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 410,
+      "x": 688,
+      "right": 900,
+      "left": 500,
+      "top": 50,
+      "caption_y": 66,
+      "y": 241,
+      "caption_x": 620
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        228,
+        241
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 1,
+      "mouse_clicks": 1,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 1057
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 1018
+    },
+    "a_alive": true,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764116,
+        "client": [
+          180,
+          160
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 81,
+          "right": 432,
+          "bottom": 402
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 228,
+          "y": 241,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 764116",
+        "status": "Switched · ProtoInputMux Routing Test — PID 764116",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 764116,
+        "mode": "switched"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 722564,
+        "client": [
+          180,
+          160
+        ],
+        "bounds": {
+          "left": 508,
+          "top": 81,
+          "right": 892,
+          "bottom": 402
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 688,
+          "y": 241,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 722564",
+        "status": "Switched · ProtoInputMux Routing Test — PID 722564",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 722564,
+        "mode": "switched"
+      }
+    ]
+  },
+  "drop-claim-a": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        798,
+        321
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 3,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 6,
+      "mouse_clicks": 3,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 5441
+    },
+    "button": "2 Release click",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 510,
+      "x": 768,
+      "right": 1040,
+      "left": 580,
+      "top": 110,
+      "caption_y": 126,
+      "y": 301,
+      "caption_x": 700
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        228,
+        241
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 4,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 6,
+      "mouse_clicks": 4,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 5236
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 5199
+    },
+    "a_alive": true,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 722564,
+        "client": [
+          210,
+          180
+        ],
+        "bounds": {
+          "left": 588,
+          "top": 141,
+          "right": 1032,
+          "bottom": 502
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 798,
+          "y": 321,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 722564",
+        "status": "Virtual Coral took this application",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 722564,
+        "mode": "concurrent"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 764116,
+        "client": [
+          180,
+          160
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 81,
+          "right": 432,
+          "bottom": 402
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 228,
+          "y": 241,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 764116",
+        "status": "Concurrent · ProtoInputMux Routing Test — PID 764116",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 764116,
+        "mode": "concurrent"
+      }
+    ]
+  },
+  "start": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 286
+    },
+    "button": "Start routing",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 410,
+      "x": 688,
+      "right": 900,
+      "left": 500,
+      "top": 50,
+      "caption_y": 66,
+      "y": 241,
+      "caption_x": 620
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 344
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 295
+    },
+    "a_alive": true,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 0,
+        "client": [
+          228,
+          241
+        ],
+        "bounds": {
+          "left": 0,
+          "top": 0,
+          "right": 2560,
+          "bottom": 1440
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 228,
+          "y": 241,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Click a window to route input",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 0,
+        "mode": "switched"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 0,
+        "client": [
+          688,
+          241
+        ],
+        "bounds": {
+          "left": 0,
+          "top": 0,
+          "right": 2560,
+          "bottom": 1440
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 688,
+          "y": 241,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Click a window to route input",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 0,
+        "mode": "switched"
+      }
+    ]
+  },
+  "release-root-a": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        1035,
+        505
+      ],
+      "test_keys": 1,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 3,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 2895
+    },
+    "button": "1 Release click",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 510,
+      "x": 768,
+      "right": 1040,
+      "left": 580,
+      "top": 110,
+      "caption_y": 126,
+      "y": 301,
+      "caption_x": 700
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        798,
+        321
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 2,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 2,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 2853
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 2815
+    },
+    "a_alive": true,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764116,
+        "client": [
+          750,
+          240
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 81,
+          "right": 432,
+          "bottom": 402
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 798,
+          "y": 321,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 764116",
+        "status": "Switched · ProtoInputMux Routing Test — PID 764116",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 764116,
+        "mode": "switched"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 722564,
+        "client": [
+          447,
+          364
+        ],
+        "bounds": {
+          "left": 588,
+          "top": 141,
+          "right": 1032,
+          "bottom": 502
+        },
+        "buttons": [],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 1035,
+          "y": 505,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 722564",
+        "status": "Resizing window",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 722564,
+        "mode": "switched"
+      }
+    ]
+  },
+  "caption-b": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        688,
+        241
+      ],
+      "test_keys": 1,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 1,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 1620
+    },
+    "button": "2 Move to point",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 410,
+      "x": 688,
+      "right": 900,
+      "left": 500,
+      "top": 50,
+      "caption_y": 66,
+      "y": 241,
+      "caption_x": 620
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        228,
+        241
+      ],
+      "test_keys": 0,
+      "buttons": 1,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 1,
+      "mouse_clicks": 2,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 1646
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 1590
+    },
+    "a_alive": true,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764116,
+        "client": [
+          180,
+          160
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 81,
+          "right": 432,
+          "bottom": 402
+        },
+        "buttons": [
+          1
+        ],
+        "keys": [],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 228,
+          "y": 241,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 764116",
+        "status": "Switched · ProtoInputMux Routing Test — PID 764116",
+        "root": true,
+        "captured": true,
+        "keyboard_pid": 764116,
+        "mode": "switched"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 722564,
+        "client": [
+          112,
+          -15
+        ],
+        "bounds": {
+          "left": 508,
+          "top": 81,
+          "right": 892,
+          "bottom": 402
+        },
+        "buttons": [],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 620,
+          "y": 66,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 722564",
+        "status": "Waiting for Virtual Blue to release input",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 722564,
+        "mode": "switched"
+      }
+    ]
+  },
+  "select-b": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        688,
+        241
+      ],
+      "test_keys": 0,
+      "buttons": 1,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 1,
+      "mouse_clicks": 1,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 885
+    },
+    "button": "2 Hold click",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 410,
+      "x": 688,
+      "right": 900,
+      "left": 500,
+      "top": 50,
+      "caption_y": 66,
+      "y": 241,
+      "caption_x": 620
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        228,
+        241
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 1,
+      "mouse_clicks": 1,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 902
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 864
+    },
+    "a_alive": true,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764116,
+        "client": [
+          180,
+          160
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 81,
+          "right": 432,
+          "bottom": 402
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 228,
+          "y": 241,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 764116",
+        "status": "Switched · ProtoInputMux Routing Test — PID 764116",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 764116,
+        "mode": "switched"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 722564,
+        "client": [
+          180,
+          160
+        ],
+        "bounds": {
+          "left": 508,
+          "top": 81,
+          "right": 892,
+          "bottom": 402
+        },
+        "buttons": [
+          1
+        ],
+        "keys": [],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 688,
+          "y": 241,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 722564",
+        "status": "Switched · ProtoInputMux Routing Test — PID 722564",
+        "root": true,
+        "captured": true,
+        "keyboard_pid": 722564,
+        "mode": "switched"
+      }
+    ]
+  },
+  "root-again": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        228,
+        691
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 3,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 7,
+      "mouse_clicks": 3,
+      "key_presses": 3,
+      "sampled_test_key_presses": 3,
+      "frames": 6322
+    },
+    "button": "Switched",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 510,
+      "x": 768,
+      "right": 1040,
+      "left": 580,
+      "top": 110,
+      "caption_y": 126,
+      "y": 301,
+      "caption_x": 700
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        228,
+        241
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 4,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 6,
+      "mouse_clicks": 4,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 6084
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        228,
+        691
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 1,
+      "mouse_clicks": 1,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 6047
+    },
+    "a_alive": true,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 766596,
+        "client": [
+          180,
+          160
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 531,
+          "right": 432,
+          "bottom": 852
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 228,
+          "y": 691,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 766596",
+        "status": "Concurrent · ProtoInputMux Routing Test — PID 766596",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 766596,
+        "mode": "switched"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 764116,
+        "client": [
+          180,
+          160
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 81,
+          "right": 432,
+          "bottom": 402
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 228,
+          "y": 241,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 764116",
+        "status": "Concurrent · ProtoInputMux Routing Test — PID 764116",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 764116,
+        "mode": "switched"
+      }
+    ]
+  },
+  "swap-b": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        798,
+        321
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 3,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 6,
+      "mouse_clicks": 3,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 5159
+    },
+    "button": "2 Move to point",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 510,
+      "x": 768,
+      "right": 1040,
+      "left": 580,
+      "top": 110,
+      "caption_y": 126,
+      "y": 301,
+      "caption_x": 700
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        798,
+        321
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 3,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 5,
+      "mouse_clicks": 3,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 4955
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 4923
+    },
+    "a_alive": true,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 722564,
+        "client": [
+          210,
+          180
+        ],
+        "bounds": {
+          "left": 588,
+          "top": 141,
+          "right": 1032,
+          "bottom": 502
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 798,
+          "y": 321,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 722564",
+        "status": "Concurrent · ProtoInputMux Routing Test — PID 722564",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 722564,
+        "mode": "concurrent"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 0,
+        "client": [
+          228,
+          241
+        ],
+        "bounds": {
+          "left": 0,
+          "top": 0,
+          "right": 2560,
+          "bottom": 1440
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 228,
+          "y": 241,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Virtual Blue took this application",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 0,
+        "mode": "concurrent"
+      }
+    ]
+  },
+  "grab-resize": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        700,
+        126
+      ],
+      "test_keys": 1,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 2297
+    },
+    "button": "2 Hold click",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 470,
+      "x": 768,
+      "right": 980,
+      "left": 580,
+      "top": 110,
+      "caption_y": 126,
+      "y": 301,
+      "caption_x": 700
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        228,
+        241
+      ],
+      "test_keys": 0,
+      "buttons": 1,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 1,
+      "mouse_clicks": 2,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 2333
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 2278
+    },
+    "a_alive": true,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764116,
+        "client": [
+          180,
+          160
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 81,
+          "right": 432,
+          "bottom": 402
+        },
+        "buttons": [
+          1
+        ],
+        "keys": [],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 228,
+          "y": 241,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 764116",
+        "status": "Switched · ProtoInputMux Routing Test — PID 764116",
+        "root": true,
+        "captured": true,
+        "keyboard_pid": 764116,
+        "mode": "switched"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 722564,
+        "client": [
+          387,
+          324
+        ],
+        "bounds": {
+          "left": 588,
+          "top": 141,
+          "right": 972,
+          "bottom": 462
+        },
+        "buttons": [],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 975,
+          "y": 465,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 722564",
+        "status": "Resizing window",
+        "root": false,
+        "captured": true,
+        "keyboard_pid": 722564,
+        "mode": "switched"
+      }
+    ]
+  },
+  "claim-b": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        798,
+        321
+      ],
+      "test_keys": 0,
+      "buttons": 1,
+      "drag_moves": 3,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 6,
+      "mouse_clicks": 3,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 4876
+    },
+    "button": "1 Hold click",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 510,
+      "x": 768,
+      "right": 1040,
+      "left": 580,
+      "top": 110,
+      "caption_y": 126,
+      "y": 301,
+      "caption_x": 700
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        798,
+        321
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 3,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 5,
+      "mouse_clicks": 3,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 4698
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 4659
+    },
+    "a_alive": true,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 722564,
+        "client": [
+          210,
+          180
+        ],
+        "bounds": {
+          "left": 588,
+          "top": 141,
+          "right": 1032,
+          "bottom": 502
+        },
+        "buttons": [
+          1
+        ],
+        "keys": [],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 798,
+          "y": 321,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 722564",
+        "status": "Concurrent · ProtoInputMux Routing Test — PID 722564",
+        "root": false,
+        "captured": true,
+        "keyboard_pid": 722564,
+        "mode": "concurrent"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 0,
+        "client": [
+          798,
+          361
+        ],
+        "bounds": {
+          "left": 0,
+          "top": 0,
+          "right": 2560,
+          "bottom": 1440
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 798,
+          "y": 361,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Virtual Blue took this application",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 0,
+        "mode": "concurrent"
+      }
+    ]
+  },
+  "drop-b": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        700,
+        126
+      ],
+      "test_keys": 1,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 2029
+    },
+    "button": "2 Release click",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 470,
+      "x": 768,
+      "right": 980,
+      "left": 580,
+      "top": 110,
+      "caption_y": 126,
+      "y": 301,
+      "caption_x": 700
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        228,
+        241
+      ],
+      "test_keys": 0,
+      "buttons": 1,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 1,
+      "mouse_clicks": 2,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 2053
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 2011
+    },
+    "a_alive": true,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764116,
+        "client": [
+          180,
+          160
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 81,
+          "right": 432,
+          "bottom": 402
+        },
+        "buttons": [
+          1
+        ],
+        "keys": [],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 228,
+          "y": 241,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 764116",
+        "status": "Switched · ProtoInputMux Routing Test — PID 764116",
+        "root": true,
+        "captured": true,
+        "keyboard_pid": 764116,
+        "mode": "switched"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 722564,
+        "client": [
+          112,
+          -15
+        ],
+        "bounds": {
+          "left": 588,
+          "top": 141,
+          "right": 972,
+          "bottom": 462
+        },
+        "buttons": [],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 700,
+          "y": 126,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 722564",
+        "status": "Moving window",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 722564,
+        "mode": "switched"
+      }
+    ]
+  },
+  "all-clear": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        228,
+        691
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 3,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 7,
+      "mouse_clicks": 3,
+      "key_presses": 3,
+      "sampled_test_key_presses": 3,
+      "frames": 7330
+    },
+    "button": "Release all users",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 510,
+      "x": 768,
+      "right": 1040,
+      "left": 580,
+      "top": 110,
+      "caption_y": 126,
+      "y": 301,
+      "caption_x": 700
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        228,
+        241
+      ],
+      "test_keys": 1,
+      "buttons": 1,
+      "drag_moves": 4,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 6,
+      "mouse_clicks": 5,
+      "key_presses": 3,
+      "sampled_test_key_presses": 3,
+      "frames": 6330
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        228,
+        691
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 3,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 3,
+      "mouse_clicks": 2,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 6985
+    },
+    "a_alive": false,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 0,
+        "client": [
+          228,
+          691
+        ],
+        "bounds": {
+          "left": 0,
+          "top": 0,
+          "right": 2560,
+          "bottom": 1440
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 228,
+          "y": 691,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Virtual Coral took this application",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 0,
+        "mode": "switched"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 766596,
+        "client": [
+          180,
+          160
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 531,
+          "right": 432,
+          "bottom": 852
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 228,
+          "y": 691,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 766596",
+        "status": "Switched · ProtoInputMux Routing Test — PID 766596",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 766596,
+        "mode": "switched"
+      }
+    ]
+  },
+  "resume": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        798,
+        361
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 2,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 5,
+      "mouse_clicks": 2,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 4578
+    },
+    "button": "Resume",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 510,
+      "x": 768,
+      "right": 1040,
+      "left": 580,
+      "top": 110,
+      "caption_y": 126,
+      "y": 301,
+      "caption_x": 700
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        268,
+        241
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 3,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 4,
+      "mouse_clicks": 3,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 4388
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 4362
+    },
+    "a_alive": true,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764116,
+        "client": [
+          220,
+          160
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 81,
+          "right": 432,
+          "bottom": 402
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 268,
+          "y": 241,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 764116",
+        "status": "Concurrent · ProtoInputMux Routing Test — PID 764116",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 764116,
+        "mode": "concurrent"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 722564,
+        "client": [
+          210,
+          220
+        ],
+        "bounds": {
+          "left": 588,
+          "top": 141,
+          "right": 1032,
+          "bottom": 502
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 798,
+          "y": 361,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 722564",
+        "status": "Concurrent · ProtoInputMux Routing Test — PID 722564",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 722564,
+        "mode": "concurrent"
+      }
+    ]
+  },
+  "both-held": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        798,
+        321
+      ],
+      "test_keys": 1,
+      "buttons": 1,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 4,
+      "mouse_clicks": 2,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 3583
+    },
+    "button": "Hold all users",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 510,
+      "x": 768,
+      "right": 1040,
+      "left": 580,
+      "top": 110,
+      "caption_y": 126,
+      "y": 301,
+      "caption_x": 700
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        228,
+        241
+      ],
+      "test_keys": 1,
+      "buttons": 1,
+      "drag_moves": 2,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 3,
+      "mouse_clicks": 3,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 3471
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 3421
+    },
+    "a_alive": true,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764116,
+        "client": [
+          180,
+          160
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 81,
+          "right": 432,
+          "bottom": 402
+        },
+        "buttons": [
+          1
+        ],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 228,
+          "y": 241,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 764116",
+        "status": "Concurrent · ProtoInputMux Routing Test — PID 764116",
+        "root": false,
+        "captured": true,
+        "keyboard_pid": 764116,
+        "mode": "concurrent"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 722564,
+        "client": [
+          210,
+          180
+        ],
+        "bounds": {
+          "left": 588,
+          "top": 141,
+          "right": 1032,
+          "bottom": 502
+        },
+        "buttons": [
+          1
+        ],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 798,
+          "y": 321,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 722564",
+        "status": "Concurrent · ProtoInputMux Routing Test — PID 722564",
+        "root": false,
+        "captured": true,
+        "keyboard_pid": 722564,
+        "mode": "concurrent"
+      }
+    ]
+  },
+  "resize-b": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        1035,
+        505
+      ],
+      "test_keys": 1,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 3,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 2438
+    },
+    "button": "2 Move to point",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 510,
+      "x": 768,
+      "right": 1040,
+      "left": 580,
+      "top": 110,
+      "caption_y": 126,
+      "y": 301,
+      "caption_x": 700
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        228,
+        241
+      ],
+      "test_keys": 0,
+      "buttons": 1,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 1,
+      "mouse_clicks": 2,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 2458
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 2420
+    },
+    "a_alive": true,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764116,
+        "client": [
+          180,
+          160
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 81,
+          "right": 432,
+          "bottom": 402
+        },
+        "buttons": [
+          1
+        ],
+        "keys": [],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 228,
+          "y": 241,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 764116",
+        "status": "Switched · ProtoInputMux Routing Test — PID 764116",
+        "root": true,
+        "captured": true,
+        "keyboard_pid": 764116,
+        "mode": "switched"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 722564,
+        "client": [
+          447,
+          364
+        ],
+        "bounds": {
+          "left": 588,
+          "top": 141,
+          "right": 1032,
+          "bottom": 502
+        },
+        "buttons": [],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 1035,
+          "y": 505,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 722564",
+        "status": "Resizing window",
+        "root": false,
+        "captured": true,
+        "keyboard_pid": 722564,
+        "mode": "switched"
+      }
+    ]
+  },
+  "corner-b": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        700,
+        126
+      ],
+      "test_keys": 1,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 2,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 2170
+    },
+    "button": "2 Move to point",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 470,
+      "x": 768,
+      "right": 980,
+      "left": 580,
+      "top": 110,
+      "caption_y": 126,
+      "y": 301,
+      "caption_x": 700
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        228,
+        241
+      ],
+      "test_keys": 0,
+      "buttons": 1,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 1,
+      "mouse_clicks": 2,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 2194
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 2136
+    },
+    "a_alive": true,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764116,
+        "client": [
+          180,
+          160
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 81,
+          "right": 432,
+          "bottom": 402
+        },
+        "buttons": [
+          1
+        ],
+        "keys": [],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 228,
+          "y": 241,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 764116",
+        "status": "Switched · ProtoInputMux Routing Test — PID 764116",
+        "root": true,
+        "captured": true,
+        "keyboard_pid": 764116,
+        "mode": "switched"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 722564,
+        "client": [
+          387,
+          324
+        ],
+        "bounds": {
+          "left": 588,
+          "top": 141,
+          "right": 972,
+          "bottom": 462
+        },
+        "buttons": [],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 975,
+          "y": 465,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 722564",
+        "status": "Moving window",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 722564,
+        "mode": "switched"
+      }
+    ]
+  },
+  "root-a": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        688,
+        241
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 1,
+      "mouse_clicks": 1,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 1168
+    },
+    "button": "1 Hold click",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 410,
+      "x": 688,
+      "right": 900,
+      "left": 500,
+      "top": 50,
+      "caption_y": 66,
+      "y": 241,
+      "caption_x": 620
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        228,
+        241
+      ],
+      "test_keys": 0,
+      "buttons": 1,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 1,
+      "mouse_clicks": 2,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 1198
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 1159
+    },
+    "a_alive": true,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764116,
+        "client": [
+          180,
+          160
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 81,
+          "right": 432,
+          "bottom": 402
+        },
+        "buttons": [
+          1
+        ],
+        "keys": [],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 228,
+          "y": 241,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 764116",
+        "status": "Switched · ProtoInputMux Routing Test — PID 764116",
+        "root": true,
+        "captured": true,
+        "keyboard_pid": 764116,
+        "mode": "switched"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 722564,
+        "client": [
+          180,
+          160
+        ],
+        "bounds": {
+          "left": 508,
+          "top": 81,
+          "right": 892,
+          "bottom": 402
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 688,
+          "y": 241,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 722564",
+        "status": "Switched · ProtoInputMux Routing Test — PID 722564",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 722564,
+        "mode": "switched"
+      }
+    ]
+  },
+  "hold-a-key": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        228,
+        691
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 3,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 7,
+      "mouse_clicks": 3,
+      "key_presses": 3,
+      "sampled_test_key_presses": 3,
+      "frames": 6619
+    },
+    "button": "2 Hold W",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 510,
+      "x": 768,
+      "right": 1040,
+      "left": 580,
+      "top": 110,
+      "caption_y": 126,
+      "y": 301,
+      "caption_x": 700
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        228,
+        241
+      ],
+      "test_keys": 1,
+      "buttons": 1,
+      "drag_moves": 4,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 6,
+      "mouse_clicks": 5,
+      "key_presses": 3,
+      "sampled_test_key_presses": 3,
+      "frames": 6330
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        228,
+        691
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 1,
+      "mouse_clicks": 1,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 6277
+    },
+    "a_alive": true,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 766596,
+        "client": [
+          180,
+          160
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 531,
+          "right": 432,
+          "bottom": 852
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 228,
+          "y": 691,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 766596",
+        "status": "Concurrent · ProtoInputMux Routing Test — PID 766596",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 766596,
+        "mode": "switched"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 764116,
+        "client": [
+          180,
+          160
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 81,
+          "right": 432,
+          "bottom": 402
+        },
+        "buttons": [
+          1
+        ],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 228,
+          "y": 241,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 764116",
+        "status": "Switched · ProtoInputMux Routing Test — PID 764116",
+        "root": true,
+        "captured": true,
+        "keyboard_pid": 764116,
+        "mode": "switched"
+      }
+    ]
+  },
+  "wheel-a": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        798,
+        361
+      ],
+      "test_keys": 1,
+      "buttons": 1,
+      "drag_moves": 2,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 5,
+      "mouse_clicks": 2,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 4002
+    },
+    "button": "1 Wheel",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 510,
+      "x": 768,
+      "right": 1040,
+      "left": 580,
+      "top": 110,
+      "caption_y": 126,
+      "y": 301,
+      "caption_x": 700
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        268,
+        241
+      ],
+      "test_keys": 1,
+      "buttons": 1,
+      "drag_moves": 3,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 4,
+      "mouse_clicks": 3,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 3858
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 3811
+    },
+    "a_alive": true,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764116,
+        "client": [
+          220,
+          160
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 81,
+          "right": 432,
+          "bottom": 402
+        },
+        "buttons": [
+          1
+        ],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 268,
+          "y": 241,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 764116",
+        "status": "Concurrent · ProtoInputMux Routing Test — PID 764116",
+        "root": false,
+        "captured": true,
+        "keyboard_pid": 764116,
+        "mode": "concurrent"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 722564,
+        "client": [
+          210,
+          220
+        ],
+        "bounds": {
+          "left": 588,
+          "top": 141,
+          "right": 1032,
+          "bottom": 502
+        },
+        "buttons": [
+          1
+        ],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 798,
+          "y": 361,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 722564",
+        "status": "Concurrent · ProtoInputMux Routing Test — PID 722564",
+        "root": false,
+        "captured": true,
+        "keyboard_pid": 722564,
+        "mode": "concurrent"
+      }
+    ]
+  },
+  "drag-b": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        798,
+        361
+      ],
+      "test_keys": 1,
+      "buttons": 1,
+      "drag_moves": 2,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 5,
+      "mouse_clicks": 2,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 3864
+    },
+    "button": "2 Down",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 510,
+      "x": 768,
+      "right": 1040,
+      "left": 580,
+      "top": 110,
+      "caption_y": 126,
+      "y": 301,
+      "caption_x": 700
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        268,
+        241
+      ],
+      "test_keys": 1,
+      "buttons": 1,
+      "drag_moves": 3,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 4,
+      "mouse_clicks": 3,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 3724
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 3691
+    },
+    "a_alive": true,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764116,
+        "client": [
+          220,
+          160
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 81,
+          "right": 432,
+          "bottom": 402
+        },
+        "buttons": [
+          1
+        ],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 268,
+          "y": 241,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 764116",
+        "status": "Concurrent · ProtoInputMux Routing Test — PID 764116",
+        "root": false,
+        "captured": true,
+        "keyboard_pid": 764116,
+        "mode": "concurrent"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 722564,
+        "client": [
+          210,
+          220
+        ],
+        "bounds": {
+          "left": 588,
+          "top": 141,
+          "right": 1032,
+          "bottom": 502
+        },
+        "buttons": [
+          1
+        ],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 798,
+          "y": 361,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 722564",
+        "status": "Concurrent · ProtoInputMux Routing Test — PID 722564",
+        "root": false,
+        "captured": true,
+        "keyboard_pid": 722564,
+        "mode": "concurrent"
+      }
+    ]
+  },
+  "typing-a": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        798,
+        321
+      ],
+      "test_keys": 1,
+      "buttons": 0,
+      "drag_moves": 3,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 6,
+      "mouse_clicks": 3,
+      "key_presses": 3,
+      "sampled_test_key_presses": 3,
+      "frames": 5741
+    },
+    "button": "2 Tap D",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 510,
+      "x": 768,
+      "right": 1040,
+      "left": 580,
+      "top": 110,
+      "caption_y": 126,
+      "y": 301,
+      "caption_x": 700
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        228,
+        241
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 4,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 6,
+      "mouse_clicks": 4,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 5524
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 5504
+    },
+    "a_alive": true,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 722564,
+        "client": [
+          210,
+          180
+        ],
+        "bounds": {
+          "left": 588,
+          "top": 141,
+          "right": 1032,
+          "bottom": 502
+        },
+        "buttons": [],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 798,
+          "y": 321,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 722564",
+        "status": "Virtual Coral took this application",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 722564,
+        "mode": "concurrent"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 764116,
+        "client": [
+          180,
+          160
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 81,
+          "right": 432,
+          "bottom": 402
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 228,
+          "y": 241,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 764116",
+        "status": "Concurrent · ProtoInputMux Routing Test — PID 764116",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 764116,
+        "mode": "concurrent"
+      }
+    ]
+  },
+  "drop-new-c": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        228,
+        691
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 3,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 7,
+      "mouse_clicks": 3,
+      "key_presses": 3,
+      "sampled_test_key_presses": 3,
+      "frames": 6181
+    },
+    "button": "1 Release click",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 510,
+      "x": 768,
+      "right": 1040,
+      "left": 580,
+      "top": 110,
+      "caption_y": 126,
+      "y": 301,
+      "caption_x": 700
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        228,
+        241
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 4,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 6,
+      "mouse_clicks": 4,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 5943
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        228,
+        691
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 1,
+      "mouse_clicks": 1,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 5906
+    },
+    "a_alive": true,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 766596,
+        "client": [
+          180,
+          160
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 531,
+          "right": 432,
+          "bottom": 852
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 228,
+          "y": 691,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 766596",
+        "status": "Concurrent · ProtoInputMux Routing Test — PID 766596",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 766596,
+        "mode": "concurrent"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 764116,
+        "client": [
+          180,
+          160
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 81,
+          "right": 432,
+          "bottom": 402
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 228,
+          "y": 241,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 764116",
+        "status": "Concurrent · ProtoInputMux Routing Test — PID 764116",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 764116,
+        "mode": "concurrent"
+      }
+    ]
+  },
+  "drop-resize": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        1035,
+        505
+      ],
+      "test_keys": 1,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 3,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 2580
+    },
+    "button": "2 Release click",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 510,
+      "x": 768,
+      "right": 1040,
+      "left": 580,
+      "top": 110,
+      "caption_y": 126,
+      "y": 301,
+      "caption_x": 700
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        228,
+        241
+      ],
+      "test_keys": 0,
+      "buttons": 1,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 1,
+      "mouse_clicks": 2,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 2592
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 2546
+    },
+    "a_alive": true,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764116,
+        "client": [
+          180,
+          160
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 81,
+          "right": 432,
+          "bottom": 402
+        },
+        "buttons": [
+          1
+        ],
+        "keys": [],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 228,
+          "y": 241,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 764116",
+        "status": "Switched · ProtoInputMux Routing Test — PID 764116",
+        "root": true,
+        "captured": true,
+        "keyboard_pid": 764116,
+        "mode": "switched"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 722564,
+        "client": [
+          447,
+          364
+        ],
+        "bounds": {
+          "left": 588,
+          "top": 141,
+          "right": 1032,
+          "bottom": 502
+        },
+        "buttons": [],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 1035,
+          "y": 505,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 722564",
+        "status": "Resizing window",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 722564,
+        "mode": "switched"
+      }
+    ]
+  },
+  "release-a": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 695
+    },
+    "button": "1 Release click",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 410,
+      "x": 688,
+      "right": 900,
+      "left": 500,
+      "top": 50,
+      "caption_y": 66,
+      "y": 241,
+      "caption_x": 620
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        228,
+        241
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 1,
+      "mouse_clicks": 1,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 728
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 695
+    },
+    "a_alive": true,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764116,
+        "client": [
+          180,
+          160
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 81,
+          "right": 432,
+          "bottom": 402
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 228,
+          "y": 241,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 764116",
+        "status": "Switched · ProtoInputMux Routing Test — PID 764116",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 764116,
+        "mode": "switched"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 0,
+        "client": [
+          688,
+          241
+        ],
+        "bounds": {
+          "left": 0,
+          "top": 0,
+          "right": 2560,
+          "bottom": 1440
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 688,
+          "y": 241,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Click a window to route input",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 0,
+        "mode": "switched"
+      }
+    ]
+  },
+  "claim-new-c": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        228,
+        691
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 3,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 7,
+      "mouse_clicks": 3,
+      "key_presses": 3,
+      "sampled_test_key_presses": 3,
+      "frames": 6054
+    },
+    "button": "1 Hold click",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 510,
+      "x": 768,
+      "right": 1040,
+      "left": 580,
+      "top": 110,
+      "caption_y": 126,
+      "y": 301,
+      "caption_x": 700
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        228,
+        241
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 4,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 6,
+      "mouse_clicks": 4,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 5834
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        228,
+        691
+      ],
+      "test_keys": 0,
+      "buttons": 1,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 1,
+      "mouse_clicks": 1,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 5795
+    },
+    "a_alive": true,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 766596,
+        "client": [
+          180,
+          160
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 531,
+          "right": 432,
+          "bottom": 852
+        },
+        "buttons": [
+          1
+        ],
+        "keys": [],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 228,
+          "y": 691,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 766596",
+        "status": "Concurrent · ProtoInputMux Routing Test — PID 766596",
+        "root": false,
+        "captured": true,
+        "keyboard_pid": 766596,
+        "mode": "concurrent"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 764116,
+        "client": [
+          180,
+          160
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 81,
+          "right": 432,
+          "bottom": 402
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 228,
+          "y": 241,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 764116",
+        "status": "Concurrent · ProtoInputMux Routing Test — PID 764116",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 764116,
+        "mode": "concurrent"
+      }
+    ]
+  },
+  "after-exit-move": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        228,
+        691
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 3,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 7,
+      "mouse_clicks": 3,
+      "key_presses": 3,
+      "sampled_test_key_presses": 3,
+      "frames": 6905
+    },
+    "button": "2 Move to point",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 510,
+      "x": 768,
+      "right": 1040,
+      "left": 580,
+      "top": 110,
+      "caption_y": 126,
+      "y": 301,
+      "caption_x": 700
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        228,
+        241
+      ],
+      "test_keys": 1,
+      "buttons": 1,
+      "drag_moves": 4,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 6,
+      "mouse_clicks": 5,
+      "key_presses": 3,
+      "sampled_test_key_presses": 3,
+      "frames": 6330
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        228,
+        691
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 1,
+      "mouse_clicks": 1,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 6574
+    },
+    "a_alive": false,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 766596,
+        "client": [
+          180,
+          160
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 531,
+          "right": 432,
+          "bottom": 852
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 228,
+          "y": 691,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 766596",
+        "status": "Concurrent · ProtoInputMux Routing Test — PID 766596",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 766596,
+        "mode": "switched"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 0,
+        "client": [
+          228,
+          691
+        ],
+        "bounds": {
+          "left": 0,
+          "top": 0,
+          "right": 2560,
+          "bottom": 1440
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 228,
+          "y": 691,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "",
+        "status": "Target closed or hidden; choose another window",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 0,
+        "mode": "switched"
+      }
+    ]
+  },
+  "return-a": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        1035,
+        505
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 3,
+      "mouse_clicks": 1,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 3303
+    },
+    "button": "1 Move to point",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 510,
+      "x": 768,
+      "right": 1040,
+      "left": 580,
+      "top": 110,
+      "caption_y": 126,
+      "y": 301,
+      "caption_x": 700
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        228,
+        241
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 2,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 3,
+      "mouse_clicks": 2,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 3225
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 3187
+    },
+    "a_alive": true,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764116,
+        "client": [
+          180,
+          160
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 81,
+          "right": 432,
+          "bottom": 402
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 228,
+          "y": 241,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 764116",
+        "status": "Switched · ProtoInputMux Routing Test — PID 764116",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 764116,
+        "mode": "concurrent"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 722564,
+        "client": [
+          447,
+          364
+        ],
+        "bounds": {
+          "left": 588,
+          "top": 141,
+          "right": 1032,
+          "bottom": 502
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 1035,
+          "y": 505,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 722564",
+        "status": "Resizing window",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 722564,
+        "mode": "concurrent"
+      }
+    ]
+  },
+  "swap-a": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        798,
+        361
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 2,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 5,
+      "mouse_clicks": 2,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 4718
+    },
+    "button": "1 Move to point",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 510,
+      "x": 768,
+      "right": 1040,
+      "left": 580,
+      "top": 110,
+      "caption_y": 126,
+      "y": 301,
+      "caption_x": 700
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        798,
+        321
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 3,
+      "wheel_events": 1,
+      "wheel_delta": 1.0,
+      "mouse_moves": 5,
+      "mouse_clicks": 3,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 4541
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 4503
+    },
+    "a_alive": true,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764116,
+        "client": [
+          750,
+          240
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 81,
+          "right": 432,
+          "bottom": 402
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 798,
+          "y": 321,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 764116",
+        "status": "Concurrent · ProtoInputMux Routing Test — PID 764116",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 764116,
+        "mode": "concurrent"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 722564,
+        "client": [
+          210,
+          220
+        ],
+        "bounds": {
+          "left": 588,
+          "top": 141,
+          "right": 1032,
+          "bottom": 502
+        },
+        "buttons": [],
+        "keys": [],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 798,
+          "y": 361,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 722564",
+        "status": "Concurrent · ProtoInputMux Routing Test — PID 722564",
+        "root": false,
+        "captured": false,
+        "keyboard_pid": 722564,
+        "mode": "concurrent"
+      }
+    ]
+  },
+  "drag-a": {
+    "b": {
+      "pid": 722564,
+      "cursor": [
+        798,
+        321
+      ],
+      "test_keys": 1,
+      "buttons": 1,
+      "drag_moves": 1,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 4,
+      "mouse_clicks": 2,
+      "key_presses": 2,
+      "sampled_test_key_presses": 2,
+      "frames": 3725
+    },
+    "button": "1 Right",
+    "b_window": {
+      "hwnd": 14878972,
+      "bottom": 510,
+      "x": 768,
+      "right": 1040,
+      "left": 580,
+      "top": 110,
+      "caption_y": 126,
+      "y": 301,
+      "caption_x": 700
+    },
+    "a": {
+      "pid": 764116,
+      "cursor": [
+        268,
+        241
+      ],
+      "test_keys": 1,
+      "buttons": 1,
+      "drag_moves": 3,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 4,
+      "mouse_clicks": 3,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 3603
+    },
+    "c": {
+      "pid": 766596,
+      "cursor": [
+        2143,
+        523
+      ],
+      "test_keys": 0,
+      "buttons": 0,
+      "drag_moves": 0,
+      "wheel_events": 0,
+      "wheel_delta": 0.0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 3558
+    },
+    "a_alive": true,
+    "state": [
+      {
+        "name": "Virtual Blue",
+        "pid": 764116,
+        "client": [
+          220,
+          160
+        ],
+        "bounds": {
+          "left": 48,
+          "top": 81,
+          "right": 432,
+          "bottom": 402
+        },
+        "buttons": [
+          1
+        ],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 35981948,
+          "x": 268,
+          "y": 241,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 764116",
+        "status": "Concurrent · ProtoInputMux Routing Test — PID 764116",
+        "root": false,
+        "captured": true,
+        "keyboard_pid": 764116,
+        "mode": "concurrent"
+      },
+      {
+        "name": "Virtual Coral",
+        "pid": 722564,
+        "client": [
+          210,
+          180
+        ],
+        "bounds": {
+          "left": 588,
+          "top": 141,
+          "right": 1032,
+          "bottom": 502
+        },
+        "buttons": [
+          1
+        ],
+        "keys": [
+          87
+        ],
+        "overlay": {
+          "hwnd": 32640792,
+          "x": 798,
+          "y": 321,
+          "visible": true,
+          "no_activate": true,
+          "click_through": true,
+          "painted_pixels": 712
+        },
+        "title": "ProtoInputMux Routing Test — PID 722564",
+        "status": "Concurrent · ProtoInputMux Routing Test — PID 722564",
+        "root": false,
+        "captured": true,
+        "keyboard_pid": 722564,
+        "mode": "concurrent"
+      }
+    ]
+  }
+}

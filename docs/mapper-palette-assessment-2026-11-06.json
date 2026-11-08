@@ -1,0 +1,128 @@
+{
+  "date": "2026-11-06",
+  "decision": "MAPPER_PALETTE_ACCEPTED",
+  "scope": "Searchable categorized Ouroboros node palette in wide Graph sidebar and compact Nodes browser; shared pure MCP catalogue filtering.",
+  "verification": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-palette-20261106\\checks-003\\verification.json",
+    "sha256": "ad921d9e436da15337af66c9681f8aa4783d5d8d8320d451da37c80df9ab42a5"
+  },
+  "review": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-palette-20261106\\independent-acceptance.json",
+    "sha256": "ebdd2846e55b911d33413246ce0e30c4a685148fda58f08b6462e79997de3b90"
+  },
+  "publication": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-palette-20261106\\publication.json",
+    "sha256": "f0ba2e7d296e4f81b947514a6f519971e4242ee980c987e6810438465a5cf1d1"
+  },
+  "workspace_tests": {
+    "passed": 809,
+    "failed": 0,
+    "ignored": 19
+  },
+  "checks": {
+    "fmt": 0,
+    "clippy": 0,
+    "workspace-tests": 0,
+    "build-gui": 0
+  },
+  "x64_image": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-palette-20261106\\checks-003\\x64\\protoinputmultiplex.exe",
+    "sha256": "040c2f26dcc2251348420a5f186d076059ff6d816d44669998aef74db6a3be28"
+  },
+  "producer": {
+    "original_session": 46004,
+    "original_exit_code": 0
+  },
+  "native": {
+    "evidence": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mt-6d623c3efc58\\evidence.json",
+      "sha256": "02096cc52f0c5a9b480e80e9f6906c861f69501ed1be4bd02339bfdfe1b64c42"
+    },
+    "driver": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-palette-20261106\\native.py",
+      "sha256": "5da475b0d43cd8018ed5d19465d8a55eda7d2cd4dd8735e4be0d7b99916b05b5"
+    },
+    "original_session": 73771,
+    "original_exit_code": 0,
+    "scope": {
+      "virtual_pairs": 1,
+      "GUI": 1,
+      "targets": 0,
+      "MCP": 1,
+      "hardware_input": 0,
+      "routing_or_injection": 0
+    },
+    "UI_actions": 18,
+    "MCP_catalogue_calls": 6,
+    "GUI_exit": 0,
+    "MCP_exit": 0
+  },
+  "accepted": [
+    "Nine original categories exhaustively cover current typed prototypes with no change to graph evaluation.",
+    "Case-insensitive bounded query and category intersection shared between Rust GUI and MCP; empty results cannot add a hidden choice.",
+    "Wide sidebar alongside default graph canvas; compact node browser with separate selection and explicit Add.",
+    "Add creates one undoable draft with existing virtual-user binding, then opens Inspector; navigation/filter/selection never applies or arms.",
+    "Native wide/compact filtering, explicit selection, draft Add/Undo and normal stopped-GUI shutdown passed independent review."
+  ],
+  "limits": [
+    "One virtual pair, stopped GUI and pure MCP catalogue only; no targets, routing, injection or hardware input.",
+    "Drag-to-create, complete Mapper/Ultra UX, broader applications/devices, full SDK integrations and release readiness remain unverified or incomplete.",
+    "Historical intermittent GUI stall remains open; physical checkout folder rename stays user-deferred."
+  ],
+  "reference": "https://www.mousemux.com/pages/apps/webapp-input-mapper-beta/",
+  "mcp_smoke_contract": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-palette-20261106\\smoke-after.py",
+    "sha256": "73396979e01e7974ab530d3b3223d489fa5604aebd30caac646681549a6dc5fd"
+  },
+  "mcp_tool_names": [
+    "agent_session",
+    "annotation",
+    "app_preferences",
+    "automation_cancel",
+    "automation_clip",
+    "automation_play",
+    "automation_record",
+    "macro_studio",
+    "magnifier",
+    "mapper_library",
+    "profile_document",
+    "routing_capture",
+    "routing_displays",
+    "routing_graph",
+    "routing_input",
+    "routing_mode",
+    "routing_output",
+    "routing_replication",
+    "routing_settings",
+    "routing_start",
+    "routing_state",
+    "routing_stop",
+    "routing_windows",
+    "virtual_users"
+  ],
+  "retained_compact_failure": {
+    "path": "C:/Users/Kenny/.cache/ProtoInputMultiPlex/mt-0b4709d66359/evidence.json",
+    "sha256": "3117c81ea820e3a3fa63b357e8c825d23ed969232a5549411f6fe505dbdbce5b",
+    "original_session": 57594,
+    "original_exit_code": 1,
+    "scope": "NOT_ACCEPTED: compact result viewport could not show Choose after12steps; wideflow and MCPdiscovery passed, GUI andMCP bothnormalexit0."
+  },
+  "retained_native_failure": {
+    "path": "C:/Users/Kenny/.cache/ProtoInputMultiPlex/mt-8904278511b9/evidence.json",
+    "sha256": "b40a6c2261e64e36f8674e3182df5a50f0754b14036be8bd860577d8cbe87095",
+    "scope": "NOT_ACCEPTED stale23tool oracle beforeGUI; MCP exited0."
+  },
+  "retained_failed_checks": [
+    {
+      "receipt": {
+        "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-palette-20261106\\checks-001\\verification.json",
+        "sha256": "90630f649ee98deb318d34d0b76f82824e8149a107fa7b30f09af490808da4ac"
+      },
+      "error": "RuntimeError('clippy failed')",
+      "checks": {
+        "fmt": 0,
+        "clippy": 101
+      }
+    }
+  ]
+}

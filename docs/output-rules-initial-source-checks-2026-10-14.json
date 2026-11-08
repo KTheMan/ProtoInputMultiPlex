@@ -1,0 +1,63 @@
+{
+  "result": "PASS",
+  "date": "2026-10-14",
+  "checks": [
+    {
+      "command": [
+        "cargo",
+        "fmt",
+        "--all",
+        "--check"
+      ],
+      "exit_code": 0,
+      "log": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-output-rules-20261014-102605\\1.log"
+    },
+    {
+      "command": [
+        "cargo",
+        "clippy",
+        "--workspace",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit_code": 0,
+      "log": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-output-rules-20261014-102605\\2.log"
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--workspace"
+      ],
+      "exit_code": 0,
+      "log": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-output-rules-20261014-102605\\3.log"
+    },
+    {
+      "command": [
+        "cargo",
+        "build",
+        "--workspace"
+      ],
+      "exit_code": 0,
+      "log": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-output-rules-20261014-102605\\4.log"
+    },
+    {
+      "command": [
+        "cargo",
+        "build",
+        "--workspace",
+        "--target",
+        "i686-pc-windows-msvc"
+      ],
+      "exit_code": 0,
+      "log": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-output-rules-20261014-102605\\5.log"
+    }
+  ],
+  "workspace_tests": 105,
+  "build_sha256": {
+    "x64": "5fa2711c790289767d24e2a15506a8f1abe1b58c34939bdce0f359455e67a3b2",
+    "i686": "9b96dfa17f4d9a950bef7ccf995dc38bec423dc1b13d502ff411dfc386332487"
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "decision": "ACCEPTED_BOUNDED_GROUP",
+  "independent_approval": true,
+  "group": "gui_profile_file_liveness",
+  "reviewer": "independent broker_source_review",
+  "reviewed_at_utc": "2026-10-22T06:36:49.802309+00:00",
+  "composition": "Supported12-control startup/Save-edit prefix plus separately gated11-control missing-only tail, source/production tests and required producer. Both raw native aggregates remain NOT_ACCEPTED; no full19-control raw pass or raw tail pass claimed.",
+  "source_review": {
+    "path": "runtime/gui-profile-file-source-review.json",
+    "sha256": "18b417ad796ea85ad6e2c090516992db6859b8b6573c3386ba0b8f3dab6e56b1"
+  },
+  "producer": {
+    "path": "runtime/producer-gui-profile-file-liveness-20261021-attempt001/verification.json",
+    "sha256": "9e7242c10668a99e87b9425cad6e95c6ddbeddc430d0b05cae32858b88e6fd3e",
+    "totals": {
+      "passed": 535,
+      "failed": 0,
+      "ignored": 1
+    },
+    "checks": "fmt/strictworkspace-alltargetsClippy/workspacetests/x64+i686 app-observer builds all0"
+  },
+  "producer_review": {
+    "path": "runtime/gui-profile-file-producer-review.json",
+    "sha256": "5d4ee3a03f3e6155ebf153cbfa326c09c60034f073f2fe61a40a990698a8e026"
+  },
+  "components": [
+    {
+      "scope": "Startup load + Save/newer-memory/disabled-action component",
+      "assessment_path": "runtime/producer-gui-profile-file-liveness-20261021-attempt001/private-runtime/acceptance-profile-file-ui-attempt001/actual-assessment.json",
+      "assessment_sha256": "cd8f2bc435cf9e7515c7b1d12d3c2a3206c08940f046244e9749f50a9b452c31",
+      "component_status": "ACCEPTED_BOUNDED_COMPONENT",
+      "raw_path": "runtime/producer-gui-profile-file-liveness-20261021-attempt001/private-runtime/acceptance-profile-file-ui-attempt001/evidence.json",
+      "raw_sha256": "3cb87a01b7970700195d15e93f528979aa8ef2f4f06e28f3982f21b597dae61e",
+      "raw_result": "NOT ACCEPTED",
+      "accepted_control_observations": 12,
+      "failure": "Immediate new-kind assertion saw priorSave projection after13thLoad click; no Load outcome accepted there."
+    },
+    {
+      "scope": "Remaining Load/Import/Export/Restore/finalSave-and-Quit component",
+      "assessment_path": "runtime/producer-gui-profile-file-liveness-20261021-attempt001/private-runtime/acceptance-profile-file-ui-tail-attempt002/actual-assessment.json",
+      "assessment_sha256": "05161c7660e27081310e062384b113ee413f72a92836ba1c416522b09a7b4778",
+      "component_status": "ACCEPTED_BOUNDED_COMPONENT",
+      "raw_path": "runtime/producer-gui-profile-file-liveness-20261021-attempt001/private-runtime/acceptance-profile-file-ui-tail-attempt002/evidence.json",
+      "raw_sha256": "749e24b16391588d7a3832906dfcf1e4454844d1f22c4e68e82e7979723aa128",
+      "raw_result": "NOT ACCEPTED",
+      "accepted_control_observations": 11,
+      "failure": "Post-completion inventory requested nonexistent unused prefix active.json.bak. Independent read-only required-file reconstruction supports component without rerun."
+    }
+  ],
+  "accepted_behavior": [
+    "All six GUI profile-file entrypoints use one bounded Rust worker with immutable path/profile jobs; unchanged profile_store semantics. Production source/tests cover ticket/context/profile/session guards, hidden draft actual/accessibility input, failclosed initial recovery, errors/panic, nonjoining Drop and failed-write Quit staying open.",
+    "Native startup load and acceptedSave remain responsive during artificial pending work; secondSave visibly disabled; navigation and newer full memory preserved while captured originalA saved with exact prior raw-byte backup.",
+    "Tail full LoadB/ImportC/ExportC/RestoreA and finalSave profiles independently checked; exact originalB backup bytes reconstructed rather than accepting the erroneous final inventory.",
+    "ActualQuit during pending finalSave waits while GUI progresses, then durable expected final/backup files exist and GUI exits0 normally. Both ownedGUI cohorts exit0 without forced fallback or cleanup errors.",
+    "Fresh stopped540x640 capture independently viewed and bound; sampled scrolled Import/Recovery actions only."
+  ],
+  "native_scope": {
+    "GUI_architecture": "x64",
+    "owned_GUI_processes_total": 2,
+    "prefix_GUI": 166688,
+    "tail_GUI": 149068,
+    "routing_workers": 0,
+    "target_probes": 0,
+    "MCP_clients": 0,
+    "routed_input_calls": 0,
+    "configured_virtual_seats_per_GUI": 2,
+    "worker_delay_ms": 8000,
+    "delay_artificial": true
+  },
+  "visual_review": {
+    "path": "profile-file-controls.png",
+    "sha256": "79a543d47e349c2d3f9c9a1f99ce63560338a92a068590a8714f03dab5d402e5",
+    "DPI": 96,
+    "client_logical": [
+      540,
+      640
+    ],
+    "client_pixels": [
+      540,
+      640
+    ],
+    "observed": "Independently viewed fresh owned stopped Profiles frame: complete Import/Export and Profile recovery controls including Restore/Reset/Undo visible.",
+    "limits": "Content is scrolled; top Save/Load fields/buttons are outside the capture and the long footer is clipped. No full-form, full-footer or minimum-layout visual acceptance."
+  },
+  "integrity": {
+    "source_paths": 869,
+    "scripts": 90,
+    "consumed_copies_and_private_runtime": "PASS",
+    "both_recorded_final_guards": "PASS",
+    "independent_current_source_runtime_check": "PASS",
+    "raw_records_preserved_unchanged": true
+  },
+  "limits": [
+    "Two bounded stopped no-DLL components; no single full19-control native aggregate accepted, and both raw failures remain unchanged.",
+    "Capture is scrolled; no whole-form, topSave/Load or entire-footer/minimum-layout pixel claim.",
+    "Synthetic worker sleep proves scheduling/order only, not real filesystem latency/performance.",
+    "Initial-failure, stale hidden-form and failed-write Quit variants are source/production-unit evidence rather than added native cases.",
+    "AppPreferences filesystem/registry and lifecycle I/O remain separate OPEN scope. Historical GUI-stall P1 cause/fix remains unproven and full Ultra parity incomplete.",
+    "No input-delivery, real-device, target-application isolation, broad display/hardware or performance claim."
+  ]
+}

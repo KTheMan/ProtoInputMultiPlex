@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "crate": "accesskit",
+  "version": "0.24.1",
+  "declared_license": "MIT OR Apache-2.0",
+  "repository": "https://github.com/AccessKit/accesskit",
+  "repository_root": "https://github.com/AccessKit/accesskit",
+  "cargo_vcs_info": {
+    "git": {
+      "sha1": "a55d3e1a18bb9ef0e4bccc9083fb13c3e0ad8969"
+    },
+    "path_in_vcs": "common"
+  },
+  "files": [
+    {
+      "path": "LICENSE-MIT",
+      "upstream_path": "LICENSE-MIT",
+      "url": "https://raw.githubusercontent.com/AccessKit/accesskit/a55d3e1a18bb9ef0e4bccc9083fb13c3e0ad8969/LICENSE-MIT",
+      "bytes": 1023,
+      "sha256": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+    },
+    {
+      "path": "LICENSE-APACHE",
+      "upstream_path": "LICENSE-APACHE",
+      "url": "https://raw.githubusercontent.com/AccessKit/accesskit/a55d3e1a18bb9ef0e4bccc9083fb13c3e0ad8969/LICENSE-APACHE",
+      "bytes": 9723,
+      "sha256": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a"
+    },
+    {
+      "path": "LICENSE.chromium",
+      "upstream_path": "LICENSE.chromium",
+      "url": "https://raw.githubusercontent.com/AccessKit/accesskit/a55d3e1a18bb9ef0e4bccc9083fb13c3e0ad8969/LICENSE.chromium",
+      "bytes": 1559,
+      "sha256": "845022e0c1db1abb41a6ba4cd3c4b674ec290f3359d9d3c78ae558d4c0ed9308"
+    },
+    {
+      "path": "AUTHORS-NOTICE.txt",
+      "upstream_path": "AUTHORS",
+      "url": "https://raw.githubusercontent.com/AccessKit/accesskit/a55d3e1a18bb9ef0e4bccc9083fb13c3e0ad8969/AUTHORS",
+      "bytes": 346,
+      "sha256": "3bab8c36f6a85657504aaefb37c7ff34e29b8c917290f3d28a1f0920c992e502"
+    }
+  ],
+  "crate_authors": [
+    "The AccessKit contributors"
+  ]
+}

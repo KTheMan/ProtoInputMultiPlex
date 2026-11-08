@@ -1,0 +1,14 @@
+{
+  "date": "2026-10-14",
+  "review": "APPROVED_SOURCE_ONLY",
+  "file": "crates/protoinputmux/src/ui_script.rs",
+  "file_sha256": "5134ea2ff1258c8286fc8545eeba9783606b574e6e8113e68d26fbad6fb8e0fb",
+  "baseline_file": "runtime/idle-checkbox-diagnostic-20261014-203327/diagnostic1-source/ui_script.rs",
+  "baseline_sha256": "7781b590aae410921231cc24783e1328a1a47e5305b5c608150abe22b536713b",
+  "change": "Moved acknowledgement of an enabled clicked response ahead of post-click center-visibility geometry checks; expect_disabled branch remains earlier and unchanged.",
+  "diagnostic_trace": "runtime/acceptance-graph-idle-checkbox-diagnostic-20261014-204643/idle-trace.jsonl",
+  "diagnostic_trace_sha256": "33a4b0995b3a0329c86093a81f61cbfc7a3a9d51b69c515e80dddbf23dfa9b32",
+  "evidence": "Trace showed frame 129 clicked=true, changed=true, center_visible=false, script_observed=false, stored=5000; frame 142 retry clicked=true, changed=true, script_observed=true, stored=null.",
+  "safety_review": "The moved branch still requires clickable && awaiting_click && response.clicked(); expect_disabled handling returns before it. Center visibility remains the gate for staging future script clicks and scroll requests.",
+  "scope": "Only Script::observe acknowledgement ordering was reviewed. No Cargo build, application run, native acceptance, or runtime behavior claim."
+}

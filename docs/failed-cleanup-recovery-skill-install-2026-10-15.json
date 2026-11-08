@@ -1,0 +1,13 @@
+{
+  "result": "INSTALLED",
+  "source": "skills\\protoinputmux\\SKILL.md",
+  "destination": "C:\\Users\\Archform CAD Station\\.codex\\skills\\protoinputmux\\SKILL.md",
+  "old_sha256": "71aeb3a120014d9961cd5ade3ffcd2f3d61d4c27e05babb218a126ab7d79ce92",
+  "new_sha256": "aa6683ef3794e798c1328f016001ab68e0f380433fb58a83b10ef9df33094e63",
+  "yaml_sha256": "61c08546d1fafc09287f36c34a74766769d7462034a3eeabd33c999eb0fc16c3",
+  "source_review": "/root/recovery_review approved exact skill hash",
+  "scope": "Narrow recovery operational guidance; existing metadata preserved",
+  "source_quick_validate": "PASS",
+  "installed_quick_validate": "PASS",
+  "metadata_preserved": true
+}

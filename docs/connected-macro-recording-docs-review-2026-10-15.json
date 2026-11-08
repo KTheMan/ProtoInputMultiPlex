@@ -1,0 +1,27 @@
+{
+  "review": "Independent documentation review: connected Macro Studio recording",
+  "result": "approved",
+  "canonical_assessment_sha256": "820943add078ae60178ceed6acdb5187581d3a759c9650f992e51f7547a4a9fb",
+  "files_sha256": {
+    "docs/connected-macro-studio-plan.md": "7756de5370f0cbcd2da909ded129578d91f97ce11f7df855b93ebe9b62ca99f2",
+    "README.md": "77966a5c686030e1fb2cdb37433a823ed1ef307ba7d6873a548542ebc7b605dd",
+    "docs/connected-macro-recording-contract.md": "384a1e2990cded1599094d51e88f9df1a5d242212c4fd337672e02557ba0909d",
+    "docs/roadmap.md": "f6f648d9f316e786d7eaff5bb7650a70010e37b015464fa66d61280cd399fb7e",
+    "docs/validation.md": "565b18ece9987dd2eb18e06772bf2f3477335b4bb90da67f064a263603bae109",
+    "docs/agents.md": "6a9c1b30e74ca12d01b08fb51f9c648bfd97cc0ad779de98e70245a95ba4a947",
+    "docs/ultra-parity.md": "3cc75a060340053b152b7a674b77012aac49b1176fd7552cb377d72091801d38",
+    "skills/protoinputmux/SKILL.md": "5c03ea018e28d2c60802718bf78ba5d29448a4e80ceb0725529b0d777694b3a8"
+  },
+  "findings": [],
+  "correction_to_prior_source_review": "The earlier source-review note incorrectly described ReleaseAll as globally scoped. The final docs correctly distinguish agent_runtime Request::ReleaseAll, which cancels/releases only that connected client, from local session Request::ReleaseAll, which remains session-wide.",
+  "verified_claims": [
+    "Inspect is read-only and does not require the mutation grant; mutation commands require session-control and active permitted user.",
+    "Record Start requires an active allowed user, selected allowed target, idle lane and no held input for that user; holds on other users do not block it. Only the owning client can Stop, including after focus changes.",
+    "Recording covers only the owner client's successfully accepted logical actions, before output conversion; it excludes physical, manual, other-client and replicated inputs, and does not claim application consumption.",
+    "Batch preflight failures record no actions, but earlier successful batch members and partial text effects may remain delivered. Capacity is checked before emission; invalid/empty commit preserves the existing clip/revision.",
+    "The assessment scope is accurately bounded to six native groups, 14 named outcomes, 28 GUI receipts, three frames, two x64 targets and no i686 execution; the historical authoring/playback result remains separate.",
+    "The contract preserves pending-local editor fields when external ACK telemetry arrives, distinguishes working and committed clips, and states that discard does not undo already delivered target input.",
+    "Skill frontmatter and tool count remain consistent with the existing 23-tool surface; no new permission or tool is claimed."
+  ],
+  "limits": "Documentation/source-scope review only; native acceptance is represented by the canonical assessment and no broader Ultra parity is claimed."
+}

@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "crate": "accesskit_winit",
+  "version": "0.32.2",
+  "declared_license": "Apache-2.0",
+  "repository": "https://github.com/AccessKit/accesskit",
+  "repository_root": "https://github.com/AccessKit/accesskit",
+  "cargo_vcs_info": {
+    "git": {
+      "sha1": "1bbcf100942bac96c2c3a4a91cb67b0b20201a24"
+    },
+    "path_in_vcs": "platforms/winit"
+  },
+  "files": [
+    {
+      "path": "LICENSE-APACHE",
+      "upstream_path": "LICENSE-APACHE",
+      "url": "https://raw.githubusercontent.com/AccessKit/accesskit/1bbcf100942bac96c2c3a4a91cb67b0b20201a24/LICENSE-APACHE",
+      "bytes": 9723,
+      "sha256": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a"
+    },
+    {
+      "path": "AUTHORS-NOTICE.txt",
+      "upstream_path": "AUTHORS",
+      "url": "https://raw.githubusercontent.com/AccessKit/accesskit/1bbcf100942bac96c2c3a4a91cb67b0b20201a24/AUTHORS",
+      "bytes": 346,
+      "sha256": "3bab8c36f6a85657504aaefb37c7ff34e29b8c917290f3d28a1f0920c992e502"
+    }
+  ],
+  "source_notices": [
+    {
+      "path": "source-notices/src/lib.rs.NOTICE.txt",
+      "upstream_path": "platforms/winit/src/lib.rs",
+      "url": "https://raw.githubusercontent.com/AccessKit/accesskit/1bbcf100942bac96c2c3a4a91cb67b0b20201a24/platforms/winit/src/lib.rs",
+      "bytes": 547,
+      "sha256": "fb64274f602e0fa2b4e5e10c594484471d2426b956f42a008abc994b4a584bcb",
+      "cached_source_sha256": "cbe4ef8dde0a3aa3d9777e51f86eeff2eb4396e290ab5ea83494920b8005b631",
+      "extraction": "Unmodified leading source comment and following blank lines from the cached registry source."
+    },
+    {
+      "path": "source-notices/src/platform_impl/android.rs.NOTICE.txt",
+      "upstream_path": "platforms/winit/src/platform_impl/android.rs",
+      "url": "https://raw.githubusercontent.com/AccessKit/accesskit/1bbcf100942bac96c2c3a4a91cb67b0b20201a24/platforms/winit/src/platform_impl/android.rs",
+      "bytes": 152,
+      "sha256": "e02a5933ddb46e68f1d34c2bfddc703fb6b351f676de58a746303273d651f5a5",
+      "cached_source_sha256": "3bd0c85c8da3ed2dfaafc107616e9a72216dfae65c0dff2eec63c0ed841afae3",
+      "extraction": "Unmodified leading source comment and following blank lines from the cached registry source."
+    },
+    {
+      "path": "source-notices/src/platform_impl/macos.rs.NOTICE.txt",
+      "upstream_path": "platforms/winit/src/platform_impl/macos.rs",
+      "url": "https://raw.githubusercontent.com/AccessKit/accesskit/1bbcf100942bac96c2c3a4a91cb67b0b20201a24/platforms/winit/src/platform_impl/macos.rs",
+      "bytes": 151,
+      "sha256": "8f66c779519de460932950fc3240883b3d5dace439d9c024f05e7b1d5f9e46fd",
+      "cached_source_sha256": "9bb36fff123be11afadc7a7f8c09d2b8d04d3f091ad3f6bf23bec55ff933ebf1",
+      "extraction": "Unmodified leading source comment and following blank lines from the cached registry source."
+    },
+    {
+      "path": "source-notices/src/platform_impl/mod.rs.NOTICE.txt",
+      "upstream_path": "platforms/winit/src/platform_impl/mod.rs",
+      "url": "https://raw.githubusercontent.com/AccessKit/accesskit/1bbcf100942bac96c2c3a4a91cb67b0b20201a24/platforms/winit/src/platform_impl/mod.rs",
+      "bytes": 207,
+      "sha256": "66e6c75e5b8e11341febb9b5a63e55fe0004badf20f49c07a454f1e5a2ed6572",
+      "cached_source_sha256": "7bd9ce32dbdd50903add37e53af398d876d6d570f8b563aaeb57f2b728031aa7",
+      "extraction": "Unmodified leading source comment and following blank lines from the cached registry source."
+    },
+    {
+      "path": "source-notices/src/platform_impl/null.rs.NOTICE.txt",
+      "upstream_path": "platforms/winit/src/platform_impl/null.rs",
+      "url": "https://raw.githubusercontent.com/AccessKit/accesskit/1bbcf100942bac96c2c3a4a91cb67b0b20201a24/platforms/winit/src/platform_impl/null.rs",
+      "bytes": 152,
+      "sha256": "75025a5e33bcd50f747df3a7fc9a969f2f0cb7b5a098eee6a1e3bf6c481306f0",
+      "cached_source_sha256": "0bad7fd53d810d9076ef1cc6feef3e1e68930c26a0677a4fdb38ce36c8658c96",
+      "extraction": "Unmodified leading source comment and following blank lines from the cached registry source."
+    },
+    {
+      "path": "source-notices/src/platform_impl/unix.rs.NOTICE.txt",
+      "upstream_path": "platforms/winit/src/platform_impl/unix.rs",
+      "url": "https://raw.githubusercontent.com/AccessKit/accesskit/1bbcf100942bac96c2c3a4a91cb67b0b20201a24/platforms/winit/src/platform_impl/unix.rs",
+      "bytes": 152,
+      "sha256": "75025a5e33bcd50f747df3a7fc9a969f2f0cb7b5a098eee6a1e3bf6c481306f0",
+      "cached_source_sha256": "116c505a50fc7ba3c6eb9bc17d6c6dd6065082a8bc246e8889199d4153d1ece3",
+      "extraction": "Unmodified leading source comment and following blank lines from the cached registry source."
+    },
+    {
+      "path": "source-notices/src/platform_impl/windows.rs.NOTICE.txt",
+      "upstream_path": "platforms/winit/src/platform_impl/windows.rs",
+      "url": "https://raw.githubusercontent.com/AccessKit/accesskit/1bbcf100942bac96c2c3a4a91cb67b0b20201a24/platforms/winit/src/platform_impl/windows.rs",
+      "bytes": 151,
+      "sha256": "8f66c779519de460932950fc3240883b3d5dace439d9c024f05e7b1d5f9e46fd",
+      "cached_source_sha256": "7222ee5c2c519e5f1a195d9724f720ebf84fa6b6ac11547370f2fb66ec98417b",
+      "extraction": "Unmodified leading source comment and following blank lines from the cached registry source."
+    }
+  ],
+  "crate_authors": [
+    "The AccessKit contributors"
+  ],
+  "scope": "Immutable upstream root license/authors bytes at the cached crate VCS revision, plus verbatim cached source copyright and attribution headers. No crate, dependency, or compiled product source changes."
+}

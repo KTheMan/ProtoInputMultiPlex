@@ -1,0 +1,23 @@
+{
+  "date": "2026-10-14",
+  "group": "stable-ID visual replication graph",
+  "kind": "producer verification; independent acceptance remains separate",
+  "status": "PASS",
+  "exec_session": 63659,
+  "exit_code": 0,
+  "checks": [
+    "cargo fmt --all --check",
+    "cargo clippy --workspace --all-targets -- -D warnings",
+    "cargo test --workspace",
+    "cargo build -p protoinputmux",
+    "cargo build -p protoinputmux --target i686-pc-windows-msvc"
+  ],
+  "tests": {"mux_core":49,"mux_windows":2,"abi":3,"hit_test":2,"binary":7,"total":63},
+  "builds": {
+    "x64_sha256":"0314c494234a0e0e74d4e867c62813ddd1cb8051f65ab64495a93370a8a3b057",
+    "i686_sha256":"05ba4ad122ed4c28fa1eeb7491a598392f9364fba84d45dc00a1e62863cc8b4a"
+  },
+  "correction":"Independent native testing caught routing_graph Inspect waiting for an acknowledgement despite sending no request. Inspect now shares nonblocking drain/snapshot with routing_state. Apply drains queued events before revision selection. Startup still waits for initial configuration. A regression test invokes actual graph inspection without a controller or command acknowledgement.",
+  "ui_corrections":"Missing endpoint warnings truncate Unicode IDs by characters, avoiding a UTF-8 boundary panic. UI test observation scrolls clipped disabled controls into view and checks click capability as well as egui enabled status, since pinned Ouroboros disables its buttons using hover-only interaction. Disabled controls emit no test click. Direction arrowheads now clear the actual rectangular destination boundary instead of being obscured inside nodes.",
+  "scope":"These checks establish source/build verification only. Native delivery, visual controls, offline persistence and restoration require the independent acceptance assessment. Hardware and RustDesk input are not used."
+}

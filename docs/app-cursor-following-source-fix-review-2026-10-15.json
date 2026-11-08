@@ -1,0 +1,35 @@
+{
+  "decision": "APPROVED — SOURCE REPAIR ONLY",
+  "frozen_producer_path": "runtime/producer-app-cursor-following-20261015-035509/verification.json",
+  "producer_status_at_review": "PASS",
+  "changed_source": {
+    "path": "crates/cursor-observer/src/lib.rs",
+    "sha256": "1fbb833945ec494682b65153ea914e60f83a8e0518558341e9e833d18c416f67"
+  },
+  "other_frozen_inputs_unchanged": 80,
+  "baseline": {
+    "producer_path": "runtime/producer-app-cursor-following-20261015-034749/verification.json",
+    "producer_sha256": "8f3e183a41ea3fb2662be9f8a0babe3ad21c072fdbd233664ec56e486507b887",
+    "observer_source_sha256": "0b846f16223984630935660d1c3a5751a8ba8f49f974cc6fa9240d212e4ef83c"
+  },
+  "failed_native_evidence": {
+    "path": "runtime/acceptance-app-cursor-main-20261015-035118/evidence.json",
+    "sha256": "07d6b597f5cf9874293eed6d10239f0851e9373dda19a6a2349ad7229ec8eaa5"
+  },
+  "resolved_cause": [
+    "Production receive_latest snapshots RequestClock after the actual receive callback/Condvar wait and pending take, so wake-arriving work is no longer compared to an obsolete pre-wait generation.",
+    "A valid retry survives a busy publication mutex when no newer work replaces it. Stale retry generations remain discarded.",
+    "Frame::empty converts missing-payload STATUS_VALID to protocol-valid UNSUPPORTED fallback. A later pending payload for the same request is still processed.",
+    "Stop frame uses the post-receive request; the already-reviewed Start/STOPPED-publication lifecycle gate is retained."
+  ],
+  "regressions_reviewed": [
+    "notification_arriving_during_receive_uses_post_wake_generation uses the production receive helper with a deterministic clock mutation during receive; it does not claim actual threaded Condvar scheduling coverage.",
+    "incomplete_capture_is_fallback_instead_of_valid_without_payload uses production Frame::empty and the actual SnapshotHeader validator."
+  ],
+  "material_findings": [],
+  "limits": [
+    "Source approval only; final mandatory producer and real native gate remain required.",
+    "No native retries, apps, Cargo or product writes by this reviewer.",
+    "Busy-OS-mutex retry preservation is source-reviewed, not a forced native provider race. Existing failed raw and initial source reviews remain unchanged."
+  ]
+}

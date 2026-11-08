@@ -1,0 +1,10 @@
+{
+  "assessment": "BOUNDED_ACCEPTANCE",
+  "feature": "Magnifier compact controls and app-local Alt+B/Alt+U",
+  "date": "2026-10-21",
+  "evidence": "runtime/magnifier-controls-ui-attempt004/evidence.json",
+  "independent_review": "runtime/magnifier-controls-ui-attempt004-review.json",
+  "observed": "With two owned virtual probes, the GUI's normal and compact Mode popup accepted actual Tab/Enter and MenuItem choices, then stopped Save committed Lens and restored Off before routing. Eight app-local Alt+B/Alt+U receipts toggled selected-user border and auto-refresh drafts; four exact Apply ACKs and read-only MCP Inspect checks confirmed A/B isolation and restoration with no Off-mode capture. All 50 GUI actions completed and ordinary Stop and owned-process cleanup passed.",
+  "prior_attempts": "Native Magnifier attempts001, 002, and 003 remain FAIL with their raw evidence preserved. Runner oracle and display corrections were reviewed before the fresh passing attempt004; those failed runs were not relabeled.",
+  "limits": "This validates one bounded app-local virtual-device workflow, not magnifier image pixels, real hardware, arbitrary target applications, desktop-wide routing, or same-process multi-user isolation. The separate historical intermittent GUI-stall P1 remains OPEN."
+}

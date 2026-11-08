@@ -1,0 +1,144 @@
+{
+  "decision": "ACCEPTED_BOUNDED_GROUP",
+  "independent_approval": true,
+  "reviewer": "independent broker_source_review",
+  "reviewed_at_utc": "2026-10-22T05:40:00.283650+00:00",
+  "group": "cursor_settings_coherence",
+  "original_execution": {
+    "session_id": 76210,
+    "initial_tool_chunk": "05d94f",
+    "terminal_tool_chunk": "385dd8",
+    "exit_code": 0,
+    "provenance": "Root-supplied original execution identity; independently checked saved artifacts. Reviewer did not execute or replay the cohort."
+  },
+  "raw_evidence": {
+    "path": "runtime/producer-cursor-settings-coherence-20261021-attempt002/private-runtime/acceptance-graph-gpu-rasterization-ui-20261021-223611/evidence.json",
+    "sha256": "73354649543c347f3e901cec36ed8a98f20772e8c2b400bca0e41ac8e0cbf3cd",
+    "result": "PENDING_INDEPENDENT_ACCEPTANCE",
+    "preserved_unchanged": true
+  },
+  "source_review": {
+    "path": "runtime/cursor-settings-coherence-source-review-attempt002.json",
+    "sha256": "e4180fb8cf793c980cc6ca6b549e695f03f2e364ba452040f81b8e0b99f0b34d"
+  },
+  "producer": {
+    "path": "runtime/producer-cursor-settings-coherence-20261021-attempt002/verification.json",
+    "sha256": "03727ce16b43857aa82d8dbe6a86f10c2343b24d64d037c98b6a2e58f3cf60b6",
+    "result": "PASS",
+    "test_totals": {
+      "passed": 527,
+      "failed": 0,
+      "ignored": 1
+    }
+  },
+  "producer_review": {
+    "path": "runtime/cursor-settings-coherence-producer-review.json",
+    "sha256": "e88282d1f64a5e3ebd88d330a63f40b7ffb3537908e47d9385c7bdeefc4daeca"
+  },
+  "driver_review": {
+    "path": "runtime/cursor-settings-coherence-ui-review.json",
+    "sha256": "8d218dd6afcc2bb41a39af92289eddf08801b6efe4bfdfd347d0d0eed3556f04"
+  },
+  "driver_hashes": {
+    "parent": "10b3c6f0f1a357a6e4ca2a24d7925e0b7701efc5ad47c6942f5791f3c3b89267",
+    "child": "e901965f6892d5b37a4b1055ce6369aef324cc709dbaad726c3c318f479b84f7"
+  },
+  "scope": {
+    "native_GUI_architecture": "x64",
+    "GUI": 1,
+    "owned_target_probes": 2,
+    "virtual_pairs": 2,
+    "worker_cycles": 1,
+    "connected_MCP_client_processes": 1,
+    "standalone_discovery_MCP_processes": 1,
+    "actual_MCP_processes_total": 2,
+    "MCP_settings_mutations": 2,
+    "local_cursor_settings_apply": 1,
+    "accepted_real_controls_and_samples": 27,
+    "fresh_independently_viewed_captures": 1,
+    "routing_input_calls": 0,
+    "input_delivery_claim": false
+  },
+  "accepted_behavior": [
+    "Clean user0 draft synchronizes complete MCP-applied GDI settings; full profile differs from baseline only in that cursor object.",
+    "Auto local draft and original size28 remain after external complete GDI settings size30; applied model advances, conflict true, pending/error null.",
+    "Actual Use applied settings control restores the complete latest acknowledged GDI/size30 cursor policy, clears conflict, and preserves other user/profile fields.",
+    "Local Auto Apply settles with exact typed Cursor settings applied. status, no pending/error/conflict, applied model Auto/size30, and independent worker routing_state full-settings readback. Native status/model checks are grounded in reviewed typed-correlation dispatch; stale/mismatched/generic ACK rejection is source/unit covered.",
+    "All full-profile and per-user worker-settings comparisons preserve user1 and every unrelated field. Final saved full profile equals the initial full profile with only user0 size28 to30; renderer returns to initial Auto.",
+    "Stop callback requires neutral probes, known overlay absence and original worker handle exit0; connected MCP EOF is journaled before the callback waits for descriptor absence. No descriptor contents are read by this assessment.",
+    "Every journaled mutation completed acknowledged once. Normal actual menu Quit exits GUI0, both probe WM_CLOSE exits0 and discovery/connected MCP EOF exits0. No forced cleanup or cleanup errors."
+  ],
+  "visual_review": {
+    "path": "cursor-settings-external-conflict.png",
+    "sha256": "708b4e1602278db617b464d3de9c0697f3b8a21096f45ffa956f7965e4ee481a",
+    "client_pixels": [
+      540,
+      520
+    ],
+    "DPI": 96,
+    "binding": "Saved capture hash and dimensions match accepted dirty-auto sample. Reviewed request-time owned-frame copier requires a new product frame after its request and exact owned-window geometry.",
+    "observed": "Owned Cursor User1 Overlay page in Routing state; selector reads Auto GPU drawing; full Applied settings changed; draft kept. warning; complete Use applied settings and Apply cursor settings buttons visible inside reserved footer.",
+    "limits": "Lower scrollable form is clipped normally. No claim that entire form or arbitrary minimum-size layouts are visible in this native capture."
+  },
+  "cleanup": {
+    "worker": {
+      "pid": 71052,
+      "exit_code": 0,
+      "original_handle_signaled": true
+    },
+    "GUI_and_probes": [
+      {
+        "pid": 168420,
+        "exit_code": 0
+      },
+      {
+        "pid": 141788,
+        "exit_code": 0
+      },
+      {
+        "pid": 133856,
+        "exit_code": 0
+      }
+    ],
+    "MCP_processes": [
+      {
+        "pid": 19896,
+        "exit_code": 0
+      },
+      {
+        "pid": 149496,
+        "exit_code": 0
+      }
+    ],
+    "owned_processes_closed": true,
+    "forced_cleanup": false,
+    "cleanup_errors": [],
+    "evidence_basis": "Frozen accepted callbacks and retained handle/Popen receipts; no new process/window query or absence scan by reviewer."
+  },
+  "integrity": {
+    "recorded_final_integrity": "PASS",
+    "independent_rehash": "Current source868 with dynamic crate keyset, full scripts90, reviewed drivers/source/producer, both consumed app copies, ROOT/private/staged runtime exact10 all match.",
+    "raw_evidence_unchanged": true
+  },
+  "test_history": {
+    "first_required_producer": {
+      "path": "runtime/producer-cursor-settings-coherence-20261021-attempt001/verification.json",
+      "sha256": "6ea1c32afa2033e99f80a699690f3b99b9f73b687999721edaf720901e9c2422",
+      "result": "FAIL"
+    },
+    "unchanged_isolated_test": {
+      "path": "runtime/cursor-settings-coherence-isolated-script-test-20261021/execution.json",
+      "sha256": "75829821070ad7f6917f9dc16319c569681bb6873e48c034139e6109181d63d7",
+      "exit_code": 0
+    },
+    "interpretation": "First workspace failure remains FAIL. Source proves a preexisting test publication/consumption race repaired by test-only ordering. Original failing wait caller remains unknown; isolated pass is not a timing/root-cause classification."
+  },
+  "limits": [
+    "One focused virtual GUI/MCP state-coherence workflow; no routed key/mouse delivery, real-device, target-application isolation, performance or hardware acceptance.",
+    "Native coverage uses user0 settings changes and one selected page. Identity reorder/reset/stale ACK/wrong settings/other-user/periodic-keyboard behavior is backed by reviewed production-helper tests and required workspace checks, not a new native matrix.",
+    "Initial owned WM_NULL startup observation missed its200ms bound (~203ms); later real controls and advancing frames establish this workflow. It does not prove a persistent GUI stall or its cause.",
+    "UI phase diagnostics reach the existing64-record cap. Acceptance uses27 durable click events, matching accepted samples and final sample count27; no claim that all later phases were retained.",
+    "Saved ui.state can retain terminal historical rows; no state-file-cleared claim. Known overlay checks and retained original worker exit form the cleanup oracle.",
+    "Historical GUI stall P1 remains OPEN, cause/fix unproven; full Ultra parity remains incomplete."
+  ]
+}

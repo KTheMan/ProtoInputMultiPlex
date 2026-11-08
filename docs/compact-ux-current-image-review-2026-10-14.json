@@ -1,0 +1,46 @@
+{
+  "result": "NOT ACCEPTED for complete compact UX group; bounded offline subgroups accepted",
+  "image_sha256": {
+    "x64": "f3f901e32a74303050c7a748619c1683102ffe4984ea792419eaed0b9d28c960",
+    "i686": "bffe4169002d5828077d2a14651eb908f7ba534ec2fd40dffaefcd611c292718"
+  },
+  "architecture_scope": "Only current x64 GUI launched; current i686 copied but unused. No workers/probes/MCP/native routing launched.",
+  "subgroups": [
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-compact-ux-short-20261014-175723\\evidence.json",
+      "original_status": "PENDING INDEPENDENT VISUAL REVIEW",
+      "observations": 4,
+      "independent_review": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-compact-ux-short-20261014-175723\\independent-visual-review.json",
+      "scope": "Home bounds/manual resize/selection navigation PASS"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-compact-ux-long-forms-20261014-175820\\evidence.json",
+      "original_status": "PENDING INDEPENDENT VISUAL REVIEW",
+      "observations": 12,
+      "independent_review": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-compact-ux-long-forms-20261014-175820\\independent-visual-review.json",
+      "scope": "Controls/bounds/profile preservation PASS; wide chord alignment NOT ACCEPTED"
+    }
+  ],
+  "retained_failed_attempts": [
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-compact-ux-short-20261014-175145\\evidence.json",
+      "result": "NOT ACCEPTED",
+      "reason": "Partial PNG read race;0acceptedcontrols"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-compact-ux-short-20261014-175416\\evidence.json",
+      "result": "NOT ACCEPTED",
+      "reason": "Live independent review wait expired;0acceptedcontrols"
+    }
+  ],
+  "remaining": [
+    "Wide-form fixed-column alignment",
+    "Full compact UX cleanliness/familiarity not claimed",
+    "Same-image shared routing dispatch not run; parent requested slot returned before lifecycle tails"
+  ],
+  "reference": {
+    "url": "https://www.mousemux.com/pages/manual/",
+    "correction": "Official modes are progressively disclosed. Hidden modes alone is not a proven fidelity gap; grouping and affordance remain design observations."
+  },
+  "cleanup": "Both current offline GUI runs closed their owned processes; startup test GUID keys removed by driver."
+}

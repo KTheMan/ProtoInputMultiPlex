@@ -1,0 +1,39 @@
+{
+  "decision": "APPROVED",
+  "date": "2026-10-15",
+  "scope": "Bounded review of motion-coalescing documentation, skill guidance, canonical assessment and copied originals against the approved source/native/GUI evidence. No source, app, Cargo or installed-skill changes.",
+  "material_findings": [],
+  "notes": [
+    "Claims preserve the original native aggregate as NOT ACCEPTED and describe only its approved baseline/count prefix plus separately reviewed missing-only tail.",
+    "Native count/endpoints, barriers, timer, invalid settings and lifecycle claims are bounded to the recorded virtual x64 owned-target runs; no latency benchmark, hardware, x86 execution, broad compatibility or full Ultra parity is claimed.",
+    "GUI claims match the 14-observation stopped-GUI evidence and two reviewed images; Save is fresh, image request freshness and complete layout/accessibility coverage are not claimed.",
+    "Skill paragraph gives actionable config bounds and flush/error caveats, directs callers to preserve full settings and inspect older-build schema."
+  ],
+  "reviewed_files": {
+    "docs/agents.md": "017de43e6746c44f3ed049ba6b5a504c7d6bd9dc2272b1683514e76227bdee90",
+    "docs/ultra-parity.md": "f87b7a6404179258dc274c6b8d56a3308035831e8bd50a76d8683c5505465eff",
+    "docs/motion-coalescing-contract.md": "3d0786f67467631dd2e14c7555c721d6d6c78dab8b9a8358ba4738918860dffc",
+    "docs/motion-coalescing-minimum.png": "1f1aea42aff51c0d229c8357b6f0cdc9f31b2484a7cd3925e4e295ab30b216d3",
+    "docs/validation.md": "49b33b2921f9255227ca504aac9b34cf559e1edb01acb70faf5b9c8bd1a0b42f",
+    "skills/protoinputmux/SKILL.md": "7c46aecd8ea3083afd2b3407f93b4d60192eea13b144574d5f18ea13c46a2ef1",
+    "docs/roadmap.md": "5566a53df4ec2adec3aba9f1554917b8401ef15c0d02eb56c115533bc1e7a99e",
+    "docs/motion-coalescing-normal.png": "a75a5a1df92938afc3c7cebb51929553fe007c5b8ae0b2d0b342f87bcfcf093e",
+    "README.md": "087e91d976e009b4c13521d53b94c0fa9923dc33dae29227b75639df5ed9544a",
+    "docs/motion-coalescing-assessment-2026-10-15.json": "6f5bd7d0e92d5c0893dd35933a0e397a1dcdef71d35c2a5b420985ad6c6a8d0b"
+  },
+  "reviewed_images": {
+    "docs/motion-coalescing-minimum.png": "1f1aea42aff51c0d229c8357b6f0cdc9f31b2484a7cd3925e4e295ab30b216d3",
+    "docs/motion-coalescing-normal.png": "a75a5a1df92938afc3c7cebb51929553fe007c5b8ae0b2d0b342f87bcfcf093e"
+  },
+  "evidence": {
+    "gui_raw_sha256": "a37cb0bde2e3428893ed76c225267d4a32a985d7ffe84af67db843d7608ba63c",
+    "source_review_sha256": "a92c7aecc110dd025387959c068e47b0b486d2e1fd61d639dee17a4da913fa91",
+    "gui_review_sha256": "acdc9be0325ea38fa1c527ee901e4cdc502672ed2854dc88100bb5ecc7de11cc",
+    "native_tail_review_sha256": "ca15b65b3e9610d99750f14526daad4787da195d05ca39871186327b1e07adee",
+    "native_prefix_raw_sha256": "67c9fb43d5eddf1f185bd0455ea220d8c3aafafdab0986c10528df766ad48ce3",
+    "producer_verification_sha256": "e6be400792fcb1e7ae07a36d09ef69933ce46e7db992a7b8d5625a6d12875a05",
+    "native_tail_raw_sha256": "dad255d5a4192ae8c052739c9b55dfbb6482f1cd8258ae447d0cbe84e10d2f88",
+    "assessment_sha256": "6f5bd7d0e92d5c0893dd35933a0e397a1dcdef71d35c2a5b420985ad6c6a8d0b",
+    "native_prefix_review_sha256": "d3edceeb6fcfcabd04ff9895fd2567635daace0258f02232910143ecb3188f9c"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "review": "Independent source review: compact utility-page UX and attachment status lifecycle",
+  "date": "2026-10-15",
+  "result": "approved_source_only",
+  "baseline_manifest": "runtime/productivity-ux-base/root-baseline.json",
+  "contract": "runtime/productivity-ux-contract.md",
+  "files": [
+    {
+      "path": "crates/protoinputmux/src/gui.rs",
+      "baseline": "runtime/productivity-ux-base/gui.rs",
+      "baseline_sha256": "687068dc345d8d38efc282ab94de782032731da1428b493c72962ca08e28b91a",
+      "current_sha256": "2781889d8ab535856dafee640fcd818f676ff25382cee6f0f420ea328acc5d6f"
+    },
+    {
+      "path": "crates/protoinputmux/src/session.rs",
+      "baseline": "runtime/productivity-ux-base/session.rs",
+      "baseline_sha256": "32d6e7df5049f01470ff46f27fa0485aa4667fe7a083ba25178b99d513d27514",
+      "current_sha256": "df0ec1555ff97cbd574b1e7c52981ed2b2f001060b3618e727e63c1cebf1757e"
+    },
+    {
+      "path": "crates/protoinputmux/src/desktop_router.rs",
+      "baseline": "runtime/productivity-ux-base/desktop_router.rs",
+      "baseline_sha256": "b95d7e7bbe2b18da29aa4b945f86b98945e31b86265967b9fbbf080b74281ed6",
+      "current_sha256": "5af01b65801151ec53c4721c764dd5a45cc8645decd5ad0e881637d00389876b"
+    }
+  ],
+  "findings": [],
+  "reviewed": [
+    "DesktopRouter emits matched attachment progress and completion/failure only around a new backend open; an existing open or cached PID failure is not reported as a new attempt.",
+    "Completion telemetry clears matching cached progress without being replayed to later subscribers, and does not clear pending worker deadlines.",
+    "GUI progress/failure notice remains independent of persistent command status and page-owned pending/error state; normal request acknowledgements retain their existing handling.",
+    "Failed backend opens are cached for the session and may reflect partial native setup; event text should describe the backend open attempt, not target-side input consumption.",
+    "Rechecked the GUI against its UTF-8 baseline after restoration: non-ASCII code-point counts match exactly (including middle dots, multiplication signs, ellipses, arrow, and disclosure triangles), with no replacement characters; the diff contains only the documented attachment lifecycle, compact utility sizing, and focused regression-test changes."
+  ],
+  "limitations": [
+    "Source review only; no Cargo checks or native acceptance claimed. Failed backend-open races and page-pending overlap remain unverified by native acceptance."
+  ]
+}

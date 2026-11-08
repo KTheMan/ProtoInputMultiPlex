@@ -1,0 +1,35 @@
+{
+  "decision": "PREPARED_SOURCE_APPROVED_PENDING_ROOT_READY",
+  "date": "2026-10-15",
+  "runner": {
+    "path": "scripts\\test-target-exit-recovery-acceptance.py",
+    "sha256": "ed13289c20af567f4c77fe191c3f629ca056c613055057a0465f853ed9d3cdb2",
+    "AST": "PASS"
+  },
+  "plan": {
+    "path": "runtime/p1-target-exit-acceptance-plan.md",
+    "sha256": "3f8e440723fc0ca4265ded8c39df71efb6c2ce1a177e28b34d5ddb999eb71e3a"
+  },
+  "source_fix_review": {
+    "path": "docs/target-exit-fix-source-review-2026-10-15.json",
+    "sha256": "5ea2cce555ad20f67a01ec52a65e58b0ee237a521324d03dcb24df19d93cecbc"
+  },
+  "read_only_preflight": {
+    "source_files": 64,
+    "producer": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-p1-target-exit-20261015-024710\\verification.json",
+    "producer_sha256": "c44632cd654b2a8d5312fd1a88a232856e38a593fd894a6c4a20012e0a0a55e6",
+    "binary_sha256": {
+      "x64": "b997f872799f13966cd5ffd5a176e7a69d9bf00429f0a644b875b98ee054e9b7",
+      "i686": "3854e339266c96cb36c37a945ac679f0c33544c5d465bba8c63a5ee08c17a677"
+    },
+    "all_three_prior_raw_reviews_guarded": true
+  },
+  "reviewed": [
+    "Explicit mutually exclusive recovery-acceptance mode is bound to final024710 producer/hash186 tests and both exact images. The executed preflight read only files and passed; no app/process launched.",
+    "Success flow remains four groups/nine GUI controls. Actual native source/target counters, target state, strict public-pipe tags and nonvacuous terminal cleanup are required.",
+    "Every image call is now one-shot optional metadata/copy, with no waiting, resizing, freshness predicate or frame count requirement. It cannot skip A closure merely because no PNG is available. No pixel/phase-freshness claim.",
+    "Policy ACK ordering, robust JSON reads, no native phase replay on unexpected IO, separate state snapshots, ordinary Stop UP and owned cleanup remain unchanged from reviewed corrections.",
+    "All three previous failed/diagnostic outcomes and source snapshots remain unchanged; raw new success awaits independent data review, not automatic P1 approval."
+  ],
+  "execution": "AST/helper/binding review plus file-only verify_frozen_inputs. No native apps/Cargo/product edits. Independent ROOT review/READY is still required."
+}

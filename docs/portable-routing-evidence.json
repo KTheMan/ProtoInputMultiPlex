@@ -1,0 +1,2003 @@
+{
+  "result": "PASS",
+  "scope": "Virtual-only standalone MCP routing from unmodified portable ZIP; owned native probe targets",
+  "archive_sha256": "59f66e2fea9ec7c0517c9b90fe028a2d5cd68c6ec8ed994af7201339e1e68a2e",
+  "phases": [
+    {
+      "name": "explicit-stop",
+      "result": "PASS",
+      "observations": {
+        "targets_ready": [
+          {
+            "pid": 78132,
+            "cursor": [
+              0,
+              590
+            ],
+            "test_keys": 0,
+            "buttons": 0,
+            "drag_moves": 0,
+            "wheel_events": 0,
+            "wheel_delta": 0.0,
+            "mouse_moves": 0,
+            "mouse_clicks": 0,
+            "key_presses": 0,
+            "sampled_test_key_presses": 0,
+            "frames": 155
+          },
+          {
+            "pid": 104176,
+            "cursor": [
+              0,
+              590
+            ],
+            "test_keys": 0,
+            "buttons": 0,
+            "drag_moves": 0,
+            "wheel_events": 0,
+            "wheel_delta": 0.0,
+            "mouse_moves": 0,
+            "mouse_clicks": 0,
+            "key_presses": 0,
+            "sampled_test_key_presses": 0,
+            "frames": 37
+          }
+        ],
+        "native_selection_clicks": [
+          {
+            "pid": 78132,
+            "cursor": [
+              188,
+              201
+            ],
+            "test_keys": 0,
+            "buttons": 0,
+            "drag_moves": 1,
+            "wheel_events": 0,
+            "wheel_delta": 0.0,
+            "mouse_moves": 1,
+            "mouse_clicks": 1,
+            "key_presses": 0,
+            "sampled_test_key_presses": 0,
+            "frames": 510
+          },
+          {
+            "pid": 104176,
+            "cursor": [
+              648,
+              201
+            ],
+            "test_keys": 0,
+            "buttons": 0,
+            "drag_moves": 1,
+            "wheel_events": 0,
+            "wheel_delta": 0.0,
+            "mouse_moves": 1,
+            "mouse_clicks": 1,
+            "key_presses": 0,
+            "sampled_test_key_presses": 0,
+            "frames": 398
+          }
+        ],
+        "target_module_audit": [
+          {
+            "pid": 78132,
+            "name": "ProtoInputHooks64.dll",
+            "path": "\\\\?\\E:\\Temp\\ProtoInputMux portable routing 9zldbjqr\\ProtoInputMux\\runtime\\ProtoInputHooks64.dll",
+            "expected": "E:\\Temp\\ProtoInputMux portable routing 9zldbjqr\\ProtoInputMux\\runtime\\ProtoInputHooks64.dll",
+            "sha256": "b9e6b84e71d0e595aa62bf92125518b7aed83c66b27b4df8ddc3f5ddab9fbec1"
+          },
+          {
+            "pid": 104176,
+            "name": "ProtoInputHooks32.dll",
+            "path": "\\\\?\\E:\\Temp\\ProtoInputMux portable routing 9zldbjqr\\ProtoInputMux\\runtime\\ProtoInputHooks32.dll",
+            "expected": "E:\\Temp\\ProtoInputMux portable routing 9zldbjqr\\ProtoInputMux\\runtime\\ProtoInputHooks32.dll",
+            "sha256": "4c1458e7ab495bed9a21ea53eb32dec991a291b12d2345d48381cbb826c73a77"
+          }
+        ],
+        "bundled_native_modules_loaded": {
+          "targets": [
+            {
+              "pid": 78132,
+              "name": "ProtoInputHooks64.dll",
+              "path": "\\\\?\\E:\\Temp\\ProtoInputMux portable routing 9zldbjqr\\ProtoInputMux\\runtime\\ProtoInputHooks64.dll",
+              "expected": "E:\\Temp\\ProtoInputMux portable routing 9zldbjqr\\ProtoInputMux\\runtime\\ProtoInputHooks64.dll",
+              "sha256": "b9e6b84e71d0e595aa62bf92125518b7aed83c66b27b4df8ddc3f5ddab9fbec1"
+            },
+            {
+              "pid": 104176,
+              "name": "ProtoInputHooks32.dll",
+              "path": "\\\\?\\E:\\Temp\\ProtoInputMux portable routing 9zldbjqr\\ProtoInputMux\\runtime\\ProtoInputHooks32.dll",
+              "expected": "E:\\Temp\\ProtoInputMux portable routing 9zldbjqr\\ProtoInputMux\\runtime\\ProtoInputHooks32.dll",
+              "sha256": "4c1458e7ab495bed9a21ea53eb32dec991a291b12d2345d48381cbb826c73a77"
+            }
+          ],
+          "workers": [
+            {
+              "pid": 100892,
+              "parent_pid": 101932,
+              "image": "E:\\Temp\\ProtoInputMux portable routing 9zldbjqr\\ProtoInputMux\\protoinputmux.exe",
+              "loader": {
+                "name": "ProtoInputLoader64.dll",
+                "path": "\\\\?\\E:\\Temp\\ProtoInputMux portable routing 9zldbjqr\\ProtoInputMux\\runtime\\ProtoInputLoader64.dll"
+              },
+              "sha256": "f6eb1cb4aa44f1bc37f8f39a74aab27215a8d4b14ce80aff7d1814d8b3841ab9"
+            }
+          ]
+        },
+        "switched_arbitration_independent_keyboard": [
+          {
+            "pid": 78132,
+            "cursor": [
+              188,
+              201
+            ],
+            "test_keys": 0,
+            "buttons": 1,
+            "drag_moves": 1,
+            "wheel_events": 0,
+            "wheel_delta": 0.0,
+            "mouse_moves": 1,
+            "mouse_clicks": 2,
+            "key_presses": 0,
+            "sampled_test_key_presses": 0,
+            "frames": 589
+          },
+          {
+            "pid": 104176,
+            "cursor": [
+              648,
+              201
+            ],
+            "test_keys": 8,
+            "buttons": 0,
+            "drag_moves": 1,
+            "wheel_events": 0,
+            "wheel_delta": 0.0,
+            "mouse_moves": 1,
+            "mouse_clicks": 1,
+            "key_presses": 1,
+            "sampled_test_key_presses": 1,
+            "frames": 476
+          }
+        ],
+        "release_all_while_hooks_active": [
+          {
+            "pid": 78132,
+            "cursor": [
+              188,
+              201
+            ],
+            "test_keys": 0,
+            "buttons": 0,
+            "drag_moves": 1,
+            "wheel_events": 0,
+            "wheel_delta": 0.0,
+            "mouse_moves": 1,
+            "mouse_clicks": 2,
+            "key_presses": 0,
+            "sampled_test_key_presses": 0,
+            "frames": 620
+          },
+          {
+            "pid": 104176,
+            "cursor": [
+              648,
+              201
+            ],
+            "test_keys": 0,
+            "buttons": 0,
+            "drag_moves": 1,
+            "wheel_events": 0,
+            "wheel_delta": 0.0,
+            "mouse_moves": 1,
+            "mouse_clicks": 1,
+            "key_presses": 1,
+            "sampled_test_key_presses": 1,
+            "frames": 508
+          }
+        ],
+        "concurrent_distinct_key_and_button_delivery": [
+          {
+            "pid": 78132,
+            "cursor": [
+              188,
+              201
+            ],
+            "test_keys": 1,
+            "buttons": 1,
+            "drag_moves": 1,
+            "wheel_events": 0,
+            "wheel_delta": 0.0,
+            "mouse_moves": 1,
+            "mouse_clicks": 3,
+            "key_presses": 1,
+            "sampled_test_key_presses": 1,
+            "frames": 683
+          },
+          {
+            "pid": 104176,
+            "cursor": [
+              648,
+              201
+            ],
+            "test_keys": 8,
+            "buttons": 1,
+            "drag_moves": 1,
+            "wheel_events": 0,
+            "wheel_delta": 0.0,
+            "mouse_moves": 1,
+            "mouse_clicks": 2,
+            "key_presses": 2,
+            "sampled_test_key_presses": 2,
+            "frames": 572
+          }
+        ],
+        "native_motion_drag_no_crossover": {
+          "reports": [
+            {
+              "pid": 78132,
+              "cursor": [
+                213,
+                219
+              ],
+              "test_keys": 1,
+              "buttons": 1,
+              "drag_moves": 2,
+              "wheel_events": 0,
+              "wheel_delta": 0.0,
+              "mouse_moves": 2,
+              "mouse_clicks": 3,
+              "key_presses": 1,
+              "sampled_test_key_presses": 1,
+              "frames": 715
+            },
+            {
+              "pid": 104176,
+              "cursor": [
+                648,
+                201
+              ],
+              "test_keys": 8,
+              "buttons": 1,
+              "drag_moves": 1,
+              "wheel_events": 0,
+              "wheel_delta": 0.0,
+              "mouse_moves": 1,
+              "mouse_clicks": 2,
+              "key_presses": 2,
+              "sampled_test_key_presses": 2,
+              "frames": 603
+            }
+          ],
+          "state": {
+            "agent_session": null,
+            "annotation": {
+              "acknowledged": false,
+              "error": null,
+              "export": null,
+              "overlay": null,
+              "revision": 1,
+              "users": [
+                {
+                  "open": false,
+                  "segments": 0,
+                  "settings": {
+                    "activator": "primary",
+                    "alpha": 255,
+                    "clear_all": false,
+                    "clear_key": null,
+                    "color": [
+                      96,
+                      165,
+                      250
+                    ],
+                    "tool": "off",
+                    "width": 6
+                  },
+                  "strokes": 0,
+                  "user": 0
+                },
+                {
+                  "open": false,
+                  "segments": 0,
+                  "settings": {
+                    "activator": "primary",
+                    "alpha": 255,
+                    "clear_all": false,
+                    "clear_key": null,
+                    "color": [
+                      248,
+                      113,
+                      113
+                    ],
+                    "tool": "off",
+                    "width": 6
+                  },
+                  "strokes": 0,
+                  "user": 1
+                }
+              ]
+            },
+            "automation": {
+              "acknowledged": false,
+              "clip": null,
+              "edges": [],
+              "error": null,
+              "graph_revision": 0,
+              "loaded_events": 0,
+              "playback": null,
+              "recorded_events": 0,
+              "recording": false,
+              "replication": {
+                "byte_capacity": 8388608,
+                "cancelled": 0,
+                "capacity": 4096,
+                "coalesced": 0,
+                "emitted": 0,
+                "error": null,
+                "pending_bytes": 0,
+                "pending_events": 0,
+                "pending_motion": 0,
+                "suspended": false
+              }
+            },
+            "graph": {
+              "definition": {
+                "edges": [],
+                "version": 1
+              },
+              "revision": 0
+            },
+            "identities": [
+              {
+                "active": true,
+                "clone_of": null,
+                "id": "legacy-81375dc078e65fcfd49a71995886db48",
+                "name": "Portable Blue",
+                "user": 0
+              },
+              {
+                "active": true,
+                "clone_of": null,
+                "id": "legacy-81375ec078e66182f0574a5c4e6c1ec8",
+                "name": "Portable Coral",
+                "user": 1
+              }
+            ],
+            "last_error": null,
+            "macro_studio": {
+              "acknowledged": false,
+              "error": null,
+              "users": [
+                {
+                  "clip": null,
+                  "keep_awake": false,
+                  "loaded_events": 0,
+                  "playback": null,
+                  "power": null,
+                  "recorded_events": 0,
+                  "recording": false,
+                  "revision": 0,
+                  "user": 0
+                },
+                {
+                  "clip": null,
+                  "keep_awake": false,
+                  "loaded_events": 0,
+                  "playback": null,
+                  "power": null,
+                  "recorded_events": 0,
+                  "recording": false,
+                  "revision": 0,
+                  "user": 1
+                }
+              ]
+            },
+            "magnifier": {
+              "acknowledged": false,
+              "error": null,
+              "export": null,
+              "users": [
+                {
+                  "capture_sequence": 0,
+                  "cursor": null,
+                  "frame_age_ms": null,
+                  "frame_cursor": null,
+                  "in_flight": false,
+                  "overlay": null,
+                  "settings": {
+                    "auto_refresh": true,
+                    "border": true,
+                    "border_color": [
+                      96,
+                      165,
+                      250
+                    ],
+                    "desktop_region": null,
+                    "dock": "right",
+                    "height": 240,
+                    "mode": "off",
+                    "monitor_id": null,
+                    "refresh_hz": 8,
+                    "source": "selected_target",
+                    "width": 320,
+                    "work_area": true,
+                    "zoom": 2.0
+                  },
+                  "source_bounds": null,
+                  "source_hwnd": null,
+                  "source_pid": null,
+                  "status": "Disabled",
+                  "user": 0
+                },
+                {
+                  "capture_sequence": 0,
+                  "cursor": null,
+                  "frame_age_ms": null,
+                  "frame_cursor": null,
+                  "in_flight": false,
+                  "overlay": null,
+                  "settings": {
+                    "auto_refresh": true,
+                    "border": true,
+                    "border_color": [
+                      248,
+                      113,
+                      113
+                    ],
+                    "desktop_region": null,
+                    "dock": "right",
+                    "height": 240,
+                    "mode": "off",
+                    "monitor_id": null,
+                    "refresh_hz": 8,
+                    "source": "selected_target",
+                    "width": 320,
+                    "work_area": true,
+                    "zoom": 2.0
+                  },
+                  "source_bounds": null,
+                  "source_hwnd": null,
+                  "source_pid": null,
+                  "status": "Disabled",
+                  "user": 1
+                }
+              ]
+            },
+            "output": {
+              "acknowledged": false,
+              "error": null,
+              "user": null,
+              "users": [
+                {
+                  "active": true,
+                  "settings": {
+                    "buttons": [
+                      {
+                        "type": "legacy"
+                      },
+                      {
+                        "type": "legacy"
+                      },
+                      {
+                        "type": "legacy"
+                      },
+                      {
+                        "type": "legacy"
+                      },
+                      {
+                        "type": "legacy"
+                      }
+                    ],
+                    "keys": {}
+                  },
+                  "user": 0
+                },
+                {
+                  "active": true,
+                  "settings": {
+                    "buttons": [
+                      {
+                        "type": "legacy"
+                      },
+                      {
+                        "type": "legacy"
+                      },
+                      {
+                        "type": "legacy"
+                      },
+                      {
+                        "type": "legacy"
+                      },
+                      {
+                        "type": "legacy"
+                      }
+                    ],
+                    "keys": {}
+                  },
+                  "user": 1
+                }
+              ]
+            },
+            "paused": false,
+            "running": true,
+            "user_settings": [
+              {
+                "settings": {
+                  "badge": null,
+                  "badge_position": "inline",
+                  "badge_shape": "rounded",
+                  "bounds_mode": "legacy",
+                  "button_mapping": [
+                    "primary",
+                    "secondary",
+                    "middle",
+                    "x1",
+                    "x2"
+                  ],
+                  "color": [
+                    96,
+                    165,
+                    250
+                  ],
+                  "horizontal_wheel": "ignore",
+                  "horizontal_wheel_emulation": "never",
+                  "horizontal_wheel_scale": 1.0,
+                  "idle_hide_ms": null,
+                  "invert_horizontal_wheel": false,
+                  "invert_wheel": false,
+                  "invert_x": false,
+                  "invert_y": false,
+                  "label": true,
+                  "label_font_size": 14.0,
+                  "label_position": "right",
+                  "lock_window": false,
+                  "monitor_id": null,
+                  "monitor_work_area": false,
+                  "motion_curve": "linear",
+                  "region": null,
+                  "shape": "arrow",
+                  "size": 28.0,
+                  "speed_x": 1.0,
+                  "speed_y": 1.0,
+                  "swap_buttons": false,
+                  "visible": true,
+                  "wheel_scale": 1.0
+                },
+                "user": 0
+              },
+              {
+                "settings": {
+                  "badge": null,
+                  "badge_position": "inline",
+                  "badge_shape": "rounded",
+                  "bounds_mode": "legacy",
+                  "button_mapping": [
+                    "primary",
+                    "secondary",
+                    "middle",
+                    "x1",
+                    "x2"
+                  ],
+                  "color": [
+                    248,
+                    113,
+                    113
+                  ],
+                  "horizontal_wheel": "ignore",
+                  "horizontal_wheel_emulation": "never",
+                  "horizontal_wheel_scale": 1.0,
+                  "idle_hide_ms": null,
+                  "invert_horizontal_wheel": false,
+                  "invert_wheel": false,
+                  "invert_x": false,
+                  "invert_y": false,
+                  "label": true,
+                  "label_font_size": 14.0,
+                  "label_position": "right",
+                  "lock_window": false,
+                  "monitor_id": null,
+                  "monitor_work_area": false,
+                  "motion_curve": "linear",
+                  "region": null,
+                  "shape": "arrow",
+                  "size": 28.0,
+                  "speed_x": 1.0,
+                  "speed_y": 1.0,
+                  "swap_buttons": false,
+                  "visible": true,
+                  "wheel_scale": 1.0
+                },
+                "user": 1
+              }
+            ],
+            "users": [
+              {
+                "bounds": {
+                  "bottom": 402,
+                  "left": 48,
+                  "right": 432,
+                  "top": 81
+                },
+                "buttons": [
+                  1
+                ],
+                "captured": true,
+                "client": [
+                  165,
+                  138
+                ],
+                "keyboard_pid": 78132,
+                "keys": [
+                  87
+                ],
+                "mode": "concurrent",
+                "movement_bounds": {
+                  "bottom": 1440,
+                  "left": 0,
+                  "right": 2560,
+                  "top": 0
+                },
+                "name": "Portable Blue",
+                "overlay": {
+                  "badge": null,
+                  "canvas_size": [
+                    121,
+                    36
+                  ],
+                  "click_through": true,
+                  "hotspot": [
+                    0,
+                    0
+                  ],
+                  "hwnd": 2820814,
+                  "idle_hidden": false,
+                  "label_truncated": false,
+                  "no_activate": true,
+                  "paint_generation": 1,
+                  "painted_pixels": 792,
+                  "pixel_hash": 13659629682447754368,
+                  "render_origin": [
+                    213,
+                    219
+                  ],
+                  "rendered_label": "Portable Blue",
+                  "shape": "arrow",
+                  "visible": true,
+                  "x": 213,
+                  "y": 219
+                },
+                "pid": 78132,
+                "root": false,
+                "status": "Concurrent \u00b7 ProtoInputMux Routing Test \u2014 PID 78132",
+                "title": "ProtoInputMux Routing Test \u2014 PID 78132"
+              },
+              {
+                "bounds": {
+                  "bottom": 402,
+                  "left": 508,
+                  "right": 892,
+                  "top": 81
+                },
+                "buttons": [
+                  1
+                ],
+                "captured": true,
+                "client": [
+                  140,
+                  120
+                ],
+                "keyboard_pid": 104176,
+                "keys": [
+                  68
+                ],
+                "mode": "concurrent",
+                "movement_bounds": {
+                  "bottom": 1440,
+                  "left": 0,
+                  "right": 2560,
+                  "top": 0
+                },
+                "name": "Portable Coral",
+                "overlay": {
+                  "badge": null,
+                  "canvas_size": [
+                    127,
+                    36
+                  ],
+                  "click_through": true,
+                  "hotspot": [
+                    0,
+                    0
+                  ],
+                  "hwnd": 3279918,
+                  "idle_hidden": false,
+                  "label_truncated": false,
+                  "no_activate": true,
+                  "paint_generation": 1,
+                  "painted_pixels": 793,
+                  "pixel_hash": 11013736757891541162,
+                  "render_origin": [
+                    648,
+                    201
+                  ],
+                  "rendered_label": "Portable Coral",
+                  "shape": "arrow",
+                  "visible": true,
+                  "x": 648,
+                  "y": 201
+                },
+                "pid": 104176,
+                "root": false,
+                "status": "Concurrent \u00b7 ProtoInputMux Routing Test \u2014 PID 104176",
+                "title": "ProtoInputMux Routing Test \u2014 PID 104176"
+              }
+            ],
+            "virtual_users": {
+              "acknowledged": false,
+              "error": null,
+              "revision": 0,
+              "slots": [
+                {
+                  "active": true,
+                  "clone_of": null,
+                  "seat": {
+                    "annotation": {
+                      "activator": "primary",
+                      "alpha": 255,
+                      "clear_all": false,
+                      "clear_key": null,
+                      "color": [
+                        96,
+                        165,
+                        250
+                      ],
+                      "tool": "off",
+                      "width": 6
+                    },
+                    "cursor": {
+                      "badge": null,
+                      "badge_position": "inline",
+                      "badge_shape": "rounded",
+                      "bounds_mode": "legacy",
+                      "button_mapping": [
+                        "primary",
+                        "secondary",
+                        "middle",
+                        "x1",
+                        "x2"
+                      ],
+                      "color": [
+                        96,
+                        165,
+                        250
+                      ],
+                      "horizontal_wheel": "ignore",
+                      "horizontal_wheel_emulation": "never",
+                      "horizontal_wheel_scale": 1.0,
+                      "idle_hide_ms": null,
+                      "invert_horizontal_wheel": false,
+                      "invert_wheel": false,
+                      "invert_x": false,
+                      "invert_y": false,
+                      "label": true,
+                      "label_font_size": 14.0,
+                      "label_position": "right",
+                      "lock_window": false,
+                      "monitor_id": null,
+                      "monitor_work_area": false,
+                      "motion_curve": "linear",
+                      "region": null,
+                      "shape": "arrow",
+                      "size": 28.0,
+                      "speed_x": 1.0,
+                      "speed_y": 1.0,
+                      "swap_buttons": false,
+                      "visible": true,
+                      "wheel_scale": 1.0
+                    },
+                    "desktop_start": null,
+                    "id": "legacy-81375dc078e65fcfd49a71995886db48",
+                    "keyboard": "virtual://keyboard/1",
+                    "magnifier": {
+                      "auto_refresh": true,
+                      "border": true,
+                      "border_color": [
+                        96,
+                        165,
+                        250
+                      ],
+                      "desktop_region": null,
+                      "dock": "right",
+                      "height": 240,
+                      "mode": "off",
+                      "monitor_id": null,
+                      "refresh_hz": 8,
+                      "source": "selected_target",
+                      "width": 320,
+                      "work_area": true,
+                      "zoom": 2.0
+                    },
+                    "mouse": "virtual://mouse/1",
+                    "name": "Portable Blue",
+                    "output": {
+                      "buttons": [
+                        {
+                          "type": "legacy"
+                        },
+                        {
+                          "type": "legacy"
+                        },
+                        {
+                          "type": "legacy"
+                        },
+                        {
+                          "type": "legacy"
+                        },
+                        {
+                          "type": "legacy"
+                        }
+                      ],
+                      "keys": {}
+                    },
+                    "target_pid": 0
+                  },
+                  "user": 0
+                },
+                {
+                  "active": true,
+                  "clone_of": null,
+                  "seat": {
+                    "annotation": {
+                      "activator": "primary",
+                      "alpha": 255,
+                      "clear_all": false,
+                      "clear_key": null,
+                      "color": [
+                        248,
+                        113,
+                        113
+                      ],
+                      "tool": "off",
+                      "width": 6
+                    },
+                    "cursor": {
+                      "badge": null,
+                      "badge_position": "inline",
+                      "badge_shape": "rounded",
+                      "bounds_mode": "legacy",
+                      "button_mapping": [
+                        "primary",
+                        "secondary",
+                        "middle",
+                        "x1",
+                        "x2"
+                      ],
+                      "color": [
+                        248,
+                        113,
+                        113
+                      ],
+                      "horizontal_wheel": "ignore",
+                      "horizontal_wheel_emulation": "never",
+                      "horizontal_wheel_scale": 1.0,
+                      "idle_hide_ms": null,
+                      "invert_horizontal_wheel": false,
+                      "invert_wheel": false,
+                      "invert_x": false,
+                      "invert_y": false,
+                      "label": true,
+                      "label_font_size": 14.0,
+                      "label_position": "right",
+                      "lock_window": false,
+                      "monitor_id": null,
+                      "monitor_work_area": false,
+                      "motion_curve": "linear",
+                      "region": null,
+                      "shape": "arrow",
+                      "size": 28.0,
+                      "speed_x": 1.0,
+                      "speed_y": 1.0,
+                      "swap_buttons": false,
+                      "visible": true,
+                      "wheel_scale": 1.0
+                    },
+                    "desktop_start": null,
+                    "id": "legacy-81375ec078e66182f0574a5c4e6c1ec8",
+                    "keyboard": "virtual://keyboard/2",
+                    "magnifier": {
+                      "auto_refresh": true,
+                      "border": true,
+                      "border_color": [
+                        248,
+                        113,
+                        113
+                      ],
+                      "desktop_region": null,
+                      "dock": "right",
+                      "height": 240,
+                      "mode": "off",
+                      "monitor_id": null,
+                      "refresh_hz": 8,
+                      "source": "selected_target",
+                      "width": 320,
+                      "work_area": true,
+                      "zoom": 2.0
+                    },
+                    "mouse": "virtual://mouse/2",
+                    "name": "Portable Coral",
+                    "output": {
+                      "buttons": [
+                        {
+                          "type": "legacy"
+                        },
+                        {
+                          "type": "legacy"
+                        },
+                        {
+                          "type": "legacy"
+                        },
+                        {
+                          "type": "legacy"
+                        },
+                        {
+                          "type": "legacy"
+                        }
+                      ],
+                      "keys": {}
+                    },
+                    "target_pid": 0
+                  },
+                  "user": 1
+                }
+              ]
+            }
+          }
+        },
+        "native_wheel_no_crossover": [
+          {
+            "pid": 78132,
+            "cursor": [
+              213,
+              219
+            ],
+            "test_keys": 1,
+            "buttons": 1,
+            "drag_moves": 2,
+            "wheel_events": 1,
+            "wheel_delta": 1.0,
+            "mouse_moves": 2,
+            "mouse_clicks": 3,
+            "key_presses": 1,
+            "sampled_test_key_presses": 1,
+            "frames": 777
+          },
+          {
+            "pid": 104176,
+            "cursor": [
+              648,
+              201
+            ],
+            "test_keys": 8,
+            "buttons": 1,
+            "drag_moves": 1,
+            "wheel_events": 1,
+            "wheel_delta": -1.0,
+            "mouse_moves": 1,
+            "mouse_clicks": 2,
+            "key_presses": 2,
+            "sampled_test_key_presses": 2,
+            "frames": 665
+          }
+        ],
+        "pause_releases_native_holds": [
+          {
+            "pid": 78132,
+            "cursor": [
+              213,
+              219
+            ],
+            "test_keys": 0,
+            "buttons": 0,
+            "drag_moves": 2,
+            "wheel_events": 1,
+            "wheel_delta": 1.0,
+            "mouse_moves": 2,
+            "mouse_clicks": 3,
+            "key_presses": 1,
+            "sampled_test_key_presses": 1,
+            "frames": 809
+          },
+          {
+            "pid": 104176,
+            "cursor": [
+              648,
+              201
+            ],
+            "test_keys": 0,
+            "buttons": 0,
+            "drag_moves": 1,
+            "wheel_events": 1,
+            "wheel_delta": -1.0,
+            "mouse_moves": 1,
+            "mouse_clicks": 2,
+            "key_presses": 2,
+            "sampled_test_key_presses": 2,
+            "frames": 695
+          }
+        ],
+        "native_holds_before_explicit_stop": [
+          {
+            "pid": 78132,
+            "cursor": [
+              213,
+              219
+            ],
+            "test_keys": 1,
+            "buttons": 1,
+            "drag_moves": 2,
+            "wheel_events": 1,
+            "wheel_delta": 1.0,
+            "mouse_moves": 2,
+            "mouse_clicks": 4,
+            "key_presses": 2,
+            "sampled_test_key_presses": 2,
+            "frames": 857
+          },
+          {
+            "pid": 104176,
+            "cursor": [
+              648,
+              201
+            ],
+            "test_keys": 8,
+            "buttons": 1,
+            "drag_moves": 1,
+            "wheel_events": 1,
+            "wheel_delta": -1.0,
+            "mouse_moves": 1,
+            "mouse_clicks": 3,
+            "key_presses": 3,
+            "sampled_test_key_presses": 3,
+            "frames": 743
+          }
+        ],
+        "explicit_stop_acknowledged": {
+          "state": {
+            "agent_session": null,
+            "annotation": null,
+            "automation": {
+              "acknowledged": false,
+              "clip": null,
+              "edges": [],
+              "error": null,
+              "graph_revision": 0,
+              "loaded_events": 0,
+              "playback": null,
+              "recorded_events": 0,
+              "recording": false,
+              "replication": {
+                "byte_capacity": 8388608,
+                "cancelled": 0,
+                "capacity": 4096,
+                "coalesced": 0,
+                "emitted": 0,
+                "error": null,
+                "pending_bytes": 0,
+                "pending_events": 0,
+                "pending_motion": 0,
+                "suspended": false
+              }
+            },
+            "graph": null,
+            "identities": [],
+            "last_error": null,
+            "macro_studio": null,
+            "magnifier": null,
+            "output": null,
+            "paused": false,
+            "running": false,
+            "user_settings": [],
+            "users": [],
+            "virtual_users": null
+          },
+          "scope": "EventStopped follows successful shutdown/fence on these ordinary probe pumps; per-recipient counts not exposed by MCP"
+        },
+        "post_shutdown_release_and_overlay_removal": {
+          "reports": [
+            {
+              "pid": 78132,
+              "cursor": [
+                0,
+                590
+              ],
+              "test_keys": 0,
+              "buttons": 0,
+              "drag_moves": 2,
+              "wheel_events": 1,
+              "wheel_delta": 1.0,
+              "mouse_moves": 2,
+              "mouse_clicks": 4,
+              "key_presses": 2,
+              "sampled_test_key_presses": 2,
+              "frames": 889
+            },
+            {
+              "pid": 104176,
+              "cursor": [
+                0,
+                590
+              ],
+              "test_keys": 0,
+              "buttons": 0,
+              "drag_moves": 1,
+              "wheel_events": 1,
+              "wheel_delta": -1.0,
+              "mouse_moves": 1,
+              "mouse_clicks": 3,
+              "key_presses": 3,
+              "sampled_test_key_presses": 3,
+              "frames": 775
+            }
+          ],
+          "overlays_exist": [
+            false,
+            false
+          ],
+          "scope": "Post-unhook API zeros are supplemental; explicit-stop ACK is the fence oracle. EOF does not independently expose fence acknowledgement."
+        },
+        "only_owned_targets_remain_after_session": [
+          {
+            "pid": 78132,
+            "parent_pid": 103160,
+            "image": "E:\\Temp\\ProtoInputMux portable routing 9zldbjqr\\ProtoInputMux\\protoinputmux.exe"
+          },
+          {
+            "pid": 104176,
+            "parent_pid": 103160,
+            "image": "E:\\Temp\\ProtoInputMux portable routing 9zldbjqr\\fixtures\\owned x86 probe.exe"
+          }
+        ]
+      },
+      "checks": [
+        "targets_ready",
+        "native_selection_clicks",
+        "bundled_native_modules_loaded",
+        "switched_arbitration_independent_keyboard",
+        "release_all_while_hooks_active",
+        "concurrent_distinct_key_and_button_delivery",
+        "native_motion_drag_no_crossover",
+        "native_wheel_no_crossover",
+        "pause_releases_native_holds",
+        "native_holds_before_explicit_stop",
+        "explicit_stop_acknowledged",
+        "post_shutdown_release_and_overlay_removal",
+        "only_owned_targets_remain_after_session"
+      ],
+      "allowed_pids": [
+        78132,
+        104176
+      ],
+      "owned_windows": [
+        {
+          "client": {
+            "bottom": 402,
+            "left": 48,
+            "right": 432,
+            "top": 81
+          },
+          "hwnd": 1707272,
+          "outer": {
+            "bottom": 410,
+            "left": 40,
+            "right": 440,
+            "top": 50
+          },
+          "pid": 78132,
+          "title": "ProtoInputMux Routing Test \u2014 PID 78132"
+        },
+        {
+          "client": {
+            "bottom": 402,
+            "left": 508,
+            "right": 892,
+            "top": 81
+          },
+          "hwnd": 7342692,
+          "outer": {
+            "bottom": 410,
+            "left": 500,
+            "right": 900,
+            "top": 50
+          },
+          "pid": 104176,
+          "title": "ProtoInputMux Routing Test \u2014 PID 104176"
+        }
+      ],
+      "mcp_exit_code": 0,
+      "mcp_stderr": "",
+      "probe_exit_codes": [
+        0,
+        0
+      ],
+      "forced_cleanup": [],
+      "remaining_owned_processes": []
+    },
+    {
+      "name": "eof-with-held-input",
+      "result": "PASS",
+      "observations": {
+        "targets_ready": [
+          {
+            "pid": 99480,
+            "cursor": [
+              1913,
+              841
+            ],
+            "test_keys": 0,
+            "buttons": 0,
+            "drag_moves": 0,
+            "wheel_events": 0,
+            "wheel_delta": 0.0,
+            "mouse_moves": 0,
+            "mouse_clicks": 0,
+            "key_presses": 0,
+            "sampled_test_key_presses": 0,
+            "frames": 71
+          },
+          {
+            "pid": 95728,
+            "cursor": [
+              1913,
+              841
+            ],
+            "test_keys": 0,
+            "buttons": 0,
+            "drag_moves": 0,
+            "wheel_events": 0,
+            "wheel_delta": 0.0,
+            "mouse_moves": 0,
+            "mouse_clicks": 0,
+            "key_presses": 0,
+            "sampled_test_key_presses": 0,
+            "frames": 37
+          }
+        ],
+        "native_selection_clicks": [
+          {
+            "pid": 99480,
+            "cursor": [
+              188,
+              201
+            ],
+            "test_keys": 0,
+            "buttons": 0,
+            "drag_moves": 1,
+            "wheel_events": 0,
+            "wheel_delta": 0.0,
+            "mouse_moves": 1,
+            "mouse_clicks": 1,
+            "key_presses": 0,
+            "sampled_test_key_presses": 0,
+            "frames": 421
+          },
+          {
+            "pid": 95728,
+            "cursor": [
+              648,
+              201
+            ],
+            "test_keys": 0,
+            "buttons": 0,
+            "drag_moves": 1,
+            "wheel_events": 0,
+            "wheel_delta": 0.0,
+            "mouse_moves": 1,
+            "mouse_clicks": 1,
+            "key_presses": 0,
+            "sampled_test_key_presses": 0,
+            "frames": 398
+          }
+        ],
+        "target_module_audit": [
+          {
+            "pid": 99480,
+            "name": "ProtoInputHooks64.dll",
+            "path": "\\\\?\\E:\\Temp\\ProtoInputMux portable routing 9zldbjqr\\ProtoInputMux\\runtime\\ProtoInputHooks64.dll",
+            "expected": "E:\\Temp\\ProtoInputMux portable routing 9zldbjqr\\ProtoInputMux\\runtime\\ProtoInputHooks64.dll",
+            "sha256": "b9e6b84e71d0e595aa62bf92125518b7aed83c66b27b4df8ddc3f5ddab9fbec1"
+          },
+          {
+            "pid": 95728,
+            "name": "ProtoInputHooks32.dll",
+            "path": "\\\\?\\E:\\Temp\\ProtoInputMux portable routing 9zldbjqr\\ProtoInputMux\\runtime\\ProtoInputHooks32.dll",
+            "expected": "E:\\Temp\\ProtoInputMux portable routing 9zldbjqr\\ProtoInputMux\\runtime\\ProtoInputHooks32.dll",
+            "sha256": "4c1458e7ab495bed9a21ea53eb32dec991a291b12d2345d48381cbb826c73a77"
+          }
+        ],
+        "bundled_native_modules_loaded": {
+          "targets": [
+            {
+              "pid": 99480,
+              "name": "ProtoInputHooks64.dll",
+              "path": "\\\\?\\E:\\Temp\\ProtoInputMux portable routing 9zldbjqr\\ProtoInputMux\\runtime\\ProtoInputHooks64.dll",
+              "expected": "E:\\Temp\\ProtoInputMux portable routing 9zldbjqr\\ProtoInputMux\\runtime\\ProtoInputHooks64.dll",
+              "sha256": "b9e6b84e71d0e595aa62bf92125518b7aed83c66b27b4df8ddc3f5ddab9fbec1"
+            },
+            {
+              "pid": 95728,
+              "name": "ProtoInputHooks32.dll",
+              "path": "\\\\?\\E:\\Temp\\ProtoInputMux portable routing 9zldbjqr\\ProtoInputMux\\runtime\\ProtoInputHooks32.dll",
+              "expected": "E:\\Temp\\ProtoInputMux portable routing 9zldbjqr\\ProtoInputMux\\runtime\\ProtoInputHooks32.dll",
+              "sha256": "4c1458e7ab495bed9a21ea53eb32dec991a291b12d2345d48381cbb826c73a77"
+            }
+          ],
+          "workers": [
+            {
+              "pid": 105292,
+              "parent_pid": 101560,
+              "image": "E:\\Temp\\ProtoInputMux portable routing 9zldbjqr\\ProtoInputMux\\protoinputmux.exe",
+              "loader": {
+                "name": "ProtoInputLoader64.dll",
+                "path": "\\\\?\\E:\\Temp\\ProtoInputMux portable routing 9zldbjqr\\ProtoInputMux\\runtime\\ProtoInputLoader64.dll"
+              },
+              "sha256": "f6eb1cb4aa44f1bc37f8f39a74aab27215a8d4b14ce80aff7d1814d8b3841ab9"
+            }
+          ]
+        },
+        "concurrent_distinct_key_and_button_delivery": [
+          {
+            "pid": 99480,
+            "cursor": [
+              188,
+              201
+            ],
+            "test_keys": 1,
+            "buttons": 1,
+            "drag_moves": 1,
+            "wheel_events": 0,
+            "wheel_delta": 0.0,
+            "mouse_moves": 1,
+            "mouse_clicks": 2,
+            "key_presses": 1,
+            "sampled_test_key_presses": 1,
+            "frames": 491
+          },
+          {
+            "pid": 95728,
+            "cursor": [
+              648,
+              201
+            ],
+            "test_keys": 8,
+            "buttons": 1,
+            "drag_moves": 1,
+            "wheel_events": 0,
+            "wheel_delta": 0.0,
+            "mouse_moves": 1,
+            "mouse_clicks": 2,
+            "key_presses": 1,
+            "sampled_test_key_presses": 1,
+            "frames": 477
+          }
+        ],
+        "post_shutdown_release_and_overlay_removal": {
+          "reports": [
+            {
+              "pid": 99480,
+              "cursor": [
+                1806,
+                915
+              ],
+              "test_keys": 0,
+              "buttons": 0,
+              "drag_moves": 1,
+              "wheel_events": 0,
+              "wheel_delta": 0.0,
+              "mouse_moves": 1,
+              "mouse_clicks": 2,
+              "key_presses": 1,
+              "sampled_test_key_presses": 1,
+              "frames": 523
+            },
+            {
+              "pid": 95728,
+              "cursor": [
+                1806,
+                915
+              ],
+              "test_keys": 0,
+              "buttons": 0,
+              "drag_moves": 1,
+              "wheel_events": 0,
+              "wheel_delta": 0.0,
+              "mouse_moves": 1,
+              "mouse_clicks": 2,
+              "key_presses": 1,
+              "sampled_test_key_presses": 1,
+              "frames": 508
+            }
+          ],
+          "overlays_exist": [
+            false,
+            false
+          ],
+          "scope": "Post-unhook API zeros are supplemental; explicit-stop ACK is the fence oracle. EOF does not independently expose fence acknowledgement."
+        },
+        "only_owned_targets_remain_after_session": [
+          {
+            "pid": 99480,
+            "parent_pid": 103160,
+            "image": "E:\\Temp\\ProtoInputMux portable routing 9zldbjqr\\ProtoInputMux\\protoinputmux.exe"
+          },
+          {
+            "pid": 95728,
+            "parent_pid": 103160,
+            "image": "E:\\Temp\\ProtoInputMux portable routing 9zldbjqr\\fixtures\\owned x86 probe.exe"
+          }
+        ]
+      },
+      "checks": [
+        "targets_ready",
+        "native_selection_clicks",
+        "bundled_native_modules_loaded",
+        "concurrent_distinct_key_and_button_delivery",
+        "post_shutdown_release_and_overlay_removal",
+        "only_owned_targets_remain_after_session"
+      ],
+      "allowed_pids": [
+        99480,
+        95728
+      ],
+      "owned_windows": [
+        {
+          "client": {
+            "bottom": 402,
+            "left": 48,
+            "right": 432,
+            "top": 81
+          },
+          "hwnd": 9767596,
+          "outer": {
+            "bottom": 410,
+            "left": 40,
+            "right": 440,
+            "top": 50
+          },
+          "pid": 99480,
+          "title": "ProtoInputMux Routing Test \u2014 PID 99480"
+        },
+        {
+          "client": {
+            "bottom": 402,
+            "left": 508,
+            "right": 892,
+            "top": 81
+          },
+          "hwnd": 3607728,
+          "outer": {
+            "bottom": 410,
+            "left": 500,
+            "right": 900,
+            "top": 50
+          },
+          "pid": 95728,
+          "title": "ProtoInputMux Routing Test \u2014 PID 95728"
+        }
+      ],
+      "mcp_exit_code": 0,
+      "mcp_stderr": "",
+      "probe_exit_codes": [
+        0,
+        0
+      ],
+      "forced_cleanup": [],
+      "remaining_owned_processes": []
+    }
+  ],
+  "hardware_or_rustdesk_input_used": false,
+  "harness_sha256": {
+    "test-portable-routing.py": "fe8b422d94924bba883102949926e50440b2bae9bd314111957945042174aa99",
+    "test-portable.py": "08d8326b6dbee78624c499e59db21ed586c899a003ac324a6848882db5e37689",
+    "test-portable-gui.py": "e2bcb9e8eb1cdceccec92307ca15143e7660290a229c087c99035402e8194a5e"
+  },
+  "disposable_root": "E:\\Temp\\ProtoInputMux portable routing 9zldbjqr",
+  "manifest_sha256": "ff834e1c9daa923963a3250797dc6e02634812f92c35c6b1330b38898cfb377c",
+  "application_sha256": "886da0c7b7ba2468f700446a976f4372d86d5d09721b55f40fd0a9e2e562d344",
+  "payload_hashes_before": {
+    "launch-gui.cmd": "3aa5c6b2829e466161851b6f0b957041118ee30f757785fdcbe978ad2d3bde51",
+    "launch-mcp.cmd": "93c230f8eb7418ad570c681bf8e89051b44841eaa300aa91cdb7f431639c1784",
+    "LICENSE": "1b26a3b874901e312b7522cbcf4f93efea5b8a9c5fcae7e45b74fed6936a5803",
+    "licenses/ProtoInput/lib/Blackbone/LICENSE": "a3df485039a6422df210eb0a1ea4327d6af2ad3efa4cbfdd7d3fc4319ef1fb4e",
+    "licenses/ProtoInput/lib/Blackbone/src/3rd_party/AsmJit/LICENSE.md": "d7296cf2691dc0b35779916648e42bf1bf633092d9cda0d7e2b2294c0b6a400b",
+    "licenses/ProtoInput/lib/Blackbone/src/3rd_party/rewolf-wow64ext/lgpl-3.0.txt": "ea7d049c7705dc13afc202dd18e1827f3484f8212fd3fa7b82fc4a0c363432c9",
+    "licenses/ProtoInput/lib/cereal/include/cereal/external/rapidxml/license.txt": "794bf3b2ecf5cf0c740ac6c524d66ce6284c4b1de1f983d21a242b8abbeb9720",
+    "licenses/ProtoInput/lib/cereal/LICENSE": "0b476cd1b1bacea6ebb7ae0d939d0ab9d5f8e6a1a8d358283e561abb165c7ae0",
+    "licenses/ProtoInput/lib/EasyHook/DriverShared/Disassembler/udis86-LICENSE.txt": "459a860bd2873bb8e35c7daec32c69a376789f35a5d4aa985b0a0194923ed6e8",
+    "licenses/ProtoInput/lib/EasyHook/LICENSE": "6de6ed90d9af409b875e3d393d575be387c6a52cc88cf1e2661e8e615b19b871",
+    "licenses/ProtoInput/lib/glew/auto/doc/credits.html": "6f934b28481a50f9919877b2e67b37363f6f6f5e023ed84d75ffc98835555e21",
+    "licenses/ProtoInput/lib/glew/auto/src/glew_license.h": "c6fa0357a9049c8cd7fc3f0c7dfb33b98a98917428b9107c46db03a9a2e9d788",
+    "licenses/ProtoInput/lib/glew/auto/src/khronos_license.h": "bd87649c90965a76d26831c16dc45f52e71c78d6f7d7fc518d8fcc5a7dcaf552",
+    "licenses/ProtoInput/lib/glew/auto/src/mesa_license.h": "aaf49f30eb323a54ee90b3c42a13b08591e8895fa28c07bf3fd349feae1527fa",
+    "licenses/ProtoInput/lib/glew/doc/credits.html": "e8e4f359c51f942bc091344de3869fa9b6659c5fb83ec60b19ba1afcb05197c1",
+    "licenses/ProtoInput/lib/glew/LICENSE.txt": "38a38de1748714672193f12c6412489a00ff65a61e1bd2da9f360db990d156cf",
+    "licenses/ProtoInput/lib/imgui/examples/libs/glfw/COPYING.txt": "3d63403fef9242cbfd31ce987464fffdc88a874685236c187b4a110978b31654",
+    "licenses/ProtoInput/lib/imgui/LICENSE.txt": "e06a3394ffbde6fee1ae1b6273d7f5cb2bbf1baa7074858ae00211210107c9cb",
+    "licenses/ProtoInput/LICENSE": "013797822a031d618679eba6a0ef7061381a0ab1565230a9a792342f1a5a30a8",
+    "licenses/rust/accesskit-0.24.1/AUTHORS-NOTICE.txt": "3bab8c36f6a85657504aaefb37c7ff34e29b8c917290f3d28a1f0920c992e502",
+    "licenses/rust/accesskit-0.24.1/LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+    "licenses/rust/accesskit-0.24.1/LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3",
+    "licenses/rust/accesskit-0.24.1/LICENSE.chromium": "845022e0c1db1abb41a6ba4cd3c4b674ec290f3359d9d3c78ae558d4c0ed9308",
+    "licenses/rust/accesskit-0.24.1/NOTICE-PROVENANCE.json": "723e25e1f6920708a2c52cc79c5c060119a459014332ce06a75654fd2ede294a",
+    "licenses/rust/adler2-2.0.1/LICENSE-0BSD": "861399f8c21c042b110517e76dc6b63a2b334276c8cf17412fc3c8908ca8dc17",
+    "licenses/rust/adler2-2.0.1/LICENSE-APACHE": "8ada45cd9f843acf64e4722ae262c622a2b3b3007c7310ef36ac1061a30f6adb",
+    "licenses/rust/adler2-2.0.1/LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3",
+    "licenses/rust/ahash-0.8.12/LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+    "licenses/rust/ahash-0.8.12/LICENSE-MIT": "0444c6991eead6822f7b9102e654448d51624431119546492e8b231db42c48bb",
+    "licenses/rust/anstream-1.0.0/LICENSE-APACHE": "c6596eb7be8581c18be736c846fb9173b69eccf6ef94c5135893ec56bd92ba08",
+    "licenses/rust/anstream-1.0.0/LICENSE-MIT": "6efb0476a1cc085077ed49357026d8c173bf33017278ef440f222fb9cbcb66e6",
+    "licenses/rust/anstyle-1.0.14/LICENSE-APACHE": "c6596eb7be8581c18be736c846fb9173b69eccf6ef94c5135893ec56bd92ba08",
+    "licenses/rust/anstyle-1.0.14/LICENSE-MIT": "6efb0476a1cc085077ed49357026d8c173bf33017278ef440f222fb9cbcb66e6",
+    "licenses/rust/anstyle-parse-1.0.0/LICENSE-APACHE": "c6596eb7be8581c18be736c846fb9173b69eccf6ef94c5135893ec56bd92ba08",
+    "licenses/rust/anstyle-parse-1.0.0/LICENSE-MIT": "6efb0476a1cc085077ed49357026d8c173bf33017278ef440f222fb9cbcb66e6",
+    "licenses/rust/anstyle-query-1.1.5/LICENSE-APACHE": "c6596eb7be8581c18be736c846fb9173b69eccf6ef94c5135893ec56bd92ba08",
+    "licenses/rust/anstyle-query-1.1.5/LICENSE-MIT": "6efb0476a1cc085077ed49357026d8c173bf33017278ef440f222fb9cbcb66e6",
+    "licenses/rust/anstyle-wincon-3.0.11/LICENSE-APACHE": "c6596eb7be8581c18be736c846fb9173b69eccf6ef94c5135893ec56bd92ba08",
+    "licenses/rust/anstyle-wincon-3.0.11/LICENSE-MIT": "6efb0476a1cc085077ed49357026d8c173bf33017278ef440f222fb9cbcb66e6",
+    "licenses/rust/anyhow-1.0.104/LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+    "licenses/rust/anyhow-1.0.104/LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3",
+    "licenses/rust/arboard-3.6.1/LICENSE-APACHE.txt": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594",
+    "licenses/rust/arboard-3.6.1/LICENSE-MIT.txt": "f35468024534e0f4f16bb94cd0e88c87fbd1314f919c2645a07d350fb77b40c0",
+    "licenses/rust/arrayvec-0.7.8/LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+    "licenses/rust/arrayvec-0.7.8/LICENSE-MIT": "4da95ec4ecb65b738d470b7d762894ad9c97da93e6cbfb18b570fc2c96f4b871",
+    "licenses/rust/autocfg-1.5.1/LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+    "licenses/rust/autocfg-1.5.1/LICENSE-MIT": "27995d58ad5c1145c1a8cd86244ce844886958a35eb2b78c6b772748669999ac",
+    "licenses/rust/base64-0.22.1/LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+    "licenses/rust/base64-0.22.1/LICENSE-MIT": "0dd882e53de11566d50f8e8e2d5a651bcf3fabee4987d70f306233cf39094ba7",
+    "licenses/rust/bitflags-2.13.2/LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+    "licenses/rust/bitflags-2.13.2/LICENSE-MIT": "6485b8ed310d3f0340bf1ad1f47645069ce4069dcc6bb46c7d5c6faf41de1fdb",
+    "licenses/rust/bytemuck-1.25.2/LICENSE-APACHE": "e3ba223bb1423f0aad8c3dfce0fe3148db48926d41e6fbc3afbbf5ff9e1c89cb",
+    "licenses/rust/bytemuck-1.25.2/LICENSE-MIT": "9df9ba60a11af705f2e451b53762686e615d86f76b169cf075c3237730dbd7e2",
+    "licenses/rust/bytemuck-1.25.2/LICENSE-ZLIB": "84b34dd7608f7fb9b17bd588a6bf392bf7de504e2716f024a77d89f1b145a151",
+    "licenses/rust/bytemuck_derive-1.12.1/LICENSE-APACHE": "e3ba223bb1423f0aad8c3dfce0fe3148db48926d41e6fbc3afbbf5ff9e1c89cb",
+    "licenses/rust/bytemuck_derive-1.12.1/LICENSE-MIT": "9df9ba60a11af705f2e451b53762686e615d86f76b169cf075c3237730dbd7e2",
+    "licenses/rust/bytemuck_derive-1.12.1/LICENSE-ZLIB": "84b34dd7608f7fb9b17bd588a6bf392bf7de504e2716f024a77d89f1b145a151",
+    "licenses/rust/byteorder-lite-0.1.0/LICENSE-MIT": "0f96a83840e146e43c0ec96a22ec1f392e0680e6c1226e6f3ba87e0740af850f",
+    "licenses/rust/byteorder-lite-0.1.0/UNLICENSE": "7e12e5df4bae12cb21581ba157ced20e1986a0508dd10d0e8a4ab9a4cf94e85c",
+    "licenses/rust/bytes-1.12.1/LICENSE": "45f522cacecb1023856e46df79ca625dfc550c94910078bd8aec6e02880b3d42",
+    "licenses/rust/cfg-if-1.0.5/LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+    "licenses/rust/cfg-if-1.0.5/LICENSE-MIT": "378f5840b258e2779c39418f3f2d7b2ba96f1c7917dd6be0713f88305dbda397",
+    "licenses/rust/cfg_aliases-0.2.2/LICENSE": "31b94860253d8ec7b4529f51901044d3b459d6292d996504a36b1bae3a36a812",
+    "licenses/rust/cfg_aliases-0.2.2/NOTICES.md": "1e2b7ade3fb228130408b9990cae6a7618eb314c75aa0b164bfe485d9d9756ee",
+    "licenses/rust/chrono-0.4.45/LICENSE.txt": "946c9835d8034d24404f8cfec5f4654cee5dad17e944afc3d06d742cf2882831",
+    "licenses/rust/clap-4.6.7/LICENSE-APACHE": "249fdb6694467dd615b259f7ddde07be3f8ae5a72cecebb0e24f6629af4215fe",
+    "licenses/rust/clap-4.6.7/LICENSE-MIT": "6efb0476a1cc085077ed49357026d8c173bf33017278ef440f222fb9cbcb66e6",
+    "licenses/rust/clap_builder-4.6.7/LICENSE-APACHE": "249fdb6694467dd615b259f7ddde07be3f8ae5a72cecebb0e24f6629af4215fe",
+    "licenses/rust/clap_builder-4.6.7/LICENSE-MIT": "6efb0476a1cc085077ed49357026d8c173bf33017278ef440f222fb9cbcb66e6",
+    "licenses/rust/clap_derive-4.6.7/LICENSE-APACHE": "249fdb6694467dd615b259f7ddde07be3f8ae5a72cecebb0e24f6629af4215fe",
+    "licenses/rust/clap_derive-4.6.7/LICENSE-MIT": "6efb0476a1cc085077ed49357026d8c173bf33017278ef440f222fb9cbcb66e6",
+    "licenses/rust/clap_lex-1.1.1/LICENSE-APACHE": "249fdb6694467dd615b259f7ddde07be3f8ae5a72cecebb0e24f6629af4215fe",
+    "licenses/rust/clap_lex-1.1.1/LICENSE-MIT": "6efb0476a1cc085077ed49357026d8c173bf33017278ef440f222fb9cbcb66e6",
+    "licenses/rust/clipboard-win-5.4.1/LICENSE": "c9bff75738922193e67fa726fa225535870d2aa1059f91452c411736284ad566",
+    "licenses/rust/clipboard-win-5.4.1/NOTICE-PROVENANCE.json": "ddedbf29c50ad8a2c9593662a0b9e4cbfbc9038b6babe0e98bcfcc597da2c01e",
+    "licenses/rust/color-0.3.3/LICENSE-APACHE": "a6cba85bc92e0cff7a450b1d873c0eaa2e9fc96bf472df0247a26bec77bf3ff9",
+    "licenses/rust/color-0.3.3/LICENSE-MIT": "508a77d2e7b51d98adeed32648ad124b7b30241a8e70b2e72c99f92d8e5874d1",
+    "licenses/rust/colorchoice-1.0.5/LICENSE-APACHE": "c6596eb7be8581c18be736c846fb9173b69eccf6ef94c5135893ec56bd92ba08",
+    "licenses/rust/colorchoice-1.0.5/LICENSE-MIT": "6efb0476a1cc085077ed49357026d8c173bf33017278ef440f222fb9cbcb66e6",
+    "licenses/rust/crc32fast-1.5.2/LICENSE-APACHE": "c6596eb7be8581c18be736c846fb9173b69eccf6ef94c5135893ec56bd92ba08",
+    "licenses/rust/crc32fast-1.5.2/LICENSE-MIT": "61d383b05b87d78f94d2937e2580cce47226d17823c0430fbcad09596537efcf",
+    "licenses/rust/cursor-icon-1.2.0/LICENSE-APACHE": "b59affd015e517ed998dd735757f9a3693643cd389609947ed54074234a10784",
+    "licenses/rust/cursor-icon-1.2.0/LICENSE-MIT": "c138726a726ac37bae09d0f8a48e74e8e3aa8a8952fcd10fae0fb224cc1c05f1",
+    "licenses/rust/cursor-icon-1.2.0/LICENSE-ZLIB": "01e533bd94e8f1c32b2c2531e2c398de7d35d7804add3d574b4e1fe581d53537",
+    "licenses/rust/darling-0.24.1/LICENSE": "8ea93490d74a5a1b1af3ff71d786271b3f1e5f0bea79ac16e02ec533cef040d6",
+    "licenses/rust/darling_core-0.24.1/LICENSE": "8ea93490d74a5a1b1af3ff71d786271b3f1e5f0bea79ac16e02ec533cef040d6",
+    "licenses/rust/darling_macro-0.24.1/LICENSE": "8ea93490d74a5a1b1af3ff71d786271b3f1e5f0bea79ac16e02ec533cef040d6",
+    "licenses/rust/displaydoc-0.2.7/LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+    "licenses/rust/displaydoc-0.2.7/LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3",
+    "licenses/rust/document-features-0.2.12/LICENSE-APACHE": "074e6e32c86a4c0ef8b3ed25b721ca23aca83df277cd88106ef7177c354615ff",
+    "licenses/rust/document-features-0.2.12/LICENSE-MIT": "aa893340d14b9844625be6a50ac644169a01b52f0211cbf81b09e1874c8cd81d",
+    "licenses/rust/dpi-0.1.2/LICENSE": "6dc0e068dcf3a5bc8e054205b85b7720e1d49265bbc64bf515d2cf79197df69a",
+    "licenses/rust/dpi-0.1.2/LICENSE-LIBM-MIT": "9eff396a99bafd208e7126602420d6864f6066c08b84485a5b032320a9c01997",
+    "licenses/rust/dyn-clone-1.0.20/LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+    "licenses/rust/dyn-clone-1.0.20/LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3",
+    "licenses/rust/ecolor-0.34.3/LICENSE-APACHE": "8173d5c29b4f956d532781d2b86e4e30f83e6b7878dce18c919451d6ba707c90",
+    "licenses/rust/ecolor-0.34.3/LICENSE-MIT": "95ca92f5f8ea5231f1580b3a2a799e8260af3114b900e1def5355a7f44bcf60c",
+    "licenses/rust/ecolor-0.34.3/NOTICE-PROVENANCE.json": "0dcb6bfbd5be490809942baa91fad30f14dcab81f164565973dcdc79a42f364d",
+    "licenses/rust/eframe-0.34.3/LICENSE-APACHE": "8173d5c29b4f956d532781d2b86e4e30f83e6b7878dce18c919451d6ba707c90",
+    "licenses/rust/eframe-0.34.3/LICENSE-MIT": "95ca92f5f8ea5231f1580b3a2a799e8260af3114b900e1def5355a7f44bcf60c",
+    "licenses/rust/eframe-0.34.3/NOTICE-PROVENANCE.json": "a1be76c6e7491a19ae65373df4bd3109e76301fd2eccf7baef48ecff8d27a430",
+    "licenses/rust/egui-0.34.3/LICENSE-APACHE": "8173d5c29b4f956d532781d2b86e4e30f83e6b7878dce18c919451d6ba707c90",
+    "licenses/rust/egui-0.34.3/LICENSE-MIT": "95ca92f5f8ea5231f1580b3a2a799e8260af3114b900e1def5355a7f44bcf60c",
+    "licenses/rust/egui-0.34.3/NOTICE-PROVENANCE.json": "ec704d42f570774cc9a442171603e1f542f55b53ed6e9f66809f447a2e353159",
+    "licenses/rust/egui-phosphor-0.12.0/LICENSE-APACHE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+    "licenses/rust/egui-phosphor-0.12.0/LICENSE-MIT": "dc440c2ee985a57add4a93b0b2bedaf5827cf6870573df51401f944cc9e4546e",
+    "licenses/rust/egui-winit-0.34.3/LICENSE-APACHE": "8173d5c29b4f956d532781d2b86e4e30f83e6b7878dce18c919451d6ba707c90",
+    "licenses/rust/egui-winit-0.34.3/LICENSE-MIT": "95ca92f5f8ea5231f1580b3a2a799e8260af3114b900e1def5355a7f44bcf60c",
+    "licenses/rust/egui-winit-0.34.3/NOTICE-PROVENANCE.json": "4abe20271b1168850c5f2eec02cd97bfe26a75b2118911501b9c67e63ee78272",
+    "licenses/rust/egui_extras-0.34.3/LICENSE-APACHE": "8173d5c29b4f956d532781d2b86e4e30f83e6b7878dce18c919451d6ba707c90",
+    "licenses/rust/egui_extras-0.34.3/LICENSE-MIT": "95ca92f5f8ea5231f1580b3a2a799e8260af3114b900e1def5355a7f44bcf60c",
+    "licenses/rust/egui_extras-0.34.3/NOTICE-PROVENANCE.json": "c1335de526e24938134f33dd1fa0239f60994a82cdc8c3903127eb01039d8a54",
+    "licenses/rust/egui_glow-0.34.3/LICENSE-APACHE": "8173d5c29b4f956d532781d2b86e4e30f83e6b7878dce18c919451d6ba707c90",
+    "licenses/rust/egui_glow-0.34.3/LICENSE-MIT": "95ca92f5f8ea5231f1580b3a2a799e8260af3114b900e1def5355a7f44bcf60c",
+    "licenses/rust/egui_glow-0.34.3/NOTICE-PROVENANCE.json": "3ef0e1c5560c9339de95698c369e1425c652e9c0d961a6cff5e4208f86a30202",
+    "licenses/rust/emath-0.34.3/LICENSE-APACHE": "8173d5c29b4f956d532781d2b86e4e30f83e6b7878dce18c919451d6ba707c90",
+    "licenses/rust/emath-0.34.3/LICENSE-MIT": "95ca92f5f8ea5231f1580b3a2a799e8260af3114b900e1def5355a7f44bcf60c",
+    "licenses/rust/emath-0.34.3/NOTICE-PROVENANCE.json": "3cb7b381c439ef9f4606bfdc46d6c11d70aba932a470969cc721af27865f7388",
+    "licenses/rust/enum-map-2.7.3/LICENSE-APACHE.txt": "074e6e32c86a4c0ef8b3ed25b721ca23aca83df277cd88106ef7177c354615ff",
+    "licenses/rust/enum-map-2.7.3/LICENSE-MIT.txt": "b85dcd3e453d05982552c52b5fc9e0bdd6d23c6f8e844b984a88af32570b0cc0",
+    "licenses/rust/enum-map-2.7.3/NOTICE-PROVENANCE.json": "19a94c72d3579c4858bec44cc73ff00724bc3986e509d9c2f928d2cbff0bf972",
+    "licenses/rust/enum-map-2.7.3/source-notices/src/arbitrary.rs.NOTICE.txt": "3bb2125a45f7a128246fb5946b48ff20b6226ad4b190c6fa36198e45896ec063",
+    "licenses/rust/enum-map-2.7.3/source-notices/src/enum_map_impls.rs.NOTICE.txt": "77fa957223570b4a857559dd78dc2e8743a76c4f4855461ec36f7365fed5e483",
+    "licenses/rust/enum-map-2.7.3/source-notices/src/internal.rs.NOTICE.txt": "4503a234e7576afbaacc4d58b2d981f1956091554603ad955dfcc905203d5c7e",
+    "licenses/rust/enum-map-2.7.3/source-notices/src/iter.rs.NOTICE.txt": "8518f618b95e04959f0c4b2e1d46101255c834e0b73eda79909e29df084403f8",
+    "licenses/rust/enum-map-2.7.3/source-notices/src/lib.rs.NOTICE.txt": "df24c632293fbfad49344efbbb53a82393b58e406be5f32ba116b62e6289b317",
+    "licenses/rust/enum-map-2.7.3/source-notices/src/serde.rs.NOTICE.txt": "1aaad0637aa28cfaff7c13a5adbe8af4fa0e1ff8c4e932dfbb370e907371befc",
+    "licenses/rust/enum-map-derive-0.17.0/LICENSE-APACHE.txt": "074e6e32c86a4c0ef8b3ed25b721ca23aca83df277cd88106ef7177c354615ff",
+    "licenses/rust/enum-map-derive-0.17.0/LICENSE-MIT.txt": "b85dcd3e453d05982552c52b5fc9e0bdd6d23c6f8e844b984a88af32570b0cc0",
+    "licenses/rust/enum-map-derive-0.17.0/NOTICE-PROVENANCE.json": "15bb438323e9c0674e58ed4da8b2cbd4af5f28f80d7f9e2160757f2f79dd3bd6",
+    "licenses/rust/enum-map-derive-0.17.0/source-notices/src/derive_enum.rs.NOTICE.txt": "3f1d722aff649f5508b0464c453c347bb8b06e2b07ff339b585b44a0b746f67c",
+    "licenses/rust/enum-map-derive-0.17.0/source-notices/src/derive_struct.rs.NOTICE.txt": "b34582a608a72785cc46e27e9d130e8922d4d9f3c4ec08a38e5994f874841251",
+    "licenses/rust/enum-map-derive-0.17.0/source-notices/src/lib.rs.NOTICE.txt": "c02aaebec9986faea6519f997e971d4237c6383bc59fa162353370cef3ff39c6",
+    "licenses/rust/epaint-0.34.3/LICENSE-APACHE": "8173d5c29b4f956d532781d2b86e4e30f83e6b7878dce18c919451d6ba707c90",
+    "licenses/rust/epaint-0.34.3/LICENSE-MIT": "95ca92f5f8ea5231f1580b3a2a799e8260af3114b900e1def5355a7f44bcf60c",
+    "licenses/rust/epaint-0.34.3/NOTICE-PROVENANCE.json": "c711418db222a62892dfde42b8fb139d11d425f0b0d6114d2a1cce5d8319f534",
+    "licenses/rust/epaint_default_fonts-0.34.3/fonts/emoji-icon-font-mit-license.txt": "b9d2c1d909aa149996fd4c91dcb92b2362a04431640c1d200959da94caf8cde1",
+    "licenses/rust/epaint_default_fonts-0.34.3/fonts/OFL.txt": "6a73f9541c2de74158c0e7cf6b0a58ef774f5a780bf191f2d7ec9cc53efe2bf2",
+    "licenses/rust/equivalent-1.0.2/LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+    "licenses/rust/equivalent-1.0.2/LICENSE-MIT": "7365cc8878a1d7ce155a58c4ca09c3d7a6be413efa5334a80ea842912b669349",
+    "licenses/rust/error-code-3.4.0/LICENSE": "c9bff75738922193e67fa726fa225535870d2aa1059f91452c411736284ad566",
+    "licenses/rust/euclid-0.22.14/COPYRIGHT": "ec82b96487e9e778ee610c7ab245162464782cfa1f555c2299333f8dbe5c036a",
+    "licenses/rust/euclid-0.22.14/LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+    "licenses/rust/euclid-0.22.14/LICENSE-MIT": "62065228e42caebca7e7d7db1204cbb867033de5982ca4009928915e4095f3a3",
+    "licenses/rust/fax-0.2.7/LICENSE": "7101390b4c8edd752f4c0de47f35d61b44d9cf0ee8dd032115e25644e277cfff",
+    "licenses/rust/fdeflate-0.3.7/LICENSE-APACHE": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594",
+    "licenses/rust/fdeflate-0.3.7/LICENSE-MIT": "c77a4cf9da729987d0fe7ccd811e3bd27393914ddf3d23467c18cc22954513b3",
+    "licenses/rust/fearless_simd-0.3.0/LICENSE-APACHE": "a6cba85bc92e0cff7a450b1d873c0eaa2e9fc96bf472df0247a26bec77bf3ff9",
+    "licenses/rust/fearless_simd-0.3.0/LICENSE-MIT": "23c23145f6eac25c28cdcc03d38506a5712a9a8cffb5bd5301457f6173ea696e",
+    "licenses/rust/flate2-1.1.10/LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+    "licenses/rust/flate2-1.1.10/LICENSE-MIT": "025436edff4cfcdde17a5811fdea78892d8482efd1abdec5a17872d07a4f2112",
+    "licenses/rust/foldhash-0.2.0/LICENSE": "b1181a40b2a7b25cf66fd01481713bc1005df082c53ef73e851e55071b102744",
+    "licenses/rust/font-types-0.11.3/LICENSE-APACHE": "a14f7d685a79c0f4fb64aee305527a6d5fa55f2401f4e6d688d7b1301868e6c0",
+    "licenses/rust/font-types-0.11.3/LICENSE-MIT": "8a62fa27ffdccc3df19dce90f8bb3d572e27aecffc1a383d0c2601834dcec434",
+    "licenses/rust/form_urlencoded-1.2.2/LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+    "licenses/rust/form_urlencoded-1.2.2/LICENSE-MIT": "20c7855c364d57ea4c97889a5e8d98470a9952dade37bd9248b9a54431670e5e",
+    "licenses/rust/futures-0.3.34/LICENSE-APACHE": "275c491d6d1160553c32fd6127061d7f9606c3ea25abfad6ca3f6ed088785427",
+    "licenses/rust/futures-0.3.34/LICENSE-MIT": "6652c868f35dfe5e8ef636810a4e576b9d663f3a17fb0f5613ad73583e1b88fd",
+    "licenses/rust/futures-channel-0.3.34/LICENSE-APACHE": "275c491d6d1160553c32fd6127061d7f9606c3ea25abfad6ca3f6ed088785427",
+    "licenses/rust/futures-channel-0.3.34/LICENSE-MIT": "6652c868f35dfe5e8ef636810a4e576b9d663f3a17fb0f5613ad73583e1b88fd",
+    "licenses/rust/futures-core-0.3.34/LICENSE-APACHE": "275c491d6d1160553c32fd6127061d7f9606c3ea25abfad6ca3f6ed088785427",
+    "licenses/rust/futures-core-0.3.34/LICENSE-MIT": "6652c868f35dfe5e8ef636810a4e576b9d663f3a17fb0f5613ad73583e1b88fd",
+    "licenses/rust/futures-executor-0.3.34/LICENSE-APACHE": "275c491d6d1160553c32fd6127061d7f9606c3ea25abfad6ca3f6ed088785427",
+    "licenses/rust/futures-executor-0.3.34/LICENSE-MIT": "6652c868f35dfe5e8ef636810a4e576b9d663f3a17fb0f5613ad73583e1b88fd",
+    "licenses/rust/futures-io-0.3.34/LICENSE-APACHE": "275c491d6d1160553c32fd6127061d7f9606c3ea25abfad6ca3f6ed088785427",
+    "licenses/rust/futures-io-0.3.34/LICENSE-MIT": "6652c868f35dfe5e8ef636810a4e576b9d663f3a17fb0f5613ad73583e1b88fd",
+    "licenses/rust/futures-macro-0.3.34/LICENSE-APACHE": "275c491d6d1160553c32fd6127061d7f9606c3ea25abfad6ca3f6ed088785427",
+    "licenses/rust/futures-macro-0.3.34/LICENSE-MIT": "6652c868f35dfe5e8ef636810a4e576b9d663f3a17fb0f5613ad73583e1b88fd",
+    "licenses/rust/futures-sink-0.3.34/LICENSE-APACHE": "275c491d6d1160553c32fd6127061d7f9606c3ea25abfad6ca3f6ed088785427",
+    "licenses/rust/futures-sink-0.3.34/LICENSE-MIT": "6652c868f35dfe5e8ef636810a4e576b9d663f3a17fb0f5613ad73583e1b88fd",
+    "licenses/rust/futures-task-0.3.34/LICENSE-APACHE": "275c491d6d1160553c32fd6127061d7f9606c3ea25abfad6ca3f6ed088785427",
+    "licenses/rust/futures-task-0.3.34/LICENSE-MIT": "6652c868f35dfe5e8ef636810a4e576b9d663f3a17fb0f5613ad73583e1b88fd",
+    "licenses/rust/futures-util-0.3.34/LICENSE-APACHE": "275c491d6d1160553c32fd6127061d7f9606c3ea25abfad6ca3f6ed088785427",
+    "licenses/rust/futures-util-0.3.34/LICENSE-MIT": "6652c868f35dfe5e8ef636810a4e576b9d663f3a17fb0f5613ad73583e1b88fd",
+    "licenses/rust/getrandom-0.4.3/LICENSE-APACHE": "aaff376532ea30a0cd5330b9502ad4a4c8bf769c539c87ffe78819d188a18ebf",
+    "licenses/rust/getrandom-0.4.3/LICENSE-MIT": "523a42c25d245dde9c015f882cec7f4555aad883382a6cf19b4b7d9b2cd5419b",
+    "licenses/rust/gl_generator-0.14.0/LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "licenses/rust/gl_generator-0.14.0/NOTICE-PROVENANCE.json": "8b30307076313b6f2cdff1479710ec253309d031d3450a22663e677fbda8944d",
+    "licenses/rust/gl_generator-0.14.0/SOURCE-LICENSE-NOTICE.txt": "7eb15307bafc2e83b48490a5a4f1024f860d00c98b173fb5b8fa11e4e6692a31",
+    "licenses/rust/glow-0.17.0/LICENSE-APACHE": "b8601fc79bdf8d8088f0938bea861ffc63ed0eebbedf25f44ab2cf2e85bd7edc",
+    "licenses/rust/glow-0.17.0/LICENSE-MIT": "cdbd06e25b8c9c5d6019949d2de8123f56d29cee4166396423d2ba8c81700845",
+    "licenses/rust/glow-0.17.0/LICENSE-ZLIB": "636f644f1e149eb62961657c0e34953681eff64435653912e7bd19992666faa5",
+    "licenses/rust/glutin-0.32.3/LICENSE": "a4445427440043e8ce6fadf7a43fb906cb0d7f6c573a560a9f142cf9f9bf8ff4",
+    "licenses/rust/glutin-winit-0.5.0/LICENSE": "d35629aec828ca86834f76e4c813bd6a6f0dda9005da898b0f49021f8042c5bd",
+    "licenses/rust/glutin_egl_sys-0.7.1/LICENSE": "a4445427440043e8ce6fadf7a43fb906cb0d7f6c573a560a9f142cf9f9bf8ff4",
+    "licenses/rust/glutin_wgl_sys-0.6.1/LICENSE": "a4445427440043e8ce6fadf7a43fb906cb0d7f6c573a560a9f142cf9f9bf8ff4",
+    "licenses/rust/half-2.7.1/LICENSE-APACHE": "a6cba85bc92e0cff7a450b1d873c0eaa2e9fc96bf472df0247a26bec77bf3ff9",
+    "licenses/rust/half-2.7.1/LICENSE-MIT": "508a77d2e7b51d98adeed32648ad124b7b30241a8e70b2e72c99f92d8e5874d1",
+    "licenses/rust/hashbrown-0.16.1/LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+    "licenses/rust/hashbrown-0.16.1/LICENSE-MIT": "ff8f68cb076caf8cefe7a6430d4ac086ce6af2ca8ce2c4e5a2004d4552ef52a2",
+    "licenses/rust/hashbrown-0.17.1/LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+    "licenses/rust/hashbrown-0.17.1/LICENSE-MIT": "ff8f68cb076caf8cefe7a6430d4ac086ce6af2ca8ce2c4e5a2004d4552ef52a2",
+    "licenses/rust/heck-0.5.0/LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+    "licenses/rust/heck-0.5.0/LICENSE-MIT": "7b63ecd5f1902af1b63729947373683c32745c16a10e8e6292e2e2dcd7e90ae0",
+    "licenses/rust/icu_collections-2.3.0/LICENSE": "f367c1b8e1aa262435251e442901da4607b4650e0e63a026f5044473ecfb90f2",
+    "licenses/rust/icu_locale_core-2.3.0/LICENSE": "f367c1b8e1aa262435251e442901da4607b4650e0e63a026f5044473ecfb90f2",
+    "licenses/rust/icu_normalizer-2.3.0/LICENSE": "f367c1b8e1aa262435251e442901da4607b4650e0e63a026f5044473ecfb90f2",
+    "licenses/rust/icu_normalizer_data-2.3.0/LICENSE": "f367c1b8e1aa262435251e442901da4607b4650e0e63a026f5044473ecfb90f2",
+    "licenses/rust/icu_properties-2.3.0/LICENSE": "f367c1b8e1aa262435251e442901da4607b4650e0e63a026f5044473ecfb90f2",
+    "licenses/rust/icu_properties_data-2.3.0/LICENSE": "f367c1b8e1aa262435251e442901da4607b4650e0e63a026f5044473ecfb90f2",
+    "licenses/rust/icu_provider-2.3.1/LICENSE": "f367c1b8e1aa262435251e442901da4607b4650e0e63a026f5044473ecfb90f2",
+    "licenses/rust/ident_case-1.0.1/LICENSE": "508a77d2e7b51d98adeed32648ad124b7b30241a8e70b2e72c99f92d8e5874d1",
+    "licenses/rust/idna-1.1.0/LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+    "licenses/rust/idna-1.1.0/LICENSE-MIT": "b38f11f6096706e6de553dabe2a7ed142d59b6fa8c97e290c67496154745cdd5",
+    "licenses/rust/idna_adapter-1.2.2/LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+    "licenses/rust/idna_adapter-1.2.2/LICENSE-MIT": "8b43ce8accd61e9d370b5ca9e9c4f953279b5c239926c62315b40e24df51b726",
+    "licenses/rust/image-0.25.10/LICENSE-APACHE": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594",
+    "licenses/rust/image-0.25.10/LICENSE-MIT": "c77a4cf9da729987d0fe7ccd811e3bd27393914ddf3d23467c18cc22954513b3",
+    "licenses/rust/indexmap-2.14.2/LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+    "licenses/rust/indexmap-2.14.2/LICENSE-MIT": "ecc269ef87fd38a1d98e30bfac9ba964a9dbd9315c3770fed98d4d7cb5882055",
+    "licenses/rust/is_terminal_polyfill-1.70.2/LICENSE-APACHE": "c6596eb7be8581c18be736c846fb9173b69eccf6ef94c5135893ec56bd92ba08",
+    "licenses/rust/is_terminal_polyfill-1.70.2/LICENSE-MIT": "6efb0476a1cc085077ed49357026d8c173bf33017278ef440f222fb9cbcb66e6",
+    "licenses/rust/itoa-1.0.18/LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+    "licenses/rust/itoa-1.0.18/LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3",
+    "licenses/rust/khronos_api-3.1.0/LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "licenses/rust/khronos_api-3.1.0/NOTICE-PROVENANCE.json": "44ae6f43b4bcccad33fb9c4788d88ca7b5ff3105ce3585bebaf6d019b6f1097e",
+    "licenses/rust/khronos_api-3.1.0/SOURCE-LICENSE-NOTICE.txt": "7eb15307bafc2e83b48490a5a4f1024f860d00c98b173fb5b8fa11e4e6692a31",
+    "licenses/rust/kurbo-0.13.1/LICENSE-APACHE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "licenses/rust/kurbo-0.13.1/LICENSE-MIT": "23c23145f6eac25c28cdcc03d38506a5712a9a8cffb5bd5301457f6173ea696e",
+    "licenses/rust/libloading-0.8.9/LICENSE": "b29f8b01452350c20dd1af16ef83b598fea3053578ccc1c7a0ef40e57be2620f",
+    "licenses/rust/linebender_resource_handle-0.1.1/LICENSE-APACHE": "a6cba85bc92e0cff7a450b1d873c0eaa2e9fc96bf472df0247a26bec77bf3ff9",
+    "licenses/rust/linebender_resource_handle-0.1.1/LICENSE-MIT": "508a77d2e7b51d98adeed32648ad124b7b30241a8e70b2e72c99f92d8e5874d1",
+    "licenses/rust/litemap-0.8.3/LICENSE": "f367c1b8e1aa262435251e442901da4607b4650e0e63a026f5044473ecfb90f2",
+    "licenses/rust/litrs-1.0.1/LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+    "licenses/rust/litrs-1.0.1/LICENSE-MIT": "7dc1552e88f49132cb358b1b962fc5e79fa42d70bcbb88c526d33e45b8e98036",
+    "licenses/rust/lock_api-0.4.14/LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+    "licenses/rust/lock_api-0.4.14/LICENSE-MIT": "c9a75f18b9ab2927829a208fc6aa2cf4e63b8420887ba29cdb265d6619ae82d5",
+    "licenses/rust/log-0.4.34/LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+    "licenses/rust/log-0.4.34/LICENSE-MIT": "6485b8ed310d3f0340bf1ad1f47645069ce4069dcc6bb46c7d5c6faf41de1fdb",
+    "licenses/rust/memchr-2.8.3/COPYING": "01c266bced4a434da0051174d6bee16a4c82cf634e2679b6155d40d75012390f",
+    "licenses/rust/memchr-2.8.3/LICENSE-MIT": "0f96a83840e146e43c0ec96a22ec1f392e0680e6c1226e6f3ba87e0740af850f",
+    "licenses/rust/memchr-2.8.3/UNLICENSE": "7e12e5df4bae12cb21581ba157ced20e1986a0508dd10d0e8a4ab9a4cf94e85c",
+    "licenses/rust/memoffset-0.9.1/LICENSE": "3234ac55816264ee7b6c7ee27efd61cf0a1fe775806870e3d9b4c41ea73c5cb1",
+    "licenses/rust/miniz_oxide-0.8.9/LICENSE": "4108245a1f2df9d4e94df8abed5b4ba0759bb2f9b40a6b939f1be141077ae50b",
+    "licenses/rust/miniz_oxide-0.8.9/LICENSE-APACHE.md": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594",
+    "licenses/rust/miniz_oxide-0.8.9/LICENSE-MIT.md": "799e9ca9d179295ef372f25d3769cdda7d25bb2668add6a6a1e22d1e4c678b8d",
+    "licenses/rust/miniz_oxide-0.8.9/LICENSE-ZLIB.md": "0a54e647fe54104658b5e563c04c6f9edf251710e47bce692e0bd990a4ddaa39",
+    "licenses/rust/miniz_oxide-0.9.1/LICENSE": "4108245a1f2df9d4e94df8abed5b4ba0759bb2f9b40a6b939f1be141077ae50b",
+    "licenses/rust/miniz_oxide-0.9.1/LICENSE-APACHE.md": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594",
+    "licenses/rust/miniz_oxide-0.9.1/LICENSE-MIT.md": "799e9ca9d179295ef372f25d3769cdda7d25bb2668add6a6a1e22d1e4c678b8d",
+    "licenses/rust/miniz_oxide-0.9.1/LICENSE-ZLIB.md": "0a54e647fe54104658b5e563c04c6f9edf251710e47bce692e0bd990a4ddaa39",
+    "licenses/rust/moxcms-0.8.1/LICENSE-APACHE.md": "90bf2d659c43045111b65c733ab2a6d4cbcb422a098368c8c58a9ba3db4ed0c5",
+    "licenses/rust/moxcms-0.8.1/LICENSE.md": "2aa92cada6431e75615e3fe6cb1a9082c98f777d48ae1c087c0da0e37f7b8bff",
+    "licenses/rust/nohash-hasher-0.2.0/LICENSE-APACHE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "licenses/rust/nohash-hasher-0.2.0/LICENSE-MIT": "ec353d4fecf7963b4c054384557e5dbc3c7a717997eb4a3815b315721a6aa75a",
+    "licenses/rust/num-traits-0.2.19/LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+    "licenses/rust/num-traits-0.2.19/LICENSE-MIT": "6485b8ed310d3f0340bf1ad1f47645069ce4069dcc6bb46c7d5c6faf41de1fdb",
+    "licenses/rust/once_cell-1.21.4/LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+    "licenses/rust/once_cell-1.21.4/LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3",
+    "licenses/rust/once_cell_polyfill-1.70.2/LICENSE-APACHE": "c6596eb7be8581c18be736c846fb9173b69eccf6ef94c5135893ec56bd92ba08",
+    "licenses/rust/once_cell_polyfill-1.70.2/LICENSE-MIT": "6efb0476a1cc085077ed49357026d8c173bf33017278ef440f222fb9cbcb66e6",
+    "licenses/rust/ouroboros-ui-0.1.0/assets/fonts/OFL-Iosevka.txt": "4ba53c7c1cb39279aae5f8d7d22054c485c71169920e5a36ed098b115e2e3c5d",
+    "licenses/rust/ouroboros-ui-0.1.0/CREDITS.md": "0974b37bf41b25cb67d624736c4aab2b443d15dd9080ff314cbf92638df9ad92",
+    "licenses/rust/ouroboros-ui-0.1.0/LICENSE": "53529b4321826789bc46dfbbbbde4a8b04d5fba361abb0ef81af847687b04bcd",
+    "licenses/rust/parking_lot-0.12.5/LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+    "licenses/rust/parking_lot-0.12.5/LICENSE-MIT": "c9a75f18b9ab2927829a208fc6aa2cf4e63b8420887ba29cdb265d6619ae82d5",
+    "licenses/rust/parking_lot_core-0.9.12/LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+    "licenses/rust/parking_lot_core-0.9.12/LICENSE-MIT": "c9a75f18b9ab2927829a208fc6aa2cf4e63b8420887ba29cdb265d6619ae82d5",
+    "licenses/rust/pastey-0.2.3/LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+    "licenses/rust/pastey-0.2.3/LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3",
+    "licenses/rust/peniko-0.6.1/LICENSE-APACHE": "f9946796a8a5bd5981565142fa42e3b0cc36aef6f80e86beaf5905b3c0fef1b5",
+    "licenses/rust/peniko-0.6.1/LICENSE-MIT": "23c23145f6eac25c28cdcc03d38506a5712a9a8cffb5bd5301457f6173ea696e",
+    "licenses/rust/percent-encoding-2.3.2/LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+    "licenses/rust/percent-encoding-2.3.2/LICENSE-MIT": "b38f11f6096706e6de553dabe2a7ed142d59b6fa8c97e290c67496154745cdd5",
+    "licenses/rust/pin-project-lite-0.2.17/LICENSE-APACHE": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594",
+    "licenses/rust/pin-project-lite-0.2.17/LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3",
+    "licenses/rust/png-0.18.1/LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+    "licenses/rust/png-0.18.1/LICENSE-MIT": "eaf40297c75da471f7cda1f3458e8d91b4b2ec866e609527a13acfa93b638652",
+    "licenses/rust/polycool-0.4.0/LICENSE-APACHE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "licenses/rust/polycool-0.4.0/LICENSE-MIT": "23c23145f6eac25c28cdcc03d38506a5712a9a8cffb5bd5301457f6173ea696e",
+    "licenses/rust/potential_utf-0.1.6/LICENSE": "f367c1b8e1aa262435251e442901da4607b4650e0e63a026f5044473ecfb90f2",
+    "licenses/rust/proc-macro2-1.0.107/LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+    "licenses/rust/proc-macro2-1.0.107/LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3",
+    "licenses/rust/profiling-1.0.18/LICENSE-APACHE": "10d30a673cd5e9349bdc02aeb48f14b3386d27d0da32df8f0a555d4aa16aa551",
+    "licenses/rust/profiling-1.0.18/LICENSE-MIT": "c8167fdeeed46d3f244d3f85c5bf998ce889343691c32be2c61a8bc4b5c08333",
+    "licenses/rust/profiling-1.0.18/NOTICE-PROVENANCE.json": "6075da5b9fb2c00531ba8bb36985f01ce2d1402b247d59a5f88b7b60cece25c8",
+    "licenses/rust/pxfm-0.1.30/LICENSE-APACHE.md": "90bf2d659c43045111b65c733ab2a6d4cbcb422a098368c8c58a9ba3db4ed0c5",
+    "licenses/rust/pxfm-0.1.30/LICENSE.md": "2aa92cada6431e75615e3fe6cb1a9082c98f777d48ae1c087c0da0e37f7b8bff",
+    "licenses/rust/quick-error-2.0.1/LICENSE-APACHE": "c6596eb7be8581c18be736c846fb9173b69eccf6ef94c5135893ec56bd92ba08",
+    "licenses/rust/quick-error-2.0.1/LICENSE-MIT": "058f01fe181608d027fcde7e528fc03ea3cf90f30903c407644b0a9bbc54f500",
+    "licenses/rust/quote-1.0.47/LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+    "licenses/rust/quote-1.0.47/LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3",
+    "licenses/rust/raw-window-handle-0.6.2/LICENSE-APACHE.md": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594",
+    "licenses/rust/raw-window-handle-0.6.2/LICENSE-MIT.md": "9c5a80639a57c1c945570e7ebbca0706305849ce3c098021325cca9db2f7acc4",
+    "licenses/rust/raw-window-handle-0.6.2/LICENSE-ZLIB.md": "ae895c8576e682f310fb70d93d9f99b1dd82872094c54a8f6cdfe2ca5c2d6ecb",
+    "licenses/rust/read-fonts-0.37.0/LICENSE-APACHE": "a14f7d685a79c0f4fb64aee305527a6d5fa55f2401f4e6d688d7b1301868e6c0",
+    "licenses/rust/read-fonts-0.37.0/LICENSE-MIT": "8a62fa27ffdccc3df19dce90f8bb3d572e27aecffc1a383d0c2601834dcec434",
+    "licenses/rust/ref-cast-1.0.27/LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+    "licenses/rust/ref-cast-1.0.27/LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3",
+    "licenses/rust/ref-cast-impl-1.0.27/LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+    "licenses/rust/ref-cast-impl-1.0.27/LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3",
+    "licenses/rust/rmcp-3.5.1/LICENSE": "0382b0057770ca05e9c350a50aa3b1c1fea84da0bc81d723bf00b9aa841be58a",
+    "licenses/rust/rmcp-3.5.1/NOTICE-PROVENANCE.json": "71fdd43cb6cdadd48421a5cf0e192738518a7056b6eed57ff112ee368c5fccf2",
+    "licenses/rust/rmcp-macros-3.5.1/LICENSE": "0382b0057770ca05e9c350a50aa3b1c1fea84da0bc81d723bf00b9aa841be58a",
+    "licenses/rust/rmcp-macros-3.5.1/NOTICE-PROVENANCE.json": "a4690a5f7fd1e78730e95d367fac2bcf25fa12eda3f4133cf15175a882892a67",
+    "licenses/rust/schemars-1.2.3/LICENSE": "1954992a2b32e8a2af24a4c11b726902e344c1934b947a77f04d404908f8db30",
+    "licenses/rust/schemars_derive-1.2.3/LICENSE": "1954992a2b32e8a2af24a4c11b726902e344c1934b947a77f04d404908f8db30",
+    "licenses/rust/scopeguard-1.2.0/LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+    "licenses/rust/scopeguard-1.2.0/LICENSE-MIT": "fb77f0a9c53e473abe5103c8632ef9f0f2874d4fb3f17cb2d8c661aab9cee9d7",
+    "licenses/rust/self_cell-1.3.0/LICENSE-APACHE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+    "licenses/rust/self_cell-1.3.0/LICENSE-GPLv2": "f9c375a1be4a41f7b70301dd83c91cb89e41567478859b77eef375a52d782505",
+    "licenses/rust/serde-1.0.229/LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+    "licenses/rust/serde-1.0.229/LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3",
+    "licenses/rust/serde_core-1.0.229/LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+    "licenses/rust/serde_core-1.0.229/LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3",
+    "licenses/rust/serde_derive-1.0.229/LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+    "licenses/rust/serde_derive-1.0.229/LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3",
+    "licenses/rust/serde_derive_internals-0.30.0/LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+    "licenses/rust/serde_derive_internals-0.30.0/LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3",
+    "licenses/rust/serde_json-1.0.154/LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+    "licenses/rust/serde_json-1.0.154/LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3",
+    "licenses/rust/simd-adler32-0.3.10/LICENSE.md": "42a35170233e83e18856792e748de4c1ce4a63b2afce9a370c89ef3fe23f9f2d",
+    "licenses/rust/skrifa-0.40.0/LICENSE-APACHE": "a14f7d685a79c0f4fb64aee305527a6d5fa55f2401f4e6d688d7b1301868e6c0",
+    "licenses/rust/skrifa-0.40.0/LICENSE-MIT": "8a62fa27ffdccc3df19dce90f8bb3d572e27aecffc1a383d0c2601834dcec434",
+    "licenses/rust/slab-0.4.12/LICENSE": "8ce0830173fdac609dfb4ea603fdc002c2f4af0dc9b1a005653f5da9cf534b18",
+    "licenses/rust/smallvec-1.16.3/LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+    "licenses/rust/smallvec-1.16.3/LICENSE-MIT": "0b28172679e0009b655da42797c03fd163a3379d5cfa67ba1f1655e974a2a1a9",
+    "licenses/rust/smol_str-0.2.2/LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+    "licenses/rust/smol_str-0.2.2/LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3",
+    "licenses/rust/stable_deref_trait-1.2.1/LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+    "licenses/rust/stable_deref_trait-1.2.1/LICENSE-MIT": "5e05b024f653a5ce199e77cbbbd42fb5553562ec714b819421ed0c3e552a75d7",
+    "licenses/rust/static_assertions-1.1.0/LICENSE-APACHE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "licenses/rust/static_assertions-1.1.0/LICENSE-MIT": "ea084a2373ebc1f0902c09266e7bf25a05ab3814c1805bb017ffa7308f90c061",
+    "licenses/rust/strsim-0.11.1/LICENSE": "1e697ce8d21401fbf1bddd9b5c3fd4c4c79ae1e3bdf51f81761c85e11d5a89cd",
+    "licenses/rust/syn-2.0.119/LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+    "licenses/rust/syn-2.0.119/LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3",
+    "licenses/rust/syn-3.0.9/LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+    "licenses/rust/syn-3.0.9/LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3",
+    "licenses/rust/synstructure-0.14.0/LICENSE": "219920e865eee70b7dcfc948a86b099e7f4fe2de01bcca2ca9a20c0a033f2b59",
+    "licenses/rust/thiserror-2.0.21/LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+    "licenses/rust/thiserror-2.0.21/LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3",
+    "licenses/rust/thiserror-impl-2.0.21/LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+    "licenses/rust/thiserror-impl-2.0.21/LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3",
+    "licenses/rust/tiff-0.11.3/LICENSE": "20c097d0de27e2adc179140a3d542091951a030699c7e1c78655f2a2d08d4e3e",
+    "licenses/rust/tiff-0.11.3/tests/COPYRIGHT": "c6d1d56bb6e2fe4f0aed4aa8553261dd65247db6db50c87c9e9f3fbe095e2202",
+    "licenses/rust/tinystr-0.8.4/LICENSE": "f367c1b8e1aa262435251e442901da4607b4650e0e63a026f5044473ecfb90f2",
+    "licenses/rust/tokio-1.53.3/LICENSE": "253cd04c6714889df2d32f3f64d669179a1c95c76ac43c40882c52eb06bc3552",
+    "licenses/rust/tokio-macros-2.7.2/LICENSE": "0b83dc40cba89b9922bb84b0a9c7d2768ce37c1d7e138b7424fd4549915778c9",
+    "licenses/rust/tokio-util-0.7.20/LICENSE": "253cd04c6714889df2d32f3f64d669179a1c95c76ac43c40882c52eb06bc3552",
+    "licenses/rust/tracing-0.1.44/LICENSE": "898b1ae9821e98daf8964c8d6c7f61641f5f5aa78ad500020771c0939ee0dea1",
+    "licenses/rust/tracing-attributes-0.1.31/LICENSE": "898b1ae9821e98daf8964c8d6c7f61641f5f5aa78ad500020771c0939ee0dea1",
+    "licenses/rust/tracing-core-0.1.36/LICENSE": "898b1ae9821e98daf8964c8d6c7f61641f5f5aa78ad500020771c0939ee0dea1",
+    "licenses/rust/tracing-core-0.1.36/src/spin/LICENSE": "58545fed1565e42d687aecec6897d35c6d37ccb71479a137c0deb2203e125c79",
+    "licenses/rust/unicode-ident-1.0.27/LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+    "licenses/rust/unicode-ident-1.0.27/LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3",
+    "licenses/rust/unicode-ident-1.0.27/LICENSE-UNICODE": "f7db81051789b729fea528a63ec4c938fdcb93d9d61d97dc8cc2e9df6d47f2a1",
+    "licenses/rust/unicode-segmentation-1.13.3/COPYRIGHT": "23860c2a7b5d96b21569afedf033469bab9fe14a1b24a35068b8641c578ce24d",
+    "licenses/rust/unicode-segmentation-1.13.3/LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+    "licenses/rust/unicode-segmentation-1.13.3/LICENSE-MIT": "7b63ecd5f1902af1b63729947373683c32745c16a10e8e6292e2e2dcd7e90ae0",
+    "licenses/rust/url-2.5.8/LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+    "licenses/rust/url-2.5.8/LICENSE-MIT": "b38f11f6096706e6de553dabe2a7ed142d59b6fa8c97e290c67496154745cdd5",
+    "licenses/rust/utf8_iter-1.0.4/COPYRIGHT": "c30152c94a6d75e021adbc52b3a52470366a46edb917e17deae3259251af244c",
+    "licenses/rust/utf8_iter-1.0.4/LICENSE-APACHE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "licenses/rust/utf8_iter-1.0.4/LICENSE-MIT": "3fa4ca83dcc9237839b1bdeb2e6d16bdfb5ec0c5ce42b24694d8bbf0dcbef72c",
+    "licenses/rust/utf8parse-0.2.2/LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+    "licenses/rust/utf8parse-0.2.2/LICENSE-MIT": "e4c9b06fa850cb9b540a5e400e9f6394cf15efcf4098144de477d1d3dae10150",
+    "licenses/rust/uuid-1.28.0/LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+    "licenses/rust/uuid-1.28.0/LICENSE-MIT": "436bc5a105d8e57dcd8778730f3754f7bf39c14d2f530e4cde4bd2d17a83ec3d",
+    "licenses/rust/vello_common-0.0.6/LICENSE-APACHE": "a6cba85bc92e0cff7a450b1d873c0eaa2e9fc96bf472df0247a26bec77bf3ff9",
+    "licenses/rust/vello_common-0.0.6/LICENSE-MIT": "adf157330f722fe7cfd5964a2a6974eff851b718228c6735724a11706e6f4dec",
+    "licenses/rust/vello_cpu-0.0.6/LICENSE-APACHE": "a6cba85bc92e0cff7a450b1d873c0eaa2e9fc96bf472df0247a26bec77bf3ff9",
+    "licenses/rust/vello_cpu-0.0.6/LICENSE-MIT": "adf157330f722fe7cfd5964a2a6974eff851b718228c6735724a11706e6f4dec",
+    "licenses/rust/version_check-0.9.5/LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+    "licenses/rust/version_check-0.9.5/LICENSE-MIT": "b7e650f3fce5c53249d1cdc608b54df156a97edd636cf9d23498d0cfe7aec63e",
+    "licenses/rust/web-time-1.1.0/LICENSE-APACHE": "54a744942eb3fa63a74d8d359989ed6962c04f3f10ff20cfa08ff8aa7efbe4e6",
+    "licenses/rust/web-time-1.1.0/LICENSE-MIT": "f428305bbf2e70fbd807af0f3c7ac1b7acfb95311640f451e9d2e48db6d7e96b",
+    "licenses/rust/webbrowser-1.2.4/LICENSE-APACHE": "b0f7d40eaa9577d99132579866bf1eaf448577dc737582b8a34f1b3e7fab8994",
+    "licenses/rust/webbrowser-1.2.4/LICENSE-MIT": "7f0f4f8802c102d35110806d1755b7681127575b644f64750810cc47fa78df5b",
+    "licenses/rust/weezl-0.1.12/LICENSE-APACHE": "769f80b5bcb42ed0af4e4d2fd74e1ac9bf843cb80c5a29219d1ef3544428a6bb",
+    "licenses/rust/weezl-0.1.12/LICENSE-MIT": "573f5227db835cd30bbdd3aed3f82615f80119a4d5c82b4daf642dbfe2b6afde",
+    "licenses/rust/windows-link-0.2.1/license-apache-2.0": "c16f8dcf1a368b83be78d826ea23de4079fe1b4469a0ab9ee20563f37ff3d44b",
+    "licenses/rust/windows-link-0.2.1/license-mit": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383",
+    "licenses/rust/windows-sys-0.52.0/license-apache-2.0": "c16f8dcf1a368b83be78d826ea23de4079fe1b4469a0ab9ee20563f37ff3d44b",
+    "licenses/rust/windows-sys-0.52.0/license-mit": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383",
+    "licenses/rust/windows-sys-0.60.2/license-apache-2.0": "c16f8dcf1a368b83be78d826ea23de4079fe1b4469a0ab9ee20563f37ff3d44b",
+    "licenses/rust/windows-sys-0.60.2/license-mit": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383",
+    "licenses/rust/windows-sys-0.61.2/license-apache-2.0": "c16f8dcf1a368b83be78d826ea23de4079fe1b4469a0ab9ee20563f37ff3d44b",
+    "licenses/rust/windows-sys-0.61.2/license-mit": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383",
+    "licenses/rust/windows-targets-0.52.6/license-apache-2.0": "c16f8dcf1a368b83be78d826ea23de4079fe1b4469a0ab9ee20563f37ff3d44b",
+    "licenses/rust/windows-targets-0.52.6/license-mit": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383",
+    "licenses/rust/windows-targets-0.53.5/license-apache-2.0": "c16f8dcf1a368b83be78d826ea23de4079fe1b4469a0ab9ee20563f37ff3d44b",
+    "licenses/rust/windows-targets-0.53.5/license-mit": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383",
+    "licenses/rust/windows_x86_64_msvc-0.52.6/license-apache-2.0": "c16f8dcf1a368b83be78d826ea23de4079fe1b4469a0ab9ee20563f37ff3d44b",
+    "licenses/rust/windows_x86_64_msvc-0.52.6/license-mit": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383",
+    "licenses/rust/windows_x86_64_msvc-0.53.1/license-apache-2.0": "c16f8dcf1a368b83be78d826ea23de4079fe1b4469a0ab9ee20563f37ff3d44b",
+    "licenses/rust/windows_x86_64_msvc-0.53.1/license-mit": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383",
+    "licenses/rust/winit-0.30.13/LICENSE": "6dc0e068dcf3a5bc8e054205b85b7720e1d49265bbc64bf515d2cf79197df69a",
+    "licenses/rust/writeable-0.6.4/LICENSE": "f367c1b8e1aa262435251e442901da4607b4650e0e63a026f5044473ecfb90f2",
+    "licenses/rust/xml-rs-0.8.29/LICENSE": "0dc18d924dc0a5f41172a393012843a5eaaef338e795b3645da9cc3b6068220b",
+    "licenses/rust/yoke-0.8.3/LICENSE": "f367c1b8e1aa262435251e442901da4607b4650e0e63a026f5044473ecfb90f2",
+    "licenses/rust/yoke-derive-0.8.4/LICENSE": "f367c1b8e1aa262435251e442901da4607b4650e0e63a026f5044473ecfb90f2",
+    "licenses/rust/zerocopy-0.8.63/LICENSE-APACHE": "9d185ac6703c4b0453974c0d85e9eee43e6941009296bb1f5eb0b54e2329e9f3",
+    "licenses/rust/zerocopy-0.8.63/LICENSE-BSD": "83c1763356e822adde0a2cae748d938a73fdc263849ccff6b27776dff213bd32",
+    "licenses/rust/zerocopy-0.8.63/LICENSE-MIT": "1a2f5c12ddc934d58956aa5dbdd3255fe55fd957633ab7d0d39e4f0daa73f7df",
+    "licenses/rust/zerocopy-derive-0.8.63/LICENSE-APACHE": "9d185ac6703c4b0453974c0d85e9eee43e6941009296bb1f5eb0b54e2329e9f3",
+    "licenses/rust/zerocopy-derive-0.8.63/LICENSE-BSD": "83c1763356e822adde0a2cae748d938a73fdc263849ccff6b27776dff213bd32",
+    "licenses/rust/zerocopy-derive-0.8.63/LICENSE-MIT": "1a2f5c12ddc934d58956aa5dbdd3255fe55fd957633ab7d0d39e4f0daa73f7df",
+    "licenses/rust/zerofrom-0.1.8/LICENSE": "f367c1b8e1aa262435251e442901da4607b4650e0e63a026f5044473ecfb90f2",
+    "licenses/rust/zerofrom-derive-0.1.8/LICENSE": "f367c1b8e1aa262435251e442901da4607b4650e0e63a026f5044473ecfb90f2",
+    "licenses/rust/zerotrie-0.2.5/LICENSE": "f367c1b8e1aa262435251e442901da4607b4650e0e63a026f5044473ecfb90f2",
+    "licenses/rust/zerovec-0.11.8/LICENSE": "f367c1b8e1aa262435251e442901da4607b4650e0e63a026f5044473ecfb90f2",
+    "licenses/rust/zerovec-derive-0.11.6/LICENSE": "f367c1b8e1aa262435251e442901da4607b4650e0e63a026f5044473ecfb90f2",
+    "licenses/rust/zlib-rs-0.6.8/LICENSE": "e72111c52b7d96ebe25348dee19f0744f444d3c95ae6b1ecb6ccaecc5bce05ba",
+    "licenses/rust/zmij-1.0.23/LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3",
+    "licenses/rust/zune-core-0.5.3/LICENSE-APACHE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+    "licenses/rust/zune-core-0.5.3/LICENSE-MIT": "d30047bca3b516639339a3c279bb84c3483124fb5a9dafe3c75056a85090e745",
+    "licenses/rust/zune-core-0.5.3/LICENSE-ZLIB": "d201d14804d3bcd3b944147173175e4abfbd838b7c8069b6bd3452496bf13e6c",
+    "licenses/rust/zune-jpeg-0.5.15/LICENSE-APACHE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+    "licenses/rust/zune-jpeg-0.5.15/LICENSE-MIT": "d30047bca3b516639339a3c279bb84c3483124fb5a9dafe3c75056a85090e745",
+    "licenses/rust/zune-jpeg-0.5.15/LICENSE-ZLIB": "d201d14804d3bcd3b944147173175e4abfbd838b7c8069b6bd3452496bf13e6c",
+    "licenses/rust-toolchain/GPL-2.0-only.txt": "54b212ba1f97f6948fa5486239ab505dd820b02e50cbfd296b4062c8609a70af",
+    "licenses/rust-toolchain/GPL-3.0-or-later.txt": "05315fce6c35f79b8a35454828995fa26336f235895ac64557abc028f4ffcea2",
+    "licenses/rust-toolchain/OFL-1.1.txt": "8eea8287e5876b539670cadb82e99f9a7afddec6f6730811be1daf25d2e9bcfd",
+    "licenses/supplemental/COPYING-GPL-3.0.txt": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+    "licenses/supplemental/rust/accesskit-0.24.1/AUTHORS-NOTICE.txt": "3bab8c36f6a85657504aaefb37c7ff34e29b8c917290f3d28a1f0920c992e502",
+    "licenses/supplemental/rust/accesskit-0.24.1/LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+    "licenses/supplemental/rust/accesskit-0.24.1/LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3",
+    "licenses/supplemental/rust/accesskit-0.24.1/LICENSE.chromium": "845022e0c1db1abb41a6ba4cd3c4b674ec290f3359d9d3c78ae558d4c0ed9308",
+    "licenses/supplemental/rust/accesskit-0.24.1/NOTICE-PROVENANCE.json": "723e25e1f6920708a2c52cc79c5c060119a459014332ce06a75654fd2ede294a",
+    "licenses/supplemental/rust/clipboard-win-5.4.1/LICENSE": "c9bff75738922193e67fa726fa225535870d2aa1059f91452c411736284ad566",
+    "licenses/supplemental/rust/clipboard-win-5.4.1/NOTICE-PROVENANCE.json": "ddedbf29c50ad8a2c9593662a0b9e4cbfbc9038b6babe0e98bcfcc597da2c01e",
+    "licenses/supplemental/rust/ecolor-0.34.3/LICENSE-APACHE": "8173d5c29b4f956d532781d2b86e4e30f83e6b7878dce18c919451d6ba707c90",
+    "licenses/supplemental/rust/ecolor-0.34.3/LICENSE-MIT": "95ca92f5f8ea5231f1580b3a2a799e8260af3114b900e1def5355a7f44bcf60c",
+    "licenses/supplemental/rust/ecolor-0.34.3/NOTICE-PROVENANCE.json": "0dcb6bfbd5be490809942baa91fad30f14dcab81f164565973dcdc79a42f364d",
+    "licenses/supplemental/rust/eframe-0.34.3/LICENSE-APACHE": "8173d5c29b4f956d532781d2b86e4e30f83e6b7878dce18c919451d6ba707c90",
+    "licenses/supplemental/rust/eframe-0.34.3/LICENSE-MIT": "95ca92f5f8ea5231f1580b3a2a799e8260af3114b900e1def5355a7f44bcf60c",
+    "licenses/supplemental/rust/eframe-0.34.3/NOTICE-PROVENANCE.json": "a1be76c6e7491a19ae65373df4bd3109e76301fd2eccf7baef48ecff8d27a430",
+    "licenses/supplemental/rust/egui-0.34.3/LICENSE-APACHE": "8173d5c29b4f956d532781d2b86e4e30f83e6b7878dce18c919451d6ba707c90",
+    "licenses/supplemental/rust/egui-0.34.3/LICENSE-MIT": "95ca92f5f8ea5231f1580b3a2a799e8260af3114b900e1def5355a7f44bcf60c",
+    "licenses/supplemental/rust/egui-0.34.3/NOTICE-PROVENANCE.json": "ec704d42f570774cc9a442171603e1f542f55b53ed6e9f66809f447a2e353159",
+    "licenses/supplemental/rust/egui-winit-0.34.3/LICENSE-APACHE": "8173d5c29b4f956d532781d2b86e4e30f83e6b7878dce18c919451d6ba707c90",
+    "licenses/supplemental/rust/egui-winit-0.34.3/LICENSE-MIT": "95ca92f5f8ea5231f1580b3a2a799e8260af3114b900e1def5355a7f44bcf60c",
+    "licenses/supplemental/rust/egui-winit-0.34.3/NOTICE-PROVENANCE.json": "4abe20271b1168850c5f2eec02cd97bfe26a75b2118911501b9c67e63ee78272",
+    "licenses/supplemental/rust/egui_extras-0.34.3/LICENSE-APACHE": "8173d5c29b4f956d532781d2b86e4e30f83e6b7878dce18c919451d6ba707c90",
+    "licenses/supplemental/rust/egui_extras-0.34.3/LICENSE-MIT": "95ca92f5f8ea5231f1580b3a2a799e8260af3114b900e1def5355a7f44bcf60c",
+    "licenses/supplemental/rust/egui_extras-0.34.3/NOTICE-PROVENANCE.json": "c1335de526e24938134f33dd1fa0239f60994a82cdc8c3903127eb01039d8a54",
+    "licenses/supplemental/rust/egui_glow-0.34.3/LICENSE-APACHE": "8173d5c29b4f956d532781d2b86e4e30f83e6b7878dce18c919451d6ba707c90",
+    "licenses/supplemental/rust/egui_glow-0.34.3/LICENSE-MIT": "95ca92f5f8ea5231f1580b3a2a799e8260af3114b900e1def5355a7f44bcf60c",
+    "licenses/supplemental/rust/egui_glow-0.34.3/NOTICE-PROVENANCE.json": "3ef0e1c5560c9339de95698c369e1425c652e9c0d961a6cff5e4208f86a30202",
+    "licenses/supplemental/rust/emath-0.34.3/LICENSE-APACHE": "8173d5c29b4f956d532781d2b86e4e30f83e6b7878dce18c919451d6ba707c90",
+    "licenses/supplemental/rust/emath-0.34.3/LICENSE-MIT": "95ca92f5f8ea5231f1580b3a2a799e8260af3114b900e1def5355a7f44bcf60c",
+    "licenses/supplemental/rust/emath-0.34.3/NOTICE-PROVENANCE.json": "3cb7b381c439ef9f4606bfdc46d6c11d70aba932a470969cc721af27865f7388",
+    "licenses/supplemental/rust/enum-map-2.7.3/LICENSE-APACHE.txt": "074e6e32c86a4c0ef8b3ed25b721ca23aca83df277cd88106ef7177c354615ff",
+    "licenses/supplemental/rust/enum-map-2.7.3/LICENSE-MIT.txt": "b85dcd3e453d05982552c52b5fc9e0bdd6d23c6f8e844b984a88af32570b0cc0",
+    "licenses/supplemental/rust/enum-map-2.7.3/NOTICE-PROVENANCE.json": "19a94c72d3579c4858bec44cc73ff00724bc3986e509d9c2f928d2cbff0bf972",
+    "licenses/supplemental/rust/enum-map-2.7.3/source-notices/src/arbitrary.rs.NOTICE.txt": "3bb2125a45f7a128246fb5946b48ff20b6226ad4b190c6fa36198e45896ec063",
+    "licenses/supplemental/rust/enum-map-2.7.3/source-notices/src/enum_map_impls.rs.NOTICE.txt": "77fa957223570b4a857559dd78dc2e8743a76c4f4855461ec36f7365fed5e483",
+    "licenses/supplemental/rust/enum-map-2.7.3/source-notices/src/internal.rs.NOTICE.txt": "4503a234e7576afbaacc4d58b2d981f1956091554603ad955dfcc905203d5c7e",
+    "licenses/supplemental/rust/enum-map-2.7.3/source-notices/src/iter.rs.NOTICE.txt": "8518f618b95e04959f0c4b2e1d46101255c834e0b73eda79909e29df084403f8",
+    "licenses/supplemental/rust/enum-map-2.7.3/source-notices/src/lib.rs.NOTICE.txt": "df24c632293fbfad49344efbbb53a82393b58e406be5f32ba116b62e6289b317",
+    "licenses/supplemental/rust/enum-map-2.7.3/source-notices/src/serde.rs.NOTICE.txt": "1aaad0637aa28cfaff7c13a5adbe8af4fa0e1ff8c4e932dfbb370e907371befc",
+    "licenses/supplemental/rust/enum-map-derive-0.17.0/LICENSE-APACHE.txt": "074e6e32c86a4c0ef8b3ed25b721ca23aca83df277cd88106ef7177c354615ff",
+    "licenses/supplemental/rust/enum-map-derive-0.17.0/LICENSE-MIT.txt": "b85dcd3e453d05982552c52b5fc9e0bdd6d23c6f8e844b984a88af32570b0cc0",
+    "licenses/supplemental/rust/enum-map-derive-0.17.0/NOTICE-PROVENANCE.json": "15bb438323e9c0674e58ed4da8b2cbd4af5f28f80d7f9e2160757f2f79dd3bd6",
+    "licenses/supplemental/rust/enum-map-derive-0.17.0/source-notices/src/derive_enum.rs.NOTICE.txt": "3f1d722aff649f5508b0464c453c347bb8b06e2b07ff339b585b44a0b746f67c",
+    "licenses/supplemental/rust/enum-map-derive-0.17.0/source-notices/src/derive_struct.rs.NOTICE.txt": "b34582a608a72785cc46e27e9d130e8922d4d9f3c4ec08a38e5994f874841251",
+    "licenses/supplemental/rust/enum-map-derive-0.17.0/source-notices/src/lib.rs.NOTICE.txt": "c02aaebec9986faea6519f997e971d4237c6383bc59fa162353370cef3ff39c6",
+    "licenses/supplemental/rust/epaint-0.34.3/LICENSE-APACHE": "8173d5c29b4f956d532781d2b86e4e30f83e6b7878dce18c919451d6ba707c90",
+    "licenses/supplemental/rust/epaint-0.34.3/LICENSE-MIT": "95ca92f5f8ea5231f1580b3a2a799e8260af3114b900e1def5355a7f44bcf60c",
+    "licenses/supplemental/rust/epaint-0.34.3/NOTICE-PROVENANCE.json": "c711418db222a62892dfde42b8fb139d11d425f0b0d6114d2a1cce5d8319f534",
+    "licenses/supplemental/rust/gl_generator-0.14.0/LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "licenses/supplemental/rust/gl_generator-0.14.0/NOTICE-PROVENANCE.json": "8b30307076313b6f2cdff1479710ec253309d031d3450a22663e677fbda8944d",
+    "licenses/supplemental/rust/gl_generator-0.14.0/SOURCE-LICENSE-NOTICE.txt": "7eb15307bafc2e83b48490a5a4f1024f860d00c98b173fb5b8fa11e4e6692a31",
+    "licenses/supplemental/rust/khronos_api-3.1.0/LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "licenses/supplemental/rust/khronos_api-3.1.0/NOTICE-PROVENANCE.json": "44ae6f43b4bcccad33fb9c4788d88ca7b5ff3105ce3585bebaf6d019b6f1097e",
+    "licenses/supplemental/rust/khronos_api-3.1.0/SOURCE-LICENSE-NOTICE.txt": "7eb15307bafc2e83b48490a5a4f1024f860d00c98b173fb5b8fa11e4e6692a31",
+    "licenses/supplemental/rust/profiling-1.0.18/LICENSE-APACHE": "10d30a673cd5e9349bdc02aeb48f14b3386d27d0da32df8f0a555d4aa16aa551",
+    "licenses/supplemental/rust/profiling-1.0.18/LICENSE-MIT": "c8167fdeeed46d3f244d3f85c5bf998ce889343691c32be2c61a8bc4b5c08333",
+    "licenses/supplemental/rust/profiling-1.0.18/NOTICE-PROVENANCE.json": "6075da5b9fb2c00531ba8bb36985f01ce2d1402b247d59a5f88b7b60cece25c8",
+    "licenses/supplemental/rust/rmcp-3.5.1/LICENSE": "0382b0057770ca05e9c350a50aa3b1c1fea84da0bc81d723bf00b9aa841be58a",
+    "licenses/supplemental/rust/rmcp-3.5.1/NOTICE-PROVENANCE.json": "71fdd43cb6cdadd48421a5cf0e192738518a7056b6eed57ff112ee368c5fccf2",
+    "licenses/supplemental/rust/rmcp-macros-3.5.1/LICENSE": "0382b0057770ca05e9c350a50aa3b1c1fea84da0bc81d723bf00b9aa841be58a",
+    "licenses/supplemental/rust/rmcp-macros-3.5.1/NOTICE-PROVENANCE.json": "a4690a5f7fd1e78730e95d367fac2bcf25fa12eda3f4133cf15175a882892a67",
+    "protoinputmux.exe": "886da0c7b7ba2468f700446a976f4372d86d5d09721b55f40fd0a9e2e562d344",
+    "README-portable.txt": "e5e33c577fc832b5c0eb2da4e0933890fc92486c9249248c02d0b3ca488a705e",
+    "runtime/ProtoInputHooks32.dll": "4c1458e7ab495bed9a21ea53eb32dec991a291b12d2345d48381cbb826c73a77",
+    "runtime/ProtoInputHooks64.dll": "b9e6b84e71d0e595aa62bf92125518b7aed83c66b27b4df8ddc3f5ddab9fbec1",
+    "runtime/ProtoInputIJ32.exe": "ae3efbd654006efa77b4794ee2ea750cef56f78566964bcf96651df197b02260",
+    "runtime/ProtoInputIJ64.exe": "66fa10d8389c238a669fcc8cec98b57c2ad204ea6ddf3d8b1775299b8e0a78df",
+    "runtime/ProtoInputIJP32.dll": "b039a1ffa452aa8884c0406e148dc153bcd9eb487641c8abffcc4d569609b895",
+    "runtime/ProtoInputIJP64.dll": "7f26ed86f8f3d4db72996c7614a077fd78ed1fc6b34dd97108a605f724a00f8c",
+    "runtime/ProtoInputLoader32.dll": "fbc4c0c0ef7283b0f1c1e57589d80e461e16341983c69efbb135e21ab995a05e",
+    "runtime/ProtoInputLoader64.dll": "f6eb1cb4aa44f1bc37f8f39a74aab27215a8d4b14ce80aff7d1814d8b3841ab9",
+    "source/corresponding-source.zip": "9988020dbe3ce48638074ad0e3ec24751c1ba72ae8bfde1a89a4a933fc2d6aff",
+    "THIRD_PARTY_NOTICES.md": "026a673656f31b314290836eb1929b576ca6f26c0cb46495c9e0e79aed6a66f5"
+  },
+  "external_x86_fixture": {
+    "source": "E:\\.cargo\\target\\i686-pc-windows-msvc\\debug\\protoinputmux.exe",
+    "sha256": "a92fe912958b69c8c573e11cb320e7d2e326f01a09f81e7b45a165c13db10f52",
+    "scope": "Disposable target only; never host/runtime or bundle payload"
+  },
+  "payload_hashes_after_match": true,
+  "remaining_owned_processes": [],
+  "disposable_root_removed": true
+}

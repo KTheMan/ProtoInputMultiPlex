@@ -1,0 +1,70 @@
+{
+  "result": "PASS for bounded application presentation; lifecycle remains pending",
+  "current_image_sha256": {
+    "x64": "75eb07f965e0d17c18d2bf5ad7d55ffc25493162cb1d2b1f1b7d0f691fb15104",
+    "i686": "5e3f68e9b29293d536ba0e8d484078cc3151d5fed68f604563ca098e29392f4e"
+  },
+  "current_scope": [
+    {
+      "phase": "options-tail",
+      "evidence": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-application-presentation-options-tail-20261014-190426\\evidence.json",
+      "evidence_sha256": "06746ef829f43f2da296bdf266ca4386871e4e480ca2a74935c05b46d570454d",
+      "review": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-application-presentation-options-tail-20261014-190426\\independent-visual-review.json",
+      "review_sha256": "ed839e06da7fcfc88c28c98c37834520c3cc3272ef0d4a00a94c877f49d7c898",
+      "controls": 4
+    },
+    {
+      "phase": "relaunch",
+      "evidence": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-application-presentation-relaunch-20261014-190503\\evidence.json",
+      "evidence_sha256": "c772f2b5aba141e569c5dc6669046360fe3fdd4507da8775547025c791c8e5b6",
+      "review": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-application-presentation-relaunch-20261014-190503\\independent-visual-review.json",
+      "review_sha256": "1b9264398c53dc13115e0f9934edb83b422e68dfa78226a0434af0ad2ce537a9",
+      "controls": 2
+    },
+    {
+      "phase": "selection-only",
+      "evidence": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-application-presentation-selection-only-20261014-190623\\evidence.json",
+      "evidence_sha256": "5ae9af1daee02ccf9d9f22919a2f38dda22b157f74e7a7fb8ac2493ea4bc1819",
+      "review": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-application-presentation-selection-only-20261014-190623\\independent-visual-review.json",
+      "review_sha256": "3ae11a270510fc379af91a71da792c1e910a7f7751e1ed6f4ce9afec538849a1",
+      "controls": 1
+    }
+  ],
+  "retained_earlier_evidence": [
+    {
+      "path": "runtime/acceptance-application-presentation-documents-20261014-183214/evidence.json",
+      "status": "PASS",
+      "scope": "StandaloneMCP appearance defaults/bounds/merge/rejections; e262f494 x64."
+    },
+    {
+      "path": "runtime/acceptance-graph-application-presentation-home-preferences-20261014-183228/evidence.json",
+      "status": "NOT ACCEPTED",
+      "scope": "12acceptedcontrol/stateprefix; widealignment+Dark/LightApply100pixelsaccepted; realexpandedoverlap andlatertransientreadyJSONreadfailure retained;13thplus eventunaccepted."
+    },
+    {
+      "path": "runtime/acceptance-graph-application-presentation-zoom-tail-20261014-185342/evidence.json",
+      "status": "PENDING INDEPENDENT VISUAL REVIEW",
+      "scope": "SeparateboundedreviewPASS8controls, actualLight75 render/runtimephysicalsize invariant;418c737/091b35a images."
+    },
+    {
+      "path": "runtime/acceptance-graph-application-presentation-long-home-20261014-185433/evidence.json",
+      "status": "PENDING INDEPENDENT VISUAL REVIEW",
+      "scope": "5realcontrolreceipts; separatevisualreviewNOTACCEPTED clippedMulti. scroll-limit-correction.json preserves true maxscrollunestablished."
+    }
+  ],
+  "counts": "12earlierprefix+8zoom+4correctedoptions+2relaunch+1selection are control occurrences withsetup; not distinctfeature/parity counts. Earlierlong5 receipts do not accept its clippedvisual criterion.",
+  "corrected_findings": [
+    "Widechordcolumn alignment corrected on earlier e262f494 image.",
+    "Initialexpandedoptionsfooter overdraw corrected; clippedMulti capture required furtherdensitytail.",
+    "CurrentexactminimumfullMulti pixels +realoff/on now satisfyfullvisibilitycriterion without changingcenter-onlyobserver orinjectingexternalinput."
+  ],
+  "visual_judgment": "Roster-first table, singleprimaryaction, explicitroutingdisclosure andfullwidthConfigure are materially cleaner andfamiliar in hierarchy. This is originalProtoInputMux presentation, not apixelclone orfullMouseMuxUXparity. KnownCJKglyphboxes remain excluded.",
+  "source_provenance": "runtime/producer-home-density-20261014-190112/verification.json PASSfmt/strictClippy/135tests/bothbuilds; parent independentlyverified63sources/4reviewfiles/2binaries. Productionbuilds are not independentnative acceptance.",
+  "limits": [
+    "Onlyoffline x64GUI launched in thispresentationgate; i686binarycopy is not executionproof.",
+    "Remaining lifecyclemain/startup/cold/quarantine/standalonehandoff tails NOT RUN oraccepted yet.",
+    "No hardware/RustDeskinput, OSinputinjection, desktop/privatepixelcapture orbroaderapplicationcompatibility claim.",
+    "Prior compact-UX failedattempts and all originalaggregates/sidecars remainunchanged."
+  ],
+  "cleanup": "Current threeownedGUIruns exitednormally, lifecycleHWNDsdestroyed, GUIDtestkeysremoved; finalown-prefixCIMaudit empty. No native routingworker/probe launched."
+}

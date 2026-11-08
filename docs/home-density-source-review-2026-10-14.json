@@ -1,0 +1,17 @@
+{
+  "kind": "source_only_review",
+  "date": "2026-10-14",
+  "scope": "Home density and hierarchy changes in the frozen GUI source only; no Cargo, GUI, or native acceptance was run.",
+  "reviewed_files_sha256": {
+    "crates/protoinputmux/src/gui.rs": "8152de0323d32a9cc7e2d0e06c3ca9ba2c686aac3fcfe6dfd4c385b588169959",
+    "crates/protoinputmux/src/app_preferences_ui.rs": "58bc0a688529c3d437f8a73854d224a6342810fc45fe7777213060db5f87f8df",
+    "crates/protoinputmux/src/mcp.rs": "40df09f2b257bed33238fb58b629d341a6dcaa7303ccebfbc290736d570ef4cd",
+    "crates/protoinputmux/src/main.rs": "2e17c2c5efda71d2d3b693f17b14f2088bcea41974c47e9e7b9e8517101dd3d4"
+  },
+  "review": "Source review found the identity column width is shared between heading and rows through USER_IDENTITY_WIDTH, row selection still uses the existing seat-identity widget ID and 'Select user N' observer/consume guard, and names retain bounded rendering with the complete value in the tooltip. The separate selected-user status row is removed; readiness remains available in the selected row tooltip. Default Home status chrome is suppressed only for the exact default message, while non-default status and dropped-packet warnings remain visible. The Start/Stop buttons use the existing script observation and consume-action guard; Start retains graph, failed-cleanup, quit, and close-state checks, while Pause/Resume and Stop enablement and dispatch remain unchanged. The existing routing-options disclosure IDs, measured route sizing, clipping, and 32–96 px options viewport bounds are retained; roster reserve is reduced from 84 to 64 px to account for the removed selected-status line.",
+  "limitations": [
+    "This review does not establish that the full Multi keyboard row or footer is visible at all window sizes; visual acceptance must verify it.",
+    "No claim is made about overall MouseMux UX parity or broad ProtoInputMux completion."
+  ],
+  "result": "source_review_approved"
+}

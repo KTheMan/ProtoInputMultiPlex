@@ -1,0 +1,19 @@
+{
+  "result": "PASS",
+  "date": "2026-10-14",
+  "assessment_sha256": "5d66f391814a2a9302dea47794868083fc39800252865e395582cc6480baace4",
+  "manifest_sha256": "bf4425a18cebeda6565b70c72981fca40ade07473b3b17c7e32bb67ae6aabcd0",
+  "canonical_json_archives_verified": 11,
+  "not_accepted_aggregates_preserved": 8,
+  "frozen_current_source_hashes_verified": 57,
+  "current_binary_hashes_verified": 2,
+  "native_to_gui_source_delta": [
+    "crates\\protoinputmux\\src\\gui.rs"
+  ],
+  "owned_gui_image_byte_exact": true,
+  "owned_png_zip_entries_byte_exact": 17,
+  "actual_gui_click_occurrences": 44,
+  "disabled_observations": 6,
+  "root_visual_review": "Safe owned GUI, bounded long roster/heading, appearance controls visible. Dense navigation and missing CJK glyph boxes remain; this is not UX parity. Root also inspected native max-size wide inline, independent badge without name and below-name frames.",
+  "scope": "Provenance/archive verification supplements independent bounded virtual acceptance; no historical/native suite replay."
+}

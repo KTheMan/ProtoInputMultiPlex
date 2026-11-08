@@ -1,0 +1,56 @@
+{
+  "title": "Connected Macro Studio source review",
+  "date": "2026-10-14",
+  "result": "approved_source_review",
+  "scope": "Read-only review of the six connected Macro Studio integration/core files against the preserved connected-macro-studio-base snapshots.",
+  "files": [
+    {
+      "path": "crates/protoinputmux/src/agent_runtime.rs",
+      "sha256": "927de02ae3a77ab808bb025ba064e4e72ff585fd940db3683832bc91dbbde121",
+      "baseline_path": "runtime/connected-macro-studio-base/agent_runtime.rs",
+      "baseline_sha256": "e784edded3a8ba7b2820c092ea49d02a17396806e28c6b765c1f1542bf86731e"
+    },
+    {
+      "path": "crates/protoinputmux/src/mcp.rs",
+      "sha256": "717e03e75b0a5af0a9bd3352ba7e7f3d038f595bdb6677ecaac827c5fbe55d3c",
+      "baseline_path": "runtime/connected-macro-studio-base/mcp.rs",
+      "baseline_sha256": "2ef1dc8147c6909e26f5eefff2b19cf39e9e5f1dc47e73584d0d3c42a4b1e461"
+    },
+    {
+      "path": "crates/protoinputmux/src/gui.rs",
+      "sha256": "30fd85251cb3ec4fc91d8fbde78c83982351bc73a3a1cf26d5d047c5b7c09151",
+      "baseline_path": "runtime/connected-macro-studio-base/gui.rs",
+      "baseline_sha256": "517e1a048576d0ee8160072270343d468cee613287f558c55e09c57fff2ab779"
+    },
+    {
+      "path": "crates/protoinputmux/src/macro_studio_ui.rs",
+      "sha256": "fef4c769672d47e1bac64482bd8a39c1460127e7b98b3366eb78412f9a5701ed",
+      "baseline_path": "runtime/connected-macro-studio-base/macro_studio_ui.rs",
+      "baseline_sha256": "c753abab76460b9e2e6f8d5c23c8b6e388ca4c1c0a4dfdb0008038cc0acab851"
+    },
+    {
+      "path": "crates/protoinputmux/src/macro_studio.rs",
+      "sha256": "0edc8ad080bb58ad312cb7838be699d6b5fbe5522714d98735d384adc2d51021",
+      "baseline_path": "runtime/connected-macro-studio-base/macro_studio.rs",
+      "baseline_sha256": "d9e8ccf8143a23c5a7fcc79bee449439b606eb4a728ad7ca526ec89a07c40802"
+    },
+    {
+      "path": "crates/protoinputmux/src/routing_engine.rs",
+      "sha256": "ba9ed5acfd43fb68476febd26541be58acd0abadec15d8955ae4d6e1f3955371",
+      "baseline_path": "runtime/connected-macro-studio-base/routing_engine.rs",
+      "baseline_sha256": "f4b1a0d1540530b470c45976f28c580baa72aeceffd772f8f51fcd2e4af88353"
+    }
+  ],
+  "reviewed_behaviors": [
+    "Connected mutations require session-control and active permitted virtual users; recording is explicitly unavailable because input attribution is not implemented.",
+    "Clip packet devices are rebound to the selected virtual seat; edit/reset/play paths validate candidates before replacing lane state.",
+    "Playback has a distinct agent owner keyed by client, user, pinned HWND and PID; owner-scoped claims, queues, cancellation, completion and disconnect/revocation cleanup preserve other actors and manual claims.",
+    "Each playback action is rechecked at delivery, including replication; source recipient checks pin the source user to the selected app PID while allowing child HWNDs in that same process, and destination scope remains policy-checked.",
+    "Macro Studio nested acknowledgements reach MCP and GUI state; external acknowledgements merge clip state without consuming an outstanding local edit or its draft. The external-update status test now uses the authoring state with agent_client unset."
+  ],
+  "findings": [],
+  "validation_limits": [
+    "This is source review only. The reviewer did not run Cargo checks or native applications.",
+    "No native acceptance or broader product-parity claim is made."
+  ]
+}

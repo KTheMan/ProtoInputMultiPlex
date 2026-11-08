@@ -1,0 +1,238 @@
+{
+  "decision": "APPROVED FINAL BOUNDED CLEAN-RESTART CLOSURE",
+  "date": "2026-10-15",
+  "full_Ultra_goal": "OPEN",
+  "canonical": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\docs\\clean-restart-assessment-2026-10-15.json",
+    "sha256": "0788020a84c0ff78ce511cdd5d77ee0ef49707614d0fd6237b9d86d32c4e443b"
+  },
+  "producer": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-clean-restart-20261015-095400\\verification.json",
+    "sha256": "2833cd9c02798af00a33fec0bbfacf6c29ebcea1bcb1cc03932a184988badae2"
+  },
+  "current_product_integrity": {
+    "compiled_inputs_match": 830,
+    "runtime_files_match": 10,
+    "both_current_builds_match": {
+      "x64": "3de655955af19fa871da56886ccc81b6b42adce153bc55cb1d97cfddfc50c9f4",
+      "i686": "ae3756a60068506de87188f88ce59167d456b79d858299f62550185564ed1c6b"
+    },
+    "copied_run_EXEs_verified": {
+      "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-clean-restart-native-20261015-100245\\control64.exe": "3de655955af19fa871da56886ccc81b6b42adce153bc55cb1d97cfddfc50c9f4",
+      "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-clean-restart-native-20261015-100245\\probe32.exe": "ae3756a60068506de87188f88ce59167d456b79d858299f62550185564ed1c6b",
+      "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-clean-restart-native-20261015-100540\\control64.exe": "3de655955af19fa871da56886ccc81b6b42adce153bc55cb1d97cfddfc50c9f4",
+      "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-clean-restart-native-20261015-100540\\probe32.exe": "ae3756a60068506de87188f88ce59167d456b79d858299f62550185564ed1c6b",
+      "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-clean-restart-native-20261015-101049\\control64.exe": "3de655955af19fa871da56886ccc81b6b42adce153bc55cb1d97cfddfc50c9f4",
+      "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-clean-restart-native-20261015-101049\\probe32.exe": "ae3756a60068506de87188f88ce59167d456b79d858299f62550185564ed1c6b",
+      "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-clean-restart-native-20261015-101609\\control64.exe": "3de655955af19fa871da56886ccc81b6b42adce153bc55cb1d97cfddfc50c9f4",
+      "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-clean-restart-native-20261015-101609\\probe32.exe": "ae3756a60068506de87188f88ce59167d456b79d858299f62550185564ed1c6b",
+      "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-clean-restart-gui-20261015-101736\\control64.exe": "3de655955af19fa871da56886ccc81b6b42adce153bc55cb1d97cfddfc50c9f4",
+      "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-clean-restart-gui-20261015-101736\\probe32.exe": "ae3756a60068506de87188f88ce59167d456b79d858299f62550185564ed1c6b"
+    },
+    "native_build_and_five_Rust_commands_and_doctor": "Previously executed producer PASS261, unchanged; not rerun by closure audit."
+  },
+  "artifact_checks": {
+    "canonical_direct_refs_verified": {
+      "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-clean-restart-20261015-095400\\verification.json": "2833cd9c02798af00a33fec0bbfacf6c29ebcea1bcb1cc03932a184988badae2",
+      "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\docs\\clean-restart-source-review-2026-10-15.json": "fc7a5b29ed7ae03b21da5c8aac5e7071f3b824e6fdbbe186b9293a22ec16b2f2",
+      "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\docs\\clean-restart-harness-correction-review-2026-10-15.json": "9cb4ff6190a8125a772b261d4191503afa36649c6a23e3457ca3114eae2edc16",
+      "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\docs\\clean-restart-busy-relocation-review-2026-10-15.json": "fd06a5964f350e1a63e5059e11cafc679327a6fa52c8e45e4b8eb48d731ec392",
+      "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\docs\\clean-restart-missing-tail-review-2026-10-15.json": "722f9125df0cef7de86774e44c4d9b0a854f1c173fc0c18149ee829c32f0dd6b",
+      "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\patches\\lifecycle\\0004-clean-restart.patch": "052d7c886511e38db80b304ea710c415777977411ec868c813861f2001d6c7bb",
+      "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-clean-restart-native-20261015-101049\\evidence.json": "5a5b42efade63268bd80f6b94d1904a7e354d0210616980b754eb2937848c962",
+      "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-clean-restart-native-20261015-101049\\independent-prefix-review.json": "026cc74bc6d7a2c043cf7105bd032c3f496a4940ac2274d9d673b95da17f0065",
+      "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-clean-restart-native-20261015-101609\\evidence.json": "5350d4e0aa02dcd7ea6e37b1c9db60062fd3115de34013bd577beab63522aabf",
+      "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-clean-restart-native-20261015-101609\\independent-review.json": "c3622b2b756818eb149f44f1494d4709871adc3a79d923ebfed6870b4f48cabd",
+      "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-clean-restart-gui-20261015-101736\\evidence.json": "5af57b8c1206524169cc93ac080607b5f4deea77113e6c52d76bc52b9dbdc985",
+      "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-clean-restart-gui-20261015-101736\\independent-review.json": "ef60027f384d52c97169f6b6d96c0546e9e58d5a94f168f62a341b486b96c8a4",
+      "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-clean-restart-native-20261015-100245\\evidence.json": "065d82b0e6994c239e6e52eb07af55bf2f43c0e81ea249e288c1f69e3ff43ff0",
+      "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-clean-restart-native-20261015-100245\\independent-review.json": "8e897bc36e72094f357b61afe1572d4bcfae83d0dfa45999e7f77cd7aba8cd5b",
+      "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-clean-restart-native-20261015-100540\\evidence.json": "c63522ec008267f401cd156a09c1ba435c56a0cec7e959be6c50290f25a3c9de",
+      "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-clean-restart-native-20261015-100540\\independent-review.json": "8fd354181b93df43a1fff37fe1c85e83fe5987ede37a9b1866a3e432cf6a5407",
+      "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-clean-restart-gui-20261015-101736\\stop1.png": "6a198c643f605c7a3838ea93f96017c099764880e4c3066ac4dc03be9e39f560",
+      "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-clean-restart-gui-20261015-101736\\stop2.png": "002775c347c92968cc0c22e1f81c636ce5d1e210fc4f1cd52580bbe8970ec76f"
+    },
+    "historical_runner_archives_verified": {
+      "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-clean-restart-native-20261015-100245\\runner-source\\test-clean-restart-acceptance.py": "99431c01db74d74babcec3597b90c7a172e06cae9d475beccb6cf1f2dca83182",
+      "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-clean-restart-native-20261015-100540\\runner-source\\test-clean-restart-acceptance.py": "f984abe1f729cc120c2d3ab66e0d305acf32e100558c0f992deca6cae3b152ad",
+      "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-clean-restart-native-20261015-101049\\runner-source\\test-clean-restart-acceptance.py": "f3cf69e6f51d85e7c6ac23f1cab6104e33104b77381b4b6a29d71f3978be8a57",
+      "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-clean-restart-native-20261015-101609\\runner-source\\test-clean-restart-acceptance.py": "eb594ba2e30c2e087cf4302be63a7ed7fc5931b580fee4e27bd847af1841f661",
+      "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-clean-restart-gui-20261015-101736\\runner-source\\test-clean-restart-acceptance.py": "eb594ba2e30c2e087cf4302be63a7ed7fc5931b580fee4e27bd847af1841f661"
+    },
+    "current_runner": {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\scripts\\test-clean-restart-acceptance.py",
+      "sha256": "eb594ba2e30c2e087cf4302be63a7ed7fc5931b580fee4e27bd847af1841f661"
+    },
+    "current_plan": {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\clean-restart-acceptance-plan.md",
+      "sha256": "609eb08ed4facd81ec27e386ac831a05bc4ec40b9469337bb257cf894be19047"
+    },
+    "historical_ref_limit": "Old source/harness reports intentionally bind earlier runner/plan revisions. Archived runner bytes match old hashes; do not claim all earlier plan byte archives. Old source-review contract was pre-acceptance prose, superseded by independent docs review/addendum."
+  },
+  "independent_document_review": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\docs\\clean-restart-doc-review-2026-10-15.json",
+    "sha256": "a748e1995d982376328fdfb493188010e1efce7b9ba69a4cb57a2e54f7c8c8ab"
+  },
+  "resolved_accuracy_addendum": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\docs\\clean-restart-doc-closure-addendum-2026-10-15.json",
+    "sha256": "1f4bc44d094564ee4bf04cf4c3543742fd6bae8deecb78537c3dd4d70032059e"
+  },
+  "current_seven_documents": {
+    "README.md": "a05d90af67ac90625df4510859c27fdea586720a66de8d49edadce5bc8abbbc6",
+    "docs/ultra-parity.md": "1e7357f17a7bce3dc16b00b7a8977bbef68815f80dfa78a0c569d034a2c91c3e",
+    "docs/roadmap.md": "ed16066d7f01d381b9ab99bd70f4576ae0f2c385051a9c897d13314e5476ca3d",
+    "docs/agents.md": "e5f528439f45262d41f211d804110afb761cf4c5b5d890a8a18d27b7aaed10f7",
+    "docs/validation.md": "1e13523b7153f1f8f2d4762885a208f9b82727d489af07d0c52968bc1549d97e",
+    "docs/clean-restart-contract.md": "d94e32c55ed8b6e87554614bc44c950e466673f7a14962f761d948331f6db93b",
+    "skills/protoinputmux/SKILL.md": "a7bb279fdd8f04db8c37925d415e8295068fd1a8d1be37d594c6c3741ea1528f"
+  },
+  "byte_exact_display_images": {
+    "docs/clean-restart-home.png": "6a198c643f605c7a3838ea93f96017c099764880e4c3066ac4dc03be9e39f560",
+    "docs/clean-restart-minimum.png": "002775c347c92968cc0c22e1f81c636ce5d1e210fc4f1cd52580bbe8970ec76f"
+  },
+  "historical_initial_REVISE_preserved": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\docs\\clean-restart-doc-review-initial-2026-10-15.json",
+    "sha256": "c3d2dc8d279036d2dbf29a129e0bc76af24126f714bb6895bc4b1c9b72aebdc1"
+  },
+  "skill_install": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\docs\\clean-restart-skill-install-2026-10-15.json",
+    "sha256": "4730c43cddf9d74f1dd643d233bad090b94bd9671fb46999ea002f4ae6186909"
+  },
+  "skill_verification": {
+    "source": {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\skills\\protoinputmux\\SKILL.md",
+      "sha256": "a7bb279fdd8f04db8c37925d415e8295068fd1a8d1be37d594c6c3741ea1528f"
+    },
+    "installed": {
+      "path": "C:\\Users\\Archform CAD Station\\.codex\\skills\\protoinputmux\\SKILL.md",
+      "sha256": "a7bb279fdd8f04db8c37925d415e8295068fd1a8d1be37d594c6c3741ea1528f"
+    },
+    "source_installed_byte_equal": true,
+    "old_backup": {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\clean-restart-skill-before.md",
+      "sha256": "aa8be5483c45e8a48121d12cff92c36a1bc2d89706eb502aea8fcbe257ccc728"
+    },
+    "both_recorded_validators_exit0": true,
+    "validator_or_install_rerun_by_this_audit": false
+  },
+  "accepted_scope": "Same original owned x64+x86 targets through two clean virtual sessions with original saved UPs/new root recipients/current observer metadata, fail-closed real fence failure and own worker loss, actual GUI-owner+one-standalone Busy/no output and four GUI Start/Stop clicks.",
+  "counts": {
+    "accepted_phase_MCP_mutations": 57,
+    "accepted_phase_routing_input_calls": 39,
+    "actual_GUI_clicks": 4,
+    "originals": 2,
+    "all_attempt_mutations": 90,
+    "all_attempt_routing_input_calls": 64,
+    "counts_not_distinct_tests": true
+  },
+  "owned_cleanup_audit": {
+    "all_recorded_ordinary_own_exits0": true,
+    "expected_deliberate_worker_exit15": true,
+    "all_recorded_CIM0_and_overlays_closed": true,
+    "GUI_GUID_descriptor_absent": true,
+    "fresh_scoped_CIM_by_exact_unique_run_image_survivors": [],
+    "per_attempt": [
+      {
+        "raw": {
+          "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-clean-restart-native-20261015-100245\\evidence.json",
+          "sha256": "065d82b0e6994c239e6e52eb07af55bf2f43c0e81ea249e288c1f69e3ff43ff0"
+        },
+        "recorded_owned_exit_codes": {
+          "154264": 0,
+          "166312": 0,
+          "156392": 0
+        },
+        "worker_exit_codes": {
+          "165972": 0
+        },
+        "CIM_survivors": [],
+        "known_overlays_closed": true
+      },
+      {
+        "raw": {
+          "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-clean-restart-native-20261015-100540\\evidence.json",
+          "sha256": "c63522ec008267f401cd156a09c1ba435c56a0cec7e959be6c50290f25a3c9de"
+        },
+        "recorded_owned_exit_codes": {
+          "161172": 0,
+          "148664": 0,
+          "153664": 0,
+          "168828": 0
+        },
+        "worker_exit_codes": {
+          "155760": 0
+        },
+        "CIM_survivors": [],
+        "known_overlays_closed": true
+      },
+      {
+        "raw": {
+          "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-clean-restart-native-20261015-101049\\evidence.json",
+          "sha256": "5a5b42efade63268bd80f6b94d1904a7e354d0210616980b754eb2937848c962"
+        },
+        "recorded_owned_exit_codes": {
+          "168672": 0,
+          "161044": 0,
+          "158288": 0,
+          "168180": 0,
+          "168600": 0,
+          "166068": 0,
+          "167348": 0
+        },
+        "worker_exit_codes": {
+          "165344": 0,
+          "167116": 0
+        },
+        "CIM_survivors": [],
+        "known_overlays_closed": true
+      },
+      {
+        "raw": {
+          "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-clean-restart-native-20261015-101609\\evidence.json",
+          "sha256": "5350d4e0aa02dcd7ea6e37b1c9db60062fd3115de34013bd577beab63522aabf"
+        },
+        "recorded_owned_exit_codes": {
+          "130764": 0,
+          "157900": 0,
+          "167676": 0,
+          "171512": 0,
+          "164148": 0,
+          "125344": 0,
+          "165160": 0,
+          "165168": 0
+        },
+        "worker_exit_codes": {
+          "154160": 15
+        },
+        "CIM_survivors": [],
+        "known_overlays_closed": true
+      },
+      {
+        "raw": {
+          "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-clean-restart-gui-20261015-101736\\evidence.json",
+          "sha256": "5af57b8c1206524169cc93ac080607b5f4deea77113e6c52d76bc52b9dbdc985"
+        },
+        "recorded_owned_exit_codes": {
+          "160940": 0,
+          "152284": 0,
+          "152788": 0
+        },
+        "worker_exit_codes": {},
+        "CIM_survivors": [],
+        "known_overlays_closed": true
+      }
+    ],
+    "exclusive_native_slot_returned": true
+  },
+  "remaining_limits": [
+    "Full goal, full UX/P1 and real-hardware/desktop-wide/same-process/arbitrary-app claims remain open.",
+    "Bottom status cropped right/bottom in both originals; whole Stop/readiness reason pixel readability unaccepted. Whole Start/roster/Configure/Settings and actual Stop workflow only.",
+    "Concurrent standalone sessions collide on emergency F11; actual Busy proof uses GUI owner+one standalone.",
+    "Disjoint accepted native device-ID sets/old-ID rejection, forced partial Prepare/failedUP-commit/legacy/mismatch/stale wire faults remain source/unit or unperformed native as canonical states.",
+    "i686 target executed; i686 controller built only. Physical/fixed-relative restart unverified.",
+    "Resident DLL and idle helpers remain loaded; no complete native unload claim.",
+    "Three old NOT ACCEPTED aggregates and PENDING raw statuses preserved; accepted subgroups are separate."
+  ],
+  "findings": [],
+  "new_apps_native_UI_Cargo_or_tests": false
+}

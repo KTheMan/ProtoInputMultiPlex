@@ -1,0 +1,89 @@
+{
+  "date": "2026-10-14",
+  "group": "live GUI agent connections and selected-target capture",
+  "kind": "producer verification; independent acceptance remains separate",
+  "status": "PASS",
+  "checks": [
+    {
+      "command": [
+        "cargo",
+        "fmt",
+        "--all",
+        "--check"
+      ],
+      "exit_code": 0,
+      "log": "runtime\\producer-connected-agents-20261014-075914\\1.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": [
+        "cargo",
+        "clippy",
+        "--workspace",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit_code": 0,
+      "log": "runtime\\producer-connected-agents-20261014-075914\\2.log",
+      "sha256": "85a09568fd379a55866aecd55b83e4ac44642f41c39667f1ae26c65fdf019f25"
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--workspace"
+      ],
+      "exit_code": 0,
+      "log": "runtime\\producer-connected-agents-20261014-075914\\3.log",
+      "sha256": "930c735aa8f7b4b02a9ff858249eb68ef8256e1046486791b89e48fd6520abe7"
+    },
+    {
+      "command": [
+        "cargo",
+        "build",
+        "-p",
+        "protoinputmux"
+      ],
+      "exit_code": 0,
+      "log": "runtime\\producer-connected-agents-20261014-075914\\4.log",
+      "sha256": "b6601d5836b2cb8895b550d7ce7c72d0794298b7ba5775c935effd79b9c238d9"
+    },
+    {
+      "command": [
+        "cargo",
+        "build",
+        "-p",
+        "protoinputmux",
+        "--target",
+        "i686-pc-windows-msvc"
+      ],
+      "exit_code": 0,
+      "log": "runtime\\producer-connected-agents-20261014-075914\\5.log",
+      "sha256": "0776c89397fdf43a3c641eef296e20c6d607d323f8d81a0f5aac673a3b933e14"
+    }
+  ],
+  "tool_count": 20,
+  "test_groups": [
+    57,
+    2,
+    3,
+    2,
+    29,
+    0,
+    0
+  ],
+  "total_tests": 93,
+  "builds": {
+    "x64": {
+      "path": "E:\\.cargo\\target\\debug\\protoinputmux.exe",
+      "sha256": "5d46ebeae342f62864bcb3d69a8ed8b946930a82ef6e3ec729890bddc69abf05"
+    },
+    "i686": {
+      "path": "E:\\.cargo\\target\\i686-pc-windows-msvc\\debug\\protoinputmux.exe",
+      "sha256": "e17457be884605df2b1028e76cf8f19dd4d3453a1f8bdac8bf378df366f85275"
+    }
+  },
+  "scope": "Source/build checks only; virtual-only GUI connection, actor claims/PID grants and real capture need independent native/UI acceptance. No new backend source patch. Hardware, same-process isolation and broad Ultra parity remain unverified."
+}

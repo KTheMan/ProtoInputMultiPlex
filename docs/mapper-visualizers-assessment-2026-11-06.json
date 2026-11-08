@@ -1,0 +1,112 @@
+{
+  "date": "2026-11-06",
+  "decision": "MAPPER_VISUALIZERS_ACCEPTED",
+  "scope": "LED, Gauge, XY Pad and Path Tracer nodes with typed, actor-private Ouroboros and MCP displays.",
+  "verification": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-visualizers-20261106\\checks-004\\verification.json",
+    "sha256": "a99e93f4690aae692575457a7f741b7c4bccb81fec08680ce4e73ad45237cb6f"
+  },
+  "review": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-visualizers-20261106\\independent-acceptance.json",
+    "sha256": "b367c8225800f006bd14f91622bee4869abc2c9c4c0e67de00e6174f6ad7df2a"
+  },
+  "publication": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-visualizers-20261106\\publication.json",
+    "sha256": "c2a8e559795d46fa49262061ba930d54bbc1eafa6233db3282a99167bf2083d0"
+  },
+  "workspace_tests": {
+    "passed": 781,
+    "failed": 0,
+    "ignored": 19
+  },
+  "x64_image": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-visualizers-20261106\\checks-004\\x64\\protoinputmultiplex.exe",
+    "sha256": "aa2e2696a3463be90992a56622215fb5b72a325f6c1cfcce006ca189e1829df4"
+  },
+  "checks": {
+    "fmt": 0,
+    "clippy": 0,
+    "workspace-tests": 0,
+    "build-gui": 0
+  },
+  "producer": {
+    "original_session": 88507,
+    "original_exit_code": 0
+  },
+  "native": {
+    "original_session": 11248,
+    "original_exit_code": 0,
+    "raw": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\ms-da9d6e6fb599\\evidence.json",
+      "sha256": "ead0c140404a0d7a20b87b550e37cec1ab23796b9168bb3d682786c0a9a09133"
+    },
+    "driver": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-visualizers-20261106\\native-v2.py",
+      "sha256": "a1d39db41928b13033f550ad1387e2143758e3d4115f6b147467c63778d6128c"
+    },
+    "readiness": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-visualizers-20261106\\native-ready-layout.json",
+      "sha256": "847294f2e132b444256aaa4340b6f97a884df08e720fd5754627749ce215ebd4"
+    },
+    "ui_actions": 21,
+    "capture": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\ms-da9d6e6fb599\\visualizer-activity.png",
+      "sha256": "6164064de8ed9d3a9e78ed7fc4dade773f54f5918d2957092b87fc287fc3b22c",
+      "geometry": {
+        "hwnd": 269760,
+        "dpi": 96,
+        "client_pixels": [
+          680,
+          620
+        ],
+        "client_logical": [
+          680.0,
+          620.0
+        ],
+        "window_rect": [
+          312,
+          312,
+          1008,
+          971
+        ]
+      }
+    },
+    "exit_codes": {
+      "GUI": 0,
+      "MCP": [
+        0,
+        0
+      ],
+      "targets": {
+        "a": 0,
+        "b": 0
+      }
+    }
+  },
+  "earlier_workspace_attempt": {
+    "original_session": 5253,
+    "original_exit_code": 1,
+    "verification": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-visualizers-20261106\\checks-002\\verification.json",
+      "sha256": "67dbb70d32acc97d69590b07a37338ffa05ce0e21ac360f1b9008b15c3d193ad"
+    },
+    "observed": "One existing UI-script test hit DirectoryNotEmpty during teardown. The same source passed on retry."
+  },
+  "earlier_native_attempt": {
+    "original_session": 65472,
+    "original_exit_code": 0,
+    "raw": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\ms-ead3e7c15cc1\\evidence.json",
+      "sha256": "34ffc1f14505d5f8847c4609280ddf156c307e0e1d8b90a07b69bd85c63c40ed"
+    },
+    "observed": "MCP observations passed. Independent review found both right-hand cards clipped in the 680x620 capture. The layout was corrected before the accepted run."
+  },
+  "coverage": [
+    "One owned virtual workflow inspected Hold, Impulse and Position latest values and timed Position path points through MCP. The second client had no readings.",
+    "The local GUI displayed LED, Gauge, XY Pad and Path Tracer together. Disarm cleared the current run's history and all owned processes exited normally.",
+    "Rust tests cover input type, range validation, private observation and the committed sample paths."
+  ],
+  "open": [
+    "Additional Mapper visualizers, native Delta and scalar-state display coverage, historical GUI stall and full Ultra parity remain open."
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "decision": "APPROVED HARNESS-ONLY CORRECTION; NEW ROOT READY REQUIRED",
+  "retained_source_approval": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\docs\\clean-restart-source-review-2026-10-15.json",
+    "sha256": "fc7a5b29ed7ae03b21da5c8aac5e7071f3b824e6fdbbe186b9293a22ec16b2f2"
+  },
+  "retained_failed_raw": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-clean-restart-native-20261015-100245\\evidence.json",
+    "sha256": "065d82b0e6994c239e6e52eb07af55bf2f43c0e81ea249e288c1f69e3ff43ff0"
+  },
+  "failure_review": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-clean-restart-native-20261015-100245\\independent-review.json",
+    "sha256": "8e897bc36e72094f357b61afe1572d4bcfae83d0dfa45999e7f77cd7aba8cd5b"
+  },
+  "changed_runner": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\scripts\\test-clean-restart-acceptance.py",
+    "sha256": "f984abe1f729cc120c2d3ab66e0d305acf32e100558c0f992deca6cae3b152ad",
+    "ast": "PASS"
+  },
+  "plan": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\clean-restart-acceptance-plan.md",
+    "sha256": "5ca653740b780ae149f3ec2e8d3de5bc23e050b2068eebeb171ba263d8ebca5f"
+  },
+  "actual_delta": [
+    "Declare PostMessageW HWND-width prototype in native phase",
+    "Replace both following oracle literals with exact public Following application cursor",
+    "Print run path once on run-directory creation"
+  ],
+  "other_field_oracles_rechecked": {
+    "application_cursor.state": "app_cursor.rs provider_state STATUS_VALID|HIDDEN -> Following application cursor, both waits exact",
+    "application_cursor fields": "AppCursorObservation pid:u32/hwnd:usize/provider_status:Option<u32>/kind:u32/sequence:u64; no invented payload",
+    "eligibility.state": "targets.rs serde snake_case fresh,reusable,busy,dirty,legacy,unavailable; creation Option<u64>",
+    "recovery.phase": "session_recovery.rs serde snake_case stopped/running/quarantined; bool can_start",
+    "user_settings": "mcp Snapshot Vec<UserSettings>{user,settings}; complete CursorSettings keyboard focus clicked snake_case/follow_application bool",
+    "keyboard clicked": "State keyboard.clicked Option<Recipient>{hwnd,pid}; real recipient equality uses actual own HWND",
+    "native key/button": "automation_probe record_native_event kind key/code VK or button/code1 secondary, pressed bool, actual hwnd",
+    "pump schema": "test-output-shutdown-timeout pump_mode normal/none, mode_entered1, frames,key_events vk/pressed; normal+3 fresh reports rather than required late-UP",
+    "worker identity": "CIM ProcessId/ParentProcessId/ExecutablePath/CommandLine; retained HANDLE GetExitCodeProcess, deliberate kill only exact own child",
+    "GUI Script": "Existing Start routing/Stop routing labels; Base callback verify(name,sample), after_controls(gate), profile_state.profile/state rows/.recovery.json"
+  },
+  "budget_unchanged": {
+    "native_mutation_cap": 60,
+    "expected_mutations": 57,
+    "routing_input_cap": 40,
+    "expected_routing_calls": 39,
+    "gui_receipts": 4,
+    "originals": 2
+  },
+  "product_changes": false,
+  "new_apps_run": false
+}

@@ -1,0 +1,130 @@
+{
+  "date": "2026-11-06",
+  "decision": "INDEPENDENTLY_ACCEPTED_SHARED_CHECKOUT_INTEGRATION",
+  "scope": "Development acceptance for the default supervised Rust worker with two independent virtual users and disposable x64 target applications.",
+  "worktree": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux",
+  "compiler_inputs": 143,
+  "changed_source_paths": [
+    "crates/mux-windows/src/protoinput.rs",
+    "crates/protoinputmultiplex/src/agent_runtime.rs",
+    "crates/protoinputmultiplex/src/agent_ui.rs",
+    "crates/protoinputmultiplex/src/annotation_runtime.rs",
+    "crates/protoinputmultiplex/src/desktop_router.rs",
+    "crates/protoinputmultiplex/src/gui.rs",
+    "crates/protoinputmultiplex/src/gui_activity.rs",
+    "crates/protoinputmultiplex/src/gui_bridge.rs",
+    "crates/protoinputmultiplex/src/gui_discovery.rs",
+    "crates/protoinputmultiplex/src/gui_script_io.rs",
+    "crates/protoinputmultiplex/src/gui_setup.rs",
+    "crates/protoinputmultiplex/src/macro_studio.rs",
+    "crates/protoinputmultiplex/src/macro_studio/mapper_delivery.rs",
+    "crates/protoinputmultiplex/src/macro_studio/user_pause.rs",
+    "crates/protoinputmultiplex/src/macro_studio/user_pause_tests.rs",
+    "crates/protoinputmultiplex/src/magnifier_runtime.rs",
+    "crates/protoinputmultiplex/src/main.rs",
+    "crates/protoinputmultiplex/src/mcp.rs",
+    "crates/protoinputmultiplex/src/router.rs",
+    "crates/protoinputmultiplex/src/routing_engine.rs",
+    "crates/protoinputmultiplex/src/session.rs",
+    "crates/protoinputmultiplex/src/ui_script.rs"
+  ],
+  "new_source_paths": 3,
+  "verification": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\integration-20261106\\checks-002\\verification.json",
+    "sha256": "d2b0fc61287e6564cbdc6fe13028aa2c327cf66eadf932096c230bc76f9da288"
+  },
+  "checks": {
+    "fmt": 0,
+    "clippy": 0,
+    "workspace-tests": 0,
+    "build-gui": 0,
+    "build-i686": 0
+  },
+  "workspace_tests": {
+    "passed": 745,
+    "failed": 0,
+    "ignored": 19
+  },
+  "builds": {
+    "x64": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\integration-20261106\\checks-002\\x64\\protoinputmultiplex.exe",
+      "sha256": "476d653b716a5392ba86193ad74d462eff926afa59670b41488a666b60d633e1"
+    },
+    "i686": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\integration-20261106\\checks-002\\i686\\protoinputmultiplex.exe",
+      "sha256": "e09bbd6432a18a4afc76dd38547aafd3adaeb66476ce5cb9fc6410cd898b32e9"
+    }
+  },
+  "native_gate": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\integration-20261106\\native-gate-v3.json",
+    "sha256": "1528b3b85d8b9d9cf0d904f9b11e4b4d924ba47603ed1bcc2c6fd97a24c0bdf3"
+  },
+  "native_source_review": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\integration-20261106\\native-ready-review-v3.json",
+    "sha256": "114fccc30385c0e1f851012bd0d9e2ade9cca34d8d6e3d7d2d838c492c218401"
+  },
+  "native": {
+    "original_session": 92787,
+    "exit_code": 0,
+    "raw": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\integration-d309bdc534b8\\evidence.json",
+      "sha256": "5d01ed8ded10a4b9a0608129cdbb96e899bcf0c8cf615124e2145903bafb6b9d"
+    },
+    "independent_review": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\integration-20261106\\native-actual-review.json",
+      "sha256": "bf83f161b8d6dc4edca986509e91ed87b9c108da81c1a6133b1b16dfe68229b2"
+    },
+    "ui_steps": 16,
+    "mcp_calls": 25,
+    "exit_codes": {
+      "GUI": 0,
+      "MCP": [
+        0,
+        0
+      ],
+      "targets": {
+        "a": 0,
+        "b": 0
+      }
+    },
+    "cleanup_errors": []
+  },
+  "publication": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\integration-20261106\\publication.json",
+    "sha256": "8fdd27c7ec0c6c4d6a840b587fd2a2a02e0179e213a69dcff7b975647db74ad3"
+  },
+  "publication_review": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\integration-20261106\\publication-independent-review.json",
+    "sha256": "8bde8b8f06dfcd97b1248416e08f2e282b67e3fe6bede896b878bf159e4e0a6a"
+  },
+  "runtime_inventory": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\integration-20261106\\inventory.json",
+    "sha256": "0a9c2de4b3815c21cc57bc40a25e862d5d3a4f8f964acd93fe850cfb90e069cc"
+  },
+  "verified_behavior": [
+    "Stopped and live authenticated callback observations in the same GUI instance. Start retired Setup authority.",
+    "Exact WNDPROC delivery to two owned windows while the runtime lacked both native Loader DLLs and the app had no backend override.",
+    "A stale Mapper command preserved revision, graph and held keys. The negative receipt came from the worker.",
+    "Private GUI Pause and Resume acknowledgements. Pause released A at its original window and B continued. The next fresh A DOWN routed after the matching source UP.",
+    "Stop released both remaining holds. Terminal MCP cleared activity data, and the descriptor retired after client EOF. All five owned processes exited normally."
+  ],
+  "first_attempt": {
+    "original_session": 61255,
+    "exit_code": 1,
+    "raw_result": "NOT_ACCEPTED",
+    "phase": "Setup descriptor creation",
+    "description": "The GUI reported Windows error 3 creating its private descriptor in the redirected staging folder. GUI and both targets exited normally. The accepted attempt used the established short local staging root.",
+    "raw": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\integration-20261106\\owned-495b231e5638\\evidence.json",
+      "sha256": "105f0da0aa8673eaddcad083602b63fecbc7c2b417023865491b71d4fddd8cc6"
+    }
+  },
+  "source_review_followup": "The successful retirement path clears a generated user's Pause mask and retry state. Cleanup failure can still leave clone-controller retirement ahead of router retirement.",
+  "open": [
+    "Historical GUI-stall cause and fix",
+    "Clone retirement after cleanup failure",
+    "Pause-specific transport fault qualification",
+    "Assigned-route and i686 native acceptance for the combined features",
+    "Full Ultra and release qualification"
+  ]
+}

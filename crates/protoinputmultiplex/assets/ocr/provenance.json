@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "package": "ocrs-pretrained-latin",
+  "publisher": "robertknight (Robert Knight)",
+  "repository": "https://huggingface.co/robertknight/ocrs",
+  "revision": "df0edd170279ab971b53e094c627255a87e1a503",
+  "license": "CC-BY-SA-4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "license_text_source": "https://raw.githubusercontent.com/creativecommons/cc-legal-tools-data/a0dac18d1a773b4cdb7d8dd5d9bf4efab7901030/legacy/legalcode/by-sa_4.0.txt",
+  "license_text_sha256": "28a9529c7d0bb4dc51f4bf5c116a3d16ef247a052f7591466768ddf563fd1cf5",
+  "model_card": {
+    "filename": "MODEL_CARD.md",
+    "original_filename": "README.md",
+    "url": "https://huggingface.co/robertknight/ocrs/resolve/df0edd170279ab971b53e094c627255a87e1a503/README.md",
+    "bytes": 570,
+    "sha256": "dd8758be23f3c41367104b17936afbd4833bffdefccf76d30b010924e99faea1"
+  },
+  "models": [
+    {
+      "filename": "text-detection-ssfbcj81.rten",
+      "bytes": 2523564,
+      "sha256": "614aafabf27c94d386f7aa036c967c2e47e4b9938fa11531ca8f5698c1ca4c36",
+      "url": "https://huggingface.co/robertknight/ocrs/resolve/df0edd170279ab971b53e094c627255a87e1a503/text-detection-ssfbcj81.rten",
+      "modified": false
+    },
+    {
+      "filename": "text-rec-checkpoint-s52qdbqt.rten",
+      "bytes": 9716444,
+      "sha256": "606d9a0414c6b73c99df75b707c11c70d1c8b12e1d4f900922e185fc37bfca65",
+      "url": "https://huggingface.co/robertknight/ocrs/resolve/df0edd170279ab971b53e094c627255a87e1a503/text-rec-checkpoint-s52qdbqt.rten",
+      "modified": false
+    }
+  ],
+  "total_model_bytes": 12240008,
+  "code_license_separate": "ocrs and RTen code: MIT OR Apache-2.0; this does not relicense these model weights.",
+  "upstream_model_license": {
+    "repository": "https://github.com/robertknight/ocrs-models",
+    "revision": "a63bee16bf0c888e4ce7fe09ad124c83287444ee",
+    "url": "https://github.com/robertknight/ocrs-models/blob/a63bee16bf0c888e4ce7fe09ad124c83287444ee/LICENSE.md",
+    "source_sha256": "87db865a0a11cf66456b56920d307b3cdd80a72e0abb09495d2e663a9c81525f",
+    "section": "Pre-trained models",
+    "license": "CC-BY-SA-4.0",
+    "publisher_prescribed_attribution": "Ocrs models (https://github.com/robertknight/ocrs-models), trained on the HierText dataset by Google Research. Licensed under CC BY-SA 4.0.",
+    "training_dataset": {
+      "name": "HierText",
+      "publisher": "Google Research",
+      "url": "https://github.com/google-research-datasets/hiertext",
+      "license": "CC-BY-SA-4.0"
+    }
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "group": "Live generated virtual users",
+  "date": "2026-10-14",
+  "independent_owner": "/root/acceptance",
+  "result": "PASS",
+  "scope": "Automatic desktop routing with explicit owned target PIDs, virtual input and cooperative x64/x86 disposable applications. Generated seats start at the selected target client center, copy source cursor settings, and begin with annotation/magnifier Off and an empty macro lane.",
+  "build_sha256": {
+    "x64": "09bb590e4e628db8b7ada5883ccee5fc034508b6d3bad051fb2f72b01312a239",
+    "i686": "b384b6c39bb2f79d118fbb860b04884247ffda0e8770b236f428317204615cfd"
+  },
+  "counts": {
+    "native_grouped_checks": 5,
+    "native_setup_groups": 1,
+    "native_behavior_groups": 4,
+    "accepted_gui_prefix_controls": 26,
+    "accepted_gui_cleanup_tail_controls": 9,
+    "accepted_gui_control_occurrences": 35,
+    "distinct_gui_button_labels": 19
+  },
+  "accepted_evidence": [
+    {
+      "artifact": "docs/virtual-users-native-2026-10-14.json",
+      "original": "runtime/acceptance-virtual-users-20261014-065941/evidence.json",
+      "sha256": "e5762b9fbf2ffa715bf563cefe4de778b476a29b684057e5fad773b62a7534e0",
+      "original_status": "PASS",
+      "coverage": "18 object-root MCP schemas; click-free native attachment and center alignment; original Studio F5/Back and other-user manual F6 preserved; missing source, out-of-scope/exited/duplicate PID, stale revision and invalid options rejected atomically; actual x86 child F5/Back/UTF-16 text order and independent motion; intermediate clone removal cancels delayed crossing routes and releases downstream copied F5/F7 while retaining manual F8; actual RGBA ink cleanup, clone macro clearing and magnifier/cursor HWND destruction; tombstone ID/index rejection; later unique slot/ID/device paths on reused owned target; native release and HWND destruction on controller EOF."
+    },
+    {
+      "artifact": "docs/virtual-users-ui-prefix-2026-10-14.json",
+      "original": "runtime/acceptance-graph-virtual-users-20261014-070013/evidence.json",
+      "sha256": "20905bc20cf8327d5a5926322909d023a2a34a9974353b1e8bc45def85227ae9",
+      "original_status": "NOT ACCEPTED",
+      "accepted_prefix_controls": 26,
+      "coverage": "Actual Start/Select controls and matched roster acknowledgements; duplicate-target error followed by successful retry; source F7/Unicode/Back delivered to both owned x86 EDIT controls; scoped removal preserves originals and the other clone; replacement uses a later unique slot; visibly rendered generated roster and real controls.",
+      "excluded_failure": "The unaccepted 27th Stop sample required ui.state.json to become empty. That file retains the last routing tick and has no promised Stop rewrite. The original failure status is retained; the cleanup criterion is independently covered by the focused tail."
+    },
+    {
+      "artifact": "docs/virtual-users-ui-cleanup-2026-10-14.json",
+      "original": "runtime/acceptance-graph-virtual-users-cleanup-20261014-070320/evidence.json",
+      "sha256": "659880da6f51fc3775f7a9f39585ffd2151d85d3ce3361d06a0acd9028020e48",
+      "original_status": "PASS",
+      "coverage": "Nine actual controls: Start, create clone, Stop, actual profile Save/Load and roster reset. Independent IsWindow checks prove previous native cursor HWNDs were destroyed; native holds are empty. Saved seats contain only the two originals, and the original text-only B-to-A edge remains while every temporary clone edge is omitted."
+    }
+  ],
+  "visual_evidence": {
+    "artifact": "docs/virtual-users-control-center.png",
+    "original": "runtime/acceptance-graph-virtual-users-20261014-070013/virtual-replicas.png",
+    "sha256": "9b9826601869e2d405aa17eead9eab3aa5326be715a2da3bcd7b29641c4ba274",
+    "review": "Independently viewed pixels show the actual Virtual Replicas page, Start/Select/Stop controls, roster revision 2 with four slots, and two active generated seats. Only owned test names and PIDs are visible; root also inspected the image."
+  },
+  "producer_verification": "docs/virtual-users-rust-checks-2026-10-14.json records fmt, strict workspace Clippy, 87 workspace tests and both builds. These producer checks are separate from the independent native/UI evidence.",
+  "runner_correction": "Only the unpromised post-Stop telemetry-file assumption was corrected. A bounded nine-control cleanup/profile tail replaced a full 31-control replay. No product changes or native feature repeats were needed after READY.",
+  "limits": [
+    "No hardware or RustDesk input used for control or validation; no OS input injection. Passive device discovery is not claimed disabled.",
+    "The x64 controller/GUI delivered input to owned x64/x86 targets; an i686 controller/GUI session was not separately exercised.",
+    "No full same-process isolation, unrelated application compatibility, remote operation, full MouseMux Ultra parity, forced native allocation/provider failure, or crash-recovery claim.",
+    "Inactive index/ID rejection and visible tombstones were covered; every disabled inactive-user control across the other pages was not separately exercised.",
+    "New lifecycle tests used default motion options plus a three-second delayed chain. The earlier component-filter, pacing, annotation and magnifier suites were not broadly repeated. Mouse-only sources and all optional clone edge settings were not separately enumerated."
+  ],
+  "cleanup": {
+    "all_artifacts_record_owned_processes_closed": true,
+    "native_eof_controller_exit_code": 0,
+    "independent_final_owned_process_cim_audit": "empty",
+    "exclusive_live_slot_released": true
+  }
+}

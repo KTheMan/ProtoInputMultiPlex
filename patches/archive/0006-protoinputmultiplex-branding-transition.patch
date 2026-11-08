@@ -1,0 +1,84 @@
+diff --git a/src/ProtoInput/ProtoInputLoader/InstanceHandling.cpp b/src/ProtoInput/ProtoInputLoader/InstanceHandling.cpp
+--- a/src/ProtoInput/ProtoInputLoader/InstanceHandling.cpp
++++ b/src/ProtoInput/ProtoInputLoader/InstanceHandling.cpp
+@@ -23,7 +23,7 @@
+ 		|| !GetProcessTimes(process, &created, &exited, &kernel, &user)
+ 		|| (static_cast<uint64_t>(created.dwHighDateTime) << 32 | created.dwLowDateTime) != creation)
+ 		return 0;
+-	const auto name = std::wstring(L"\\\\.\\pipe\\ProtoInputMux.Lifecycle.")
++	const auto name = std::wstring(L"\\\\.\\pipe\\ProtoInputMultiPlex.Lifecycle.")
+ 		+ std::to_wstring(pid) + L"." + std::to_wstring(creation);
+ 	// Nonblocking connection polling gives a real deadline without leaving a
+ 	// loader thread behind. Once connected, ordinary serialized writes are used.
+diff --git a/src/ProtoInput/ProtoInputHooks/MessageFilterHook.cpp b/src/ProtoInput/ProtoInputHooks/MessageFilterHook.cpp
+--- a/src/ProtoInput/ProtoInputHooks/MessageFilterHook.cpp
++++ b/src/ProtoInput/ProtoInputHooks/MessageFilterHook.cpp
+@@ -25,7 +25,7 @@
+ 
+ UINT QueueFenceMessage()
+ {
+-	static const UINT message = RegisterWindowMessageW(L"ProtoInputMux.QueueFence.V1");
++	static const UINT message = RegisterWindowMessageW(L"ProtoInputMultiPlex.QueueFence.V1");
+ 	return message;
+ }
+ }
+diff --git a/src/ProtoInput/ProtoInputHooks/MuxLifecycleNative.h b/src/ProtoInput/ProtoInputHooks/MuxLifecycleNative.h
+--- a/src/ProtoInput/ProtoInputHooks/MuxLifecycleNative.h
++++ b/src/ProtoInput/ProtoInputHooks/MuxLifecycleNative.h
+@@ -42,7 +42,7 @@
+     current.bits = sizeof(uintptr_t) * 8;
+     current.creation = static_cast<uint64_t>(created.dwHighDateTime) << 32 | created.dwLowDateTime;
+     current.build = Build;
+-    const auto name = std::wstring(L"Local\\ProtoInputMux.Lifecycle.")
++    const auto name = std::wstring(L"Local\\ProtoInputMultiPlex.Lifecycle.")
+         + std::to_wstring(GetCurrentProcessId()) + L"." + std::to_wstring(current.creation);
+     readyMapping = CreateFileMappingW(INVALID_HANDLE_VALUE, nullptr, PAGE_READWRITE, 0, sizeof(Ready), name.c_str());
+     if (!readyMapping) return;
+@@ -67,7 +67,7 @@
+ }
+ inline std::wstring PipeName()
+ {
+-    return std::wstring(L"\\\\.\\pipe\\ProtoInputMux.Lifecycle.")
++    return std::wstring(L"\\\\.\\pipe\\ProtoInputMultiPlex.Lifecycle.")
+         + std::to_wstring(GetCurrentProcessId()) + L"." + std::to_wstring(current.creation);
+ }
+ inline void ReplyTo(uint64_t replyMapping, uint64_t replyEvent, uint32_t result,
+@@ -111,7 +111,7 @@
+ }
+ inline bool ServerOwnsLease(ULONG server)
+ {
+-    const auto name = std::wstring(L"Local\\ProtoInputMux.Lease.")
++    const auto name = std::wstring(L"Local\\ProtoInputMultiPlex.Lease.")
+         + std::to_wstring(GetCurrentProcessId()) + L"." + std::to_wstring(current.creation);
+     const HANDLE mapping = OpenFileMappingW(FILE_MAP_READ, FALSE, name.c_str());
+     if (!mapping) return false;
+diff --git a/src/ProtoInput/ProtoInputHooks/MuxKeyboardStateBridge.h b/src/ProtoInput/ProtoInputHooks/MuxKeyboardStateBridge.h
+--- a/src/ProtoInput/ProtoInputHooks/MuxKeyboardStateBridge.h
++++ b/src/ProtoInput/ProtoInputHooks/MuxKeyboardStateBridge.h
+@@ -42,9 +42,9 @@
+         if (slash == std::wstring::npos) return;
+         path.resize(slash + 1);
+ #ifdef _WIN64
+-        path += L"protoinputmux_cursor_observer64.dll";
++        path += L"protoinputmultiplex_cursor_observer64.dll";
+ #else
+-        path += L"protoinputmux_cursor_observer32.dll";
++        path += L"protoinputmultiplex_cursor_observer32.dll";
+ #endif
+         const HMODULE module = LoadLibraryExW(path.c_str(), nullptr,
+             LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR | LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
+diff --git a/src/ProtoInput/ProtoInputHooks/MuxCursorObserverBridge.h b/src/ProtoInput/ProtoInputHooks/MuxCursorObserverBridge.h
+--- a/src/ProtoInput/ProtoInputHooks/MuxCursorObserverBridge.h
++++ b/src/ProtoInput/ProtoInputHooks/MuxCursorObserverBridge.h
+@@ -41,9 +41,9 @@
+ 		if (slash == std::wstring::npos) return;
+ 		path.resize(slash + 1);
+ #ifdef _WIN64
+-		path += L"protoinputmux_cursor_observer64.dll";
++		path += L"protoinputmultiplex_cursor_observer64.dll";
+ #else
+-		path += L"protoinputmux_cursor_observer32.dll";
++		path += L"protoinputmultiplex_cursor_observer32.dll";
+ #endif
+ 		const HMODULE module = LoadLibraryExW(path.c_str(), nullptr,
+ 			LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR | LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);

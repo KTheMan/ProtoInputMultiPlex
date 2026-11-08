@@ -1,0 +1,59 @@
+{
+  "decision": "PAGE_USER_SCROLL_ACCEPTED",
+  "date": "2026-11-07",
+  "scope": "Per-page and per-stable-user/tab scroll context isolation with retained return positions; original Rust/Ouroboros controls.",
+  "verification": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\page-scroll-20261107\\checks-001\\verification.json",
+    "sha256": "703675be69103025d7400452778be547700ae02cdcdf0c69ec6405406d930ebd"
+  },
+  "independent_approval": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\page-scroll-20261107\\independent-acceptance.json",
+    "sha256": "25d5fef664e6b0cf4765cafb6d0c121f3cdeebe121ac9952712d7730a73397f5"
+  },
+  "native": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\page-scroll-20261107\\native-run-945680acd1fa\\evidence.json",
+    "sha256": "dc82982a4d30a57d5c8076483b381a9e7a1e9e159809b342119709bed9438ebb"
+  },
+  "publication": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\page-scroll-20261107\\publication.json",
+    "sha256": "03496c93cfdc89514f6e39bced74bf457af7af40ebb67d02d5e4726175b107de"
+  },
+  "red_regression": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\page-scroll-20261107\\probe-red-001\\evidence.json",
+    "sha256": "c978f4846702458a35272e051e1cfdd0f04a69a78ad069c2ac85d9fe147d1100"
+  },
+  "red_review": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\page-scroll-20261107\\notes\\scroll-red-review.json",
+    "sha256": "c9db3f5afe294bc1b37ce03063f7ef420dbbdfd7a42d3e660813b510ba530124"
+  },
+  "p1_scope_review": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\page-scroll-20261107\\notes\\p1-scope-review.json",
+    "sha256": "f625902fbc58ccf635e54a32a7e06019ee786f59c16d1651ebf9e28f15f0d98c"
+  },
+  "checks": {
+    "passed": 927,
+    "failed": 0,
+    "ignored": 19
+  },
+  "accepted_behavior": [
+    "Fresh pages start at top; each visited page restores its own position.",
+    "User-body positions use stable Seat::identity and UserTab, including Keyboard; reordering or reused list indices cannot transfer those positions.",
+    "Target, Draw, Magnifier and Macros namespace only their embedded user body; headers and tabs retain existing identities.",
+    "App Preferences, Output and Virtual Users own distinct root scroll IDs.",
+    "Four real-wheel egui tests cover clipped heading, visible clickable lower control, Ouroboros input, fresh/restored page/user/tab and stable identity through reorder at320x360/680x620.",
+    "One stopped native GUI uses two virtual pairs and existing Script controls; original PNGs require independent visual acceptance, B-only settings edit, no persisted preference/profile change, normal close exit0."
+  ],
+  "limits": [
+    "Old Keyboard scroll position resets once; no new persistent scroll storage.",
+    "An intentionally scrolled returning page can retain a clipped heading.",
+    "Native App Preferences pixels prove heading displacement and byte-identical restoration; they do not show the clicked shortcut checkbox. Earlier response history shows its fully visible control; final sticky progress rectangle is offscreen.",
+    "No new routing, target, SDK or MCP behavior; no physical/RustDesk/global input validation.",
+    "Historical intermittent GUI-stall P1 remains OPEN and unattributed; no new profiler or healthy-run diagnostic replay.",
+    "Full Ultra/UI parity and release readiness remain incomplete."
+  ],
+  "constraints": {
+    "folder_rename": "USER_DEFERRED",
+    "external_chats": "KEEP_SEPARATE",
+    "active_owned_jobs": []
+  }
+}

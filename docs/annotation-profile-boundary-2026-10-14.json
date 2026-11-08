@@ -1,0 +1,299 @@
+{
+  "result": "PASS",
+  "scope": "Offline profile transition resets staged annotation selection, width/color/clear-key drafts before committing the newly loaded profile.",
+  "sha256_x64": "ccae96f88122af8c49e92ec15562999b08a0b5e280c1577ed689b826d0f8f74f",
+  "samples": {
+    "annotation-a": {
+      "button": "Annotation"
+    },
+    "stage-user-2": {
+      "button": "Select annotation user 2"
+    },
+    "stage-unapplied": {
+      "button": "Annotation Brush"
+    },
+    "profiles-load": {
+      "button": "Profiles"
+    },
+    "load-b": {
+      "button": "Load profile"
+    },
+    "annotation-b": {
+      "button": "Annotation"
+    },
+    "fresh-brush": {
+      "button": "Annotation Brush"
+    },
+    "commit-b": {
+      "button": "Save annotation settings to profile"
+    },
+    "profiles-save": {
+      "button": "Profiles"
+    },
+    "save-b": {
+      "button": "Save profile",
+      "saved_profile": {
+        "version": 1,
+        "concurrent": true,
+        "desktop": {
+          "mode": "concurrent",
+          "multi_keyboard": true,
+          "allowed_pids": []
+        },
+        "seats": [
+          {
+            "name": "Profile B user 1",
+            "mouse": "virtual://mouse/71",
+            "keyboard": "virtual://keyboard/71",
+            "target_pid": 0,
+            "desktop_start": null,
+            "cursor": {
+              "color": [
+                45,
+                212,
+                191
+              ],
+              "size": 28.0,
+              "shape": "arrow",
+              "visible": true,
+              "label": true,
+              "badge": null,
+              "speed_x": 1.0,
+              "speed_y": 1.0,
+              "motion_curve": "linear",
+              "invert_x": false,
+              "invert_y": false,
+              "button_mapping": [
+                "primary",
+                "secondary",
+                "middle",
+                "x1",
+                "x2"
+              ],
+              "swap_buttons": false,
+              "wheel_scale": 1.0,
+              "invert_wheel": false,
+              "horizontal_wheel": "ignore",
+              "horizontal_wheel_scale": 1.0,
+              "invert_horizontal_wheel": false,
+              "lock_window": true,
+              "bounds_mode": "legacy",
+              "monitor_id": null,
+              "monitor_work_area": false,
+              "region": null
+            },
+            "annotation": {
+              "tool": "brush",
+              "activator": "primary",
+              "color": [
+                96,
+                165,
+                250
+              ],
+              "alpha": 255,
+              "width": 6,
+              "clear_key": null,
+              "clear_all": false
+            }
+          },
+          {
+            "name": "Profile B user 2",
+            "mouse": "virtual://mouse/72",
+            "keyboard": "virtual://keyboard/72",
+            "target_pid": 0,
+            "desktop_start": null,
+            "cursor": {
+              "color": [
+                45,
+                212,
+                191
+              ],
+              "size": 28.0,
+              "shape": "arrow",
+              "visible": true,
+              "label": true,
+              "badge": null,
+              "speed_x": 1.0,
+              "speed_y": 1.0,
+              "motion_curve": "linear",
+              "invert_x": false,
+              "invert_y": false,
+              "button_mapping": [
+                "primary",
+                "secondary",
+                "middle",
+                "x1",
+                "x2"
+              ],
+              "swap_buttons": false,
+              "wheel_scale": 1.0,
+              "invert_wheel": false,
+              "horizontal_wheel": "ignore",
+              "horizontal_wheel_scale": 1.0,
+              "invert_horizontal_wheel": false,
+              "lock_window": true,
+              "bounds_mode": "legacy",
+              "monitor_id": null,
+              "monitor_work_area": false,
+              "region": null
+            },
+            "annotation": {
+              "tool": "off",
+              "activator": "primary",
+              "color": [
+                96,
+                165,
+                250
+              ],
+              "alpha": 255,
+              "width": 6,
+              "clear_key": null,
+              "clear_all": false
+            }
+          }
+        ]
+      }
+    }
+  },
+  "profile_a": {
+    "version": 1,
+    "concurrent": true,
+    "desktop": {
+      "mode": "concurrent",
+      "multi_keyboard": true,
+      "allowed_pids": []
+    },
+    "seats": [
+      {
+        "name": "Profile A user 1",
+        "mouse": "virtual://mouse/61",
+        "keyboard": "virtual://keyboard/61",
+        "target_pid": 0,
+        "annotation": {
+          "tool": "off",
+          "activator": "primary",
+          "color": [
+            96,
+            165,
+            250
+          ],
+          "alpha": 255,
+          "width": 6,
+          "clear_key": null,
+          "clear_all": false
+        }
+      },
+      {
+        "name": "Profile A user 2",
+        "mouse": "virtual://mouse/62",
+        "keyboard": "virtual://keyboard/62",
+        "target_pid": 0,
+        "annotation": {
+          "tool": "off",
+          "activator": "primary",
+          "color": [
+            96,
+            165,
+            250
+          ],
+          "alpha": 255,
+          "width": 6,
+          "clear_key": null,
+          "clear_all": false
+        }
+      }
+    ]
+  },
+  "profile_b": {
+    "version": 1,
+    "concurrent": true,
+    "desktop": {
+      "mode": "concurrent",
+      "multi_keyboard": true,
+      "allowed_pids": []
+    },
+    "seats": [
+      {
+        "name": "Profile B user 1",
+        "mouse": "virtual://mouse/71",
+        "keyboard": "virtual://keyboard/71",
+        "target_pid": 0,
+        "annotation": {
+          "tool": "off",
+          "activator": "primary",
+          "color": [
+            96,
+            165,
+            250
+          ],
+          "alpha": 255,
+          "width": 6,
+          "clear_key": null,
+          "clear_all": false
+        }
+      },
+      {
+        "name": "Profile B user 2",
+        "mouse": "virtual://mouse/72",
+        "keyboard": "virtual://keyboard/72",
+        "target_pid": 0,
+        "annotation": {
+          "tool": "off",
+          "activator": "primary",
+          "color": [
+            96,
+            165,
+            250
+          ],
+          "alpha": 255,
+          "width": 6,
+          "clear_key": null,
+          "clear_all": false
+        }
+      }
+    ]
+  },
+  "clicked_events": [
+    {
+      "button": "Annotation",
+      "clicked": true
+    },
+    {
+      "button": "Select annotation user 2",
+      "clicked": true
+    },
+    {
+      "button": "Annotation Brush",
+      "clicked": true
+    },
+    {
+      "button": "Profiles",
+      "clicked": true
+    },
+    {
+      "button": "Load profile",
+      "clicked": true
+    },
+    {
+      "button": "Annotation",
+      "clicked": true
+    },
+    {
+      "button": "Annotation Brush",
+      "clicked": true
+    },
+    {
+      "button": "Save annotation settings to profile",
+      "clicked": true
+    },
+    {
+      "button": "Profiles",
+      "clicked": true
+    },
+    {
+      "button": "Save profile",
+      "clicked": true
+    }
+  ],
+  "owned_processes_closed": true
+}

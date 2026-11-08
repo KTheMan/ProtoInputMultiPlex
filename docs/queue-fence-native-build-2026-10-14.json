@@ -1,0 +1,19 @@
+{
+  "result": "PASS",
+  "date": "2026-10-14",
+  "command": [
+    "scripts/build-backend.ps1",
+    "-Architecture",
+    "both"
+  ],
+  "exit_code": 0,
+  "log": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\queue-fence-native-build.log",
+  "input_transport_version": 3,
+  "runtime_sha256": {
+    "ProtoInputLoader64.dll": "d5e55cffcfe5b9b911609d40b39167556cad38cffda42e34026ae87f081ca88e",
+    "ProtoInputLoader32.dll": "18bbcc6e520023113b3f63142d3c8b7a0141215b7a3ef49d651e5e5971df3372",
+    "ProtoInputHooks64.dll": "e22087e79fb900fc61bcb6dc77d0686ce20f8de286f02acc99d6d03088b9e3f3",
+    "ProtoInputHooks32.dll": "5fac477e9ed5b0901ecd947cf7b01b8a97ea117affb89e90ce36514496e57658"
+  },
+  "scope": "Build/staging evidence only. Actual virtual shutdown and all output-rules acceptance remain pending."
+}

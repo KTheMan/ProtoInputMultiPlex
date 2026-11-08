@@ -1,0 +1,79 @@
+{
+  "review_date": "2026-10-15",
+  "decision": "APPROVED",
+  "scope": "Independent read-only source and bounded acceptance-harness review; no apps or Cargo commands run by reviewer.",
+  "material_findings": [],
+  "source_sha256": {
+    "crates/protoinputmux/Cargo.toml": "2a8f0a1da182ce0bb0edbcf7256f48792702382dc48377ab6c236b8bb72db192",
+    "crates/protoinputmux/src/gui.rs": "d66a8be6d51b7594d0bed7e46c31a9469c8245c58102b763e35098d3d2dbed17",
+    "crates/protoinputmux/src/keyboard_slider.rs": "0676c5feb2eb5294abbc172e8cba65082fa80fb25efd1d23879e7d0e25989e6f",
+    "crates/protoinputmux/src/main.rs": "88cd6f32e1fc97ccd93ce56fe9c79b52867642ec1ea1fbcfc1ead2249e771a73",
+    "crates/protoinputmux/src/ui_script.rs": "879817ff8284f88f56d62caf022b0b1719ce0d9e51f971dc9c9974bca87d7c75",
+    "Cargo.lock": "92c6e4ffde632e1c81c9a691db8308e6e07719377c1a86fe543f885f89ef1444"
+  },
+  "harness_sha256": {
+    "scripts/test-keyboard-configuration-ui.py": "7ebc3f50321c468de50b73b2fa8bacae7c85c8ead4977fc34843fb2a714a347e",
+    "runtime/keyboard-ux-uia-helper.ps1": "784e2f71b6e38867f2c330c6e3295a20df6fc77d9643a48f10565b65b364c8ff",
+    "runtime/keyboard-ux-acceptance-plan.md": "80467e88307d3ad7addba159ffeae6ecf72544e8f9860dc30cbf385dbca519b8"
+  },
+  "producer": {
+    "path": "runtime/producer-keyboard-configuration-20261015-062334/verification.json",
+    "sha256": "dba45378089d98d004e98a9f39f6d18a918422599b5e752921ce29fdcb133b78",
+    "result": "PASS",
+    "source_file_count": 83,
+    "source_hashes_unchanged": true,
+    "rust_checks": [
+      {
+        "command": "cargo fmt --all --check",
+        "exit_code": 0
+      },
+      {
+        "command": "cargo clippy --config build.rustc-wrapper=\"\" --workspace --all-targets -- -D warnings",
+        "exit_code": 0
+      },
+      {
+        "command": "cargo test --config build.rustc-wrapper=\"\" --workspace",
+        "exit_code": 0
+      },
+      {
+        "command": "cargo build --config build.rustc-wrapper=\"\" --workspace",
+        "exit_code": 0
+      },
+      {
+        "command": "cargo build --config build.rustc-wrapper=\"\" --workspace --target i686-pc-windows-msvc",
+        "exit_code": 0
+      }
+    ],
+    "workspace_tests": 219,
+    "executable_sha256": {
+      "x64": "33d45accb79866bac4c5ab247dc7538e0a13bab9597b921c647a7225d9b6b40d",
+      "i686": "92481c21cc0256722e63fca5686894916ee76a5860e74060eb1607865e711d48"
+    },
+    "runtime_file_count": 10,
+    "historical_reused_native_backend_build": {
+      "path": "runtime/app-cursor-native-build-result.json",
+      "sha256": "a663e1dfeaf3171c01f314bed36849bde594b4d63def0decc3a4b4974bae04b6",
+      "exit_code": 0,
+      "current_group_build": "NOT RUN",
+      "scope": "Historical native backend build result reused as producer metadata; no C++ backend build was run for this keyboard group."
+    },
+    "runtime_sha256": {
+      "ProtoInputHooks32.dll": "1f6ce1a3f690b9c93566a23d51d91ae450f70fb2d1f857d3e502b9189b4c0b72",
+      "ProtoInputHooks64.dll": "31b3436421ed0a64bd7b66f7fc41295739017caad3e7605513d00d51868d44c3",
+      "ProtoInputIJ32.exe": "73c10f7397d22ed9a9f9b1ee804f17853a2c9f96d495a83f9448201b97f27a86",
+      "ProtoInputIJ64.exe": "e11a9fd0f14902f0c749781a42a8f912fb3eb876a54454f4cb5eddea5fa5636d",
+      "ProtoInputIJP32.dll": "d593e4b4f304f55743c6bbb680cf3c81f2be97392980c29367639859ffdccc3e",
+      "ProtoInputIJP64.dll": "8daf63d2c87a150e0928f0b6d359ea503b6180538faf14bc3c66fa8228a49172",
+      "ProtoInputLoader32.dll": "0eaa05d49dd43dca41dba7457ca814f5599981746994078d81ce59d0f126d590",
+      "ProtoInputLoader64.dll": "08ecac0469fdd8e33106ac0bd5eddf759c948a86e3540f3f60d6a00cdd218f9c",
+      "protoinputmux_cursor_observer64.dll": "9f086fdd62e0e7f29056f4a38723266c03a22182b2a0875d6bd104b98f77603a",
+      "protoinputmux_cursor_observer32.dll": "a5d6d6db1e7318dc401caec1923ae90c678d5c1389ca913bd57aaf68fb042d48"
+    }
+  },
+  "review_limits": [
+    "Native UIA SetValue success is not treated as product acknowledgement; acceptance separately waits for the exact owned profile change and preserves the other seat.",
+    "Periodic ui.png mtime is not associated with a particular screenshot request; direct review must reject originals that do not visibly match the expected state.",
+    "The gate proves generic InputSent completion and profile persistence, not an independent worker-speed readback, routed physical input, or full screen-reader certification.",
+    "Native acceptance remains pending; this record approves frozen source and harness design only."
+  ]
+}

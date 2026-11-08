@@ -1,0 +1,122 @@
+{
+  "date": "2026-11-06",
+  "decision": "APPS_LAUNCHER_ACCEPTED",
+  "reference": "https://www.mousemux.com/pages/manual/#app-launcher",
+  "scope": "Ouroboros launcher for six first-party tools, app information and an authorized shared visibility preference.",
+  "verification": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\apps-launcher-20261106\\checks-002\\verification.json",
+    "sha256": "739e58083ed7d1c5e9824d89663cbee94022d6f188703cd27a263b586891f496"
+  },
+  "review": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\apps-launcher-20261106\\independent-acceptance.json",
+    "sha256": "957da8d4eaf4db34e95185767964b08dc88ebe83005825f6bc83e81f1dd58c5c"
+  },
+  "publication": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\apps-launcher-20261106\\publication.json",
+    "sha256": "88e8453b1bbd43ba84a66527e8b2d1ebc41d984f0f5ca39ae12e13e54b3a787f"
+  },
+  "workspace_tests": {
+    "passed": 765,
+    "failed": 0,
+    "ignored": 19
+  },
+  "x64_image": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\apps-launcher-20261106\\checks-002\\x64\\protoinputmultiplex.exe",
+    "sha256": "de223929c912f08afc425f3c431477442aadc8162a3f889c9a14183fb5269790"
+  },
+  "checks": {
+    "fmt": 0,
+    "clippy": 0,
+    "workspace-tests": 0,
+    "build-gui": 0
+  },
+  "native": {
+    "original_session": 91920,
+    "original_exit_code": 0,
+    "raw": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\al-87326f3179c8\\evidence.json",
+      "sha256": "1b9123ed6f19c133611ee431c3a0e47e92e53889a7ddfecfcb1b050b3999e4f9"
+    },
+    "driver": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\apps-launcher-20261106\\native-v2.py",
+      "sha256": "0e5e9ec12c327b48a60e90ca676593315be375394a87b8dafd84497fc814a9e8"
+    },
+    "readiness": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\apps-launcher-20261106\\native-ready-v2.json",
+      "sha256": "46472c53489e03cf350760b23171aa0e928d07683ce5c53ecd4158cab26f5212"
+    },
+    "UI_events": 14,
+    "captures": {
+      "launcher-compact": {
+        "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\al-87326f3179c8\\launcher-compact.png",
+        "sha256": "443f720fd8d21421c249f4076844aee54b6ffdfd2dfb33a7d502f1a6b331bfd1",
+        "geometry": {
+          "hwnd": 4588126,
+          "dpi": 96,
+          "client_pixels": [
+            320,
+            360
+          ],
+          "client_logical": [
+            320.0,
+            360.0
+          ],
+          "window_rect": [
+            338,
+            338,
+            674,
+            737
+          ]
+        }
+      },
+      "launcher-info": {
+        "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\al-87326f3179c8\\launcher-info.png",
+        "sha256": "d0067d9ef780f941cc4da279e3f636655f6b1b66d74d8f68f9c2e95a860a2378",
+        "geometry": {
+          "hwnd": 4588126,
+          "dpi": 96,
+          "client_pixels": [
+            540,
+            480
+          ],
+          "client_logical": [
+            540.0,
+            480.0
+          ],
+          "window_rect": [
+            338,
+            338,
+            894,
+            857
+          ]
+        }
+      }
+    },
+    "exit_codes": {
+      "GUI": 0,
+      "MCP": 0
+    }
+  },
+  "prior_native": {
+    "original_chunk": "473a37",
+    "original_exit_code": 1,
+    "raw": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\al-db6d6665bad1\\evidence.json",
+      "sha256": "0f2cceedd9de6c463d69c0fa0acd1ef6f5726ab6bfb025c014930aca83fabf19"
+    },
+    "terminal": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\al-db6d6665bad1\\owned-terminal.json",
+      "sha256": "107fb7cda5da7065ac9cf6d269008b3bbaeac6f6b8a94c28b5b67726fa8ec054"
+    },
+    "reason": "The fixture passed mutually exclusive MCP flags. The GUI never started, and the original MCP PID was absent. The retry used one private data directory and verified the exact preferences path."
+  },
+  "coverage": [
+    "One owned stopped x64 GUI with two virtual pairs. Alt+A opened Apps. App-local Tab focused Macro Studio, Enter selected it, Info showed its built-in details, and Open reached the actual Macro Studio page while routing remained stopped. The external App Library control was disabled.",
+    "A private standalone MCP connection verified legacy default true, writing false, retaining false on omission, and writing true. The GUI checkbox staged false independently, and Apply acknowledged and persisted it. Home Exit completed ordinary shutdown after the launcher was hidden.",
+    "Original compact list and normal Info captures record the sampled layout. There were no target processes, routed input, backend DLLs or host input."
+  ],
+  "open": [
+    "The external App Library, third-party app installation and management, connected MCP live preference smoke for this field, and five other native Open destinations remain outside this acceptance.",
+    "Historical intermittent GUI stall and full Ultra parity remain open."
+  ]
+}

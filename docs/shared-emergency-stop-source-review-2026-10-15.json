@@ -1,0 +1,80 @@
+{
+  "decision": "SOURCE APPROVED; native/data/pixel acceptance pending",
+  "scope": "Shared fixed emergency Stop broker and GUI/standalone integration; read-only review, no apps/tests run by reviewer.",
+  "baseline": {
+    "path": "runtime\\producer-clean-restart-20261015-095400\\verification.json",
+    "sha256": "2833cd9c02798af00a33fec0bbfacf6c29ebcea1bcb1cc03932a184988badae2"
+  },
+  "reviewed_source": {
+    "crates/protoinputmux/src/emergency_stop.rs": {
+      "baseline": null,
+      "current": "a7a086e00e6dac6fca04762ba0c5c0a068c2051f8efda40e2aeec06a972b8da9"
+    },
+    "crates/protoinputmux/src/main.rs": {
+      "baseline": "2683a779a5a07f5942d16c02271efbccc71d913840f456b5e674eb1b35adddba",
+      "current": "76bcb65d586f5b4bba01be50f3409d1ad0d88d7022350252bf5011eaeb7ac8c3"
+    },
+    "crates/protoinputmux/src/session.rs": {
+      "baseline": "6f447c701206caeda6814336c16cd171389e330cf70307155affa9c7f171ab73",
+      "current": "e52411698ffb5e52562a715421a9aa081843433c2e3f38009419cd01e0cadcb3"
+    },
+    "crates/protoinputmux/src/gui.rs": {
+      "baseline": "f8851a0d7ecbf7624004096b0b09d62995eb97bd613b13790245d289c8d9b396",
+      "current": "76d1373031796b76ddca40c3f3dc7b82a28e4cca0835656b5e2a129d93b23258"
+    },
+    "crates/protoinputmux/src/mcp.rs": {
+      "baseline": "bd365f5aaa6656ac9ca7506acbe57cbb1c5eaef6d230bbb7000e8633970a51eb",
+      "current": "adf4750d62aa595e0f678070905f3429db9fb3186e60b416b24a8bf8aacdd178"
+    },
+    "crates/protoinputmux/src/app_lifecycle.rs": {
+      "baseline": "8ceb83f48ab571efed752fdbfc341f6aba9a4bfdb18f84df01bde4715e1aac61",
+      "current": "c6ed771b53121d822e8bd09f54f7e6e0f84b28927f64a38e50aa2b910eeb6781"
+    },
+    "crates/protoinputmux/src/app_preferences.rs": {
+      "baseline": "6aba587084f8b8c7fafbe89f5ee3c2f33ea7c6bd8697a3ecefd077e7a3bc222a",
+      "current": "2519278ccca7408411ea0ef04ef01fb155fbad7704497d99923a993f66d2aba2"
+    },
+    "crates/protoinputmux/src/app_preferences_ui.rs": {
+      "baseline": "58bc0a688529c3d437f8a73854d224a6342810fc45fe7777213060db5f87f8df",
+      "current": "e40687c38232e2bf142fa5592ba8476391e8b0ab41f66aebe541586b02c01512"
+    }
+  },
+  "protected_baseline_inputs": 823,
+  "protected_baseline_inputs_match": true,
+  "runtime10_unchanged": {
+    "ProtoInputHooks32.dll": "9fcc2e0602d15ba1ba0c2433217c9868fef6ea039b05fd29c53b35a43ee4e4bb",
+    "ProtoInputIJ32.exe": "73c10f7397d22ed9a9f9b1ee804f17853a2c9f96d495a83f9448201b97f27a86",
+    "ProtoInputIJP32.dll": "d593e4b4f304f55743c6bbb680cf3c81f2be97392980c29367639859ffdccc3e",
+    "ProtoInputLoader32.dll": "f8e0a573a42b948f099ccd8cfd5ce3427d3eabef4de25302cb6fa1e9e4e9e7be",
+    "ProtoInputHooks64.dll": "3a67717f8711fa7d310c4c679ec51b8f994b08839eadb58c67519ae85ec7addc",
+    "ProtoInputIJ64.exe": "e11a9fd0f14902f0c749781a42a8f912fb3eb876a54454f4cb5eddea5fa5636d",
+    "ProtoInputIJP64.dll": "8daf63d2c87a150e0928f0b6d359ea503b6180538faf14bc3c66fa8228a49172",
+    "ProtoInputLoader64.dll": "e4e3889472761337de4bd232863b84a319833fc0104c2062ae553239910f5f11",
+    "protoinputmux_cursor_observer32.dll": "bc2b2fbd2655e3324fcea2f41dc54a493bbd3120dd48daf92bb08ecfb5d20069",
+    "protoinputmux_cursor_observer64.dll": "3ade9c71977c87340daae545295cbea11aba3347ee84171aab189814d03f2212"
+  },
+  "checks_pending": "Root-owned final five-command producer and doctor; exploratory core tests do not replace final checks.",
+  "reviewed_invariants": [
+    "Logon-SID protected local pipe, desktop/executable namespace; exact peer PID, creation and executable identity.",
+    "40-byte NOWAIT frames, bounded admission/drain/handshake, sender-age heartbeat health and monotonic per-subscriber pulse; terminal failure without reconnect.",
+    "Registration and WELCOME precede routing worker spawn; fixed chord reserved for Stop; custom shortcuts retain transactional staging, rollback and committed health semantics.",
+    "Broker lifetime independent of first participant; no-valid-participant boot bound and ordinary final lease exit.",
+    "Loss requests ordinary Stop; existing all-target cleanup/worker-exit commit and quarantine remain intact; MCP notice remains separate from command ACK.",
+    "GUI explicit health gate/Retry; GUI receives LifecycleAction, and starts supervisor with app_hotkeys=true."
+  ],
+  "findings": [],
+  "nonblocking_note": "GUI poll_session has an EmergencyUnavailable handler outside telemetry exclusions, but supervisor emits that event only with app_hotkeys=false; current GUI uses true and receives the lifecycle action. No current reachable command-ACK defect established.",
+  "native_required": [
+    "Concurrent standalone disjoint targets and exact Busy isolation.",
+    "Stop/EOF one participant without affecting another, followed by exact owned broker WM_HOTKEY broadcast to two participants and native saved UPs.",
+    "Owned broker termination with two standalone plus GUI participants, ordinary Stop, explicit Retry and GUI health views."
+  ],
+  "limits": [
+    "No native evidence yet; no physical shortcut actuation, arbitrary desktop/logon/app, or hardware claim.",
+    "Protocol/race/rollback edge cases are source or deterministic unit evidence, not forced native matrices."
+  ],
+  "plan": {
+    "path": "docs/shared-emergency-stop-plan.md",
+    "sha256": "2cb7b1d5e927e5ef5fffe1134bffd9113fb4e505f174b4340adabe67115e5060"
+  }
+}

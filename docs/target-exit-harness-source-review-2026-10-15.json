@@ -1,0 +1,57 @@
+{
+  "decision": "PREPARED_SOURCE_APPROVED_PENDING_ROOT_READY",
+  "date": "2026-10-15",
+  "runner": {
+    "path": "scripts\\test-target-exit-recovery-acceptance.py",
+    "sha256": "80e255a321abdd576173ec0371cb6989f1a110c5d0de93f0702c264c3a551dd4",
+    "AST": "PASS"
+  },
+  "plan": {
+    "path": "runtime\\p1-target-exit-acceptance-plan.md",
+    "sha256": "829fff516e07a8b3ab9279c73cb0df8a420e5ca491005a3d2a4630637e74b053"
+  },
+  "references": [
+    {
+      "path": "runtime/p1-target-exit-next-contract.md",
+      "sha256": "a8c2b52265f3abfae06670be8e55b2e5733f57adee42478f3dece19ffe7c1730"
+    },
+    {
+      "path": "runtime/p1-target-exit-preflight-review.json",
+      "sha256": "1937b5ef4c803a36e7155111f51cdd58484074ed9074874159dde8607dc7ae1c"
+    },
+    {
+      "path": "scripts/test-app-lifecycle-ui.py",
+      "sha256": "e21a4933ce48f1c3f727aa4e9881a6b3cd5861fa67d3166f1e2cc95519c2b23e"
+    },
+    {
+      "path": "scripts/test-connected-agents-acceptance.py",
+      "sha256": "b5cbb3251be03bb2b42a731a9fec5596175825836287ab97638289b6e6206f1b"
+    },
+    {
+      "path": "scripts/test-connected-macro-studio-acceptance.py",
+      "sha256": "30df5f9b2fd1165e4fe33847e5248adbb2fd8ec4fa33119caa6e15629d98fda8"
+    },
+    {
+      "path": "scripts/owned-gui-geometry.py",
+      "sha256": "8c557ad86e100074b2ccf8d40190cf8fba0c486584165ff41442c75c257dfaa7"
+    }
+  ],
+  "original_preflight": "Five material fixture/oracle issues were reported before edits and preserved; parent authorized bounded harness-only correction. Root must independently review corrections before READY.",
+  "resolved_findings": [
+    "Actual matching policy ACK is awaited before opening either connection. Existing OwnedPipe.request checks acknowledged/client/sequence for every reply.",
+    "Two distinct nonzero live overlay HWNDs are established at Start; terminal Stop cleanup waits for their destruction and Agent descriptor removal after observing the actual plain native F7 UP.",
+    "Probe/profile JSON reads use bounded existing retry helpers. Unexpected IO failures inside native action or partial-registration phases become fatal rather than triggering callback action replay.",
+    "Distinct actual initial-held, post-exit and post-ReleaseAll snapshots are preserved. Native event evidence uses observed reports and exact fresh F5/F6 pairs; no arithmetic event count or overwritten exit snapshot.",
+    "Four phase PNGs must be freshly written after each observed native outcome; geometry/time metadata is recorded and exact four-frame completion is required."
+  ],
+  "helper_API_checks": [
+    "Base constructor args match; custom fixtures bypass the historical seventeen-tool discovery helper. Base.execute callback signatures are verify(name,sample), before_controls(gate), after_controls(gate).",
+    "key(user,pressed,vk,scan) and button(user,pressed,index) return the expected packet wrapper; OwnedPipe request supports execute/inspect with tagged correlated replies.",
+    "Known owned HWND/PID discovery, PostMessage WM_CLOSE, GetClientRect-based geometry and copy_owned_product_frame signatures match existing helpers. Normal cleanup closes clients, GUI/probes and the private startup-test provider."
+  ],
+  "scope": "Same four behavioral groups, exactly nine actual GUI observations and four owned Home frames; three prestarted owned x64 targets, two virtual users/two raw public-protocol clients. No new product source, hook, schema, Cargo or native launch.",
+  "limits": [
+    "No direct raw-Claims telemetry assertion. Fresh C F6 pair is functional post-cleanup evidence; cancel_agent source establishes scope.",
+    "Native recovery, fixture delivery and screenshots remain unperformed until explicit ROOT READY. No application compatibility, hardware, assigned-mode or full P1 claim."
+  ]
+}

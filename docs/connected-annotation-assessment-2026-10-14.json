@@ -1,0 +1,82 @@
+{
+  "result": "PASS",
+  "group": "shared_gui_annotation",
+  "date": "2026-10-14",
+  "judgment": "Independent bounded GUI-connected annotation authorization, matching ACK, authoritative profile/draft synchronization and ink-count lifecycle accepted. Original raw PENDING INDEPENDENT VISUAL REVIEW remains unchanged; this assessment supplies the direct-original pixel judgment.",
+  "counts": {
+    "actual_gui_observations": 18,
+    "named_outcome_records": 26,
+    "planned_feature_groups": 17,
+    "interpretation": "Outcome records split permission/busy subcases; not26 feature families. Two disposable x64 probes, one GUI session; no prior-suite replay."
+  },
+  "build_sha256": {
+    "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-connected-annotation-20261014-221333\\control64.exe": "ed07efad77ecb2385c4d93c7d90c000be3d33a65d588ee80bc539cdbcaf019e4",
+    "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-connected-annotation-20261014-221333\\probe32.exe": "317f658eee1e2a2b0ad30bc7a13adba958a311936a02ddfed925bb50b1c2014f"
+  },
+  "executed_architecture": "x64 GUI and two x64 targets; copied i686 executable unused",
+  "accepted": [
+    "Control-off Configure/ClearUser/ClearAll denied atomically; Inspect retained existing read-only behavior. Actual GUI checkbox+policy ACK enabled A-only session control, while capture/app-preference grants stayed off.",
+    "Excluded B configuration/clear, partial ClearAll, invalid settings and unknown user rejected without authoritative ink/profile mutation. Worker-side raw unknown-user rejection also checked separately from MCP preflight.",
+    "Preseeded GUI all-user F8 clear shortcut and configuring its all-user capability denied under partial scope without ink/profile changes; authorized all-user grant later permitted actual F8 clearing.",
+    "Configure rejected another actor's native selected-user F5 hold, a disabled raw Forward hold, an open stroke, consumed activator after ClearUser closed the stroke, and consumed clear-key DOWN. Holds remained until their actual matching UP; no implicit cancellation/release was accepted.",
+    "First raw Configure and post-open raw ClearUser returned actual acknowledged Annotation events with matching client/sequence, distinct from periodic events. Actual connected annotation MCP Configure(width27), ClearUser ownership and ClearAll positives returned acknowledged snapshots without error.",
+    "Successful and rejected replies preserved annotation.users.settings == nested VirtualUsers.slots.seat.annotation == authoritative Agent profile; subsequent Inspect and actual GUI profile agreed. Real Home selection/Draw/Eraser/Apply carried agent-set width27 and F7 clear key into a GUI-origin tool change, reflected back in connected inspection. No scripted feature recipient fields.",
+    "With all active users granted, an unrelated B actor's actual native F6 hold permitted A configuration and survived ClearUser, ClearAll and authorized all-user shortcut. ClearUser removed only A ink; B counts survived. ClearAll removed both users' ink counts. Known owned annotation HWND/status and revision were observed; no fresh ink-pixel claim.",
+    "Annotation export and magnifier mutation remained unsupported; no export file or capture grant. MCP EOF left GUI routing/profile alive. Explicit Stop removed known cursor/annotation HWNDs and own descriptor; normal close and owned resource cleanup succeeded."
+  ],
+  "independent_pixel_review": {
+    "result": "PASS",
+    "method": "Direct view_image of exact immutable original own GUI frames after GUI close.",
+    "observations": [
+      "AgentAccess visibly shows A selected/B excluded, explicit own target PIDs, checked Allow session changes, unchecked selected-target capture and app-preference permissions, and wording including annotation configuration/clearing.",
+      "Draw visibly retains selected own Alpha identity, actual F7 clear-key field, unchecked clear-all shortcut, authoritative Ink0 strokes/segments and real Apply/Clear controls. Width27 is verified in ACK/profile state, not claimed visible in this scrolled frame."
+    ],
+    "frames": [
+      {
+        "path": "runtime\\acceptance-graph-connected-annotation-20261014-221333\\agent-annotation-permission.png",
+        "sha256": "0d96cb05475bddfa55b188b215200d24d00e283861870ea9b79b79c6510a684d"
+      },
+      {
+        "path": "runtime\\acceptance-graph-connected-annotation-20261014-221333\\draw-committed-agent-draft.png",
+        "sha256": "d19d89578bbd50ac411ab37264811acb739ad7a7067d66b92b19c9dd670fdbda"
+      }
+    ]
+  },
+  "limits": [
+    "No fresh transparent overlay pixels, annotation rendering/eraser algorithms, export/capture/desktop source, magnifier positive behavior, recording/playback or broad input-family validation.",
+    "Native selected/disabled/consumed and unrelated-other-actor holds tested. Exhaustive Manual/Studio/Composite origin combinations, translated-output/replica-path guard combinations, active-program continuation and GUI-pending/external-ACK race remain source/unit-only here.",
+    "Actual retired-clone/tombstone creation not exercised in this two-seat gate; unknown numeric user and policy replacement/reconnection were exercised. No confidentiality claim from annotation Inspect or existing broader snapshots.",
+    "No hardware/RustDesk input, global OS injection, private background pixels, real startup key, general-app/same-process isolation or full Ultra/UX parity claim. i686 producer-built but unused by this native gate."
+  ],
+  "references": [
+    {
+      "path": "runtime\\acceptance-graph-connected-annotation-20261014-221333\\evidence.json",
+      "sha256": "53ddf246c786ce0d393897c028a36819fc38944e3919c84cb12ca33825edf305"
+    },
+    {
+      "path": "runtime\\producer-connected-annotation-20261014-220846\\verification.json",
+      "sha256": "9a48e6ad017b38c897305ab9aa8f0b1d7bc0c2e89f6b0c0b7235d8c4fbd5b97b"
+    },
+    {
+      "path": "docs\\connected-annotation-source-review-2026-10-14.json",
+      "sha256": "0ecfc7db15aa8ed614ee2ac30fad07417106906353b1bd716618b348cd2fef32"
+    },
+    {
+      "path": "runtime\\acceptance-graph-connected-annotation-20261014-221333\\runner-source\\test-connected-annotation-acceptance.py",
+      "sha256": "7c2c31e78c13b34d5fed7e515891014cfd19507babec4ac7251b6826dbdb1348"
+    },
+    {
+      "path": "runtime\\acceptance-graph-connected-annotation-20261014-221333\\runner-source\\ui.json",
+      "sha256": "1d88cebdbe6a9ad3a511e472d759a4cf412ee22be66349a0b456ff23a494932d"
+    }
+  ],
+  "cleanup": {
+    "owned_processes_closed": true,
+    "connected_mcp_processes_closed": true,
+    "raw_pipe_handles_closed": true,
+    "own_guid_registry_key_absent": true,
+    "own_executable_prefix_CIM_survivors": 0,
+    "known_overlay_HWNDs_and_descriptor_removed_at_Stop": true
+  },
+  "slot": "Returned to root; no further app/Cargo/native launch planned."
+}

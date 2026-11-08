@@ -1,0 +1,3 @@
+[submodule "vendor/ProtoInput"]
+	path = vendor/ProtoInput
+	url = https://github.com/Ilyaki/ProtoInput.git

@@ -1,0 +1,28 @@
+{
+  "decision": "BOUNDED_NATIVE_I686_TARGET_COMPATIBILITY_ACCEPTED",
+  "date": "2026-10-21",
+  "scope": "One x64 standalone MCP controller routed virtual mouse and keyboard input to two separately owned i686 ordinary Windows EDIT probes using the accepted native-controls policy.",
+  "producer": {
+    "path": "runtime/producer-magnifier-controls-20261021-attempt003/verification.json",
+    "sha256": "4c5f1ba2e1f39eecca7e19c598a49f582bb13193623e556e4b491f4f4c7d59e7"
+  },
+  "native_evidence": {
+    "path": "runtime/native-i686-targets-attempt002/evidence.json",
+    "sha256": "fac8285573275095fc57cdc0ede2f871250733278b4293ac1eae6b0bb24f914f"
+  },
+  "independent_review": {
+    "path": "runtime/native-i686-targets-attempt002-review.json",
+    "sha256": "7558edc6b68135faaf831a2a322f454fdab584c10df08000fe5fb3afe6d4c803"
+  },
+  "accepted": "Both original i686 EDIT targets received independent exact native text (30 characters), retained focus through a two-second idle interval, native Tab to their left EDITs, and simultaneous per-target mouse capture with isolated release. All 22 virtual input calls completed; ordinary Stop, worker and MCP zero exits, probe zero exits, zero holds and private-image absence passed with no cleanup fallback.",
+  "preserved_failure": {
+    "path": "runtime/native-i686-targets-attempt001-review.json",
+    "sha256": "70e25a2e703d20f6c559565c2a90ea2cc39b5d9241ef7afd600b5c28d93be2d8",
+    "reason": "The first runner's local fixture name shadowed its observation function; only three virtual inputs ran before the harness failed. It remains NOT_ACCEPTED."
+  },
+  "limits": [
+    "This accepts the two owned i686 ordinary EDIT fixtures only; arbitrary i686 applications remain untested.",
+    "No hardware, RustDesk, GUI configuration replay, desktop-wide or same-process isolation, GPU capture, shipping, or complete MouseMux Ultra parity claim follows from this run.",
+    "The historical GUI-stall P1 remains open."
+  ]
+}

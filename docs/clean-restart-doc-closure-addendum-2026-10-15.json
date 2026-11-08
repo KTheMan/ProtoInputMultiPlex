@@ -1,0 +1,27 @@
+{
+  "decision": "APPROVED ACCURACY-ONLY CONTRACT CORRECTION",
+  "date": "2026-10-15",
+  "historical_approved_doc_review": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\docs\\clean-restart-doc-review-2026-10-15.json",
+    "sha256": "a748e1995d982376328fdfb493188010e1efce7b9ba69a4cb57a2e54f7c8c8ab"
+  },
+  "historical_guarded_install": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\docs\\clean-restart-skill-install-2026-10-15.json",
+    "sha256": "4730c43cddf9d74f1dd643d233bad090b94bd9671fb46999ea002f4ae6186909"
+  },
+  "contract": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\docs\\clean-restart-contract.md",
+    "historical_review_sha256": "d6331b91363d49a8ae491cdef5e8edc94021c45a1edd4e5898a6b4d645ba3a05",
+    "current_sha256": "d94e32c55ed8b6e87554614bc44c950e466673f7a14962f761d948331f6db93b",
+    "exact_change": {
+      "before": "no extra old graph edges",
+      "after": "no extra old key/button input edges"
+    }
+  },
+  "check": "Inverse replacement reconstructs exactly the historically approved contract hash, proving this is the sole byte change. Native raw traces/accepted assessment exercised key/button edges, not graph replication.",
+  "resolved_finding": "Unsupported native graph-edge claim removed; bounded evidence accurately described.",
+  "skill_payload_changed": false,
+  "product_inputs_changed": false,
+  "new_apps_or_tests": false,
+  "findings": []
+}

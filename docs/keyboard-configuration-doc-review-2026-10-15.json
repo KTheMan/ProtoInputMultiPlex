@@ -1,0 +1,62 @@
+{
+  "review_date": "2026-10-15",
+  "decision": "APPROVED",
+  "scope": "Independent read-only review of final keyboard configuration documentation and ProtoInputMux skill guidance against the canonical bounded assessment, retained source/tail reviews, producer record, and acceptance artifacts. No applications, Cargo commands, production edits, or skill installation performed.",
+  "canonical_assessment": {
+    "path": "docs/keyboard-configuration-assessment-2026-10-15.json",
+    "sha256": "80c29de85d717ae87613bd9e2f8d0b77347ab6b6bc4928986c74d4e24732fb7f",
+    "decision": "APPROVED - BOUNDED KEYBOARD CONFIGURATION AND NATIVE UIA"
+  },
+  "producer": {
+    "path": "runtime/producer-keyboard-configuration-20261015-062334/verification.json",
+    "sha256": "dba45378089d98d004e98a9f39f6d18a918422599b5e752921ce29fdcb133b78",
+    "result": "PASS",
+    "workspace_tests": 219,
+    "current_commands": 5,
+    "current_cpp_backend_build": "NOT RUN",
+    "x64": "built and executed in acceptance",
+    "i686": "built only",
+    "frozen_inputs": 83
+  },
+  "prior_reviews": {
+    "source_review_sha256": "f9c403e577cd26efa0e04639e9534a0fc379882c9c6cfbad71b557468d4591d0",
+    "persistence_tail_source_review_sha256": "e491e1b3bbe5f5523a784b9a99d58595268e7ee0b691869055bef4266e324843"
+  },
+  "acceptance": {
+    "prefix": "22 accepted observations of 23 actual; aggregate remains NOT ACCEPTED and interrupted original Save outcome is unproven",
+    "tail": "separate five-click stopped-GUI continuation: fresh destination Save commit and Load; seeded B speed 1.3 is explicit setup",
+    "combined": "27 accepted phase observations of 28 actual, not 28 unique controls or a fresh 24-step run",
+    "native_sample": "Home controls and Motion slider only; one UIA SetValue; all seven settings/eleven responsive call sites are source/frame tested, not all natively sampled",
+    "apply": "generic InputSent acknowledgement only, no independent worker numeric readback",
+    "capture": "original reviewed image content only; no request-associated PNG freshness claim",
+    "input_scope": "owned virtual offline fixture; no routed packets, physical/global/RustDesk input, or hardware",
+    "accessibility": "bounded native Windows UIA sample, not full screen-reader or assistive-technology certification",
+    "parity": "full UX/Ultra parity remains open"
+  },
+  "docs_sha256": {
+    "README.md": "880e9deb7d4d75f6941dd78514bd458e13178c455fa80b4a7587d006578c157d",
+    "docs/ultra-parity.md": "17c91d886054cc1aea656a03288005ffa5ff72e1186a53befb020838ad558be0",
+    "docs/roadmap.md": "852b81db966fd5649753e254af843c360fa87d3b912fd009587580e0216ff7d3",
+    "docs/validation.md": "0cd95dd48863f2594f4b07d8444da3e5394d6b3e3c836eb69acc0a37295da4c7",
+    "docs/keyboard-configuration-contract.md": "ba0feed5390427e2b82eada8da9918483b901af324117c9437f6b88655d7aa65",
+    "docs/agents.md": "e31210fa0a80f89e5132cd8d522e129973f790a3fe52bb054fa72dc51aae2697",
+    "skills/protoinputmux/SKILL.md": "612e341df8908c0eda51fbe3671400027f5681487df7f3f65ae9432799942271"
+  },
+  "skill_install_review": {
+    "source_skill_path": "skills/protoinputmux/SKILL.md",
+    "source_skill_sha256": "612e341df8908c0eda51fbe3671400027f5681487df7f3f65ae9432799942271",
+    "decision": "APPROVED_FOR_GUARDED_INSTALL_OF_THIS_EXACT_SOURCE_HASH",
+    "installed_pre_review_path": "C:\\Users\\Archform CAD Station\\.codex\\skills\\protoinputmux\\SKILL.md",
+    "installed_pre_review_sha256": "8eb3e67ef753f0a7ac6fb92070d81347faffe127f2982f79a34598cf428f3af6",
+    "installation_performed": false
+  },
+  "material_findings": [],
+  "review_limits": [
+    "Approval is limited to wording accuracy and the exact listed document/skill hashes.",
+    "Native execution, accessibility breadth, and persistence evidence remain bounded as stated in the canonical assessment.",
+    "The interrupted prefix Save is not attributed as a product failure or a successful save; only the separate fresh-file tail proves its bounded Save/Load path.",
+    "No current-group C++ backend build is claimed; the producer ran five Rust commands and reused ten runtime files.",
+    "Keyboard/native sample is limited to Home and Motion; other responsive call sites have source/frame coverage only.",
+    "The persistence tail compares only B.cursor.speed_x by f32 bits and strictly compares all other JSON values/types; it uses explicit 1.3 seed setup and a fresh output path."
+  ]
+}

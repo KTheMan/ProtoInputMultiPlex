@@ -1,0 +1,84 @@
+{
+  "decision": "BOUNDED_KEYBOARD_STATE_AND_THEME_PREVIEW_ACCEPTED",
+  "date": "2026-10-20",
+  "producer": {
+    "path": "runtime/producer-keyboard-theme-20261020-completion001/verification.json",
+    "sha256": "fc65f0f1eae90d4f5ae342ba4d30f1f233284f1540a55db9549dd149f96b52cf"
+  },
+  "producer_review": {
+    "path": "runtime/keyboard-theme-completion001-producer-review.json",
+    "sha256": "2e205c9ad7d0bdecc283abf656a31760fed443c0c276656dcaff02952ecbe000"
+  },
+  "source_review": {
+    "path": "runtime/keyboard-theme-source-v2-review.json",
+    "sha256": "a683713d1cc24cfe7007909d9b8f4e8fc190f548f06b7f75bace75986174d7f0"
+  },
+  "checks": {
+    "required": "cargo fmt --all --check; strict workspace/all-target Clippy; cargo test --workspace; default x64/i686 app/provider builds",
+    "tests": {
+      "passed": 394,
+      "failed": 0,
+      "ignored": 3
+    },
+    "native_backend": "Unchanged accepted backend reused byte-for-byte. No native C++ rebuild.",
+    "raw_build": {
+      "path": "runtime/producer-keyboard-theme-20261020-attempt002/verification.json",
+      "sha256": "e26813b9d6c5d61219a76ac052446cb39f45279b7afca9e7ec6b44b8df9789d2"
+    },
+    "completion": "Five commands passed; raw aggregate remains FAIL because collector expected a standardized filename rather than Cargo cursor_observer.dll. Separate completion mapped actual compiler-artifact outputs to staged names and verified source/artifact/private-runtime integrity without rerunning checks."
+  },
+  "keyboard": {
+    "evidence": {
+      "path": "runtime/keyboard-peek-attempt001/evidence.json",
+      "sha256": "c288e6858c88ade28e7c8d5aacb0013a1631934b1342d3c20cd98b8db0dc6841"
+    },
+    "independent_review": {
+      "path": "runtime/keyboard-peek-attempt001-review.json",
+      "sha256": "73a8ddff417a356738009758484a114d97c6eb471f7ef7f58b08128ee2802015"
+    },
+    "scope": "One owned x64 native EDIT fixture, English-US target-thread layout, four virtual Shift-down/A-down/A-up/Shift-up edges.",
+    "accepted": "All sixteen GetKeyboardState samples succeeded with 256-byte tables; each pair of PM_NOREMOVE observations preserved the full previous table and same message identity. Actual removal alone advanced generic/left Shift and A states, matching public GetKeyState. Native TranslateMessage produced SEEDA once, second EDIT stayed empty; final held bits clear and ordinary Stop/EOF/WM_CLOSE clean."
+  },
+  "theme_preview": {
+    "evidence": {
+      "path": "runtime/theme-preview-ui-attempt001/evidence.json",
+      "sha256": "0f37d49fa43e90b90ba9f3bf275c06d4f61fcdebc391ee172ffc35b30a88e08e"
+    },
+    "independent_review": {
+      "path": "runtime/theme-preview-ui-attempt001-review.json",
+      "sha256": "f7bc9488731e6033130020f5fefada5ba78fcbfb0e5de2533f179c6b3fa7c98e"
+    },
+    "scope": "Stopped Ouroboros Theme configuration in one private x64 GUI, two virtual user pairs, twelve real egui-only steps, four owned PNGs at 320x360 and 360x360; empty runtime and no target PIDs.",
+    "accepted": "Actual Windows arrow selection changes only the selected user draft. White Windows arrow artwork and distinct red 24-pixel/blue 48-pixel halos are fully visible; normal owned WM_CLOSE exits0 with no fallback/errors. Bounded cached resources/textures and proportional image fit replace the former System ring preview.",
+    "full_canvas_layout_accepted": false,
+    "layout_limit": "The 180px painter canvas is vertically clipped by the compact scroll viewport, although all tested glyphs/halos are fully visible. Full Theme layout/visual parity remains open.",
+    "representative_original_images": {
+      "theme-windows-arrow-24": {
+        "path": "docs/theme-windows-arrow-24.png",
+        "sha256": "4b765621485429289dfe1602bfa25da9f4bc2b396975874a8163f686865df07b",
+        "source": "runtime/theme-preview-ui-attempt001/a-windows-arrow-320x360.png"
+      },
+      "theme-windows-arrow-48": {
+        "path": "docs/theme-windows-arrow-48.png",
+        "sha256": "5be97479504d38b2e3a438dc970dfe76377864fa95b10ed5b6c9943ab5962b85",
+        "source": "runtime/theme-preview-ui-attempt001/b-windows-arrow-360x360.png"
+      }
+    }
+  },
+  "preserved_failures": [
+    {
+      "path": "runtime/producer-keyboard-theme-20261020-attempt001/verification.json",
+      "sha256": "48c716d491af598847641c62287ddacb1cec68f218f68457437bc1c862ae5ccd"
+    },
+    {
+      "path": "runtime/producer-keyboard-theme-20261020-attempt002/verification.json",
+      "sha256": "e26813b9d6c5d61219a76ac052446cb39f45279b7afca9e7ec6b44b8df9789d2"
+    }
+  ],
+  "limits": [
+    "One English-US Shift+A/GetMessage-after-Peek case, not all queue filters, layouts, repeats, lock keys, applications or keyboard APIs. Earlier accepted Ctrl+S and two-WordPad cohort remain separate evidence.",
+    "Configured Windows arrow preview only; live following, animation, theme refresh, arbitrary artwork/aspect/DPI matrices and complete Theme UI are outside this cohort.",
+    "No hardware/RustDesk pointer use, native i686 execution, same-process/desktop-wide isolation, P1 reliability, GPU performance, shipping or full MouseMux Ultra/UI parity claim.",
+    "Documentation-only publication follows completed checks and native gates; no additional product/runtime mutation or input is part of publication."
+  ]
+}

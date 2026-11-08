@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "created_at_utc": "2026-10-14T07:32:38.853459+00:00",
+  "feature_group": "Cursor appearance and monitor/region bounds",
+  "independent_verdict": "PASS",
+  "verdict_basis": "Combined finite native gate, 38 accepted UI prefix controls, automatic lifecycle tail, and assigned-process lifecycle smoke satisfy the scoped acceptance matrix. Original source artifacts retain their original results.",
+  "scope": {
+    "input": "Application-local virtual mice/keyboards only; no hardware, RustDesk, SendInput, or SetCursorPos input.",
+    "targets": "Disposable test-owned x64/x86 applications, explicitly scoped by PID.",
+    "host_displays": "One connected monitor with an OS monitor-interface identity; read-only inventory only.",
+    "alignment": "Actual overlay HWND origin plus shape hotspot equals logical cursor coordinates; native cursor API alignment is required inside authorized eligible client/Region scope. Full monitor/desktop extrema verify logical and overlay clamping without a broader native-hover claim.",
+    "assigned_scope": "Bounded ring-hotspot, per-user Region settings cleanup, paused clamp/Resume synchronization, profile save and Stop smoke; not exhaustive assigned-process message compatibility."
+  },
+  "criteria_verified": [
+    "Distinct nonempty native rendered bitmap hashes for Arrow, Crosshair, I-beam and Ring on both architectures; actual window geometry, click-through/no-activate styles and native hit-test/mouse-activate responses.",
+    "Cursor sizes 12 and 64, eight-character Unicode badge, label/badge rendering, hidden/shown status and native window visibility.",
+    "13 discoverable object-schema tools on this accepted build; full settings shape/bounds enums, defaults, and routing_displays inventory usable with an empty DLL-free runtime and no active routing session.",
+    "Legacy lock true/false, Desktop, Window, Monitor and monitor work-area absolute/relative logical clamp; Region immediate native clamp and overlay alignment in eligible target scope.",
+    "Live settings application releases selected-user held input while retaining the other user; malformed/empty/outside regions, missing/disconnected monitor identity and invalid badge reject before live settings, positions, holds or appearance mutate.",
+    "Pause releases held input and changes rendered palette. Bounds application during pause clamps logical overlay coordinates while native cursor remains unchanged; Resume restores exact native/overlay/hotspot alignment in automatic and assigned routers.",
+    "Actual Ouroboros shape choices, hide/show and bounds controls; saved profile preserves appearance/bounds fields and old profile defaults; Stop destroys overlays and releases input."
+  ],
+  "portable_signed_coordinate_evidence": {
+    "source_path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\crates\\mux-core\\src\\desktop.rs",
+    "test": "bounds_resolve_legacy_window_monitor_and_intersecting_region",
+    "review": "Negative-origin monitor/region intersection is asserted with concrete signed rectangles in the passing core test. The host native inventory had no negative-origin monitor."
+  },
+  "real_defect_found_and_fixed": {
+    "failed_evidence_path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-appearance-20261014-001302\\evidence.json",
+    "defect": "UpdateLayeredWindow used logical minus hotspot, but a subsequent SetWindowPos moved the overlay back to logical x/y. Centered cursor shapes therefore had incorrect actual HWND origins.",
+    "fix": "Final SetWindowPos uses the computed render position (pos.x/pos.y).",
+    "independent_verification": "Native001834 verifies actual GetWindowRect under a per-monitor-v2 runner DPI context, rather than accepting telemetry alone; UI controls and both lifecycle tails also verify actual origin plus hotspot."
+  },
+  "runner_corrections": [
+    "BoundsMode JSON Schema uses oneOf with enum/const; the runner now interprets those valid schema forms.",
+    "Hide/Show controls belong to the Overlay tab; the runner added that actual navigation action.",
+    "Removed the unpromised per-user paused status-string expectation; actual pause palette and native deferral/resume behavior remain required."
+  ],
+  "required_rust_checks": {
+    "reported_by_parent": "Final bundle92947 passed formatting, strict workspace Clippy, all29 workspace tests, and both x64/i686 builds. Acceptance did not repeat those completed checks."
+  },
+  "artifacts": [
+    {
+      "kind": "native",
+      "evidence_path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-appearance-20261014-001834\\evidence.json",
+      "recorded_overall_result": "PASS",
+      "accepted_grouped_checks": 10,
+      "owned_processes_closed": true
+    },
+    {
+      "kind": "ui_prefix",
+      "evidence_path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-appearance-ui-20261014-002426\\evidence.json",
+      "recorded_overall_result": "NOT ACCEPTED",
+      "accepted_controls": 38,
+      "owned_processes_closed": true,
+      "interpretation": "38 individual controls passed. The aggregate result remains NOT ACCEPTED; its failure came from an invalid runner expectation requiring the per-user route status string to contain paused.",
+      "excluded_unpromised_criterion": "State.status describes the user route, not the overall controller pause state. The pause requirement was verified in the subsequent tails through held-input release, rendered paused palette, native motion deferral during bounds apply, and exact native/overlay alignment after Resume.",
+      "failure_as_recorded": "AssertionError()"
+    },
+    {
+      "kind": "automatic_lifecycle_tail",
+      "evidence_path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-appearance-ui-20261014-002720\\evidence.json",
+      "recorded_overall_result": "PASS",
+      "accepted_controls": 25,
+      "owned_processes_closed": true
+    },
+    {
+      "kind": "assigned_lifecycle_smoke",
+      "evidence_path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-assigned-appearance-ui-20261014-002848\\evidence.json",
+      "recorded_overall_result": "PASS",
+      "accepted_controls": 25,
+      "owned_processes_closed": true
+    }
+  ],
+  "cleanup": {
+    "all_owned_processes_closed": true,
+    "audit": "Final exact-path CIM process audit found no acceptance control, probe or worker process. Exclusive live slot released."
+  },
+  "unverified_and_not_claimed": [
+    "Physical HID input or hardware compatibility.",
+    "Real display hot-unplug, monitor reconnect identity stability, multiple-monitor transitions or general mixed-DPI correctness.",
+    "Arbitrary third-party application compatibility or native OS cursor-theme replacement.",
+    "GPU cursor rendering, desktop-wide isolation or simultaneous independent users inside one process."
+  ]
+}

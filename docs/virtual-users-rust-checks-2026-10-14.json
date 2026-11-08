@@ -1,0 +1,22 @@
+{
+  "date": "2026-10-14",
+  "group": "live generated virtual-user lifecycle, Ouroboros controls and MCP",
+  "kind": "producer verification; independent acceptance remains separate",
+  "status": "PASS",
+  "exec_session": 92094,
+  "exit_code": 0,
+  "checks": [
+    "cargo fmt --all --check",
+    "cargo clippy --workspace --all-targets -- -D warnings",
+    "cargo test --workspace",
+    "cargo build -p protoinputmux",
+    "cargo build -p protoinputmux --target i686-pc-windows-msvc"
+  ],
+  "tests": {"mux_core":57,"mux_windows":2,"abi":3,"hit_test":2,"binary":23,"total":87},
+  "tool_count": 18,
+  "builds": {
+    "x64_sha256":"09bb590e4e628db8b7ada5883ccee5fc034508b6d3bad051fb2f72b01312a239",
+    "i686_sha256":"b384b6c39bb2f79d118fbb860b04884247ffda0e8770b236f428317204615cfd"
+  },
+  "scope":"Source/build verification only. Live clone attachment, independent delivery, removal/chain/resource cleanup and actual Ouroboros controls require independent acceptance. Only virtual devices and owned disposable applications are authorized. Automatic desktop routing is supported for this implementation; assigned-process cloning, persistent promotion and broader Ultra parity remain separate. No new vendored backend patch was made."
+}

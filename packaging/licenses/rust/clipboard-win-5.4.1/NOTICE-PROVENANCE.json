@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "crate": "clipboard-win",
+  "version": "5.4.1",
+  "declared_license": "BSL-1.0",
+  "repository": "https://github.com/DoumanAsh/clipboard-win",
+  "repository_root": "https://github.com/DoumanAsh/clipboard-win",
+  "cargo_vcs_info": {
+    "git": {
+      "sha1": "3b27cf2bfd1adcfa6e0264eb51c1025ddaf0f342"
+    },
+    "path_in_vcs": ""
+  },
+  "files": [
+    {
+      "path": "LICENSE",
+      "upstream_path": "LICENSE",
+      "url": "https://raw.githubusercontent.com/DoumanAsh/clipboard-win/3b27cf2bfd1adcfa6e0264eb51c1025ddaf0f342/LICENSE",
+      "bytes": 1338,
+      "sha256": "c9bff75738922193e67fa726fa225535870d2aa1059f91452c411736284ad566"
+    }
+  ],
+  "crate_authors": [
+    "Douman <douman@gmx.se>"
+  ]
+}

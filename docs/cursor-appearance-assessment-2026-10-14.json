@@ -1,0 +1,117 @@
+{
+  "result": "PASS",
+  "date": "2026-10-14",
+  "reviewer": "Independent acceptance subagent",
+  "scope": "Bounded virtual cursor layout, actual owned-overlay pixels/geometry, idle lifecycle, standalone MCP settings/input, actual Ouroboros menus and profile persistence. This is not a clean-layout or UX-parity assessment.",
+  "builds": {
+    "initial_setup_and_readback_failures": {
+      "x64": "8649c06f068b0f560acc0ddaf48068cf5a0a559f9adcd381ad697495bad4cfd9",
+      "i686": "b0c1b02c827fd35fd40961dc94112fe1b5c8936c08d9f8e36c2c1b48dc4d37f1"
+    },
+    "accepted_native_and_earlier_gui_failures": {
+      "x64": "f5d8b759fa35d6fb1884e3adc2a262170c0317e646f24777642ea05bac5c785d",
+      "i686": "3567bddfe46f7ed583aeb75700eb717cdf515f1e8e2534606a45bb19878fa195"
+    },
+    "accepted_gui_prefix_and_tails": {
+      "x64": "fa39b7f5cd85533a95e8a02a36ada5825c8cad8961de19229372936c58903423",
+      "i686": "c16f57e08bdec2e9769026de36e579ecae212748031d6a586e7f805172450cee"
+    },
+    "provenance": "Printing build adds real owned WM_PRINT/WM_PRINTCLIENT cached-DIB output. Final build differs from accepted native build in gui.rs only: bounded long-name UI layout. Native V3 DLLs unchanged. GUI-only correction does not justify native replay."
+  },
+  "accepted": [
+    "22-tool discovery exposes additive layout enums/defaults. Native HWND rectangles and hotspots align to logical coordinates; visible rendered canvas is bounded to 1024x1024, with real owned PrintWindow RGB readback for16 variants plus one x86-owner sample. Four label placements, font8/48, three badge shapes, five badge placements, badge-without-label and maxwide size256 combination render distinct relevant pixel hashes. Unicode truncation metadata is valid/bounded, and position-only moves preserve paint generation/pixel hash.",
+    "Idle hides native HWND and status without changing saved visibility or pointer position. Keyboard/text do not wake; disabled/keymapped raw mouse activity wakes only its owner; actual held native drag stays visible. Paused idle settles, Resume does not wake; saved visible=false stays hidden after mouse activity.",
+    "MoveTo, one synchronized replay and replica motion wake intended users; accepted settings reset only the selected timer. Invalid appearance/range/enum/badge candidates preserve full settings and unrelated actual F6 hold. Stop releases input and destroys owned overlay HWNDs.",
+    "Actual Ouroboros Label Above, Badge Circle and Badge Bottom right menu clicks update the draft. A separately observed actual inactivity checkbox enables5000ms before the next Apply stages600ms. Apply commits size256/font48/layout/idle, actual worker overlay state reflects it, idle/wake behavior works, Stop cleans up, and stopped Save/Load/Save retains the complete profile.",
+    "Fixed nonconcurrent route renders all six extended controls visible and disabled without clicking. Invalid extended profile Load visibly rejects and preserves the complete draft; actual Save preserves that complete valid profile. No routing session starts in this offline phase.",
+    "Long valid Unicode user names no longer push main controls offscreen. The full owned GUI screenshot shows bounded roster/heading and actual appearance controls; it does not establish Unicode GUI glyph legibility or visual-design parity."
+  ],
+  "counts": {
+    "native_substantive_groups": 4,
+    "rendered_variants": 16,
+    "additional_x86_owner_pixel_sample": 1,
+    "accepted_gui_menu_prefix_clicks": 16,
+    "live_tail_clicks": 20,
+    "fixed_prefix_clicks": 4,
+    "fixed_prefix_disabled_observations": 6,
+    "fixed_file_tail_clicks": 4,
+    "retained_not_accepted_aggregates": 8,
+    "note": "Control occurrences include repeated navigation/setup and are not distinct feature counts. Native Rendered is accepted only from its complete prefix group; three unfinished groups completed in the focused tail."
+  },
+  "retained_failures": [
+    {
+      "artifact": "docs/cursor-appearance-native-setup-failure-2026-10-14.json",
+      "accepted_scope": "None.",
+      "cause": "Runner immediately restarted its owned worker for long names before hotkey teardown finished. Optional fixture user_names now supplies names on initial Start. Stop-to-Start ownership remains for the separate lifecycle gate."
+    },
+    {
+      "artifact": "docs/cursor-appearance-native-readback-failure-2026-10-14.json",
+      "accepted_scope": "Own target setup only.",
+      "cause": "Layered HWND GetWindowDC readback was blank/unsupported. Real owned WM_PRINT support was added; no status-only pixel substitute was accepted."
+    },
+    {
+      "artifact": "docs/cursor-appearance-native-rendered-prefix-2026-10-14.json",
+      "accepted_scope": "Complete Rendered group only:16 variants and one x86-owner sample.",
+      "cause": "Separate snapshot/native visibility reads raced an idle transition. Tail waits for both expected observations; actual native visibility criterion remains."
+    },
+    {
+      "artifact": "docs/cursor-appearance-native-hidden-prefix-2026-10-14.json",
+      "accepted_scope": "No complete additional group counted.",
+      "cause": "Runner confused zero rendered canvas of hidden invalidated cache with retained HWND allocation. Correct oracle requires hidden/zero pixel hash/count and anchored origin; nonzero/visible frame geometry stays exact."
+    },
+    {
+      "artifact": "docs/cursor-appearance-ui-setup-failure-2026-10-14.json",
+      "accepted_scope": "None; no GUI launched.",
+      "cause": "Reused fixture helper lacked args.assigned. Runner flag and exception cleanup corrected; two owned fixture processes were explicitly closed."
+    },
+    {
+      "artifact": "docs/cursor-appearance-ui-long-name-defect-2026-10-14.json",
+      "accepted_scope": "None.",
+      "cause": "Real UI layout defect: valid long name made main controls invisible. GUI-only bounded width/heading correction verified by final actual workflows and screenshot."
+    },
+    {
+      "artifact": "docs/cursor-appearance-ui-menu-prefix-2026-10-14.json",
+      "accepted_scope": "Only16 recorded passed clicks through Badge Bottom right.",
+      "cause": "Next step staged600ms before previous checkbox sample expected transient5000ms. Focused tail inserts an actual no-field guard control and verifies5000 before staging600."
+    },
+    {
+      "artifact": "docs/cursor-appearance-fixed-prefix-2026-10-14.json",
+      "accepted_scope": "Four passed navigation clicks and all six truthful disabled observations.",
+      "cause": "Runner expected incidental words overlay/fixed; actual accurate error says extended appearance requires desktop cursor routing. Four-click tail verifies actual semantic error, complete draft and file equality."
+    }
+  ],
+  "limits": [
+    "Virtual IDs, owned disposable x64/x86 targets/files and own HWND/GUI pixels only. No hardware/RustDesk input used for control or validation and no OS input injection. No arbitrary-app, hardware, full functional/UX parity or same-process multi-user isolation claim.",
+    "Controller/GUI and overlay windows execute x64; x86 is an owned target. i686 executable is built/copied/hashed and used as probe, not a separately exercised x86 GUI controller. No exhaustive size/font/placement/architecture cross product.",
+    "Actual bitmap captures independently establish bounded geometry and changed pixels. The exact512px text-width bound is producer/source coverage; the runner checks scalar/truncation metadata and total native canvas, not an independent glyph-width measurement. No general font/glyph-legibility claim; GUI CJK boxes and dense visual hierarchy remain visible limitations.",
+    "Connected-agent activity/authorization path is source/producer coverage only. Standalone MCP Manual, replay and replica activity is independently exercised. No extra Agent Access or historical feature suite replay.",
+    "Owned HWND PrintWindow observes the actual cached rendering; screen composition, DPI/monitor Cartesian coverage, forced native failures and filtered-message-pump cleanup are outside this group. Hidden invalidated frames can retain old HWND allocation with zero rendered canvas."
+  ],
+  "cleanup": {
+    "all_recorded_owned_processes_closed": true,
+    "final_owned_path_cim_audit": "empty",
+    "exclusive_slot_returned": true
+  },
+  "producer_checks": [
+    {
+      "path": "docs/cursor-appearance-initial-producer-checks-2026-10-14.json",
+      "sha256": "2142f205f75c3fa12a776c5f48943b618b486190bad8de4d3760f3e62d19688e"
+    },
+    {
+      "path": "docs/cursor-appearance-print-producer-checks-2026-10-14.json",
+      "sha256": "9c887b4616332f7a4513738e5314d65f6f4fd72a6495c2c40770f0b75654aac8"
+    },
+    {
+      "path": "docs/cursor-appearance-rust-checks-2026-10-14.json",
+      "sha256": "52e6d2c5a87ae546fe8c05c151e6145424bdfc4de8c3d14e49ffad4059f575e6"
+    }
+  ],
+  "producer_scope": "Each final relevant producer bundle passes fmt, strict Clippy,125 workspace tests and x64/i686 builds. Producer checks are distinct from independent acceptance; preserved source-check failures remain linked by producer records.",
+  "evidence_manifest": "docs/cursor-appearance-evidence-manifest-2026-10-14.json",
+  "evidence_manifest_sha256": "bf4425a18cebeda6565b70c72981fca40ade07473b3b17c7e32bb67ae6aabcd0",
+  "image": {
+    "path": "docs/cursor-appearance-control-center.png",
+    "sha256": "0230f7126f81256b0ac84806e5f7d645df81662617e5ee6cf149fe21934f08aa",
+    "visual_review": "Independently inspected safe full owned layout: main controls visible, bounded long roster/name heading, selected Circle/Bottom right, checked inactivity and600ms label; bottom viewport scroll remains. Root also reviewed it for future layout cleanup."
+  }
+}

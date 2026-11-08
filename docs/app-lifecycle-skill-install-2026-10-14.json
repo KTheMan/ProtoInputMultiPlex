@@ -1,0 +1,13 @@
+{
+  "result": "PASS",
+  "scope": "Documentation validation and exact guarded installation only. App-lifecycle and compact-UX native/UI acceptance remain pending.",
+  "source": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\skills\\protoinputmux\\SKILL.md",
+  "installed": "C:\\Users\\Archform CAD Station\\.codex\\skills\\protoinputmux\\SKILL.md",
+  "previous_sha256": "cbbfdad8f943ff9683eb333a93c1c66c29418d1e270c8fb2d23192f5307b9569",
+  "backup": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\lifecycle-skill-backup-20261014-170424\\SKILL.md",
+  "source_sha256": "2ada4b7fd815572c0bd792627b07c11918a81fef3d73b79826d1560dda293950",
+  "installed_sha256": "2ada4b7fd815572c0bd792627b07c11918a81fef3d73b79826d1560dda293950",
+  "unchanged_agent_metadata_sha256": "61c08546d1fafc09287f36c34a74766769d7462034a3eeabd33c999eb0fc16c3",
+  "validation_exit_code": 0,
+  "validation_output": "Skill is valid!"
+}

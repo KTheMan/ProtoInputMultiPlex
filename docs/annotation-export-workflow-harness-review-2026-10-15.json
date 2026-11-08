@@ -1,0 +1,64 @@
+{
+  "decision": "HARNESS APPROVED for the bounded owned/virtual gate; root READY and exclusive-slot handoff required before launch",
+  "runner": {
+    "path": "scripts/test-annotation-export-workflow.py",
+    "sha256": "be2065dcece3e81c5fd2e7a1c5f33a3d6a2ff5bcfd9b285d34922da837409de7",
+    "ast": "PASS (parsed only; not executed)"
+  },
+  "producer": {
+    "path": "runtime/producer-annotation-export-20261015-120757/verification.json",
+    "sha256": "471088527bed806679963e78e5ecc1c8f96fb677926fc0d32f07f213d7ab04c5",
+    "result": "PASS",
+    "workspace_tests": 282,
+    "current_source_inputs": 832,
+    "current_input_mismatches": 0,
+    "runtime_files": 10
+  },
+  "source_review": {
+    "path": "docs/annotation-export-workflow-source-review-2026-10-15.json",
+    "sha256": "2de89e7238e7d30efda383d84216faf9d09e20854afaa56643fefe0953177931"
+  },
+  "plan": {
+    "path": "docs/annotation-export-workflow-plan.md",
+    "sha256": "ca2baee43755a66b64f5e71893c7c5ef557cd959bb03a83d4fa74c9e355b8a2d"
+  },
+  "direct_helpers": {
+    "test-app-lifecycle-ui.py": "e21a4933ce48f1c3f727aa4e9881a6b3cd5861fa67d3166f1e2cc95519c2b23e",
+    "test-profile-maintenance.py": "69b6aea466bea87925b88a333f407f0782c41e961aeadebaf3849de4e6edc6d4",
+    "test-connected-agents-acceptance.py": "b5cbb3251be03bb2b42a731a9fec5596175825836287ab97638289b6e6206f1b",
+    "test-mcp.py": "1d9cbeee58cd23efd0c313f6219bc951234e899fa6e2a91b328fe6a72baf0391",
+    "test-shared-emergency-stop-native.py": "5a5debd02923bd5559a577fe957196b274b956719e2d8dc8f18123b99cb9ac2d",
+    "owned-gui-geometry.py": "8c557ad86e100074b2ccf8d40190cf8fba0c486584165ff41442c75c257dfaa7"
+  },
+  "findings": [],
+  "resolved_draft_findings": [
+    "Both owned capture-pattern probes are created and their actual PIDs/child bounds placed in the profile before GUI launch. MCP, Script and geometry calls now match the inspected existing helpers.",
+    "Explicit omitted-scope request excludes the field instead of serializing null; selected/partial-all/capture-off/selected-PID denials use actual current permission boundaries and preserve ink/revision and absent or sentinel destination.",
+    "Sentinel is a named sentinel_path argument; atomic writer temporary glob matches .mux-export.*.tmp.",
+    "GUI completion reads the existing acknowledged annotation journal by exact path and checks authoritative current pending None, avoiding ephemeral export metadata overwritten by telemetry.",
+    "Policy equality compares selected users, allowed PIDs, capture and session_control, excluding legitimate reconnect client-list changes.",
+    "Two delay-clear operations use distinct current-delay keys. Threaded preparation completion is asserted false after the exact B F5 native down/up recipient witness, then awaited before output decoding.",
+    "Matching result annotation.export supplies exact requested scope/revision/composition HWND/PID/dimensions. PNG checks use actual child capture geometry and a background sample outside the white orientation mark.",
+    "Relevant ctypes handle/message/geometry APIs are typed; retained handle closure uses a typed CloseHandle.",
+    "Initial cursor overlay observation requires two distinct nonzero live HWNDs; observed annotation and magnifier HWNDs are retained for closure checks.",
+    "Every imperative attempt is recorded before dispatch. Failure is preserved without automatic replay; final cleanup checks owned parents, exact two copied run-image CIM scope, known overlays, GUI descriptor and private startup key. A survivor remains a failure for identity-bound parent cleanup instead of blind termination."
+  ],
+  "finite_scope": {
+    "gui_control_observations": 22,
+    "owned_targets": "Two disposable x64 capture-pattern probes, exact PIDs, child HWND ownership and process identity checks; x86 image copied/built, not run.",
+    "native_cases": "Two-user ink; connected capture/scope/PID denials; selected-user transparent PNG; all-user selected-target composition with B native continuity; pending job revocation/capacity denial; one magnifier PNG regression; normal Stop/close.",
+    "local_cases": "Actual Draw export omitted-default all-users and selected-user controls, two decoded PNGs and representative 540x520 / 420x520 owned GUI originals.",
+    "configured_caps": {
+      "connected_annotation_export_attempts": 12,
+      "routing_input_mutations": 30
+    },
+    "planned_actions_by_static_read": "Nine connected annotation export attempts, fourteen routing_input mutations, one magnifier export, and two GUI annotation exports; read-only inventory/inspect and explicit policy/navigation actions are separate."
+  },
+  "limits": [
+    "No apps, native routing, tests, Cargo or helper execution was performed in this review; only source/AST/hash checks.",
+    "This approval is launch readiness, not native, file, timing or pixel acceptance. Raw failures must be retained and material issues stop the gate.",
+    "420x520 is a representative compact Draw observation, not the absolute 320x360 minimum. Periodic PNG mtime/geometry is not request-associated freshness; exact originals require independent manual review after cleanup.",
+    "Existing provider delay is a bounded owned-fixture observation, not a claim about arbitrary blocked providers, network I/O, all races, or postapproval Stop/crash guarantees.",
+    "No hardware, RustDesk, SendInput, OS pointer/foreground manipulation, global/desktop pixel capture, arbitrary unowned process input, x86 execution or full P1/UX/Ultra parity claim."
+  ]
+}

@@ -1,0 +1,121 @@
+{
+  "decision": "BOUNDED ASSIGNED RELEASE RECOVERY ITEM COMPLETE AND APPROVED; FULL ULTRA GOAL OPEN",
+  "date": "2026-10-15",
+  "scope": "Assigned concurrent virtual held-release ownership/healthy-user continuity, correlated connected MCP errors/settings, conservative failed-Stop recovery and targeted compact Home/dialog correction. No whole-UX or real-hardware approval.",
+  "canonical": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\docs\\assigned-release-recovery-assessment-2026-10-15.json",
+    "sha256": "02ff1192867877bdb5656333cf17684d17dcf7eef9cc310d6d6ee250de7bb0a5"
+  },
+  "verification": {
+    "canonical_refs_verified": 12,
+    "documentation_and_images_verified": 10,
+    "doc_hash_case_normalized": true,
+    "source_inputs": 84,
+    "current_source_mismatches": 0,
+    "GUI_only_correction_protected_inputs": 83,
+    "current_manifest_sha256": "ecd1f4c0ed73bd37b65658d207152e43971596ec9c22d454ac5fae70397070bc",
+    "manifest_encoding": "UTF8 sorted compact JSON; exact full manifest bound by final producer hash.",
+    "both_producers": "238tests and five Rust commands PASS; both builds recorded; no new test/build execution in closure audit.",
+    "current_executables_verified": {
+      "x64": "6552ce91aa5c9ddc6f28d3c3b701edd0d9a76afc85e389eb0ac3fd2c68e3c54e",
+      "i686": "b92c6103f361ce3916784c32b7e247b28618543b78c9b20443f55137160ff8d4"
+    },
+    "run_copy_executables_verified": 4,
+    "unchanged_runtime_files_verified": 10,
+    "genuine_GUI_byte_diff": "Recorded patch text equals unified diff of saved355470 baseline and finalc42f40 GUI bytes; only presentation/copy/semantic header control, unchanged cleanup handlers.",
+    "native_data": "Independent080418data review reconciled exact sameclient1, retained failed originals/settings rollback, healthyB/globalcleanup/Resume/rehold/StopUP, twoPIDquarantine and freshC/D restart.",
+    "pixels": "Acceptance and root directly viewed exact originals after closure. Final320Home fulltwoRows/count and contained320modal/title/count/causeprefix/wholewrappedactions approved. Documentation copies byteexact.",
+    "combined_counts": {
+      "mutating_MCP_calls": 22,
+      "readonly_MCP_calls": 8,
+      "GUI_phase_observations": 27,
+      "GUI_actual_clicks": 26,
+      "disabled_Start_observations": 1,
+      "process_occurrences_exit_zero": 10
+    },
+    "history_preserved": "Both raw PENDING results and prior data/readable review/OPEN visual findings remain byteexact; corrected visuals separately close the two specific findings. Source237producer superseded before native; no fictitious native failure or one fresh final-suite claim."
+  },
+  "skill_install": {
+    "source": "skills\\protoinputmux\\SKILL.md",
+    "installed": "C:\\Users\\Archform CAD Station\\.codex\\skills\\protoinputmux\\SKILL.md",
+    "sha256": "c1bacfc4c4a5d87644dd808084aff1177e121b31da351ea215b1b12ebdb7af38",
+    "actual_exact_byte_equality": true,
+    "old_backup": "runtime\\assigned-release-recovery-skill-before.md",
+    "old_backup_sha256": "7c46aecd8ea3083afd2b3407f93b4d60192eea13b144574d5f18ea13c46a2ef1",
+    "old_backup_verified": true,
+    "recorded_source_and_installed_quick_validate": "Both exit0/Skill is valid!; audited existing results, not rerun."
+  },
+  "cleanup": "Recorded both-run CIM0/GUIDabsent/descriptors0/temps0, all10owned process occurrences exited0 and known overlays destroyed. Fresh closure scopedCIM check count0 at2026-10-15T15:25:57Z; no active owned handles. Native slot returned.",
+  "remaining_limits": [
+    "Home Routing active still wraps awkwardly at320; no all-compact-polish/fullUX approval. Corrected360 is geometry-only; full long cause hover is source-only.",
+    "Periodic PNG cadence/twowrites do not guarantee request-associated freshness; only exact reviewed content accepted.",
+    "Native fixed-relative/x86, physicaldevices/arbitraryapps/HWNDreuse/forcedraces/live-target transient retry/durable quarantine/sameprocess isolation and broader Ultra/accessibility/performance/remote goals remain open."
+  ],
+  "references": [
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\docs\\assigned-release-recovery-assessment-2026-10-15.json",
+      "sha256": "02ff1192867877bdb5656333cf17684d17dcf7eef9cc310d6d6ee250de7bb0a5"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\docs\\assigned-release-recovery-doc-review-2026-10-15.json",
+      "sha256": "4a667b145a3b71544a929ec10e29406c38db95fed3ae6eb112b63a4a8609e8ed"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\docs\\assigned-release-recovery-skill-install-2026-10-15.json",
+      "sha256": "57124c621d0afa23192496ab771bf8ecb4d4c3c20631dfa2905603d078d06637"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\docs\\assigned-release-recovery-source-review-2026-10-15.json",
+      "sha256": "8460f9654a49cdb5db47e4ce17836ac5531952ba7c7366a1d9f9d2341c73f90c"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\docs\\assigned-release-recovery-ux-source-review-2026-10-15.json",
+      "sha256": "9d79270578195ec90dc8d31412d1661c7b1c5922d9830a6e0a0e2324589cdb91"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-assigned-release-recovery-20261015-080115\\verification.json",
+      "sha256": "8d57dd3e4f94646caaf49927c08982478b959ce6d087bded28f432db4cdb614b"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-assigned-release-recovery-20261015-081426\\verification.json",
+      "sha256": "cf2ec409244936f0e316998a5171a869a27ebe9c040bab466304e010913bc963"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-assigned-release-recovery-20261015-080418\\evidence.json",
+      "sha256": "6f4aa7fa49c8fd88af5e186d54060cf004ad61d1b238c6f9425eb960f8af6836"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-assigned-release-recovery-20261015-080418\\independent-review.json",
+      "sha256": "6dc4e6532a58232db58a0c94de37194a3ff6fa3f638e80f9c40b890c9f4b5267"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-assigned-release-recovery-ux-tail-20261015-081627\\evidence.json",
+      "sha256": "1c756b9592a461e260300108614b4a38f39a3eba6a3aafebab2b21711b00e4d4"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-assigned-release-recovery-ux-tail-20261015-081627\\independent-review.json",
+      "sha256": "f2938f15229544e40fe44aa7872ab6f61c07cbd225365c5816d54708c3e9869b"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\assigned-release-recovery-harness-review.json",
+      "sha256": "2842a6799aeaa52bb250733b1dc584bc123091669c3714cb27bdf362388e44f6"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\assigned-release-recovery-ux-harness-review.json",
+      "sha256": "cbbec1af8511bbabf15e22728feffed0cbd8d6dab49ca6edc933d6ee56b745b7"
+    }
+  ],
+  "reviewed_document_image_hashes": {
+    "README.md": "79755b7298535d59b276299fe26002985990811d5455af82533de2cfd4a17041",
+    "docs/ultra-parity.md": "8e767c096f448e450d48c8a0f20e6e322f9d8b87a58cb8f9b00b1147a7389302",
+    "docs/roadmap.md": "0efdf836a540917ed00ac653b63ab491fb2361d3f870e91a6cdafbbb124db26d",
+    "docs/agents.md": "f65d78fec61163a3d4d4f0f2b4d41e0139e7a5f4714a42b0c548752c464838fe",
+    "docs/validation.md": "85daa5a7cdd99b88c36abb3bbfca2b689f8bdc65043b931487a9a71be4c8c3fa",
+    "skills/protoinputmux/SKILL.md": "c1bacfc4c4a5d87644dd808084aff1177e121b31da351ea215b1b12ebdb7af38",
+    "docs/assigned-release-recovery-contract.md": "8ef98df5b5ec6a47e297773ed6f75155fc6cc1133f78735cc530db21dd8b457c",
+    "docs/assigned-release-recovery-assessment-2026-10-15.json": "02ff1192867877bdb5656333cf17684d17dcf7eef9cc310d6d6ee250de7bb0a5",
+    "docs/assigned-release-recovery-home-minimum.png": "3b8fdc8362b16e08e1586422526f18ee4b3e8305bbf6aed71451a674bf44cc75",
+    "docs/assigned-release-recovery-dialog-minimum.png": "0b2ce89794518a94bfa1562e4a0f1b18d3789081a7533935152152a2a585bd0e"
+  },
+  "actions": "Read-only audits and this final acceptance record only. No Cargo/apps/native experiments/source or canonical modifications."
+}

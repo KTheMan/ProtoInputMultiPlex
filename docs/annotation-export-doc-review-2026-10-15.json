@@ -1,0 +1,43 @@
+{
+  "decision": "APPROVED FOUR CURRENT DOC/SKILL FILES FOR BOUNDED EXPORT SCOPE; INSTALL PENDING",
+  "assessment": {
+    "path": "docs\\annotation-export-assessment-2026-10-15.json",
+    "sha256": "33399b21bb53ea994bc347801d199fbd66788719ccd35a661894f960681de5ba"
+  },
+  "reviewed_files": [
+    {
+      "path": "README.md",
+      "sha256": "ccbc1fcbae1d73d5b41bc90a1151a97f0a17aa5b51ecd727575f37724aeb07e0"
+    },
+    {
+      "path": "docs/agents.md",
+      "sha256": "8994802035afd799971f9991b051a5afe412c2ac4f54745c625df378c689f3f6"
+    },
+    {
+      "path": "skills/protoinputmux/SKILL.md",
+      "sha256": "04ad08d8b6cd2f9ec4a399fd38fa508eaca0ac079dde3c82af324614016300ae"
+    },
+    {
+      "path": "docs/ultra-parity.md",
+      "sha256": "52cc9f6d501f4ec3a6fbff0e59979bba48803ae6f8bf5807735491f286fcaef9"
+    }
+  ],
+  "findings": [],
+  "review": [
+    "Annotation export is documented as available to local GUI/standalone and connected callers, no stale standalone-only/unavailable restriction in the updated export guidance.",
+    "Connected capture/user/all-active-user/selected-target permission boundaries are accurate; no session-change grant is required for export. Ink snapshot and selected-client-only composition distinguish transparent virtual canvas from desktop pixels.",
+    "Off-input-thread preparation/publication is distinguished from the synchronous waiting MCP call; GUI pending state, second-client input and one retained annotation job are described.",
+    "Approval is the commit point; timeout after approval requires inspecting the destination, while Stop/crash can interrupt publication and temporary cleanup.",
+    "Bounded accepted user-facing local/connected exports and permission/continuity/magnifier results are linked to the exact assessment. Native precommit revocation/capacity/normalStop gaps remain explicit, source/unit evidence distinct; no full feature/native gate/Ultra/UX claim.",
+    "540-pixel-width whole Save/kind/path/scope and420 Draw/clear/scope-only limits match directly viewed originals. Completion or compact Save pixels are not claimed.",
+    "Reviewed only the annotation update/current related guidance, preserving unrelated historical assessments. Assessment links resolve correctly. Repository skill frontmatter remains present; validators and guarded install are root follow-up, not performed here."
+  ],
+  "installed_skill_before_sync": {
+    "path": "C:\\Users\\Archform CAD Station\\.codex\\skills\\protoinputmux\\SKILL.md",
+    "sha256": "fca13a68d5e6f3f9769871061bb9b814e323d82e5e24dd062f76d27116372577"
+  },
+  "limits": [
+    "No Rust/source mutation, app/native/build/Cargo/test or skill installation performed by reviewer.",
+    "This approves documentation of the canonical bounded scope, not the remaining native acceptance criteria."
+  ]
+}

@@ -1,0 +1,4 @@
+
+thread 'main' (797748) panicked at crates\protoinputmux\src\mcp.rs:683:5:
+Invalid input schema for `rmcp::handler::server::wrapper::parameters::Parameters<protoinputmux::annotation_runtime::Command>`: Schema is missing 'type' field. MCP specification requires inputSchema to have root type 'object'.
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

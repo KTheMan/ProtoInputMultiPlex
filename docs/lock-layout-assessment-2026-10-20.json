@@ -1,0 +1,143 @@
+{
+  "decision": "BOUNDED_COMPACT_LOCK_LAYOUT_ACCEPTED",
+  "date": "2026-10-20",
+  "scope": "Original Rust/Ouroboros compact Lock configuration, one x64 GUI, two virtual mouse/keyboard pairs and two owned x64 probes; 320x360 and 360x360 logical client sizes. Individually scrolled responses, not simultaneous visibility of every field.",
+  "native": {
+    "evidence": {
+      "path": "runtime/lock-layout-ui-attempt007/evidence.json",
+      "sha256": "5e96dc870f2c843949e2c1d4d4ab2933e89a851200915fe5562bd74284af1bee"
+    },
+    "independent_review": {
+      "path": "runtime/lock-layout-ui-attempt007-review.json",
+      "sha256": "7d655d5757e9a9495854911899362959ce704d94c3b7387faa31aab72c8d5a4b"
+    },
+    "original_exec_session": 26264,
+    "exit_code": 0,
+    "gui_actions": 75,
+    "whole_response_samples": 26,
+    "original_pngs": 14,
+    "elapsed_ms": 54656,
+    "routing_input_calls": 0,
+    "attachment": "No routed input or probe attachment."
+  },
+  "producer": {
+    "report": {
+      "path": "runtime/producer-lock-layout-20261020-attempt005/verification.json",
+      "sha256": "8156f842ae60ae2d23b15133bb2b3837edbaf326af43fda8464ea3a69d32015e"
+    },
+    "independent_review": {
+      "path": "runtime/lock-layout-producer-attempt005-review.json",
+      "sha256": "32f857a7ef48239d0b0d3185827acae0a6396f68baff9542f3ae908d08b18238"
+    },
+    "original_exec_session": 16158,
+    "exit_code": 0,
+    "checks": "cargo fmt --all --check; cargo clippy --workspace --all-targets -- -D warnings; cargo test --workspace:410 passed,0 failed,3 ignored; x64+i686 app/observer builds PASS",
+    "source_count": 858,
+    "private_runtime_files": 10,
+    "backend_rebuilt": false
+  },
+  "source": {
+    "crates/protoinputmux/src/gui.rs": "a09e09834ee4486e202935a47be4299131118367195194e6eaca78c10cdbc045",
+    "crates/protoinputmux/src/ui_script.rs": "69b185c635402f1927c2e24eefbf0d981c242bdb160cebc01d3434e41cfd69d1",
+    "final_source_review": {
+      "path": "runtime/lock-layout-source-v7-review.json",
+      "sha256": "3b77443b5ec8750ade49d94192b7c7cdaf076690dec8281c6a80f6679d17b968"
+    },
+    "sample_barrier_review": {
+      "path": "runtime/lock-layout-source-v5-review.json",
+      "sha256": "2a11db510abff26dd9b307e080c7376eb9198cb1cc738900c7a89c0d3cd7612c"
+    },
+    "runtime_bound_runner_review": {
+      "path": "runtime/lock-layout-ui-source-v7-review.json",
+      "sha256": "ce9c7029684638bc6c82212a5a5baaa8e93a01480b24af668ee45793c0509133"
+    }
+  },
+  "accepted": [
+    "Actual Movement bounds popup commits all five choices: Legacy, Desktop, Window, Monitor and Region. The fixed footer names the selected bounds Apply action.",
+    "Draft and acknowledged worker modes remain distinct: Region draft/Window applied before the single live Apply, then Region applied for A with B still Window.",
+    "Each stopped user chooses and stages its own exact owned window; both observed stages are cleared before live Start. Current, next-Start and highlighted candidate meanings remain distinct; transient HWND/token state is absent from profile.",
+    "Named target/candidate summaries and all four Region rows qualify whole response rectangles at320/360 through ordinary scrolling. Caption truncation uses Ouroboros font/tracking and visible width, with complete title/status hover; compact refresh keeps its accessible name.",
+    "Available and deliberately unavailable monitor paths are explicit. Reversed Region draft retains identity/other-user settings, visible validation and fully contained disabled Apply.",
+    "Existing MCP agent_session/routing_state inspection reports exact two users/two allowed PIDs and independent acknowledged modes. Optional session-control, capture and app-preferences grants remain false; these operations do not establish blanket input denial by policy.",
+    "Normal GUI Stop leaves no Controller, clean stopped recovery and no retained target; MCP EOF and owned WM_CLOSE exit normally. Independent review confirms all four original processes, known windows and private-image workers absent.",
+    "Opt-in sampling blocks next-step observation, scrolling and field/position edits until sample ACK; focused regression passes. No worker, backend, serialization or permission expansion."
+  ],
+  "published_original_images": {
+    "live-draft-before-apply.png": {
+      "path": "docs/lock-layout-draft-before-apply.png",
+      "sha256": "214e086a4fa03ffd36e029c52010c1e616cab6fc152fe46b7706da4dc3f8ce4e",
+      "size": [
+        360,
+        360
+      ],
+      "original": "runtime/lock-layout-ui-attempt007/live-draft-before-apply.png"
+    },
+    "applied-region.png": {
+      "path": "docs/lock-layout-applied-region.png",
+      "sha256": "5e3fc3cdb17f5b2607e347c113f56be6210eec55db46f36dbc4e7ca305ce0ac5",
+      "size": [
+        360,
+        360
+      ],
+      "original": "runtime/lock-layout-ui-attempt007/applied-region.png"
+    }
+  },
+  "preserved_failures": [
+    {
+      "attempt": 1,
+      "review": {
+        "path": "runtime/lock-layout-ui-attempt001-review.json",
+        "sha256": "d234fa69d60e99189c8362299b442081e35ebf82a1efded5cd1f6e95ab700f5d"
+      }
+    },
+    {
+      "attempt": 2,
+      "review": {
+        "path": "runtime/lock-layout-ui-attempt002-review.json",
+        "sha256": "4375a1388a49f504a2b5ba3c11d73f43800b60c1df4c12d616e79886d884f57a"
+      }
+    },
+    {
+      "attempt": 3,
+      "review": {
+        "path": "runtime/lock-layout-ui-attempt003-review.json",
+        "sha256": "ab0c1875780e0a4b8aec4808e0120ead1dfc9c1c5e2b4ec8bc81be199c762c9a"
+      }
+    },
+    {
+      "attempt": 4,
+      "review": {
+        "path": "runtime/lock-layout-ui-attempt004-review.json",
+        "sha256": "cd389225f9f258ae6bfc2b86c376eb7ce514ba14bed2f8383bbe12ada2af5a8b"
+      }
+    },
+    {
+      "attempt": 5,
+      "review": {
+        "path": "runtime/lock-layout-ui-attempt005-review.json",
+        "sha256": "2e270fb30aea38aa376cf2f817862f4ec436fcb461afa26d5bdb7d0c7921025e"
+      }
+    },
+    {
+      "attempt": 6,
+      "review": {
+        "path": "runtime/lock-layout-ui-attempt006-review.json",
+        "sha256": "754587f6e9afa422cec7d781250bfed422246c4b3563f2ff0135c9131f14e074"
+      }
+    }
+  ],
+  "failure_summary": {
+    "001": "Initial evidence only after runner handle finalization bug; separately recorded normal root cleanup. Initial zeros are not final execution evidence.",
+    "002": "Actual footer clipping from Small measurement versus Body error rendering.",
+    "003": "Runner sample/resize ordering; footer repair verified.",
+    "004": "Actual staged-title width overflow from unmatched typography.",
+    "005": "Actual candidate/chooser row width overflow after layout expansion.",
+    "006": "Runner read a pre-Clear published frame; final observed stage cleared. All aggregates remain FAIL."
+  },
+  "limits": [
+    "Virtual devices and explicitly owned targets only; hardware and RustDesk pointer untouched.",
+    "Scrolling is required; fourteen sampled originals and twenty-six full responses do not establish complete feature-page UX, accessibility or exact visual equivalence.",
+    "No monitor reconnect/mixed-DPI, native i686 execution, arbitrary application compatibility, performance benchmark, same-process/desktop-wide isolation, general P1 reliability or full Ultra parity claim.",
+    "Existing selection/startup/cursor/keyboard/dynamic-clamping families were not replayed for this layout group. MCP tools and grants are unchanged."
+  ]
+}

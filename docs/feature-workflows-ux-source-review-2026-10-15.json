@@ -1,0 +1,369 @@
+{
+  "reviewed_at": "2026-10-15",
+  "checkout": "E:/Kenny/Documents/GitHub/ProtoInputMux-ux",
+  "review_kind": "independent, read-only source review",
+  "source_verdict": "PASS for the bounded Output, Profiles feedback, and Automation minimum-width source changes by direct comparison with preserved pre-fix sources. Producer143350 passed fmt, strict Clippy, all 290 workspace tests, and both architecture builds. Independent binding confirms all 78 source hashes match before/after/current and the 10 native runtime hashes match producer140856. The original 141902 offline run passed all 115 real control observations with exact cleanup. The two replacement minimum frames now visually qualify Save feedback and Automation control reachability; live qualification remains pending.",
+  "acceptance_status": "BOUNDED FEATURE-WORKFLOW UX ACCEPTED. Offline behavior passed all 115 observations; minimum-size replacement/layout qualification passed all 21 observations and both original frames were visually accepted. The live overlap run accepted 45 real workflow observations and recorded the real Stop click. Its raw aggregate remains NOT ACCEPTED because the final Stop verifier read stale historical ui.state.json and emitted no accepted live-stop sample. Independent stop qualification documents the fresh stopped recovery state and cleanup evidence with explicit limits; do not call the raw live runner PASS. This acceptance covers only the finite workflows in the plan, not full MouseMux Ultra parity or hardware validation.",
+  "source_hashes_sha256": {
+    "crates/protoinputmux/src/gui.rs": "ff40eda68802cab2cd24e224657977926b524119176edc8ffc2396902a599b7b",
+    "crates/protoinputmux/src/output_ui.rs": "9e0ecd3a912afeb3adbb60c8efd83444b6897347cf59cb8c4af4076eaccd00c0",
+    "crates/protoinputmux/src/ui_script.rs": "c982aac47d42d0703290d28d39b0663bec417d4c56d34d4aa723b3ecdd7e24c9"
+  },
+  "review_artifact_hashes_sha256": {
+    "skills/protoinputmux/SKILL.md": "e9c35d17b6fa154c4f5d7da3737db8c188fc91d76379ef4eda4ba504519381f3",
+    "docs/feature-workflows-ux-contract.md": "6e2e70cb2c5f4f5bceae4af4ca5d3a0f4580d454149c581f155b3498dcec9f4e",
+    "docs/feature-workflows-ux-inventory.md": "88ac1a75e904b50becb32afbff7640fe19104a0da164a534c07d1249989f8a81",
+    "docs/feature-workflows-ux-acceptance-plan.md": "ae1ed897cd53e1c29ab7dcb0060be302d9600d21c2b49249884062a4a2627e13",
+    "scripts/test-feature-workflows-ux.py": "2270e7ab478e15a3930a10b40d897b2c55a18efb45a0c2a2fc2fc5d267fd22cb",
+    "docs/feature-workflows-ux-delivery.md": "10798690ebc101a21d74a3b5048b0e0abcd787258f19ea5552bc5c688497c02c",
+    "docs/feature-workflows-ux-evidence/.gitattributes": "85e48d232edc7b02f6cecf8fbbf905f3b126c467b594d8dd16c4f8fa283a8320"
+  },
+  "reviewed_workflows": [
+    {
+      "workflow": "Output Rules navigation and per-user drafts",
+      "references": [
+        "crates/protoinputmux/src/gui.rs:861-870 Dashboard::go_to_page",
+        "crates/protoinputmux/src/output_ui.rs:127-180 OutputPage::sync_profile",
+        "crates/protoinputmux/src/output_ui.rs:261-270 OutputPage::select_user",
+        "crates/protoinputmux/src/output_ui.rs:1000-1040 identity preservation and loaded key mapping tests",
+        "docs/per-user-layout-assessment-2026-10-14.json selected-user context boundaries"
+      ],
+      "assessment": "On first entry to Output, selection follows the Home roster user. Subsequent selection, profile sync, append, reorder, and page return preserve drafts by stable seat identity. A loaded named-key mapping now initializes its editor value and starts clean."
+    },
+    {
+      "workflow": "Output staged, committed, and editor state",
+      "references": [
+        "crates/protoinputmux/src/output_ui.rs:186-244 OutputPage::receive",
+        "crates/protoinputmux/src/output_ui.rs:254-263 OutputPage::saved_to_profile",
+        "crates/protoinputmux/src/output_ui.rs:375-432 Apply, Save to profile, and Discard footer actions",
+        "crates/protoinputmux/src/output_ui.rs:638-658 Add key mapping and unsubmitted-entry cue",
+        "crates/protoinputmux/src/output_ui.rs:698-729 commit gates and has_unapplied_key_entry",
+        "crates/protoinputmux/src/output_ui.rs:1047-1075 and 1178-1207 unadded key entry unit test",
+        "crates/protoinputmux/src/mcp.rs:748-832 output command completion and error events"
+      ],
+      "assessment": "Matching successful acknowledgements update the committed baseline; failures keep staged values available. The source now prevents Apply/Save while a nonempty source/destination mapping remains unadded, explains that Add is required, and leaves Discard available. Save-to-profile is separate from durable profile Save. Backend Output command errors are emitted as acknowledged terminal results, so the earlier false-ACK busy-state concern is not reachable through those command failures. Delayed successful acknowledgements identify the original user in status even when the chooser changes, and selection clears stale status; a focused unit test covers this attribution."
+    },
+    {
+      "workflow": "Profiles and unsupported gates",
+      "references": [
+        "crates/protoinputmux/src/gui.rs:6055-6227 Dashboard::profiles",
+        "crates/protoinputmux/src/output_ui.rs:592-715 unsupported-seat messages and commit gates"
+      ],
+      "assessment": "Save/Load remain the visible primary profile actions. Import/export, recovery, automatic targeting scope, and backend runtime are default-closed disclosures. Session routing disables file mutation and target-scope edits. Output conversion remains unavailable for physical mouse users; key output without a virtual keyboard cannot commit. The 141902 minimum screenshot was scrolled past Save/Load and owned feedback because the next Import observer auto-scrolled during sample wait. The existing wrapped feedback was moved before explanatory copy; the layout gate inserts a same-Save Tab fence and captures after persisted file/snapshot equality and visible Saved status. The replacement frame is pending."
+    },
+    {
+      "workflow": "Legacy combined Macro and replication form",
+      "references": [
+        "crates/protoinputmux/src/gui.rs:1905-2214 Dashboard::automation_controls",
+        "crates/protoinputmux/src/gui.rs:861-883 page-specific viewport sizing"
+      ],
+      "assessment": "The legacy form groups Macro file, Playback options, and Replication help in default-closed disclosures; Play is primary, From/To selectors are named and paired with a user-name summary, and replication rows wrap. Source review confirmed the responsive fix moves From/To into separate rows, places Add replication below the event-category row, and places Refresh/Start/Stop/Cancel in separate rows. These changes preserve the original enable predicates and action bodies. Macro Studio, Replication Graph, and Virtual Replicas source paths were not changed. The 141902 minimum screenshot shows the prior To/Add horizontal clipping; the post-fix endpoint frame is pending."
+    },
+    {
+      "workflow": "Opt-in UX evidence snapshots",
+      "references": [
+        "crates/protoinputmux/src/ui_script.rs:356-375 Script::workflow_state",
+        "crates/protoinputmux/src/gui.rs:6337-6346 Dashboard::ui"
+      ],
+      "assessment": "Only an explicit UI-script session writes output-page and navigation snapshots into that owned evidence directory. This does not alter public MCP tools or permission state."
+    }
+  ],
+  "material_findings": [
+    {
+      "finding": "Output editor could lose a valid but unadded source/destination entry on commit.",
+      "resolution": "Current source guard blocks both commit actions, presents an Add cue, and preserves Discard; the UI harness now exercises entry, disabled Save/Apply, Add, staging, and later Discard.",
+      "test_evidence_gap": "The focused valid-seat test covers active and stopped session states and passed in the Producer131442 cargo test --workspace run."
+    },
+    {
+      "finding": "Newly loaded named-key output could display as an empty editor field.",
+      "resolution": "Current sync_profile initializes editor text from committed key settings; initial_profile_key_mappings_populate_editor_and_start_clean covers this path."
+    }
+  ],
+  "baseline_render_reference": {
+    "run": "runtime/acceptance-graph-feature-workflows-ux-baseline-20261015-123348",
+    "scope": "nine UI Script steps, four current-main Output/Profiles render frames, no worker/client/probes/MCP/hardware",
+    "qualification": "Baseline fixture used feature-ux-baseline IDs, while the candidate uses feature-ux IDs plus synthetic keyboardless and physical-seat cases. Beta/common geometry is a render reference only. The normal Output image begins at a lower-form viewport; the minimum frame does not prove endpoint scroll reachability."
+  },
+  "accepted_coverage_boundaries": {
+    "prior_accepted_evidence": [
+      "Home/application presentation: docs/application-presentation-assessment-2026-10-14.json",
+      "Settings category hub and chooser: docs/settings-hub-assessment-2026-10-14.json",
+      "Selected-user twelve-tab layout and shared tools/forms: docs/per-user-layout-assessment-2026-10-14.json and docs/per-user-tools-assessment-2026-10-14.json",
+      "Output conversion/backend contract: docs/output-rules-assessment-2026-10-14.json",
+      "Profile file atomicity, invalid-input preservation, reset/undo semantics: docs/profile-maintenance-assessment-2026-10-14.json",
+      "Macro Studio, Replication Graph, and connected Agent permission contracts: docs/productivity-ux-assessment-2026-10-15.json, scripts/test-productivity-ux-ui.py, scripts/test-connected-agents-acceptance.py, and scripts/test-connected-virtual-users-acceptance.py"
+    ],
+    "not_claimed": [
+      "all 13 Settings destinations as fully audited feature pages",
+      "full keyboard or screen-reader accessibility",
+      "physical-device or hardware validation",
+      "RustDesk input, arbitrary-application delivery, desktop-wide isolation, or same-process multi-user isolation",
+      "complete MouseMux Ultra functional or UX parity"
+    ]
+  },
+  "remaining_gates": [
+    "No remaining gates for the bounded finite feature-workflow UX scope. The raw 145712 runner result remains NOT ACCEPTED and is not rewritten; Stop was qualified independently from the retained click, recovery, released-input, descriptor, and cleanup evidence with no at-stop HWND sample.",
+    "Broader parity, all Settings feature pages, screen-reader/accessibility coverage, physical devices, RustDesk input, arbitrary-application delivery, desktop-wide isolation, and same-process multi-user isolation remain outside this bounded acceptance."
+  ],
+  "producer_verification": {
+    "path": "runtime/producer-feature-workflows-ux-20261015-143350/verification.json",
+    "sha256": "2133f674e18cc7f72b7561c3174e18ccf53452c3b7fbb57be673a18aee4ff56e",
+    "result": "PASS",
+    "source_inputs": 78,
+    "source_before_after_equal": true,
+    "checks": [
+      "cargo fmt --all --check",
+      "cargo clippy --config build.rustc-wrapper=\\\"\\\" --workspace --all-targets -- -D warnings",
+      "cargo test --config build.rustc-wrapper=\\\"\\\" --workspace (290 passed)",
+      "cargo build --config build.rustc-wrapper=\\\"\\\" --workspace (x64)",
+      "cargo build --config build.rustc-wrapper=\\\"\\\" --workspace --target i686-pc-windows-msvc"
+    ],
+    "build_sha256": {
+      "x64": "29a98fbfed91136aa243b19678898aadb329df7ab8c2f171a8968ae29c5cae5c",
+      "i686": "4e0cefb37143409bf9c33007a79f10df58d9dd6ebe765bda6a8f326780bec332"
+    },
+    "applicability": "Independent PowerShell hash pass checked all 78 current source files against source_before_sha256 with zero mismatches. The 10 native baseline hashes match producer140856 exactly. Actual x64/i686 executable hashes match this manifest; all five checks exited zero and the workspace test count is 290."
+  },
+  "lifecycle_overlay": {
+    "artifact": "runtime/feature-workflows-ux-lifecycle-overlay.json",
+    "artifact_sha256": "e1eed97daed422fb724fa54d94d4fe22a5c72cdfad499f0d57f0ceac150c0066",
+    "producer": "runtime/producer-annotation-open-budget-20261015-131610/verification.json",
+    "producer_sha256": "380358b115466146ee030b20b27547f650409604073b7ccba200502352f3b7f3",
+    "path": "crates/mux-windows/src/lifecycle.rs",
+    "before_sha256": "4fe3efbd680964706f09b086869488358b1eca17f44345eedc04092f1aadc056",
+    "after_sha256": "cabbd0ca524c08c6364efefd501458625c1f2a9de6bc175e2f015999c31fd4d3",
+    "current_matches_after": true,
+    "assessment": "Exact single-file lifecycle overlay is independently bound to the accepted producer and currently matches after_sha256. It is a separate parent-owned baseline integration, excluded from UX implementation changes. Producer133411 passed for its then-frozen source set, but the subsequent bounded GUI/Output minimum-width fixes changed source hashes, so its checks do not verify current source."
+  },
+  "offline_attempt": {
+    "run": "runtime/acceptance-graph-feature-workflows-ux-offline-20261015-134134",
+    "result": "NOT ACCEPTED",
+    "process_exit_code": 1,
+    "failed_step": "output-invalid-key",
+    "failure": "AssertionError at verify line 379: the step expected the named-key validation state, but the final OutputPage snapshot remained at button key A and unadded source/destination A/B with parse_error null. The script event recorded Save output rules to profile as disabled, and its fields did not appear in the snapshot; treat as harness interaction/contract unresolved and do not infer a product defect from this attempt.",
+    "cleanup": {
+      "startup_key_removed": true,
+      "owned_binary_processes_closed": true,
+      "remaining_exact_owned_image_processes": [],
+      "cleanup_errors": []
+    },
+    "captured_frames": [
+      {
+        "path": "runtime/acceptance-graph-feature-workflows-ux-offline-20261015-134134/output-normal.png",
+        "sha256": "ac9520d8f8c06bf26ae0e69c00d3e4076b4965b4b42eb8a2aa04d6977df5ba5d",
+        "geometry": "680x620 logical, 680x620 pixels, 96 DPI",
+        "inspection": "Original PNG directly reviewed; chooser, selected-user summary, staged state, disabled Apply/Save, Discard, and Add cue are visible."
+      }
+    ],
+    "complete_six_frame_set": false,
+    "runtime_slot_returned": true
+  },
+  "offline_attempt_retry": {
+    "run": "runtime/acceptance-graph-feature-workflows-ux-offline-20261015-135414",
+    "result": "NOT ACCEPTED",
+    "process_exit_code": 1,
+    "failed_step": "profiles-keyboard-save",
+    "failure": "AssertionError at verify line 458: Save profile receipt arrived before the active profile file and per-frame profile snapshot had settled. Root independently confirmed the saved file equals the snapshot after the runner terminated; this was a transient completion-window assertion, not a content mismatch.",
+    "cleanup": {
+      "startup_key_removed": true,
+      "owned_binary_processes_closed": true,
+      "remaining_exact_owned_image_processes": [],
+      "cleanup_errors": []
+    },
+    "captured_frames": [
+      {
+        "path": "runtime/acceptance-graph-feature-workflows-ux-offline-20261015-135414/output-normal.png",
+        "sha256": "62a3cc84cd7b6dfa517f445e5c040d61984b11e082bb26528a2e8fd03eb41c2c",
+        "inspection": "Original PNG directly reviewed. Normal Output viewport shows selected user B and staged status; lower mapping rows continue in the page scroll area."
+      },
+      {
+        "path": "runtime/acceptance-graph-feature-workflows-ux-offline-20261015-135414/output-minimum.png",
+        "sha256": "2f01df5969c6eba1775074aae319773db79d225ea4fe5b24897f53bb01c10820",
+        "inspection": "Original PNG directly reviewed. 320x360 text in the keyboard-remapping caption clipped horizontally; action footer remained visible. Root accepted this as a material minimum-width finding and bounded wrap fix."
+      },
+      {
+        "path": "runtime/acceptance-graph-feature-workflows-ux-offline-20261015-135414/profiles-normal.png",
+        "sha256": "ce3b2ebec469da27a5fce3b98d3e92454ed7c2e16ec8fcaa02c285b5944bf6c9",
+        "inspection": "Original PNG directly reviewed. Save/Load and default-closed profile sections are legible at normal size."
+      },
+      {
+        "path": "runtime/acceptance-graph-feature-workflows-ux-offline-20261015-135414/profiles-minimum.png",
+        "sha256": "f9488eb32a12ad3eb6eb406449505755e1669fc914e86b82230f84cd7a9525dc",
+        "inspection": "Original PNG directly reviewed. Save/Load are reachable; the longer explanatory paragraph continues below the minimum viewport and the scroll area/footer clip its lower lines. Follow-up candidate capture moves the single minimum PNG after Save completion feedback."
+      }
+    ],
+    "complete_six_frame_set": false,
+    "runtime_slot_returned": true
+  },
+  "offline_attempt_141537": {
+    "run": "runtime/acceptance-graph-feature-workflows-ux-offline-20261015-141537",
+    "result": "NOT ACCEPTED",
+    "process_exit_code": 1,
+    "failed_step": "output-save-draft",
+    "failure": "TypeError at the profile completion predicate: profile_snapshot() missing required gate argument. The event had passed through Output unsupported gates, but the profile wait helper passed the unbound function into ui.eventually.",
+    "cleanup": {
+      "startup_key_removed": true,
+      "owned_binary_processes_closed": true,
+      "remaining_exact_owned_image_processes": [],
+      "cleanup_errors": []
+    },
+    "captured_frames": [
+      {
+        "path": "runtime/acceptance-graph-feature-workflows-ux-offline-20261015-141537/output-normal.png",
+        "sha256": "059c5f3fbbddc91f6b3e22c4906aa7f0e32657a4012c190beaa20ccfdefc12b1",
+        "inspection": "Original PNG directly reviewed. Selected user B, staged state, and footer remain legible at normal size."
+      },
+      {
+        "path": "runtime/acceptance-graph-feature-workflows-ux-offline-20261015-141537/output-minimum.png",
+        "sha256": "3ea64ba54257670cd672b71cf9256ed41731c0e0ec3e041369d887b2657aefad",
+        "inspection": "Original PNG directly reviewed. The caption wraps horizontally; at the captured lower scroll position its continuation is occluded by the sticky footer, while adjacent fields are below the viewport. This may be ordinary vertical scrolling; no controls were shown lost."
+      }
+    ],
+    "complete_six_frame_set": false,
+    "runtime_slot_returned": true
+  },
+  "offline_functional_run_141902": {
+    "run": "runtime/acceptance-graph-feature-workflows-ux-offline-20261015-141902",
+    "raw_evidence_result": "PENDING INDEPENDENT VISUAL REVIEW",
+    "functional_verdict": "PASS: Gate.execute completed all 115 real control observations; no failure was recorded. The harness changes the raw result to pending visual review after successful control execution, so the raw evidence label is preserved verbatim.",
+    "process_exit_code": 0,
+    "observations": 115,
+    "cleanup": {
+      "startup_key_removed": true,
+      "owned_binary_processes_closed": true,
+      "remaining_exact_owned_image_processes": [],
+      "cleanup_errors": []
+    },
+    "captured_frames": [
+      {
+        "name": "output-normal",
+        "path": "runtime/acceptance-graph-feature-workflows-ux-offline-20261015-141902/output-normal.png",
+        "sha256": "059c5f3fbbddc91f6b3e22c4906aa7f0e32657a4012c190beaa20ccfdefc12b1",
+        "geometry": "680x620 logical/pixels, 96 DPI",
+        "inspection": "Legible selected-user B and staged Output state; footer controls visible."
+      },
+      {
+        "name": "output-minimum",
+        "path": "runtime/acceptance-graph-feature-workflows-ux-offline-20261015-141902/output-minimum.png",
+        "sha256": "3ea64ba54257670cd672b71cf9256ed41731c0e0ec3e041369d887b2657aefad",
+        "geometry": "320x360 logical/pixels, 96 DPI",
+        "inspection": "Caption now wraps horizontally. Its continuation is vertically clipped at the scroll viewport/footer at this scroll position; sticky actions remain visible and no lost control is inferred."
+      },
+      {
+        "name": "profiles-normal",
+        "path": "runtime/acceptance-graph-feature-workflows-ux-offline-20261015-141902/profiles-normal.png",
+        "sha256": "ce3b2ebec469da27a5fce3b98d3e92454ed7c2e16ec8fcaa02c285b5944bf6c9",
+        "geometry": "680x620 logical/pixels, 96 DPI",
+        "inspection": "Save/Load and default-closed disclosures are clear at normal size."
+      },
+      {
+        "name": "profiles-minimum",
+        "path": "runtime/acceptance-graph-feature-workflows-ux-offline-20261015-141902/profiles-minimum.png",
+        "sha256": "02a2551a86134a6c28000197df1920ef23ed311f9794de9e68fda08b65256191",
+        "geometry": "320x360 logical/pixels, 96 DPI",
+        "inspection": "After Save, the next Import observer auto-scrolled; this frame shows lower disclosures/caption rather than Save/Load and owned completion feedback. Replace this frame with the same-Save sampling fence."
+      },
+      {
+        "name": "automation-minimum",
+        "path": "runtime/acceptance-graph-feature-workflows-ux-offline-20261015-141902/automation-minimum.png",
+        "sha256": "47509cc8866f994a2d5fc38667eba3b0df06f7f010f4d50306b7deaa5c213a1f",
+        "geometry": "320x360 logical/pixels, 96 DPI",
+        "inspection": "From is fully visible, but the To selector starts at x283 and is cut at the right edge; Add replication also extends beyond the right edge. The lower controls need responsive rows."
+      },
+      {
+        "name": "settings-representative",
+        "path": "runtime/acceptance-graph-feature-workflows-ux-offline-20261015-141902/settings-representative.png",
+        "sha256": "62792877a566cc9d563294cb241e1f1b88191549885ad96e1207e63fb22e88c5",
+        "geometry": "680x620 logical/pixels, 96 DPI",
+        "inspection": "Agent access Settings representative remains readable; route coverage and category memory passed in the functional event run."
+      }
+    ],
+    "reused_in_final_frame_set": [
+      "output-normal",
+      "output-minimum",
+      "profiles-normal",
+      "settings-representative"
+    ],
+    "superseded_visuals": [
+      "profiles-minimum",
+      "automation-minimum"
+    ],
+    "runtime_slot_returned": true
+  },
+  "harness_contract_review": {
+    "references": [
+      "crates/protoinputmux/src/ui_script.rs:261 field_edits reads steps.front fields",
+      "crates/protoinputmux/src/gui.rs:1190-1194 applies queued field edits; 6337-6341 writes workflow snapshot"
+    ],
+    "finding": "The Script verifier samples state after the current step is popped, so the next queued step fields are already visible. A snapshot wait for the current step values is incorrect.",
+    "resolution": "Added adjacent field-free, disabled observation fences after all stateful offline Output actions and after live Output selector/type/apply actions. Added a field-free Disable agent access fence before grant fields. Removed forced output_user selection on initial Home→Output entry and Output page return, and assert stable user B automatically at initial entry, page return with staged draft, and Settings route 12.",
+    "review": "Independent static review confirms the fence helper uses exact adjacent IDs and no fields; offline step-construction probe passes for all 19 stateful Output controls and output entry/return selectors have no user override. Python py_compile passes. The 135414 failure showed Script receipts can precede post-click disk/snapshot settlement. Current harness uses finite ui.eventually predicates for Save/Export/Import/Undo/Reset/Load and output Add/Discard/profile application, checks visible profile status, verifies the empty pre-Load state, and takes the single Profiles minimum screenshot after Save completion. Run 141537 caught one unbound profile_snapshot callback; the corrected lambda was mock-executed, and all seven eventually operations pass AST inspection. The 141902 run passed all 115 real observations and exact cleanup, while visual inspection found two replacement-worthy screenshots. The layout phase verified the allowed pending-visual prior run had all 115 receipts, no failure, removed key, and clean owned-image process audit; it performed only Profiles Save feedback and Automation reachability with exactly two replacement frame calls. `output_workflow` independently mock-reviewed phase callbacks/resize waits, Save persistence/fence ordering, disabled Automation controls, same-user selector choices, and the two-frame bound. Its follow-up confirmed the prior-run guard matches 141902 exactly and rejects failed/unclean runs. Run 144654 exited 0 after 21 real control observations and exact cleanup; both original replacement PNGs were independently reviewed and accepted. The separately scoped live harness was then read-only reviewed for per-user Apply ACKs, connected B update/draft retention, manual F6 retention/release, fixtures, and least-grant policy; no material issue was found. The 145712 live run passed its 45-step overlap prefix and clicked Stop, but its final raw aggregate remained NOT ACCEPTED because the verifier treated the persistent historical ui.state.json as current. The independent Stop qualification records the fresh stopped recovery snapshot, released probe inputs, descriptor and process cleanup; its scope and lack of an accepted live-stop sample are explicit in docs/feature-workflows-ux-live-stop-qualification-2026-10-15.json. Independent review approves the corrected post-run stop predicate, but it was not executed in a fresh live run."
+  },
+  "minimum_size_source_review": {
+    "references": [
+      "runtime/pre-minimum-fix-output_ui.rs",
+      "runtime/pre-minimum-fix-gui.rs",
+      "crates/protoinputmux/src/output_ui.rs:493-499 output body caption wrapping",
+      "crates/protoinputmux/src/output_ui.rs:539-542 selected-user label wrapping",
+      "crates/protoinputmux/src/output_ui.rs:606-607 and 630-631 mouse/keyboard captions wrap",
+      "crates/protoinputmux/src/output_ui.rs:663-667 key mapping removal row wraps",
+      "crates/protoinputmux/src/gui.rs:6109-6115 profile feedback now precedes the explanatory paragraph"
+    ],
+    "finding": "The 135414 320x360 Output original clips the keyboard-remapping caption horizontally. Its action footer remains visible. The bounded Output change adds wrapping to the three captions and selected-name label and wraps key removal rows. The 141902 Output minimum frame wraps horizontally; lower continuation is clipped by the vertical scroll viewport while footer actions remain visible, so no control loss is inferred. The 141902 Profiles minimum screenshot is scrolled beyond Save/Load and owned feedback. Its post-fix gate now fences on Save during the sample window and captures only after persisted Save feedback settles. The 141902 Automation minimum screenshot clips the To selector and Add action on the right. Current source separates From/To and Add into vertical rows and makes the four top actions vertical. Run 144654 tests actual control reachability at 320x360, reaches Apply, and captures the Save-completion state. Both replacement images are visually accepted: Profile Save/Load and the beginning of Saved feedback are visible, and Automation From/To/Add/Apply fit within the 304px content width.",
+    "source_review": "Direct comparison against preserved pre-Automation-width source confirms the current changes are layout-only: label budget -110 to -130, From/To selectors in separate rows, Add replication below the wrapped category row, and Refresh/Start/Stop/Cancel in separate rows. Action predicates and bodies are unchanged. Current gui.rs SHA256 is ff40eda68802cab2cd24e224657977926b524119176edc8ffc2396902a599b7b. Producer143350 passes fmt, strict Clippy, 290 workspace tests, and x64+i686 builds with all 78 source hashes matching; the exact x64/i686 artifact hashes are bound above."
+  },
+  "layout_qualification_144654": {
+    "run": "runtime/acceptance-graph-feature-workflows-ux-layout-20261015-144654",
+    "raw_evidence_result": "PENDING INDEPENDENT VISUAL REVIEW",
+    "functional_verdict": "PASS: process exit 0; all 21 real control observations passed. This phase replaced only the Profiles-minimum and Automation-minimum frames.",
+    "process_exit_code": 0,
+    "observations": 21,
+    "prior_functional_run": "runtime/acceptance-graph-feature-workflows-ux-offline-20261015-141902",
+    "cleanup": {
+      "startup_key_removed": true,
+      "owned_binary_processes_closed": true,
+      "remaining_exact_owned_image_processes": [],
+      "cleanup_errors": []
+    },
+    "captured_frames": [
+      {
+        "name": "profiles-minimum-qualified",
+        "path": "runtime/acceptance-graph-feature-workflows-ux-layout-20261015-144654/profiles-minimum-qualified.png",
+        "sha256": "b555946c87ddfb02ead25fd02e55eb71db349289552e396de54e4a43f9370e4a",
+        "geometry": "320x360 logical/pixels, 96 DPI",
+        "inspection": "Original PNG independently reviewed. Save is keyboard-focused, Load remains visible, and the owned Saved feedback begins within the viewport; path detail continues through ordinary vertical scrolling."
+      },
+      {
+        "name": "automation-minimum-qualified",
+        "path": "runtime/acceptance-graph-feature-workflows-ux-layout-20261015-144654/automation-minimum-qualified.png",
+        "sha256": "c016036526c7909d4d7431bae57dbe77362c38a4660425a9ab40adce88a1c56c",
+        "geometry": "320x360 logical/pixels, 96 DPI",
+        "inspection": "Original PNG independently reviewed. From/To selectors, Add replication, and Apply replication are fully within the 304px content width; top actions were also checked for visibility and disabled state when unsupported."
+      }
+    ],
+    "prior_frame_set": "Reuse output-normal, output-minimum, profiles-normal, and settings-representative from offline run 141902; retain its original files unchanged.",
+    "runtime_slot_returned": true
+  },
+  "durable_evidence_manifest": {
+    "path": "docs/feature-workflows-ux-evidence/manifest.json",
+    "sha256": "775180abc832cb7242d20dd385cd7af4e96aa195e04ca0e80d186d09525eac61",
+    "entries": 23,
+    "validation": "Independent SHA-256 comparison confirmed all 23 original/copy/staged-blob triplets match the manifest records. Local .gitattributes disables text normalization and diff heuristics for retained evidence files."
+  },
+  "live_stop_qualification": {
+    "path": "docs/feature-workflows-ux-live-stop-qualification-2026-10-15.json",
+    "sha256": "a40dff29c1f133ecac778bcc355b84805f35c470df1540053f1d4d108cc1b271",
+    "review": "Independent reviewer approved the corrected stop predicate with mocked checks, but raw 145712 contains no accepted live-stop sample; HWND absence was observed after cleanup only."
+  },
+  "independent_assessment": {
+    "path": "docs/feature-workflows-ux-independent-assessment-2026-10-15.json",
+    "status": "bounded workflow UX approval; raw live runner status preserved"
+  },
+  "nonblocking_glyph_gap": {
+    "symbol": "U+25BE ▾",
+    "source": "crates/protoinputmux/src/gui.rs:918-930 shared Button-based Dashboard::choice_menu",
+    "evidence": "docs/feature-workflows-ux-evidence/after-automation-minimum-qualified.png",
+    "observation": "The selector trigger shows a missing-glyph box in the actual product frame. The literal U+25BE is used in an Ouroboros Button instead of a Select icon. Font-table inspection found U+25BE absent from the configured proportional fallbacks (Ubuntu, Noto Emoji, emoji-icon, Phosphor Light and installed Malgun); Hack contains it but is not in that stack. Phosphor Light includes CARET_DOWN at U+E136, with Ouroboros icon_right as a source-only combined-fix recommendation.",
+    "disposition": "Nonblocking and explicitly unresolved in this patch. Named controls and popup choices worked; no product edit or runtime replay was made for this glyph."
+  }
+}

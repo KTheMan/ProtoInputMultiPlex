@@ -1,0 +1,42 @@
+{
+  "review": "independent-document-review",
+  "approved": true,
+  "scope": "Five canonical P1 target-exit recovery documents; bounded claims and linked evidence only.",
+  "documents": {
+    "README.md": "f83b8909ce366ac255365f3eeff3bfadedfd734df6a45898dcb67084e3eba139",
+    "docs/validation.md": "c595ac2296d46fe075ff33a365ac784760400b02f5fe21e9b2395f9a39589d6c",
+    "docs/ultra-parity.md": "cc4b77139bc3c85c6a459555167144b7e47f58892eae0ab4e6f0dc067b8dd6bb",
+    "docs/roadmap.md": "c13b372e2a48f932eec64d48df9d4dd187056c1817476821cd37392829884ca9",
+    "docs/target-exit-recovery-contract.md": "113930dfacdc97381317881de911db2f6f086276eea1533feb6aca45c2475ee3"
+  },
+  "assessment": {
+    "path": "docs/target-exit-recovery-assessment-2026-10-15.json",
+    "sha256": "d876a81500292829371aeee73116c6600135b4b883ba83daab8df0f66a34c2a5"
+  },
+  "source_review": {
+    "path": "docs/target-exit-fix-source-review-2026-10-15.json",
+    "sha256": "5ea2cce555ad20f67a01ec52a65e58b0ee237a521324d03dcb24df19d93cecbc"
+  },
+  "producer": {
+    "path": "docs/target-exit-recovery-rust-checks-2026-10-15.json",
+    "sha256": "c44632cd654b2a8d5312fd1a88a232856e38a593fd894a6c4a20012e0a0a55e6"
+  },
+  "accepted_run": {
+    "path": "runtime/acceptance-graph-target-exit-recovery-fixed-20261015-025101/evidence.json",
+    "sha256": "1e0b480721604b37416d9f9ae86d68ee9bbe83eba77c8e14f14f0c33ecd6f56b"
+  },
+  "independent_data_review": {
+    "path": "runtime/acceptance-graph-target-exit-recovery-fixed-20261015-025101/independent-data-review.json",
+    "sha256": "bcf0815917c2ae1f4909dd86789513d82da4896681024bc1d3ecbf8eb4727a70"
+  },
+  "verified": [
+    "The fixed-build bounded gate is described as passed: four groups and nine GUI interactions, with A exit, B continuity, A client-scoped ReleaseAll, explicit preauthorized C selection, and normal GUI Stop cleanup.",
+    "The final run is distinguished from earlier NOT ACCEPTED runs; 33 phase clicks and 31 accepted samples across runs are not presented as distinct controls, and only the final nine belong to the fixed build.",
+    "Producer checks are correctly separate from native acceptance: 186 workspace tests, formatting, strict Clippy, x64/i686 builds; i686 was built but not executed.",
+    "Raw evidence retaining PENDING INDEPENDENT DATA REVIEW is identified as historical raw status, with the canonical assessment supplying the bounded accepted status.",
+    "Limits remain explicit: no arbitrary target recovery, assigned recovery, fresh MCP stdio coverage, pixel/freshness claim from optional PNGs, persistent-alive interleavings, or full P1/Ultra completion.",
+    "The P1 roadmap row now aligns with the bounded pass while keeping broader reliability and startup validation open; ownership terminology and the skill-install record label are accurate."
+  ],
+  "findings": [],
+  "acceptance_boundary": "Source/docs review only; no tests, builds, or native applications run in this review."
+}

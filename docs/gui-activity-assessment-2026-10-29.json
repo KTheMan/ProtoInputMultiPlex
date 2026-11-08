@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "decision": "GUI_ACTIVITY_PRIVATE_DIAGNOSTIC_GROUP_ACCEPTED",
+  "group": "gui_activity",
+  "reviewed_evidence": {
+    "core_review": {
+      "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\gui-activity-native-attempt002-independent-review-20261029.json",
+      "sha256": "9585f8cea268fe0909f31657982dbaf46a334d7873c3acf3bcdd95fc4bf3fb2c"
+    },
+    "source_review": {
+      "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\gui-activity-flat-source-independent-review-20261029.json",
+      "sha256": "eb92b74be777e6c7ec5fbc79bd72feb5257e3ef07146faf8fd730120eca8efa2"
+    },
+    "checks_review": {
+      "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\gui-activity-flat-checks-independent-review-20261029.json",
+      "sha256": "a5ecd491729cca782c2813cb806bdeab9f45d5a6dacbf28d219ebecdaaedd341"
+    },
+    "handoff_review": {
+      "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\gui-activity-source-handoff-independent-review-20261029-v3.json",
+      "sha256": "ed0888ad023cc1984f94f311326658c44244094e6a2b9cc56a67f10ac28b0125"
+    },
+    "visual_review": {
+      "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\gui-activity-flat-native-attempt001-independent-review-20261029.json",
+      "sha256": "fedf4760347b6439a033ed3d7fa2b992bd45c413f6b48f084212577546bef8b3"
+    }
+  },
+  "final_verification": {
+    "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\gui-activity-flat-checks-20261029-attempt001\\verification.json",
+    "sha256": "aa9eeab2694aa3462217e24ef4276b8bf7feaa64bd60945d075cb77748876d99"
+  },
+  "accepted_scope": [
+    "Exact private121 source callback observer/optional stoppedActivity+liveInspect metadata and diagnostic display, with full mandated checks687passed/0failed/1ignored and freshx64GUI.",
+    "Prior authentic stopped/live same-instance advancing callbacks, B historical radio pair, minimized logic-only/restoredlogicUI progress, grantsfalse/no-selectedtarget/no-heldinput/visiblefixture noinput and authoritative terminalclearing as bounded core receipt.",
+    "Final exactsource optional nonclickableText observation hooks plus single outer Access scroll; fresh stopped-only original normal/minimum explanation/counters readability and Disableauthoritycleanup/descriptorretirement/normalQuit0."
+  ],
+  "composition_basis": "Of original121-file callback/source cohort,120files remain unchanged through final flatcandidate; sole agent_ui.rs deltas add optional script observations and simplify presentation scrolling, independently reviewed in successive exactsource deltas. No broker/callback/metadata/authority behavior changed. Final complete checks and targeted visual run qualify changed presentation without replaying core keyboard/live matrix.",
+  "failures_preserved": "Original native001 descriptorlookup failure, native002 rawNOT_ACCEPTED invalid preEOF descriptor oracle, visual001 nestedscroll failure, visualcheck001 strictClippy failure and v1/v2 static findings remain unchanged. Accepted subscopes do not relabel failed raw aggregates.",
+  "material_findings": [],
+  "diagnostic_group_complete": true,
+  "private_candidate_only": true,
+  "current_checkout_approved": false,
+  "port_feature_accepted": false,
+  "P1_gui_stall_fixed": false,
+  "full_Ultra_parity": false,
+  "release_approved": false,
+  "explicit_limits": [
+    "Callback boundary metadata/counters are not paint/renderer/OShealth/inputdelivery, recovery authority or historical stall cause/fix. Unavailable replies remain indeterminate; live worker/broker authorization/locks can still prevent replies.",
+    "Core native002 did not reach final no-input-throughStop sample or success-path postflight guards; those are not claimed. It did reach authoritative terminal metadata clearing and finally normalMCP/GUI/fixture exit0.",
+    "Current live Rust port not integrated or approved; manual handoff only. No hardware/RustDesk/arbitraryapplication/sameprocessisolation/Ultra/release acceptance.",
+    "Original rawreceipts remain scoped evidence, not broad performance/pipe transit or pre-admissionbootstrap acceptance."
+  ],
+  "review_scope": "Composed immutable independent source/check/core/visual/handoff evidence and exact limits; no new execution or live source reads."
+}

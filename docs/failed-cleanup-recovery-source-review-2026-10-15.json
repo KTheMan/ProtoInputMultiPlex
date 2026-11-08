@@ -1,0 +1,38 @@
+{
+  "decision": "APPROVED SOURCE ONLY",
+  "scope": "Shared frontend failed-cleanup quarantine/explicit process-exit recovery; native gate still required",
+  "producer": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-failed-cleanup-recovery-20261015-045854\\verification.json",
+    "sha256": "e439636aea925d7c12427bc7340f0451e96751a86116341a5038873538e649e5",
+    "checks": "205 workspace tests, fmt/strictClippy/bothbuilds PASS; not native acceptance"
+  },
+  "current_source_sha256": {
+    "crates/protoinputmux/src/gui.rs": "726ba2e57a4eebca8f7cf550a09b343c6ff07b65d4c919d57cf84fce8afd28f8",
+    "crates/protoinputmux/src/main.rs": "079e7240aaaa7a7035216ae54fad6a4cc070e33d6e19935bf4142709fd33ac94",
+    "crates/protoinputmux/src/mcp.rs": "5f4efe40cd3624b7c73cda891fb09d7e053a5934e38d747acb005dd4ed669b7a",
+    "crates/protoinputmux/src/session.rs": "49f300ca596d2af75a126f1fa2e81175f289dcf7dfb0ba71fb9da0574fe85994",
+    "crates/protoinputmux/src/session_recovery.rs": "aa8776e5639b3db567ac838a4e9d0b6e3e0ec70525a34a8667a464f4c6f6abce",
+    "crates/protoinputmux/src/ui_script.rs": "074918e028b9cd4e600e9ae30e9897289675056ecd0d7f1d77fd5fd35608269c"
+  },
+  "all82_producer_inputs_verified": true,
+  "review": [
+    "Registry captures selected assigned process identities before spawning/Configured; automatic explicit PID scope is prewatched but only observed attachment attempts become affected. Duplicate attempt preserves original affected handle. Unwatched open failures fail closed; PID-reuse polling is conservative.",
+    "Reader records Attaching even during supervisor unwind; Worker drop kills/waits then joins reader before terminal Failed/Stopped can reach frontend. Terminal success follows worker exit and job/hotkey cleanup.",
+    "Controller and SharedHandle retain shared recovery state independent of frontend clearing Controller. Model ignores clean-stop while quarantine, requires original affected exits, and never automatically starts routing.",
+    "Standalone Failed retains snapshot.recovery; ACK timeout keeps Controller, marks stopping and requests cleanup rather than discarding ownership. Start, exchange and capture paths block while cleanup pending/quarantined. GUI Start/hotkey use shared gate; profile loading does not replace Recovery.",
+    "GUI logic polls recovery independently of painting. Recovery dialog uses real Ouroboros controls and PID/cause/status details. Script snapshot is read-only. Existing quarantined Quit/close prevention remains; this native gate tests normalQuit after original exit, not quitting while quarantine remains."
+  ],
+  "unit_scope": [
+    "Model lifecycle/duplicate stale Stopped/only affected/partial assigned enrollment and real current-process Registry identity fixtures cover intended production transitions.",
+    "No deterministic native partial-backend attachment or 50-second ACK-timeout fault is injected by this acceptance. These remain source/unit-limited."
+  ],
+  "runner_sha256": "edd906d450b73de3c38642e3ce4a31519e6c08740a66ae7d62fb969c04fe4363",
+  "plan_sha256": "0b5e9ee4cb9752759baf00a8bb9ba2da1a67071f747fc534c809c98fcd68b7b8",
+  "runner_ast": "PASS",
+  "bounds": "Standalone15mutations; GUI26observations=24clicks+2disabled,2originals360x360; one owned A/C pair per frontend; no x86 execution",
+  "findings": [],
+  "limits": [
+    "Source approval does not prove default360x360 recovery-dialog PID/cause readability or reachable content; actual pixel gate may reject clipping.",
+    "No orphan-client cleanup/forceoverride/new auth flow/general-app or hardware guarantee."
+  ]
+}

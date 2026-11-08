@@ -1,0 +1,31 @@
+{
+  "reviewed_at": "2026-10-15",
+  "decision": "APPROVED; SOURCE SKILL MAY BE INSTALLED",
+  "canonical_assessment": {
+    "path": "docs/orphan-client-cleanup-assessment-2026-10-15.json",
+    "sha256": "9b8fdcae32b8ccdbaf171d27cc02e7d662273151f483fa92b6321d8f9706fe99"
+  },
+  "reviewed_files_sha256": {
+    "README.md": "ed0e93ef2cf287bc8803ed81ee7a11c36364c557b56e7833e3f42994df1954d7",
+    "docs/ultra-parity.md": "4399507b97ba63e6c3de3641716e60c8be11461a449398004154bdb0379c0dd5",
+    "docs/roadmap.md": "d9e8d2da18d03ebe2676e4773d5346b5ba0d68c98da6f41241306db845853121",
+    "docs/validation.md": "9e94cdc5e42eecc70cdf2bfe6f0d16ec66ef808403e146a8b6ef986acba063c7",
+    "docs/orphan-client-cleanup-contract.md": "4bfdc70ddb0ebf1698aad5e5f4f4288634a16bcd948830ee7054547e1c6fe909",
+    "docs/agents.md": "9485e07fa23561e73d976c9ac30403b9f51d1f6379163e3e6b392244e9bd2209",
+    "skills/protoinputmux/SKILL.md": "8eb3e67ef753f0a7ac6fb92070d81347faffe127f2982f79a34598cf428f3af6"
+  },
+  "material_findings": [],
+  "review": "The seven documents describe the same bounded behavior as the canonical assessment and cleanup contract: EOF, connected Stop, and valid policy replacement revoke a retired client's command access while saved failed releases remain retryable; other clients' shared holds survive; pending cleanup consumes one of eight combined admission slots; and GUI/MCP status is observational, with attempts representing a snapshot rather than every retry. The assessment correctly combines the earlier fixed-build 8-click/15-Execute functional data with a later UI-only pinned-status change and a separate 8-click/4-Execute visual gate. It records accepted 680x620 originals, retains earlier failed/unaccepted artifacts, and does not claim that the visual run repeated the 15-Execute functional workload.",
+  "acceptance_scope_checks": {
+    "x64_execution_only_i686_build_only": "Accurately stated in validation and contract limits.",
+    "minimum_size_eight_row_reachability_and_lower_scroll_retention": "Explicitly not pixel-certified in validation; no such claim found in the reviewed text.",
+    "native_provider_recovery": "Limited to the recorded owned-process exit fixture and production Engine/coordinator regression; arbitrary provider recovery is explicitly unproven.",
+    "process_local_and_non_durable_state": "Explicitly stated in cleanup contract and skill.",
+    "historical_failed_artifacts": "Canonical retained outcomes and prose preserve their original statuses."
+  },
+  "limits": [
+    "Documentation and skill source review only; no Cargo commands, applications, or installation were run by this reviewer.",
+    "Approval is for the exact source skill hash above; the guarded install and installed-hash validation remain separate steps.",
+    "This review does not expand canonical acceptance to i686 runtime, minimum-size layout, eight-row scrolling, arbitrary native providers, physical input, RustDesk, broad application compatibility, or full Ultra parity."
+  ]
+}

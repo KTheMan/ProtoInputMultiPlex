@@ -1,0 +1,370 @@
+{
+  "judgment": "PASS within the expressly limited virtual-input/cooperative-owned-application scope",
+  "date": "2026-10-14",
+  "independent_gate_owner": "acceptance subagent",
+  "accepted_evidence": [
+    {
+      "role": "native",
+      "canonical": "docs/macro-studio-native-2026-10-14.json",
+      "runtime_original": "runtime/acceptance-macro-studio-20261014-030602/evidence.json",
+      "artifact_sha256": "57afab890b2072a75bc965c705cb7b2d6fdc28bd936fe51dd4a3c7685fb6890e",
+      "original_result": "PASS",
+      "accepted_scope": "All 22 grouped checks accepted; two are fixture/schema setup. Native delivered message order, record/save/load/edit, simultaneous clocks, scoped cancellation, workflow boundaries, replication/keyboard ownership, six generated paths/five paired clicks, real power guards and Stop.",
+      "owned_processes_closed": true,
+      "grouped_check_ids": [
+        "selected-owned-x64-x86-edit-windows",
+        "sixteen-object-schemas-independent-empty-lanes",
+        "per-user-record-save-load-empty-preservation-native-total-order",
+        "all-editor-operations-stable-retime-copy-and-simultaneous-delayed-speed-loops",
+        "scoped-cancel-manual-escape-error-atomicity-and-global-cancel",
+        "legacy-active-rejects-studio-before-mutation",
+        "replicated-studio-and-manual-shared-native-claims-last-owner-release",
+        "shared-active-target-keyboard-union-first-down-last-up",
+        "native-generated-circle",
+        "native-generated-square",
+        "native-generated-triangle",
+        "native-generated-line",
+        "native-generated-figure_eight",
+        "seeded-jiggle-reproducible-native-movement-only",
+        "native-generator-paired-button-0",
+        "native-generator-paired-button-1",
+        "native-generator-paired-button-2",
+        "native-generator-paired-button-3",
+        "native-generator-paired-button-4",
+        "invalid-generator-preserves-clip-clear-and-reset",
+        "actual-keep-awake-handle-acquisition-scoped-cancel-completion-pause-cleanup",
+        "stop-native-held-overlay-and-power-cleanup"
+      ],
+      "grouped_check_count": 22,
+      "builds": {
+        "x64": "adab3cbb0d84d8e23c89a5c3250b10c728e935288cf5cfb7dfab2430593d3715",
+        "x86": "bf3f2c51a1fcbde1ccde222d30caf189245691a50a55fdc0e80cc3e5b7b8fd3c"
+      }
+    },
+    {
+      "role": "origins",
+      "canonical": "docs/macro-studio-origin-2026-10-14.json",
+      "runtime_original": "runtime/acceptance-macro-studio-20261014-030854/evidence.json",
+      "artifact_sha256": "88fa2d924726eb39ee6f811785ccef8beb240d2dff72efa2fb0edbd209e8f01e",
+      "original_result": "PASS",
+      "accepted_scope": "Two additional substantive checks plus setup: simultaneous recorders/scoped Stop, record-start own-program interruption, actual playback and replicated Escape preserve other lanes.",
+      "owned_processes_closed": true,
+      "grouped_check_ids": [
+        "selected-owned-x64-x86-edit-windows",
+        "sixteen-object-schemas-independent-empty-lanes",
+        "record-start-cancels-owner-only-simultaneous-record-and-scoped-stop",
+        "native-playback-and-replicated-escape-preserve-destination-program"
+      ],
+      "grouped_check_count": 4,
+      "builds": {
+        "x64": "5636bb2daa9efffa3c95919c18b4a421f26275ce458652d48a129763bc726a16",
+        "x86": "55ad28c2b915ec5bfb19d96220b954c18bfb14356a1171673e2a950eab2a8d4d"
+      }
+    },
+    {
+      "role": "automatic_ui",
+      "canonical": "docs/macro-studio-ui-2026-10-14.json",
+      "runtime_original": "runtime/acceptance-macro-studio-ui-20261014-030918/evidence.json",
+      "artifact_sha256": "1f7fcf4e17406c954ac45d1d08d54bc72f0c5a470c0480248b799ef5d7a6f497",
+      "original_result": "PASS",
+      "accepted_scope": "57 actual Ouroboros controls accepted; typed Insert/Replace/Retime, timeline/range operations, failing shift ACK and invalid Load preserve saved clip, copy/play/record/generate, scoped two-lane cancel, Reset and Stop.",
+      "owned_processes_closed": true,
+      "accepted_control_ids": [
+        "input-page",
+        "start",
+        "select-0",
+        "drop-0",
+        "select-1",
+        "drop-1",
+        "ordinary-other-hold",
+        "studio-page",
+        "inspect-0",
+        "load-base",
+        "save-base",
+        "retime",
+        "insert-typed",
+        "replace-typed",
+        "duplicate-selected",
+        "shift-range",
+        "delete-selected",
+        "duplicate-range",
+        "delete-range",
+        "bad-shift",
+        "save-preserved",
+        "bad-load",
+        "save-after-bad-load",
+        "copy",
+        "inspect-1",
+        "save-copy",
+        "inspect-play-0",
+        "play-edited-0",
+        "inspect-play-1",
+        "play-edited-1",
+        "record-inspect",
+        "record-start",
+        "record-input-page",
+        "record-text",
+        "record-key",
+        "record-studio-page",
+        "record-stop",
+        "record-save",
+        "square-generate",
+        "square-save",
+        "square-play",
+        "jiggle-generate",
+        "jiggle-save",
+        "jiggle-play",
+        "held-load-0",
+        "held-play-0",
+        "held-inspect-1",
+        "held-load-1",
+        "held-play-1",
+        "cancel-inspect-0",
+        "cancel-0",
+        "cancel-inspect-1",
+        "cancel-1",
+        "reset-1",
+        "reset-0",
+        "stop-page",
+        "stop"
+      ],
+      "accepted_control_count": 57,
+      "builds": {
+        "x64": "5636bb2daa9efffa3c95919c18b4a421f26275ce458652d48a129763bc726a16",
+        "x86": "55ad28c2b915ec5bfb19d96220b954c18bfb14356a1171673e2a950eab2a8d4d"
+      }
+    },
+    {
+      "role": "assigned_prefix",
+      "canonical": "docs/macro-studio-assigned-prefix-2026-10-14.json",
+      "runtime_original": "runtime/acceptance-assigned-macro-studio-ui-20261014-032752/evidence.json",
+      "artifact_sha256": "340ff5c77e6ea9a4fc8866ce5cf729fead355e73fb79b027318ebf43e3005d0e",
+      "original_result": "NOT ACCEPTED",
+      "accepted_scope": "Only the 31 recorded accepted controls are accepted. Original aggregate remains NOT ACCEPTED after a runner partial telemetry read during capture. Actual assigned EDIT RYRY and two F5 pairs, live cursor alignment, root bounds, both power-backed held lanes and scoped cancellation passed.",
+      "owned_processes_closed": true,
+      "accepted_control_ids": [
+        "input-page",
+        "start",
+        "select-0",
+        "drop-0",
+        "select-1",
+        "drop-1",
+        "ordinary-other-hold",
+        "studio-page",
+        "inspect-0",
+        "load-base",
+        "retime",
+        "insert-typed",
+        "replace-typed",
+        "save-preserved",
+        "play-edited-0",
+        "assigned-bounds-page",
+        "assigned-lock-tab",
+        "assigned-root-window-bounds",
+        "assigned-bounds-apply",
+        "assigned-back-studio",
+        "held-load-0",
+        "held-play-0",
+        "held-inspect-1",
+        "held-load-1",
+        "held-play-1",
+        "cancel-inspect-0",
+        "cancel-0",
+        "cancel-inspect-1",
+        "cancel-1",
+        "assigned-capture-page",
+        "assigned-root-capture-kind"
+      ],
+      "accepted_control_count": 31,
+      "builds": {
+        "x64": "5d872e25127bc276e00e9953fd155e2ef807e9ee135e7975dc9c7fb2db7db1c8",
+        "x86": "771910db260ddbcc6329faa4f9051249541b15fee60b38fd4e607f56213763dd"
+      }
+    },
+    {
+      "role": "assigned_capture_tail",
+      "canonical": "docs/macro-studio-assigned-capture-2026-10-14.json",
+      "runtime_original": "runtime/acceptance-assigned-macro-studio-capture-ui-20261014-033208/evidence.json",
+      "artifact_sha256": "7d96af3ea55122cb4de7f5cab0b3017b0c98b468e16808f42d06edc85afa37c8",
+      "original_result": "PASS",
+      "accepted_scope": "15 actual controls accepted: root Window bounds, exact assigned ROOT HWND/PID/client PNG dimensions and independently decoded own known RGBA pixels, native/overlay Stop cleanup. Setup duplicates are not new coverage.",
+      "owned_processes_closed": true,
+      "accepted_control_ids": [
+        "input-page",
+        "start",
+        "select-0",
+        "drop-0",
+        "select-1",
+        "drop-1",
+        "assigned-bounds-page",
+        "assigned-lock-tab",
+        "assigned-root-window-bounds",
+        "assigned-bounds-apply",
+        "assigned-capture-page",
+        "assigned-root-capture-kind",
+        "assigned-root-capture",
+        "stop-page",
+        "stop"
+      ],
+      "accepted_control_count": 15,
+      "builds": {
+        "x64": "5d872e25127bc276e00e9953fd155e2ef807e9ee135e7975dc9c7fb2db7db1c8",
+        "x86": "771910db260ddbcc6329faa4f9051249541b15fee60b38fd4e607f56213763dd"
+      }
+    },
+    {
+      "role": "eof",
+      "canonical": "docs/macro-studio-eof-2026-10-14.json",
+      "runtime_original": "runtime/acceptance-macro-studio-20261014-033300/evidence.json",
+      "artifact_sha256": "d3a9bfaf294c438ad227285a49e5e3b31fd2dcfb15aad2fc3614c627d2f2a824",
+      "original_result": "PASS",
+      "accepted_scope": "Four groups including setup and repeated bounded power lifecycle; new fresh-EOF proof closes two playing lanes, releases native input, exits actual guard-owning worker and destroys overlays.",
+      "owned_processes_closed": true,
+      "grouped_check_ids": [
+        "selected-owned-x64-x86-edit-windows",
+        "sixteen-object-schemas-independent-empty-lanes",
+        "actual-keep-awake-handle-acquisition-scoped-cancel-completion-pause-cleanup",
+        "eof-native-held-and-power-process-cleanup"
+      ],
+      "grouped_check_count": 4,
+      "builds": {
+        "x64": "5d872e25127bc276e00e9953fd155e2ef807e9ee135e7975dc9c7fb2db7db1c8",
+        "x86": "771910db260ddbcc6329faa4f9051249541b15fee60b38fd4e607f56213763dd"
+      }
+    },
+    {
+      "role": "annotation_claims",
+      "canonical": "docs/macro-studio-annotation-claims-2026-10-14.json",
+      "runtime_original": "runtime/acceptance-macro-studio-20261014-033351/evidence.json",
+      "artifact_sha256": "eba4171e68a02bfd33002e473cc16b0974b504767ef9313e91e3a05beb5a0618",
+      "original_result": "PASS",
+      "accepted_scope": "One additional substantive check plus setup: actual RGBA ink for two Brush lanes; shared consumed replicated activator emits no native clicks; source cancellation closes only source while destination remains open/playing/power-backed; final cancellation closes destination.",
+      "owned_processes_closed": true,
+      "grouped_check_ids": [
+        "selected-owned-x64-x86-edit-windows",
+        "sixteen-object-schemas-independent-empty-lanes",
+        "actual-ink-consumed-replicated-activator-origin-cancel-preserves-other-open-stroke"
+      ],
+      "grouped_check_count": 3,
+      "builds": {
+        "x64": "5d872e25127bc276e00e9953fd155e2ef807e9ee135e7975dc9c7fb2db7db1c8",
+        "x86": "771910db260ddbcc6329faa4f9051249541b15fee60b38fd4e607f56213763dd"
+      }
+    }
+  ],
+  "assigned_combined": {
+    "accepted_prefix_controls": 31,
+    "capture_stop_tail_controls": 15,
+    "distinct_control_ids": 34,
+    "note": "31 + 15 is not 46 distinct controls. The prefix aggregate was not relabeled PASS; its accepted individual samples combine with a separate passing tail."
+  },
+  "preserved_failed_artifacts": [
+    {
+      "runtime_original": "runtime/acceptance-macro-studio-20261014-030439/evidence.json",
+      "original_result": "NOT ACCEPTED",
+      "artifact_sha256": "b984e9c746204994ebce6a46e54069cfcb21d4e8dd50f1bc1d6d7170b6a175c6",
+      "failure": "AssertionError({'acknowledged': False, 'error': None, 'users': [{'clip': {'events': [{'action': {'packet': {'data': 116, 'device': 4043309059, 'flags': 0, 'kind': 1, 'x': 63, 'y': 0}, 'type': 'packet', 'user': 0}, 'at_micros': 37388}, {'action': {'text': 'A🙂', 'type': 'text', 'user': 0}, 'at_micros': 199522}, {'action': {'packet': {'data': 0, 'device': 4043309058, 'flags': 64, 'kind': 0, 'x': 0, 'y': 0}, 'type': 'packet', 'user': 0}, 'at_micros': 237558}, {'action': {'packet': {'data': 0, 'device': 4043309058, 'flags': 0, 'kind': 0, 'x': 5, 'y': 3}, 'type': 'packet', 'user': 0}, 'at_micros': 401844}, {'action': {'packet': {'data': 0, 'device': 4043309058, 'flags': 128, 'kind': 0, 'x': 0, 'y': 0}, 'type': 'packet', 'user': 0}, 'at_micros': 501082}, {'action': {'packet': {'data': 116, 'device': 4043309059, 'flags': 1, 'kind': 1, 'x': 63, 'y': 0}, 'type': 'packet', 'user': 0}, 'at_micros': 563186}], 'version': 1}, 'keep_awake': False, 'loaded_events': 6, 'playback': None, 'power': None, 'recorded_events': 0, 'recording': False, 'revision': 2, 'user': 0}, {'clip': None, 'keep_awake': False, 'loaded_events': 0, 'playback': None, 'power': None, 'recorded_events': 0, 'recording': False, 'revision': 0, 'user': 1}, {'clip': None, 'keep_awake': False, 'loaded_events': 0, 'playback': None, 'power': None, 'recorded_events': 0, 'recording': False, 'revision': 0, 'user': 2}]})",
+      "assessment": "Runner required the returned latest MCP snapshot to retain acknowledged=true, although a newer periodic snapshot had replaced the successful ACK; exact committed clip/revision were correct. Removed only this unpromised ACK-retention criterion.",
+      "owned_processes_closed": true
+    },
+    {
+      "runtime_original": "runtime/acceptance-macro-studio-20261014-030520/evidence.json",
+      "original_result": "NOT ACCEPTED",
+      "artifact_sha256": "5569ef93af5d3b462db6aba83f79f491fa0b9e6c5ceef4795b9249e5c2e5c09d",
+      "failure": "AssertionError({'content': [{'type': 'text', 'text': 'failed to deserialize parameters: missing field `speed`'}], 'isError': True})",
+      "assessment": "Runner omitted required legacy playback speed. Corrected the valid legacy request; active-Studio legacy rejection was then tested with fully valid parameters.",
+      "owned_processes_closed": true
+    },
+    {
+      "runtime_original": "runtime/acceptance-assigned-macro-studio-ui-20261014-031053/evidence.json",
+      "original_result": "NOT ACCEPTED",
+      "artifact_sha256": "445566cd2f88ea115849dcd54787cbc739a5373f6aa745fdf3beecf3c62bffdf",
+      "failure": "AssertionError('UI stalled after 15/26 controls')",
+      "assessment": "Real assigned-routing compatibility defect: native root-targeted messages did not reach the clicked EDIT child; virtual hook-held state changed but actual EDIT trace/readback remained empty. Producer fixed Rust child hit testing, retained clicked keyboard child and stored held-release targets, while retaining root capture/bounds. Final assigned prefix/tail independently verify resulting behavior.",
+      "owned_processes_closed": true
+    },
+    {
+      "runtime_original": "runtime/acceptance-assigned-macro-studio-ui-20261014-032213/evidence.json",
+      "original_result": "NOT ACCEPTED",
+      "artifact_sha256": "51427be386b23a5632489e27a3096a7c7044111b75bfb52a72e51e9afe689d6d",
+      "failure": "AssertionError([(116, True), (116, False), (116, True)])",
+      "assessment": "Runner sampled three of four native F5 edges immediately after worker completion; queued final release arrived in final probe trace. Corrected to wait for exact delivered edges. Live accepted samples had aligned virtual cursors; post-cleanup unhooked cursor value is not live alignment evidence.",
+      "owned_processes_closed": true
+    },
+    {
+      "runtime_original": "runtime/acceptance-assigned-macro-studio-ui-20261014-032539/evidence.json",
+      "original_result": "NOT ACCEPTED",
+      "artifact_sha256": "050440cc8f346cf30308501ae73d8c517d9795cc758021dcdcbbbe617d77b507",
+      "failure": "AssertionError('UI stalled after 16/33 controls')",
+      "assessment": "Runner omitted actual Lock-tab navigation before Window bounds. Typed playback/native delivery/alignment passed; added real Lock button.",
+      "owned_processes_closed": true
+    },
+    {
+      "runtime_original": "runtime/acceptance-assigned-macro-studio-ui-20261014-032752/evidence.json",
+      "original_result": "NOT ACCEPTED",
+      "artifact_sha256": "340ff5c77e6ea9a4fc8866ce5cf729fead355e73fb79b027318ebf43e3005d0e",
+      "failure": "JSONDecodeError('Expecting value: line 1 column 1 (char 0)')",
+      "assessment": "Original aggregate remains NOT ACCEPTED. Thirty-one accepted controls preserved separately; new capture sample lacked retry for a partial raw telemetry write. Completion supplied by the focused capture/Stop tail.",
+      "owned_processes_closed": true
+    },
+    {
+      "runtime_original": "runtime/acceptance-assigned-macro-studio-capture-ui-20261014-032957/evidence.json",
+      "original_result": "NOT ACCEPTED",
+      "artifact_sha256": "0fce4d1ddeab1dc05610d3915c2ef43a7d2fe65907826a84a27f5ae1bc7d1058",
+      "failure": "AssertionError('UI stalled after 13/15 controls')",
+      "assessment": "Runner expected export metadata in periodic annotation State, although export is ACK-only. Actual PNG and successful root capture ACK existed. Corrected to read acknowledged export log; focused capture/Stop tail passed.",
+      "owned_processes_closed": true
+    }
+  ],
+  "confirmed_product_defect": {
+    "canonical": "docs/macro-studio-assigned-root-defect-2026-10-14.json",
+    "problem": "Assigned routing selected the root rather than clicked child input surface. Native EDIT delivery failed despite held-state telemetry.",
+    "correction": "Rust fixed-process child hit testing/focus and stored target release, with root bounds and root screenshot source preserved. No C++ backend or fixture-forwarding workaround.",
+    "verification": [
+      "assigned_prefix",
+      "assigned_capture_tail"
+    ]
+  },
+  "cross_build_scope": {
+    "adab3cbb0d84d8e23c89a5c3250b10c728e935288cf5cfb7dfab2430593d3715 / bf3f2c51a1fcbde1ccde222d30caf189245691a50a55fdc0e80cc3e5b7b8fd3c": [
+      "native"
+    ],
+    "5636bb2daa9efffa3c95919c18b4a421f26275ce458652d48a129763bc726a16 / 55ad28c2b915ec5bfb19d96220b954c18bfb14356a1171673e2a950eab2a8d4d": [
+      "origins",
+      "automatic_ui"
+    ],
+    "5d872e25127bc276e00e9953fd155e2ef807e9ee135e7975dc9c7fb2db7db1c8 / 771910db260ddbcc6329faa4f9051249541b15fee60b38fd4e607f56213763dd": [
+      "assigned_prefix",
+      "assigned_capture_tail",
+      "eof",
+      "annotation_claims"
+    ],
+    "reason": "Later production changes were scoped to asynchronous GUI error display and assigned child compatibility. Relevant latest-build gates were run; unchanged automatic behavior retains prior exact-build evidence. No broad repeat of earlier accepted feature groups."
+  },
+  "power_evidence": {
+    "actual": "PowerCreateRequest/PowerSetRequest API-backed per-lane status, owned worker PID, measured +1/+2 kernel request handles and return to baseline after scoped cancel/completion/pause; Stop/EOF worker exit closes active guards. Invalid options preserve active guards.",
+    "limits": "Unprivileged powercfg /requests unavailable; no forced Windows power API failure, idle timeout/sleep override or blocked-provider test."
+  },
+  "gui_capture": {
+    "canonical": "docs/macro-studio-control-center.png",
+    "runtime_original": "runtime/acceptance-macro-studio-ui-20261014-030918/macro-studio-editor.png",
+    "visual_review": "Owned egui Macro Studio timeline/range editor; only disposable own fixture titles. No private window inventory or desktop pixels."
+  },
+  "producer_checks": {
+    "canonical": "docs/macro-studio-rust-checks-2026-10-14.json",
+    "scope": "Producer-reported fmt check, strict workspace Clippy, 52 tests and x64/i686 builds. Not independent native acceptance evidence."
+  },
+  "limits": [
+    "All input came from app-local virtual device streams and only explicitly owned disposable x64/x86 targets. No hardware/RustDesk/SendInput/SetCursorPos input or OS Escape polling by the runtime/runner.",
+    "No unrelated application, hardware compatibility, full same-process isolation, full desktop input isolation or complete MouseMux Ultra parity claim.",
+    "Assigned coverage is a bounded smoke of typed/native delivery, ownership, root bounds/capture and cleanup; not exhaustive assigned message-family coverage.",
+    "Asynchronous GUI tick-failure display was source-fixed by producer; no artificial live provider failure was introduced to force it. Validation errors and actual worker ACK error preservation were independently exercised."
+  ],
+  "cleanup": {
+    "owned_processes_closed": true,
+    "read_only_cim_audit": "No executable under any owned Macro Studio acceptance run prefix remained after final cleanup.",
+    "exclusive_live_slot": "released",
+    "further_live_retests": "none required"
+  },
+  "runner_syntax": "Both new Python runner scripts pass AST parsing."
+}

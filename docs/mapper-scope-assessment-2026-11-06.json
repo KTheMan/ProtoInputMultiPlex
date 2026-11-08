@@ -1,0 +1,108 @@
+{
+  "date": "2026-11-06",
+  "decision": "MAPPER_SCOPE_ACCEPTED",
+  "scope": "Typed passive Scope waveform, with bounded committed history and actor-private GUI and MCP access.",
+  "verification": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-scope-20261106\\checks-003\\verification.json",
+    "sha256": "c5eded9d5fbf175cdda27bf2c88054f856693eba7cb9ebfd9c79864d4347ebe8"
+  },
+  "review": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-scope-20261106\\independent-acceptance.json",
+    "sha256": "6d77d917bfaf5289b0898dfd2f82818a9a81556b19b0c052ba155258edcd8e9c"
+  },
+  "publication": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-scope-20261106\\publication.json",
+    "sha256": "75785c63a70b3e143000d3cf49c42fc40a8d5c1b9a9dd73072b36656036e037f"
+  },
+  "workspace_tests": {
+    "passed": 778,
+    "failed": 0,
+    "ignored": 19
+  },
+  "x64_image": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-scope-20261106\\checks-003\\x64\\protoinputmultiplex.exe",
+    "sha256": "0d396ca81072f47ac3e57c894ecf66a575d39a35094949cd3908aad70dec41bf"
+  },
+  "checks": {
+    "fmt": 0,
+    "clippy": 0,
+    "workspace-tests": 0,
+    "build-gui": 0
+  },
+  "producer": {
+    "original_session": 93380,
+    "original_exit_code": 0
+  },
+  "native": {
+    "original_session": 96531,
+    "original_exit_code": 0,
+    "raw": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\ms-08f50209298b\\evidence.json",
+      "sha256": "0edd2ff4bef2d35405e8fc0cdd4f5de26960b5048b53d7e53ce2dee10b66bf76"
+    },
+    "driver": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-scope-20261106\\native-v2.py",
+      "sha256": "8cc274aac480fd11e111c5fef44ab46c8de74b437ff540b81d95324aae1c04ce"
+    },
+    "readiness": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-scope-20261106\\native-ready-v2.json",
+      "sha256": "0c1926039e58d0f9568e648c2493285aaa88e0b2c61cf18521d2f3dda0223b11"
+    },
+    "ui_actions": 18,
+    "capture": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\ms-08f50209298b\\scope-activity.png",
+      "sha256": "df4bb2f219ab8f08b90019f68354ab69936f6898f6e0282f80e82b0836bd7d77",
+      "geometry": {
+        "hwnd": 10754998,
+        "dpi": 96,
+        "client_pixels": [
+          680,
+          620
+        ],
+        "client_logical": [
+          680.0,
+          620.0
+        ],
+        "window_rect": [
+          26,
+          26,
+          722,
+          685
+        ]
+      }
+    },
+    "exit_codes": {
+      "GUI": 0,
+      "MCP": [
+        0,
+        0
+      ],
+      "targets": {
+        "a": 0,
+        "b": 0
+      }
+    }
+  },
+  "earlier_native_attempt": {
+    "original_session": 30891,
+    "original_exit_code": 1,
+    "raw": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\ms-383955f33391\\evidence.json",
+      "sha256": "90f14253730afb122f2aa7565d2f427b5fc536e529d80ab96d27f9fa507a0da5"
+    },
+    "cleanup": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\ms-383955f33391\\ordinary-cleanup.json",
+      "sha256": "bfca99e4979accac7b3a668e3172b7ca306a9f619c57daab8ed30d55ecb47e52"
+    },
+    "observed": "The first catalogue check expected a string port name. MCP returned the typed port object. The owned windows were closed normally."
+  },
+  "coverage": [
+    "An owned virtual F7 press and release produced two typed Hold points with increasing elapsed_us for the connected actor. A second actor had no trace, and ordinary routing state excluded trace data.",
+    "The local virtual F7 pair produced a separate Scope waveform. Its falling step is at the right plot edge, where sampled cyan pixels match the top trace. Disarm cleared private traces. GUI, clients and both owned windows exited normally.",
+    "Rust tests cover history eviction, failed-wave rollback, independent actor state, exact private receipt delivery and stale GUI replies."
+  ],
+  "open": [
+    "Native plotted signal coverage is one Hold waveform. Other signal types use the same private history and separate render modes.",
+    "Additional Mapper visualizers, historical GUI stall and full Ultra parity remain open."
+  ]
+}

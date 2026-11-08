@@ -1,0 +1,104 @@
+{
+  "assessment": "PASS within owned virtual x64/x86 cooperative source scope after combined independent gates",
+  "independent_gate_owner": "/root/acceptance",
+  "parent_build": "Original bundle33677 and focused correction bundle10116: fmt check, strict workspace Clippy,40 tests and both x64/i686 builds passed",
+  "build_scope": {
+    "original_evidence": "The six original evidence artifacts below validate bundle33677. Their results remain unchanged, including original NOT ACCEPTED records.",
+    "original_x64_sha256": "7ae9112758416c0a3fc532fe836aa648cb032b283f92b133fd7e88959a26f801",
+    "original_x86_sha256": "333d8b0eabc58394f624f2ed4fb8e8b29bb7924ad96dc86ff87921668750eb18",
+    "focused_correction": "Bundle10116 changed only raising the application's visible cursor HWNDs above magnifier layers and opt-in fixture WM_PRINT tracing/rendering. New focused gates verify cursor order, real layered-source fidelity, and actual large-frame job isolation.",
+    "corrected_x64_sha256": "5481a149cc9b901cba3c3976af95bc1382b6918fff01d892c246d5164875ced2",
+    "corrected_x86_sha256": "1f2bf89936b6bf093abc39b86f8f2b469ab446eee1401900dd4e4597e57a9721"
+  },
+  "evidence": [
+    {
+      "path": "magnifier-native-prefix-2026-10-14.json",
+      "artifact_result": "NOT ACCEPTED",
+      "accepted_prefix_grouped_checks": 8,
+      "covers": "Setup/discovery and invalid-setting atomicity, actual x64/x86 selected-window PNG pixels, zoom1/2/4 registration spans and zoom32 edge, 2px RGB border, manual freeze and real Auto refresh, all dock sides/work-area Fullscreen native geometry/styles/hit-test/affinity, fullscreen most-recent-active winner and transformed native cursor hotspot with unchanged logical pointer, own-region true Desktop versus selected HWND beneath unrelated own overlap, feedback exclusion while Fullscreen covers ROI, manual Desktop frozen pixels after cursor movement",
+      "failure": "The configured fixture delay2500ms did not establish an observable in-flight slow PrintWindow capture. This criterion is incomplete rather than a demonstrated product blocking defect.",
+      "original_runtime_path": "acceptance-magnifier-20261014-014911/evidence.json"
+    },
+    {
+      "path": "magnifier-lifecycle-2026-10-14.json",
+      "artifact_result": "PASS",
+      "grouped_checks": 3,
+      "covers": "Actual manual ink freeze then explicit Rust ink composition into captured frame, other user's normal native F5, pause/resume hiding and rejected paused Refresh, minimize/source-close stale frame hide, routing remains alive, Stop releases native hold and destroys all cursor/annotation/magnifier HWNDs",
+      "original_runtime_path": "acceptance-magnifier-20261014-015403/evidence.json"
+    },
+    {
+      "path": "magnifier-zorder-before-2026-10-14.json",
+      "artifact_result": "NOT ACCEPTED",
+      "accepted_prefix_grouped_checks": 3,
+      "real_failure": "Docked Left opaque magnifier bounds0,96..256,1296 overlaps cursor158,171. Actual GW_HWNDPREV chain places magnifier HWND56232740 above crosshair HWND6358634, although cursor telemetry visible=true. The magnifier therefore covers the virtual cursor. Lens native visibility and hotspot geometry passed.",
+      "original_runtime_path": "acceptance-magnifier-20261014-015459/evidence.json"
+    },
+    {
+      "path": "magnifier-ui-2026-10-14.json",
+      "artifact_result": "PASS",
+      "actual_controls": 52,
+      "covers": "Real Ouroboros mode/source/dock choices and Apply, manual Refresh/export, decoded known pixels/border/fullscreen dimensions, scoped Desktop manual pattern freeze/new refresh and real Auto change, second independent user's frame/source HWND, genuine failed export retaining committed settings/live views/native held F5, Off/Stop cleanup, omitted fields default Off/SelectedTarget and exact profile round-trip",
+      "original_runtime_path": "acceptance-magnifier-ui-20261014-015955/evidence.json"
+    },
+    {
+      "path": "magnifier-assigned-2026-10-14.json",
+      "artifact_result": "PASS",
+      "actual_controls": 22,
+      "covers": "Bounded assigned-root x64/x86 source/PNG/metadata smoke, Lens/Docked Apply and manual Refresh/export, genuine export error preservation, second user's independent frame, Off/Stop normal hold and overlay cleanup",
+      "original_runtime_path": "acceptance-assigned-magnifier-ui-20261014-020140/evidence.json"
+    },
+    {
+      "path": "magnifier-eof-2026-10-14.json",
+      "artifact_result": "PASS",
+      "grouped_checks": 3,
+      "covers": "Fresh fixtures: ink/pause/minimize/close lifecycle followed by stdin EOF with normal native F5 held; all native overlay HWNDs destroyed and F5 released",
+      "original_runtime_path": "acceptance-magnifier-20261014-020258/evidence.json"
+    },
+    {
+      "path": "magnifier-zorder-2026-10-14.json",
+      "artifact_result": "PASS",
+      "grouped_checks": 4,
+      "build": "10116",
+      "covers": "Native Lens cursor visibility/hotspot position and opaque overlapping256x1200 docked view: actual cursor HWND remains above the magnifier in GW_HWNDPREV ordering. Logical pointer/native target coordinate remains unchanged.",
+      "original_runtime_path": "acceptance-magnifier-20261014-020719/evidence.json"
+    },
+    {
+      "path": "magnifier-layered-2026-10-14.json",
+      "artifact_result": "PASS",
+      "grouped_checks": 3,
+      "build": "10116",
+      "covers": "Owned B root made WS_EX_LAYERED with capture affinity0, alpha255 then128, placed over A's same authorized EDIT ROI. Desktop PNG contains exact B color then exact A/B blend while SelectedTarget retains A's pattern. Under WDA-excluded Fullscreen, B's actual color change produces the correct new blend, proving selective exclusion rather than skipping every layered window. Owned style/position restored.",
+      "original_runtime_path": "acceptance-magnifier-20261014-021027/evidence.json"
+    },
+    {
+      "path": "magnifier-responsiveness-2026-10-14.json",
+      "artifact_result": "PASS",
+      "grouped_checks": 3,
+      "build": "10116",
+      "covers": "Real15,860,294-pixel owned EDIT client capture/copy/render job, clipped by its unchanged small parent root. Warm capture exported actual known RGB. During real in-flight work, B receives native F5 press/release in62/63ms, Refresh returns62ms, three Refresh intents coalesce, Off returns63ms with old job still in_flight. Completion clears in_flight, cannot reshow a layer, and does not advance capture_sequence1 after Off. No synthetic runtime sleeps or production capture-flag changes.",
+      "scope": "Actual large native capture/copy/render job responsiveness and generation isolation. Blocking PrintWindow callback behavior is explicitly not claimed.",
+      "original_runtime_path": "acceptance-magnifier-20261014-021733/evidence.json"
+    }
+  ],
+  "diagnostic": "Independent own EDIT PrintWindow flags3 returned success in0.016s with reported delay2500ms; Configure returned0.062s already Ready. Even after WM_PRINT tracing,020732's actual counters were print0/printclient0, applied_delay0: this host uses redirected surfaces. A bounded post-creation WS_EX_NOREDIRECTIONBITMAP experiment could not retain that style and restored original state. Parent explicitly authorized the real near16M native/pixel job alternative, which independently passed021733. No nonexistent callback delay is claimed.",
+  "runner_corrections": [
+    "Magnifier palette defaults vary per user; user1 base defaults are checked exactly, with policy default Off for every user.",
+    "Added missing inherited annotation default initialization for lifecycle helper, without changing product behavior.",
+    "First UI run015602 sampled Dock Top Apply against stale Dock Right telemetry. Corrected with the prior accepted harness's350ms settle and exact committed dock predicate; preserved failed artifact and reran actual controls successfully015955."
+  ],
+  "scope_limits": [
+    "Only virtual seats and explicitly owned disposable x64/x86 pattern fixtures were operated; no hardware/RustDesk/SendInput/SetCursorPos.",
+    "Every Desktop source used an explicit small physical-pixel rectangle wholly inside an owned EDIT client; Fullscreen output magnified only that authorized source and did not authorize broader desktop capture.",
+    "Single connected host display and cooperative Win32 patterns; no general mixed-DPI, hot-unplug, third-party/GPU/protected capture or same-process/HID isolation claim.",
+    "Assigned coverage remains a bounded22-control smoke rather than repeating every automatic-route case.",
+    "Native callback blocking is not observed on this redirected-surface host. Actual substantial native/pixel job isolation, response latency, pending-refresh coalescing and stale-generation discard are independently validated instead; no universal capture latency promise."
+  ],
+  "cleanup": {
+    "all_listed_owned_processes_closed": true,
+    "exact_path_cim_audit": "No live runtime/acceptance-* executable process found",
+    "exclusive_live_slot_released": true,
+    "original_artifacts_preserved": true
+  },
+  "remaining_gate": "None within stated scope. Original failed artifacts remain failed and are interpreted only as explicitly accepted prefixes; focused current-build evidence completes the group's criteria.",
+  "scope_and_testing_review": "No keyboard/macro/settings/appearance/annotation broad suites were repeated. Original magnifier pixel/native/GUI/lifecycle evidence was preserved. Changes were confined to cursor HWND stacking and opt-in fixture diagnostics; focused overlap/capture/real-job checks address those concrete gaps without repeating52 automatic and22 assigned controls. No production files were edited by the independent gate owner."
+}

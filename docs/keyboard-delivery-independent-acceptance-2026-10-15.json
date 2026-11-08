@@ -1,0 +1,180 @@
+{
+  "decision": "APPROVED exact bounded keyboard source/recipient function plus observed normal/minimum controls; fullUltra/fullUX OPEN",
+  "current_producer": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-keyboard-delivery-20261015-090807\\verification.json",
+    "sha256": "fb519cbb1cf2f00fd69841d73842bf8765c98c994467b6846f5837c0c0f1e111",
+    "required_commands": 5,
+    "all_exit0": true,
+    "workspace_tests": 252,
+    "current_inputs_verified": 86,
+    "runtime_files_verified": 10,
+    "actual_current_build_sha256": {
+      "x64": "9c176214cb8de3d18853e16ef4082df1476b2247ba2a0b26dee9ed7f34560aad",
+      "i686": "d54dc555dff92e17789b37c61c67ad3b9720faf34b8d7b6f173f97ee101a6a7f"
+    },
+    "x64_executed": true,
+    "i686_build_only": true
+  },
+  "source_reviews": [
+    {
+      "path": "docs\\keyboard-delivery-source-review-2026-10-15.json",
+      "sha256": "45dcf33dc518f5ea52c73c59eadac66ea9eed201f56ab197d6cc168502a1fcc6"
+    },
+    {
+      "path": "docs\\keyboard-delivery-fixture-revision-source-review-2026-10-15.json",
+      "sha256": "c62334e76c17a123535228acd3ca2216e647644be18d608efbb36130e238390e"
+    },
+    {
+      "path": "docs\\keyboard-delivery-minimum-source-review-2026-10-15.json",
+      "sha256": "033ad3657802d63867f969858fbab5a23de92cdb038cea867f348ec28c55b649"
+    }
+  ],
+  "functional_phase": {
+    "raw": {
+      "path": "runtime\\acceptance-graph-keyboard-delivery-20261015-090348\\evidence.json",
+      "sha256": "ac69456993f280b3c2175c5f4da40d52f5299d571e3d428173896be73b2485d4"
+    },
+    "independent_review": {
+      "path": "runtime\\acceptance-graph-keyboard-delivery-20261015-090348\\independent-review.json",
+      "sha256": "c40b35ac27dfc22658e8e38c56c5c615cabe00bdc713daeb651dd103c6599ba9"
+    },
+    "producer": {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-keyboard-delivery-20261015-090154\\verification.json",
+      "sha256": "a7171e898e572539bd799f7a11b8f179ec88f3e6ff9572a5f79407517e95442f"
+    },
+    "exec_session": 35191,
+    "terminal_exit_code": 0,
+    "gui_receipts": 24,
+    "mcp_mutating": 27,
+    "mcp_readonly": 162,
+    "probes": 2,
+    "sessions": 1,
+    "approved_results": [
+      "Genuine postclickGTI focus/caret left whileclicked right, onexplicitcustomfocus-preservingtargets",
+      "FocusedUnicode text A-left; heldF5UP onoriginalA-left/B-right atactualClickedsettingsApply",
+      "Native exactDOWN/UP:Clicked A-right,Caret/Native A-left,Active ownA-root,healthyB own-right; diagnosticState corroboratedbynative",
+      "DisabledrawEscape/Text excludedfromnative,recordingandgraphfanout; mouseoriginX1->F2 stillnative andrecordercommits2rawmouseactions",
+      "Actualcheckbox/radiosApply ACK; externalFocused sync anddirtyClicked retainedwhileexternalNativeACK/StateNative",
+      "Fullunrelatedprofile/B/graph/preferencespreserved; normalStop andallownedcleanup"
+    ],
+    "normal_originals_approved": 2
+  },
+  "minimum_only_phase": {
+    "raw": {
+      "path": "runtime\\acceptance-graph-keyboard-delivery-minimum-tail-20261015-091151\\evidence.json",
+      "sha256": "63ab54d74a797c81007cf1300bea8546c8800a0fa788d7105b1ebc9cba3f5d31"
+    },
+    "independent_review": {
+      "path": "runtime\\acceptance-graph-keyboard-delivery-minimum-tail-20261015-091151\\independent-review.json",
+      "sha256": "f13eb1c702dbc0514777ca4d600bac0bf944511189eeb0bb830e9fc3d13966b2"
+    },
+    "producer": {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-keyboard-delivery-20261015-090807\\verification.json",
+      "sha256": "fb519cbb1cf2f00fd69841d73842bf8765c98c994467b6846f5837c0c0f1e111"
+    },
+    "exec_session": 83400,
+    "terminal_exit_code": 0,
+    "gui_receipts": 8,
+    "mcp_calls": 0,
+    "routed_packets": 0,
+    "probes": 1,
+    "approved_results": [
+      "ActualConfigure/Keyboard navigation at320 throughnewnarrowstrip",
+      "Wholeoffdraftcheckbox/identity/selectedKeyboard/wholeApply readableinone320original",
+      "SubsequentactualApplyworkerStateenabledfalse/Clicked; onlyenabledbit/fullprofile/prefsoraclepassed",
+      "NormalStop andallownedcleanup"
+    ],
+    "source_reuse": "Onlygui tab-row slicingchanged vsfunctional090154; exactsaved-byte diff,85protected inputs andruntime10match. Normal540 branch/handlers unchanged; nofull24/27replayneeded."
+  },
+  "approved_originals": [
+    {
+      "path": "runtime\\acceptance-graph-keyboard-delivery-20261015-090348\\keyboard-focused-normal.png",
+      "sha256": "c2836ee07fda9834c38045905b83bde14d0609e7e22f70b7927c0e0800a7542f",
+      "dimensions": [
+        540,
+        520
+      ]
+    },
+    {
+      "path": "runtime\\acceptance-graph-keyboard-delivery-20261015-090348\\keyboard-external-ack-preserved-draft.png",
+      "sha256": "33ebe31658c3f16b8df6e8a624c84f06d09533ac9f4572f1001e8ad7718bc568",
+      "dimensions": [
+        540,
+        520
+      ]
+    },
+    {
+      "path": "runtime\\acceptance-graph-keyboard-delivery-minimum-tail-20261015-091151\\keyboard-off-draft-minimum.png",
+      "sha256": "22189c4a1d0e0f9f8da40f3239ac905ee19eeff69353fb9560ac0a2c53dfd307",
+      "dimensions": [
+        320,
+        360
+      ]
+    }
+  ],
+  "pixel_limits": [
+    "Focusednormal shows enabledbox/all5radios/wholeApply; lowerhelp clippedatscroll-edge, noallbodysimultaneousclaim",
+    "Externalnormal shows liveNative+draftdifferswarning/wholeApply; dirtyClicked valuefromJSON,radiooffviewport",
+    "Current320 originalshowswholeoffcheckbox+footer BEFOREApply, doesnotshowrecipientradiorow. WorkerACK occursafterimage.",
+    "Wholecurrentminimumradio orsimultaneouscheckbox+radio criterion remainsUNPROVEN andexplicitlyexcluded, notrelabeledPASS. Ordinaryscrollableformisnotrequiredtoshowallcontrolssimultaneously; no materialunreachabilityfinding. Modecontrolsrequireverticalscroll; broadercompact/fullUXstillOPEN.",
+    "PeriodicPNG writes donotestablishrequest-associatedfreshness; originalcontents directlyinspectedaftercleanup"
+  ],
+  "historical_evidence_retained": {
+    "first_fixture_failure": [
+      {
+        "path": "runtime\\acceptance-graph-keyboard-delivery-20261015-085740\\evidence.json",
+        "sha256": "3532b4913ccd48a643f8212774e5c1e0967afb3f2f1f9bbeacf0811bb8220d07"
+      },
+      {
+        "path": "runtime\\acceptance-graph-keyboard-delivery-20261015-085740\\independent-review.json",
+        "sha256": "3d6ecfd7aa4a4f9316d2a76ff05caeb4ef945b168b049d16676d642f6a5bb74f"
+      },
+      {
+        "path": "runtime\\acceptance-graph-keyboard-delivery-20261015-085740\\post-terminal-cleanup.json",
+        "sha256": "38abd83735464701fe37b799f6a50c7ffcd447d6e88e9bd22c4574cb1d681746"
+      }
+    ],
+    "first_attempt_counts": {
+      "accepted_gui": 10,
+      "actual_gui": 11,
+      "mcp_mutating": 6,
+      "test_keys_text": 0
+    },
+    "first_reason": "OrdinarystockEDITclick movedactualfocusright; Focusedcorrectlyresolvedright, notproductfailure",
+    "old_minimum_rejection": {
+      "path": "runtime\\acceptance-graph-keyboard-delivery-20261015-090348\\keyboard-disabled-minimum.png",
+      "sha256": "2cf2ce5e2f0df51a104391706cc145caa380d416ae18cd1bc95f8e7ec471c606"
+    },
+    "raw_statuses": "FirstNOTACCEPTED/newPENDING preservedbyteexact; independentdecisionsareseparate; phasecountsarenotdistinctcontrols"
+  },
+  "cleanup": {
+    "functional": {
+      "owned_exit_codes": {
+        "111768": 0,
+        "164580": 0,
+        "164560": 0,
+        "162116": 0
+      },
+      "scoped_cim_survivors": [],
+      "guid_value_absent": true,
+      "descriptor_absent": true,
+      "known_overlays_closed": true
+    },
+    "minimum": {
+      "owned_exit_codes": {
+        "134036": 0,
+        "160212": 0
+      },
+      "scoped_cim_survivors": [],
+      "guid_value_absent": true,
+      "descriptor_absent": true,
+      "known_overlays_closed": true
+    },
+    "slot_returned": true
+  },
+  "remaining_scope": [
+    "Customtarget-owned5messageguardkeepscandidatesdistinct; notstockEDITclickequivalence. PinnedFocusMessageLoop/FocusHook constrainarbitraryapplicationfocus/Tab; broadworkflowunvalidated",
+    "No profileSave/Load/persistedrelaunch,physical/globalhotkey,broadAT,hardware,RustDesk/globalpointer/desktopwide/sameprocess/generalapps/fullUltra claim",
+    "Foreignwindow/ownedpopup/queryfailure/retry/race/unsupportedphysical/fixed variants source/unitbounded, notnewnativefamilyclaims"
+  ]
+}

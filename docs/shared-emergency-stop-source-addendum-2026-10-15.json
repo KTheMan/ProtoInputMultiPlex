@@ -1,0 +1,34 @@
+{
+  "decision": "SOURCE APPROVED; native/data/pixels pending",
+  "initial_review": {
+    "path": "docs\\shared-emergency-stop-source-review-2026-10-15.json",
+    "sha256": "b8a170c265e075d4cf3dc89086441a8b3318a882fd9d56a1a441b3a5e459a58f"
+  },
+  "current_reviewed_source_sha256": {
+    "crates/protoinputmux/src/emergency_stop.rs": "a7a086e00e6dac6fca04762ba0c5c0a068c2051f8efda40e2aeec06a972b8da9",
+    "crates/protoinputmux/src/main.rs": "76bcb65d586f5b4bba01be50f3409d1ad0d88d7022350252bf5011eaeb7ac8c3",
+    "crates/protoinputmux/src/session.rs": "e52411698ffb5e52562a715421a9aa081843433c2e3f38009419cd01e0cadcb3",
+    "crates/protoinputmux/src/gui.rs": "76d1373031796b76ddca40c3f3dc7b82a28e4cca0835656b5e2a129d93b23258",
+    "crates/protoinputmux/src/mcp.rs": "adf4750d62aa595e0f678070905f3429db9fb3186e60b416b24a8bf8aacdd178",
+    "crates/protoinputmux/src/app_lifecycle.rs": "c6ed771b53121d822e8bd09f54f7e6e0f84b28927f64a38e50aa2b910eeb6781",
+    "crates/protoinputmux/src/app_preferences.rs": "2519278ccca7408411ea0ef04ef01fb155fbad7704497d99923a993f66d2aba2",
+    "crates/protoinputmux/src/app_preferences_ui.rs": "e40687c38232e2bf142fa5592ba8476391e8b0ab41f66aebe541586b02c01512"
+  },
+  "correction": "The initial review JSON was written after root mechanical fixes landed, so its eight recorded source hashes already equal the final frozen files. Its nonblocking telemetry note and the handoff describing pre-fix hashes were stale prose; GUI now explicitly excludes EmergencyUnavailable from command-completion clearing. This addendum resolves that note without changing the historical review.",
+  "review": "Read the six reported Clippy fixes and current source: two direct enum constructors and four collapsed if conditions preserve control flow/guards. The GUI telemetry exclusion is correct. No material source finding.",
+  "historical_failed_producer": {
+    "path": "runtime/producer-shared-emergency-stop-20261015-104851/verification.json",
+    "sha256": "a0d1a6816e197057c5e1486b3c393539aa0c685c509605db6864187c12c9c049",
+    "result": "FAIL at strict Clippy; no native attempt"
+  },
+  "plan": {
+    "path": "docs/shared-emergency-stop-plan.md",
+    "sha256": "2cb7b1d5e927e5ef5fffe1134bffd9113fb4e505f174b4340adabe67115e5060"
+  },
+  "findings": [],
+  "limits": [
+    "Source-only addendum; root-owned final five checks/doctor and exact source/build/runtime verification required before launch.",
+    "Harness AST checked only; native retained-process identity correction pending before launch.",
+    "No app, Cargo or native input executed by reviewer."
+  ]
+}

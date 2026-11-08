@@ -1,0 +1,321 @@
+{
+  "2": {
+    "b": {
+      "pid": 733364,
+      "cursor": [
+        242,
+        265
+      ],
+      "test_keys": 0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 1156
+    },
+    "button": "1 Right",
+    "a": {
+      "pid": 731348,
+      "cursor": [
+        256,
+        239
+      ],
+      "test_keys": 0,
+      "mouse_moves": 1,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 1131
+    }
+  },
+  "1": {
+    "b": {
+      "pid": 733364,
+      "cursor": [
+        242,
+        265
+      ],
+      "test_keys": 0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 869
+    },
+    "button": "Start routing",
+    "a": {
+      "pid": 731348,
+      "cursor": [
+        216,
+        239
+      ],
+      "test_keys": 0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 849
+    }
+  },
+  "3": {
+    "b": {
+      "pid": 733364,
+      "cursor": [
+        242,
+        265
+      ],
+      "test_keys": 0,
+      "mouse_moves": 0,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 1376
+    },
+    "button": "1 Tap W",
+    "a": {
+      "pid": 731348,
+      "cursor": [
+        256,
+        239
+      ],
+      "test_keys": 0,
+      "mouse_moves": 1,
+      "mouse_clicks": 0,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 1338
+    }
+  },
+  "6": {
+    "b": {
+      "pid": 733364,
+      "cursor": [
+        242,
+        305
+      ],
+      "test_keys": 0,
+      "mouse_moves": 1,
+      "mouse_clicks": 0,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 2008
+    },
+    "button": "Pause",
+    "a": {
+      "pid": 731348,
+      "cursor": [
+        256,
+        239
+      ],
+      "test_keys": 0,
+      "mouse_moves": 1,
+      "mouse_clicks": 0,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 1971
+    }
+  },
+  "7": {
+    "b": {
+      "pid": 733364,
+      "cursor": [
+        242,
+        305
+      ],
+      "test_keys": 0,
+      "mouse_moves": 1,
+      "mouse_clicks": 0,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 2228
+    },
+    "button": "1 Right",
+    "a": {
+      "pid": 731348,
+      "cursor": [
+        256,
+        239
+      ],
+      "test_keys": 0,
+      "mouse_moves": 1,
+      "mouse_clicks": 0,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 2186
+    }
+  },
+  "9": {
+    "b": {
+      "pid": 733364,
+      "cursor": [
+        242,
+        305
+      ],
+      "test_keys": 0,
+      "mouse_moves": 1,
+      "mouse_clicks": 0,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 2620
+    },
+    "button": "Resume",
+    "a": {
+      "pid": 731348,
+      "cursor": [
+        256,
+        239
+      ],
+      "test_keys": 0,
+      "mouse_moves": 1,
+      "mouse_clicks": 0,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 2594
+    }
+  },
+  "8": {
+    "b": {
+      "pid": 733364,
+      "cursor": [
+        242,
+        305
+      ],
+      "test_keys": 0,
+      "mouse_moves": 1,
+      "mouse_clicks": 0,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 2414
+    },
+    "button": "2 Tap W",
+    "a": {
+      "pid": 731348,
+      "cursor": [
+        256,
+        239
+      ],
+      "test_keys": 0,
+      "mouse_moves": 1,
+      "mouse_clicks": 0,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 2388
+    }
+  },
+  "11": {
+    "b": {
+      "pid": 733364,
+      "cursor": [
+        1767,
+        1030
+      ],
+      "test_keys": 0,
+      "mouse_moves": 1,
+      "mouse_clicks": 0,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 3020
+    },
+    "button": "Stop routing",
+    "a": {
+      "pid": 731348,
+      "cursor": [
+        1767,
+        1030
+      ],
+      "test_keys": 0,
+      "mouse_moves": 2,
+      "mouse_clicks": 0,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 3004
+    }
+  },
+  "5": {
+    "b": {
+      "pid": 733364,
+      "cursor": [
+        242,
+        305
+      ],
+      "test_keys": 0,
+      "mouse_moves": 1,
+      "mouse_clicks": 0,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 1789
+    },
+    "button": "2 Tap D",
+    "a": {
+      "pid": 731348,
+      "cursor": [
+        256,
+        239
+      ],
+      "test_keys": 0,
+      "mouse_moves": 1,
+      "mouse_clicks": 0,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 1765
+    }
+  },
+  "4": {
+    "b": {
+      "pid": 733364,
+      "cursor": [
+        242,
+        305
+      ],
+      "test_keys": 0,
+      "mouse_moves": 1,
+      "mouse_clicks": 0,
+      "key_presses": 0,
+      "sampled_test_key_presses": 0,
+      "frames": 1583
+    },
+    "button": "2 Down",
+    "a": {
+      "pid": 731348,
+      "cursor": [
+        256,
+        239
+      ],
+      "test_keys": 0,
+      "mouse_moves": 1,
+      "mouse_clicks": 0,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 1553
+    }
+  },
+  "10": {
+    "b": {
+      "pid": 733364,
+      "cursor": [
+        242,
+        305
+      ],
+      "test_keys": 0,
+      "mouse_moves": 1,
+      "mouse_clicks": 0,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 2813
+    },
+    "button": "1 Left",
+    "a": {
+      "pid": 731348,
+      "cursor": [
+        216,
+        239
+      ],
+      "test_keys": 0,
+      "mouse_moves": 2,
+      "mouse_clicks": 0,
+      "key_presses": 1,
+      "sampled_test_key_presses": 1,
+      "frames": 2785
+    }
+  }
+}

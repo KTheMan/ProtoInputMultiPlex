@@ -1,0 +1,10 @@
+{
+  "assessment": "BOUNDED_ACCEPTANCE",
+  "feature": "Draw access keys and annotation export",
+  "date": "2026-10-21",
+  "evidence": "runtime/draw-access-keys-ui-attempt002/evidence.json",
+  "independent_review": "runtime/draw-access-keys-ui-attempt002-review.json",
+  "observed": "With two owned virtual probes, app-local Alt+D/E plus Apply changed only selected user A; Alt+B/S/O focused controls and O opened the color editor; Alt+V exported an ink-only transparent PNG containing both known strokes; Alt+C cleared selected-user ink and then all-user ink after A was restored. All 26 UI steps completed, raw annotation ACKs matched the effects, and ordinary Stop and process cleanup passed.",
+  "prior_attempt": "runtime/draw-access-keys-ui-attempt001/evidence.json remains FAIL; its strict antialias color oracle was corrected only in the acceptance runner before the fresh passing run.",
+  "limits": "This validates a bounded app-local virtual-device workflow, not real devices, arbitrary target apps, desktop-wide routing, or same-process multi-user isolation. The separate historical intermittent GUI-stall P1 remains OPEN."
+}

@@ -1,0 +1,33 @@
+{
+  "decision": "ACCEPTED_BOUNDED_GUI_RECOVERY_CONTINUATION",
+  "accepted": true,
+  "scope": "One owned virtual failed-cleanup recovery and explicit fresh-start workflow",
+  "native_run": {
+    "controls_passed": 45,
+    "captures_reviewed": 3,
+    "original_execution": 45890,
+    "terminal_exit_code": 0,
+    "final_integrity": true,
+    "cleanup_forced": false,
+    "cleanup_errors": [],
+    "surviving_processes": []
+  },
+  "producer": {
+    "required_checks_passed": 5,
+    "tests_passed": 517,
+    "tests_failed": 0,
+    "tests_ignored": 3
+  },
+  "pins": {
+    "product_manifest_sha256": "c7929a14d8de88050bef35f9819c64c43a4c90c300c862b1680c80d1ffb47073",
+    "product_source_review_sha256": "7bfa467a79d4efb87c4765cf8f528cf49934b08b536f329fde8cca67e3e1fab7",
+    "producer_verification_sha256": "3a40ec5a78fb82260443e31e92f6fadc59aff753363bfee8b2fbefa510c84551",
+    "raw_evidence_sha256": "0e9955b621f372e4c8bba41d5ec39fe084aef31ef4711250c9d2150ff7e2d933",
+    "actual_assessment_sha256": "9e023e5de7b612f8d62433f0935b30cfdb9fa6a5228df86174fb46fff174c098",
+    "actual_acceptance_sha256": "ce8cb753cec56190f3f95a641e0988074e3c0364d4c41c3cdd0ba779fdbd1362"
+  },
+  "visual_limits": "Technical-details image shows expanded header and start of diagnostic only. Source supports scrolling; complete error visibility and native scroll proof are not established.",
+  "historical_gui_stall_p1_closed": false,
+  "full_ultra_parity": false,
+  "hardware_acceptance": false
+}

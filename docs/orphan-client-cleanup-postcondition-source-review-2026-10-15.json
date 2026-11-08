@@ -1,0 +1,37 @@
+{
+  "decision": "APPROVED SOURCE ONLY \u2014 CONFIRMED RELEASE POSTCONDITION FIX",
+  "producer": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-orphan-client-cleanup-20261015-053312\\verification.json",
+    "sha256": "0407e61bc7b04efd0516b4baa2a2ab60653dc37a534b268f6a797ea79cfa058c",
+    "checks": "fmt/strictClippy/212 workspace tests/x64+i686 PASS"
+  },
+  "baseline_producer": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-orphan-client-cleanup-20261015-052001\\verification.json",
+    "sha256": "442501721463067a82c19fc8ac016ef04d9790553eb87482025bbdd9ef2347e2"
+  },
+  "changed_source_sha256": {
+    "crates/protoinputmux/src/agent_runtime.rs": "736aa3e2482ee0fea6ad09d600b58a91f8eeeb7c77848985f5adc8cc70869c7a",
+    "crates/protoinputmux/src/macro_studio.rs": "b669a1af960af2e46d91140b873fda5ba5472a16079dd9afbb62e6646d6ecefe"
+  },
+  "protected_inputs_unchanged": 80,
+  "native_runtime_files_unchanged": 10,
+  "failure_review": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-orphan-client-cleanup-20261015-052447\\independent-failure-review.json",
+    "sha256": "82aea2ecf3651e226773a3e8fb260ddec146ab4264dcb22c37a05439827ea330"
+  },
+  "review": [
+    "Claims.release_owner now checks !token.held(router) after savedUP returnsOk and before deleting lastowner. Error retains owner+savedDown and lets exhaustive sweep proceed to healthy/shared claims; no blanket ordinary input error-propagation change.",
+    "Postcondition executes only for a genuinely held lastowner. Releasing one share while Y remains does not demand tokenfalse or emit nativeUP. Saved release data remains unchanged.",
+    "New productionEngine regression returnsOk while deliberately retaining a held token; verifies failed-owner/Studioidentity retention, healthyotheruser release, sharedY survival, later exactUPonce and no third-sweepduplicate.",
+    "Runtime coordinator integrationEngine now models this actualOk+held contract as test-only change. Existing retries/capacity/auth/policy/passiveACK safeguards unchanged.",
+    "DesktopRouter, GUI, MCP, session, UI and other80 producer inputs remain byteexact against211 baseline; native10 runtime files unchanged."
+  ],
+  "runner_sha256": "ce3f088e677b668d913121b8a9c06814ef8e29138e0250fb8c23755c5e0c3c43",
+  "plan_sha256": "e19d9d44b2873dba759ea7e98fd92cbd68c17961f2b14f935dcae44d72dbdb9b",
+  "runner_ast": "PASS",
+  "authorized_repeat_scope": "Same8actualGUIclicks/15Execute/2Connect+XEOF/2neworiginals; no addedfamily/diagnostic",
+  "limits": [
+    "Source approval does not imply native repair success; exactly one approved repeated gate required.",
+    "Old211 failure/raw/sourceapproval remain unchanged. Transient live-target retry is productionunit coverage; native case remains deadchild\u2192parentexit only."
+  ]
+}

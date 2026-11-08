@@ -1,0 +1,53 @@
+{
+  "review": "Independent final documentation review: connected virtual-user lifecycle",
+  "date": "2026-10-15",
+  "result": "approved",
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "7fd32510dd90e44e68860bcc35d85a585f854c59ebb8b0a3f281d5aea0d88676"
+    },
+    {
+      "path": "docs/agents.md",
+      "sha256": "81db90691134b9c5e9bfe6ad0665a383cd418d985b6363fb6a98b65722bab2b7"
+    },
+    {
+      "path": "docs/connected-virtual-users-contract.md",
+      "sha256": "fd3b1bbed975b55e492e3ba0261d0f97451f7fab063bf1ff0b882a64d001c3cd"
+    },
+    {
+      "path": "skills/protoinputmux/SKILL.md",
+      "sha256": "f92698c94c1972c0695be0322b2ba06418f41ade6f41d7d8855f73028dedc108"
+    },
+    {
+      "path": "docs/validation.md",
+      "sha256": "064bf9531d9ed95722a79ee1c17de6212cc64e9673dc12daeea37e94124a19eb"
+    },
+    {
+      "path": "docs/ultra-parity.md",
+      "sha256": "bbf35af36cc6c56b2d399b0b5a9bdfa986f9e16fe923cbe81c21b756769af459"
+    },
+    {
+      "path": "docs/roadmap.md",
+      "sha256": "9ee142d2dfcddf25e4988299ea1d7fb628f681b51a86af481d6a12593aeee11c"
+    },
+    {
+      "path": "docs/gui-agent-plan.md",
+      "sha256": "9a72f7b7caaeac39887f6ccf9fbb761ace1e28edaa3fa80d612e70930de267c5"
+    }
+  ],
+  "acceptance": {
+    "assessment": "docs/connected-virtual-users-assessment-2026-10-15.json",
+    "sha256": "3ae97e428a47f641445591bd93d8a3be8a7049d936dc5b6768cb92611ac459ef",
+    "producer": "docs/connected-virtual-users-rust-checks-2026-10-15.json",
+    "producer_sha256": "49acbe36c725c07daa49b818304bd6e4d0382ed503e6d687d30c1b4b0083e404",
+    "scope": "Five groups, 18 GUI observations, 19 named outcomes, three original frames, three distinct owned x64 targets; 183 tests, formatting, strict Clippy, x64/i686 builds; i686 was not executed."
+  },
+  "findings": [],
+  "reviewed_boundaries": [
+    "Connected mutations reuse the 23-tool schema and require current session-control permission, expected roster revision, automatic routing, a nonempty fully covered PID scope, active permitted users, and permitted current recipients.",
+    "A clone remains unchecked and GUI-session-owned until explicitly granted; reconnect is required after policy Apply. Creator Stop exception is limited to the exact clone created by that still-connected client.",
+    "Preflight rejection preserves state; authorized native cleanup may be partial. EOF clears the creator receipt but not the clone. Scheduled tap-release filtering is source-reviewed only.",
+    "Historical failed aggregate artifacts remain unchanged. No i686 execution, hardware, broad application compatibility, same-process isolation, or full Ultra/UX parity claim."
+  ]
+}

@@ -1,0 +1,99 @@
+{
+  "date": "2026-11-06",
+  "decision": "MAPPER_MATH_ACCEPTED",
+  "scope": "Rust scalar function, vector magnitude and normalization nodes through existing Ouroboros Inspector and MCP routing_graph.",
+  "verification": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-math-20261106\\checks-005\\verification.json",
+    "sha256": "f98e40572c650637ddca2f9322a7ab2bc4595dfa53ddc45543b9965967de8964"
+  },
+  "review": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-math-20261106\\independent-acceptance.json",
+    "sha256": "1412635c2c75644bcc96b6d59aa2be012ccc740923ae029c73fc78ce35e1a5eb"
+  },
+  "publication": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-math-20261106\\publication.json",
+    "sha256": "2172a23c42e51a18db8c97583c7f41ae4fc7557ffb9bae7536a0f2f8efb717c6"
+  },
+  "workspace_tests": {
+    "passed": 802,
+    "failed": 0,
+    "ignored": 19
+  },
+  "checks": {
+    "fmt": 0,
+    "clippy": 0,
+    "workspace-tests": 0,
+    "build-gui": 0
+  },
+  "x64_image": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-math-20261106\\checks-005\\x64\\protoinputmultiplex.exe",
+    "sha256": "1b21a2dff02cf2bb0e739f3b46cd654ef49d106b3a0131c029e6f72083cd96e7"
+  },
+  "producer": {
+    "original_session": 16288,
+    "original_exit_code": 0
+  },
+  "native": {
+    "evidence": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mm-cb44380e333c\\evidence.json",
+      "sha256": "d4706a1bd3c625c24a54c140e6e333d009f507c57a4903f39dc210c4b60b7e66"
+    },
+    "driver": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-math-20261106\\native.py",
+      "sha256": "a6b458344b8096ae957f05ff4dfc2f96669783a785af5098f21ab02aa88a00be"
+    },
+    "target_wrapper": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-math-20261106\\owned-target.py",
+      "sha256": "85f528378d1f48cf605dbd348180f1dd280bc40b0dab83e31627cc20eba8f3e4"
+    },
+    "original_session": 3018,
+    "original_exit_code": 0,
+    "scope": {
+      "GUI": 1,
+      "normal_x64_targets": 2,
+      "virtual_pairs": 2,
+      "authenticated_MCP_actors": 2
+    },
+    "exit_codes": {
+      "GUI": 0,
+      "MCP": [
+        0,
+        0
+      ],
+      "targets": {
+        "a": 0,
+        "b": 0
+      }
+    }
+  },
+  "accepted": [
+    "Ten unary operations preserve scalar State or Impulse semantics; sin/cos use radians.",
+    "Vector magnitude maps Position to State and Delta to Impulse; normalization preserves vector kind and maps zero to zero.",
+    "Finite bounded evaluation with scaled normalization; invalid math rolls back actor state, observer samples and outputs.",
+    "Compact and normal Ouroboros node creation and Inspector reachability passed egui tests.",
+    "Owned virtual native run checks exact transformed mouse/wheel payloads, actor separation, invalid square-root rejection followed by valid input, Disarm and normal shutdown."
+  ],
+  "limits": [
+    "Two virtual pairs and two owned x64 target windows only; hardware and arbitrary applications unverified.",
+    "The intermittent GUI stall remains open; full Mapper, SDK/application breadth, Ultra parity and release readiness remain incomplete.",
+    "Physical checkout folder rename is user-deferred."
+  ],
+  "retained_native_oracle_failure": {
+    "path": "C:/Users/Kenny/.cache/ProtoInputMultiPlex/mm-e05c305679e9/evidence.json",
+    "sha256": "f62b092820cb3f7660159255833069ac90cf7f9a9b01f15ebccf6ec5c8ed03cd",
+    "original_session": 30311,
+    "original_exit_code": 1,
+    "scope": "NOT_ACCEPTED: exact transformed delta and wheel values observed, but oracle rejected stationary mouse moves; all owned processes exited0."
+  },
+  "retained_native_stage_failure": {
+    "path": "C:/Users/Kenny/.cache/ProtoInputMultiPlex/mm-ce4c92207c35/evidence.json",
+    "sha256": "5810d822e16406b4cf07154d6bf9ff20b7512907ddb35b69c70eaa649441be6e",
+    "scope": "Wrapper source path alias mismatch before any process launch; no native input or acceptance."
+  },
+  "retained_failed_attempts": [
+    "checks-001 unused mut test lint",
+    "checks-002 floating-point/order test oracles",
+    "checks-003 initial Inspector frame harness timing",
+    "checks-004 compact scroll harness aimed at footer"
+  ]
+}

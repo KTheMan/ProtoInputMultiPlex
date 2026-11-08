@@ -1,0 +1,33 @@
+{
+  "decision": "APPROVED BOUNDED DOCUMENTATION AND IMAGE REVIEW",
+  "date": "2026-10-15",
+  "scope": "Independent factual, scope, link, producer-count and presentation review of the assigned-release recovery documentation set; no source-code review or execution was performed.",
+  "reviewed_files": {
+    "README.md": "79755B7298535D59B276299FE26002985990811D5455AF82533DE2CFD4A17041",
+    "docs/ultra-parity.md": "8E767C096F448E450D48C8A0F20E6E322F9D8B87A58CB8F9B00B1147A7389302",
+    "docs/roadmap.md": "0EFDF836A540917ED00AC653B63AB491FB2361D3F870E91A6CDAFBBB124DB26D",
+    "docs/agents.md": "F65D78FEC61163A3D4D4F0F2B4D41E0139E7A5F4714A42B0C548752C464838FE",
+    "docs/validation.md": "85DAA5A7CDD99B88C36ABB3BBFCA2B689F8BDC65043B931487A9A71BE4C8C3FA",
+    "skills/protoinputmux/SKILL.md": "C1BACFC4C4A5D87644DD808084AFF1177E121B31DA351EA215B1B12EBDB7AF38",
+    "docs/assigned-release-recovery-contract.md": "8EF98DF5B5EC6A47E297773ED6F75155FC6CC1133F78735CC530DB21DD8B457C",
+    "docs/assigned-release-recovery-assessment-2026-10-15.json": "02FF1192867877BDB5656333CF17684D17DCF7EEF9CC310D6D6EE250DE7BB0A5",
+    "docs/assigned-release-recovery-home-minimum.png": "3B8FDC8362B16E08E1586422526F18EE4B3E8305BBF6AED71451A674BF44CC75",
+    "docs/assigned-release-recovery-dialog-minimum.png": "0B2CE89794518A94BFA1562E4A0F1B18D3789081A7533935152152A2A585BD0E"
+  },
+  "patch_sha256": "F4EEE5348AA9A0766B0C927F062383EDADF4AB8C5A94287D68AE8F266E1CB46D",
+  "findings": [
+    "The public state path is consistently routing_state.users[].pending_releases, with assigned-concurrent scope and null for modes where unavailable.",
+    "The roadmap correction distinguishes live-client scoped ReleaseAll from retired-client saved-release cleanup; the latter retries while retired and completes on successful release or observed process exit.",
+    "The skill narrows the old target-exit guidance: concurrent assigned release recovery is described separately, while native fixed-relative recovery remains unverified. No universal fixed-target stop behavior is asserted.",
+    "Retry interval, original-recipient ownership, healthy-user continuity, typed local InputRejected behavior, connected tagged errors, all-user GUI cleanup, and conservative failed-Stop quarantine match the accepted contract and evidence scope.",
+    "Producer and acceptance totals match the assessment: functional run 17 MCP mutations and 18 GUI observations; GUI-only tail 5 MCP mutations and 9 GUI clicks; 22 total mutations and 27 observations across two runs. Producer records report 238 tests, formatting, strict Clippy and x64/i686 builds.",
+    "The two 320x360 images show both full user rows and the contained release-details dialog with complete wrapped actions. The documentation preserves the 360x360 geometry-only, ellipsized cause/hover, and compact status-wrap limits.",
+    "All referenced assessment, contract, source review, producer, raw run and image files exist. The ten reviewed documents/images match the hashes recorded above.",
+    "Current reviewed text files use CRLF consistently with no bare LF. README and the saved prior skill copy also use CRLF; the skill's fixed-target paragraph and new guidance preserve its established CRLF format."
+  ],
+  "limits": [
+    "No claim is made for physical devices, native fixed-relative execution, native x86 runtime, arbitrary applications, HWND reuse, forced races, durable recovery, same-process isolation or full Ultra/UX parity.",
+    "Raw pending-review evidence remains immutable; the combined account does not claim one fresh full final-build suite or 27 distinct controls.",
+    "This review did not rerun Cargo checks or native acceptance."
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "assessment": "stopped-tray-open-assessment-2026-10-21",
+  "status": "ACCEPTED_BOUNDED_STOPPED_TRAY_OPEN_OBSERVATION",
+  "scope": "One current-build stopped GUI only. Product close-to-tray hid the original root; one actual owned tray Open returned the same root visible and noniconic within the eight-second bound. A fresh 680x620 Home capture was independently inspected. Actual ordinary Quit exited 0 without fallback or cleanup errors.",
+  "observed_state": {
+    "frame_progress": [385, 634, 637],
+    "root_identity_preserved": true,
+    "controller_present": false,
+    "preflight_pending": false,
+    "ready": false,
+    "stopping": false,
+    "targets": 0,
+    "session_workers": 0,
+    "routing_starts": 0,
+    "mcp_clients": 0,
+    "routed_input": 0,
+    "forced_cleanup": false,
+    "ordinary_quit_exit_code": 0,
+    "screenshot_geometry_px": [680, 620]
+  },
+  "evidence": {
+    "producer_verification": {
+      "path": "runtime/producer-guided-quit-recovery-20261021-attempt002/verification.json",
+      "sha256": "5301515fd4ed90d4876b523fe85b5399dacaf634010865e608a517c7d0acbe81",
+      "scope": "Existing current GUI build and required checks; 494 passed, 0 failed, 3 ignored. Reused for this observation; no new build or Rust checks."
+    },
+    "raw_evidence": {
+      "path": "runtime/producer-guided-quit-recovery-20261021-attempt002/private-runtime/acceptance-graph-stopped-tray-open-20261021-172453/evidence.json",
+      "sha256": "349e076d2f2e623f197a0a30e4b840bed8070a0525eebde0b6b79d73c382081e"
+    },
+    "screenshot": {
+      "path": "runtime/producer-guided-quit-recovery-20261021-attempt002/private-runtime/acceptance-graph-stopped-tray-open-20261021-172453/stopped-Open-restored.png",
+      "sha256": "27020e943e11efbd5eceb654e812ea969ef9d3a42b0794f7d13f70af299f6ce4"
+    },
+    "source_review": {
+      "path": "runtime/stopped-tray-open-diagnostic-candidate/source-review.json",
+      "sha256": "1e15503b733cfd27a4cb4ccd4b5c9a2a07a7c900e38b22c8d1a9f62448a5f2a3"
+    },
+    "actual_assessment": {
+      "path": "runtime/producer-guided-quit-recovery-20261021-attempt002/private-runtime/acceptance-graph-stopped-tray-open-20261021-172453/actual-assessment.json",
+      "sha256": "e2450d3fde8202ad681c8ad31adce7b749f8ac48f7ea5aebd222f22e0ae825d8"
+    }
+  },
+  "preserved_prior_failure": {
+    "assessment_sha256": "35efdf2d7c303fdf1120d338c39f82891ed0867ab0616a11644c57c300597977",
+    "raw_evidence_sha256": "2aa3f5317649f7fd1d832457c744f21d3e5962d37200dc72c6bbe4947f3f0f30",
+    "status": "NOT_ACCEPTED; earlier eight-second Restore failure remains preserved and its cause unexplained."
+  },
+  "limits": [
+    "One stopped-state sample only; no reliability rate, historical failure fix, or general GUI responsiveness claim.",
+    "No product source change or visibility/timer workaround was introduced.",
+    "No target process, session worker, routed input, MCP client, hardware, RustDesk, global pointer, or clipboard was used.",
+    "This is a bounded behavior observation, not full MouseMux Ultra parity or distribution acceptance."
+  ]
+}

@@ -1,0 +1,195 @@
+{
+  "date": "2026-10-15",
+  "result": "APPROVED BOUNDED WORKER TRANSPORT LIVENESS",
+  "full_p1_complete": false,
+  "full_ultra_parity_complete": false,
+  "source_changes_sha256": {
+    "crates/protoinputmux/src/session.rs": "2e63c20083b903e1245464d0def76cd98e3a7a5607f49d72087a88e8c7e84466",
+    "crates/protoinputmux/src/session/transport.rs": "1dca3de1a122f572d2e2526c949674ae73d6f1c2dbe2ac2cd36d6107926c353e"
+  },
+  "producer": {
+    "path": "runtime\\producer-worker-transport-20261015-162705\\verification.json",
+    "sha256": "36188c1dfd73359599a68c8642ff3ed3f1b7f4a735de765d089ff93687dac380",
+    "result": "PASS",
+    "workspace_tests": 333,
+    "product_build_inputs": 845,
+    "parent_orchestration_helpers": 2,
+    "producer_helper_sha256": "14ad1a5e38f9a55a51df4d1fcfb2af01784f0e1dddfb7cf8d6baf1c8dbb12d75",
+    "new_regressions": {
+      "session::attachment_event_tests::nonreading_owned_child_times_out_and_worker_drop_joins_after_exit": true,
+      "session::attachment_event_tests::stop_intent_bypasses_ordinary_request_backlog": true,
+      "session::transport::tests::blocked_writer_keeps_watchdog_stop_and_backpressure_nonblocking": true,
+      "session::transport::tests::writer_preserves_frames_and_write_completion_is_only_transport_progress": true
+    },
+    "checks": "Formatting, strict workspace/all-targets Clippy, workspace tests, default x64 and i686 application/observer builds.",
+    "artifacts_sha256": {
+      "x64": {
+        "protoinputmux_cursor_observer.dll": "3ade9c71977c87340daae545295cbea11aba3347ee84171aab189814d03f2212",
+        "protoinputmux.exe": "924c34dd838cb0e458174094d78eb28ae4e76e9b535f66b7c482d4b88c6159da"
+      },
+      "i686": {
+        "protoinputmux_cursor_observer.dll": "bc2b2fbd2655e3324fcea2f41dc54a493bbd3120dd48daf92bb08ecfb5d20069",
+        "protoinputmux.exe": "db780b7378355599d6c930177c350fc6ecd4504448f742ef1907eed7a879109f"
+      }
+    }
+  },
+  "producer_independent_review": {
+    "path": "runtime/worker-transport-producer-independent-review.json",
+    "sha256": "a43fb3a99888048ffaab155876f3a0c4b50bdd9753e2d592e38a843e03214439"
+  },
+  "native_independent_review_sha256": "2c1082fbf34808973dc4e98e9633103011fd10e443b6e5f05ba69a8538fc7045",
+  "native_independent_review": {
+    "decision": "APPROVED BOUNDED WORKER TRANSPORT FEATURE",
+    "raw": {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-worker-transport-20261015-163615\\evidence.json",
+      "sha256": "9e79ec19775cef5fb185280ea05021536f20ea1d0ba0e3051a956b7855abe784",
+      "preserved_label": "PASS_PENDING_INDEPENDENT_REVIEW"
+    },
+    "producer": {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-worker-transport-20261015-162705\\verification.json",
+      "sha256": "36188c1dfd73359599a68c8642ff3ed3f1b7f4a735de765d089ff93687dac380"
+    },
+    "review_and_harness_sha256": {
+      "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\p1-transport-candidate-v2\\independent-source-review.json": "d6f0c6df14aa9c1146ba6766c7957a930df06bf80c16696ca45edcc97adfe597",
+      "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\p1-transport-formatted-helper-independent-review.json": "124e29b1cbc543c04f0d090836902a80597ef6ef496cecfc94bb4a74a17f526a",
+      "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\worker-transport-producer-independent-review.json": "a43fb3a99888048ffaab155876f3a0c4b50bdd9753e2d592e38a843e03214439",
+      "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\worker-transport-smoke-independent-source-review.json": "5d9001e5d60343e2d662663d87d253da02fc5d1cf90b86851d4eb103267c1c2e",
+      "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\test-worker-transport-smoke.py": "2c685275af5a371bd66b31f74c5be06acbdf92758a4798581afabf6176553bc4",
+      "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\worker-transport-smoke-plan.json": "39fdce6b736c669a566b3d92ff828fe17787e69587440a3f696f8dc4058efee5"
+    },
+    "source_sha256": {
+      "crates/protoinputmux/src/session.rs": "2e63c20083b903e1245464d0def76cd98e3a7a5607f49d72087a88e8c7e84466",
+      "crates/protoinputmux/src/session/transport.rs": "1dca3de1a122f572d2e2526c949674ae73d6f1c2dbe2ac2cd36d6107926c353e"
+    },
+    "evidence_composition": [
+      "Source-reviewed bounded FIFO writer+atomic Stop bypass/deadlines; global cleanup and unchanged terminal commit/quarantine semantics.",
+      "Executed333-test producer includes four named transport regressions: blocked Write/backpressure/Stop watchdog, exact FIFO bytes, Stop backlog bypass, and a genuinely nonreading owned hidden child with real pipe and production Job/Worker kill-wait-before-join teardown assertions.",
+      "Current new-binary standalone full supervisor MCP route: one Start/eight inputs/one global Stop; native A F5 hold and B secondary hold observed, then correct saved UPs at each original own EDIT HWND, no duplicate/cross-user discrete edges or holds.",
+      "Stop reply plus fresh independent state clean stopped/can_start/empty targets, exact retained worker exit0, both known cursor HWNDs absent and both original identities reusable without restart."
+    ],
+    "actual_counts": {
+      "standalone_clients": 1,
+      "owned_x64_probes": 2,
+      "routing_start": 1,
+      "routing_input": 8,
+      "routing_stop": 1,
+      "GUI_observations": 0,
+      "original_frames": 0
+    },
+    "native": {
+      "owned_pids": [
+        276928,
+        150120
+      ],
+      "worker_before_stop": {
+        "ppid": 271144,
+        "create_time": 1792107362.3594036,
+        "pid": 275428,
+        "cmdline": [
+          "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-worker-transport-20261015-163615\\owned transport control.exe",
+          "session-worker",
+          "--runtime",
+          "\\\\?\\E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-worker-transport-20261015-163615\\acceptance-runtime",
+          "--controller-pid",
+          "271144"
+        ],
+        "exe": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-worker-transport-20261015-163615\\owned transport control.exe"
+      },
+      "exact_worker_exit_code": 0,
+      "discrete_edges": [
+        [
+          [
+            "button",
+            0,
+            true
+          ],
+          [
+            "button",
+            0,
+            false
+          ],
+          [
+            "key",
+            116,
+            true
+          ],
+          [
+            "key",
+            116,
+            false
+          ]
+        ],
+        [
+          [
+            "button",
+            0,
+            true
+          ],
+          [
+            "button",
+            0,
+            false
+          ],
+          [
+            "button",
+            1,
+            true
+          ],
+          [
+            "button",
+            1,
+            false
+          ]
+        ]
+      ],
+      "known_overlay_HWNDs_absent": [
+        1249098,
+        3670122
+      ],
+      "reuse_witnesses": [
+        {
+          "creation": 134365809621433334,
+          "pid": 276928,
+          "reason": "PID 276928: ready for another virtual session",
+          "state": "reusable"
+        },
+        {
+          "creation": 134365809621517097,
+          "pid": 150120,
+          "reason": "PID 150120: ready for another virtual session",
+          "state": "reusable"
+        }
+      ]
+    },
+    "cleanup": {
+      "errors": [],
+      "recorded_exact_owned_image_processes": [],
+      "MCP_exit_code": 0,
+      "both_probe_clean_exit_assertions_passed": true,
+      "current_standalone_descriptor_absent": true,
+      "basis": "Actual final cleanup table and reviewed mandatory Popen cleanup assertions; no new process or native action performed by reviewer."
+    },
+    "final_integrity": {
+      "source847_current_match": true,
+      "stage_native10_match": true,
+      "copied_current_app_match": true,
+      "producer_and_five_logs_match": true
+    },
+    "unresolved_material_findings": [],
+    "explicit_limits": [
+      "Nonreading-child test directly exercises production Transport and Job/Worker teardown; full GUI worker-fault injection, live route backpressure failure/quarantine race and physical hardware are not claimed.",
+      "Healthy actual supervisor Stop is distinct from synthetic stalled-write regression; no performance or Stop-latency bound claimed from this smoke.",
+      "i686 built only; no new GUI pixels, arbitrary-app, fullP1/Ultra/hardware/desktop-wide isolation or shipping acceptance. Frozen329 release stays separate."
+    ],
+    "reviewer_actions": "Read-only exact evidence/log/source/artifact review; no apps/native/Cargo/tests/reruns."
+  },
+  "interface": "Existing Ouroboros Stopping/error/recovery and MCP terminal/recovery state; no schema or permission changes. Connected routing_stop remains client-local disconnect.",
+  "scope": "Composition of controlled writer/backpressure/FIFO/Stop-intent regressions, a real nonreading child Transport plus production Job/Worker Drop regression, and one healthy full-supervisor standalone virtual routing/Stop workflow.",
+  "limits": [
+    "No live routed nonreading-worker/backpressure/quarantine fault injection.",
+    "No new GUI fault-injection, hardware, performance, arbitrary-application or desktop-wide/same-process isolation acceptance.",
+    "The separately frozen 329-test release source predates this fix; its ongoing build does not include this P1 source.",
+    "Raw pending-review labels remain unchanged; this assessment records separate independent approval."
+  ],
+  "shipping_acceptance": "OPEN; frozen 329 distribution proceeds separately and excludes this P1 change"
+}

@@ -1,0 +1,17 @@
+{
+  "reviewer": "/root/recovery_review",
+  "result": "APPROVED bounded outcome and documentation; no material findings",
+  "assessment": "docs/failed-cleanup-recovery-assessment-2026-10-15.json",
+  "assessment_sha256": "f5e5acc50d82fc25bc03ac3691ad1d6191eca700a5baf62e4e562d6d2432367b",
+  "documentation_sha256": {
+    "README.md": "7ce9879da9931c79f1a27db1e7348cf361fd05b0b3652432a22d57ae6792d8cd",
+    "docs/ultra-parity.md": "013da4a2dd9e43f9688ab233025edd4a90dfdcb8e05aa34bdd0eeecc1ee7c4bc",
+    "docs/roadmap.md": "08c551bcdbdc1e396f7dd1113a42802100a1dbb565073d8433b4d6d1a8122a7e",
+    "docs/validation.md": "1c0a62db4ca888c8fa4516397ccbe383edfa8829fcfe91cb8fcaf32e071e9b7f",
+    "docs/agents.md": "49a3eaa3862cb1587038c4c6bb194ba55290377e02a71cb570175e94e4f86052",
+    "docs/failed-cleanup-recovery-contract.md": "7df2fbe0886a19967973f2a970cfe21f4c932c540dd926d147dbcc650b924cde",
+    "skills/protoinputmux/SKILL.md": "aa6683ef3794e798c1328f016001ab68e0f380433fb58a83b10ef9df33094e63"
+  },
+  "root_viewed_originals": 2,
+  "production_inputs_unchanged_after_acceptance": true
+}

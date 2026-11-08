@@ -1,0 +1,114 @@
+{
+  "decision": "BOUNDED FEATURE APPROVED; FULL ULTRA PARITY REMAINS OPEN",
+  "date": "2026-10-15",
+  "canonical": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\docs\\motion-coalescing-assessment-2026-10-15.json",
+    "sha256": "6f5bd7d0e92d5c0893dd35933a0e397a1dcdef71d35c2a5b420985ad6c6a8d0b"
+  },
+  "verification": "Independent review reconciled canonical claims against own source/native-prefix/native-tail/GUI reviews and exact raw traces/profile JSON. Root separately directly viewed both exact originals and approved their stated bounds. All referenced bytes verified; no apps/builds/tests rerun.",
+  "source_integrity": {
+    "producer_source_count": 84,
+    "current_mismatches": 0,
+    "changed_or_new_since_219": 12,
+    "protected_since_219": 72,
+    "comparison_limit": "Earlier219 baseline provides hashes, not source-byte snapshots.",
+    "current_manifest_sha256": "693efdb00fc4289c5fb16a922a9847855aeef0e9c8fe693303fc3428dc5179be",
+    "manifest_encoding": "UTF8 JSON sorted keys and compact separators; full map bound by exact producer bytes.",
+    "both_current_executables_match": true,
+    "runtime_file_hashes_verified": 10
+  },
+  "accepted": "Virtual automatic/concurrent per-user publication reduction/endpoints; separately settled button/key/wheel barrier traces; single-packet autonomous timer publication; invalid settings rejection; settings/Pause and A-exit/B-continuity/normalStop. Stopped Ouroboros count/time controls, actual local keyboard changes, independent B9/5 and fresh whole typed profile Save.",
+  "counts": {
+    "prior_native_mutations": 18,
+    "tail_native_mutations": 29,
+    "combined_native_mutations": 47,
+    "combined_native_source_packets": 69,
+    "gui_semantic_observations": 14,
+    "gui_pointer_clicks": 10,
+    "gui_key_receipts": 4,
+    "gui_app_local_key_pairs": 48,
+    "original_images": 2
+  },
+  "preserved_history": "071258 raw NOT ACCEPTED unchanged; its first3 native groups approved independently. Tail/GUI raw PENDING states unchanged; independent decisions grant bounded acceptance. No relabelled raw or silently repeated accepted prefix.",
+  "limits": "Automatic concurrent owned x64 probes/virtual devices only; i686 built only. Exact pending/deadline/forced-failure/resize/relative split/clipping and coalesced annotation/graph cross-products lack new native acceptance. Existing WM_MOUSEMOVE dequeue rewriting prevents historical coordinate inference; isolated clips used. Minimum image shows time5ms whole slider/Apply, time checkbox above viewport; no simultaneous-all-controls, request-associated PNG freshness, broad accessibility/UX/performance/hardware/general-app/isolation claim.",
+  "cleanup": "All3 attempts terminal, owned processes/overlays closed, final holds empty; scopedCIM0 in each audit. GUI GUID absent, no temporary files/agent descriptor. Exclusive native slot returned; no outstanding handles.",
+  "references": [
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-motion-coalescing-20261015-070832\\verification.json",
+      "sha256": "e6be400792fcb1e7ae07a36d09ef69933ce46e7db992a7b8d5625a6d12875a05"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\docs\\motion-coalescing-source-review-2026-10-15.json",
+      "sha256": "a92c7aecc110dd025387959c068e47b0b486d2e1fd61d639dee17a4da913fa91"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\coalescing-native-tail-source-review.json",
+      "sha256": "b932d7fa1eb4a7e7b5576a05b7f30df3adf5ac16dbec5f42a262e0e4c87a219c"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\scripts\\test-motion-coalescing-acceptance.py",
+      "sha256": "4497bba20ac39d5a08741156c73e8b4b6826c26b31888c0a7a96fa20de30cb4d"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\coalescing-acceptance-plan.md",
+      "sha256": "2f3647e8f3b115820abcbdc206db1b39123ffaf78890d88a7ef7ed15b0f63e73"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-motion-coalescing-20261015-071258\\evidence.json",
+      "sha256": "67c9fb43d5eddf1f185bd0455ea220d8c3aafafdab0986c10528df766ad48ce3"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-motion-coalescing-20261015-071258\\independent-review.json",
+      "sha256": "d3edceeb6fcfcabd04ff9895fd2567635daace0258f02232910143ecb3188f9c"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-motion-coalescing-20261015-071258\\cleanup-audit.json",
+      "sha256": "983a5d98aab060156fb090b9176da4fe2ce750b43d31b13fc5d3768501822bd3"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-motion-coalescing-20261015-072050\\evidence.json",
+      "sha256": "dad255d5a4192ae8c052739c9b55dfbb6482f1cd8258ae447d0cbe84e10d2f88"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-motion-coalescing-20261015-072050\\independent-review.json",
+      "sha256": "ca15b65b3e9610d99750f14526daad4787da195d05ca39871186327b1e07adee"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-motion-coalescing-20261015-072050\\cleanup-audit.json",
+      "sha256": "58f7922ffa6340c103d1d949454f7cedeb3753fd18c50a95bbf02e4e40f61e57"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-motion-coalescing-gui-20261015-072253\\evidence.json",
+      "sha256": "a37cb0bde2e3428893ed76c225267d4a32a985d7ffe84af67db843d7608ba63c"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-motion-coalescing-gui-20261015-072253\\independent-review.json",
+      "sha256": "acdc9be0325ea38fa1c527ee901e4cdc502672ed2854dc88100bb5ecc7de11cc"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-motion-coalescing-gui-20261015-072253\\cleanup-audit.json",
+      "sha256": "3e5c076b4d91e6544dbff4ce532ba00e11da46a27b9e2f5b16619b8255f580a3"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-motion-coalescing-gui-20261015-072253\\fresh coalescing profile.json",
+      "sha256": "1f42a52493fea698d1f0750e2dbf4d6dfcbdfc2dade0d9ae4e1ef6f9ebdc6deb"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-motion-coalescing-gui-20261015-072253\\count-normal.png",
+      "sha256": "a75a5a1df92938afc3c7cebb51929553fe007c5b8ae0b2d0b342f87bcfcf093e"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\docs\\motion-coalescing-normal.png",
+      "sha256": "a75a5a1df92938afc3c7cebb51929553fe007c5b8ae0b2d0b342f87bcfcf093e"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-motion-coalescing-gui-20261015-072253\\time-minimum.png",
+      "sha256": "1f1aea42aff51c0d229c8357b6f0cdc9f31b2484a7cd3925e4e295ab30b216d3"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\docs\\motion-coalescing-minimum.png",
+      "sha256": "1f1aea42aff51c0d229c8357b6f0cdc9f31b2484a7cd3925e4e295ab30b216d3"
+    }
+  ],
+  "documentation": "Seven prose/skill updates are separately reviewed by coalescing_docs; this record approves canonical feature evidence only."
+}

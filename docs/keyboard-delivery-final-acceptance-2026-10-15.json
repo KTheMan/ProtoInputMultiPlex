@@ -1,0 +1,188 @@
+{
+  "decision": "APPROVED FINAL EXACT BOUNDED KEYBOARD DELIVERY GROUP; FULL ULTRA/FULL UX OPEN",
+  "canonical": {
+    "path": "docs\\keyboard-delivery-assessment-2026-10-15.json",
+    "sha256": "3a7b7ac400b4b5c2e542ffce93f5e4a042768d2b16160cf71f17e187b819963c"
+  },
+  "independent_acceptance": {
+    "path": "docs/keyboard-delivery-independent-acceptance-2026-10-15.json",
+    "sha256": "7941da3550067dc271f5488c6481b1482461b7e9c515d70a7cf0cff0b3434f28"
+  },
+  "documentation_review": {
+    "path": "docs\\keyboard-delivery-doc-review-2026-10-15.json",
+    "sha256": "bb4b16ea201dcdf1c690371789f002b9e7bab4dadd41e0e6313044db59b4727a"
+  },
+  "reviewed_docs_and_display_images": {
+    "README.md": "644879051b2974001cc4f23e6f0a54c56ce4fb0e10f4e3c0dd370806197491fa",
+    "docs/ultra-parity.md": "2fb9ea07546d29a81aad88d73e3784356107027ff84e584b383d121166779d6e",
+    "docs/roadmap.md": "a92833bfc6e1a8d4afbaf5925ecb29804946ee00c1ceb373d5af2f1458bababa",
+    "docs/agents.md": "22a0ce81159910135b260b9adcc5326412c872acb1f1e37a021d1168db997e8d",
+    "docs/validation.md": "49a2e26c5a11e2f321c2deba21018cb6abb8fc819d0e56d740c245783fbc879e",
+    "skills/protoinputmux/SKILL.md": "aa8be5483c45e8a48121d12cff92c36a1bc2d89706eb502aea8fcbe257ccc728",
+    "docs/keyboard-delivery-contract.md": "f7716758215bdf67356ca6ddf83cd573bb37d76189df3feafc3098f9b57dbe96",
+    "docs/keyboard-delivery-assessment-2026-10-15.json": "3a7b7ac400b4b5c2e542ffce93f5e4a042768d2b16160cf71f17e187b819963c",
+    "docs/keyboard-delivery-focused.png": "c2836ee07fda9834c38045905b83bde14d0609e7e22f70b7927c0e0800a7542f",
+    "docs/keyboard-delivery-external-draft.png": "33ebe31658c3f16b8df6e8a624c84f06d09533ac9f4572f1001e8ad7718bc568",
+    "docs/keyboard-delivery-minimum.png": "22189c4a1d0e0f9f8da40f3239ac905ee19eeff69353fb9560ac0a2c53dfd307"
+  },
+  "skill_install": {
+    "path": "docs\\keyboard-delivery-skill-install-2026-10-15.json",
+    "sha256": "7ce44c6db573f4f889588d133d08cf864780850691ff239bfd69a7b38b28dafb"
+  },
+  "source_and_binary_audit": {
+    "producer": {
+      "path": "runtime\\producer-keyboard-delivery-20261015-090807\\verification.json",
+      "sha256": "fb519cbb1cf2f00fd69841d73842bf8765c98c994467b6846f5837c0c0f1e111"
+    },
+    "required_commands": 5,
+    "all_exit0": true,
+    "workspace_tests": 252,
+    "all_current_source_inputs_match": 86,
+    "current_build_sha256": {
+      "x64": "9c176214cb8de3d18853e16ef4082df1476b2247ba2a0b26dee9ed7f34560aad",
+      "i686": "d54dc555dff92e17789b37c61c67ad3b9720faf34b8d7b6f173f97ee101a6a7f"
+    },
+    "owned_run_executable_copies_verified": [
+      {
+        "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-keyboard-delivery-20261015-085740\\control64.exe",
+        "sha256": "ac4ca9428212162d5b338af65a88ab2725f9ec6b77d4abef9995db85b8e39667"
+      },
+      {
+        "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-keyboard-delivery-20261015-085740\\probe32.exe",
+        "sha256": "10b582ae54bedcf987ce1a4b7c975f78ac967882dc2aad2d523cd364902e0335"
+      },
+      {
+        "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-keyboard-delivery-20261015-090348\\control64.exe",
+        "sha256": "eba3b793d9d3c94630a0000db2b3c119f9e0475e9a4b9244f5c3b616f6877866"
+      },
+      {
+        "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-keyboard-delivery-20261015-090348\\probe32.exe",
+        "sha256": "d99dba3c0d99df2b14cbd2fb713f36e1c239d1156534c5185d47c8c0df0ce06f"
+      },
+      {
+        "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-keyboard-delivery-minimum-tail-20261015-091151\\control64.exe",
+        "sha256": "9c176214cb8de3d18853e16ef4082df1476b2247ba2a0b26dee9ed7f34560aad"
+      },
+      {
+        "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-keyboard-delivery-minimum-tail-20261015-091151\\probe32.exe",
+        "sha256": "d54dc555dff92e17789b37c61c67ad3b9720faf34b8d7b6f173f97ee101a6a7f"
+      }
+    ],
+    "native_runtime_files_verified": 10,
+    "source_manifest_partition": "19new/changed+67protected=86; finalminimumGUI-onlydelta retains85functionalinputs",
+    "source_reviews": [
+      {
+        "path": "docs/keyboard-delivery-source-review-2026-10-15.json",
+        "sha256": "45dcf33dc518f5ea52c73c59eadac66ea9eed201f56ab197d6cc168502a1fcc6"
+      },
+      {
+        "path": "docs/keyboard-delivery-fixture-revision-source-review-2026-10-15.json",
+        "sha256": "c62334e76c17a123535228acd3ca2216e647644be18d608efbb36130e238390e"
+      },
+      {
+        "path": "docs/keyboard-delivery-minimum-source-review-2026-10-15.json",
+        "sha256": "033ad3657802d63867f969858fbab5a23de92cdb038cea867f348ec28c55b649"
+      }
+    ]
+  },
+  "native_ui_evidence_audit": {
+    "raw_and_independent_review_hashes_verified": [
+      {
+        "path": "runtime\\acceptance-graph-keyboard-delivery-20261015-085740\\evidence.json",
+        "sha256": "3532b4913ccd48a643f8212774e5c1e0967afb3f2f1f9bbeacf0811bb8220d07"
+      },
+      {
+        "path": "runtime\\acceptance-graph-keyboard-delivery-20261015-085740\\independent-review.json",
+        "sha256": "3d6ecfd7aa4a4f9316d2a76ff05caeb4ef945b168b049d16676d642f6a5bb74f"
+      },
+      {
+        "path": "runtime\\acceptance-graph-keyboard-delivery-20261015-085740\\post-terminal-cleanup.json",
+        "sha256": "38abd83735464701fe37b799f6a50c7ffcd447d6e88e9bd22c4574cb1d681746"
+      },
+      {
+        "path": "runtime\\acceptance-graph-keyboard-delivery-20261015-090348\\evidence.json",
+        "sha256": "ac69456993f280b3c2175c5f4da40d52f5299d571e3d428173896be73b2485d4"
+      },
+      {
+        "path": "runtime\\acceptance-graph-keyboard-delivery-20261015-090348\\independent-review.json",
+        "sha256": "c40b35ac27dfc22658e8e38c56c5c615cabe00bdc713daeb651dd103c6599ba9"
+      },
+      {
+        "path": "runtime\\acceptance-graph-keyboard-delivery-minimum-tail-20261015-091151\\evidence.json",
+        "sha256": "63ab54d74a797c81007cf1300bea8546c8800a0fa788d7105b1ebc9cba3f5d31"
+      },
+      {
+        "path": "runtime\\acceptance-graph-keyboard-delivery-minimum-tail-20261015-091151\\independent-review.json",
+        "sha256": "f13eb1c702dbc0514777ca4d600bac0bf944511189eeb0bb830e9fc3d13966b2"
+      }
+    ],
+    "functional_phase": "24GUI/27mutatingMCP/162readonly; actualownedx64customfocus-preservingtargets; native/text/originalUP/rawdisable/recordgraph/mouseconversion/Bcontinuity/externalACKdirtydraft passed",
+    "minimum_phase": "8GUI/0MCP/0packets; current320offdraftcheckbox/footer beforeApply thenworkerStateACKfalse/Clicked; normalStop",
+    "approved_originals_and_byteexact_display_copies": {
+      "docs/keyboard-delivery-focused.png": {
+        "sha256": "c2836ee07fda9834c38045905b83bde14d0609e7e22f70b7927c0e0800a7542f",
+        "origin": "runtime/acceptance-graph-keyboard-delivery-20261015-090348/keyboard-focused-normal.png",
+        "scope": "540x520 functional-build normal; enabledcheckbox/all5radios/Apply; lowerhelp scroll-edgeclipped"
+      },
+      "docs/keyboard-delivery-external-draft.png": {
+        "sha256": "33ebe31658c3f16b8df6e8a624c84f06d09533ac9f4572f1001e8ad7718bc568",
+        "origin": "runtime/acceptance-graph-keyboard-delivery-20261015-090348/keyboard-external-ack-preserved-draft.png",
+        "scope": "540x520 functional-build normal; actualNative state+dirtydraftwarning/Apply; exactClicked draftfromJSON, radiooffviewport"
+      },
+      "docs/keyboard-delivery-minimum.png": {
+        "sha256": "22189c4a1d0e0f9f8da40f3239ac905ee19eeff69353fb9560ac0a2c53dfd307",
+        "origin": "runtime/acceptance-graph-keyboard-delivery-minimum-tail-20261015-091151/keyboard-off-draft-minimum.png",
+        "scope": "320x360 finalbuild; offdraftcheckbox+Apply only, workerACKafterimage; modesoffviewport"
+      }
+    },
+    "first_failed_fixture": "RawNOTACCEPTED/10accepted11actualGUI/6selectionMCP/0testkeys-text retained; ordinaryEDITfocuschanged, notresolverfailure",
+    "historical_initial_runner_plan_archive_verified": true
+  },
+  "cleanup_audit": {
+    "accepted_functional_processes_all_exit0": 4,
+    "accepted_minimum_processes_all_exit0": 2,
+    "first_failed_attempt_processes_terminal": 4,
+    "first_owned_descriptor_explicit_cleanup_preserved": true,
+    "current_scoped_owned_executable_survivors": [],
+    "own_GUID_keys_absent": [
+      "Software\\ProtoInputMux\\Tests\\70ca3599-8b7b-4782-a1f9-f23aaafaefe7",
+      "Software\\ProtoInputMux\\Tests\\e82e06a6-5423-44c6-a53c-3153af1b5fda",
+      "Software\\ProtoInputMux\\Tests\\354cd311-fc3e-4ec7-9a46-6338a63ba3bc"
+    ],
+    "own_descriptors_absent_for_gui_pids": [
+      156924,
+      164560,
+      160212
+    ],
+    "accepted_known_overlays_and_lifecycle_closed": true,
+    "slot_returned": true
+  },
+  "skill_audit": {
+    "source": {
+      "path": "skills\\protoinputmux\\SKILL.md",
+      "sha256": "aa8be5483c45e8a48121d12cff92c36a1bc2d89706eb502aea8fcbe257ccc728"
+    },
+    "installed": {
+      "path": "C:\\Users\\Archform CAD Station\\.codex\\skills\\protoinputmux\\SKILL.md",
+      "sha256": "aa8be5483c45e8a48121d12cff92c36a1bc2d89706eb502aea8fcbe257ccc728"
+    },
+    "byte_identical": true,
+    "old_backup": {
+      "path": "runtime\\keyboard-delivery-skill-before.md",
+      "sha256": "c1bacfc4c4a5d87644dd808084aff1177e121b31da351ea215b1b12ebdb7af38"
+    },
+    "guarded_atomic_install_record_verified": true,
+    "recorded_source_and_installed_validators": "Both exit0/Skill is valid!",
+    "independent_readonly_quick_validate_recheck": "Both source andinstalled exit0/Skill is valid! atclosure",
+    "temporary_absent": true
+  },
+  "scope_judgment": "Canonicalagreeswithindependentdata/originalreviewandparentdirectviews. No materialfinding. Currentminimumwhole-radio/simultaneouscheckbox+mode remainsUNPROVEN/excluded, neverrelabeledPASS. Ordinaryverticalscroll isnotunreachability; nofurthermicrotailrequired.",
+  "remaining_limits": [
+    "Customfocus-preservingtarget messagehandling distinguishes candidates; pinnedFocusMessageLoop/FocusHook meanarbitraryapplicationfocus/Tabunverified",
+    "Currentminimumoriginalcertifieswholeoffcheckbox/identity/Keyboard/Apply only; no currentminimumwhole-mode/all-controls/fullcompactpolish claim",
+    "ExternalnormalshowsNative+dirtywarning; exactClickedfromJSON,notvisibleoffscreenradio",
+    "No request-associatedPNG freshness,profileSave/Load,broadAT,physical/globalhotkeys,realhardware,RustDesk/globalpointer,desktopwide/sameprocess/generalapp/nativefixedrelative/fullUltra parity",
+    "i686 built only; phasecountsarenotdistinctcontrols. EarlierNA/PENDINGrawstatuses remainimmutable."
+  ],
+  "findings": []
+}

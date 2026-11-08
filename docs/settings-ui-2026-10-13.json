@@ -1,0 +1,5015 @@
+{
+  "samples": {
+    "defaults-page": {
+      "probes": [
+        {
+          "pid": 789180,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 73,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 782956,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 69,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [],
+      "button": "Profiles"
+    },
+    "save-defaults": {
+      "probes": [
+        {
+          "pid": 789180,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 81,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 782956,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 78,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [],
+      "button": "Save profile",
+      "saved_profile": {
+        "version": 1,
+        "concurrent": true,
+        "desktop": {
+          "mode": "concurrent",
+          "multi_keyboard": true,
+          "allowed_pids": [
+            789180,
+            782956
+          ]
+        },
+        "seats": [
+          {
+            "name": "UI64",
+            "mouse": "virtual://mouse/1",
+            "keyboard": "virtual://keyboard/1",
+            "target_pid": 0,
+            "desktop_start": [
+              158,
+              171
+            ],
+            "cursor": {
+              "color": [
+                45,
+                212,
+                191
+              ],
+              "size": 28.0,
+              "visible": true,
+              "label": true,
+              "speed_x": 1.0,
+              "speed_y": 1.0,
+              "motion_curve": "linear",
+              "invert_x": false,
+              "invert_y": false,
+              "button_mapping": [
+                "primary",
+                "secondary",
+                "middle",
+                "x1",
+                "x2"
+              ],
+              "swap_buttons": false,
+              "wheel_scale": 1.0,
+              "invert_wheel": false,
+              "horizontal_wheel": "ignore",
+              "horizontal_wheel_scale": 1.0,
+              "invert_horizontal_wheel": false,
+              "lock_window": false
+            }
+          },
+          {
+            "name": "UI32",
+            "mouse": "virtual://mouse/2",
+            "keyboard": "virtual://keyboard/2",
+            "target_pid": 0,
+            "desktop_start": [
+              618,
+              171
+            ],
+            "cursor": {
+              "color": [
+                45,
+                212,
+                191
+              ],
+              "size": 28.0,
+              "visible": true,
+              "label": true,
+              "speed_x": 1.0,
+              "speed_y": 1.0,
+              "motion_curve": "linear",
+              "invert_x": false,
+              "invert_y": false,
+              "button_mapping": [
+                "primary",
+                "secondary",
+                "middle",
+                "x1",
+                "x2"
+              ],
+              "swap_buttons": false,
+              "wheel_scale": 1.0,
+              "invert_wheel": false,
+              "horizontal_wheel": "ignore",
+              "horizontal_wheel_scale": 1.0,
+              "invert_horizontal_wheel": false,
+              "lock_window": false
+            }
+          }
+        ]
+      }
+    },
+    "setup-lab": {
+      "probes": [
+        {
+          "pid": 789180,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 93,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 782956,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 90,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [],
+      "button": "Input lab"
+    },
+    "start": {
+      "probes": [
+        {
+          "pid": 789180,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 116,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 782956,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 113,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 0,
+          "client": [
+            158,
+            171
+          ],
+          "bounds": {
+            "left": 0,
+            "top": 0,
+            "right": 2560,
+            "bottom": 1440
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 38997386,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "",
+          "status": "Click a window to route input",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 0,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 0,
+          "client": [
+            618,
+            171
+          ],
+          "bounds": {
+            "left": 0,
+            "top": 0,
+            "right": 2560,
+            "bottom": 1440
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 121178842,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "",
+          "status": "Click a window to route input",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 0,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Start routing"
+    },
+    "select-0": {
+      "probes": [
+        {
+          "pid": 789180,
+          "cursor": [
+            158,
+            171
+          ],
+          "buttons": 1,
+          "test_keys": 0,
+          "frames": 143,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            }
+          ],
+          "mouse_event_count": 1,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 782956,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 141,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 789180,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [],
+          "overlay": {
+            "hwnd": 38997386,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 789180",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 789180",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 789180,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 0,
+          "client": [
+            618,
+            171
+          ],
+          "bounds": {
+            "left": 0,
+            "top": 0,
+            "right": 2560,
+            "bottom": 1440
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 121178842,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "",
+          "status": "Click a window to route input",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 0,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "1 Hold click"
+    },
+    "drop-0": {
+      "probes": [
+        {
+          "pid": 789180,
+          "cursor": [
+            158,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 153,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 782956,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 151,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [],
+          "mouse_event_count": 0,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 789180,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 38997386,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 789180",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 789180",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 789180,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 0,
+          "client": [
+            618,
+            171
+          ],
+          "bounds": {
+            "left": 0,
+            "top": 0,
+            "right": 2560,
+            "bottom": 1440
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 121178842,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "",
+          "status": "Click a window to route input",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 0,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "1 Release click"
+    },
+    "select-1": {
+      "probes": [
+        {
+          "pid": 789180,
+          "cursor": [
+            158,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 189,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 782956,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 1,
+          "test_keys": 0,
+          "frames": 186,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            }
+          ],
+          "mouse_event_count": 1,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 789180,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 38997386,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 789180",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 789180",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 789180,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 782956,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [],
+          "overlay": {
+            "hwnd": 121178842,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 782956",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 782956",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 782956,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "2 Hold click"
+    },
+    "drop-1": {
+      "probes": [
+        {
+          "pid": 789180,
+          "cursor": [
+            158,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 198,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 782956,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 193,
+          "text": "",
+          "held_keys": [],
+          "key_events": [],
+          "key_event_count": 0,
+          "text_events": 0,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 2,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 789180,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 38997386,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 789180",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 789180",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 789180,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 782956,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 121178842,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 782956",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 782956",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 782956,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "2 Release click"
+    },
+    "settings-held": {
+      "probes": [
+        {
+          "pid": 789180,
+          "cursor": [
+            158,
+            171
+          ],
+          "buttons": 1,
+          "test_keys": 1,
+          "frames": 207,
+          "text": "",
+          "held_keys": [
+            87
+          ],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 1,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            }
+          ],
+          "mouse_event_count": 3,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 782956,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 1,
+          "test_keys": 1,
+          "frames": 203,
+          "text": "",
+          "held_keys": [
+            87
+          ],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 1,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            }
+          ],
+          "mouse_event_count": 3,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 789180,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [
+            87
+          ],
+          "overlay": {
+            "hwnd": 38997386,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 789180",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 789180",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 789180,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 782956,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [
+            87
+          ],
+          "overlay": {
+            "hwnd": 121178842,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 782956",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 782956",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 782956,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Hold all users"
+    },
+    "invalid-text-held": {
+      "probes": [
+        {
+          "pid": 789180,
+          "cursor": [
+            158,
+            171
+          ],
+          "buttons": 1,
+          "test_keys": 1,
+          "frames": 217,
+          "text": "",
+          "held_keys": [
+            87
+          ],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 1,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            }
+          ],
+          "mouse_event_count": 3,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 782956,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 1,
+          "test_keys": 1,
+          "frames": 213,
+          "text": "",
+          "held_keys": [
+            87
+          ],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 1,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            }
+          ],
+          "mouse_event_count": 3,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 789180,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [
+            87
+          ],
+          "overlay": {
+            "hwnd": 38997386,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 789180",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 789180",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 789180,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 782956,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [
+            87
+          ],
+          "overlay": {
+            "hwnd": 121178842,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 782956",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 782956",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 782956,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Send text"
+    },
+    "motion-user": {
+      "probes": [
+        {
+          "pid": 789180,
+          "cursor": [
+            158,
+            171
+          ],
+          "buttons": 1,
+          "test_keys": 1,
+          "frames": 226,
+          "text": "",
+          "held_keys": [
+            87
+          ],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 1,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            }
+          ],
+          "mouse_event_count": 3,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 782956,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 1,
+          "test_keys": 1,
+          "frames": 221,
+          "text": "",
+          "held_keys": [
+            87
+          ],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 1,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            }
+          ],
+          "mouse_event_count": 3,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 789180,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [
+            87
+          ],
+          "overlay": {
+            "hwnd": 38997386,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 789180",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 789180",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 789180,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 782956,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [
+            87
+          ],
+          "overlay": {
+            "hwnd": 121178842,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 782956",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 782956",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 782956,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Configure user"
+    },
+    "motion-tab": {
+      "probes": [
+        {
+          "pid": 789180,
+          "cursor": [
+            158,
+            171
+          ],
+          "buttons": 1,
+          "test_keys": 1,
+          "frames": 236,
+          "text": "",
+          "held_keys": [
+            87
+          ],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 1,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            }
+          ],
+          "mouse_event_count": 3,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 782956,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 1,
+          "test_keys": 1,
+          "frames": 231,
+          "text": "",
+          "held_keys": [
+            87
+          ],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 1,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            }
+          ],
+          "mouse_event_count": 3,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 789180,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [
+            87
+          ],
+          "overlay": {
+            "hwnd": 38997386,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 789180",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 789180",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 789180,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 782956,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [
+            87
+          ],
+          "overlay": {
+            "hwnd": 121178842,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 782956",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 782956",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 782956,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Motion"
+    },
+    "strong": {
+      "probes": [
+        {
+          "pid": 789180,
+          "cursor": [
+            158,
+            171
+          ],
+          "buttons": 1,
+          "test_keys": 1,
+          "frames": 244,
+          "text": "",
+          "held_keys": [
+            87
+          ],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 1,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            }
+          ],
+          "mouse_event_count": 3,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 782956,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 1,
+          "test_keys": 1,
+          "frames": 239,
+          "text": "",
+          "held_keys": [
+            87
+          ],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 1,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            }
+          ],
+          "mouse_event_count": 3,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 789180,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [
+            87
+          ],
+          "overlay": {
+            "hwnd": 38997386,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 789180",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 789180",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 789180,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 782956,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [
+            87
+          ],
+          "overlay": {
+            "hwnd": 121178842,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 782956",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 782956",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 782956,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Strong response"
+    },
+    "apply-held": {
+      "probes": [
+        {
+          "pid": 789180,
+          "cursor": [
+            158,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 252,
+          "text": "",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 87,
+              "pressed": false,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 4,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 782956,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 1,
+          "test_keys": 1,
+          "frames": 247,
+          "text": "",
+          "held_keys": [
+            87
+          ],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 1,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            }
+          ],
+          "mouse_event_count": 3,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 789180,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 38997386,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 789180",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 789180",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 789180,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 782956,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [
+            87
+          ],
+          "overlay": {
+            "hwnd": 121178842,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 782956",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 782956",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 782956,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Apply cursor settings"
+    },
+    "motion-lab": {
+      "probes": [
+        {
+          "pid": 789180,
+          "cursor": [
+            158,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 264,
+          "text": "",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 87,
+              "pressed": false,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 4,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 782956,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 1,
+          "test_keys": 1,
+          "frames": 260,
+          "text": "",
+          "held_keys": [
+            87
+          ],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 1,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            }
+          ],
+          "mouse_event_count": 3,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 789180,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 38997386,
+            "x": 158,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 789180",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 789180",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 789180,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 782956,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [
+            87
+          ],
+          "overlay": {
+            "hwnd": 121178842,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 782956",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 782956",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 782956,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Input lab"
+    },
+    "strong-motion": {
+      "probes": [
+        {
+          "pid": 789180,
+          "cursor": [
+            255,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 272,
+          "text": "",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 87,
+              "pressed": false,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 4,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 782956,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 1,
+          "test_keys": 1,
+          "frames": 268,
+          "text": "",
+          "held_keys": [
+            87
+          ],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 1,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            }
+          ],
+          "mouse_event_count": 3,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 789180,
+          "client": [
+            195,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 38997386,
+            "x": 255,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 789180",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 789180",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 789180,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 782956,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [
+            87
+          ],
+          "overlay": {
+            "hwnd": 121178842,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 782956",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 782956",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 782956,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "1 Right"
+    },
+    "wheel-user": {
+      "probes": [
+        {
+          "pid": 789180,
+          "cursor": [
+            255,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 280,
+          "text": "",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 87,
+              "pressed": false,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 4,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 782956,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 1,
+          "test_keys": 1,
+          "frames": 276,
+          "text": "",
+          "held_keys": [
+            87
+          ],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 1,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            }
+          ],
+          "mouse_event_count": 3,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 789180,
+          "client": [
+            195,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 38997386,
+            "x": 255,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 789180",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 789180",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 789180,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 782956,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [
+            87
+          ],
+          "overlay": {
+            "hwnd": 121178842,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 782956",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 782956",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 782956,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Configure user"
+    },
+    "wheel-tab": {
+      "probes": [
+        {
+          "pid": 789180,
+          "cursor": [
+            255,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 289,
+          "text": "",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 87,
+              "pressed": false,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 4,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 782956,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 1,
+          "test_keys": 1,
+          "frames": 285,
+          "text": "",
+          "held_keys": [
+            87
+          ],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 1,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            }
+          ],
+          "mouse_event_count": 3,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 789180,
+          "client": [
+            195,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 38997386,
+            "x": 255,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 789180",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 789180",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 789180,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 782956,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [
+            87
+          ],
+          "overlay": {
+            "hwnd": 121178842,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 782956",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 782956",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 782956,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Wheel"
+    },
+    "convert": {
+      "probes": [
+        {
+          "pid": 789180,
+          "cursor": [
+            255,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 327,
+          "text": "",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 87,
+              "pressed": false,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 4,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 782956,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 1,
+          "test_keys": 1,
+          "frames": 323,
+          "text": "",
+          "held_keys": [
+            87
+          ],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 1,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            }
+          ],
+          "mouse_event_count": 3,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 789180,
+          "client": [
+            195,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 38997386,
+            "x": 255,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 789180",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 789180",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 789180,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 782956,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [
+            87
+          ],
+          "overlay": {
+            "hwnd": 121178842,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 782956",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 782956",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 782956,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Convert to vertical"
+    },
+    "apply-wheel": {
+      "probes": [
+        {
+          "pid": 789180,
+          "cursor": [
+            255,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 338,
+          "text": "",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 87,
+              "pressed": false,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 4,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 782956,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 1,
+          "test_keys": 1,
+          "frames": 335,
+          "text": "",
+          "held_keys": [
+            87
+          ],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 1,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            }
+          ],
+          "mouse_event_count": 3,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 789180,
+          "client": [
+            195,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 38997386,
+            "x": 255,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 789180",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 789180",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 789180,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 782956,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [
+            87
+          ],
+          "overlay": {
+            "hwnd": 121178842,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 782956",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 782956",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 782956,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Apply cursor settings"
+    },
+    "wheel-lab": {
+      "probes": [
+        {
+          "pid": 789180,
+          "cursor": [
+            255,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 351,
+          "text": "",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 87,
+              "pressed": false,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 4,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 782956,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 1,
+          "test_keys": 1,
+          "frames": 347,
+          "text": "",
+          "held_keys": [
+            87
+          ],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 1,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            }
+          ],
+          "mouse_event_count": 3,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 789180,
+          "client": [
+            195,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 38997386,
+            "x": 255,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 789180",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 789180",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 789180,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 782956,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [
+            87
+          ],
+          "overlay": {
+            "hwnd": 121178842,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 782956",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 782956",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 782956,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Input lab"
+    },
+    "converted-wheel": {
+      "probes": [
+        {
+          "pid": 789180,
+          "cursor": [
+            255,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 359,
+          "text": "",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 87,
+              "pressed": false,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 4,
+          "wheel_events": 1,
+          "wheel_delta": -240,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 782956,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 1,
+          "test_keys": 1,
+          "frames": 355,
+          "text": "",
+          "held_keys": [
+            87
+          ],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 1,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            }
+          ],
+          "mouse_event_count": 3,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 789180,
+          "client": [
+            195,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 38997386,
+            "x": 255,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 789180",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 789180",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 789180,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 782956,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [
+            87
+          ],
+          "overlay": {
+            "hwnd": 121178842,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 782956",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 782956",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 782956,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "1 Horizontal wheel"
+    },
+    "buttons-user": {
+      "probes": [
+        {
+          "pid": 789180,
+          "cursor": [
+            255,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 367,
+          "text": "",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 87,
+              "pressed": false,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 4,
+          "wheel_events": 1,
+          "wheel_delta": -240,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 782956,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 1,
+          "test_keys": 1,
+          "frames": 364,
+          "text": "",
+          "held_keys": [
+            87
+          ],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 1,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            }
+          ],
+          "mouse_event_count": 3,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 789180,
+          "client": [
+            195,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 38997386,
+            "x": 255,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 789180",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 789180",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 789180,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 782956,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [
+            87
+          ],
+          "overlay": {
+            "hwnd": 121178842,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 782956",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 782956",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 782956,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Configure user"
+    },
+    "buttons-tab": {
+      "probes": [
+        {
+          "pid": 789180,
+          "cursor": [
+            255,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 380,
+          "text": "",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 87,
+              "pressed": false,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 4,
+          "wheel_events": 1,
+          "wheel_delta": -240,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 782956,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 1,
+          "test_keys": 1,
+          "frames": 377,
+          "text": "",
+          "held_keys": [
+            87
+          ],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 1,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            }
+          ],
+          "mouse_event_count": 3,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 789180,
+          "client": [
+            195,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 38997386,
+            "x": 255,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 789180",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 789180",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 789180,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 782956,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [
+            87
+          ],
+          "overlay": {
+            "hwnd": 121178842,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 782956",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 782956",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 782956,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Buttons"
+    },
+    "apply-map": {
+      "probes": [
+        {
+          "pid": 789180,
+          "cursor": [
+            255,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 389,
+          "text": "",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 87,
+              "pressed": false,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 4,
+          "wheel_events": 1,
+          "wheel_delta": -240,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 782956,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 1,
+          "test_keys": 1,
+          "frames": 385,
+          "text": "",
+          "held_keys": [
+            87
+          ],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 1,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            }
+          ],
+          "mouse_event_count": 3,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 789180,
+          "client": [
+            195,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 38997386,
+            "x": 255,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 789180",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 789180",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 789180,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 782956,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [
+            87
+          ],
+          "overlay": {
+            "hwnd": 121178842,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 782956",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 782956",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 782956,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Apply cursor settings"
+    },
+    "mapped-lab": {
+      "probes": [
+        {
+          "pid": 789180,
+          "cursor": [
+            255,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 397,
+          "text": "",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 87,
+              "pressed": false,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 4,
+          "wheel_events": 1,
+          "wheel_delta": -240,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 782956,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 1,
+          "test_keys": 1,
+          "frames": 393,
+          "text": "",
+          "held_keys": [
+            87
+          ],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 1,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            }
+          ],
+          "mouse_event_count": 3,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 789180,
+          "client": [
+            195,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 38997386,
+            "x": 255,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 789180",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 789180",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 789180,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 782956,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [
+            87
+          ],
+          "overlay": {
+            "hwnd": 121178842,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 782956",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 782956",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 782956,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Input lab"
+    },
+    "mapped-hold": {
+      "probes": [
+        {
+          "pid": 789180,
+          "cursor": [
+            255,
+            171
+          ],
+          "buttons": 8,
+          "test_keys": 0,
+          "frames": 409,
+          "text": "",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 87,
+              "pressed": false,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 3,
+              "pressed": true
+            }
+          ],
+          "mouse_event_count": 5,
+          "wheel_events": 1,
+          "wheel_delta": -240,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 782956,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 1,
+          "test_keys": 1,
+          "frames": 406,
+          "text": "",
+          "held_keys": [
+            87
+          ],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 1,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            }
+          ],
+          "mouse_event_count": 3,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 789180,
+          "client": [
+            195,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [
+            64
+          ],
+          "keys": [],
+          "overlay": {
+            "hwnd": 38997386,
+            "x": 255,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 789180",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 789180",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 789180,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 782956,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [
+            87
+          ],
+          "overlay": {
+            "hwnd": 121178842,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 782956",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 782956",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 782956,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "1 Hold click"
+    },
+    "mapped-release": {
+      "probes": [
+        {
+          "pid": 789180,
+          "cursor": [
+            255,
+            171
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 417,
+          "text": "",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 87,
+              "pressed": false,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 3,
+              "pressed": true
+            },
+            {
+              "button": 3,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 6,
+          "wheel_events": 1,
+          "wheel_delta": -240,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 782956,
+          "cursor": [
+            618,
+            171
+          ],
+          "buttons": 1,
+          "test_keys": 1,
+          "frames": 414,
+          "text": "",
+          "held_keys": [
+            87
+          ],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 1,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            }
+          ],
+          "mouse_event_count": 3,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 789180,
+          "client": [
+            195,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 38997386,
+            "x": 255,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 789180",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 789180",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 789180,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 782956,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [
+            87
+          ],
+          "overlay": {
+            "hwnd": 121178842,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 782956",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 782956",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 782956,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "1 Release click"
+    },
+    "settings-stop": {
+      "probes": [
+        {
+          "pid": 789180,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 426,
+          "text": "",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 87,
+              "pressed": false,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 3,
+              "pressed": true
+            },
+            {
+              "button": 3,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 6,
+          "wheel_events": 1,
+          "wheel_delta": -240,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 782956,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 423,
+          "text": "",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 87,
+              "pressed": false,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 4,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 789180,
+          "client": [
+            195,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 38997386,
+            "x": 255,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 789180",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 789180",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 789180,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 782956,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [
+            87
+          ],
+          "overlay": {
+            "hwnd": 121178842,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 782956",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 782956",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 782956,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Stop routing"
+    },
+    "configured-page": {
+      "probes": [
+        {
+          "pid": 789180,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 438,
+          "text": "",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 87,
+              "pressed": false,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 3,
+              "pressed": true
+            },
+            {
+              "button": 3,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 6,
+          "wheel_events": 1,
+          "wheel_delta": -240,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 782956,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 435,
+          "text": "",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 87,
+              "pressed": false,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 4,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 789180,
+          "client": [
+            195,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 38997386,
+            "x": 255,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 789180",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 789180",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 789180,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 782956,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [
+            87
+          ],
+          "overlay": {
+            "hwnd": 121178842,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 782956",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 782956",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 782956,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Profiles"
+    },
+    "save-configured": {
+      "probes": [
+        {
+          "pid": 789180,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 446,
+          "text": "",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 87,
+              "pressed": false,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 3,
+              "pressed": true
+            },
+            {
+              "button": 3,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 6,
+          "wheel_events": 1,
+          "wheel_delta": -240,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        },
+        {
+          "pid": 782956,
+          "cursor": [
+            2484,
+            0
+          ],
+          "buttons": 0,
+          "test_keys": 0,
+          "frames": 443,
+          "text": "",
+          "held_keys": [],
+          "key_events": [
+            {
+              "vk": 87,
+              "pressed": true,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            },
+            {
+              "vk": 87,
+              "pressed": false,
+              "scan": 17,
+              "extended": false,
+              "alt": false
+            }
+          ],
+          "key_event_count": 2,
+          "text_events": 1,
+          "mouse_events": [
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            },
+            {
+              "button": 0,
+              "pressed": true
+            },
+            {
+              "button": 0,
+              "pressed": false
+            }
+          ],
+          "mouse_event_count": 4,
+          "wheel_events": 0,
+          "wheel_delta": 0,
+          "horizontal_wheel_events": 0,
+          "horizontal_wheel_delta": 0
+        }
+      ],
+      "state": [
+        {
+          "name": "UI64",
+          "pid": 789180,
+          "client": [
+            195,
+            68
+          ],
+          "bounds": {
+            "left": 60,
+            "top": 103,
+            "right": 399,
+            "bottom": 339
+          },
+          "buttons": [],
+          "keys": [],
+          "overlay": {
+            "hwnd": 38997386,
+            "x": 255,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 553
+          },
+          "title": "ProtoInputMux Automation Test — PID 789180",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 789180",
+          "root": false,
+          "captured": false,
+          "keyboard_pid": 789180,
+          "mode": "concurrent"
+        },
+        {
+          "name": "UI32",
+          "pid": 782956,
+          "client": [
+            98,
+            68
+          ],
+          "bounds": {
+            "left": 520,
+            "top": 103,
+            "right": 859,
+            "bottom": 339
+          },
+          "buttons": [
+            1
+          ],
+          "keys": [
+            87
+          ],
+          "overlay": {
+            "hwnd": 121178842,
+            "x": 618,
+            "y": 171,
+            "visible": true,
+            "no_activate": true,
+            "click_through": true,
+            "painted_pixels": 540
+          },
+          "title": "ProtoInputMux Automation Test — PID 782956",
+          "status": "Concurrent · ProtoInputMux Automation Test — PID 782956",
+          "root": false,
+          "captured": true,
+          "keyboard_pid": 782956,
+          "mode": "concurrent"
+        }
+      ],
+      "button": "Save profile",
+      "saved_profile": {
+        "version": 1,
+        "concurrent": true,
+        "desktop": {
+          "mode": "concurrent",
+          "multi_keyboard": true,
+          "allowed_pids": [
+            789180,
+            782956
+          ]
+        },
+        "seats": [
+          {
+            "name": "UI64",
+            "mouse": "virtual://mouse/1",
+            "keyboard": "virtual://keyboard/1",
+            "target_pid": 0,
+            "desktop_start": [
+              158,
+              171
+            ],
+            "cursor": {
+              "color": [
+                45,
+                212,
+                191
+              ],
+              "size": 28.0,
+              "visible": true,
+              "label": true,
+              "speed_x": 1.0,
+              "speed_y": 1.0,
+              "motion_curve": "strong",
+              "invert_x": false,
+              "invert_y": false,
+              "button_mapping": [
+                "x1",
+                "secondary",
+                "middle",
+                null,
+                "x2"
+              ],
+              "swap_buttons": false,
+              "wheel_scale": 1.0,
+              "invert_wheel": false,
+              "horizontal_wheel": "convert_to_vertical",
+              "horizontal_wheel_scale": 2.0,
+              "invert_horizontal_wheel": true,
+              "lock_window": false
+            }
+          },
+          {
+            "name": "UI32",
+            "mouse": "virtual://mouse/2",
+            "keyboard": "virtual://keyboard/2",
+            "target_pid": 0,
+            "desktop_start": [
+              618,
+              171
+            ],
+            "cursor": {
+              "color": [
+                45,
+                212,
+                191
+              ],
+              "size": 28.0,
+              "visible": true,
+              "label": true,
+              "speed_x": 1.0,
+              "speed_y": 1.0,
+              "motion_curve": "linear",
+              "invert_x": false,
+              "invert_y": false,
+              "button_mapping": [
+                "primary",
+                "secondary",
+                "middle",
+                "x1",
+                "x2"
+              ],
+              "swap_buttons": false,
+              "wheel_scale": 1.0,
+              "invert_wheel": false,
+              "horizontal_wheel": "ignore",
+              "horizontal_wheel_scale": 1.0,
+              "invert_horizontal_wheel": false,
+              "lock_window": false
+            }
+          }
+        ]
+      }
+    }
+  },
+  "result": "PASS",
+  "clicked_events": [
+    {
+      "button": "Profiles",
+      "clicked": true
+    },
+    {
+      "button": "Save profile",
+      "clicked": true
+    },
+    {
+      "button": "Input lab",
+      "clicked": true
+    },
+    {
+      "button": "Start routing",
+      "clicked": true
+    },
+    {
+      "button": "1 Hold click",
+      "clicked": true
+    },
+    {
+      "button": "1 Release click",
+      "clicked": true
+    },
+    {
+      "button": "2 Hold click",
+      "clicked": true
+    },
+    {
+      "button": "2 Release click",
+      "clicked": true
+    },
+    {
+      "button": "Hold all users",
+      "clicked": true
+    },
+    {
+      "button": "Send text",
+      "clicked": true
+    },
+    {
+      "button": "Configure user",
+      "clicked": true
+    },
+    {
+      "button": "Motion",
+      "clicked": true
+    },
+    {
+      "button": "Strong response",
+      "clicked": true
+    },
+    {
+      "button": "Apply cursor settings",
+      "clicked": true
+    },
+    {
+      "button": "Input lab",
+      "clicked": true
+    },
+    {
+      "button": "1 Right",
+      "clicked": true
+    },
+    {
+      "button": "Configure user",
+      "clicked": true
+    },
+    {
+      "button": "Wheel",
+      "clicked": true
+    },
+    {
+      "button": "Convert to vertical",
+      "clicked": true
+    },
+    {
+      "button": "Apply cursor settings",
+      "clicked": true
+    },
+    {
+      "button": "Input lab",
+      "clicked": true
+    },
+    {
+      "button": "1 Horizontal wheel",
+      "clicked": true
+    },
+    {
+      "button": "Configure user",
+      "clicked": true
+    },
+    {
+      "button": "Buttons",
+      "clicked": true
+    },
+    {
+      "button": "Apply cursor settings",
+      "clicked": true
+    },
+    {
+      "button": "Input lab",
+      "clicked": true
+    },
+    {
+      "button": "1 Hold click",
+      "clicked": true
+    },
+    {
+      "button": "1 Release click",
+      "clicked": true
+    },
+    {
+      "button": "Stop routing",
+      "clicked": true
+    },
+    {
+      "button": "Profiles",
+      "clicked": true
+    },
+    {
+      "button": "Save profile",
+      "clicked": true
+    }
+  ],
+  "owned_processes_closed": true
+}

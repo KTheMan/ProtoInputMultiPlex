@@ -1,0 +1,117 @@
+{
+  "date": "2026-10-15",
+  "reviewer": "Independent UX acceptance reviewer",
+  "verdict": "APPROVED FOR THE BOUNDED FEATURE-WORKFLOW UX SCOPE, WITH RAW LIVE RUNNER STATUS AND SCOPE LIMITS RETAINED",
+  "decision": "Offline workflows and minimum-size visuals passed; the 45-step live overlap prefix passed; the final Stop workflow is independently qualified from the retained real Stop receipt and stopped recovery/cleanup evidence. The complete live runner remains raw NOT ACCEPTED because its final verifier relied on stale historical ui.state.json and recorded no accepted live-stop sample. Do not describe the raw live gate as PASS or claim an at-stop HWND sample.",
+  "producer": {
+    "manifest": "runtime/producer-feature-workflows-ux-20261015-143350/verification.json",
+    "sha256": "2133f674e18cc7f72b7561c3174e18ccf53452c3b7fbb57be673a18aee4ff56e",
+    "result": "PASS: fmt, strict Clippy, 290 workspace tests, x64 build, i686 build; 78 source inputs bound and stable.",
+    "executed_x64_sha256": "29a98fbfed91136aa243b19678898aadb329df7ab8c2f171a8968ae29c5cae5c",
+    "copied_i686_sha256": "4e0cefb37143409bf9c33007a79f10df58d9dd6ebe765bda6a8f326780bec332",
+    "native_runtime_sha256": {
+      "ProtoInputHooks32.dll": "9fcc2e0602d15ba1ba0c2433217c9868fef6ea039b05fd29c53b35a43ee4e4bb",
+      "ProtoInputIJ32.exe": "73c10f7397d22ed9a9f9b1ee804f17853a2c9f96d495a83f9448201b97f27a86",
+      "ProtoInputIJP32.dll": "d593e4b4f304f55743c6bbb680cf3c81f2be97392980c29367639859ffdccc3e",
+      "ProtoInputLoader32.dll": "f8e0a573a42b948f099ccd8cfd5ce3427d3eabef4de25302cb6fa1e9e4e9e7be",
+      "ProtoInputHooks64.dll": "3a67717f8711fa7d310c4c679ec51b8f994b08839eadb58c67519ae85ec7addc",
+      "ProtoInputIJ64.exe": "e11a9fd0f14902f0c749781a42a8f912fb3eb876a54454f4cb5eddea5fa5636d",
+      "ProtoInputIJP64.dll": "8daf63d2c87a150e0928f0b6d359ea503b6180538faf14bc3c66fa8228a49172",
+      "ProtoInputLoader64.dll": "e4e3889472761337de4bd232863b84a319833fc0104c2062ae553239910f5f11",
+      "protoinputmux_cursor_observer32.dll": "bc2b2fbd2655e3324fcea2f41dc54a493bbd3120dd48daf92bb08ecfb5d20069",
+      "protoinputmux_cursor_observer64.dll": "3ade9c71977c87340daae545295cbea11aba3347ee84171aab189814d03f2212"
+    },
+    "native_runtime_unchanged_from": "runtime/producer-feature-workflows-ux-20261015-140856/verification.json",
+    "native_runtime_sets_equal": true
+  },
+  "source_sha256": {
+    "crates/protoinputmux/src/gui.rs": "ff40eda68802cab2cd24e224657977926b524119176edc8ffc2396902a599b7b",
+    "crates/protoinputmux/src/output_ui.rs": "9e0ecd3a912afeb3adbb60c8efd83444b6897347cf59cb8c4af4076eaccd00c0",
+    "crates/protoinputmux/src/ui_script.rs": "c982aac47d42d0703290d28d39b0663bec417d4c56d34d4aa723b3ecdd7e24c9"
+  },
+  "executed_and_reviewed_harnesses": {
+    "executed_live_run_145712": "b1d70cb76280e775ae37d0464b56b845e1474bd62795fd3db441d1a1677b0752",
+    "current_postrun_stale_state_oracle_fix": "2270e7ab478e15a3930a10b40d897b2c55a18efb45a0c2a2fc2fc5d267fd22cb",
+    "plan_sha256": "ae1ed897cd53e1c29ab7dcb0060be302d9600d21c2b49249884062a4a2627e13",
+    "raw_live_failure": "145712 executed b1d70cb76280e775ae37d0464b56b845e1474bd62795fd3db441d1a1677b0752; the later 2270e7ab stop-oracle change was only pycompiled, AST-checked, and independently mock-reviewed, never executed in a fresh live runtime."
+  },
+  "workflow_evidence": {
+    "offline_functional": {
+      "run": "runtime/acceptance-graph-feature-workflows-ux-offline-20261015-141902",
+      "raw_result": "PENDING INDEPENDENT VISUAL REVIEW",
+      "process_exit_code": 0,
+      "accepted_observations": 115,
+      "cleanup": "PASS: owned GUI stopped, private startup key removed, no exact owned-image processes, no cleanup errors."
+    },
+    "minimum_layout": {
+      "run": "runtime/acceptance-graph-feature-workflows-ux-layout-20261015-144654",
+      "process_exit_code": 0,
+      "accepted_observations": 21,
+      "cleanup": "PASS: owned GUI/probes absent, private key removed, no exact owned-image survivors.",
+      "reused_original_frames": [
+        "output-normal",
+        "output-minimum",
+        "profiles-normal",
+        "settings-representative"
+      ],
+      "replacement_frames": [
+        "profiles-minimum-qualified",
+        "automation-minimum-qualified"
+      ],
+      "visual_verdict": "PASS: Save/Load and start of Saved feedback visible at 320x360; Automation From/To/Add/Apply fully fit within 304px content width."
+    },
+    "live_overlap": {
+      "run": "runtime/acceptance-graph-feature-workflows-ux-live-20261015-145712",
+      "raw_result": "NOT ACCEPTED",
+      "raw_failure": "AssertionError: No accepted lifecycle control/sample after 46/46; the live-stop verifier consulted stale historical ui.state.json.",
+      "accepted_observations": 45,
+      "scope_passed": "Two owned x64 probes; routing start; per-user legacy click delivery; manual F6 hold on B; GUI Apply ACK for A; per-user draft and switch preservation; explicitly scoped session-control grant only for fixture users/PIDs with capture and app-preferences false; connected B settings update preserved its dirty draft and unrelated F6 hold; F6 released; Stop clicked.",
+      "stop_qualification": "docs/feature-workflows-ux-live-stop-qualification-2026-10-15.json",
+      "stop_qualification_sha256": "a40dff29c1f133ecac778bcc355b84805f35c470df1540053f1d4d108cc1b271",
+      "cleanup": "PASS: stopped/error-free recovery with no targets, probes released, descriptors absent, owned GUI/probes closed, private startup key absent, no exact image-path processes."
+    }
+  },
+  "durable_image_evidence": {
+    "manifest": "docs/feature-workflows-ux-evidence/manifest.json",
+    "manifest_sha256": "775180abc832cb7242d20dd385cd7af4e96aa195e04ca0e80d186d09525eac61",
+    "original_capture_count": 10,
+    "verified_byte_identical_original_to_copy_count": 23,
+    "frame_set": "Four unchanged baseline render-reference images and six after images (four reused from 141902 plus two qualified 144654 replacements). All paths and SHA-256 values are in the manifest.",
+    "image_files": 10,
+    "build_records": 6,
+    "workflow_records": 7,
+    "validation": "Independent SHA-256 comparison confirmed all 23 runtime-original, durable-copy and staged-blob triplets match their manifest records. The local evidence .gitattributes disables text normalization and diff heuristics so CRLF and exact bytes are preserved."
+  },
+  "accepted_coverage_boundaries": [
+    "Acceptance covers the finite Output Rules, Profiles/feedback, minimum-size Automation reachability, representative Settings navigation/context, and the bounded two-probe live overlap workflows documented in the linked plan and existing assessments.",
+    "Does not claim all 13 Settings destinations as fully audited feature pages, full screen-reader/accessibility coverage, physical-device or hardware validation, RustDesk input delivery, arbitrary-application delivery, desktop-wide/same-process isolation, or complete MouseMux Ultra functional/UX parity.",
+    "The i686 executable was built/copied and hash-bound but never executed; live probes were two x64 owned automation probes. No physical devices or hardware were used."
+  ],
+  "preserved_failures": [
+    "134134",
+    "135414",
+    "141537",
+    "145323",
+    "145712 raw NOT ACCEPTED"
+  ],
+  "reviewed_artifacts": {
+    "source_review": "docs/feature-workflows-ux-source-review-2026-10-15.json",
+    "stop_qualification": "docs/feature-workflows-ux-live-stop-qualification-2026-10-15.json",
+    "delivery_doc": "docs/feature-workflows-ux-delivery.md",
+    "source_review_sha256": "39fe1f1199b69338fa17f1510b9ac18223a9b3ac8d0fe388a2a545a4996b7bc4",
+    "stop_qualification_sha256": "a40dff29c1f133ecac778bcc355b84805f35c470df1540053f1d4d108cc1b271",
+    "delivery_doc_sha256": "10798690ebc101a21d74a3b5048b0e0abcd787258f19ea5552bc5c688497c02c",
+    "contract": "docs/feature-workflows-ux-contract.md",
+    "contract_sha256": "6e2e70cb2c5f4f5bceae4af4ca5d3a0f4580d454149c581f155b3498dcec9f4e",
+    "evidence_gitattributes": "docs/feature-workflows-ux-evidence/.gitattributes",
+    "evidence_gitattributes_sha256": "85e48d232edc7b02f6cecf8fbbf905f3b126c467b594d8dd16c4f8fa283a8320"
+  },
+  "nonblocking_glyph_gap": {
+    "symbol": "U+25BE ▾",
+    "visible_finding": "Missing-glyph box appears in the Automation selector trigger in the original qualified minimum-size screenshot.",
+    "source_reference": "crates/protoinputmux/src/gui.rs:918-930",
+    "documented_in": "docs/feature-workflows-ux-delivery.md",
+    "disposition": "Nonblocking known affordance issue; accepted scope retains it as unresolved and makes no claim of broad font coverage.",
+    "font_audit": "U+25BE is absent from Phosphor Light; its CARET_DOWN icon U+E136 is present. Ouroboros icon_right is a source-only combined-fix recommendation, not part of this patch."
+  }
+}

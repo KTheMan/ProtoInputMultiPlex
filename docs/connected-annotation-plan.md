@@ -1,0 +1,17 @@
+# Connected GUI annotation control
+
+Status: bounded independent [virtual acceptance passed](connected-annotation-assessment-2026-10-14.json), with a separate [source review](connected-annotation-source-review-2026-10-14.json) and [producer checks](connected-annotation-rust-checks-2026-10-14.json). This extends the existing `annotation` MCP tool, with no new tool or request schema.
+
+A connected agent may inspect the GUI session as before. Annotation Configure and ClearUser require the existing **Allow session changes** grant and an active virtual user whose stable identity is in Agent Access. ClearAll additionally requires permission for every active user. Configuring a clear key with `clear_all` also requires that complete scope. Export and magnifier mutations remain unavailable through a GUI connection. Capture keeps its separate default-off grant.
+
+Before Configure, the worker rejects input busy for the selected user: supervised raw-source, translated-output or replication-path holds from any actor; actual routed buttons, keys or capture; and an annotation stroke, consumed activator or consumed shortcut awaiting release. Rejection performs no release or cancellation. An unrelated user's independent hold does not block configuration. Programs are not cancelled; an accepted configuration changes how future input is interpreted. Clear commands change ink only; a consumed button/key remains consumed until its matching release even after a stroke is cleared.
+
+The last agent-delivery check also recognizes all-user annotation shortcuts after output translation. Such a key-down requires session-control permission and coverage of every currently active user, including newly generated users. A previously configured shortcut cannot retain broader authority after a policy change. Matching key-up releases remain possible. Ordinary per-user tool input retains its existing routing policy.
+
+Successful commands return the actual annotation acknowledgement in their correlated client/sequence reply. Agent profiles project annotation settings from the authoritative renderer state. The GUI updates its committed profile and Draw controller from that state, including clear-key text. An external acknowledgement is treated as telemetry by a pending local GUI command and cannot complete it. Settings remain session/profile-draft state until normal explicit profile persistence; this change adds no automatic disk writes.
+
+The existing Agent snapshot contains broader profile/state information; a user input grant is not a confidentiality boundary for that snapshot. This change adds no general screen reading, export, physical input or desktop capture.
+
+## Verification boundary
+
+Required Rust formatting, strict Clippy and workspace tests plus both Windows builds precede the independent gate. Focused units cover source-only/translated/shared/replica claims, shortcut authorization and active-user coverage, partial/global command scope, and external ACK handling. The native gate uses two virtual users and owned disposable targets, actual Ouroboros permission controls, MCP command/reply checks, authoritative ink counts/revisions and known owned-window lifecycle. No annotation rasterization, macro/graph family or general application suite is replayed. Removed-user and exhaustive mapped/replica cases may have source/unit evidence only; the final assessment must identify those limits. Validation, authorization and busy rejections preserve committed settings; forced renderer/provider failure transactions are outside this gate.

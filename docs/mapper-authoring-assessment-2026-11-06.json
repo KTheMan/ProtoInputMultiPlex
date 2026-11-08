@@ -1,0 +1,85 @@
+{
+  "date": "2026-11-06",
+  "decision": "MAPPER_AUTHORING_ACCEPTED",
+  "scope": "Single-node authoring in the Rust/Ouroboros Input Mapper using canvas drag, keyboard editing and an Inspector Duplicate action.",
+  "producer": {
+    "original_session": 83254,
+    "original_exit_code": 0
+  },
+  "verification": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-authoring-20261106\\checks-003\\verification.json",
+    "sha256": "302aa0d8aafd1366803a6a3107116d2afe831c8821984a0a11c0854b86a72e89"
+  },
+  "review": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-authoring-20261106\\independent-acceptance.json",
+    "sha256": "135e24c33de3ce8df6ad66e08786c54b2426cadf4593badcb72610e6815bb376"
+  },
+  "publication": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-authoring-20261106\\publication.json",
+    "sha256": "b83c8d54a670756f4b6fc911df6c490bb96bb1274c00c1223293932e2c168424"
+  },
+  "workspace_tests": {
+    "passed": 772,
+    "failed": 0,
+    "ignored": 19
+  },
+  "checks": {
+    "fmt": 0,
+    "clippy": 0,
+    "workspace-tests": 0,
+    "build-gui": 0
+  },
+  "x64_image": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-authoring-20261106\\checks-003\\x64\\protoinputmultiplex.exe",
+    "sha256": "8b40c220e90a2002da7e8aad9229662e3c9c80b7b400bd2efb3f1458d0c0c78a"
+  },
+  "native": {
+    "original_session": 70414,
+    "original_exit_code": 0,
+    "raw": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mapper-authoring-c93dd0f1fe17\\evidence.json",
+      "sha256": "e06fe2efe52050de94cdbe41fa24d6a481746154f0e4b1a4ca4146029d0d6858"
+    },
+    "driver": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-authoring-20261106\\native.py",
+      "sha256": "388b3338e4cc43151997a961a9795511baa9e139666f288dfd1532ef9f97b64a"
+    },
+    "scope": {
+      "virtual_pairs": 2,
+      "GUI": 1,
+      "targets": 0,
+      "MCP": 0,
+      "hardware_input": 0,
+      "routing_or_injection": 0
+    },
+    "actions": [
+      "Settings",
+      "Settings category Automation",
+      "Input Mapper",
+      "Select mapper node constant-baseline",
+      "Duplicate mapper node",
+      "Mapper Graph",
+      "Undo mapper edit",
+      "Redo mapper edit"
+    ],
+    "duplicate_node_id": "node-1",
+    "wm_null_responded": true,
+    "normal_wm_close_exit": 0,
+    "png": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mapper-authoring-c93dd0f1fe17\\native\\ui.png",
+      "sha256": "3ca65121cbe5a2e4c119b83d2d8a76bc0b4b5d1a9542939cf6721a87d1632711",
+      "size": 86248,
+      "mtime_ns": 1794012622962768200,
+      "event_mtime_ns": 1794012622908050500
+    }
+  },
+  "coverage": [
+    "Owned stopped GUI verified Duplicate, Undo and Redo with exact draft snapshots and a stable applied definition.",
+    "Focused egui events exercised drag location, one-step undo, a busy cancellation, and Ctrl+D/Z/Y and Delete.",
+    "The native run used app-local clicks and two virtual mouse/keyboard pairs."
+  ],
+  "open": [
+    "Multi-node selection and duplication, direct canvas wire editing, native drag and keyboard sampling, and broader Ultra parity remain open.",
+    "Historical GUI stall remains open."
+  ]
+}

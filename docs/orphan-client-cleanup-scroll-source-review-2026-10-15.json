@@ -1,0 +1,31 @@
+{
+  "decision": "APPROVED SOURCE ONLY",
+  "scope": "Agent Access sole scroll owner; pixels still require independent correctiongate",
+  "producer": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-orphan-client-cleanup-20261015-054219\\verification.json",
+    "sha256": "4a7a55d5901fb4d5569c15e35cd59023e9fb3e4921bedbe7cbdb1b44cfa44823",
+    "checks": "fmt/strictClippy/212tests/bothbuildsPASS"
+  },
+  "baseline_producer": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-orphan-client-cleanup-20261015-053312\\verification.json",
+    "sha256": "0407e61bc7b04efd0516b4baa2a2ab60653dc37a534b268f6a797ea79cfa058c"
+  },
+  "changed_source_sha256": {
+    "crates/protoinputmux/src/gui.rs": "af71024bb704fecb63d15a48fa902649b8952983d98ba90dc6d2b49c03d08ebe"
+  },
+  "other81_inputs_unchanged": true,
+  "runtime10_unchanged": true,
+  "review": "Only new AgentPage early-return block after normalsharednav and before commonouterScrollArea. Existing AgentPage innerScrollArea is soleowner. Removing exactly thatblock reproduces baselineGUIhash; eventlogic/controlguards/models/permissions unchanged. This resolves competing reveal ownership source issue without a test-only scroll hook.",
+  "runner": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\scripts\\test-orphan-client-cleanup-visual.py",
+    "sha256": "b635794595a26df378fed2de19c06564d3e3d03ac77612fa172e9065c44679e9",
+    "ast": "PASS",
+    "plan_sha256": "91e263a67b4a8b787bc67bbc2f95dabfcfb1e59929107e0eec42c128110f9193",
+    "budget": "8GUIclicks/4Execute/1Connect+EOF/2originals680x620"
+  },
+  "limits": [
+    "Prior two-client data approval retained exact old212image. No newY/sharedhold/continuity family replay.",
+    "GUI passive snapshot positiveowners only; no identical-retry attempt count refresh assertion.",
+    "No native/GUI execution in this source review; actual visible pending/recovered summary verdict remains open."
+  ]
+}

@@ -1,0 +1,396 @@
+{
+  "judgment": "PASS within the expressly limited virtual-input/cooperative-owned-application scope",
+  "date": "2026-10-14",
+  "independent_gate_owner": "acceptance subagent",
+  "accepted_evidence": [
+    {
+      "role": "native",
+      "canonical": "docs/replication-graph-native-2026-10-14.json",
+      "runtime_original": "runtime/acceptance-replication-graph-20261014-042319/evidence.json",
+      "artifact_sha256": "b533b4aaf38f1be5436d911b59a24672463af7a1dcbb7dcbae7c8eaa35b4b1e7",
+      "original_result": "PASS",
+      "accepted_scope": "Three grouped checks: 17 object schemas and owned x64/x86 fixture setup; stable typed/numeric APIs, CAS and malformed graph rejection preserve four native F5/Back holds; active Studio and legacy recording/playback reject graph mutation before native release.",
+      "owned_processes_closed": true,
+      "builds": {
+        "x64": "a277e86e6f56b7b9c24a9b236a7a1809c4b557662f36aa1bcba0f57fbc0e2aaa",
+        "x86": "93741d056a5c0307184260ae117eae00a0b44fcbc83e4cad7b5047d18cc93553"
+      },
+      "grouped_check_ids": [
+        "seventeen-object-schemas-owned-fixtures-stable-identities",
+        "stable-typed-and-numeric-graph-atomic-rejections-preserve-native-holds",
+        "studio-and-composite-active-reject-graph-before-native-release"
+      ],
+      "grouped_check_count": 3
+    },
+    {
+      "role": "restoration",
+      "canonical": "docs/replication-graph-restoration-2026-10-14.json",
+      "runtime_original": "runtime/acceptance-replication-graph-20261014-042736/evidence.json",
+      "artifact_sha256": "31517c6bc1ff9c35994d0f356a644ae7789a12aedfc7ecbd193aa88a8e32446d",
+      "original_result": "PASS",
+      "accepted_scope": "Two grouped checks including repeated setup and fresh renamed/reordered saved-ID diamond delivery: graph active at Start, topological initialization establishes worker/native anchors, exact Unicode/F5/Back/motion once per destination and real key timing.",
+      "owned_processes_closed": true,
+      "builds": {
+        "x64": "a277e86e6f56b7b9c24a9b236a7a1809c4b557662f36aa1bcba0f57fbc0e2aaa",
+        "x86": "93741d056a5c0307184260ae117eae00a0b44fcbc83e4cad7b5047d18cc93553"
+      },
+      "grouped_check_ids": [
+        "seventeen-object-schemas-owned-fixtures-stable-identities",
+        "fresh-renamed-reordered-stable-id-diamond-exact-native-unicode-key-mouse-motion-timing"
+      ],
+      "grouped_check_count": 2
+    },
+    {
+      "role": "offline_ui_prefix",
+      "canonical": "docs/replication-graph-ui-prefix-2026-10-14.json",
+      "runtime_original": "runtime/acceptance-graph-offline-20261014-043238/evidence.json",
+      "artifact_sha256": "b962bc375d465db2cff9f1a8a06715c9645925ddf08c72868f00746445c49e80",
+      "original_result": "NOT ACCEPTED",
+      "accepted_scope": "Only the 37 accepted real controls are accepted. Actual canvas nodes and wire, accessible connection, categories, add/update/remove/clear/undo/redo, invalid JSON and missing-keyboard load preserve history/draft/applied, graph/profile round trips, once-materialized legacy IDs and rename/device-change/reorder stability. Removed endpoint remains in saved definition with visible missing-ID warning. Original aggregate stays NOT ACCEPTED; its final response.enabled assumption is excluded and separately corrected.",
+      "owned_processes_closed": true,
+      "builds": {
+        "x64": "a277e86e6f56b7b9c24a9b236a7a1809c4b557662f36aa1bcba0f57fbc0e2aaa",
+        "x86": "93741d056a5c0307184260ae117eae00a0b44fcbc83e4cad7b5047d18cc93553"
+      },
+      "accepted_control_ids": [
+        "profiles",
+        "save-legacy",
+        "reload-materialized",
+        "save-again",
+        "graph-page",
+        "node-a",
+        "node-b",
+        "connect-a-b",
+        "wire-a-b",
+        "update-keyboard-only",
+        "undo-update",
+        "redo-update",
+        "accessible-edge",
+        "remove-edge",
+        "undo-remove",
+        "clear",
+        "undo-clear",
+        "bad-file",
+        "no-keyboard",
+        "undo-after-failures",
+        "redo-after-failures",
+        "save-graph",
+        "apply-offline",
+        "profile-committed-page",
+        "save-committed",
+        "configure-name-device",
+        "name-device-input-tab",
+        "renamed-profile-page",
+        "save-renamed",
+        "load-reordered",
+        "save-reordered",
+        "reordered-graph",
+        "reordered-node-a",
+        "remove-user-page",
+        "remove-user",
+        "missing-page",
+        "save-dangling-graph"
+      ],
+      "actual_clicked_control_count": 37
+    },
+    {
+      "role": "blocked_apply",
+      "canonical": "docs/replication-graph-blocked-apply-2026-10-14.json",
+      "runtime_original": "runtime/acceptance-graph-offline-blocked-apply-20261014-043732/evidence.json",
+      "artifact_sha256": "138860723328c5ab7208454274e2f23210faad86b7072bce644cc80a35569038",
+      "original_result": "PASS",
+      "accepted_scope": "Three real controls plus a visible unavailable Apply response, without a click. Removed stable source ID remains in exact definition; warning is visible, no worker state or routing session starts.",
+      "owned_processes_closed": true,
+      "builds": {
+        "x64": "0314c494234a0e0e74d4e867c62813ddd1cb8051f65ab64495a93370a8a3b057",
+        "x86": "05ba4ad122ed4c28fa1eeb7491a598392f9364fba84d45dc00a1e62863cc8b4a"
+      },
+      "accepted_control_ids": [
+        "remove-page",
+        "remove-user",
+        "missing-warning"
+      ],
+      "actual_clicked_control_count": 3,
+      "visible_disabled_control_observations": 1
+    },
+    {
+      "role": "blocked_start",
+      "canonical": "docs/replication-graph-blocked-start-2026-10-14.json",
+      "runtime_original": "runtime/acceptance-graph-offline-blocked-start-20261014-043738/evidence.json",
+      "artifact_sha256": "3cb4a16ab269f2e66e61cc032360c0e503b382d3b6db37f46fd674ec805b60aa",
+      "original_result": "PASS",
+      "accepted_scope": "Four real controls plus a visible unavailable Start response, without a click. Explicit UTF-8 ID whose byte 16 splits an emoji is rendered safely after endpoint removal; original definition and warning retained; no worker state or routing session starts.",
+      "owned_processes_closed": true,
+      "builds": {
+        "x64": "0314c494234a0e0e74d4e867c62813ddd1cb8051f65ab64495a93370a8a3b057",
+        "x86": "05ba4ad122ed4c28fa1eeb7491a598392f9364fba84d45dc00a1e62863cc8b4a"
+      },
+      "accepted_control_ids": [
+        "remove-page",
+        "remove-user",
+        "missing-warning",
+        "input-page"
+      ],
+      "actual_clicked_control_count": 4,
+      "visible_disabled_control_observations": 1
+    },
+    {
+      "role": "live_ui",
+      "canonical": "docs/replication-graph-ui-live-2026-10-14.json",
+      "runtime_original": "runtime/acceptance-graph-profile-save-20261014-044122/evidence.json",
+      "artifact_sha256": "ce2cbcb8afcff0b7cb95fec28bfc4fe3267aae43acf0a77530e91a874a3e8118",
+      "original_result": "PASS",
+      "accepted_scope": "31 real controls: four owned targets; actual four-edge diamond Connect/Apply, exact matching next-revision native worker acknowledgement, invalid JSON retains graph/history and all native F5 holds, exact delivered Unicode/F5/F6/Back/motion order without duplicate diamond delivery, Stop releases input and destroys overlays, actual Profile Save retains committed stable-ID definition.",
+      "owned_processes_closed": true,
+      "builds": {
+        "x64": "0314c494234a0e0e74d4e867c62813ddd1cb8051f65ab64495a93370a8a3b057",
+        "x86": "05ba4ad122ed4c28fa1eeb7491a598392f9364fba84d45dc00a1e62863cc8b4a"
+      },
+      "accepted_control_ids": [
+        "input-page",
+        "start",
+        "select-0",
+        "drop-0",
+        "select-1",
+        "drop-1",
+        "select-2",
+        "drop-2",
+        "select-3",
+        "drop-3",
+        "graph-page",
+        "add-0",
+        "add-1",
+        "add-2",
+        "add-3",
+        "apply",
+        "held-input-page",
+        "hold-f5",
+        "error-graph-page",
+        "bad-file",
+        "save-preserved",
+        "delivery-page",
+        "release-f5",
+        "unicode",
+        "tap-f6",
+        "back-down",
+        "back-up",
+        "motion",
+        "stop",
+        "profile-page",
+        "save-profile"
+      ],
+      "actual_clicked_control_count": 31
+    },
+    {
+      "role": "restart_ui",
+      "canonical": "docs/replication-graph-ui-restart-2026-10-14.json",
+      "runtime_original": "runtime/acceptance-graph-profile-restart-20261014-044214/evidence.json",
+      "artifact_sha256": "9cc4cf2f72026ef2eaa8715d4ef072ea3475637533a474436a0e7a5eddfe2b29",
+      "original_result": "PASS",
+      "accepted_scope": "26 real controls: actual saved profile reused with fresh owned target PIDs/anchors, renamed seats and order D,B,A,C. Restored graph active at Start, native anchors verified before baseline, source A now dense index 2 delivers exact text/key/button/motion sequence once in each target; actual Stop cleanup and Profile Save preserve IDs and topology.",
+      "owned_processes_closed": true,
+      "builds": {
+        "x64": "0314c494234a0e0e74d4e867c62813ddd1cb8051f65ab64495a93370a8a3b057",
+        "x86": "05ba4ad122ed4c28fa1eeb7491a598392f9364fba84d45dc00a1e62863cc8b4a"
+      },
+      "accepted_control_ids": [
+        "input-page",
+        "start",
+        "select-0",
+        "drop-0",
+        "select-1",
+        "drop-1",
+        "select-2",
+        "drop-2",
+        "select-3",
+        "drop-3",
+        "graph-page",
+        "held-input-page",
+        "hold-f5",
+        "error-graph-page",
+        "bad-file",
+        "save-preserved",
+        "delivery-page",
+        "release-f5",
+        "unicode",
+        "tap-f6",
+        "back-down",
+        "back-up",
+        "motion",
+        "stop",
+        "profile-page",
+        "save-profile"
+      ],
+      "actual_clicked_control_count": 26
+    },
+    {
+      "role": "direction_canvas",
+      "canonical": "docs/replication-graph-direction-canvas-2026-10-14.json",
+      "runtime_original": "runtime/acceptance-graph-direction-canvas-20261014-044315/evidence.json",
+      "artifact_sha256": "f2c1c28c7689badb374add2e080d2b906ac6c44ff04398b270b601ed820387e5",
+      "original_result": "PASS",
+      "accepted_scope": "Two real controls in an offline owned GUI; loaded saved graph and actual node selection. Independent pixel inspection confirms all four directed arrowheads outside destination rectangles with named colored nodes and visible category wires. Screenshot contains only owned application names.",
+      "owned_processes_closed": true,
+      "builds": {
+        "x64": "0314c494234a0e0e74d4e867c62813ddd1cb8051f65ab64495a93370a8a3b057",
+        "x86": "05ba4ad122ed4c28fa1eeb7491a598392f9364fba84d45dc00a1e62863cc8b4a"
+      },
+      "accepted_control_ids": [
+        "graph-page",
+        "connect-a-b"
+      ],
+      "actual_clicked_control_count": 2
+    }
+  ],
+  "counting": {
+    "native_grouped_checks": 5,
+    "native_setup_discovery_groups": 2,
+    "native_substantive_groups": 3,
+    "accepted_actual_gui_control_events": 103,
+    "distinct_observed_gui_button_labels": 42,
+    "gui_label_count_note": "Repeated labels, setup, renamed/reordered source controls and restart events are counted as events, not distinct features. The failed 25-control live attempt is excluded. The 37 accepted prefix remains in an original NOT ACCEPTED artifact.",
+    "visible_disabled_control_observations": 2,
+    "disabled_observations_are_clicks": false,
+    "accepted_gui_events_by_phase": [
+      37,
+      3,
+      4,
+      31,
+      26,
+      2
+    ]
+  },
+  "build_scope": {
+    "native_and_offline_prefix": {
+      "x64": "a277e86e6f56b7b9c24a9b236a7a1809c4b557662f36aa1bcba0f57fbc0e2aaa",
+      "x86": "93741d056a5c0307184260ae117eae00a0b44fcbc83e4cad7b5047d18cc93553"
+    },
+    "final_focused_ui_live_and_restart": {
+      "x64": "0314c494234a0e0e74d4e867c62813ddd1cb8051f65ab64495a93370a8a3b057",
+      "x86": "05ba4ad122ed4c28fa1eeb7491a598392f9364fba84d45dc00a1e62863cc8b4a"
+    },
+    "cross_build_reason": "Only Script.observe effective clickable telemetry and arrow boundary rendering changed after accepted native/37-control prefix. Native routing runtime and staged DLLs stayed unchanged; full native repetition was unnecessary. Latest UI controls, live native delivery/persistence/restart, disabled boundaries and actual arrows were independently verified.",
+    "producer_checks": "Parent reported final bundle63659 exit0: formatting check, strict workspace Clippy, 63 workspace tests, x64/i686 builds. Producer checks are separate from this independent behavioral proof."
+  },
+  "criterion_matrix": [
+    {
+      "criterion": "Legacy profile migration, stable identity and ID-edge persistence",
+      "result": "PASS",
+      "evidence_roles": [
+        "offline_ui_prefix",
+        "live_ui",
+        "restart_ui"
+      ],
+      "scope": "Explicit IDs remain unchanged after reload, rename, virtual device path change and reorder; removed endpoints remain visible and block Apply/Start. Saved graph and profile definitions round trip exactly."
+    },
+    {
+      "criterion": "Actual original Ouroboros canvas and accessible editing/history",
+      "result": "PASS",
+      "evidence_roles": [
+        "offline_ui_prefix",
+        "direction_canvas"
+      ],
+      "scope": "Real named node and visible wire clicks, accessible edge selection, category update, remove, clear, undo/redo; rejected load preserves prior draft/applied/history. Arrowhead pixel appearance independently inspected."
+    },
+    {
+      "criterion": "MCP typed stable graph, numeric compatibility and atomic rejection",
+      "result": "PASS",
+      "evidence_roles": [
+        "native",
+        "blocked_apply",
+        "blocked_start"
+      ],
+      "scope": "17 typed object schemas; identities/revision, matching CAS, numeric graph replacement; malformed/cycle/self/duplicate/no-category/missing-ID and stale revision preserve graph and native holds. Missing keyboard is independently exercised through offline GUI graph Load/history, not a mouse-only MCP session."
+    },
+    {
+      "criterion": "Active automation mutation boundary",
+      "result": "PASS",
+      "evidence_roles": [
+        "native"
+      ],
+      "scope": "Studio record/play and legacy record/play reject typed and numeric graph mutation before releasing ordinary native keys/buttons. No prior macro suite repeated."
+    },
+    {
+      "criterion": "Saved diamond deterministic native delivery after fresh reorder/restart",
+      "result": "PASS",
+      "evidence_roles": [
+        "restoration",
+        "live_ui",
+        "restart_ui"
+      ],
+      "scope": "Two x64 and two x86 owned EDIT fixtures, exact UTF-16 text and native key/button order, bounded timing, motion/worker/native alignment and no duplicated diamond destination delivery. Actual live worker ACK updates the GUI profile and actual Save is reused for fresh restart."
+    },
+    {
+      "criterion": "Owned cleanup and unavailable controls",
+      "result": "PASS",
+      "evidence_roles": [
+        "blocked_apply",
+        "blocked_start",
+        "live_ui",
+        "restart_ui"
+      ],
+      "scope": "Visible unavailable Apply/Start observed without synthesizing clicks; no offline worker state. Live Stop releases all native holds and destroys cursor HWNDs. Every owned process closed; final read-only CIM audit found none."
+    }
+  ],
+  "corrections": {
+    "product": "Nonblocking graph inspection/CAS drain corrected after independent timeout. Missing-ID rendering became UTF-8-safe after producer source review and passed actual Unicode removal rendering. Directed arrow endpoint clearance corrected after visual review and independently verified in final pixels.",
+    "harness": "Disabled button telemetry now honors hover-only interaction; restoration anchors initialized topologically and coordinate lists compared consistently; actual Back labels used. Failed originals preserved."
+  },
+  "retained_not_accepted_attempts": [
+    {
+      "runtime_original": "runtime/acceptance-replication-graph-20261014-041315/evidence.json",
+      "artifact_sha256": "ef721b4f652b914267aea3ffdbc933ed244292b73f5362d4d549269ee4f702fe",
+      "original_result": "NOT ACCEPTED",
+      "explanation": "Real product defect: routing_graph Inspect waited for an acknowledgement without sending a command; timed out. Shared nonblocking inspection/drain corrected; typed/numeric native gate and fresh restoration passed afterward.",
+      "owned_processes_closed": true
+    },
+    {
+      "runtime_original": "runtime/acceptance-replication-graph-20261014-042335/evidence.json",
+      "artifact_sha256": "f5dd010b3f14fa11cb73ebd5acfe671725dd66e54ece27c9f6c2bd0963b74d54",
+      "original_result": "NOT ACCEPTED",
+      "explanation": "Fixture setup defect: initializing dense order D,B,A,C with saved graph already active replicated displacement into previously anchored descendants. Unicode/key delivery was correct but cursor/button anchors invalid for the intended isolated fixture baseline. Corrected source-before-descendant initialization, without disabling restored graph.",
+      "owned_processes_closed": true
+    },
+    {
+      "runtime_original": "runtime/acceptance-replication-graph-20261014-042653/evidence.json",
+      "artifact_sha256": "d739b2c704e8dfd36823af98396f161840ac3dad42d5bcc62ab561ea63877927",
+      "original_result": "NOT ACCEPTED",
+      "explanation": "Harness assertion defect: actual native/worker anchors were correct but compared JSON lists to Python coordinate tuples. Corrected comparison; focused restoration PASS retained.",
+      "owned_processes_closed": true
+    },
+    {
+      "runtime_original": "runtime/acceptance-graph-offline-20261014-043238/evidence.json",
+      "artifact_sha256": "b962bc375d465db2cff9f1a8a06715c9645925ddf08c72868f00746445c49e80",
+      "original_result": "NOT ACCEPTED",
+      "explanation": "Accepted 37-control prefix only; last disabled-response check assumed Response.enabled reflected Ouroboros Button.enabled(false). Pinned button actually used hover-only interaction and dimmed rendering while Response.enabled stayed true. Telemetry now observes enabled plus click sense; focused disabled Apply/Start tails passed. No failed artifact relabeling.",
+      "owned_processes_closed": true
+    },
+    {
+      "runtime_original": "runtime/acceptance-graph-profile-save-20261014-043808/evidence.json",
+      "artifact_sha256": "793b05c3a08043ed4e79a6708eaa8c38ef970f143392d6d7cfd620d575189804",
+      "original_result": "NOT ACCEPTED",
+      "explanation": "Harness label defect: 25 accepted controls then awaited nonexistent Back hold. Actual Hold Back/Release Back labels corrected; direct live Apply/worker ACK/Profile Save and fresh restart rerun passed. These 25 controls are excluded from aggregate accepted event totals to avoid double counting the replay.",
+      "owned_processes_closed": true
+    }
+  ],
+  "screenshot": {
+    "runtime_original": "runtime/acceptance-graph-direction-canvas-20261014-044315/graph-canvas.png",
+    "artifact_sha256": "5106e7bc0dd9f5762d4c0b7aa7d454a97dfa396ed94f8525ba3c1d34507a8326",
+    "visually_verified": true,
+    "scope": "App-local PNG; only owned Persistent A/B/C/D names, no unrelated title inventory; four visible arrows outside target rectangles."
+  },
+  "cleanup": {
+    "all_evidence_owned_processes_closed": true,
+    "read_only_cim_audit": "No Win32_Process executable paths matching acceptance-graph-* or acceptance-replication-graph-* remained after final canvas gate.",
+    "exclusive_live_slot_released": true
+  },
+  "limits": [
+    "Virtual seats and explicitly scoped disposable cooperative Win32 x64/x86 applications only. No hardware or RustDesk input was used for control or validation, and no OS input injection was used. Passive device discovery or observation performed by the application is not claimed to be disabled.",
+    "No claim of full Ultra parity, arbitrary application compatibility, desktop-wide or same-process independent user isolation.",
+    "No mouse-only MCP Start variant was added; missing-keyboard candidate rejection was verified offline with genuine GUI history preservation. Live held-preservation was proved for other malformed/stale/active-automation candidates.",
+    "No broad assigned-routing, annotation, magnifier or macro behavior retest; prior accepted groups retained.",
+    "Node dragging was not exercised. Named canvas node clicks, real wire selection, accessible controls and arrow pixels were verified. Node positions are session-local arrangement, not persisted or included in topology undo/redo; position persistence was not a promised criterion.",
+    "Maximum 64-history boundary, exhaustive graph sizes, arbitrary third-party files, concurrent independent editors/forced stale native acknowledgements, crash/power-loss persistence and hardware device replacement remain unexercised by this live gate."
+  ],
+  "scope_and_retest_decision": "Finite planned native mutation/restoration, 37 accepted offline controls with focused disabled corrections, one justified live phase replay for a harness label error, fresh saved-profile restart and two-control pixel view completed. No unrelated suites repeated or weaker replacement criterion used."
+}

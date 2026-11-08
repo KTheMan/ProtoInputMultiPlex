@@ -1,0 +1,95 @@
+{
+  "decision": "APPROVED — BOUNDED FAILED-CLEANUP RECOVERY",
+  "date": "2026-10-15",
+  "producer": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-failed-cleanup-recovery-20261015-045854\\verification.json",
+    "sha256": "e439636aea925d7c12427bc7340f0451e96751a86116341a5038873538e649e5",
+    "checks": "fmt, strictClippy,205 workspace tests,x64+i686 builds PASS",
+    "build_sha256": {
+      "x64": "40202702f64c877555ef8955426f987a6423f47f260b37588616f36af1d38d48",
+      "i686": "a350f26794c6c8ed96c5dd5f9fa335dc1278add3413dbb272bb2f5e68f354554"
+    },
+    "runtime_sha256": "10 exact hashes in producer, reverified"
+  },
+  "source_review": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\docs\\failed-cleanup-recovery-source-review-2026-10-15.json",
+    "sha256": "ebb31c53057992bf03431bbfe2c9569b71470c12d1e091f8ba27b5cc738da4c9"
+  },
+  "runner": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\scripts\\test-failed-cleanup-recovery.py",
+    "sha256": "edd906d450b73de3c38642e3ce4a31519e6c08740a66ae7d62fb969c04fe4363"
+  },
+  "plan": {
+    "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\failed-cleanup-recovery-acceptance-plan.md",
+    "sha256": "0b5e9ee4cb9752759baf00a8bb9ba2da1a67071f747fc534c809c98fcd68b7b8"
+  },
+  "accepted_outcomes": [
+    "Standalone real non-pumping target causes failed queue-fence Stop; Recovery retains only affected original A, excludes unused preauthorized C, and rejects both attempted StartC calls while A lives, including after late native plainF6UP and normal pumping resume.",
+    "Exact original A exit permits explicit fresh StartC, actual native primary pair/F6pair and normalStop; no automatic restart. Recovery state agrees with actual liveness.",
+    "GUI real PM_NOREMOVE failure retains A after lateUP/profile replacement, real modal Details/Check/Close and two disabledStart observations work. After A exits, explicit StartC produces actual primaryDOWN→normalStop plainUP, known overlays destroyed and normalGUIclose succeeds."
+  ],
+  "evidence": [
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-failed-cleanup-stdio-20261015-050137\\evidence.json",
+      "sha256": "cec09077e21d0083e77e53cb7de960ed6b1885ec8d630c90f26e820d56f8e5fb",
+      "raw_result_preserved": "PENDING INDEPENDENT DATA REVIEW",
+      "mutations": 15,
+      "terminal": {
+        "chunk": "f44d95",
+        "exit_code": 0,
+        "live_session": "none; completed in initial wait"
+      }
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-failed-cleanup-recovery-20261015-050207\\evidence.json",
+      "sha256": "945187ffaace455f8424a1d2d55b53d38cad975632120cf1971d46c6c39606fa",
+      "raw_result_preserved": "PENDING INDEPENDENT DATA/PIXEL REVIEW",
+      "observations": 26,
+      "actual_clicks": 24,
+      "disabled_observations": 2,
+      "terminal": {
+        "session_id": 72988,
+        "exit_code": 0
+      }
+    }
+  ],
+  "originals": [
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-failed-cleanup-recovery-20261015-050207\\routing-recovery-details.png",
+      "sha256": "42cf297f5f69775d9597c0075465f9f47b5c1ccf1d4ffb00dc861882bf9d051b",
+      "pixels": [
+        360,
+        360
+      ],
+      "direct_review": "APPROVED bounded visibility"
+    },
+    {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-failed-cleanup-recovery-20261015-050207\\start-unavailable-after-profile-change.png",
+      "sha256": "556835dc4092c49854cba03945e9a731689019bb7460b3267c108178aaf4322f",
+      "pixels": [
+        360,
+        360
+      ],
+      "direct_review": "APPROVED bounded visibility"
+    }
+  ],
+  "pixel_scope": "Modal title, readable actualPID/cause in error text and wholeCheck/Close buttons; second360Home shows cleanup warning, disabledStart, Recoverydetails and loaded-profilefooter. Separate target-status row is below captured viewport; neither its visibility nor scroll reachability is certified. Metadata independently proves A running/C excluded.",
+  "profile_preferences": "Complete normalized GUI profile comparison proves only deliberate allowedPID/desktop_start replacement for C; preferences unchanged throughout. No grants enabled.",
+  "cleanup": {
+    "owned_processes_closed": true,
+    "all_known_overlays_destroyed": true,
+    "cleanup_errors": [],
+    "scoped_cim_survivors": 0,
+    "private_guid_key_absent": true,
+    "audit": {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-failed-cleanup-recovery-20261015-050207\\cleanup-audit.json",
+      "sha256": "b54c937d7b930c8991b8ee6d88eb006bc7fce48e00bc6f4dae6b868ab0897bd4"
+    },
+    "exclusive_native_slot_returned": true
+  },
+  "limits": [
+    "One automatic desktop virtual user/owned A and C per frontend, x64 execution only; i686 built/hashverified only. No hardware, globalinput, desktopcapture, generalapplications or same-process isolation claim.",
+    "Assigned partial-attachment recovery is source/unit evidence, not native-tested by this automatic-pump gate. ACK-timeout path and exact PID-reuse/unwatched interleavings are not forced native cases.",
+    "No fullP1/wholelifecycle/oldqueuefamily replay. GUIQuit while still quarantined is not exercised; normalQuit only after recovery/cleanStop. No orphan-client cleanup or new permission flow."
+  ]
+}

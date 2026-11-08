@@ -1,0 +1,276 @@
+{
+  "decision": "ACCEPTED BOUNDED EXPORT FUNCTIONALITY; FULL ANNOTATION FEATURE GATE REMAINS OPEN",
+  "date": "2026-10-15",
+  "independent_reviewer": "acceptance agent",
+  "bounded_workflow_accepted": true,
+  "full_feature_accepted": false,
+  "full_Ultra_or_full_UX_complete": false,
+  "producer": {
+    "path": "runtime\\producer-annotation-export-timing-20261015-135726\\verification.json",
+    "sha256": "e6461c8afd373cdbab4f557744b6d2655ecf777a9bec1801818c15e5091ed403",
+    "required_checks": "fmt/strictClippy/workspace286tests/x64+i686/Doctor exit0",
+    "frozen_input_count": 832,
+    "native_runtime_files": 10,
+    "build_sha256": {
+      "x64": "a39b6b7bac6947b8da212e4bcb2d627759ec13c7e374606c5c2f39389a638c87",
+      "i686": "ab70648709f8e8447d6d4cb62390011dfacf9994716b6f4b938f3725d342e925"
+    }
+  },
+  "source_and_harness_reviews": [
+    {
+      "path": "docs/annotation-export-workflow-source-review-2026-10-15.json",
+      "sha256": "2de89e7238e7d30efda383d84216faf9d09e20854afaa56643fefe0953177931"
+    },
+    {
+      "path": "docs/annotation-export-open-budget-source-review-2026-10-15.json",
+      "sha256": "294f6de9ba9dd7e0927ada75b7a742892012156bba640046395fbcdbd1c6fa33"
+    },
+    {
+      "path": "docs/annotation-export-timing-source-review-2026-10-15.json",
+      "sha256": "376cf4ad3f0de2858e0907510aa2e9abd9b3c3a527ed89a25a6068c3df4110e6"
+    },
+    {
+      "path": "runtime/producer-annotation-export-timing-20261015-135726/producer-independent-review.json",
+      "sha256": "ff09eaaa0ec1bb18b550c23dda892a6c17694a06a96890837dc365d13fccb8a7"
+    },
+    {
+      "path": "runtime/acceptance-graph-annotation-export-workflow-20261015-144853/independent-missing-revocation-review.json",
+      "sha256": "37680f2192fd1a029cefbd5f55e31db74962e28a3a95290f2a9ce1d8b0dc0c71"
+    }
+  ],
+  "accepted_evidence": [
+    {
+      "raw": {
+        "path": "runtime\\acceptance-graph-annotation-export-workflow-20261015-124053\\evidence.json",
+        "sha256": "f8bf8592b71109fa88e10b495877193b3f4aab34ce317e10443dc84fb3d2fc17"
+      },
+      "review": {
+        "path": "runtime\\acceptance-graph-annotation-export-workflow-20261015-124053\\independent-failure-review.json",
+        "sha256": "180ecf39b2b75166eda748bca5d436540539f96a0795d7b89f26628d299d08fe"
+      },
+      "accepted_scope": "Capture-off denial only, original older282-test producer471088; no native setup/export success inferred."
+    },
+    {
+      "raw": {
+        "path": "runtime\\acceptance-graph-annotation-export-workflow-20261015-142833\\evidence.json",
+        "sha256": "f4a35c88c7b634346604d71db3149cfd1a1e11baca3e7791fd61f2083f49f038"
+      },
+      "review": {
+        "path": "runtime\\acceptance-graph-annotation-export-workflow-20261015-142833\\independent-prefix-review.json",
+        "sha256": "a7c82d5df5f0c324eead51935307e15f74f75787dcb4505e630de86d0fb96a7e"
+      },
+      "accepted_scope": "Two local scope exports + bounded GUI pixels and native setup on e646.",
+      "copied_builds": [
+        {
+          "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-annotation-export-workflow-20261015-142833\\control64.exe",
+          "sha256": "a39b6b7bac6947b8da212e4bcb2d627759ec13c7e374606c5c2f39389a638c87"
+        },
+        {
+          "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-annotation-export-workflow-20261015-142833\\probe32.exe",
+          "sha256": "ab70648709f8e8447d6d4cb62390011dfacf9994716b6f4b938f3725d342e925"
+        }
+      ]
+    },
+    {
+      "raw": {
+        "path": "runtime\\acceptance-graph-annotation-export-workflow-20261015-144853\\evidence.json",
+        "sha256": "b2d6f297a0e4edc3484c2a77ae9935f34fbf54eaa7e428ec2e26f2af23b8e6cf"
+      },
+      "review": {
+        "path": "runtime\\acceptance-graph-annotation-export-workflow-20261015-144853\\independent-prefix-review.json",
+        "sha256": "5432bee93c3ca125bb4ec8bc160fbe209d224ad444e555629eeac26e5b20f5b5"
+      },
+      "accepted_scope": "Four user/all-user/PID denials + connected selected/composition exports + peer input overlap + focused magnifier regression on e646.",
+      "copied_builds": [
+        {
+          "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-annotation-export-workflow-20261015-144853\\control64.exe",
+          "sha256": "a39b6b7bac6947b8da212e4bcb2d627759ec13c7e374606c5c2f39389a638c87"
+        },
+        {
+          "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\acceptance-graph-annotation-export-workflow-20261015-144853\\probe32.exe",
+          "sha256": "ab70648709f8e8447d6d4cb62390011dfacf9994716b6f4b938f3725d342e925"
+        }
+      ]
+    }
+  ],
+  "accepted_artifacts": [
+    {
+      "path": "runtime\\acceptance-graph-annotation-export-workflow-20261015-142833\\gui-all.png",
+      "sha256": "511bacb0765a0153f022da79773970cad1b0c4c45545cfed13b583866c00f101",
+      "producer_sha256": "e6461c8afd373cdbab4f557744b6d2655ecf777a9bec1801818c15e5091ed403"
+    },
+    {
+      "path": "runtime\\acceptance-graph-annotation-export-workflow-20261015-142833\\gui-selected.png",
+      "sha256": "012054abf1c9474143757b676c377f5c8fd4275f124574eddf788d275a046271",
+      "producer_sha256": "e6461c8afd373cdbab4f557744b6d2655ecf777a9bec1801818c15e5091ed403"
+    },
+    {
+      "path": "runtime\\acceptance-graph-annotation-export-workflow-20261015-142833\\gui-export-default-540x520.png",
+      "sha256": "371c1906acca4bcfcab59366915eef6a7bf1e27fa59487e4ceef6661d82fd8c7",
+      "producer_sha256": "e6461c8afd373cdbab4f557744b6d2655ecf777a9bec1801818c15e5091ed403"
+    },
+    {
+      "path": "runtime\\acceptance-graph-annotation-export-workflow-20261015-142833\\gui-export-minimum-420x520.png",
+      "sha256": "1ddcec54d105d2c22277fb126246767376e81fc41462771ffaa4480e10e63336",
+      "producer_sha256": "e6461c8afd373cdbab4f557744b6d2655ecf777a9bec1801818c15e5091ed403"
+    },
+    {
+      "path": "runtime\\acceptance-graph-annotation-export-workflow-20261015-144853\\connected-a-selected.png",
+      "sha256": "012054abf1c9474143757b676c377f5c8fd4275f124574eddf788d275a046271",
+      "producer_sha256": "e6461c8afd373cdbab4f557744b6d2655ecf777a9bec1801818c15e5091ed403"
+    },
+    {
+      "path": "runtime\\acceptance-graph-annotation-export-workflow-20261015-144853\\composition-all-users.png",
+      "sha256": "7a44d0fd2db0e855290518f7835afcb399c6b5fbb9175cbe5032e361a63390ee",
+      "producer_sha256": "e6461c8afd373cdbab4f557744b6d2655ecf777a9bec1801818c15e5091ed403"
+    },
+    {
+      "path": "runtime\\acceptance-graph-annotation-export-workflow-20261015-144853\\magnifier-b.png",
+      "sha256": "92aaec49d99e031fd2315e4fa559d93094561d363ced6e64dbac34cf17751f59",
+      "producer_sha256": "e6461c8afd373cdbab4f557744b6d2655ecf777a9bec1801818c15e5091ed403"
+    }
+  ],
+  "accepted_outcomes": [
+    "Actual local GUI all-users and selected-user Saves yield decoded2560x1440 RGBA revision8 ink: all contains redA+blueB; selected excludesB; untouched background alpha0. Both success ACKs clear pending.",
+    "Existing capture grant is required; with capture true/session_control false, disallowed user, all-user scope including omitted default, and selected-target PID denials produce their intended errors without output/temp files, preserving existing sentinel bytes and ink revision.",
+    "Connected selected-user transparent export succeeds. Connected all-user composition captures exact owned A child PID/HWND339x236 and overlays its ink on the patterned target client, with revision8 metadata.",
+    "Another permitted B client delivers an exact native F5 DOWN/UP at its child HWND with no held key while A composition RPC is still in flight. Preparing state was observed before peer input; no forced provider-stall claim.",
+    "One focused B magnifier PNG decodes64x64 after common worker changes.",
+    "Direct original540x520 GUI: whole genuine Save, scope/kind/path controls. Direct420x520 GUI: Draw/clear/scope controls only."
+  ],
+  "native_gaps_open": [
+    "Precommit policy revocation during a provably still-preparing native job and rejection of a new job while that old job remains pending were NOT established. Two attempts remain NOT ACCEPTED; last RPC completed in218ms before revoked-policy observation. Setting capture_delay_ms4000 did not demonstrate an applied delay. No product revocation failure is inferred.",
+    "Explicit planned normal GUI Stop receipt/cleanup after completing these export cases was not reached; ordinary failure-close cleanup is distinct.",
+    "No new standalone export execution, forced filesystem publication failure, postapproval interruption, exact selection/settings/window race, or native concurrent-ink snapshot revision test."
+  ],
+  "source_unit_evidence_distinct": {
+    "test_log": {
+      "path": "E:\\Kenny\\Documents\\GitHub\\ProtoInputMux\\runtime\\producer-annotation-export-timing-20261015-135726\\3.log",
+      "sha256": "def6bab7a1b534dbcf4216e799d58a08b480288c68b248afcb44ff91a65cecb7"
+    },
+    "coverage": "Four supplied ready/done-channel tests exercise production poll transitions: timely readiness observed late; preparation/request expiration; identity revocation before queued readiness; publication/request timeout retention and late unacknowledged telemetry. A separate real blocked-worker unit test covers timeout capacity/no-file/late telemetry. Scope/grant/roster/metadata/atomic-worker behavior and local Stop permit dropping are source/unit reviewed. These are not native forced-race proof."
+  },
+  "visual_limits": [
+    "420x520 is representative compact, not320minimum; kind/path/Save and completion below viewport are not certified there. At540 completion copy is clipped. No all-controls-simultaneous/full-form/fullUX claim.",
+    "Periodic capture mtime/geometry does not establish request-associated screenshot freshness; actual originals were directly viewed."
+  ],
+  "resources": {
+    "accepted_prefixes_and_latest_attempt": "Owned processes closed; exact run-image CIM tables empty; private startup key and descriptor absent; known cursor/annotation/magnifier/child HWNDs closed as recorded in independent reviews. No active handle retained by reviewer.",
+    "latest_failure_review": {
+      "path": "runtime\\acceptance-graph-annotation-export-workflow-20261015-145530\\independent-review.json",
+      "sha256": "3c3014dafa61c6bd1985944bd61a22aa75a4010a14c4d44f46ed5a2aa12f2988"
+    },
+    "first_attempt_cleanup_exception": "124053 raw recorded stale descriptor after forced GUI close; exact later manual cleanup is separate, not a raw relabel.",
+    "first_attempt_manual_cleanup": {
+      "path": "runtime\\acceptance-graph-annotation-export-workflow-20261015-124053\\manual-cleanup.json",
+      "sha256": "8db7ee4665908a2a0dded20757686e50b8c0fe45642ffa03fc33e74b8ce2e917"
+    }
+  },
+  "preserved_attempt_history": [
+    {
+      "path": "runtime\\acceptance-graph-annotation-export-workflow-20261015-124053\\evidence.json",
+      "sha256": "f8bf8592b71109fa88e10b495877193b3f4aab34ce317e10443dc84fb3d2fc17",
+      "result_preserved": "NOT ACCEPTED",
+      "producer_sha256": "471088527bed806679963e78e5ecc1c8f96fb677926fc0d32f07f213d7ab04c5",
+      "gui_observations": 5,
+      "routing_input_calls": 12,
+      "annotation_export_requests": 1
+    },
+    {
+      "path": "runtime\\acceptance-graph-annotation-export-workflow-20261015-125114\\evidence.json",
+      "sha256": "89e45950d2d4263aa9dc2bca155203b360106fcabb9fe4b58660915fea7c3924",
+      "result_preserved": "NOT ACCEPTED",
+      "producer_sha256": "471088527bed806679963e78e5ecc1c8f96fb677926fc0d32f07f213d7ab04c5",
+      "gui_observations": 6,
+      "routing_input_calls": 12,
+      "annotation_export_requests": 0
+    },
+    {
+      "path": "runtime\\acceptance-graph-annotation-export-workflow-20261015-125458\\evidence.json",
+      "sha256": "663d3ca0517c7ce38155bc184cb1ce30b0bce17071624c69f9b60f5c384bd54a",
+      "result_preserved": "NOT ACCEPTED",
+      "producer_sha256": "471088527bed806679963e78e5ecc1c8f96fb677926fc0d32f07f213d7ab04c5",
+      "gui_observations": 5,
+      "routing_input_calls": 2,
+      "annotation_export_requests": 0
+    },
+    {
+      "path": "runtime\\acceptance-graph-annotation-export-workflow-20261015-133112\\evidence.json",
+      "sha256": "958bb35547801c76305a67f24324bdbd9b6ceb35fe92182b426e920ffd116c78",
+      "result_preserved": "NOT ACCEPTED",
+      "producer_sha256": "380358b115466146ee030b20b27547f650409604073b7ccba200502352f3b7f3",
+      "gui_observations": 5,
+      "routing_input_calls": 8,
+      "annotation_export_requests": 0
+    },
+    {
+      "path": "runtime\\acceptance-graph-annotation-export-workflow-20261015-133829\\evidence.json",
+      "sha256": "36966efa9193c69d62fe38353e6f449c6a80c174b6f61b977f4da2928ae3ed56",
+      "result_preserved": "NOT ACCEPTED",
+      "producer_sha256": "380358b115466146ee030b20b27547f650409604073b7ccba200502352f3b7f3",
+      "gui_observations": 11,
+      "routing_input_calls": 12,
+      "annotation_export_requests": 0
+    },
+    {
+      "path": "runtime\\acceptance-graph-annotation-export-workflow-20261015-142458\\evidence.json",
+      "sha256": "6e0a6da82539e8fdfa9e4b6d1b03cd22476c3ca4518c114c449dd78783cded66",
+      "result_preserved": "NOT ACCEPTED",
+      "producer_sha256": "e6461c8afd373cdbab4f557744b6d2655ecf777a9bec1801818c15e5091ed403",
+      "gui_observations": 5,
+      "routing_input_calls": 0,
+      "annotation_export_requests": 0
+    },
+    {
+      "path": "runtime\\acceptance-graph-annotation-export-workflow-20261015-142833\\evidence.json",
+      "sha256": "f4a35c88c7b634346604d71db3149cfd1a1e11baca3e7791fd61f2083f49f038",
+      "result_preserved": "NOT ACCEPTED",
+      "producer_sha256": "e6461c8afd373cdbab4f557744b6d2655ecf777a9bec1801818c15e5091ed403",
+      "gui_observations": 17,
+      "routing_input_calls": 12,
+      "annotation_export_requests": 0
+    },
+    {
+      "path": "runtime\\acceptance-graph-annotation-export-workflow-20261015-144456\\evidence.json",
+      "sha256": "349d5e1d533dbb393aa1c1f1e16925ee0d1092e5408e91ee870da5f5a55d51eb",
+      "result_preserved": "NOT ACCEPTED",
+      "producer_sha256": "e6461c8afd373cdbab4f557744b6d2655ecf777a9bec1801818c15e5091ed403",
+      "gui_observations": 5,
+      "routing_input_calls": 0,
+      "annotation_export_requests": 0
+    },
+    {
+      "path": "runtime\\acceptance-graph-annotation-export-workflow-20261015-144853\\evidence.json",
+      "sha256": "b2d6f297a0e4edc3484c2a77ae9935f34fbf54eaa7e428ec2e26f2af23b8e6cf",
+      "result_preserved": "NOT ACCEPTED",
+      "producer_sha256": "e6461c8afd373cdbab4f557744b6d2655ecf777a9bec1801818c15e5091ed403",
+      "gui_observations": 13,
+      "routing_input_calls": 14,
+      "annotation_export_requests": 7
+    },
+    {
+      "path": "runtime\\acceptance-graph-annotation-export-workflow-20261015-145530\\evidence.json",
+      "sha256": "1db840ffaa80953c6ed8874d5bd6ff57369c2d2a547f3c56d5ef1a1c983c0254",
+      "result_preserved": "NOT ACCEPTED",
+      "producer_sha256": "e6461c8afd373cdbab4f557744b6d2655ecf777a9bec1801818c15e5091ed403",
+      "gui_observations": 9,
+      "routing_input_calls": 12,
+      "annotation_export_requests": 1
+    }
+  ],
+  "all_attempt_observation_totals": {
+    "actual_gui_phase_observations": 81,
+    "actual_gui_clicks": 75,
+    "disabled_observations": 6,
+    "routing_input_calls": 84,
+    "connected_annotation_export_requests": 9,
+    "gui_local_Save_attempts": 4,
+    "separate_magnifier_export_requests": 1,
+    "interpretation": "Phase observations and routing RPC attempts across ten runs, including necessary fresh setup and failed attempts; not distinct tests or unique controls. Four local Save attempts include one earlier selected Save timeout; only the later two successes are accepted."
+  },
+  "limits": [
+    "x64 owned disposable targets and virtual devices only; i686 built/copied, never executed for this feature gate. No real hardware, arbitrary apps, desktop capture, global pointer, RustDesk, full P1/UX/Ultra parity claim.",
+    "Original Open/timeout failures have no established causal diagnosis; bounded Open margin and ready-timestamp fix are source-reviewed changes, not proof of earlier native cause.",
+    "No further forced-race hook, new producer or native rerun is required to publish this specifically bounded scope. Remaining native criteria stay open for a future coherent acceptance group."
+  ]
+}

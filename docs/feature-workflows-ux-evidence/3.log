@@ -1,0 +1,352 @@
+   Compiling protoinputmux v0.1.0 (E:\Kenny\Documents\GitHub\ProtoInputMux-ux\crates\protoinputmux)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 54.41s
+     Running unittests src\lib.rs (E:\Kenny\Documents\GitHub\ProtoInputMux-ux-target\debug\deps\cursor_observer-88216c556ac703f6.exe)
+
+running 6 tests
+test tests::reassociation_rejects_late_old_reservation_and_repairs_stale_slot ... ok
+test tests::private_wake_coalesces_peeks_and_rejects_old_association_cookie ... ok
+test tests::incomplete_capture_is_fallback_instead_of_valid_without_payload ... ok
+test tests::native_busy_retry_is_only_for_unchanged_current_request ... ok
+test tests::native_sample_eligibility_uses_generation_and_context_only ... ok
+test tests::notification_arriving_during_receive_uses_post_wake_generation ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running unittests src\lib.rs (E:\Kenny\Documents\GitHub\ProtoInputMux-ux-target\debug\deps\cursor_snapshot_protocol-05467949c46e1594.exe)
+
+running 5 tests
+test tests::conditional_outcome_cannot_overwrite_a_later_notification ... ok
+test tests::newest_request_supersedes_a_pending_capture_status ... ok
+test tests::validates_custom_bounds_and_premultiplied_payload ... ok
+test tests::validates_known_shapes_status_and_reserved_wire_values ... ok
+test tests::concurrent_notifications_receive_unique_generations ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running unittests src\lib.rs (E:\Kenny\Documents\GitHub\ProtoInputMux-ux-target\debug\deps\mux_core-881490ceb8dfdba0.exe)
+
+running 75 tests
+test annotation::tests::invalid_configuration_and_export_bounds_do_not_mutate_document ... ok
+test annotation::tests::rendering_emits_real_alpha_pixels_and_clips_negative_origin ... ok
+test annotation::tests::activators_cover_five_raw_button_pairs ... ok
+test annotation::tests::user_export_clips_to_bounds_preserves_alpha_and_original_paint_order ... ok
+test annotation::tests::eraser_and_clear_are_scoped_to_the_owner ... ok
+test annotation::tests::cloned_document_is_an_independent_request_time_ink_snapshot ... ok
+test annotation::tests::eraser_splits_only_the_owner_segment_and_preserves_both_sides ... ok
+test automation::tests::cancellation_reports_only_users_that_received_actions ... ok
+test automation::tests::clips_reject_bad_timing_packets_and_speed ... ok
+test automation::tests::graph_fans_out_once_in_topological_order_and_rejects_cycles ... ok
+test annotation::tests::eraser_split_budget_failure_is_atomic ... ok
+test automation::tests::playback_delay_is_wall_clock_and_does_not_scale ... ok
+test desktop::tests::conditional_horizontal_emulation_uses_raw_button_mask_and_scales_once ... ok
+test desktop::tests::extended_overlay_bounds_and_idle_timeout_are_exact ... ok
+test desktop::tests::horizontal_wheel_policy_converts_signed_data_with_independent_scale ... ok
+test automation::tests::recorder_capacity_preflight_does_not_append_or_change_prior_events ... ok
+test automation::tests::playback_schedules_and_limits_catch_up ... ok
+test desktop::tests::bounds_resolve_legacy_window_monitor_and_intersecting_region ... ok
+test desktop::tests::independent_subpixel_motion_negative_origin_and_bounds ... ok
+test desktop::tests::reject_invalid_settings ... ok
+test emulated::tests::identities_and_packets_are_distinct_and_checked ... ok
+test keyboard::tests::legacy_defaults_and_explicit_keyboard_options_round_trip ... ok
+test desktop::tests::radial_curves_preserve_small_motion_and_bound_large_gain ... ok
+test desktop::tests::old_cursor_settings_default_new_appearance_and_bounds_fields ... ok
+test desktop::tests::motion_coalescing_defaults_are_backward_compatible_and_ranges_are_bounded ... ok
+test desktop::tests::mapped_button_flags_preserve_edges_disable_sources_and_apply_legacy_swap ... ok
+test macro_authoring::tests::circle_and_figure_eight_have_exact_closed_landmarks ... ok
+test macro_authoring::tests::remap_changes_owners_without_changing_packet_identity_or_time ... ok
+test macro_authoring::tests::seeded_jiggle_is_repeatable_and_bounded ... ok
+test magnifier::tests::capture_region_clips_to_source_and_output_has_border_pixels ... ok
+test magnifier::tests::invalid_zoom_region_and_image_sizes_are_rejected ... ok
+test macro_authoring::tests::click_generators_pair_each_of_the_five_buttons_at_every_point ... ok
+test macro_authoring::tests::generators_reject_bounds_click_mismatch_and_event_overflow ... ok
+test macro_authoring::tests::edits_keep_stable_equal_time_order_and_are_atomic ... ok
+test motion_coalescing::tests::buffer_only_uses_bounded_age_and_identity_includes_geometry ... ok
+test magnifier::tests::placement_clamps_negative_origins_and_supports_dock_and_fullscreen ... ok
+test macro_authoring::tests::polygon_generators_retain_corners_with_arbitrary_interval_counts ... ok
+test motion_coalescing::tests::delta_trigger_sums_transformed_samples_without_narrowing ... ok
+test motion_coalescing::tests::pushes_reject_more_than_safety_limit_without_mutating_state ... ok
+test magnifier::tests::zoom_two_and_four_sample_distinct_known_source_pixels ... ok
+test motion_coalescing::tests::count_trigger_keeps_only_latest_absolute_goal ... ok
+test motion_coalescing::tests::timer_uses_oldest_sample_and_caps_timer_only_event_count ... ok
+test output::tests::button_down_and_up_select_the_same_key_and_non_buttons_bypass_rules ... ok
+test output::tests::validation_bounds_virtual_keys_and_source_change_detection_is_precise ... ok
+test replication::tests::failed_history_replacement_is_atomic_and_undo_redo_roundtrips ... ok
+test output::tests::defaults_preserve_legacy_mouse_behavior_and_allow_shared_key_outputs ... ok
+test replication::tests::diamond_uses_one_canonical_path_and_stable_topological_order ... ok
+test replication::tests::filtered_components_apply_master_and_fine_grained_mouse_gates ... ok
+test replication::tests::route_composes_relative_offsets_and_timing_with_anchor_reset ... ok
+test replication::tests::legacy_identity_is_stable_and_explicit_id_survives_device_change ... ok
+test replication::tests::persisted_definition_rejects_composed_limits_before_serialization_or_history_mutation ... ok
+test replication::tests::old_edge_json_gets_default_options_and_roundtrips ... ok
+test replication::tests::missing_keyboard_destination_is_not_resolved ... ok
+test replication::tests::graph_roundtrip_validates_diamond_and_categories ... ok
+test replication::tests::route_rejects_composed_resource_limits_and_bad_options ... ok
+test replication::tests::stable_ids_survive_reorder_and_removal_never_retargets ... ok
+test routing::tests::append_and_retire_keep_existing_indices_and_ownership ... ok
+test routing::tests::changing_mode_clears_root_without_losing_focus ... ok
+test routing::tests::concurrent_process_ownership_and_keyboard_focus_survive_other_users ... ok
+test routing::tests::retiring_owner_releases_only_its_process_lease ... ok
+test routing::tests::switched_root_blocks_clicks_but_not_other_window_actions ... ok
+test tests::conditional_horizontal_emulation_requires_virtual_mouse_and_desktop_route ... ok
+test tests::duplicate_explicit_seat_ids_are_rejected ... ok
+test tests::extended_appearance_requires_an_overlay_route_without_requiring_hardware ... ok
+test tests::horizontal_preservation_requires_a_desktop_cursor_route ... ok
+test tests::pointers_are_independent_and_clamped ... ok
+test tests::rejects_unknown_schema ... ok
+test tests::resolves_current_handles ... ok
+test tests::legacy_profile_materializes_stable_seat_ids_and_default_graph ... ok
+test tests::rejects_conflicting_assignments ... ok
+test tests::whitespace_only_seat_id_is_rejected_without_legacy_migration ... ok
+test tests::rejects_disconnected_or_wrong_kind ... ok
+test tests::rejects_null_and_oversized_backend_handles ... ok
+test tests::profile_round_trip ... ok
+test automation::tests::recorder_rejects_budget_overflow_without_discarding_prior_events ... ok
+
+test result: ok. 75 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.07s
+
+     Running unittests src\lib.rs (E:\Kenny\Documents\GitHub\ProtoInputMux-ux-target\debug\deps\mux_windows-d6192e73ff86d881.exe)
+
+running 20 tests
+test keyboard_focus::tests::focused_retries_are_bounded_and_native_is_immediate ... ok
+test keyboard_focus::tests::focused_stops_at_first_eligible_control ... ok
+test keyboard_focus::tests::only_same_root_or_owned_popup_chain_is_eligible ... ok
+test keyboard_focus::tests::foreign_candidate_rejection_never_expands_scope ... ok
+test keyboard_focus::tests::clicked_uses_no_gui_queries ... ok
+test keyboard_focus::tests::caret_uses_valid_focused_fallback_with_reason ... ok
+test keyboard_focus::tests::disappearing_clicked_window_fails_instead_of_falling_back ... ok
+test lifecycle::tests::abi_sizes_match_native_contract ... ok
+test lifecycle::tests::acknowledgement_rejects_stale_generation_and_session ... ok
+test lifecycle::tests::commit_is_explicit_and_exactly_once ... ok
+test lifecycle::tests::commit_rejects_a_changed_session_identity ... ok
+test queue_fence::tests::recipient_tracking_rejects_a_4097th_thread_atomically ... ok
+test lifecycle::tests::dropping_supervisor_cannot_commit_a_transaction ... ok
+test power::tests::creates_and_releases_a_scoped_power_request ... ok
+test queue_fence::tests::recipient_tracking_retargets_a_thread_without_duplication ... ok
+test targets::eligibility_tests::old_and_unreadable_backends_fail_closed ... ok
+test targets::eligibility_tests::only_committed_prepared_targets_can_be_reused ... ok
+test overlay::tests::application_image_preserves_alpha_hotspot_and_cached_metadata ... ok
+test overlay::tests::overlay_lifecycle_and_emergency_message ... ok
+test overlay::tests::measured_overlay_stays_bounded_and_reuses_pixels_when_moving ... ok
+
+test result: ok. 20 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.15s
+
+     Running tests\abi.rs (E:\Kenny\Documents\GitHub\ProtoInputMux-ux-target\debug\deps\abi-4b70725332e9ba22.exe)
+
+running 3 tests
+test fixture_child ... ok
+test closing_job_terminates_owned_worker ... ok
+test ffi_configuration_and_partial_failure_cleanup ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 8.47s
+
+     Running tests\hit_test.rs (E:\Kenny\Documents\GitHub\ProtoInputMux-ux-target\debug\deps\hit_test-30d566768179b2e7.exe)
+
+running 2 tests
+test surface_fixture ... ok
+test external_clickthrough_overlay_does_not_mask_child_target_or_scope ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.48s
+
+     Running unittests src\main.rs (E:\Kenny\Documents\GitHub\ProtoInputMux-ux-target\debug\deps\protoinputmux-5db25e81fbb44ea9.exe)
+
+running 179 tests
+test agent_export::tests::malformed_paths_are_rejected_before_preparation ... ok
+test agent_runtime::annotation_export::tests::export_uses_capture_grant_and_full_ink_scope_without_session_control ... ok
+test agent_runtime::annotation_export::tests::original_user_and_all_user_roster_changes_invalidate_precommit_authority ... ok
+test agent_runtime::annotation_scope_tests::magnifier_configuration_uses_separate_session_and_capture_grants ... ok
+test agent_runtime::annotation_scope_tests::magnifier_refresh_uses_capture_grant_without_session_control ... ok
+test agent_runtime::annotation_scope_tests::per_user_and_global_annotation_capabilities_cannot_cross_scope ... ok
+test agent_runtime::app_preferences_tests::old_configure_shape_preserves_appearance_and_explicit_fields_merge ... ok
+test agent_runtime::app_preferences_tests::preference_reply_distinguishes_document_from_live_shortcut_health ... ok
+test agent_runtime::cleanup_capacity_tests::failed_retirements_keep_capacity_until_their_saved_releases_complete ... ok
+test agent_runtime::cleanup_tests::retries_are_due_bounded_and_fair_without_discarding_failed_owners ... ok
+test agent_runtime::graph_scope_tests::whole_session_graph_scope_requires_explicit_pids_all_users_and_current_recipients ... ok
+test agent_runtime::virtual_user_scope_tests::creator_receipt_exempts_only_its_active_generated_target ... ok
+test agent_runtime::virtual_user_scope_tests::receipt_cleanup_removes_retired_ids_and_revoke_clears_all_clients ... ok
+test agent_ui::tests::passive_client_event_updates_cleanup_without_acknowledging_policy_draft ... ok
+test annotation_runtime::export_tests::existing_export_json_keeps_all_users_and_explicit_scope_round_trips ... ok
+test annotation_ui::focus_user_tests::external_ack_cannot_consume_gui_pending_and_authoritative_key_refreshes ... ok
+test agent_runtime::cleanup_tests::disconnect_revokes_and_retries_saved_releases_without_harming_other_clients ... ok
+test annotation_ui::focus_user_tests::focus_keeps_pending_recipient_and_restores_each_users_staged_fields ... ok
+test app_lifecycle::tests::action_reassignment_reuses_the_accepted_hotkey_chord ... ok
+test app_lifecycle::tests::candidate_conflict_keeps_previous_stop_binding_dispatchable ... ok
+test app_lifecycle::tests::inactive_set_requires_commit_and_retries_latest_accepted_edits ... ok
+test app_lifecycle::tests::commit_rollback_preserves_healthy_set_but_failed_restoration_disables_dispatch ... ok
+test app_lifecycle::tests::shared_stop_binding_is_dispatched_only_after_commit_and_released_on_rollback ... ok
+test app_lifecycle::tests::shared_stop_health_policy_tracks_only_committed_shortcut_preferences ... ok
+test app_lifecycle::tests::staged_binding_is_ignored_until_commit_and_drop_can_rollback ... ok
+test app_lifecycle::tests::startup_conflict_releases_every_staged_binding_and_retry_recovers_saved_set ... ok
+test app_preferences::tests::defaults_keep_routing_and_login_opt_in_separate ... ok
+test app_preferences::tests::codec_is_bounded_strict_and_mcp_cannot_change_startup_registration ... ok
+test app_preferences::tests::emergency_chord_is_reserved_for_stop ... ok
+test app_preferences::tests::invalid_or_duplicate_shortcuts_are_rejected_before_store_mutation ... ok
+test app_preferences::tests::old_preferences_default_appearance_and_zoom_and_reject_invalid_values ... ok
+test app_preferences::tests::startup_test_key_is_limited_to_disposable_prefix ... ok
+test app_preferences_ui::tests::shortcut_parser_requires_exactly_one_key_and_a_safe_modifier ... ok
+test desktop_router::release_tests::last_key_owner_survives_failed_release_and_retries ... ok
+test desktop_router::release_tests::motion_failure_preserves_releases_and_unrelated_user_input ... ok
+test emergency_stop::tests::fixed_protocol_round_trip_and_rejection ... ok
+test emergency_stop::tests::heartbeat_age_uses_sender_time_and_rejects_future ... ok
+test emergency_stop::tests::independent_subscribers_receive_each_pulse_once ... ok
+test emergency_stop::tests::invalid_peer_sequence_clock_and_stale_health_are_terminal ... ok
+test emergency_stop::tests::stop_message_requires_exact_id_and_chord ... ok
+test gui::attachment_notice_tests::attachment_notice_requires_matching_completion_and_clears_on_stop ... ok
+test gui::runtime_roster_tests::external_roster_appends_then_tombstones_without_overwriting_existing_drafts ... ok
+test gui::runtime_roster_tests::mismatched_or_short_roster_cannot_partially_change_profile ... ok
+test gui_bridge::tests::bearer_token_comparison_handles_length_without_early_return ... ok
+test agent_export::tests::dropping_uncommitted_request_stops_worker_without_creating_destination ... ok
+test gui_bridge::tests::idle_named_pipe_is_not_eof_and_peer_close_is_detected ... ok
+test agent_runtime::annotation_export::tests::timeout_retains_capacity_then_finishes_as_unacknowledged_telemetry_without_file ... ok
+test gui_bridge::tests::only_exact_client_sequence_acknowledges_a_request ... ok
+test keyboard_slider::tests::accesskit_actions_route_through_the_same_bounds_without_nonfinite_corruption ... ok
+test keyboard_slider::tests::explicit_widget_identity_preserves_focus_and_actions_when_layout_reparents_slider ... ok
+test keyboard_slider::tests::focused_keyboard_changes_preserve_steps_endpoints_and_bounds ... ok
+test keyboard_slider::tests::rendering_preserves_loaded_off_grid_and_nonfinite_values ... ok
+test keyboard_slider::tests::tab_moves_from_slider_to_apply_button ... ok
+test keyboard_slider::tests::unfocused_and_disabled_sliders_do_not_consume_or_apply_keys ... ok
+test macro_studio::tests::acknowledged_but_held_release_retains_owner_while_other_users_cleanup_and_retry_once ... ok
+test macro_studio::tests::agent_can_position_an_unfocused_cursor_then_click_an_allowed_target ... ok
+test macro_studio::tests::agent_cleanup_sweeps_all_owners_and_users_and_retries_only_failed_releases ... ok
+test macro_studio::tests::authorized_raw_mouse_activity_precedes_suppression_but_not_scope_validation ... ok
+test macro_studio::tests::cancelling_one_agent_preserves_other_agent_studio_and_manual_key_owners ... ok
+test macro_studio::tests::cancelling_replicas_preserves_ordinary_and_other_program_claims ... ok
+test macro_studio::tests::connected_authoring_binds_devices_and_rejects_invalid_edits_atomically ... ok
+test macro_studio::tests::connected_lane_ownership_blocks_replacement_and_cancel_preserves_direct_claims ... ok
+test macro_studio::tests::connected_macro_cannot_send_to_another_permitted_keyboard_process ... ok
+test macro_studio::tests::connected_mutations_preserve_a_gui_owned_playback ... ok
+test macro_studio::tests::connected_play_cannot_steal_holds_and_reset_preserves_manual_input ... ok
+test macro_studio::tests::connected_play_preflights_composite_and_completion_releases_its_owner ... ok
+test macro_studio::tests::connected_playback_pins_window_even_when_new_process_is_permitted ... ok
+test macro_studio::tests::connected_record_start_checks_target_grant_holds_and_composite_without_preemption ... ok
+test macro_studio::tests::connected_recording_captures_only_its_owners_accepted_logical_actions ... ok
+test macro_studio::tests::delayed_agent_replica_rechecks_target_pid_and_still_allows_its_release ... ok
+test macro_studio::tests::delayed_studio_replica_rechecks_scope_and_releases_only_its_origin ... ok
+test macro_studio::tests::disabled_agent_keyboard_keeps_source_permissions_and_skips_irrelevant_pid_checks ... ok
+test macro_studio::tests::disabled_keyboard_sources_do_not_record_or_queue_but_other_users_continue ... ok
+test macro_studio::tests::disabled_manual_keyboard_does_not_interrupt_studio_playback ... ok
+test macro_studio::tests::disabled_replica_skips_new_keys_and_text_but_saved_up_can_retry ... ok
+test macro_studio::tests::distinct_extended_source_keys_share_output_until_both_release ... ok
+test macro_studio::tests::empty_or_invalid_connected_recording_preserves_the_committed_clip ... ok
+test macro_studio::tests::failed_agent_cleanup_stops_all_owned_work_and_retains_studio_identity_until_retry ... ok
+test macro_studio::tests::failed_tap_release_is_not_recorded_and_keeps_its_input_claim_retryable ... ok
+test macro_studio::tests::global_cancel_attempts_later_lanes_and_global_cleanup_after_failed_lane ... ok
+test macro_studio::tests::graph_transaction_preserves_recording_on_rejection_and_releases_holds_only_on_apply ... ok
+test macro_studio::tests::idle_guard_detects_replica_path_through_selected_user_without_mutation ... ok
+test macro_studio::tests::idle_guard_detects_shared_keyboard_output_without_releasing_any_owner ... ok
+test macro_studio::tests::idle_guard_ignores_an_unrelated_user_but_rejects_a_disabled_source_claim_read_only ... ok
+test macro_studio::tests::legacy_disabled_mapping_keeps_raw_source_button_for_conditionals ... ok
+test macro_studio::tests::legacy_disabled_mapping_still_reaches_earlier_button_interceptor ... ok
+test macro_studio::tests::mapped_button_claim_keeps_the_unmodified_source_predicate ... ok
+test macro_studio::tests::mouse_to_key_outputs_and_their_replicas_survive_disabled_keyboard_sources ... ok
+test macro_studio::tests::output_aliases_share_native_key_with_distinct_raw_source_owners ... ok
+test macro_studio::tests::output_rule_change_releases_changed_pairs_and_rejects_invalid_without_side_effects ... ok
+test macro_studio::tests::partial_text_failure_records_only_the_previously_successful_prefix ... ok
+test macro_studio::tests::recording_disconnect_and_local_discard_preserve_clip_and_unrelated_input ... ok
+test macro_studio::tests::recording_duration_failure_discards_before_delivery_and_allows_held_release ... ok
+test macro_studio::tests::rejected_independent_and_composite_mutations_keep_active_claims ... ok
+test macro_studio::tests::releasing_studio_claim_preserves_composite_key_and_manual_button_owners ... ok
+test macro_studio::tests::replica_up_preserves_another_source_in_the_same_composite_program ... ok
+test macro_studio::tests::retiring_path_user_releases_derived_holds_but_preserves_destination_manual_owner ... ok
+test macro_studio::tests::settings_cleanup_releases_only_claims_from_selected_devices ... ok
+test macro_studio::tests::settings_interruption_rejects_recording_before_touching_capture_or_input ... ok
+test macro_studio::tests::source_button_mask_tracks_disabled_and_key_mapped_claims_by_origin ... ok
+test macro_studio::tests::studio_cancel_preserves_manual_key_hold_until_manual_release ... ok
+test macro_studio::tests::translated_clear_all_shortcut_requires_grant_for_every_active_user ... ok
+test macro_studio_ui::focus_user_tests::agent_recording_has_discard_control_but_never_local_stop ... ok
+test macro_studio_ui::focus_user_tests::external_ack_for_another_lane_does_not_change_selected_lane_status ... ok
+test macro_studio_ui::focus_user_tests::external_agent_ack_refreshes_lane_without_consuming_local_edit ... ok
+test macro_studio_ui::focus_user_tests::focus_keeps_pending_playback_user_and_preserves_each_users_clip_state ... ok
+test magnifier_ui::focus_user_tests::external_agent_state_does_not_consume_pending_gui_settings ... ok
+test magnifier_ui::focus_user_tests::focus_keeps_pending_recipient_and_refreshes_region_for_new_user ... ok
+test mcp::tests::failed_session_remains_inspectable_and_blocks_start_before_any_mutation ... ok
+test mcp::tests::graph_inspection_needs_no_command_acknowledgement ... ok
+test mcp::tests::output_rules_decode_through_mcp_and_worker_request_boundaries ... ok
+test mcp::tests::rejected_release_preserves_live_session_and_acknowledged_settings ... ok
+test mcp::tests::tagged_gui_command_rejection_keeps_the_connected_snapshot_live ... ok
+test mcp::tests::tool_router_starts_with_valid_object_schemas ... ok
+test output_runtime::tests::physical_default_rules_are_valid_but_key_outputs_need_virtual_mouse_and_keyboard ... ok
+test output_runtime::tests::removed_slots_are_not_resolved_or_used_for_translation ... ok
+test output_runtime::tests::text_input_is_resolved_to_its_virtual_user_and_bypasses_key_rules ... ok
+test output_ui::tests::acknowledgement_after_reorder_cannot_commit_to_another_identity ... ok
+test agent_export::tests::invalid_prepared_pixels_never_offer_a_commit_or_touch_the_destination ... ok
+test output_ui::tests::delayed_acknowledgement_names_its_user_after_selection_changes ... ok
+test output_ui::tests::discard_restores_latest_committed_and_profile_save_is_memory_only ... ok
+test output_ui::tests::external_sync_preserves_dirty_values_by_identity_across_append_and_reorder ... ok
+test output_ui::tests::initial_profile_key_mappings_populate_editor_and_start_clean ... ok
+test agent_export::tests::typed_metadata_is_ready_before_commit_and_matches_published_pixels ... ok
+test output_ui::tests::pending_ack_and_rejection_preserve_draft_until_successful_ack ... ok
+test output_ui::tests::unadded_key_entry_blocks_commit_until_mapping_is_added ... ok
+test profile_store::tests::decode_materializes_legacy_identity_and_encode_persists_it ... ok
+test profile_store::tests::decode_rejects_oversized_input_before_json_parsing ... ok
+test output_ui::tests::compact_page_keeps_footer_visible_at_minimum_content_size ... ok
+test gui::font_fallback_tests::missing_optional_font_leaves_definitions_unchanged ... ok
+test profile_store::tests::failed_temp_write_does_not_leave_a_partial_destination ... ok
+test replication_queue::tests::barrier_flushes_final_motion_before_discrete_work_and_starts_new_segment ... ok
+test replication_queue::tests::byte_budget_rejects_without_mutating_admitted_actions ... ok
+test replication_queue::tests::cancellation_releases_capacity_by_origin_and_suspension_rejects_work ... ok
+test replication_queue::tests::motion_coalesces_latest_goal_and_advances_with_bounded_steps ... ok
+test replication_queue::tests::overflow_is_typed_atomic_and_keeps_an_admitted_release_event ... ok
+test replication_queue::tests::retiring_an_intermediate_user_cancels_paths_without_touching_other_sources ... ok
+test replication_queue::tests::route_slots_preserve_order_across_event_components ... ok
+test replication_queue::tests::slot_batch_admission_counts_unique_keys_without_future_clock_pruning ... ok
+test replication_ui::tests::external_ack_updates_actual_graph_without_consuming_local_pending_or_editor ... ok
+test replication_ui::tests::external_graph_refreshes_clean_draft_but_preserves_unsent_local_history ... ok
+test replication_ui::tests::failed_apply_keeps_draft_applied_graph_and_undo_history ... ok
+test replication_ui::tests::invalid_advanced_options_do_not_change_staged_or_committed_graph ... ok
+test replication_ui::tests::newer_external_graph_survives_delayed_local_ack_and_stale_telemetry ... ok
+test replication_ui::tests::pending_apply_requires_exact_revision_and_matching_edges ... ok
+test replication_ui::tests::roster_graph_pruning_keeps_pending_draft_and_history ... ok
+test replication_ui::tests::worker_graph_sync_propagates_managed_definition_without_discarding_staged_draft ... ok
+test router::tests::exited_original_process_retires_tokens_without_a_delivery_attempt ... ok
+test router::tests::failed_native_down_does_not_create_a_held_token ... ok
+test router::tests::failed_release_retains_original_owner_and_is_retryable ... ok
+test router::tests::failed_release_retries_exact_token_and_success_clears_it ... ok
+test router::tests::keyboard_options_require_paired_virtual_desktop_routing ... ok
+test router::tests::release_failure_is_downcastable_and_identifies_each_token ... ok
+test router::tests::release_sweep_attempts_other_users_after_a_failure ... ok
+test router::tests::resume_attempts_healthy_seats_after_one_seat_is_unavailable ... ok
+test router::tests::successful_native_down_keeps_its_original_recipient ... ok
+test session::attachment_event_tests::completion_expires_only_matching_progress_and_is_not_replayed ... ok
+test session::attachment_event_tests::release_rejection_is_typed_nonterminal_and_not_replayed ... ok
+test session::attachment_event_tests::session_commit_requires_stopped_and_successful_worker_exit ... ok
+test session::attachment_event_tests::startup_scope_deduplicates_required_targets_without_expanding_allowlist ... ok
+test session_recovery::tests::assigned_enrollment_survives_failure_before_configured ... ok
+test session_recovery::tests::clean_stop_clears_targets_and_drop_stop_cannot_restart_stopping ... ok
+test session_recovery::tests::failed_cleanup_retains_only_affected_targets_until_original_exits ... ok
+test session_recovery::tests::registry_captures_assigned_original_before_any_configured_event ... ok
+test session_recovery::tests::registry_releases_unused_scope_on_failure_without_quarantining_it ... ok
+test session_recovery::tests::stopping_needs_terminal_even_if_all_targets_exited_and_configured_arrives_late ... ok
+test agent_export::tests::preparation_and_denial_preserve_existing_destination ... ok
+test virtual_users::tests::invalid_replication_options_fail_before_router_mutation ... ok
+test virtual_users::tests::rejected_starts_and_original_stop_leave_roster_and_graph_unchanged ... ok
+test virtual_users::tests::start_stop_and_restart_append_fresh_slots_without_releasing_other_users ... ok
+test virtual_users_ui::external_state_tests::external_ack_preserves_pending_request_and_unsubmitted_fields ... ok
+test virtual_users_ui::external_state_tests::newer_external_roster_survives_delayed_local_ack ... ok
+test profile_store::tests::invalid_existing_profile_preserves_main_and_backup ... ok
+test agent_export::tests::approved_export_atomically_replaces_destination_with_decodable_pixels ... ok
+test profile_store::tests::failed_replace_keeps_open_main_and_exact_backup_and_cleans_temp ... ok
+test ui_script::keyboard_tests::local_script_traverses_focus_adjusts_value_and_activates_real_buttons ... ok
+test profile_store::tests::save_and_restore_keep_exact_previous_valid_bytes_as_backup ... ok
+test gui_bridge::tests::frames_roundtrip_and_enforce_payload_limit ... ok
+test gui_bridge::tests::named_pipe_transfers_png_budget_sized_json_in_both_directions ... ok
+
+test result: ok. 179 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 4.42s
+
+   Doc-tests cursor_snapshot_protocol
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests mux_core
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests mux_windows
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

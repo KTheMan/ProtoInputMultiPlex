@@ -1,0 +1,85 @@
+{
+  "date": "2026-11-06",
+  "decision": "MAPPER_FLOW_LIBRARY_ACCEPTED",
+  "scope": "Named Mapper flow library, Ouroboros JSON transfer, and standalone MCP opt-in.",
+  "verification": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-flow-library-20261106\\checks-005\\verification.json",
+    "sha256": "c88f26893be1aab13162227f4fc69c01b4bd4c91d551fd85742afb56cab6bb9c"
+  },
+  "review": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-flow-library-20261106\\independent-acceptance.json",
+    "sha256": "f232df6238024b3e0e7ba8468ebd2e7d335a3d44eae2611abae1031052688a5a"
+  },
+  "publication": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-flow-library-20261106\\publication.json",
+    "sha256": "65b9a7090ebadc129d78adb8ae89715f454ec6732445d9bc888c63ca6f2bdd82"
+  },
+  "workspace_tests": {
+    "passed": 789,
+    "failed": 0,
+    "ignored": 19
+  },
+  "x64_image": {
+    "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-flow-library-20261106\\checks-005\\x64\\protoinputmultiplex.exe",
+    "sha256": "7fb434ca09d2669eb677d1fdfbb7b4d7667adbd87c15bcd89cb8693a4fa3a263"
+  },
+  "checks": {
+    "fmt": 0,
+    "clippy": 0,
+    "workspace-tests": 0,
+    "build-gui": 0
+  },
+  "producer": {
+    "original_session": 5302,
+    "original_exit_code": 0
+  },
+  "native": {
+    "evidence": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mt-e4757c15f25a\\evidence.json",
+      "sha256": "e52333c8ee22ada7951a8374f5090da28f51f6320b54cf9ea92ae280e1103582"
+    },
+    "driver": {
+      "path": "C:\\Users\\Kenny\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\ProtoInputMultiPlex\\mapper-flow-library-20261106\\native-v2.py",
+      "sha256": "b72d7c725855212964d4de72c2631f56f5b8dd197efa22abfd1253bfb383de07"
+    },
+    "original_session": 48326,
+    "original_exit_code": 0,
+    "scope": {
+      "virtual_pairs": 1,
+      "GUI": 1,
+      "targets": 0,
+      "MCP": 1,
+      "hardware_input": 0,
+      "routing_or_injection": 0
+    },
+    "browser_capture": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\mt-e4757c15f25a\\native\\saved-flow-library.png",
+      "sha256": "73dc459ef34dfd30f48a2a16b36ae9bf2024f64da7dc46f9e7f359a84fb53d85",
+      "geometry": {
+        "hwnd": 4594920,
+        "dpi": 96,
+        "client_pixels": [
+          680,
+          620
+        ],
+        "client_logical": [
+          680.0,
+          620.0
+        ],
+        "window_rect": [
+          130,
+          130,
+          826,
+          789
+        ]
+      }
+    },
+    "gui_exit": 0,
+    "mcp_exit": 0
+  },
+  "accepted_observations": [
+    "Standalone MCP saved, listed and loaded a version-1 named Pointer trail flow.",
+    "The stopped GUI loaded the same graph as a draft, exported it to JSON and saved a second named copy.",
+    "Undo restored the original draft. Import restored the same graph as a draft while the applied graph, revision and armed state stayed at baseline."
+  ]
+}

@@ -1,0 +1,93 @@
+{
+  "status": "COMPOSED_BOUNDED_VIRTUAL_STANDALONE_ACCEPTED",
+  "date": "2026-10-21",
+  "scope": "One owned x64 standalone MCP controller/worker and current-binary native-controls EDIT fixture: live application_focus prevalidation rejection, preserved session/settings/original held Control, original Control UP to the same EDIT, normal Stop and owned cleanup, plus a later missing-only read-only private-image absence observation.",
+  "change": "Rust distinguishes read-only Settings/Mode command rejection from typed saved-release failure. Standalone MCP returns Command rejected immediately for validation and preserves input release incomplete for actual saved UP failures. GUI has distinct source-level nonterminal statuses; no new tool or permission.",
+  "producer": {
+    "path": "runtime/producer-input-rejection-feedback-20261021-attempt002/verification.json",
+    "sha256": "66b3f04cdf347344f6d2799f38d75e976d64d0a605b67438daf37247527e81f0",
+    "checks": 5,
+    "workspace_tests": {
+      "passed": 481,
+      "failed": 0,
+      "ignored": 3
+    },
+    "builds": [
+      "x64 application/observer",
+      "i686 application/observer"
+    ],
+    "source_paths": 865,
+    "runtime_files_unchanged": 10
+  },
+  "independent_composed_acceptance": {
+    "path": "runtime/input-rejection-feedback-composed-review.json",
+    "sha256": "2e2ed1086f2e3eb81587dfeb16cc5ced052143dc7193e334cb9541c2c3a579d2",
+    "decision": "INPUT_REJECTION_FEEDBACK_COMPOSED_BOUNDED_ACCEPTED"
+  },
+  "original_native_attempt": {
+    "evidence_path": "runtime/native-input-rejection-feedback-attempt001/evidence.json",
+    "evidence_sha256": "1b23411b3e7d6c6dd275a600abaa7c3c4b02e748f71962388b72ab380e104336",
+    "aggregate_result": "NOT_ACCEPTED",
+    "aggregate_preserved_unchanged": true,
+    "core_functional_result": "PASS",
+    "independent_review_path": "runtime/native-input-rejection-feedback-attempt001-review.json",
+    "independent_review_sha256": "50b0848ba3f76f3fca828cddaf8dcf63f1e18ab237c7d35d6eacae022896bfe8",
+    "probe_sha256": "4c61adec8007844c1cc185d37c3b46f67da62f04f3a55d04892ea567b5482263",
+    "binding_sha256": "1486cc2ca956a7a94083cc50caf6630da4e8edaab4567f966a22bb826c94fdb2",
+    "runner_sha256": "a4a95ae365fe872aff40f79d787c924ae6901c0e230062a4e54202c425f075c7",
+    "source_review_sha256": "b3919e055b4785e2e4c13639e4db8a5a1926f41b05249bfded4834637f33309c",
+    "original_cleanup_error": [
+      "private image absence: RuntimeError"
+    ],
+    "fallbacks": []
+  },
+  "supplement": {
+    "evidence_path": "runtime/native-input-rejection-feedback-absence-attempt001.json",
+    "evidence_sha256": "ee2befb7dc4652cd493e62382bd8557ec47d19ca22170236ba1a3c5f14fdc2e5",
+    "result": "PASS",
+    "runner_sha256": "1e283fa4b7d902bd953b558578ab705044bb1543f28edbae50c77984b755044a",
+    "source_review_sha256": "ad274d13c5dfd87d43c05802e048004a6b8d92c6d6d6816e150198d4ce0afcce",
+    "processes_checked": 741,
+    "private_matches": [],
+    "exact_protected_exclusions": [
+      {
+        "pid": 108,
+        "name": "Secure System",
+        "parent_pid": 4,
+        "creation_time": 1792431115.5251193
+      }
+    ],
+    "elapsed_seconds": 3.0,
+    "routing_or_virtual_input_calls": 0,
+    "native_product_or_fixture_launches": 0,
+    "process_terminations": 0,
+    "builds": 0
+  },
+  "accepted_observations": [
+    "Exact command-rejection text, running session, acknowledged settings, recovery and original held Control preserved.",
+    "Original Control UP delivered exactly once to the same retained EDIT and cleared virtual holds.",
+    "Normal Stop, retained worker handle signaled, overlay absent, MCP EOF exit 0 and owned root WM_CLOSE exit 0; no fallback.",
+    "Later read-only absence supplement found zero private matches among 741 processes and confirmed original owned PID/HWND absence with one exact preexisting system-process exclusion."
+  ],
+  "source_only_limits": {
+    "native": "The live application_focus prevalidation failure returned Command rejected without releasing the original held Control; the saved original UP then succeeded on the same EDIT.",
+    "source_and_passing_unit_tests": "Typed Settings and Mode validation events remain distinct from saved ReleaseFailure/InputRejected. Production MCP exchange tests verify Settings/Mode negative ACKs return without waiting for State/Stop and release rejection retains input release incomplete detail. GUI handling has distinct source-level nonterminal statuses.",
+    "not_native_validated": "No failed-release native scenario, live Mode rejection or GUI-connected feedback workflow was executed in this bounded gate."
+  },
+  "caveats": [
+    "Original per-step raw JSON replies were not retained. Exact rejection/session/policy/recovery claims rely on the unchanged reviewed runner assertions and completion receipts, with the retained native trace independently corroborating delivered key edges.",
+    "The supplemental absence audit is a later read-only observation; it cannot recover the original missing row. The original raw aggregate remains NOT_ACCEPTED permanently as historical evidence.",
+    "A process snapshot establishes observed absence during that bounded audit, with the exact protected-process exception; it does not promise future global process state."
+  ],
+  "launch_counter_scope": "Supplement zero-launch counts refer to additional product/fixture/worker launches. Source inventory invokes read-only git listing subprocesses.",
+  "limits": [
+    "One owned standalone x64 virtual-input workflow only.",
+    "Mode and GUI feedback remain source/unit coverage only. No hardware, i686 native/GUI, broad application support, P1, full UX, desktop-wide or same-process isolation, or Ultra parity acceptance is claimed.",
+    "No new i686 native test, failed-release native scenario, GUI-connected feedback workflow, post-Stop reuse, shipping or historical GUI-stall fix claim."
+  ],
+  "preserved_failed_producer": {
+    "path": "runtime/producer-input-rejection-feedback-20261021-attempt001/verification.json",
+    "sha256": "69606a8f875c29a3c62b5651250ede6b208e8dc42cd7673f90713ed585f5c236",
+    "classification": "Intentional interruption after verified compiler I/O nonprogress; owned build descendants retired; not a product/compiler error."
+  }
+}

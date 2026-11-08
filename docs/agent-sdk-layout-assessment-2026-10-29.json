@@ -1,0 +1,241 @@
+{
+  "decision": "ACCEPTED_BOUNDED_LAYOUT",
+  "group": "agent_sdk_layout",
+  "reviewer": "/root/sdk_acceptance",
+  "acceptance_scope": "ISOLATED_X64_OUROBOROS_ACCESS_SDK_PANES_AND_ACTION_FOOTERS",
+  "raw_evidence": {
+    "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\agent-sdk-layout-bd9508317613\\r\\evidence.json",
+    "sha256": "491d209938d30bc0f717fcc616e88b8fefcf9e9db2356174cb55ac5c5c25e232"
+  },
+  "frozen_candidate": {
+    "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\agent-sdk-layout-checks-20261029-attempt003\\verification.json",
+    "sha256": "0475146a90da2759cd6bfed89b9786e27277aae3f9280064f2d0ed175ded5d6b"
+  },
+  "source_review": {
+    "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\agent-sdk-layout-source-review-v3-20261029.json",
+    "sha256": "a0211f49898c6f2b3d95a5c4f149c87115bf2811e0c0bb3974b47ec581ecb921"
+  },
+  "build_review": {
+    "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\agent-sdk-layout-checks-20261029-attempt003-independent-review.json",
+    "sha256": "582e260660ee491aa2bd314b6cd540c863c478c1b62d523899a90c20724c896d"
+  },
+  "new_GUI": {
+    "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\agent-sdk-layout-checks-20261029-attempt003\\protoinputmultiplex.exe",
+    "sha256": "38c59666a26d976562187bfa75fbe796a189798fe7879d074782ad8747d83d0d"
+  },
+  "input_manifest": {
+    "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\agent-sdk-layout-candidate-20261029-attempt003\\manifest.json",
+    "sha256": "697627d5858a79f387528f09792fb57e747658612b77935d686c24510129fe20"
+  },
+  "driver": {
+    "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\agent-sdk-layout-native-v6-20261029.py",
+    "sha256": "1d3ab7915075247f8b6d674ac3b021c9a93ba9470731373ecf4aff8ea4b53f9b"
+  },
+  "gate": {
+    "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\agent-sdk-layout-native-gate-v6-20261029.json",
+    "sha256": "f4ea1e02f1ee49bcabfe5f15022f4810b94f014e5e90d102fb3a3f6d5af38a4c"
+  },
+  "driver_static_review": {
+    "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\agent-sdk-layout-native-v6-static-review-20261029.json",
+    "sha256": "0c4b91957f6364fc1133e9eb07a3e42563fe28541f271eea83370e09e1050c60"
+  },
+  "runtime_bundle_manifest": {
+    "path": "runtime/ProtoInputMultiPlex-sdk-accepted-20261029/manifest.json",
+    "sha256": "0eecf699e20e17a4783082d1cd8198d0345f80f6635bc95247ee521e2a82098d"
+  },
+  "runtime_bundle_review": {
+    "path": "runtime/ProtoInputMultiPlex-sdk-accepted-20261029-independent-review.json",
+    "sha256": "714bacf8f1dc192394de090736786ea553c614eabc423b1ed44d74cd2e13279a"
+  },
+  "original_SDK_transport_acceptance": {
+    "path": "\\\\192.168.1.107\\data\\GitHub\\ProtoInputMux\\runtime\\multiplex-sdk-idle-fixed-v4-attempt001-actual-review-20261029.json",
+    "sha256": "c5452aedaaebd2a886b1cca3735d2caf35e737c49b4be45494202cc2cd33dd5d"
+  },
+  "cohort": "bd95083176134101a58cb8a4e84e44e0",
+  "verified": {
+    "UI_samples": 30,
+    "original_product_PNGs_independently_viewed": 11,
+    "scoped_resizes": 3,
+    "sizes": [
+      [
+        320,
+        360
+      ],
+      [
+        680,
+        620
+      ]
+    ],
+    "whole_pre_changed_controls": 20,
+    "whole_post_stable_controls": 18,
+    "reflow_disclosures": 2,
+    "whole_response_Rust_staging_used": true,
+    "all_event_ack_and_target_zero_input": true,
+    "same_live_peer_client": 2,
+    "peer_continuity": "Sameendpoint+client2 before/afterresize and afterpanes/details/User2draft; noSDKrestart fromnavigation.",
+    "policy_Apply": "ActualUser2checkbox changesdraft, wholepre/postApply acknowledged layout-owned/clients[]; approveddriver requires endpointretirement and oldpeerEOF before continuing.",
+    "new_connection": "Freshcredentialhash and client3 successfullyinspected; explicitSDKDisable retiresit.",
+    "lifecycle": "NormalroutingStop then ownedordinaryWM_CLOSE GUI/target exit0; finalSetupdisabled/brokerstopped/SDKoffretired/controllerabsent; all3endpointfilesabsent.",
+    "qualified_captures": 11,
+    "WM_NULL_probe_count": 11,
+    "WM_NULL_misses": 0,
+    "WM_NULL_max_elapsed_ms": 15.000000013969839,
+    "capture_active_budget_max_seconds": 0.0779999999795109,
+    "integrity_current_hashes_verified": 139,
+    "copied_runtime10_and_newGUI_hashes_verified": true,
+    "preferences_preserved": true,
+    "process_exit_codes": {
+      "gui": 0,
+      "target": 0
+    },
+    "cleanup_errors": []
+  },
+  "captures": {
+    "setup-minimum-footer": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\agent-sdk-layout-bd9508317613\\r\\setup-minimum-footer.png",
+      "sha256": "5e7aa3b37912d19e7d259dcc5040726cfb67b07839a0b3c33cbccc6f17cc76f4",
+      "dimensions": [
+        320,
+        360
+      ],
+      "held_event": 7,
+      "qualified_capture": true,
+      "visual_review": "Stopped320x360 Setup body scrolls separately; Disable setup access is wholly visible."
+    },
+    "live-access-representative": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\agent-sdk-layout-bd9508317613\\r\\live-access-representative.png",
+      "sha256": "b05208a243596c5d05c0f9412999a526c1f0cd8bcc4bcd0e9d8cb825b1a51c15",
+      "dimensions": [
+        680,
+        620
+      ],
+      "held_event": 18,
+      "qualified_capture": true,
+      "visual_review": "680x620 Access user/PID form, concise applied status and full three-action footer; no SDK crowding."
+    },
+    "live-sdk-representative": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\agent-sdk-layout-bd9508317613\\r\\live-sdk-representative.png",
+      "sha256": "89e75145edb584a3b73185e8cb1804e902da70fcc73ace41b34adb7d45f8288d",
+      "dimensions": [
+        680,
+        620
+      ],
+      "held_event": 20,
+      "qualified_capture": true,
+      "visual_review": "680x620 SDK origins/body and full Enable/Disable footer."
+    },
+    "live-sdk-minimum-body-top": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\agent-sdk-layout-bd9508317613\\r\\live-sdk-minimum-body-top.png",
+      "sha256": "0f7182c0e91cd9fb5017bfd482ae255e87dabe11b84c31fe45441e87356ae4a1",
+      "dimensions": [
+        320,
+        360
+      ],
+      "held_event": 20,
+      "qualified_capture": true,
+      "visual_review": "320x360 SDK body scroll clips normally above whole fixed action footer."
+    },
+    "live-sdk-minimum-details": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\agent-sdk-layout-bd9508317613\\r\\live-sdk-minimum-details.png",
+      "sha256": "4417392d6e1627268e321dc904350a65eed3a86a401102093186138fcc3b1ed8",
+      "dimensions": [
+        320,
+        360
+      ],
+      "held_event": 21,
+      "qualified_capture": true,
+      "visual_review": "ExpandedSDK disclosure reached with wholepre and actualack; fresh frame shows open chevron/body while footer remainswhole. Not every technicaldetail is visible at once."
+    },
+    "live-access-minimum-body-top": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\agent-sdk-layout-bd9508317613\\r\\live-access-minimum-body-top.png",
+      "sha256": "aa5708bc7b875dd4ffaebf01cf070675e87c1778558d08203d4b510d471653d2",
+      "dimensions": [
+        320,
+        360
+      ],
+      "held_event": 22,
+      "qualified_capture": true,
+      "visual_review": "Short Access intro scroller above whole Enable/Disable/Apply footer."
+    },
+    "live-access-minimum-details": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\agent-sdk-layout-bd9508317613\\r\\live-access-minimum-details.png",
+      "sha256": "830c9cffb8106a1c0f137fcac215575fc651396bf28b8e79ca68d70f289a499e",
+      "dimensions": [
+        320,
+        360
+      ],
+      "held_event": 23,
+      "qualified_capture": true,
+      "visual_review": "Freshpost-toggle Access frame; header may scroll out afteropening. No postheaderstability claim and no fulltechnicaldetails pixelclaim."
+    },
+    "live-access-minimum-body-scrolled": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\agent-sdk-layout-bd9508317613\\r\\live-access-minimum-body-scrolled.png",
+      "sha256": "0374ef76d20b9bca449d9d4eb3137f2a1aec7049b1975160d65a5a087188e912",
+      "dimensions": [
+        320,
+        360
+      ],
+      "held_event": 24,
+      "qualified_capture": true,
+      "visual_review": "Actual User2 unchecked after whole-visible selection; user rows reached throughbody while allthreefooter actions remainwhole."
+    },
+    "live-policy-minimum-applied-footer": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\agent-sdk-layout-bd9508317613\\r\\live-policy-minimum-applied-footer.png",
+      "sha256": "088f51fbf0e06f72212d65947a60b748dc5cbfbba114773b679dc445311c4cd0",
+      "dimensions": [
+        320,
+        360
+      ],
+      "held_event": 25,
+      "qualified_capture": true,
+      "visual_review": "Actual Apply acknowledged in status, client count0, explicitPID row/body scrolled; Apply and bothotherfooter actions whole."
+    },
+    "live-sdk-minimum-reenabled-footer": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\agent-sdk-layout-bd9508317613\\r\\live-sdk-minimum-reenabled-footer.png",
+      "sha256": "2c770fed5b32ff54078424419f254c1a2b3635283b42b109d3702900c1c1d1db",
+      "dimensions": [
+        320,
+        360
+      ],
+      "held_event": 27,
+      "qualified_capture": true,
+      "visual_review": "SDK active on freshconnection with enabledDisable/disabledEnable visible atminimum."
+    },
+    "live-sdk-minimum-disabled-footer": {
+      "path": "C:\\Users\\Kenny\\.cache\\ProtoInputMultiPlex\\agent-sdk-layout-bd9508317613\\r\\live-sdk-minimum-disabled-footer.png",
+      "sha256": "298718b27bdd2e9c4482b323e04093b81c833ec495427f86a3a29b75c88ec7a1",
+      "dimensions": [
+        320,
+        360
+      ],
+      "held_event": 28,
+      "qualified_capture": true,
+      "visual_review": "SDK off, Enableavailable/Disabledisabled, bothwhole atminimum."
+    }
+  },
+  "disclosure_contract": "Whollyvisible realpreclick +actualclicked/IOack +recordedpostreflow +freshpost-togglePNG +subsequentwholeUser2bodyinteraction. Fullpost remainsmandatory for allotherchangedcontrols. No clippedpre waiver or headerpoststability claim.",
+  "terminal_observation": {
+    "original_root_exec_session": 76999,
+    "exit_code": 0,
+    "reported_by": "/root; reviewer verifies rawfinalresult/normalcleanup andpostguard artifacts without processquery"
+  },
+  "target_sample_scope": "LAST_QUALIFIED_PRE_CLOSE; no post-exit publication claimed",
+  "limits": [
+    "Acceptance covers this exact private610-test38c596x64 build, Dark100percent at96DPI,320x360/680x620, virtualtwo-user profile andoneownedtarget. CurrentparallelPort checkout is not approved.",
+    "This resolves the bounded Access/SDK policycrowding group: pane separation, independentbody scrolling, reachablefooters and realApplyintegration. It does not establish fullUltra/fullUX, everytechnicaltext field, keyboardaccessibility, otherzoom/DPI/themes/locales or hardware/arbitraryapplicationisolation.",
+    "Technicaldisclosure post-toggle frames are accepted as freshreflow observations; allconnectiondetailtext was not visibly audited atminimum. ActualbodyUser2reachability andwholefooters were visuallyverified.",
+    "Pre-existingglobalPreparing/Closing actiontext can remainbesidetruthful SDKphase status; nonblockingwording debt remains. No application-cursorfollowing/nativefollowing/graphicsperformance claim.",
+    "HistoricalGUIstall P1 remainsopen. All11 probes accepted directly; theboundedmissrecovery path was not exercised in thisrun and no200mslatency/persistentstallfix claim follows.",
+    "OriginalcommandSDK Rust/browser58actions/55idle acceptance is reused for unchangedtransport; not replayed by thiszero-routed-input focusedUIgroup.",
+    "All earlier failedattempts/gates and60fe/204d drift evidence remainunchangedNOT_ACCEPTED. No release/installer or defaultsharedruntime publication approval."
+  ],
+  "current_checkout_approved": false,
+  "port_feature_accepted": false,
+  "P1_gui_stall_fixed": false,
+  "full_Ultra_parity_accepted": false,
+  "full_Ultra": false,
+  "release_approved": false,
+  "release": false,
+  "material_findings": [],
+  "reviewer_actions": "All11originalPNG visualreview; actual30event/controlrectangle/peer/lifecycle/budget/target and139currentintegrity+copiedruntime hashes verified. No compiler/test/native/GUI/browser/input, processquery, sourceedit or other-chat contact."
+}

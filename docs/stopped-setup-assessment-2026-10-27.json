@@ -1,0 +1,108 @@
+{
+  "group": "stopped_gui_setup_bridge",
+  "decision": "ACCEPTED_BOUNDED_COMPOSED",
+  "bounded_group_accepted": true,
+  "raw_results_preserved": {
+    "5": {
+      "raw_result": "NOT_ACCEPTED",
+      "evidence_path": "X:\\GitHub\\ProtoInputMux\\runtime\\stopped-setup-native-20261027-attempt005\\evidence.json",
+      "evidence_sha256": "79a3c2080278cdccb66bfca2f4c59fa0adfe9d633f308fdb79908e79667afae8",
+      "manifest_path": "X:\\GitHub\\ProtoInputMux\\runtime\\stopped-setup-native-20261027-attempt005\\archive-manifest.json",
+      "manifest_sha256": "441ae3251148ecbf06ed9b1ad9caf23d7d30bc6c9be8ecbd1dde04d094beed52",
+      "files_verified": 38
+    },
+    "7": {
+      "raw_result": "NOT_ACCEPTED",
+      "evidence_path": "X:\\GitHub\\ProtoInputMux\\runtime\\stopped-setup-native-20261027-attempt007\\evidence.json",
+      "evidence_sha256": "369622459215af266e925a542708ed4a3a8a95efcb9d523ac7e0f43ec7825d57",
+      "manifest_path": "X:\\GitHub\\ProtoInputMux\\runtime\\stopped-setup-native-20261027-attempt007\\archive-manifest.json",
+      "manifest_sha256": "aec29391194ca55506766956456e12728092ad51d916285b7344aa53234ac351",
+      "files_verified": 30
+    },
+    "8": {
+      "raw_result": "PENDING_INDEPENDENT_ACCEPTANCE",
+      "evidence_path": "X:\\GitHub\\ProtoInputMux\\runtime\\stopped-setup-native-20261027-attempt008\\evidence.json",
+      "evidence_sha256": "e146cfab0a15157ed0e533dd3b6f358f8cacfacbfbb32cdb36fb0d4d9857a4c0",
+      "manifest_path": "X:\\GitHub\\ProtoInputMux\\runtime\\stopped-setup-native-20261027-attempt008\\archive-manifest.json",
+      "manifest_sha256": "b61762fa0a8eada6454657b94e5041dd6fb4d6569074108a3b5b135dbd7e671b",
+      "files_verified": 38
+    }
+  },
+  "contract_path": "X:\\GitHub\\ProtoInputMux\\runtime\\stopped-setup-native-acceptance-contract-v3-20261027.json",
+  "contract_sha256": "a5bdfb7e5ae03e26f67562025d2ef0edf6112f63183835c97b364ee9c3c0565c",
+  "source_review_sha256": "7c77e109eb03d5bb131cd84cb3083be708feb2d8003a6713296208bbce7b5642",
+  "producer_sha256": "845a4a5d1b235472073ee8ddbddd69541b595fe2fb56e34c00bb6f354c1c5cb1",
+  "driver_sha256": "eeaba7673c4d125800af4b0a0fb52e286267096ea604350a2ca8f4da9e8a4189",
+  "driver_review_sha256": "c9158181eda0a185284bc5c080554a2c0fd481f5a09108efa82cdb3e3ca16b00",
+  "current_tail_evidence": {
+    "sampled_steps": 38,
+    "sample_releases": 38,
+    "tool_names": [
+      "profile_setup"
+    ],
+    "file_tickets": {
+      "save": 2,
+      "load": 3,
+      "export": 4,
+      "import": 5
+    },
+    "file_outcomes": {
+      "save": "saved",
+      "load": "installed",
+      "export": "exported",
+      "import": "installed"
+    },
+    "broker_generation_before_start": 3,
+    "broker_generation_stopped_before_controller": 4,
+    "controller_epoch": 1,
+    "live_agent_policy_enabled": false,
+    "before_quit_recovery": {
+      "can_start": true,
+      "phase": "stopped"
+    },
+    "owned_quit_command": {
+      "method": "owned_lifecycle_WM_COMMAND",
+      "message": 273,
+      "command": 24836,
+      "pid": 50608,
+      "hwnd": 11013342,
+      "thread_id": 45624,
+      "posted": true,
+      "win32_error": 0
+    },
+    "quit_handler_receipt": {
+      "before": 0,
+      "after": 1,
+      "launch_mtime_ns": 1793153332655387300,
+      "sampled_after_exit": false,
+      "observed_wall": 1793153332.74488
+    },
+    "client_after_quit": "Connected tool call returned pipe-ended os error 109; this is transport revocation, not a structured cancellation or completion ACK.",
+    "normal_quit": {
+      "gui_exit": 0,
+      "main_hwnd_gone": true,
+      "lifecycle_hwnd_gone": true,
+      "setup_descriptor_gone": true
+    },
+    "owned_exit": {
+      "gui": 0,
+      "probe": 0
+    },
+    "forced_cleanup": false,
+    "postflight_integrity": "PASS"
+  },
+  "composed_support": [
+    "Raw005: authenticated Setup Inspect while hidden, actual owned tray Open accessibility action, same owned HWND and fresh visible frame. Raw005 remains NOT_ACCEPTED because its later cleanup Quit timed out and required force.",
+    "Raw007: current-source default-off/dedicated Setup tools, complete Configure/revision/dirty refusal, four GUI-path file receipts, Disable/re-enable, and authenticated hidden Inspect. Raw007 remains NOT_ACCEPTED because actual tray Open accessibility action returned DISP_E_MEMBERNOTFOUND.",
+    "Raw008: current-source complete Setup authority/file path plus one GUI-owned Start with broker Stopped before controller creation, old Setup client revoked, live Agent Access off, normal Stop, fresh Setup client, one owned lifecycle WM_COMMAND Quit, fresh positive GUI handler receipt, pipe-ended client, normal exit0 and postflight PASS. Raw008 remains PENDING_INDEPENDENT_ACCEPTANCE as immutable driver output; this review is the independent composed decision."
+  ],
+  "source_comparability": "Raw005 used SOURCE_GOv3. SOURCE_GOv4 independently established its sole source difference is script-only gui.rs Quit telemetry; no Setup authority, lifecycle action, broker or backend behavior changed. Raw007/008 used SOURCE_GOv4. This supports bounded composition, not a new one-cohort UI observation.",
+  "exclusions": [
+    "The current tail sent WM_COMMAND directly to the verified owned lifecycle HWND. It does not validate a new actual popup/accessibility Quit or Open action.",
+    "No single native run passed every Setup UI step; raw005 and raw007 failures remain visible.",
+    "The raw005 cleanup timeout cause and historical GUI stall are unresolved; these results do not establish general GUI reliability.",
+    "No physical-device compatibility, real input delivery, desktop-wide or same-process multi-user isolation, or full MouseMux Ultra parity is established."
+  ],
+  "independent_integrity": "All 38/30/38 archived files for raw005/007/008 match their manifests. After raw008, independent hashes matched the complete 871-file source closure and ten staged private runtime inputs; driver/source/contract/producer receipts matched raw evidence. I viewed current configured-home and Setup-enabled Agent Access PNGs.",
+  "tests": "Fresh producer004 PASS: cargo fmt --all --check, cargo clippy --workspace --all-targets -- -D warnings, cargo test --workspace (574 passed/0 failed/1 ignored), paired x64/i686 app/observer builds, export and source/artifact checks."
+}

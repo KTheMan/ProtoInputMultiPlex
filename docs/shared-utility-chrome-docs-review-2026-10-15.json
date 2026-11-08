@@ -1,0 +1,50 @@
+{
+  "decision": "APPROVED",
+  "date": "2026-10-15",
+  "scope": "Five frozen documentation files: only the shared utility chrome status paragraphs, contract and their current evidence links; no broad historical audit.",
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "8eb96f70e172db1d9e6fa26f9638083b48f91f484b2288776ea5152adea30dd3"
+    },
+    {
+      "path": "docs/validation.md",
+      "sha256": "eec835ec56b63a367f526f8fcc9b2f603f295cd3afbdacfb8e121360d626f75f"
+    },
+    {
+      "path": "docs/ultra-parity.md",
+      "sha256": "31ef7aa54b2985b6eecee53dc18f7f3bea9d366cd6613bdb67d46778052d09fa"
+    },
+    {
+      "path": "docs/roadmap.md",
+      "sha256": "031428eae2dd7f2498c40ae84603d7e90d4ccbae3e6f0e4ed7ea47483d363c96"
+    },
+    {
+      "path": "docs/shared-utility-chrome-contract.md",
+      "sha256": "0bf50425f71f0c6f604326982f7329d34083456800da6f66f7e409205550d76d"
+    }
+  ],
+  "references": [
+    {
+      "path": "docs/shared-utility-chrome-assessment-2026-10-15.json",
+      "sha256": "09d8bca6bb36a173f5de01ff9420780f70ba420ab1338b9d93ce2f88f9b71d1f"
+    },
+    {
+      "path": "docs/shared-utility-chrome-source-review-2026-10-15.json",
+      "sha256": "a26bd50b3a674ff7c4a0c6d46a8950e33b23ebb1ea4a7a571e37261e4c242c9f"
+    },
+    {
+      "path": "docs/shared-utility-chrome-rust-checks-2026-10-15.json",
+      "sha256": "e8acc1d5d99c7ac93182c2a3b7e595b4e3fa9421a18cc18158ea0a3d3a7108a4"
+    }
+  ],
+  "findings": [],
+  "verified": [
+    "All five byte hashes match the frozen handoff. Canonical assessment matches09d8bca6; check record matches runtime producer byte-for-byte (e8acc1d5).",
+    "Bounded status matches25 phase observations (16+9), four accepted originals and185 producer tests/both builds. It does not describe25 distinct controls or relabel earlier raw/review outcomes.",
+    "Category, Ghost Back and queue-summary/disclosure claims match reviewed source and actual accepted originals. Other category mappings and suspension/recovery warnings remain source-only.",
+    "Minimum error/summary/Apply evidence is explicitly limited to ordinary resize normalization; no automatic error-reveal or maximum-scroll claim. No worker/routing/MCP/live overflow or full UX/Ultra parity is claimed.",
+    "Current paragraph/contract local links resolve to existing files. Historical validation evidence was not rewritten by this review."
+  ],
+  "execution": "Read-only document/hash/link review only. No native, Cargo, product source changes or new tests."
+}
