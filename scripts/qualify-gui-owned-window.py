@@ -356,23 +356,7 @@ class WindowPair(base.Pair):
         self.cdp.call("Browser.close")
         require(self.browser.wait(timeout=8) == 0)
         self.http.shutdown(); self.http.server_close()
-        # Close only the visible top-level viewport of the retained GUI process.
-        user32 = ctypes.WinDLL("user32", use_last_error=True)
-        user32.GetWindowThreadProcessId.argtypes = [wintypes.HWND, ctypes.POINTER(wintypes.DWORD)]
-        user32.IsWindowVisible.argtypes = [wintypes.HWND]
-        user32.PostMessageW.argtypes = [wintypes.HWND, wintypes.UINT, wintypes.WPARAM, wintypes.LPARAM]
-        windows = []
-        callback_type = ctypes.WINFUNCTYPE(wintypes.BOOL, wintypes.HWND, wintypes.LPARAM)
-        def each(hwnd, unused):
-            pid = wintypes.DWORD()
-            user32.GetWindowThreadProcessId(hwnd, ctypes.byref(pid))
-            if pid.value == self.gui.pid and user32.IsWindowVisible(hwnd):
-                windows.append(hwnd)
-            return True
-        callback = callback_type(each)
-        user32.EnumWindows.argtypes = [callback_type, wintypes.LPARAM]
-        require(user32.EnumWindows(callback, 0) and len(windows) == 1)
-        require(user32.PostMessageW(windows[0], 0x0010, 0, 0))
+        self.close_gui_owned_main()
         require(self.gui.wait(timeout=15) == 0 and not self.descriptors())
         require(self.result["positive_owner_actions"] == 3 and self.result["host_pending_expired"] and self.result["uncertain_late_action"] and self.result["old_epoch_rejected"] and self.result["post_revoke_rejected"] and self.result["rust_mcp_fixture_invoked"] and self.result["web_query_track_control_untrack"])
         self.result.update(status="PASS", native_exit_code=0, gui_exit_code=0, owned_descriptor_cleanup=True)

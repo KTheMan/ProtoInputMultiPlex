@@ -911,6 +911,152 @@ class Pair:
         require(data["cleanup"] == 1 and data["afterDispose"] == 0 and data["domClicks"] == 0)
         self.result["web_event_hooks"]["reentrant_dispose_cleanup"] = True
 
+    def close_gui_owned_main(self):
+        """One WM_CLOSE to the unique pinned winit normal root of this live child.
+
+        GUI NativeOptions retain decorated defaults. Cargo.lock pins winit
+        0.30.13 (Windows class and normal styles) through eframe 0.34.3.
+        Auxiliary visible windows do not define the main viewport's identity.
+        """
+        probe = {
+            "schema": "pim.gui-pair.close-probe.v2",
+            "classifier": "pinned_winit_normal_root_v1",
+            "enumeration_succeeded": False,
+            "observation_succeeded": False,
+            "owned_visible_window_count": 0,
+            "window_count_over_bound": False,
+            "eligible_main_window_count": 0,
+            "gui_alive": None,
+            "owner_thread_nonzero": None,
+            "owner_pid_matches": None,
+            "recheck_enumeration_succeeded": None,
+            "recheck_observation_succeeded": None,
+            "recheck_owned_visible_window_count": None,
+            "recheck_window_count_over_bound": None,
+            "recheck_eligible_main_window_count": None,
+            "recheck_same_window": None,
+            "recheck_same_thread": None,
+            "recheck_owner_pid_matches": None,
+            "immediate_eligibility_rechecked": None,
+            "immediate_same_thread": None,
+            "immediate_owner_pid_matches": None,
+            "gui_alive_before_post": None,
+            "close_posted": None,
+        }
+        self.result["gui_close_probe"] = probe
+        user32 = ctypes.WinDLL("user32", use_last_error=True)
+        user32.GetWindowThreadProcessId.argtypes = [wintypes.HWND, ctypes.POINTER(wintypes.DWORD)]
+        user32.GetWindowThreadProcessId.restype = wintypes.DWORD
+        user32.IsWindow.argtypes = [wintypes.HWND]
+        user32.IsWindow.restype = wintypes.BOOL
+        user32.IsWindowVisible.argtypes = [wintypes.HWND]
+        user32.IsWindowVisible.restype = wintypes.BOOL
+        user32.GetClassNameW.argtypes = [wintypes.HWND, wintypes.LPWSTR, ctypes.c_int]
+        user32.GetClassNameW.restype = ctypes.c_int
+        get_style = user32.GetWindowLongPtrW if ctypes.sizeof(ctypes.c_void_p) == 8 else user32.GetWindowLongW
+        get_style.argtypes = [wintypes.HWND, ctypes.c_int]
+        get_style.restype = ctypes.c_ssize_t
+        user32.GetAncestor.argtypes = [wintypes.HWND, wintypes.UINT]
+        user32.GetAncestor.restype = wintypes.HWND
+        user32.GetWindow.argtypes = [wintypes.HWND, wintypes.UINT]
+        user32.GetWindow.restype = wintypes.HWND
+        user32.PostMessageW.argtypes = [wintypes.HWND, wintypes.UINT, wintypes.WPARAM, wintypes.LPARAM]
+        user32.PostMessageW.restype = wintypes.BOOL
+        callback_type = ctypes.WINFUNCTYPE(wintypes.BOOL, wintypes.HWND, wintypes.LPARAM)
+        user32.EnumWindows.argtypes = [callback_type, wintypes.LPARAM]
+        user32.EnumWindows.restype = wintypes.BOOL
+
+        def style(hwnd, index):
+            ctypes.set_last_error(0)
+            value = get_style(hwnd, index)
+            require(value != 0 or ctypes.get_last_error() == 0)
+            return value & 0xffffffff
+
+        def observe(hwnd):
+            pid = wintypes.DWORD()
+            thread = user32.GetWindowThreadProcessId(hwnd, ctypes.byref(pid))
+            # EnumWindows also visits unrelated windows that may retire meanwhile.
+            # Only the retained GUI's identified windows enter strict observation.
+            # An absent immediate main observation still rejects the close below.
+            if thread == 0 or pid.value != self.gui.pid:
+                return None
+            require(user32.IsWindow(hwnd))
+            if not user32.IsWindowVisible(hwnd):
+                return None
+            class_name = ctypes.create_unicode_buffer(256)
+            length = user32.GetClassNameW(hwnd, class_name, len(class_name))
+            require(0 < length < len(class_name) - 1)
+            if class_name.value != "Window Class":
+                return (False, thread, pid.value)
+            normal = style(hwnd, -16)  # GWL_STYLE
+            extended = style(hwnd, -20)  # GWL_EXSTYLE
+            root = user32.GetAncestor(hwnd, 2)  # GA_ROOT
+            require(bool(root))
+            ctypes.set_last_error(0)
+            owner = user32.GetWindow(hwnd, 4)  # GW_OWNER; null is an unowned root.
+            require(bool(owner) or ctypes.get_last_error() == 0)
+            # WS_CAPTION includes WS_BORDER. Require the normal system menu;
+            # reject child/popup windows and tool/no-activate auxiliary surfaces.
+            eligible = (normal & 0x00c80000 == 0x00c80000
+                        and normal & (0x40000000 | 0x80000000) == 0
+                        and extended & (0x00000080 | 0x08000000) == 0
+                        and root == hwnd and not owner)
+            return (eligible, thread, pid.value)
+
+        def enumerate_main(prefix):
+            owned_count = 0
+            eligible = []
+            observed = True
+            def each(hwnd, unused):
+                nonlocal owned_count, observed
+                try:
+                    row = observe(hwnd)
+                    if row is not None:
+                        owned_count += 1
+                        if row[0]:
+                            eligible.append((hwnd, row[1], row[2]))
+                        if owned_count > 16:
+                            return False
+                    return True
+                except BaseException:
+                    # ctypes callbacks must not swallow a failed identity query.
+                    observed = False
+                    return False
+            callback = callback_type(each)
+            enumerated = bool(user32.EnumWindows(callback, 0))
+            probe[prefix + "enumeration_succeeded"] = enumerated
+            probe[prefix + "observation_succeeded"] = observed
+            probe[prefix + "owned_visible_window_count"] = min(owned_count, 17)
+            probe[prefix + "window_count_over_bound"] = owned_count > 16
+            probe[prefix + "eligible_main_window_count"] = min(len(eligible), 17)
+            require(enumerated and observed and owned_count <= 16 and len(eligible) == 1)
+            return eligible[0]
+
+        probe["gui_alive"] = self.gui.poll() is None
+        self.deadline()
+        first = enumerate_main("")
+        probe["owner_thread_nonzero"] = first[1] != 0
+        probe["owner_pid_matches"] = first[2] == self.gui.pid
+        require(probe["owner_thread_nonzero"] and probe["owner_pid_matches"])
+        self.deadline()
+        second = enumerate_main("recheck_")
+        probe["recheck_same_window"] = second[0] == first[0]
+        probe["recheck_same_thread"] = second[1] == first[1] and second[1] != 0
+        probe["recheck_owner_pid_matches"] = second[2] == first[2] == self.gui.pid
+        require(probe["recheck_same_window"] and probe["recheck_same_thread"]
+                and probe["recheck_owner_pid_matches"])
+        # Re-read the exact retained root immediately before the sole post.
+        immediate = observe(first[0])
+        probe["immediate_eligibility_rechecked"] = immediate is not None and immediate[0]
+        probe["immediate_same_thread"] = immediate is not None and immediate[1] == first[1]
+        probe["immediate_owner_pid_matches"] = immediate is not None and immediate[2] == self.gui.pid
+        probe["gui_alive_before_post"] = self.gui.poll() is None
+        require(probe["immediate_eligibility_rechecked"] and probe["immediate_same_thread"]
+                and probe["immediate_owner_pid_matches"] and probe["gui_alive_before_post"])
+        self.deadline()
+        probe["close_posted"] = bool(user32.PostMessageW(first[0], 0x0010, 0, 0))
+        require(probe["close_posted"])
+
     def run(self):
         a = self.args
         require(os.name == "nt" and os.environ.get("GITHUB_ACTIONS") == "true" and os.environ.get("RUNNER_ENVIRONMENT") == "github-hosted")
@@ -1131,45 +1277,8 @@ class Pair:
         require(self.browser.wait(timeout=8) == 0)
         self.http.shutdown()
         self.http.server_close()
-        # Existing native viewport close path is independent of exhausted Script.
-        # Enumerate only top-level windows of the retained live GUI process identity.
-        user32 = ctypes.WinDLL("user32", use_last_error=True)
-        user32.GetWindowThreadProcessId.argtypes = [wintypes.HWND, ctypes.POINTER(wintypes.DWORD)]
-        user32.IsWindowVisible.argtypes = [wintypes.HWND]
-        user32.PostMessageW.argtypes = [wintypes.HWND, wintypes.UINT, wintypes.WPARAM, wintypes.LPARAM]
-        windows = []
-        callback_type = ctypes.WINFUNCTYPE(wintypes.BOOL, wintypes.HWND, wintypes.LPARAM)
-        def each(hwnd, unused):
-            pid = wintypes.DWORD()
-            user32.GetWindowThreadProcessId(hwnd, ctypes.byref(pid))
-            if pid.value == self.gui.pid and user32.IsWindowVisible(hwnd):
-                windows.append(hwnd)
-            return True
-        callback = callback_type(each)
-        user32.EnumWindows.argtypes = [callback_type, wintypes.LPARAM]
         self.check = "gui_owned_window_close"
-        enumerated = user32.EnumWindows(callback, 0)
-        gui_exit = self.gui.poll()
-        close_probe = {
-            "schema": "pim.gui-pair.close-probe.v1",
-            "enumeration_succeeded": bool(enumerated),
-            "owned_visible_window_count": min(len(windows), 17),
-            "window_count_over_bound": len(windows) > 16,
-            "gui_alive": gui_exit is None,
-            "owner_thread_nonzero": None,
-            "owner_pid_matches": None,
-            "close_posted": None,
-        }
-        self.result["gui_close_probe"] = close_probe
-        require(enumerated and len(windows) == 1 and gui_exit is None)
-        pid = wintypes.DWORD()
-        owner_thread = user32.GetWindowThreadProcessId(windows[0], ctypes.byref(pid))
-        close_probe["owner_thread_nonzero"] = bool(owner_thread)
-        close_probe["owner_pid_matches"] = pid.value == self.gui.pid
-        require(owner_thread and pid.value == self.gui.pid)
-        posted = user32.PostMessageW(windows[0], 0x0010, 0, 0)
-        close_probe["close_posted"] = bool(posted)
-        require(posted)
+        self.close_gui_owned_main()
         self.check = "gui_normal_exit"
         require(self.gui.wait(timeout=15) == 0)
         self.check = "descriptor_and_renderer_cleanup"
