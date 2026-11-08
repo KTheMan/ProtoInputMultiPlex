@@ -31,8 +31,11 @@ jobs:
       - uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: ${{ matrix.arch }}
-      - name: Build exact full-default native SDK library
-        run: cargo build -p mux-application-sdk --lib --features native-client --locked --target ${{ matrix.triple }}
+      - name: Reproduce original full-default SDK library and examples build
+        shell: pwsh
+        run: |
+          cargo build -p mux-application-sdk --lib --example native_dll_lifecycle --example native_external_consumer --features native-client --locked --target ${{ matrix.triple }} --message-format=json-render-diagnostics | Set-Content -LiteralPath sdk-build.jsonl -Encoding utf8
+          if ($LASTEXITCODE -ne 0) { throw 'SDK diagnostic build failed' }
       - name: Preserve exact DLL and raw export table
         shell: pwsh
         env:
@@ -45,10 +48,24 @@ jobs:
           New-Item -ItemType Directory -Path $root | Out-Null
           $dll = Join-Path $root 'mux_application_sdk.dll'
           Copy-Item -LiteralPath ('target/' + $env:DIAGNOSTIC_TRIPLE + '/debug/mux_application_sdk.dll') -Destination $dll
-          $exports = & dumpbin /nologo /exports $dll
+          $dumpbin = Join-Path $env:VCToolsInstallDir 'bin/Hostx64/x64/dumpbin.exe'
+          $exports = & $dumpbin /nologo /exports $dll
           $dumpExit = $LASTEXITCODE
           $exports | Set-Content -LiteralPath (Join-Path $root 'exports.txt') -Encoding utf8
           $exports | Write-Output
+          Copy-Item -LiteralPath sdk-build.jsonl -Destination (Join-Path $root 'sdk-build.jsonl')
+          $symbols = @('pim_app_native_connect', 'pim_app_native_enable_input',
+            'pim_app_native_request', 'pim_app_native_drain', 'pim_app_native_query',
+            'pim_app_native_response_size', 'pim_app_native_response_read',
+            'pim_app_native_response_discard', 'pim_app_native_stop',
+            'pim_app_native_completion_handle', 'pim_app_native_destroy')
+          $counts = @($symbols | ForEach-Object {
+            $symbol = $_
+            $found = @($exports | Where-Object { $_ -match ('^\s+\d+\s+[0-9A-Fa-f]+\s+[0-9A-Fa-f]+\s+' + [regex]::Escape($symbol) + '\s*$') })
+            [ordered]@{ symbol = $symbol; count = $found.Count }
+          })
+          $counts | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $root 'verifier-counts.json') -Encoding utf8
+          $counts | ConvertTo-Json | Write-Output
           [ordered]@{
             diagnostic_commit = $env:GITHUB_SHA
             sdk_source_base = 'c9d093e8fc637ed49261c23c4dd78bb7996f9e76'
