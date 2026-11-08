@@ -7,7 +7,7 @@ use std::{
     path::PathBuf,
     sync::{
         Arc, Mutex,
-        atomic::{AtomicBool, Ordering},
+        atomic::{AtomicBool, AtomicU64, Ordering},
         mpsc::{self, SyncSender},
     },
     thread::{self, JoinHandle},
@@ -16,7 +16,7 @@ use std::{
 
 enum Command {
     Issue(ClientPermit),
-    Copy(ClientPermit),
+    Copy(ClientPermit, u64),
     ClearCopy,
 }
 #[derive(Clone, Default)]
@@ -26,13 +26,21 @@ pub(super) struct Snapshot {
     pub service_sampled_at: Option<Instant>,
     pub error: Option<String>,
     pub retired: bool,
-    pub issued: Option<u64>,
 }
 struct Shared {
     state: Mutex<Snapshot>,
     stop: AtomicBool,
+    copy_generation: AtomicU64,
     // This slot is consumed only after a local GUI Copy action and never serialized.
     copied: Mutex<Option<(u64, String)>>,
+}
+impl Shared {
+    fn store_copy(&self, generation: u64, permit: u64, connection: Option<String>) {
+        let mut copied = self.copied.lock().unwrap_or_else(std::sync::PoisonError::into_inner);
+        if self.copy_generation.load(Ordering::Acquire) == generation {
+            *copied = connection.map(|value| (permit, value));
+        }
+    }
 }
 pub(super) struct Actor {
     shared: Arc<Shared>,
@@ -43,7 +51,7 @@ pub(super) struct Actor {
 impl Actor {
     pub fn start(
         endpoint: NetworkEndpoint,
-        origin: String,
+        origins: Vec<String>,
         root: PathBuf,
         epoch: u64,
         guards: Arc<crate::gui::RuntimeGuards>,
@@ -54,6 +62,7 @@ impl Actor {
                 ..Snapshot::default()
             }),
             stop: AtomicBool::new(false),
+            copy_generation: AtomicU64::new(0),
             copied: Mutex::new(None),
         });
         let (sender, receiver) = mpsc::sync_channel(8);
@@ -62,7 +71,7 @@ impl Actor {
             let _guards = guards;
             let outcome = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| -> Result<()> {
                 let startup = std::fs::canonicalize(root).context("resolve private application data directory")
-                    .and_then(|root| Service::start(Config { allowed_origins: vec![origin] }, endpoint).map(|service| (root, service)));
+                    .and_then(|root| Service::start(Config { allowed_origins: origins }, endpoint).map(|service| (root, service)));
                 let (root, mut service) = match startup {
                     Ok(started) => started,
                     Err(_) => {
@@ -87,13 +96,16 @@ impl Actor {
                             *task.copied.lock().unwrap_or_else(std::sync::PoisonError::into_inner) = None;
                             let path = root.join(format!("protoinputmultiplex.application-events.{}.{}.{}.json", std::process::id(), epoch, permit.id()));
                             let result: Result<crate::application_event_transport::IssuedClient> = service.issue_client(&permit, &path);
+                            let result = result.and_then(|issued| {
+                                ensure!(issued.descriptor_path == path && !issued.expires_in.is_zero(), "event issuance was not confirmed");
+                                Ok(issued)
+                            });
                             let mut state = task.state.lock().unwrap_or_else(std::sync::PoisonError::into_inner);
-                            state.issued = result.as_ref().ok().filter(|issued| issued.descriptor_path == path && !issued.expires_in.is_zero()).map(|_| permit.id());
                             state.error = result.err().map(|_| "Event connection issuance failed; approve a fresh receiver and try again.".into());
                         }
-                        Ok(Command::Copy(permit)) => {
+                        Ok(Command::Copy(permit, generation)) => {
                             let connection = service.private_connection_for_copy(&permit);
-                            *task.copied.lock().unwrap_or_else(std::sync::PoisonError::into_inner) = connection.map(|value| (permit.id(), value));
+                            task.store_copy(generation, permit.id(), connection);
                         }
                         Ok(Command::ClearCopy) => { *task.copied.lock().unwrap_or_else(std::sync::PoisonError::into_inner) = None; }
                         Err(mpsc::RecvTimeoutError::Timeout) => {}
@@ -109,7 +121,7 @@ impl Actor {
                 let sampled_at = Instant::now();
                 let snapshot = service.snapshot();
                 let mut state = task.state.lock().unwrap_or_else(std::sync::PoisonError::into_inner);
-                state.service = Some(snapshot); state.service_sampled_at = Some(sampled_at); state.phase = "off".into(); state.retired = true; state.issued = None;
+                state.service = Some(snapshot); state.service_sampled_at = Some(sampled_at); state.phase = "off".into(); state.retired = true;
                 Ok(())
             }));
             match outcome {
@@ -149,6 +161,7 @@ impl Actor {
         self.clear_copy();
     }
     pub fn clear_copy(&self) {
+        self.shared.copy_generation.fetch_add(1, Ordering::AcqRel);
         *self
             .shared
             .copied
@@ -165,7 +178,7 @@ impl Actor {
     pub fn copy(&self, permit: ClientPermit) -> Result<()> {
         ensure!(self.active(), "event listener is not active");
         self.commands
-            .try_send(Command::Copy(permit))
+            .try_send(Command::Copy(permit, self.shared.copy_generation.load(Ordering::Acquire)))
             .map_err(|_| anyhow::anyhow!("event lifecycle queue is busy"))
     }
     pub fn take_copy(&self, permit: u64) -> Option<String> {
@@ -183,5 +196,31 @@ impl Actor {
 impl Drop for Actor {
     fn drop(&mut self) {
         self.request_stop();
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn cancelled_copy_generation_cannot_restore_an_in_flight_private_result() {
+        let shared = Shared {
+            state: Mutex::new(Snapshot::default()),
+            stop: AtomicBool::new(false),
+            copy_generation: AtomicU64::new(0),
+            copied: Mutex::new(None),
+        };
+        let (sender, _receiver) = mpsc::sync_channel(8);
+        let actor = Actor { shared: Arc::new(shared), commands: sender, worker: None };
+        let old = actor.shared.copy_generation.load(Ordering::Acquire);
+        actor.clear_copy();
+        actor.shared.store_copy(old, 1, Some("synthetic private result".into()));
+        assert!(actor.shared.copied.lock().unwrap().is_none());
+        let current = actor.shared.copy_generation.load(Ordering::Acquire);
+        actor.shared.store_copy(current, 2, Some("new synthetic private result".into()));
+        assert_eq!(actor.shared.copied.lock().unwrap().as_ref().unwrap().0, 2);
+        actor.request_stop();
+        assert!(actor.shared.copied.lock().unwrap().is_none());
     }
 }

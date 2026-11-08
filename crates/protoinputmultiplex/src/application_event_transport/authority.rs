@@ -38,6 +38,17 @@ impl ClientPermit {
     pub fn id(&self) -> u64 {
         self.lease.id
     }
+    /// Credential-free authority state; a stale actor snapshot cannot revive it.
+    pub fn live(&self) -> bool {
+        self.lease.live(&self.shared, Instant::now())
+    }
+    pub fn issued(&self) -> bool {
+        self.live()
+            && self.lease.issued.load(Ordering::Acquire)
+            && !self.lease.issuing.load(Ordering::Acquire)
+            && !self.lease.connected.load(Ordering::Acquire)
+            && self.lease.credential.lock().unwrap_or_else(std::sync::PoisonError::into_inner).is_some()
+    }
 }
 
 #[derive(Debug, Clone)]

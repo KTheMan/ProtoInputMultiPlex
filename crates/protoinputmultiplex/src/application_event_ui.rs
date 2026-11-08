@@ -13,6 +13,8 @@ use std::collections::BTreeSet;
 pub(crate) enum Action {
     CreateSession,
     CreateUser,
+    AddReceiver,
+    ApplyOwner,
     Apply,
     DisablePublication,
     StartListener,
@@ -130,7 +132,7 @@ pub(crate) fn show(
     Text::new("A separate virtual-only cooperative session. Event export, keyboard observation and every remote control start off. Command SDK permissions do not grant these approvals.").caption().wrap().show(ui);
     let network = match (status.connected_clients, status.cleanup_pending) {
         (Some(connected), Some(pending)) => {
-            format!("{connected} browser connections · {pending} pending cleanup")
+            format!("{connected} event receiver connections · {pending} pending cleanup")
         }
         _ => "Listener metrics unavailable".into(),
     };
@@ -194,7 +196,66 @@ pub(crate) fn show(
     ) {
         result.push(Action::CreateUser);
     }
-    Text::new("Select only users this browser may observe. Creation never selects or grants a user automatically.").caption().wrap().show(ui);
+    Divider::horizontal().show(ui);
+    Text::new("Master local-owner consent · applies to all locally owned users")
+        .caption().wrap().show(ui);
+    ui.add_enabled_ui(allowed && controller.active(), |ui| {
+        for (label, value) in [
+            ("Master pointer observation", &mut controller.owner_consent.pointer_events),
+            ("Master keyboard observation separately", &mut controller.owner_consent.key_events),
+            ("Master lifecycle controls", &mut controller.owner_consent.lifecycle),
+            ("Master cursor controls", &mut controller.owner_consent.cursor),
+            ("Master pointer input", &mut controller.owner_consent.pointer_control),
+            ("Master keyboard input separately", &mut controller.owner_consent.key_control),
+        ] {
+            checkbox(ui, label, value, &mut script, frame, actions);
+        }
+    });
+    Text::new("Applying master consent revokes every event receiver before changing owner authority. Reapprove receivers explicitly afterward.")
+        .caption().wrap().show(ui);
+    if button(ui, "Apply master event consent", allowed && controller.active(), &mut script, frame, actions) {
+        result.push(Action::ApplyOwner);
+    }
+    if button(
+        ui,
+        "Disable application event publication",
+        controller.active() && (status.pointer_export || status.keyboard_export),
+        &mut script,
+        frame,
+        actions,
+    ) {
+        result.push(Action::DisablePublication);
+    }
+    Divider::horizontal().show(ui);
+    Text::new(format!("Event receivers (native/browser) · {} approved · up to 8 rows", status.approved_receivers))
+        .caption().wrap().show(ui);
+    if button(ui, "Add event receiver", allowed && controller.active() && controller.origin_editable()
+        && controller.receiver_rows().len() < 8, &mut script, frame, actions) {
+        result.push(Action::AddReceiver);
+    }
+    let selected_row = controller.selected_row();
+    ui.horizontal_wrapped(|ui| {
+        for (row, approved) in controller.receiver_rows() {
+            let label = format!("Event receiver {row} · {}{}",
+                if approved { "approved" } else { "draft" },
+                if selected_row == Some(row) { " · selected" } else { "" });
+            if button(ui, &label, allowed && controller.active(), &mut script, frame, actions)
+                && let Err(error) = controller.select_receiver(row) {
+                controller.error = Some(error.to_string());
+            }
+        }
+    });
+    Text::new("Selected receiver details. Each row has independent origin, exact user scope, observation, delegation and control approvals. Configure all receiver rows and origins before starting the listener; adding origins or rows then requires a new session.")
+        .caption().wrap().show(ui);
+    let editable = allowed && controller.active() && controller.selected_row().is_some() && controller.origin_editable();
+    input(
+        ui,
+        "Exact application event receiver origin",
+        &mut controller.draft.origin,
+        editable,
+        &mut script,
+    );
+    Text::new("Select only users this event receiver (native/browser) may observe. Creation never selects or grants a user automatically.").caption().wrap().show(ui);
     for user in &controller.users {
         let label = format!(
             "Export cooperative user {}:{} {}",
@@ -233,7 +294,7 @@ pub(crate) fn show(
     );
     checkbox(
         ui,
-        "Allow delegated browser controls for selected users",
+        "Allow delegated event receiver controls for selected users",
         &mut controller.draft.delegated,
         &mut script,
         frame,
@@ -271,11 +332,11 @@ pub(crate) fn show(
         frame,
         actions,
     );
-    Text::new("Draft checkboxes change no live authority. Apply retires the previous browser receiver and issues a fresh native snapshot; the local virtual user IDs remain stable.").caption().wrap().show(ui);
+    Text::new("Draft checkboxes change no live authority. Apply replaces only the selected receiver and retires its previous connection. Other receiver approvals, master consent and local virtual user IDs remain stable.").caption().wrap().show(ui);
     if button(
         ui,
-        "Apply application event approvals",
-        allowed && controller.active(),
+        "Apply selected event receiver approvals",
+        allowed && controller.active() && controller.selected_row().is_some(),
         &mut script,
         frame,
         actions,
@@ -284,18 +345,8 @@ pub(crate) fn show(
     }
     if button(
         ui,
-        "Disable application event publication",
-        controller.active() && (status.pointer_export || status.keyboard_export),
-        &mut script,
-        frame,
-        actions,
-    ) {
-        result.push(Action::DisablePublication);
-    }
-    if button(
-        ui,
-        "Revoke browser event receiver",
-        status.browser_approved,
+        "Revoke selected event receiver",
+        controller.selected_approved(),
         &mut script,
         frame,
         actions,
@@ -303,14 +354,6 @@ pub(crate) fn show(
         result.push(Action::Revoke);
     }
     Divider::horizontal().show(ui);
-    let editable = controller.origin_editable();
-    input(
-        ui,
-        "Exact application event browser origin",
-        &mut controller.draft.origin,
-        editable,
-        &mut script,
-    );
     input(
         ui,
         "Event connection lifetime in seconds (1-300)",
@@ -342,7 +385,7 @@ pub(crate) fn show(
         ui,
         "Copy private application event connection",
         allowed
-            && status.browser_approved
+            && controller.selected_approved()
             && controller.listener_active()
             && controller.connection_issued(),
         &mut script,
@@ -438,7 +481,7 @@ pub(crate) fn show(
         .show(ui);
     }
     ui.add_enabled_ui(false, |ui| {
-        let _ = Button::new("Browser control of GUI native windows unavailable")
+        let _ = Button::new("Event receiver control of GUI native windows unavailable")
             .sm()
             .enabled(false)
             .show(ui);

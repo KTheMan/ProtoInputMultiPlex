@@ -18,7 +18,7 @@ impl Dashboard {
         if let Some(connection) = self.application_events.take_copy() {
             ctx.copy_text(connection);
             self.status =
-                "Private application-event connection copied for the approved browser origin."
+                "Private application-event connection copied for the selected event receiver (native/browser)."
                     .into();
         }
     }
@@ -45,6 +45,8 @@ impl Dashboard {
                     .context("Desktop bounds are not available yet")
                     .and_then(|bounds| self.application_events.create_session(bounds)),
                 Action::CreateUser => self.application_events.create_user(),
+                Action::AddReceiver => self.application_events.add_receiver(),
+                Action::ApplyOwner => self.application_events.apply_owner_consent(),
                 Action::Apply => self.application_events.approve(),
                 Action::DisablePublication => self.application_events.disable_publication(),
                 Action::StartListener => self

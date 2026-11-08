@@ -31,6 +31,8 @@ pub struct PublicStatus {
     pub pointer_export: bool,
     pub keyboard_export: bool,
     pub browser_approved: bool,
+    #[serde(default)]
+    pub approved_receivers: usize,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub connected_clients: Option<usize>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -62,7 +64,7 @@ impl PublicStatus {
     }
 }
 
-#[derive(Default)]
+#[derive(Clone, Default)]
 pub(crate) struct Draft {
     pub name: String,
     pub origin: String,
@@ -143,11 +145,32 @@ pub(crate) struct LocalUser {
     pub id: UserId,
     pub name: String,
 }
+/// Independent master consent for the local owner's users. Receiver edits never
+/// mutate this authority or derive it from a union of receiver grants.
+#[derive(Default)]
+pub(crate) struct OwnerConsent {
+    pub pointer_events: bool,
+    pub key_events: bool,
+    pub lifecycle: bool,
+    pub cursor: bool,
+    pub pointer_control: bool,
+    pub key_control: bool,
+}
+pub(crate) struct Receiver {
+    pub row: u64,
+    draft: Draft,
+    recipient: Option<RecipientId>,
+    permit: Option<ClientPermit>,
+    approved_origin: Option<String>,
+}
 pub(crate) struct Controller {
     bridge: Option<HostBridge>,
     owner: Option<RecipientId>,
-    receiver: Option<RecipientId>,
-    permit: Option<ClientPermit>,
+    receivers: Vec<Receiver>,
+    selected: Option<usize>,
+    next_row: u64,
+    listener_origins: BTreeSet<String>,
+    pub owner_consent: OwnerConsent,
     actor: Option<actor::Actor>,
     native_subscription: Option<SubscriptionId>,
     pending_endpoint: Option<NetworkEndpoint>,
@@ -157,15 +180,18 @@ pub(crate) struct Controller {
     pub error: Option<String>,
     epoch: u64,
     ended: bool,
-    copy_pending: bool,
+    copy_pending: Option<(u64, u64)>,
 }
 impl Default for Controller {
     fn default() -> Self {
         Self {
             bridge: None,
             owner: None,
-            receiver: None,
-            permit: None,
+            receivers: Vec::new(),
+            selected: None,
+            next_row: 1,
+            listener_origins: BTreeSet::new(),
+            owner_consent: OwnerConsent::default(),
             actor: None,
             native_subscription: None,
             pending_endpoint: None,
@@ -179,7 +205,7 @@ impl Default for Controller {
             error: None,
             epoch: 0,
             ended: false,
-            copy_pending: false,
+            copy_pending: None,
         }
     }
 }
@@ -192,19 +218,67 @@ impl Controller {
     }
     pub fn can_start_listener(&self) -> bool {
         self.active() && self.actor.is_none() && self.pending_endpoint.is_some()
+            && self.receivers.iter().any(|receiver| receiver.recipient.is_some())
+    }
+    fn selected_receiver(&self) -> Option<&Receiver> {
+        self.selected.and_then(|index| self.receivers.get(index))
+    }
+    pub fn receiver_rows(&self) -> Vec<(u64, bool)> {
+        self.receivers.iter().map(|receiver| (receiver.row, receiver.recipient.is_some())).collect()
+    }
+    pub fn selected_row(&self) -> Option<u64> {
+        self.selected_receiver().map(|receiver| receiver.row)
+    }
+    pub fn selected_approved(&self) -> bool {
+        self.selected_receiver().is_some_and(|receiver| receiver.recipient.is_some())
     }
     pub fn can_issue(&self) -> bool {
-        self.listener_active() && self.receiver.is_some() && self.permit.is_none()
-    }
-    pub fn connection_issued(&self) -> bool {
-        self.permit.as_ref().is_some_and(|permit| {
-            self.actor
-                .as_ref()
-                .is_some_and(|actor| actor.snapshot().issued == Some(permit.id()))
+        self.listener_active() && self.selected_receiver().is_some_and(|receiver| {
+            receiver.recipient.is_some() && receiver.permit.is_none()
         })
     }
+    pub fn connection_issued(&self) -> bool {
+        self.listener_active() && self.selected_receiver().and_then(|receiver| receiver.permit.as_ref())
+            .is_some_and(ClientPermit::issued)
+    }
+    fn cancel_copy(&mut self) {
+        self.copy_pending = None;
+        if let Some(actor) = &self.actor {
+            actor.clear_copy();
+        }
+    }
+    pub fn select_receiver(&mut self, row: u64) -> Result<()> {
+        let index = self.receivers.iter().position(|receiver| receiver.row == row)
+            .context("Event receiver row is unavailable")?;
+        self.cancel_copy();
+        if let Some(previous) = self.selected {
+            self.receivers[previous].draft = self.draft.clone();
+        }
+        let name = self.draft.name.clone();
+        let focus = self.draft.focus;
+        self.draft = self.receivers[index].draft.clone();
+        self.draft.name = name;
+        self.draft.focus = focus;
+        self.selected = Some(index);
+        Ok(())
+    }
+    pub fn add_receiver(&mut self) -> Result<()> {
+        ensure!(self.active(), "Create a cooperative session first");
+        ensure!(self.origin_editable(), "End this session before adding an origin or receiver row");
+        ensure!(self.receivers.len() < 8, "At most eight event receiver rows are available");
+        let row = self.next_row;
+        self.next_row = self.next_row.checked_add(1).context("Receiver row IDs exhausted")?;
+        self.receivers.push(Receiver {
+            row,
+            draft: Draft { ttl: "120".into(), ..Draft::default() },
+            recipient: None,
+            permit: None,
+            approved_origin: None,
+        });
+        self.select_receiver(row)
+    }
     pub fn origin_editable(&self) -> bool {
-        self.actor.as_ref().is_none_or(actor::Actor::retired)
+        self.actor.is_none()
     }
     pub fn retired(&self) -> bool {
         (!self.active()) && self.actor.as_ref().is_none_or(actor::Actor::retired)
@@ -235,7 +309,8 @@ impl Controller {
                 .as_ref()
                 .is_some_and(|ready| ready.events.pointer_events),
             keyboard_export: owner.as_ref().is_some_and(|ready| ready.events.key_events),
-            browser_approved: self.receiver.is_some(),
+            browser_approved: self.receivers.iter().any(|receiver| receiver.recipient.is_some()),
+            approved_receivers: self.receivers.iter().filter(|receiver| receiver.recipient.is_some()).count(),
             connected_clients: network.map(|state| state.connected_clients),
             cleanup_pending: network.map(|state| state.cleanup_pending),
             uncertain_admissions: network.map(|state| state.uncertain_admissions),
@@ -273,8 +348,11 @@ impl Controller {
         self.pending_endpoint = Some(endpoint);
         self.bridge = Some(bridge);
         self.owner = Some(owner);
-        self.receiver = None;
-        self.permit = None;
+        self.receivers.clear();
+        self.selected = None;
+        self.listener_origins.clear();
+        self.owner_consent = OwnerConsent::default();
+        self.cancel_copy();
         self.actor = None;
         self.epoch = epoch;
         self.ended = false;
@@ -309,101 +387,111 @@ impl Controller {
         });
         Ok(())
     }
-    pub fn approve(&mut self) -> Result<()> {
+    pub fn apply_owner_consent(&mut self) -> Result<()> {
         ensure!(self.active(), "Create a cooperative session first");
-        let (events, controls) = self.draft.approvals()?;
-        ensure!(
-            self.draft
-                .users
-                .iter()
-                .all(|id| self.users.iter().any(|user| user.id == *id)),
-            "User selection is stale"
-        );
-        self.revoke();
+        ensure!(!self.owner_consent.key_control || self.owner_consent.key_events,
+            "Master keyboard control requires master keyboard observation");
+        ensure!(!(self.owner_consent.pointer_control || self.owner_consent.cursor)
+            || self.owner_consent.pointer_events,
+            "Master pointer/cursor control requires master pointer observation");
+        // All remote leases are fenced before any ALL_OWNED master mutation,
+        // including widening: no old receiver gains authority by implication.
+        self.revoke_all();
         let owner = self.owner.context("Native consumer unavailable")?;
-        let bridge = self
-            .bridge
-            .as_mut()
-            .context("Cooperative session unavailable")?;
+        let bridge = self.bridge.as_mut().context("Cooperative session unavailable")?;
         if let Some(subscription) = self.native_subscription.take() {
-            let _ = bridge.dispatch_local(
-                owner,
-                ClientRequest {
-                    version: PROTOCOL_VERSION,
-                    command: ClientCommand::Unsubscribe { subscription },
-                },
-            );
+            let _ = bridge.dispatch_local(owner, ClientRequest {
+                version: PROTOCOL_VERSION,
+                command: ClientCommand::Unsubscribe { subscription },
+            });
         }
         self.native.disconnect();
-        bridge
-            .host_command(HostRequest {
-                version: PROTOCOL_VERSION,
-                command: HostCommand::ApproveEvents {
-                    recipient: owner,
-                    grant: events.clone(),
-                },
-            })
-            .sdk()?;
-        let mut native_controls = controls.clone();
-        native_controls.delegated_users = false;
-        bridge
-            .host_command(HostRequest {
-                version: PROTOCOL_VERSION,
-                command: HostCommand::ApproveControls {
-                    recipient: owner,
-                    grant: native_controls,
-                },
-            })
-            .sdk()?;
-        let ClientResponse::Subscribed {
-            subscription,
-            snapshot,
-        } = bridge
-            .dispatch_local(
-                owner,
-                ClientRequest {
-                    version: PROTOCOL_VERSION,
-                    command: ClientCommand::Subscribe { capacity: 256 },
-                },
-            )
-            .sdk()?
-        else {
-            anyhow::bail!("Native snapshot unavailable");
-        };
+        bridge.host_command(HostRequest {
+            version: PROTOCOL_VERSION,
+            command: HostCommand::ApproveEvents { recipient: owner, grant: Grant {
+                users: UserScope::AllOwned,
+                pointer_events: self.owner_consent.pointer_events,
+                key_events: self.owner_consent.key_events,
+                owned_windows: false,
+            } },
+        }).sdk()?;
+        bridge.host_command(HostRequest {
+            version: PROTOCOL_VERSION,
+            command: HostCommand::ApproveControls { recipient: owner, grant: ControlGrant {
+                users: UserScope::AllOwned,
+                delegated_users: false,
+                user_lifecycle: self.owner_consent.lifecycle,
+                cursor: self.owner_consent.cursor,
+                pointer_input: self.owner_consent.pointer_control,
+                key_input: self.owner_consent.key_control,
+                window_tracking: false,
+                window_control: false,
+            } },
+        }).sdk()?;
+        if !self.owner_consent.pointer_events && !self.owner_consent.key_events {
+            return Ok(());
+        }
+        let ClientResponse::Subscribed { subscription, snapshot } = bridge.dispatch_local(owner,
+            ClientRequest { version: PROTOCOL_VERSION, command: ClientCommand::Subscribe { capacity: 256 } }
+        ).sdk()? else { anyhow::bail!("Native snapshot unavailable"); };
         self.native.install_snapshot(snapshot, self.epoch)?;
         self.native_subscription = Some(subscription);
-        let HostResponse::RecipientRegistered { recipient } = bridge
-            .host_command(HostRequest {
-                version: PROTOCOL_VERSION,
-                command: HostCommand::RegisterRecipient {
-                    local_identity: "GUI-approved browser event receiver".into(),
-                },
-            })
-            .sdk()?
-        else {
-            anyhow::bail!("Browser receiver unavailable");
-        };
-        self.receiver = Some(recipient);
-        bridge
-            .host_command(HostRequest {
-                version: PROTOCOL_VERSION,
-                command: HostCommand::ApproveEvents {
-                    recipient,
-                    grant: events,
-                },
-            })
-            .sdk()?;
-        bridge
-            .host_command(HostRequest {
-                version: PROTOCOL_VERSION,
-                command: HostCommand::ApproveControls {
-                    recipient,
-                    grant: controls,
-                },
-            })
-            .sdk()?;
-        self.receiver = Some(recipient);
         Ok(())
+    }
+    pub fn approve(&mut self) -> Result<()> {
+        ensure!(self.active(), "Create a cooperative session first");
+        let index = self.selected.context("Add and select an event receiver first")?;
+        let (events, controls) = self.draft.approvals()?;
+        crate::sdk_listener::validate_origins(std::slice::from_ref(&self.draft.origin))?;
+        ensure!(!self.draft.origin.is_empty(), "Enter an exact HTTP(S) receiver origin first");
+        ensure!(self.actor.is_none() || self.listener_origins.contains(&self.draft.origin),
+            "This origin was not approved before listener start; end the session to change origins");
+        ensure!(self.draft.users.iter().all(|id| self.users.iter().any(|user| user.id == *id)),
+            "User selection is stale");
+        let owner = self.owner.context("Native consumer unavailable")?;
+        let ready = self.bridge.as_ref().context("Cooperative session unavailable")?.host().ready_for(owner)?;
+        ensure!(!events.pointer_events || ready.events.pointer_events,
+            "Apply master pointer observation consent first");
+        ensure!(!events.key_events || ready.events.key_events,
+            "Apply master keyboard observation consent first");
+        ensure!(!controls.pointer_input || ready.controls.pointer_input,
+            "Apply master pointer control consent first");
+        ensure!(!controls.key_input || ready.controls.key_input,
+            "Apply master keyboard control consent first");
+        ensure!(!controls.cursor || ready.controls.cursor, "Apply master cursor consent first");
+        ensure!(!controls.user_lifecycle || ready.controls.user_lifecycle,
+            "Apply master lifecycle consent first");
+        self.revoke();
+        let bridge = self.bridge.as_mut().context("Cooperative session unavailable")?;
+        let HostResponse::RecipientRegistered { recipient } = bridge.host_command(HostRequest {
+            version: PROTOCOL_VERSION,
+            command: HostCommand::RegisterRecipient { local_identity: "GUI-approved event receiver (native/browser)".into() },
+        }).sdk()? else { anyhow::bail!("Event receiver unavailable"); };
+        // Record immediately so any partial approval failure is explicitly retired.
+        self.receivers[index].recipient = Some(recipient);
+        let approved = (|| -> Result<()> {
+            bridge.host_command(HostRequest { version: PROTOCOL_VERSION,
+                command: HostCommand::ApproveEvents { recipient, grant: events } }).sdk()?;
+            bridge.host_command(HostRequest { version: PROTOCOL_VERSION,
+                command: HostCommand::ApproveControls { recipient, grant: controls } }).sdk()?;
+            Ok(())
+        })();
+        if let Err(error) = approved {
+            self.revoke();
+            return Err(error);
+        }
+        self.receivers[index].draft = self.draft.clone();
+        self.receivers[index].approved_origin = Some(self.draft.origin.clone());
+        Ok(())
+    }
+    fn approved_origins(&self) -> Result<Vec<String>> {
+        let origins: BTreeSet<_> = self.receivers.iter()
+            .filter(|receiver| receiver.recipient.is_some())
+            .filter_map(|receiver| receiver.approved_origin.clone()).collect();
+        ensure!(!origins.is_empty(), "Approve at least one event receiver origin first");
+        let origins: Vec<_> = origins.into_iter().collect();
+        crate::sdk_listener::validate_origins(&origins)?;
+        Ok(origins)
     }
     pub fn start_listener(
         &mut self,
@@ -415,18 +503,15 @@ impl Controller {
             self.actor.is_none(),
             "This cooperative listener is already started; end the session before restarting"
         );
-        crate::sdk_listener::validate_origins(std::slice::from_ref(&self.draft.origin))?;
-        ensure!(
-            !self.draft.origin.is_empty(),
-            "Enter one exact HTTP(S) origin first"
-        );
+        let origins = self.approved_origins()?;
+        self.listener_origins = origins.iter().cloned().collect();
         let endpoint = self
             .pending_endpoint
             .take()
             .context("Event network endpoint is unavailable")?;
         self.actor = Some(actor::Actor::start(
             endpoint,
-            self.draft.origin.clone(),
+            origins,
             root,
             self.epoch,
             guards,
@@ -434,50 +519,28 @@ impl Controller {
         Ok(())
     }
     pub fn issue(&mut self) -> Result<()> {
-        ensure!(
-            self.permit.is_none(),
-            "Approve a fresh receiver before issuing another connection"
-        );
-        let seconds: u64 = self
-            .draft
-            .ttl
-            .parse()
-            .context("TTL must be 1 through 300 seconds")?;
-        ensure!(
-            (1..=300).contains(&seconds),
-            "TTL must be 1 through 300 seconds"
-        );
-        let actor = self
-            .actor
-            .as_ref()
-            .filter(|actor| actor.active())
-            .context("Start the listener first")?;
-        let receiver = self
-            .receiver
-            .context("Explicitly approve the browser scope first")?;
-        let permit = self
-            .bridge
-            .as_mut()
-            .context("Cooperative session unavailable")?
-            .approve_client(receiver, &self.draft.origin, Duration::from_secs(seconds))?;
-        if let Err(error) = actor.issue(permit.clone()) {
-            self.bridge.as_mut().unwrap().revoke_recipient(receiver);
-            self.receiver = None;
+        ensure!(self.can_issue(), "Start the listener and approve a fresh selected receiver first");
+        let index = self.selected.context("Select an event receiver first")?;
+        let seconds: u64 = self.draft.ttl.parse().context("TTL must be 1 through 300 seconds")?;
+        ensure!((1..=300).contains(&seconds), "TTL must be 1 through 300 seconds");
+        let receiver = self.receivers[index].recipient.context("Approve the selected event receiver first")?;
+        let origin = self.receivers[index].approved_origin.as_ref().context("Receiver origin unavailable")?;
+        let permit = self.bridge.as_mut().context("Cooperative session unavailable")?
+            .approve_client(receiver, origin, Duration::from_secs(seconds))?;
+        self.receivers[index].permit = Some(permit.clone());
+        if let Err(error) = self.actor.as_ref().context("Event listener unavailable")?.issue(permit) {
+            self.revoke();
             return Err(error);
         }
-        self.permit = Some(permit);
         Ok(())
     }
     pub fn request_copy(&mut self) -> Result<()> {
-        self.actor
-            .as_ref()
-            .context("Event listener unavailable")?
-            .copy(
-                self.permit
-                    .clone()
-                    .context("Issue an event-only connection first")?,
-            )?;
-        self.copy_pending = true;
+        ensure!(self.connection_issued(), "Issue a live selected event receiver connection first");
+        let receiver = self.selected_receiver().context("Select an event receiver first")?;
+        let permit = receiver.permit.clone().context("Issue an event-only connection first")?;
+        let ticket = (receiver.row, permit.id());
+        self.actor.as_ref().context("Event listener unavailable")?.copy(permit)?;
+        self.copy_pending = Some(ticket);
         Ok(())
     }
     pub fn can_control(&self, keys: bool, cursor: bool) -> bool {
@@ -571,80 +634,50 @@ impl Controller {
         Ok(())
     }
     pub fn take_copy(&mut self) -> Option<String> {
-        if !self.copy_pending {
+        let (row, id) = self.copy_pending?;
+        let receiver = self.selected_receiver()?;
+        let permit = receiver.permit.as_ref()?;
+        if receiver.row != row || permit.id() != id || !permit.issued() {
+            self.cancel_copy();
             return None;
         }
-        let permit = self.permit.as_ref()?;
-        // Ready verifies current authority before a pending private Copy result can
-        // leave Rust memory. Revocation/replacement clears the matching permit.
-        self.bridge
-            .as_ref()?
-            .host()
-            .ready_for(self.receiver?)
-            .ok()?;
-        let copied = self.actor.as_ref()?.take_copy(permit.id());
+        self.bridge.as_ref()?.host().ready_for(receiver.recipient?).ok()?;
+        let copied = self.actor.as_ref()?.take_copy(id);
         if copied.is_some() {
-            self.copy_pending = false;
+            self.copy_pending = None;
         }
         copied
     }
+    fn revoke_index(&mut self, index: usize) {
+        if let Some(recipient) = self.receivers[index].recipient.take()
+            && let Some(bridge) = &mut self.bridge {
+            bridge.revoke_recipient(recipient);
+            // This also retires approved recipients which never acquired a permit.
+            let _ = bridge.dispatch_local(recipient, ClientRequest {
+                version: PROTOCOL_VERSION, command: ClientCommand::Disconnect,
+            });
+        }
+        self.receivers[index].permit = None;
+        self.receivers[index].approved_origin = None;
+    }
     pub fn revoke(&mut self) {
-        self.copy_pending = false;
-        if let Some(actor) = &self.actor {
-            actor.clear_copy();
+        self.cancel_copy();
+        if let Some(index) = self.selected {
+            self.revoke_index(index);
         }
-        if let Some(receiver) = self.receiver.take()
-            && let Some(bridge) = &mut self.bridge
-        {
-            bridge.revoke_recipient(receiver);
-            // An approved receiver without an issued permit still belongs to
-            // this explicit UI setup and must not accumulate on replacement.
-            let _ = bridge.dispatch_local(
-                receiver,
-                ClientRequest {
-                    version: PROTOCOL_VERSION,
-                    command: ClientCommand::Disconnect,
-                },
-            );
+    }
+    fn revoke_all(&mut self) {
+        self.cancel_copy();
+        for index in 0..self.receivers.len() {
+            self.revoke_index(index);
         }
-        self.permit = None;
     }
     pub fn disable_publication(&mut self) -> Result<()> {
-        self.revoke();
-        if let (Some(owner), Some(bridge)) = (self.owner, &mut self.bridge) {
-            if let Some(subscription) = self.native_subscription.take() {
-                let _ = bridge.dispatch_local(
-                    owner,
-                    ClientRequest {
-                        version: PROTOCOL_VERSION,
-                        command: ClientCommand::Unsubscribe { subscription },
-                    },
-                );
-            }
-            bridge
-                .host_command(HostRequest {
-                    version: PROTOCOL_VERSION,
-                    command: HostCommand::ApproveEvents {
-                        recipient: owner,
-                        grant: Grant::default(),
-                    },
-                })
-                .sdk()?;
-            bridge
-                .host_command(HostRequest {
-                    version: PROTOCOL_VERSION,
-                    command: HostCommand::ApproveControls {
-                        recipient: owner,
-                        grant: ControlGrant::default(),
-                    },
-                })
-                .sdk()?;
-        }
-        self.native.disconnect();
-        Ok(())
+        self.owner_consent = OwnerConsent::default();
+        self.apply_owner_consent()
     }
     pub fn stop(&mut self) {
-        self.revoke();
+        self.revoke_all();
         if let Some(bridge) = &mut self.bridge {
             if let (Some(owner), Some(subscription)) = (self.owner, self.native_subscription.take())
             {
@@ -669,12 +702,14 @@ impl Controller {
         self.ended = true;
     }
     pub fn tick(&mut self, ctx: &egui::Context) {
-        let mut receiver_missing = false;
+        let mut missing = Vec::new();
         if let Some(bridge) = &mut self.bridge {
             let _report: crate::application_event_transport::TickReport = bridge.drain();
-            receiver_missing = self
-                .receiver
-                .is_some_and(|receiver| bridge.host().ready_for(receiver).is_err());
+            missing = self.receivers.iter().enumerate().filter_map(|(index, receiver)| {
+                let retired = receiver.recipient.is_some_and(|recipient| bridge.host().ready_for(recipient).is_err())
+                    || receiver.permit.as_ref().is_some_and(|permit| !permit.live());
+                retired.then_some(index)
+            }).collect();
             if self.native.state() == &StreamState::Live
                 && let (Some(owner), Some(subscription)) = (self.owner, self.native_subscription)
             {
@@ -714,6 +749,9 @@ impl Controller {
                                     } else {
                                         self.users.retain(|user| user.id != id);
                                         self.draft.users.remove(&id);
+                                        for receiver in &mut self.receivers {
+                                            receiver.draft.users.remove(&id);
+                                        }
                                         if self.draft.focus == Some(id) {
                                             self.draft.focus = None;
                                         }
@@ -736,8 +774,11 @@ impl Controller {
                 }
             }
         }
-        if receiver_missing {
-            self.revoke();
+        for index in missing {
+            if self.selected == Some(index) {
+                self.cancel_copy();
+            }
+            self.revoke_index(index);
         }
         if let Some(actor) = &self.actor
             && let Some(error) = actor.snapshot().error
@@ -758,22 +799,13 @@ impl Drop for Controller {
 #[cfg(test)]
 mod tests {
     use super::*;
+    const ORIGIN: &str = "https://consumer.example";
+
     fn local() -> Controller {
-        let bounds = Bounds {
-            left: -100,
-            top: 0,
-            right: 1000,
-            bottom: 800,
-        };
-        let mut host = Host::<PlatformWindows>::new(
-            71,
-            ScreenState {
-                revision: 1,
-                desktop: bounds,
-                screens: vec![bounds],
-            },
-        )
-        .unwrap();
+        let bounds = Bounds { left: -100, top: 0, right: 1000, bottom: 800 };
+        let mut host = Host::<PlatformWindows>::new(71, ScreenState {
+            revision: 1, desktop: bounds, screens: vec![bounds],
+        }).unwrap();
         let owner = host.register_recipient("native test consumer").unwrap();
         let (bridge, endpoint) = HostBridge::new(host);
         let mut controller = Controller::default();
@@ -783,124 +815,160 @@ mod tests {
         controller.epoch = 71;
         controller
     }
+    fn master(controller: &mut Controller) {
+        controller.owner_consent.pointer_events = true;
+        controller.owner_consent.key_events = true;
+        controller.owner_consent.pointer_control = true;
+        controller.owner_consent.key_control = true;
+        controller.apply_owner_consent().unwrap();
+    }
+    fn receiver(controller: &mut Controller, keys: bool, delegated: bool) -> u64 {
+        controller.add_receiver().unwrap();
+        controller.draft.users = controller.users.iter().map(|user| user.id).collect();
+        controller.draft.origin = ORIGIN.into();
+        controller.draft.pointer_events = true;
+        controller.draft.key_events = keys;
+        controller.draft.pointer_control = true;
+        controller.draft.key_control = keys;
+        controller.draft.delegated = delegated;
+        controller.approve().unwrap();
+        controller.selected_row().unwrap()
+    }
+    // Deliberately uses the actual bridge approval API without launching network,
+    // descriptor IO, GUI, native input, or a helper process.
+    fn permit(controller: &mut Controller) -> ClientPermit {
+        let index = controller.selected.unwrap();
+        let recipient = controller.receivers[index].recipient.unwrap();
+        let permit = controller.bridge.as_mut().unwrap()
+            .approve_client(recipient, ORIGIN, Duration::from_secs(120)).unwrap();
+        controller.receivers[index].permit = Some(permit.clone());
+        permit
+    }
+    fn remote_key(controller: &mut Controller, recipient: RecipientId, user: UserId, transition: Transition)
+        -> std::result::Result<ClientResponse, Failure> {
+        controller.bridge.as_mut().unwrap().dispatch_local(recipient, ClientRequest {
+            version: PROTOCOL_VERSION,
+            command: ClientCommand::Input { user, input: Input::Key { key: KeyCode(4), transition } },
+        })
+    }
     #[test]
-    fn creation_and_script_fields_never_grant_or_select_users() {
+    fn creation_script_and_new_rows_never_select_or_grant_remote_users() {
         let mut controller = local();
         controller.create_user().unwrap();
         controller.create_user().unwrap();
         assert_eq!(controller.users.len(), 2);
         assert!(controller.draft.users.is_empty());
-        assert!(controller.receiver.is_none());
+        assert_eq!(controller.status().approved_receivers, 0);
         assert!(controller.actor.is_none());
         assert!(!controller.status().pointer_export && !controller.status().keyboard_export);
-        controller.draft.apply_script_fields(
-            &BTreeMap::from([
-                (
-                    "application_event_origin".into(),
-                    "https://consumer.example".into(),
-                ),
-                ("application_event_key_events".into(), "true".into()),
-            ]),
-            true,
-        );
+        controller.add_receiver().unwrap();
+        controller.draft.apply_script_fields(&BTreeMap::from([
+            ("application_event_origin".into(), ORIGIN.into()),
+            ("application_event_key_events".into(), "true".into()),
+        ]), true);
         assert!(!controller.draft.key_events);
+        assert!(controller.approve().is_err());
+        master(&mut controller);
+        assert!(controller.draft.users.is_empty());
         assert!(controller.approve().is_err());
     }
     #[test]
-    fn receiver_replacement_keeps_two_users_and_does_not_leak_unissued_recipients() {
+    fn two_receivers_share_owner_user_ids_with_independent_grants_and_permits() {
+        let mut controller = local();
+        controller.create_user().unwrap();
+        controller.create_user().unwrap();
+        let ids: BTreeSet<_> = controller.users.iter().map(|user| user.id).collect();
+        master(&mut controller);
+        let a = receiver(&mut controller, true, true);
+        let first = controller.selected_receiver().unwrap().recipient.unwrap();
+        let a_permit = permit(&mut controller);
+        let b = receiver(&mut controller, false, false);
+        let second = controller.selected_receiver().unwrap().recipient.unwrap();
+        let b_permit = permit(&mut controller);
+        assert_ne!(a_permit.id(), b_permit.id());
+        assert!(a_permit.live() && b_permit.live());
+        assert!(!a_permit.issued() && !b_permit.issued());
+        assert_eq!(controller.status().approved_receivers, 2);
+        assert_eq!(controller.approved_origins().unwrap(), vec![ORIGIN.to_owned()]);
+        let bridge = controller.bridge.as_ref().unwrap();
+        let first_ready = bridge.host().ready_for(first).unwrap();
+        let second_ready = bridge.host().ready_for(second).unwrap();
+        assert_eq!(first_ready.events.users, UserScope::Only(ids.clone()));
+        assert_eq!(second_ready.events.users, UserScope::Only(ids.clone()));
+        assert!(first_ready.events.key_events && first_ready.controls.key_input);
+        assert!(!second_ready.events.key_events && !second_ready.controls.delegated_users);
+        assert!(controller.status().keyboard_export);
+        assert_eq!(controller.native.users().keys().copied().collect::<BTreeSet<_>>(), ids);
+        controller.copy_pending = Some((b, b_permit.id()));
+        controller.select_receiver(a).unwrap();
+        assert!(controller.copy_pending.is_none());
+        controller.copy_pending = Some((a, a_permit.id()));
+        controller.revoke();
+        assert!(controller.copy_pending.is_none() && controller.take_copy().is_none());
+        assert!(!a_permit.live() && b_permit.live());
+        assert_eq!(controller.selected_row(), Some(a));
+        assert!(controller.bridge.as_ref().unwrap().host().ready_for(first).is_err());
+        assert!(controller.bridge.as_ref().unwrap().host().ready_for(second).is_ok());
+        controller.approve().unwrap();
+        assert!(b_permit.live());
+        assert_eq!(controller.selected_row(), Some(a));
+        assert_eq!(controller.status().approved_receivers, 2);
+    }
+    #[test]
+    fn master_revocation_fences_all_permits_and_releases_delegated_holds() {
         let mut controller = local();
         controller.create_user().unwrap();
         controller.create_user().unwrap();
         let ids: Vec<_> = controller.users.iter().map(|user| user.id).collect();
-        controller.draft.users = ids.iter().copied().collect();
-        controller.draft.pointer_events = true;
-        for _ in 0..(MAX_RECIPIENTS + 8) {
-            controller.approve().unwrap();
-        }
-        assert_eq!(
-            controller
-                .native
-                .users()
-                .keys()
-                .copied()
-                .collect::<Vec<_>>(),
-            ids
-        );
-        assert!(
-            controller
-                .native
-                .users()
-                .values()
-                .all(|user| user.held_keys.is_none())
-        );
+        master(&mut controller);
+        receiver(&mut controller, true, false);
+        let first = controller.selected_receiver().unwrap().recipient.unwrap();
+        let a_permit = permit(&mut controller);
+        assert!(remote_key(&mut controller, first, ids[0], Transition::Down).is_err());
+        receiver(&mut controller, true, true);
+        let second = controller.selected_receiver().unwrap().recipient.unwrap();
+        let b_permit = permit(&mut controller);
+        remote_key(&mut controller, second, ids[0], Transition::Down).unwrap();
+        controller.tick(&egui::Context::default());
+        assert_eq!(controller.native.users()[&ids[0]].held_keys, Some(vec![KeyCode(4)]));
         controller.disable_publication().unwrap();
-        assert!(controller.receiver.is_none());
-        assert!(controller.native.users().is_empty());
-        assert_eq!(
-            controller
-                .users
-                .iter()
-                .map(|user| user.id)
-                .collect::<Vec<_>>(),
-            ids
-        );
+        assert!(!a_permit.live() && !b_permit.live());
+        assert_eq!(controller.status().approved_receivers, 0);
         assert!(!controller.status().pointer_export && !controller.status().keyboard_export);
+        assert!(remote_key(&mut controller, second, ids[0], Transition::Down).is_err());
+        master(&mut controller);
+        assert_eq!(controller.status().approved_receivers, 0);
+        assert_eq!(controller.native.users()[&ids[0]].held_keys, Some(Vec::new()));
+        assert_eq!(controller.users.iter().map(|user| user.id).collect::<Vec<_>>(), ids);
+        receiver(&mut controller, true, true);
+        let after = permit(&mut controller);
+        controller.stop();
+        assert!(!after.live() && controller.retired());
+        assert!(controller.native.users().is_empty());
     }
     #[test]
-    fn keyboard_and_delegation_require_distinct_explicit_approvals() {
-        let mut draft = Draft {
-            users: BTreeSet::from([UserId {
-                epoch: 71,
-                local: 1,
-            }]),
-            pointer_events: true,
-            key_control: true,
-            ..Draft::default()
-        };
-        assert!(draft.approvals().is_err());
-        draft.key_events = true;
-        let (events, controls) = draft.approvals().unwrap();
-        assert!(events.key_events && controls.key_input);
-        assert!(!controls.delegated_users);
-        draft.delegated = true;
-        assert!(draft.approvals().unwrap().1.delegated_users);
-    }
-    #[test]
-    fn gui_stop_retires_actual_native_stream_and_held_virtual_state() {
+    fn repeated_unissued_replacement_retires_recipients_and_preserves_other_row() {
         let mut controller = local();
         controller.create_user().unwrap();
-        let user = controller.users[0].id;
-        controller.draft.users.insert(user);
-        controller.draft.key_events = true;
-        controller.draft.key_control = true;
+        controller.create_user().unwrap();
+        master(&mut controller);
+        receiver(&mut controller, true, true);
+        let other = controller.selected_receiver().unwrap().recipient.unwrap();
+        let other_permit = permit(&mut controller);
+        let row = receiver(&mut controller, false, false);
+        for _ in 0..(MAX_RECIPIENTS + 8) {
+            let previous = controller.selected_receiver().unwrap().recipient.unwrap();
+            controller.approve().unwrap();
+            assert!(controller.bridge.as_ref().unwrap().host().ready_for(previous).is_err());
+        }
+        assert_eq!(controller.selected_row(), Some(row));
+        assert!(other_permit.live());
+        assert!(controller.bridge.as_ref().unwrap().host().ready_for(other).unwrap().events.key_events);
+        assert_eq!(controller.users.len(), 2);
+        // Draft origin changes do not widen the allowlist derived from approvals.
+        controller.draft.origin = "https://unapproved.example".into();
+        assert_eq!(controller.approved_origins().unwrap(), vec![ORIGIN.to_owned()]);
         controller.approve().unwrap();
-        controller
-            .local_command(ClientCommand::Input {
-                user,
-                input: Input::Key {
-                    key: KeyCode(4),
-                    transition: Transition::Down,
-                },
-            })
-            .unwrap();
-        controller.tick(&egui::Context::default());
-        assert_eq!(
-            controller.native.users()[&user].held_keys,
-            Some(vec![KeyCode(4)])
-        );
-        let owner = controller.owner.unwrap();
-        controller.stop();
-        assert!(controller.native.users().is_empty());
-        assert!(controller.users.is_empty());
-        assert!(controller.retired());
-        assert!(
-            controller
-                .bridge
-                .as_ref()
-                .unwrap()
-                .host()
-                .ready_for(owner)
-                .is_err()
-        );
+        assert_eq!(controller.approved_origins().unwrap(), vec![ORIGIN.to_owned(), "https://unapproved.example".to_owned()]);
     }
 }

@@ -135,6 +135,14 @@ mod window_selection;
 #[cfg(windows)]
 const APP_NAME: &str = "ProtoInputMultiPlex";
 
+/// Native GUI renderer; software mode never falls back to a hardware adapter.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, clap::ValueEnum)]
+enum GuiRenderer {
+    #[default]
+    Glow,
+    SoftwareDx12,
+}
+
 #[derive(Parser)]
 #[command(
     name = "protoinputmultiplex",
@@ -181,6 +189,9 @@ enum Command {
     },
     /// Open the device dashboard and live multi-mouse preview (default).
     Gui {
+        /// Native GUI renderer (software-dx12 requires the software-renderer build feature).
+        #[arg(long, value_enum, default_value_t = GuiRenderer::Glow)]
+        renderer: GuiRenderer,
         /// Root for preferences, profiles and macros; defaults to LocalAppData/ProtoInputMultiPlex.
         #[arg(long, conflicts_with = "preferences")]
         data_dir: Option<PathBuf>,
@@ -312,6 +323,7 @@ fn main() -> Result<()> {
     #[cfg(windows)]
     {
         windows_main(args.command.unwrap_or(Command::Gui {
+            renderer: GuiRenderer::Glow,
             data_dir: None,
             profile: None,
             ui_script: None,
@@ -342,6 +354,7 @@ fn windows_main(command: Command) -> Result<()> {
             return config_maintenance::run(command);
         }
         Command::Gui {
+            renderer,
             data_dir,
             profile,
             ui_script,
@@ -358,7 +371,10 @@ fn windows_main(command: Command) -> Result<()> {
                 data_dir,
                 profile,
                 ui_script,
-                !ui_script_no_screenshots,
+                gui::GuiRunOptions {
+                    renderer,
+                    script_screenshots: !ui_script_no_screenshots,
+                },
                 preferences,
                 startup_test_key,
                 gui::WorkerDelays {
@@ -520,5 +536,50 @@ fn windows_main(command: Command) -> Result<()> {
             drop(session);
             Ok(())
         }
+    }
+}
+
+#[cfg(test)]
+mod renderer_cli_tests {
+    use super::*;
+
+    #[test]
+    fn gui_renderer_is_explicit_and_defaults_to_glow() {
+        let parsed = Args::try_parse_from(["protoinputmultiplex", "gui"]).unwrap();
+        assert!(matches!(
+            parsed.command,
+            Some(Command::Gui {
+                renderer: GuiRenderer::Glow,
+                ..
+            })
+        ));
+        let parsed = Args::try_parse_from([
+            "protoinputmultiplex",
+            "gui",
+            "--renderer",
+            "software-dx12",
+        ])
+        .unwrap();
+        assert!(matches!(
+            parsed.command,
+            Some(Command::Gui {
+                renderer: GuiRenderer::SoftwareDx12,
+                ..
+            })
+        ));
+    }
+
+    #[test]
+    fn renderer_option_rejects_typos_and_does_not_apply_to_probe() {
+        assert!(Args::try_parse_from(["protoinputmultiplex", "gui", "--renderer", "cpu"]).is_err());
+        assert!(
+            Args::try_parse_from([
+                "protoinputmultiplex",
+                "probe",
+                "--renderer",
+                "software-dx12",
+            ])
+            .is_err()
+        );
     }
 }
