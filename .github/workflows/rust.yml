@@ -40,7 +40,7 @@ jobs:
       - name: Build native workspace (x64)
         run: cargo build --workspace --locked --features mux-application-sdk/native-client --target x86_64-pc-windows-msvc
       - name: Build x64 native lifecycle DLL and example with full default SDK features
-        run: cargo build -p mux-application-sdk --lib --example native_dll_lifecycle --example native_external_consumer --features native-client --locked --target x86_64-pc-windows-msvc
+        run: cargo build -p mux-application-sdk --lib --example native_dll_lifecycle --example native_external_consumer --features native-client --locked --target-dir target/sdk-native-build --target x86_64-pc-windows-msvc
       - name: Build x64 renderer-only example
         run: cargo build -p protoinputmultiplex --example software_renderer_smoke --features software-renderer --locked --target x86_64-pc-windows-msvc
       - uses: ilammy/msvc-dev-cmd@v1
@@ -49,7 +49,7 @@ jobs:
       - name: Build native workspace (x86)
         run: cargo build --workspace --locked --features mux-application-sdk/native-client --target i686-pc-windows-msvc
       - name: Build x86 native lifecycle DLL and example with full default SDK features
-        run: cargo build -p mux-application-sdk --lib --example native_dll_lifecycle --example native_external_consumer --features native-client --locked --target i686-pc-windows-msvc
+        run: cargo build -p mux-application-sdk --lib --example native_dll_lifecycle --example native_external_consumer --features native-client --locked --target-dir target/sdk-native-build --target i686-pc-windows-msvc
       - name: Package and compile-check native lifecycle artifacts
         shell: pwsh
         run: |
@@ -63,7 +63,7 @@ jobs:
             @{ Name = 'x64'; Triple = 'x86_64-pc-windows-msvc' },
             @{ Name = 'x86'; Triple = 'i686-pc-windows-msvc' }
           )) {
-            $debugRoot = Join-Path 'target' ($architecture.Triple + '/debug')
+            $debugRoot = Join-Path 'target/sdk-native-build' ($architecture.Triple + '/debug')
             $headers = @(Get-ChildItem -LiteralPath (Join-Path $debugRoot 'build') -Directory -Filter 'mux-application-sdk-*' |
               ForEach-Object { Join-Path $_.FullName 'out/protoinputmultiplex_application_sdk.h' } |
               Where-Object { (Test-Path -LiteralPath $_ -PathType Leaf) -and
@@ -88,9 +88,11 @@ jobs:
             $dumpbin = Join-Path $toolsRoot 'x64/dumpbin.exe'
             $exports = & $dumpbin /nologo /exports $dll
             if ($LASTEXITCODE -ne 0) { throw 'DLL export inspection failed' }
+            $exports | Set-Content -LiteralPath (Join-Path $packageRoot 'exports.txt') -Encoding utf8
+            $exports | Write-Output
             foreach ($symbol in $nativeExports) {
               $found = @($exports | Where-Object { $_ -match ('^\s+\d+\s+[0-9A-Fa-f]+\s+[0-9A-Fa-f]+\s+' + [regex]::Escape($symbol) + '\s*$') })
-              if ($found.Count -ne 1) { throw "Missing or ambiguous native export: $symbol" }
+              if ($found.Count -ne 1) { throw "Missing or ambiguous native export for $($architecture.Name): $symbol ($($found.Count) matches)" }
             }
             $compileRoot = Join-Path $env:RUNNER_TEMP ('sdk-header-' + $architecture.Name)
             New-Item -ItemType Directory -Path $compileRoot | Out-Null
@@ -125,6 +127,7 @@ jobs:
               profile = 'debug'
               features = @('native-ffi', 'native-windows', 'native-client')
               default_features = $true
+              isolated_sdk_build = $true
               header_compile_and_native_exports_checked = $true
               native_client_abi_version = 2
               dll = @{ file = 'mux_application_sdk.dll'; sha256 = $dllHash }
@@ -178,6 +181,15 @@ jobs:
           path: |
             target/sdk-preview/
             target/application-web/
+
+      - name: Preserve partial native SDK artifacts on check failure
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: application-sdk-preview-${{ github.sha }}-partial
+          retention-days: 1
+          if-no-files-found: warn
+          path: target/sdk-preview/
 
   qualify-native-lifecycle:
     needs: [check]
