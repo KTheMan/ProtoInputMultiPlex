@@ -846,7 +846,9 @@ mod fixture {
                 let request: ClientMessage = serde_json::from_str(request.to_text().map_err(|e| e.to_string())?)
                     .map_err(|e| e.to_string())?;
                 ensure(matches!(request.request.command, ClientCommand::Subscribe { capacity: 8 }), "unexpected request reached peer")?;
-                let response = host.dispatch(native, request.request).map_err(|e| e.to_string())?;
+                let response = host
+                    .dispatch(native, request.request)
+                    .map_err(|failure| failure.message)?;
                 socket.send(Message::Text(serde_json::to_string(&ServerMessage::Response {
                     request_id: request.request_id, reply: Reply::Ok { version: PROTOCOL_VERSION, response }
                 }).map_err(|e| e.to_string())?.into())).await.map_err(|e| e.to_string())?;
