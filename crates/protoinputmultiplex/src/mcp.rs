@@ -87,10 +87,16 @@ struct ProfileDocumentRequest {
     document: String,
 }
 
+/// Status inspection accepts no authority, mutation or filtering arguments.
+#[derive(Deserialize, schemars::JsonSchema)]
+#[serde(deny_unknown_fields)]
+struct ApplicationEventStatusRequest {}
+
 #[derive(Clone, Copy, Deserialize, schemars::JsonSchema)]
 #[serde(rename_all = "snake_case")]
 enum ProfileSetupOperation {
     Activity,
+    ApplicationEventStatus,
     Inspect,
     RefreshDiscovery,
     Configure,
@@ -132,6 +138,13 @@ impl TryFrom<ProfileSetupRequest> for crate::gui_setup::Command {
         let revision =
             || expected_revision.context("This operation requires expected_revision from Inspect");
         Ok(match operation {
+            ProfileSetupOperation::ApplicationEventStatus => {
+                ensure!(
+                    expected_revision.is_none() && document.is_none(),
+                    "Application Event Status takes no document or expected_revision"
+                );
+                Self::ApplicationEventStatus
+            }
             ProfileSetupOperation::Activity => {
                 ensure!(
                     expected_revision.is_none() && document.is_none(),
@@ -1742,16 +1755,8 @@ struct SetupServer {
     tool_router: ToolRouter<Self>,
 }
 
-#[tool_router]
 impl SetupServer {
-    #[tool(
-        description = "Read optional GUI callback activity directly from the stopped setup broker without waiting for GUI work. Optional gui_activity.render_capture correlates Script screenshot request and received-frame generations, ages, dimensions and PNG-worker publication metadata without image data or output paths; missing or contended details mean unknown, and this is not GPU-call timing, normal repaint health or completion evidence. Inspect or refresh the stopped GUI profile and interface-path inventory; replace the complete GUI profile with an expected revision; or Save/Load the GUI active path and Import/Export the GUI transfer path. configure_persistence replaces the two startup/exit profile policies with persistence {load_profile_at_startup, save_profile_on_exit} and expected_revision; it does not load a profile immediately. Inspect reports acknowledged profile_persistence and preferences_operation. Policy writes use the serial preferences owner; revoke, disconnect or timeout cancels an unclaimed commit, while a claimed commit can finish and must be inspected before retrying. A profile may stage target PIDs for an explicit, validated GUI Start. This tool cannot start routing, attach targets, emit input, or choose filesystem paths.",
-        annotations(open_world_hint = false)
-    )]
-    async fn profile_setup(
-        &self,
-        Parameters(args): Parameters<ProfileSetupRequest>,
-    ) -> CallToolResult {
+    async fn execute_setup(&self, command: crate::gui_setup::Command) -> CallToolResult {
         let client = Arc::clone(&self.client);
         let job = self.active.enter();
         match tokio::task::spawn_blocking(move || {
@@ -1759,7 +1764,6 @@ impl SetupServer {
             let mut client = client
                 .lock()
                 .map_err(|_| anyhow::anyhow!("Stopped setup client lock poisoned"))?;
-            let command: crate::gui_setup::Command = args.try_into()?;
             let reply = client.setup(command)?;
             if let Some(error) = reply.error {
                 bail!("{error}");
@@ -1782,6 +1786,34 @@ impl SetupServer {
     }
 }
 
+#[tool_router]
+impl SetupServer {
+    #[tool(
+        description = "Read safe cooperative application-event status with application_event_status: counts, sequence, grant flags and sample ages only; no user identities, credentials or consent changes. Read optional GUI callback activity directly from the stopped setup broker without waiting for GUI work. Optional gui_activity.render_capture correlates Script screenshot request and received-frame generations, ages, dimensions and PNG-worker publication metadata without image data or output paths; missing or contended details mean unknown, and this is not GPU-call timing, normal repaint health or completion evidence. Inspect or refresh the stopped GUI profile and interface-path inventory; replace the complete GUI profile with an expected revision; or Save/Load the GUI active path and Import/Export the GUI transfer path. configure_persistence replaces the two startup/exit profile policies with persistence {load_profile_at_startup, save_profile_on_exit} and expected_revision; it does not load a profile immediately. Inspect reports acknowledged profile_persistence and preferences_operation. Policy writes use the serial preferences owner; revoke, disconnect or timeout cancels an unclaimed commit, while a claimed commit can finish and must be inspected before retrying. A profile may stage target PIDs for an explicit, validated GUI Start. This tool cannot start routing, attach targets, emit input, or choose filesystem paths.",
+        annotations(open_world_hint = false)
+    )]
+    async fn profile_setup(
+        &self,
+        Parameters(args): Parameters<ProfileSetupRequest>,
+    ) -> CallToolResult {
+        match crate::gui_setup::Command::try_from(args) {
+            Ok(command) => self.execute_setup(command).await,
+            Err(error) => CallToolResult::error(vec![rmcp::model::ContentBlock::text(format!("{error:#}"))]),
+        }
+    }
+
+    #[tool(
+        description = "Read cooperative application-event status through this explicitly enabled stopped GUI setup connection. Returns only counts, native sequence, observation flags, listener/cleanup phase and sample ages. No user identities, input payloads, credentials, routing, capture or consent changes. Revoked, closing or unavailable GUI status fails; this is not native/browser delivery or parity proof.",
+        annotations(open_world_hint = false)
+    )]
+    async fn application_event_status(
+        &self,
+        Parameters(_args): Parameters<ApplicationEventStatusRequest>,
+    ) -> CallToolResult {
+        self.execute_setup(crate::gui_setup::Command::ApplicationEventStatus).await
+    }
+}
+
 #[tool_handler(router = self.tool_router)]
 impl ServerHandler for SetupServer {
     fn get_info(&self) -> ServerConfig {
@@ -1790,7 +1822,7 @@ impl ServerHandler for SetupServer {
                 Implementation::new("protoinputmultiplex", env!("CARGO_PKG_VERSION"))
                     .with_title(crate::APP_NAME),
             )
-            .with_instructions("This connection is explicitly enabled for stopped GUI profile setup. Activity reports optional callback counters and ages independently of GUI request/file publication; it does not prove painting or health. Inspect before Configure or file operations; pass the returned revision as expected_revision. Device rows contain interface paths, not Raw Input handles. Start, attach, capture, and input tools are unavailable.".to_string())
+            .with_instructions("This connection is explicitly enabled for stopped GUI setup and safe cooperative application-event status inspection. Application-event status contains no user identities, input values, credentials or consent mutation. Activity reports optional callback counters and ages independently of GUI request/file publication; it does not prove painting or health. Inspect before Configure or file operations; pass the returned revision as expected_revision. Device rows contain interface paths, not Raw Input handles. Start, attach, capture, and input tools are unavailable.".to_string())
     }
 }
 
@@ -2140,7 +2172,10 @@ impl AgentServer {
         description = "Read the GUI-owned cooperative application-event SDK status through the current authenticated Agent Access connection. Returns only virtual user counts, native sequence, separately approved observation flags, listener/cleanup phase and bounded counters, with sample age. No event credentials, connection descriptors, user identities, key/pointer events, HWNDs or authority changes are exposed. This is distinct from command SDK and routing_input. Missing or stale status is unavailable; it is not a native/browser delivery or parity verdict.",
         annotations(read_only_hint = true)
     )]
-    async fn application_event_status(&self) -> CallToolResult {
+    async fn application_event_status(
+        &self,
+        Parameters(_args): Parameters<ApplicationEventStatusRequest>,
+    ) -> CallToolResult {
         self.execute(Control::application_event_status).await
     }
     #[tool(
@@ -4594,8 +4629,9 @@ mod tests {
     #[test]
     fn stopped_setup_router_exposes_no_routing_or_standalone_tools() {
         let tools = super::SetupServer::tool_router().list_all();
-        assert_eq!(tools.len(), 1);
-        assert_eq!(tools[0].name, "profile_setup");
+        assert_eq!(tools.len(), 2);
+        assert!(tools.iter().any(|tool| tool.name == "profile_setup"));
+        assert!(tools.iter().any(|tool| tool.name == "application_event_status"));
         assert_eq!(
             tools[0]
                 .input_schema
@@ -4603,6 +4639,129 @@ mod tests {
                 .and_then(serde_json::Value::as_str),
             Some("object")
         );
+    }
+
+    #[tokio::test(flavor = "current_thread")]
+    async fn direct_setup_status_router_rejects_arguments_before_queueing() {
+        use std::sync::{Arc, Mutex, atomic::{AtomicBool, AtomicU64, Ordering}};
+        use std::time::Duration;
+        use rmcp::handler::server::tool::ToolCallContext;
+        use rmcp::model::{CallToolRequestParams, CallToolResponse, NumberOrString};
+        use rmcp::service::RequestContext;
+
+        struct ContextService;
+        impl rmcp::ServerHandler for ContextService {}
+        let (transport, _other_transport) = tokio::io::duplex(1024);
+        // A public rmcp API supplies the real request peer; no fabricated context
+        // or unsafe initialization is used. No messages use this duplex endpoint.
+        let context_service = rmcp::service::serve_directly::<rmcp::RoleServer, _, _, _, _>(
+            ContextService, transport, None,
+        );
+        let directory = std::env::temp_dir().join(format!(
+            "protoinputmultiplex-status-router-{}-{}", std::process::id(),
+            crate::gui_bridge::random_token().unwrap(),
+        ));
+        std::fs::create_dir(&directory).unwrap();
+        let descriptor = directory.join("connection.json");
+        let (setup, requests) = crate::gui_setup::channel();
+        setup.enable();
+        let broker = crate::gui_bridge::Broker::start_setup_cancellable(
+            setup.clone(), descriptor.clone(), Arc::new(AtomicU64::new(1)), 1,
+            Arc::new(AtomicBool::new(false)),
+        ).unwrap();
+        let server = super::SetupServer {
+            client: Arc::new(Mutex::new(crate::gui_bridge::Client::connect_setup(descriptor).unwrap())),
+            active: Default::default(),
+            tool_router: super::SetupServer::tool_router(),
+        };
+        let router = super::SetupServer::tool_router();
+        let bound = Duration::from_secs(2);
+        let mut malformed_rejected = true;
+        for field in ["document", "expected_revision", "persistence", "users", "credential",
+            "pointer_input", "key_input", "capture", "consent", "receiver", "operation"] {
+            let mut arguments = serde_json::Map::new();
+            arguments.insert(field.into(), serde_json::json!(true));
+            let request = CallToolRequestParams::new("application_event_status")
+                .with_arguments(arguments);
+            let context = ToolCallContext::new(&server, request,
+                RequestContext::new(NumberOrString::Number(1), context_service.peer().clone()));
+            let result = tokio::time::timeout(bound, router.call(context)).await;
+            let argument_error = match result {
+                Ok(Ok(CallToolResponse::Complete(result))) => {
+                    result.is_error == Some(true) && result.content.iter()
+                        .filter_map(|content| content.as_text())
+                        .any(|text| text.text.contains("failed to deserialize parameters")
+                            && text.text.contains("unknown field"))
+                }
+                _ => false,
+            };
+            let queue_empty = matches!(requests.try_recv(), Err(std::sync::mpsc::TryRecvError::Empty));
+            malformed_rejected &= argument_error && queue_empty
+                && server.active.count.load(Ordering::Acquire) == 0;
+            if !malformed_rejected { break; }
+        }
+        let mut legitimate_accepted = false;
+        if malformed_rejected {
+            let responder = std::thread::spawn(move || {
+                for _ in 0..2 {
+                    let Ok(request) = requests.recv_timeout(Duration::from_secs(2)) else { return false; };
+                    if !setup.permits(request.client, request.epoch)
+                        || !matches!(&request.command, crate::gui_setup::PreparedCommand::ApplicationEventStatus) {
+                        return false;
+                    }
+                    request.reply(serde_json::to_value(
+                        crate::gui_application_events::Controller::default().status()
+                    ).unwrap(), None, None);
+                }
+                true
+            });
+            legitimate_accepted = true;
+            for arguments in [Some(serde_json::Map::new()), None] {
+                let request = match arguments {
+                    Some(arguments) => CallToolRequestParams::new("application_event_status").with_arguments(arguments),
+                    None => CallToolRequestParams::new("application_event_status"),
+                };
+                let context = ToolCallContext::new(&server, request,
+                    RequestContext::new(NumberOrString::Number(1), context_service.peer().clone()));
+                legitimate_accepted &= matches!(
+                    tokio::time::timeout(bound, router.call(context)).await,
+                    Ok(Ok(CallToolResponse::Complete(result))) if result.is_error != Some(true)
+                );
+            }
+            legitimate_accepted &= responder.join().unwrap();
+        }
+        // Cleanup precedes assertions so a regression cannot strand a broker wait.
+        broker.shutdown().unwrap();
+        let drained = tokio::time::timeout(bound, server.active.idle()).await.is_ok();
+        drop(server);
+        let context_retired = tokio::time::timeout(bound, context_service.cancel()).await
+            .is_ok_and(|result| result.is_ok());
+        std::fs::remove_dir(directory).unwrap();
+        assert!(malformed_rejected, "Malformed direct calls must fail before Setup queue dispatch");
+        assert!(legitimate_accepted, "Empty and omitted arguments must reach the admitted read path");
+        assert!(drained && context_retired);
+    }
+
+    #[test]
+    fn setup_event_status_has_no_mutation_or_authority_arguments() {
+        let parse = |value| serde_json::from_value::<super::ProfileSetupRequest>(value);
+        let request = parse(serde_json::json!({"operation":"application_event_status"})).unwrap();
+        assert!(matches!(crate::gui_setup::Command::try_from(request).unwrap(),
+            crate::gui_setup::Command::ApplicationEventStatus));
+        for (field, value) in [
+            ("expected_revision", serde_json::json!(1)),
+            ("document", serde_json::json!("{}")),
+            ("persistence", serde_json::json!({"load_profile_at_startup":false,"save_profile_on_exit":false})),
+        ] {
+            let mut request = serde_json::json!({"operation":"application_event_status"});
+            request[field] = value;
+            assert!(crate::gui_setup::Command::try_from(parse(request).unwrap()).is_err());
+        }
+        for field in ["credential", "users", "pointer_input", "key_input", "capture", "consent"] {
+            let mut request = serde_json::json!({"operation":"application_event_status"});
+            request[field] = serde_json::json!(true);
+            assert!(parse(request).is_err());
+        }
     }
 
     #[test]

@@ -36,6 +36,7 @@ EXPECTED_TOOLS = {
     "routing_capture",
     "profile_document",
     "app_preferences",
+    "application_event_status",
 }
 
 

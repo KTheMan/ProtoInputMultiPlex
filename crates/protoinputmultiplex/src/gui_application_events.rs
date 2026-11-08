@@ -422,6 +422,12 @@ impl Controller {
         });
         Ok(())
     }
+    pub fn select_all_visible_users(&mut self) -> Result<()> {
+        ensure!(self.active(), "Create a cooperative session first");
+        ensure!(self.selected_row().is_some(), "Select an event receiver first");
+        self.draft.users = self.users.iter().map(|user| user.id).collect();
+        Ok(())
+    }
     pub fn apply_owner_consent(&mut self) -> Result<()> {
         ensure!(self.active(), "Create a cooperative session first");
         ensure!(
@@ -1055,6 +1061,49 @@ mod tests {
             },
         )
     }
+    #[test]
+    fn select_visible_users_stages_exact_current_scope_until_explicit_apply() {
+        let mut controller = local();
+        controller.create_user().unwrap();
+        controller.create_user().unwrap();
+        assert!(controller.select_all_visible_users().is_err());
+        controller.add_receiver().unwrap();
+        let original: BTreeSet<_> = controller.users.iter().map(|user| user.id).collect();
+        controller.select_all_visible_users().unwrap();
+        assert_eq!(controller.draft.users, original);
+        assert_eq!(controller.status().approved_receivers, 0);
+        assert!(!controller.status().pointer_export && !controller.status().keyboard_export);
+        assert!(!controller.draft.pointer_events && !controller.draft.key_events);
+        assert!(!controller.draft.delegated && !controller.draft.pointer_control && !controller.draft.key_control);
+        assert!(controller.approve().is_err());
+        assert!(controller.actor.is_none());
+        master(&mut controller);
+        controller.draft.origin = ORIGIN.into();
+        controller.draft.pointer_events = true;
+        controller.approve().unwrap();
+        let first = controller.selected_receiver().unwrap().recipient.unwrap();
+        let first_permit = permit(&mut controller);
+        controller.create_user().unwrap();
+        assert_eq!(controller.draft.users, original);
+        assert_eq!(controller.bridge.as_ref().unwrap().host().ready_for(first).unwrap().events.users,
+            UserScope::Only(original.clone()));
+        controller.select_all_visible_users().unwrap();
+        let expanded: BTreeSet<_> = controller.users.iter().map(|user| user.id).collect();
+        assert_eq!(expanded.len(), 3);
+        assert_eq!(controller.draft.users, expanded);
+        assert!(first_permit.live());
+        assert_eq!(controller.bridge.as_ref().unwrap().host().ready_for(first).unwrap().events.users,
+            UserScope::Only(original));
+        controller.approve().unwrap();
+        assert!(!first_permit.live());
+        let second = controller.selected_receiver().unwrap().recipient.unwrap();
+        assert_ne!(first, second);
+        assert_eq!(controller.bridge.as_ref().unwrap().host().ready_for(second).unwrap().events.users,
+            UserScope::Only(expanded));
+        controller.stop();
+        assert!(controller.select_all_visible_users().is_err());
+    }
+
     #[test]
     fn creation_script_and_new_rows_never_select_or_grant_remote_users() {
         let mut controller = local();

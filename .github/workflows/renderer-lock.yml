@@ -5,6 +5,7 @@ on:
     paths:
       - Cargo.toml
       - crates/**/Cargo.toml
+      - crates/**/*.rs
       - .github/workflows/renderer-lock.yml
 permissions:
   contents: read

@@ -4,7 +4,7 @@ Optional [GUI callback activity](gui-activity-contract.md) is available in suppo
 
 GUI startup first displays a responsive initialization window. Wait for the Dashboard before enabling Setup or live Agent Access. A preferences failure shows its path and cause; repair that file and use Retry in the same window. Startup does not grant MCP authority or replace unreadable preferences with defaults. See the [startup contract](gui-bootstrap-contract.md) and [bounded assessment](gui-bootstrap-assessment-2026-10-28.json).
 
-`protoinputmultiplex mcp --runtime <absolute-runtime-directory>` serves MCP over stdio using the official Rust SDK (`rmcp`). It exposes the same Rust routing policy, native delivery worker and overlays as the Ouroboros UI. It owns a separate session; it does not connect to a running GUI session. Routing servers expose 23 tools, including application-preference inspection/configuration under a separate permission boundary.
+`protoinputmultiplex mcp --runtime <absolute-runtime-directory>` serves MCP over stdio using the official Rust SDK (`rmcp`). It exposes the same Rust routing policy, native delivery worker and overlays as the Ouroboros UI. It owns a separate session; it does not connect to a running GUI session. Current development routing servers expose 25 tools, including application-preference inspection/configuration under a separate permission boundary.
 
 The [typed Input Mapper assessment](input-mapper-assessment-2026-10-29.json) accepts
 a bounded private x64 foundation after 657 passing tests, 26 UI actions and 50 SDK
@@ -16,7 +16,20 @@ GUI authoring, native payload magnitudes and on-disk profile reload remain
 unverified here. It does not approve the current Rust port, same-process
 isolation, full Mapper/Ultra parity or a historical GUI-stall P1 fix.
 
-For stopped GUI profiles, choose **Settings → Agent access → Agent Access → Enable setup access** and use its private descriptor with `mcp --gui-connection <descriptor.json>`. This separate connection exposes only `profile_setup`: Inspect, discovery refresh, whole-profile Configure, and Save/Load/Import/Export at GUI-selected paths. Start is GUI-owned and retires Setup authority before controller creation; setup access never grants live routing permissions. Use the current revision and resolve local drafts before mutations. See the [workflow and file-result limits](stopped-setup-contract.md) and [bounded composed assessment](stopped-setup-assessment-2026-10-27.json).
+For stopped GUI profiles, choose **Settings → Agent access → Agent Access → Enable setup access** and use its private descriptor with `mcp --gui-connection <descriptor.json>`. Current development builds expose `profile_setup` plus read-only `application_event_status` on this separate connection. Profile operations include Inspect, discovery refresh, whole-profile Configure, and Save/Load/Import/Export at GUI-selected paths. Start is GUI-owned and retires Setup authority before controller creation; setup access never grants live routing permissions. Use the current revision and resolve local drafts before mutations. See the [workflow and file-result limits](stopped-setup-contract.md) and [bounded composed assessment](stopped-setup-assessment-2026-10-27.json).
+
+For application-event SDK inspection, call `application_event_status` with no
+arguments or `{}`. The stopped connection also accepts
+`profile_setup {"operation":"application_event_status"}`. The direct tool rejects
+extra arguments; the alias rejects mutation/profile fields. Both require the
+existing explicit Setup grant and GUI guard, return only the safe age-masked
+summary, and do not require routing or selected target PIDs. They do not expose
+credentials, user/source/receiver identities, input values or event payloads.
+Unavailable or stale counters are omitted rather than reported as zero.
+A live GUI connection uses its existing admitted authority; there is no automatic
+fallback between authorities. Standalone routing does not own a GUI event host.
+These new paths still require current-source checks and actual GUI/MCP acceptance.
+See [the event SDK guide](application-event-sdk.md).
 
 Stopped `profile_setup` also supports `configure_persistence` for the two
 startup-load/save-on-Quit preferences. It requires opt-in Setup authority, the
@@ -68,8 +81,9 @@ Standalone `routing_state.recovery` reports `phase` (`starting`, `running`, `sto
 | `agent_session` | Inspect live GUI-connection status and the current permission policy |
 | `routing_capture` | Capture a PNG from the selected, explicitly permitted target window |
 | `app_preferences` | Inspect or configure application preferences under the current mode's explicit write permission |
+| `application_event_status` | Read safe cooperative event-SDK status through explicit live GUI or stopped Setup admission; no event or credential authority |
 
-Tool schemas are discoverable through MCP. Current source exposes 23 tools; GUI-agent, horizontal-wheel, output-rules and clone evidence retain their historical 20-, 20-, 21- and 18-tool source counts, while Macro Studio and stable-ID graph records retain 16- and 17-tool counts. User indices start at zero. A processed input command returns a subsequent worker state tick; inspect each user's status and PID to distinguish delivery from blocked arbitration. Only app-local virtual identities are generated. No physical device path, OS cursor movement, global keyboard injection or arbitrary backend command is exposed. Window titles are treated as untrusted application data. `routing_displays` remains read-only and needs no active session.
+Tool schemas are discoverable through MCP. Current source exposes 25 tools; GUI-agent, horizontal-wheel, output-rules and clone evidence retain their historical 20-, 20-, 21- and 18-tool source counts, while Macro Studio and stable-ID graph records retain 16- and 17-tool counts. User indices start at zero. A processed input command returns a subsequent worker state tick; inspect each user's status and PID to distinguish delivery from blocked arbitration. Only app-local virtual identities are generated. No physical device path, OS cursor movement, global keyboard injection or arbitrary backend command is exposed. Window titles are treated as untrusted application data. `routing_displays` remains read-only and needs no active session.
 
 ## Assigned release recovery
 

@@ -11080,6 +11080,7 @@ impl Dashboard {
         use crate::gui_setup::PreparedCommand as Command;
         enum Admitted {
             Immediate,
+            ApplicationEventStatus(serde_json::Value),
             File(u64),
             Persistence(u64, crate::app_preferences_ui::PreferencesEditorSubmission),
         }
@@ -11089,6 +11090,9 @@ impl Dashboard {
                 self.setup_guard(&request)?;
                 match &request.command {
                     Command::Inspect => Ok(Admitted::Immediate),
+                    Command::ApplicationEventStatus => Ok(Admitted::ApplicationEventStatus(
+                        serde_json::to_value(self.application_events.status())?,
+                    )),
                     Command::RefreshDiscovery => {
                         self.refresh();
                         Ok(Admitted::Immediate)
@@ -11176,6 +11180,9 @@ impl Dashboard {
                         request: None,
                         setup_request: Some(request),
                     });
+                }
+                Ok(Admitted::ApplicationEventStatus(status)) => {
+                    request.reply(status, None, None);
                 }
                 Ok(Admitted::Immediate) => {
                     let profile =

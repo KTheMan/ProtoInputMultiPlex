@@ -19,6 +19,7 @@ pub enum Command {
     /// Read callback activity on the authenticated broker worker, without a GUI request.
     Activity,
     Inspect,
+    ApplicationEventStatus,
     RefreshDiscovery,
     Configure {
         expected_revision: u64,
@@ -44,6 +45,7 @@ pub enum Command {
 
 pub enum PreparedCommand {
     Inspect,
+    ApplicationEventStatus,
     RefreshDiscovery,
     Configure {
         expected_revision: u64,
@@ -72,6 +74,7 @@ impl Command {
         Ok(match self {
             Self::Activity => anyhow::bail!("Activity must be read directly by the setup broker"),
             Self::Inspect => PreparedCommand::Inspect,
+            Self::ApplicationEventStatus => PreparedCommand::ApplicationEventStatus,
             Self::RefreshDiscovery => PreparedCommand::RefreshDiscovery,
             Self::Configure {
                 expected_revision,
@@ -557,6 +560,28 @@ mod tests {
         assert!(Command::Activity.prepare().is_err());
         handle.revoke();
         assert!(handle.authorized_activity(7, 5, epoch).is_err());
+    }
+
+    #[test]
+    fn event_status_uses_the_admitted_cancellable_setup_queue() {
+        let (handle, requests) = channel();
+        let prepared = || Command::ApplicationEventStatus.prepare().unwrap();
+        assert!(handle.submit(7, 1, 0, prepared()).is_err());
+        let epoch = handle.enable();
+        assert!(handle.submit(7, 1, epoch, prepared()).is_err());
+        handle.admit(7).unwrap();
+        assert!(handle.submit(8, 1, epoch, prepared()).is_err());
+        assert!(handle.submit(7, 1, epoch + 1, prepared()).is_err());
+        let waiting = handle.submit(7, 1, epoch, prepared()).unwrap();
+        let request = requests.try_recv().unwrap();
+        assert!(matches!(&request.command, PreparedCommand::ApplicationEventStatus));
+        assert!(!request.decision.cancelled());
+        handle.revoke();
+        assert!(!handle.permits(request.client, request.epoch));
+        assert!(request.decision.cancelled());
+        assert!(handle.submit(7, 2, epoch, prepared()).is_err());
+        drop(waiting);
+        assert!(requests.try_recv().is_err());
     }
 
     #[test]

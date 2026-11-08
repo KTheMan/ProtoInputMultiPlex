@@ -14,6 +14,7 @@ pub(crate) enum Action {
     CreateSession,
     CreateUser,
     AddReceiver,
+    SelectAllVisibleUsers,
     ApplyOwner,
     Apply,
     DisablePublication,
@@ -313,6 +314,18 @@ pub(crate) fn show(
         &mut script,
     );
     Text::new("Select only users this event receiver (native/browser) may observe. Creation never selects or grants a user automatically.").caption().wrap().show(ui);
+    if button(
+        ui,
+        "Select all visible users",
+        allowed && controller.active() && controller.selected_row().is_some(),
+        &mut script,
+        frame,
+        actions,
+    ) {
+        result.push(Action::SelectAllVisibleUsers);
+    }
+    Text::new("Selects only the current users in this draft. New users stay unselected; consent and Apply are still required.")
+        .caption().wrap().show(ui);
     for user in &controller.users {
         let label = format!(
             "Export cooperative user {}:{} {}",

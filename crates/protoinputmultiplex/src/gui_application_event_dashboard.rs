@@ -46,6 +46,7 @@ impl Dashboard {
                     .and_then(|bounds| self.application_events.create_session(bounds)),
                 Action::CreateUser => self.application_events.create_user(),
                 Action::AddReceiver => self.application_events.add_receiver(),
+                Action::SelectAllVisibleUsers => self.application_events.select_all_visible_users(),
                 Action::ApplyOwner => self.application_events.apply_owner_consent(),
                 Action::Apply => self.application_events.approve(),
                 Action::DisablePublication => self.application_events.disable_publication(),

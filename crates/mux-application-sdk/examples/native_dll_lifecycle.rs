@@ -141,12 +141,12 @@ mod fixture {
             // Data is drained immediately after DispatchMessage on this same UI thread.
             return 0;
         }
-        if message == WM_NCDESTROY {
-            if let Some(api) = WINDOW_API.get() {
-                let token = TOKEN.get();
-                if token != 0 {
-                    STOP_STATUS.set(Some(unsafe { (api.stop)(token) }));
-                }
+        if message == WM_NCDESTROY
+            && let Some(api) = WINDOW_API.get()
+        {
+            let token = TOKEN.get();
+            if token != 0 {
+                STOP_STATUS.set(Some(unsafe { (api.stop)(token) }));
             }
         }
         unsafe { CallWindowProcW(OLD_PROC.get(), hwnd, message, wparam, lparam) }
