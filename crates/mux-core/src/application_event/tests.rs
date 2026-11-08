@@ -785,48 +785,85 @@ fn window_metadata_defaults_on_old_wire_snapshots_and_bounds_native_facts() {
         WindowMetadata::default()
     );
 
-    let mut cases = Vec::new();
-    let mut invalid = WindowMetadata::default();
-    invalid.title = Some("é".repeat(257));
-    cases.push((invalid, Error::Invalid("window title")));
-    let mut invalid = WindowMetadata::default();
-    invalid.title = Some("nul\0title".into());
-    cases.push((invalid, Error::Invalid("window title")));
-    let mut invalid = WindowMetadata::default();
-    invalid.process_id = Some(0);
-    cases.push((invalid, Error::Invalid("window owner identity")));
-    let mut invalid = WindowMetadata::default();
-    invalid.client_bounds = Some(Bounds {
-        left: 10,
-        top: 0,
-        right: 9,
-        bottom: 10,
-    });
-    cases.push((invalid, Error::Invalid("window client bounds")));
-    let mut invalid = WindowMetadata::default();
-    invalid.client_bounds = Some(Bounds {
-        left: 0,
-        top: 0,
-        right: 1_000_001,
-        bottom: 10,
-    });
-    cases.push((invalid, Error::Invalid("window client bounds")));
-    let mut invalid = WindowMetadata::default();
-    invalid.dpi = Some(0);
-    cases.push((invalid, Error::Invalid("window dpi")));
-    let mut invalid = WindowMetadata::default();
-    invalid.dpi = Some(4097);
-    cases.push((invalid, Error::Invalid("window dpi")));
-    let mut invalid = WindowMetadata::default();
-    invalid.monitor_work_area = Some(screens().desktop);
-    cases.push((invalid, Error::Invalid("window monitor work area")));
-    let mut invalid = WindowMetadata::default();
-    invalid.monitor_bounds = Some(screens().desktop);
-    invalid.monitor_work_area = Some(Bounds {
-        left: -101,
-        ..screens().desktop
-    });
-    cases.push((invalid, Error::Invalid("window monitor work area")));
+    let cases = [
+        (
+            WindowMetadata {
+                title: Some("é".repeat(257)),
+                ..WindowMetadata::default()
+            },
+            Error::Invalid("window title"),
+        ),
+        (
+            WindowMetadata {
+                title: Some("nul\0title".into()),
+                ..WindowMetadata::default()
+            },
+            Error::Invalid("window title"),
+        ),
+        (
+            WindowMetadata {
+                process_id: Some(0),
+                ..WindowMetadata::default()
+            },
+            Error::Invalid("window owner identity"),
+        ),
+        (
+            WindowMetadata {
+                client_bounds: Some(Bounds {
+                    left: 10,
+                    top: 0,
+                    right: 9,
+                    bottom: 10,
+                }),
+                ..WindowMetadata::default()
+            },
+            Error::Invalid("window client bounds"),
+        ),
+        (
+            WindowMetadata {
+                client_bounds: Some(Bounds {
+                    left: 0,
+                    top: 0,
+                    right: 1_000_001,
+                    bottom: 10,
+                }),
+                ..WindowMetadata::default()
+            },
+            Error::Invalid("window client bounds"),
+        ),
+        (
+            WindowMetadata {
+                dpi: Some(0),
+                ..WindowMetadata::default()
+            },
+            Error::Invalid("window dpi"),
+        ),
+        (
+            WindowMetadata {
+                dpi: Some(4097),
+                ..WindowMetadata::default()
+            },
+            Error::Invalid("window dpi"),
+        ),
+        (
+            WindowMetadata {
+                monitor_work_area: Some(screens().desktop),
+                ..WindowMetadata::default()
+            },
+            Error::Invalid("window monitor work area"),
+        ),
+        (
+            WindowMetadata {
+                monitor_bounds: Some(screens().desktop),
+                monitor_work_area: Some(Bounds {
+                    left: -101,
+                    ..screens().desktop
+                }),
+                ..WindowMetadata::default()
+            },
+            Error::Invalid("window monitor work area"),
+        ),
+    ];
 
     for (metadata, error) in cases {
         let mut observation = base.clone();
