@@ -20,8 +20,15 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: 1.92.0
+          components: rustfmt
       - name: Resolve workspace manifest changes without compiling
         run: cargo update --workspace
+      - name: Format source candidate for review
+        run: cargo fmt --all
+      - name: Verify source candidate formatting
+        run: cargo fmt --all --check
+      - name: Record source and lock candidate patch
+        run: git diff --binary --output=source-candidate.patch -- Cargo.lock crates
       - name: Record generated lock digest
         shell: pwsh
         run: |
@@ -34,3 +41,4 @@ jobs:
           path: |
             Cargo.lock
             Cargo.lock.sha256
+            source-candidate.patch

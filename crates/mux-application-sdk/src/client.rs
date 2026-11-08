@@ -42,6 +42,9 @@ pub struct ClientState {
     state: StreamState,
     epoch: Option<u64>,
     last_sequence: u64,
+    // Engine retains the original last-delivered sequence while advancing loss.
+    // Keep the origin separate from last_sequence, which is the recovery floor.
+    gap_origin: Option<u64>,
     users: BTreeMap<UserId, UserView>,
     windows: BTreeMap<WindowId, WindowInfo>,
     screens: Option<ScreenState>,
@@ -55,6 +58,7 @@ impl Default for ClientState {
             state: StreamState::AwaitingSnapshot,
             epoch: None,
             last_sequence: 0,
+            gap_origin: None,
             users: BTreeMap::new(),
             windows: BTreeMap::new(),
             screens: None,
@@ -167,6 +171,7 @@ impl ClientState {
             state: StreamState::Live,
             epoch: Some(snapshot.epoch),
             last_sequence: snapshot.through_sequence,
+            gap_origin: None,
             users,
             windows,
             screens: Some(snapshot.screens),
@@ -179,6 +184,24 @@ impl ClientState {
     /// requests resubscribe. Malformed/duplicate/reordered batches fail closed.
     /// The whole batch is atomic: no valid prefix is committed if a suffix is bad.
     pub fn fold_poll(&mut self, poll: Poll) -> Result<FoldOutcome, FoldError> {
+        if self.state == StreamState::NeedsSnapshot {
+            return match poll {
+                Poll::Gap { after_sequence, lost_through }
+                    if self.gap_origin == Some(after_sequence)
+                        && lost_through > after_sequence
+                        && lost_through >= self.last_sequence =>
+                {
+                    self.last_sequence = lost_through;
+                    Ok(FoldOutcome::NeedsSnapshot)
+                }
+                Poll::Gap { .. } => Err(FoldError::Sequence),
+                Poll::Ended { reason } => {
+                    self.clear(StreamState::Ended(reason));
+                    Ok(FoldOutcome::Ended(reason))
+                }
+                Poll::Events { .. } => Err(FoldError::NotLive),
+            };
+        }
         if self.state != StreamState::Live {
             return Err(FoldError::NotLive);
         }
@@ -194,6 +217,7 @@ impl ClientState {
                 }
                 // Resubscription must cover every event reported as lost. A
                 // pre-gap snapshot could otherwise restore stale held input.
+                self.gap_origin = Some(after_sequence);
                 self.last_sequence = lost_through;
                 Ok(FoldOutcome::NeedsSnapshot)
             }
@@ -222,6 +246,7 @@ impl ClientState {
 
     pub fn disconnect(&mut self) {
         self.clear(StreamState::Disconnected);
+        self.gap_origin = None;
     }
 
     fn clear(&mut self, state: StreamState) {

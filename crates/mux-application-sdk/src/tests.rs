@@ -2,6 +2,59 @@ use crate::*;
 use mux_core::desktop::Bounds;
 use std::collections::BTreeSet;
 
+#[test]
+fn real_engine_repeated_overflow_keeps_original_origin_and_latest_snapshot_floor() {
+    let mut host = Host::new(71, screens()).unwrap();
+    let app = host.register_recipient("shared state consumer").unwrap();
+    let user = host.create_owned_user(app, "User").unwrap();
+    host.approve_events(app, event_grant(UserScope::AllOwned, true)).unwrap();
+    host.approve_controls(app, controls(UserScope::AllOwned, false)).unwrap();
+    let (sub, initial) = subscribe(&mut host, app, 1);
+    let origin = initial.through_sequence;
+    let mut client = ClientState::default();
+    client.install_snapshot(initial, 71).unwrap();
+    for x in [1, 2] {
+        input(&mut host, app, user, Input::Motion { position: Point { x, y: 0 } }).unwrap();
+    }
+    let first = poll(&mut host, app, sub);
+    let Poll::Gap { after_sequence, lost_through: first_floor } = first.clone() else { panic!("real Engine overflow"); };
+    assert_eq!(after_sequence, origin);
+    assert_eq!(client.fold_poll(first).unwrap(), FoldOutcome::NeedsSnapshot);
+    let stale = snapshot(&mut host, app);
+    input(&mut host, app, user, Input::Motion { position: Point { x: 3, y: 0 } }).unwrap();
+    let second = poll(&mut host, app, sub);
+    let Poll::Gap { after_sequence, lost_through: latest } = second.clone() else { panic!("persisting Engine overflow"); };
+    assert_eq!(after_sequence, origin);
+    assert!(latest > first_floor);
+    assert_eq!(client.fold_poll(second.clone()).unwrap(), FoldOutcome::NeedsSnapshot);
+    assert_eq!(client.fold_poll(second).unwrap(), FoldOutcome::NeedsSnapshot);
+    assert!(client.users().is_empty());
+    assert_eq!(client.last_sequence(), latest);
+    for malformed in [
+        Poll::Gap { after_sequence: origin, lost_through: first_floor },
+        Poll::Gap { after_sequence: first_floor, lost_through: latest + 1 },
+        Poll::Gap { after_sequence: origin, lost_through: origin },
+    ] {
+        assert_eq!(client.fold_poll(malformed), Err(FoldError::Sequence));
+        assert_eq!(client.last_sequence(), latest);
+    }
+    assert_eq!(client.install_snapshot(stale, 71), Err(FoldError::Sequence));
+    assert_eq!(client.last_sequence(), latest);
+    let response = host.dispatch(app, request(ClientCommand::Resubscribe { subscription: sub, capacity: 1 })).unwrap();
+    let ClientResponse::Subscribed { subscription: new_sub, snapshot: fresh } = response else { panic!("resubscribe"); };
+    assert_ne!(sub, new_sub);
+    client.install_snapshot(fresh, 71).unwrap();
+    let new_origin = client.last_sequence();
+    for x in [4, 5] {
+        input(&mut host, app, user, Input::Motion { position: Point { x, y: 0 } }).unwrap();
+    }
+    let new_gap = poll(&mut host, app, new_sub);
+    assert!(matches!(new_gap, Poll::Gap { after_sequence, .. } if after_sequence == new_origin));
+    client.fold_poll(new_gap).unwrap();
+    client.disconnect();
+    assert_eq!(client.fold_poll(Poll::Gap { after_sequence: new_origin, lost_through: latest + 9 }), Err(FoldError::NotLive));
+}
+
 fn screens() -> ScreenState {
     let desktop = Bounds {
         left: -100,

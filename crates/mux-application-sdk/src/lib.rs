@@ -20,3 +20,6 @@ mod tests;
 
 pub use mux_core::application_event::*;
 pub use mux_core::desktop::{CursorShape, MouseButton};
+
+#[cfg(all(windows, feature = "native-client"))]
+pub mod native_client;
