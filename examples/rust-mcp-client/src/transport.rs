@@ -22,7 +22,7 @@ pub struct StdioRpc {
     deadline: Duration,
 }
 impl StdioRpc {
-    /// Connect only to a GUI-approved window-only event descriptor. This is a
+    /// Connect only to a GUI-approved window or host event descriptor. This is a
     /// separate MCP process from the ordinary routing and stopped-Setup modes.
     pub async fn connect_event(executable: PathBuf, descriptor: PathBuf) -> Result<Self> {
         if !executable.is_absolute() || !descriptor.is_absolute() {

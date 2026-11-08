@@ -40,9 +40,10 @@ Select that current window in the GUI, approve observation and optional tracking
 or control
 for a **different** receiver row, Apply, then issue its private event descriptor.
 Launch `protoinputmultiplex mcp --event-connection <descriptor.json>` using that
-grantee descriptor. This separate MCP router exposes only `native_windows`:
-`inspect`, `refresh`, `query`, `track`, `untrack` and `control` according to
-the current GUI grant. It neither uses the stopped
+grantee descriptor. This separate MCP router exposes `native_windows` and
+`hosted_session`, each under separate current GUI grants. `native_windows`
+provides `inspect`, `refresh`, `query`, `track`, `untrack` and `control`.
+This connection neither uses the stopped
 Setup descriptor nor accepts a routing Agent Access descriptor. It cannot create
 permissions, virtual users, target PIDs or a native handle.
 
@@ -63,6 +64,18 @@ Refresh/inspect the native owner's later observation before another action.
 Window titles and optional process/thread details are client-reported data, not
 GUI or OS peer attestation. Existing read-only `application_event_status` exposes
 only bounded registered/pending/stale/uncertain counts and sample age.
+
+For host-only access, a receiver needs explicit GUI approval to observe host
+state and separate approval to change routing mode or minimize/restore the GUI;
+no native window, virtual user or input permission is required. Discover
+`hosted_session`, obtain the event epoch through `native_windows` Inspect, then
+call hosted `inspect` with that epoch for the current revision. Actions use that
+exact epoch/revision; `set_mode` chooses Native (clean routing Stop), Switched or
+Concurrent using the configured automatic profile. A hosted Start or Native Stop
+retires other receivers, which need fresh GUI approval. These controls do not
+load/save a profile or change startup-loading/save-on-Quit preferences. See the
+[event SDK guide](application-event-sdk.md) for the typed helper, consent and
+uncertainty contracts. Source support does not establish runtime qualification.
 
 Stopped `profile_setup` also supports `configure_persistence` for the two
 startup-load/save-on-Quit preferences. It requires opt-in Setup authority, the

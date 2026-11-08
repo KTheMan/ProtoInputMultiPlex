@@ -198,7 +198,7 @@ impl Peer {
             };
             ensure!(
                 window_only_admission(&ready),
-                "This receiver is not a window-only agent observer"
+                "This receiver is not a scoped window or host observer"
             );
             let mut peer = Self {
                 socket,
@@ -704,7 +704,7 @@ impl ServerHandler for WindowAgentServer {
                 Implementation::new("protoinputmultiplex-window-agent", env!("CARGO_PKG_VERSION"))
                     .with_title(crate::APP_NAME),
             )
-            .with_instructions("Use only the exact native window IDs approved in the GUI. Inspect and track before control. Window state and metadata are client-reported and may be stale. A lost action receipt is uncertain; do not replay. This connection cannot grant access or use virtual routing or Setup tools.".to_string())
+            .with_instructions("Use native_windows only for exact GUI-approved windows; inspect, track and refresh before control. Window reports are client-reported and may be stale. Use hosted_session only under its separate host-state and mode or viewport grants, with the exact epoch and observed hosted revision. Native means routing Stop; starting uses the configured automatic profile. A lost action receipt is uncertain; do not replay. This connection cannot grant access or use Setup or general virtual-input routing tools.".to_string())
     }
 }
 
@@ -732,10 +732,11 @@ mod tests {
     use super::*;
 
     #[test]
-    fn event_window_router_has_no_setup_or_virtual_routing_tools() {
+    fn event_router_exposes_only_window_and_hosted_session_tools() {
         let tools = WindowAgentServer::tool_router().list_all();
-        assert_eq!(tools.len(), 1);
-        assert_eq!(tools[0].name, "native_windows");
+        let mut names: Vec<&str> = tools.iter().map(|tool| tool.name.as_ref()).collect();
+        names.sort_unstable();
+        assert_eq!(names, ["hosted_session", "native_windows"]);
         assert!(
             serde_json::from_value::<WindowRequest>(json!({
                 "operation": "control",

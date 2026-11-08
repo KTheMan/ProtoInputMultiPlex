@@ -37,7 +37,11 @@ async fn real_native_window_agent_query_track_control_untrack() -> Result<()> {
     let window_id = number("PIM_EVENT_WINDOW_ID")?;
     let rpc = StdioRpc::connect_event(executable, descriptor).await?;
     let mut client = Client::discover(rpc).await?;
-    require(client.tool_count() == 1)?;
+    require(client.tool_count() == 2)?;
+    client.validate(
+        "hosted_session",
+        &json!({"operation":"inspect","epoch":epoch}),
+    )?;
     let inspect = client
         .call("native_windows", json!({"operation":"inspect"}))
         .await?;
