@@ -68,7 +68,7 @@ impl<'a> PendingRegistration<'a> {
 
     fn matches(&self) -> bool {
         let cookie = self.cookie.as_ref().expect("pending cookie");
-        unsafe { GetPropW(self.hwnd, self.property.as_ptr()) }
+        (unsafe { GetPropW(self.hwnd, self.property.as_ptr()) })
             == (&**cookie as *const u8).cast_mut().cast()
     }
 
