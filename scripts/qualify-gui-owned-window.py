@@ -75,6 +75,7 @@ class WindowPair(base.Pair):
             "window_qualification_phase": "not_started",
             "window_descriptor_predicate": "none",
             "window_browser_diagnostic": {"stage": "not_started", "predicate": "none", "predicate_failed": False},
+            "window_retirement_phase": "not_started", "window_retirement_probe": {},
         }
         self.expected_timeout = False
 
@@ -426,23 +427,56 @@ class WindowPair(base.Pair):
                 self.wait(lambda: self.sample(index), 40)
                 self.acknowledge(index)
         self.stage = "native_retirement"
+        self.result["window_retirement_phase"] = "native_exit_wait"
         self.wait(lambda: self.native.poll() is not None, 15)
+        self.result["window_retirement_probe"]["native_exit_observed"] = True
+        self.result["window_retirement_phase"] = "native_exit_zero"
         require(self.native.poll() == 0)
+        self.result["window_retirement_probe"]["native_exit_zero"] = True
+        self.result["window_retirement_phase"] = "native_retired_read"
         retired = self.native_detail("native_window_retired")
+        self.result["window_retirement_phase"] = "native_retired_predicates"
+        self.result["window_retirement_probe"].update({
+            "retired_record_observed": isinstance(retired, dict),
+            "retired_actions_four": isinstance(retired, dict) and retired.get("actions") == 4,
+            "retired_owner_receipts_three": isinstance(retired, dict) and retired.get("owner_receipts") == 3,
+            "retired_late_rejections_one": isinstance(retired, dict) and retired.get("late_rejections") == 1,
+            "retired_before_destroy": isinstance(retired, dict) and bool(retired.get("retired_before_hwnd_destroy")),
+        })
         require(retired["actions"] == 4 and retired["owner_receipts"] == 3 and retired["late_rejections"] == 1 and retired["retired_before_hwnd_destroy"])
+        self.result["window_retirement_phase"] = "native_unload_markers"
         require(self.native_detail("dll_unloaded_before_owner_exit") and self.native_detail("owner_ready_to_exit_after_unload"))
+        self.result["window_retirement_probe"]["native_unload_markers_passed"] = True
+        self.result["window_retirement_phase"] = "host_retired_one_client"
         self.wait(lambda: (value if value and value.get("published_windows") == 0 and value.get("window_pending") == 0 else None)
                   if (value := self.event_status("active", 0, 1, 1)) else None)
+        self.result["window_retirement_probe"]["host_retired_one_client_passed"] = True
+        self.result["window_retirement_phase"] = "mcp_stdin_close"
         self.mcp.stdin.close()
+        self.result["window_retirement_phase"] = "mcp_exit_zero"
         require(self.mcp.wait(timeout=8) == 0)
+        self.result["window_retirement_probe"]["mcp_exit_zero"] = True
+        self.result["window_retirement_phase"] = "host_retired_zero_clients"
         self.wait(lambda: (value if value and value.get("published_windows") == 0 and value.get("window_pending") == 0 else None)
                   if (value := self.event_status("active", 0, 0, 0)) else None)
+        self.result["window_retirement_probe"]["host_retired_zero_clients_passed"] = True
+        self.result["window_retirement_phase"] = "browser_close_request"
         self.cdp.call("Browser.close")
+        self.result["window_retirement_phase"] = "browser_exit_zero"
         require(self.browser.wait(timeout=8) == 0)
-        self.http.shutdown(); self.http.server_close()
+        self.result["window_retirement_probe"]["browser_exit_zero"] = True
+        self.result["window_retirement_phase"] = "http_shutdown"
+        self.http.shutdown()
+        self.result["window_retirement_phase"] = "http_server_close"
+        self.http.server_close()
+        self.result["window_retirement_phase"] = "gui_close_owned_main"
         self.close_gui_owned_main()
+        self.result["window_retirement_phase"] = "gui_exit_and_descriptor_cleanup"
         require(self.gui.wait(timeout=15) == 0 and not self.descriptors())
+        self.result["window_retirement_probe"]["gui_exit_and_descriptor_cleanup_passed"] = True
+        self.result["window_retirement_phase"] = "final_acceptance_predicates"
         require(self.result["positive_owner_actions"] == 3 and self.result["host_pending_expired"] and self.result["uncertain_late_action"] and self.result["old_epoch_rejected"] and self.result["post_revoke_rejected"] and self.result["rust_mcp_fixture_invoked"] and self.result["web_query_track_control_untrack"])
+        self.result["window_retirement_phase"] = "complete"
         self.result.update(status="PASS", native_exit_code=0, gui_exit_code=0, owned_descriptor_cleanup=True)
 
 
