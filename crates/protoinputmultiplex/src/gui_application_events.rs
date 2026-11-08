@@ -141,8 +141,14 @@ impl Draft {
             || self.window_observation
             || self.window_tracking
             || self.window_control;
-        ensure!(input_family || window_family, "Select a receiver capability first");
-        ensure!(self.users.len() <= MAX_USERS, "Too many selected cooperative users");
+        ensure!(
+            input_family || window_family,
+            "Select a receiver capability first"
+        );
+        ensure!(
+            self.users.len() <= MAX_USERS,
+            "Too many selected cooperative users"
+        );
         ensure!(
             !input_family || !self.users.is_empty(),
             "Select the exact cooperative users first"
@@ -315,7 +321,9 @@ impl Controller {
             .selected_window
             .context("Select a current native window first")?;
         ensure!(
-            self.published_windows().iter().any(|info| info.id == window),
+            self.published_windows()
+                .iter()
+                .any(|info| info.id == window),
             "Selected native window is no longer published"
         );
         Ok(serde_json::to_string(&RemoteWindowRef {
@@ -1202,12 +1210,21 @@ mod tests {
         controller.draft.window_tracking = true;
         controller.approve().unwrap();
         let publisher = controller.selected_receiver().unwrap().recipient.unwrap();
-        let publisher_ready = controller.bridge.as_ref().unwrap().host().ready_for(publisher).unwrap();
+        let publisher_ready = controller
+            .bridge
+            .as_ref()
+            .unwrap()
+            .host()
+            .ready_for(publisher)
+            .unwrap();
         assert!(publisher_ready.events.owned_windows);
         assert!(publisher_ready.controls.window_publication);
         assert!(!publisher_ready.events.pointer_events);
         assert!(!publisher_ready.events.key_events);
-        assert_eq!(publisher_ready.events.users, UserScope::Only(BTreeSet::new()));
+        assert_eq!(
+            publisher_ready.events.users,
+            UserScope::Only(BTreeSet::new())
+        );
 
         controller.add_receiver().unwrap();
         controller.draft.origin = ORIGIN.into();
@@ -1216,13 +1233,22 @@ mod tests {
         controller.draft.window_control = true;
         controller.approve().unwrap();
         let observer = controller.selected_receiver().unwrap().recipient.unwrap();
-        let observer_ready = controller.bridge.as_ref().unwrap().host().ready_for(observer).unwrap();
+        let observer_ready = controller
+            .bridge
+            .as_ref()
+            .unwrap()
+            .host()
+            .ready_for(observer)
+            .unwrap();
         assert!(observer_ready.events.owned_windows);
         assert!(!observer_ready.controls.window_publication);
         assert!(!observer_ready.controls.window_identity_metadata);
         assert!(observer_ready.controls.window_tracking);
         assert!(observer_ready.controls.window_control);
-        assert_eq!(observer_ready.events.users, UserScope::Only(BTreeSet::new()));
+        assert_eq!(
+            observer_ready.events.users,
+            UserScope::Only(BTreeSet::new())
+        );
         assert!(controller.published_windows().is_empty());
     }
     #[test]

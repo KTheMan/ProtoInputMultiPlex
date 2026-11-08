@@ -754,40 +754,70 @@ fn exact_window_delegation_is_default_deny_and_revocation_fences_tracking() {
     let mut window_grant = all(false, false);
     window_grant.owned_windows = true;
     for recipient in [publisher, browser, agent] {
-        engine.approve_grant(recipient, window_grant.clone()).unwrap();
+        engine
+            .approve_grant(recipient, window_grant.clone())
+            .unwrap();
     }
-    let window = engine.register_owned_window_with_state(
-        publisher,
-        WindowObservation {
-            bounds: screens().desktop,
-            metadata: WindowMetadata::default(),
-            visible: true,
-            minimized: false,
-            maximized: false,
-            click_through: false,
-            enabled: true,
-            topmost: false,
-            opacity: 255,
-        },
-        WindowObservationState {
-            source: WindowObservationSource::NativeClientReported,
-            sampled_at_ms: Some(100),
-            stale: false,
-        },
-    ).unwrap();
+    let window = engine
+        .register_owned_window_with_state(
+            publisher,
+            WindowObservation {
+                bounds: screens().desktop,
+                metadata: WindowMetadata::default(),
+                visible: true,
+                minimized: false,
+                maximized: false,
+                click_through: false,
+                enabled: true,
+                topmost: false,
+                opacity: 255,
+            },
+            WindowObservationState {
+                source: WindowObservationSource::NativeClientReported,
+                sampled_at_ms: Some(100),
+                stale: false,
+            },
+        )
+        .unwrap();
     assert_eq!(engine.window_info(browser, window), Err(Error::Denied));
     assert_eq!(engine.window_info(agent, window), Err(Error::Denied));
-    engine.delegate_window(window, browser, WindowAccess { observe: true, control: false }).unwrap();
+    engine
+        .delegate_window(
+            window,
+            browser,
+            WindowAccess {
+                observe: true,
+                control: false,
+            },
+        )
+        .unwrap();
     assert!(engine.window_info(browser, window).is_ok());
-    assert_eq!(engine.authorize_window_control(browser, window, &WindowControl::Hide), Err(Error::Denied));
+    assert_eq!(
+        engine.authorize_window_control(browser, window, &WindowControl::Hide),
+        Err(Error::Denied)
+    );
     engine.track_window(browser, window).unwrap();
     assert_eq!(engine.snapshot(browser).unwrap().windows.len(), 1);
     assert!(engine.snapshot(agent).unwrap().windows.is_empty());
-    engine.delegate_window(window, browser, WindowAccess::default()).unwrap();
+    engine
+        .delegate_window(window, browser, WindowAccess::default())
+        .unwrap();
     assert_eq!(engine.window_info(browser, window), Err(Error::Denied));
     assert!(engine.snapshot(browser).unwrap().windows.is_empty());
-    engine.delegate_window(window, agent, WindowAccess { observe: true, control: true }).unwrap();
-    assert_eq!(engine.authorize_window_control(agent, window, &WindowControl::Hide), Ok(publisher));
+    engine
+        .delegate_window(
+            window,
+            agent,
+            WindowAccess {
+                observe: true,
+                control: true,
+            },
+        )
+        .unwrap();
+    assert_eq!(
+        engine.authorize_window_control(agent, window, &WindowControl::Hide),
+        Ok(publisher)
+    );
     engine.destroy_window(window).unwrap();
     assert_eq!(engine.window_info(agent, window), Err(Error::MissingWindow));
 }

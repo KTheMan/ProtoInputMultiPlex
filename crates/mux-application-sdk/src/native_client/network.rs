@@ -243,7 +243,8 @@ pub(super) async fn drive<S: AsyncRead + AsyncWrite + Unpin>(
         let text = match &next {
             Outgoing::Client(value) => serde_json::to_string(value),
             Outgoing::Owner(value) => serde_json::to_string(value),
-        }.map_err(|_| StopReason::Protocol)?;
+        }
+        .map_err(|_| StopReason::Protocol)?;
         if text.len() > MAX_REQUEST_BYTES {
             return Err(StopReason::Protocol);
         }
@@ -264,13 +265,21 @@ pub(super) async fn drive<S: AsyncRead + AsyncWrite + Unpin>(
             };
             match &message {
                 ServerMessage::Response { request_id, reply }
-                    if *request_id == id && matches!(&next, Outgoing::Client(_)) => {
-                    let Outgoing::Client(value) = &next else { unreachable!() };
+                    if *request_id == id && matches!(&next, Outgoing::Client(_)) =>
+                {
+                    let Outgoing::Client(value) = &next else {
+                        unreachable!()
+                    };
                     match reply {
                         Reply::Ok { version, response }
                             if *version == PROTOCOL_VERSION
-                                && response_matches(&value.request.command, response) => {
-                            if let ClientResponse::Subscribed { subscription: token, .. } = response {
+                                && response_matches(&value.request.command, response) =>
+                        {
+                            if let ClientResponse::Subscribed {
+                                subscription: token,
+                                ..
+                            } = response
+                            {
                                 subscription = Some(*token);
                             }
                         }
@@ -283,21 +292,30 @@ pub(super) async fn drive<S: AsyncRead + AsyncWrite + Unpin>(
                     break;
                 }
                 ServerMessage::OwnerResponse { request_id, reply }
-                    if *request_id == id && matches!(&next, Outgoing::Owner(_)) => {
-                    let Outgoing::Owner(value) = &next else { unreachable!() };
+                    if *request_id == id && matches!(&next, Outgoing::Owner(_)) =>
+                {
+                    let Outgoing::Owner(value) = &next else {
+                        unreachable!()
+                    };
                     if !owner_response_matches(&value.operation, reply) {
                         return Err(StopReason::Protocol);
                     }
-                    if !shared.enqueue(message, bytes) { return Err(StopReason::QueueOverflow); }
+                    if !shared.enqueue(message, bytes) {
+                        return Err(StopReason::QueueOverflow);
+                    }
                     break;
                 }
                 ServerMessage::OwnerResponse { request_id, reply }
-                    if urgent_inflight.remove(request_id) => {
+                    if urgent_inflight.remove(request_id) =>
+                {
                     if !matches!(reply, Reply::Ok { version, response: OwnerResponse::Acknowledged } if *version == PROTOCOL_VERSION)
-                        && !matches!(reply, Reply::Error { version, .. } if *version == PROTOCOL_VERSION) {
+                        && !matches!(reply, Reply::Error { version, .. } if *version == PROTOCOL_VERSION)
+                    {
                         return Err(StopReason::Protocol);
                     }
-                    if !shared.enqueue(message, bytes) { return Err(StopReason::QueueOverflow); }
+                    if !shared.enqueue(message, bytes) {
+                        return Err(StopReason::QueueOverflow);
+                    }
                 }
                 message if valid_push(message, subscription) => {
                     let terminal = is_terminal(message);
@@ -323,9 +341,14 @@ fn owner_response_matches(operation: &OwnerOperation, reply: &Reply<OwnerRespons
         Reply::Error { version, .. } => *version == PROTOCOL_VERSION,
         Reply::Ok { version, response } if *version == PROTOCOL_VERSION => matches!(
             (operation, response),
-            (OwnerOperation::Register { .. }, OwnerResponse::Registered { .. })
-                | (OwnerOperation::Refresh { .. }, OwnerResponse::Window { .. })
-                | (OwnerOperation::Retire { .. } | OwnerOperation::ApplyResult { .. }, OwnerResponse::Acknowledged)
+            (
+                OwnerOperation::Register { .. },
+                OwnerResponse::Registered { .. }
+            ) | (OwnerOperation::Refresh { .. }, OwnerResponse::Window { .. })
+                | (
+                    OwnerOperation::Retire { .. } | OwnerOperation::ApplyResult { .. },
+                    OwnerResponse::Acknowledged
+                )
         ),
         _ => false,
     }
@@ -341,7 +364,10 @@ fn is_terminal(message: &ServerMessage) -> bool {
     )
 }
 fn take_urgent(shared: &Shared) -> Result<Option<OwnerFrame>, StopReason> {
-    let mut q = shared.mailbox.lock().unwrap_or_else(std::sync::PoisonError::into_inner);
+    let mut q = shared
+        .mailbox
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner);
     if shared.stop.load(Ordering::Acquire) {
         return Err(StopReason::LocalStop);
     }

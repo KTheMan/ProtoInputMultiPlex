@@ -1,8 +1,8 @@
 //! Owner-thread-only native bindings. Local engine IDs are never GUI IDs.
 use super::ClientError;
 use crate::{
-    Engine, Grant, RecipientId, ScreenState, UserScope, WindowControl, WindowId,
-    WindowInfo, WindowObservation,
+    Engine, Grant, RecipientId, ScreenState, UserScope, WindowControl, WindowId, WindowInfo,
+    WindowObservation,
 };
 use mux_core::desktop::Bounds;
 use mux_windows::application_window::WindowAdapter;
@@ -127,7 +127,11 @@ impl OwnedWindows {
     }
 
     pub(super) fn bind_remote(&mut self, token: u64, window: WindowId) -> Result<(), ClientError> {
-        if self.entries.values().any(|other| other.remote == Some(window)) {
+        if self
+            .entries
+            .values()
+            .any(|other| other.remote == Some(window))
+        {
             return Err(ClientError::Protocol);
         }
         let entry = self.entries.get_mut(&token).ok_or(ClientError::Window)?;
@@ -151,7 +155,10 @@ impl OwnedWindows {
             .refresh(&mut self.engine, local)
             .map_err(native_error)?;
         let observed = observation(info);
-        self.entries.get_mut(&token).ok_or(ClientError::Window)?.last = Some(observed.clone());
+        self.entries
+            .get_mut(&token)
+            .ok_or(ClientError::Window)?
+            .last = Some(observed.clone());
         Ok((window, generation, observed))
     }
 
@@ -194,7 +201,8 @@ impl OwnedWindows {
         token: u64,
     ) -> Result<(Option<WindowId>, u64, Result<(), ClientError>), ClientError> {
         let entry = self.entries.remove(&token).ok_or(ClientError::Window)?;
-        let local_result = self.adapter
+        let local_result = self
+            .adapter
             .retire(&mut self.engine, entry.local)
             .map_err(native_error);
         Ok((entry.remote, entry.generation, local_result))
@@ -207,17 +215,24 @@ impl OwnedWindows {
         generation: u64,
         control: WindowControl,
     ) -> Result<WindowObservation, crate::Error> {
-        let entry = self.entries.get(&token).ok_or(crate::Error::MissingWindow)?;
+        let entry = self
+            .entries
+            .get(&token)
+            .ok_or(crate::Error::MissingWindow)?;
         if entry.generation != generation || entry.remote != Some(window) {
             return Err(crate::Error::Denied);
         }
         let local = entry.local;
         // Engine checks action/bounds/ownership; WindowAdapter rechecks HWND,
         // creating thread, process, cookie and DPI before and after Win32 calls.
-        let observed = self.engine
+        let observed = self
+            .engine
             .control_window(self.recipient, local, control, &mut self.adapter)
             .map(|ack| observation(ack.observed))?;
-        self.entries.get_mut(&token).ok_or(crate::Error::MissingWindow)?.last = Some(observed.clone());
+        self.entries
+            .get_mut(&token)
+            .ok_or(crate::Error::MissingWindow)?
+            .last = Some(observed.clone());
         Ok(observed)
     }
 

@@ -664,10 +664,8 @@ fn generated_header_native_exports_are_feature_selected_and_host_abi_stays_stabl
         ffi::pim_app_native_window_register;
     let _: unsafe extern "C" fn(u64, u64, u32, *mut u64) -> i32 =
         ffi::pim_app_native_window_refresh;
-    let _: unsafe extern "C" fn(u64, u64, u32, *mut u64) -> i32 =
-        ffi::pim_app_native_window_notify;
-    let _: unsafe extern "C" fn(u64, u64, *mut u64) -> i32 =
-        ffi::pim_app_native_window_retire;
+    let _: unsafe extern "C" fn(u64, u64, u32, *mut u64) -> i32 = ffi::pim_app_native_window_notify;
+    let _: unsafe extern "C" fn(u64, u64, *mut u64) -> i32 = ffi::pim_app_native_window_retire;
     let _: extern "C" fn(u64) -> i32 = ffi::pim_app_native_drain;
     let _: extern "C" fn(u64) -> i32 = ffi::pim_app_native_query;
     let _: unsafe extern "C" fn(u64, *mut usize) -> i32 = ffi::pim_app_native_response_size;
@@ -704,11 +702,20 @@ fn owner_apply_is_queued_only_by_ui_drain_and_duplicate_is_fenced() {
         .cloned()
         .unwrap();
     assert_eq!(queued.request_id, (1_u64 << 63) | 1);
-    assert!(matches!(queued.operation, OwnerOperation::ApplyResult {
-        operation_id: 7,
-        result: Reply::Error { error: Failure { code: FailureCode::Uncertain, .. }, .. },
-        ..
-    }));
+    assert!(matches!(
+        queued.operation,
+        OwnerOperation::ApplyResult {
+            operation_id: 7,
+            result: Reply::Error {
+                error: Failure {
+                    code: FailureCode::Uncertain,
+                    ..
+                },
+                ..
+            },
+            ..
+        }
+    ));
     assert_eq!(client.fold(&apply), Err(ClientError::Protocol));
     client.stop();
     assert!(client.uncertain.contains(&((1_u64 << 63) | 1)));

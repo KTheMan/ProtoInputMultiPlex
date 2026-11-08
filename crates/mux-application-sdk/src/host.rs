@@ -180,7 +180,10 @@ impl<A: WindowBackend> Host<A> {
         observed: WindowObservation,
     ) -> Result<WindowId, Error> {
         self.version(PROTOCOL_VERSION)?;
-        let grant = self.event_grants.get(&owner).ok_or(Error::MissingRecipient)?;
+        let grant = self
+            .event_grants
+            .get(&owner)
+            .ok_or(Error::MissingRecipient)?;
         let controls = self.controls.get(&owner).ok_or(Error::MissingRecipient)?;
         allowed(grant.owned_windows && controls.window_publication)?;
         let id = self.engine.register_owned_window_with_state(
@@ -193,7 +196,10 @@ impl<A: WindowBackend> Host<A> {
     }
 
     pub fn remote_window_owner(&self, window: WindowId) -> Result<RecipientId, Error> {
-        self.remote_windows.get(&window).copied().ok_or(Error::MissingWindow)
+        self.remote_windows
+            .get(&window)
+            .copied()
+            .ok_or(Error::MissingWindow)
     }
 
     pub fn window_inventory(&self) -> Vec<(WindowInfo, RecipientId)> {
@@ -249,11 +255,24 @@ impl<A: WindowBackend> Host<A> {
         control: &WindowControl,
     ) -> Result<RecipientId, Error> {
         let owner = self.remote_window_active_owner(window)?;
-        let controls = self.controls.get(&recipient).ok_or(Error::MissingRecipient)?;
+        let controls = self
+            .controls
+            .get(&recipient)
+            .ok_or(Error::MissingRecipient)?;
         allowed(controls.window_tracking)?;
         allowed(controls.window_control)?;
-        allowed(self.engine.authorize_window_control(recipient, window, control)? == owner)?;
-        allowed(!self.engine.window_info(recipient, window)?.observation.stale)?;
+        allowed(
+            self.engine
+                .authorize_window_control(recipient, window, control)?
+                == owner,
+        )?;
+        allowed(
+            !self
+                .engine
+                .window_info(recipient, window)?
+                .observation
+                .stale,
+        )?;
         Ok(owner)
     }
 
@@ -526,7 +545,9 @@ impl<A: WindowBackend> Host<A> {
             WindowControl { window, control } => {
                 allowed(grant.window_control)?;
                 if self.remote_windows.contains_key(&window) {
-                    return Err(Error::Unsupported("remote window control requires asynchronous owner receipt"));
+                    return Err(Error::Unsupported(
+                        "remote window control requires asynchronous owner receipt",
+                    ));
                 }
                 ClientResponse::WindowControlled {
                     acknowledgement: self.engine.control_window(
@@ -539,12 +560,16 @@ impl<A: WindowBackend> Host<A> {
             }
             RemoteWindowQuery { reference } => {
                 self.validate_remote_reference(reference)?;
-                ClientResponse::Window { window: self.engine.window_info(recipient, reference.window)? }
+                ClientResponse::Window {
+                    window: self.engine.window_info(recipient, reference.window)?,
+                }
             }
             RemoteWindowTrack { reference } => {
                 self.validate_remote_reference(reference)?;
                 allowed(grant.window_tracking)?;
-                ClientResponse::Window { window: self.engine.track_window(recipient, reference.window)? }
+                ClientResponse::Window {
+                    window: self.engine.track_window(recipient, reference.window)?,
+                }
             }
             RemoteWindowUntrack { reference } => {
                 self.validate_remote_reference(reference)?;
@@ -554,7 +579,9 @@ impl<A: WindowBackend> Host<A> {
             }
             RemoteWindowControl { reference, .. } => {
                 self.validate_remote_reference(reference)?;
-                return Err(Error::Unsupported("remote window control requires asynchronous owner receipt"));
+                return Err(Error::Unsupported(
+                    "remote window control requires asynchronous owner receipt",
+                ));
             }
             Disconnect => {
                 self.disconnect(recipient)?;
@@ -586,7 +613,11 @@ impl<A: WindowBackend> Host<A> {
                 self.approve_controls(recipient, grant)?;
                 HostResponse::Acknowledged
             }
-            DelegateWindow { window, recipient, access } => {
+            DelegateWindow {
+                window,
+                recipient,
+                access,
+            } => {
                 self.delegate_window(window, recipient, access)?;
                 HostResponse::Acknowledged
             }
@@ -669,7 +700,10 @@ impl<A: WindowBackend> Host<A> {
 
     fn remote_window_active_owner(&self, window: WindowId) -> Result<RecipientId, Error> {
         let owner = self.remote_window_owner(window)?;
-        let events = self.event_grants.get(&owner).ok_or(Error::MissingRecipient)?;
+        let events = self
+            .event_grants
+            .get(&owner)
+            .ok_or(Error::MissingRecipient)?;
         let controls = self.controls.get(&owner).ok_or(Error::MissingRecipient)?;
         allowed(events.owned_windows && controls.window_publication)?;
         Ok(owner)
@@ -695,7 +729,11 @@ impl<A: WindowBackend> Host<A> {
             }
             self.windows.remove(&window);
         }
-        let remote: Vec<_> = self.remote_windows.iter().filter_map(|(window, owner)| (*owner == recipient).then_some(*window)).collect();
+        let remote: Vec<_> = self
+            .remote_windows
+            .iter()
+            .filter_map(|(window, owner)| (*owner == recipient).then_some(*window))
+            .collect();
         for window in remote {
             self.engine.destroy_window(window)?;
             self.remote_windows.remove(&window);

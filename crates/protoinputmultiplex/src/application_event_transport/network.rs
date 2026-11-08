@@ -664,7 +664,9 @@ pub(super) async fn drive<S: AsyncRead + AsyncWrite + Unpin>(
         if pending
             .front()
             .is_some_and(|pending| Instant::now() >= pending.deadline)
-            || urgent.values().any(|pending| Instant::now() >= pending.deadline)
+            || urgent
+                .values()
+                .any(|pending| Instant::now() >= pending.deadline)
         {
             break Err(anyhow::anyhow!(
                 "event request deadline reached; do not retry an uncertain request"
@@ -751,7 +753,10 @@ pub(super) async fn drive<S: AsyncRead + AsyncWrite + Unpin>(
     retire_pending(&pending, &shared);
     for pending in urgent.values() {
         if !pending.admission.cancel_queued()
-            && matches!(pending.admission.state.load(Ordering::Acquire), APPLYING | COMPLETED)
+            && matches!(
+                pending.admission.state.load(Ordering::Acquire),
+                APPLYING | COMPLETED
+            )
         {
             pending.admission.uncertain(&shared);
         }

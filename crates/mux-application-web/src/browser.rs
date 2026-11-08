@@ -117,8 +117,15 @@ struct Inner {
 
 #[derive(Clone, Copy)]
 enum PendingWindow {
-    Query { window: WindowId, remote: bool },
-    Control { window: WindowId, action: WindowAction, remote: bool },
+    Query {
+        window: WindowId,
+        remote: bool,
+    },
+    Control {
+        window: WindowId,
+        action: WindowAction,
+        remote: bool,
+    },
 }
 
 impl Inner {
@@ -1162,8 +1169,14 @@ impl WebClient {
         match &command {
             ClientCommand::RemoteWindowQuery { reference } => {
                 if !inner.is_live()
-                    || !inner.ready.as_ref().is_some_and(|ready| ready.events.owned_windows)
-                    || inner.ready.as_ref().is_none_or(|ready| ready.epoch != reference.epoch)
+                    || !inner
+                        .ready
+                        .as_ref()
+                        .is_some_and(|ready| ready.events.owned_windows)
+                    || inner
+                        .ready
+                        .as_ref()
+                        .is_none_or(|ready| ready.epoch != reference.epoch)
                 {
                     return Err(JsValue::from_str("Window observation is unavailable"));
                 }
@@ -1174,7 +1187,10 @@ impl WebClient {
                     || !inner.ready.as_ref().is_some_and(|ready| {
                         ready.events.owned_windows && ready.controls.window_tracking
                     })
-                    || inner.ready.as_ref().is_none_or(|ready| ready.epoch != reference.epoch)
+                    || inner
+                        .ready
+                        .as_ref()
+                        .is_none_or(|ready| ready.epoch != reference.epoch)
                 {
                     return Err(JsValue::from_str("Window tracking is unavailable"));
                 }
@@ -1193,7 +1209,9 @@ impl WebClient {
                         .get(&reference.window)
                         .is_some_and(|info| !info.observation.stale)
                 {
-                    return Err(JsValue::from_str("Track and refresh this approved window first"));
+                    return Err(JsValue::from_str(
+                        "Track and refresh this approved window first",
+                    ));
                 }
             }
             _ => {}

@@ -503,7 +503,10 @@ impl NativeClient {
             .ok_or(ClientError::Window)?
             .refresh(token)?;
         let consent = identity_metadata_consent
-            && self.ready.as_ref().is_some_and(|ready| ready.controls.window_identity_metadata);
+            && self
+                .ready
+                .as_ref()
+                .is_some_and(|ready| ready.controls.window_identity_metadata);
         redact_owner_identity(&mut observed, consent);
         let result = self.queue_owner(
             OwnerOperation::Refresh {
@@ -515,7 +518,9 @@ impl NativeClient {
             },
             OwnerPending::Refresh(token),
         );
-        if result.is_err() && let Some(owned) = &mut self.owned {
+        if result.is_err()
+            && let Some(owned) = &mut self.owned
+        {
             owned.invalidate_report(token);
         }
         result
@@ -538,7 +543,10 @@ impl NativeClient {
             .map(|(window, generation, mut observed)| {
                 let raw_observation = observed.clone();
                 let consent = identity_metadata_consent
-                    && self.ready.as_ref().is_some_and(|ready| ready.controls.window_identity_metadata);
+                    && self
+                        .ready
+                        .as_ref()
+                        .is_some_and(|ready| ready.controls.window_identity_metadata);
                 redact_owner_identity(&mut observed, consent);
                 let result = self.queue_owner(
                     OwnerOperation::Refresh {
@@ -551,8 +559,11 @@ impl NativeClient {
                     OwnerPending::Refresh(token),
                 );
                 if let Some(owned) = &mut self.owned {
-                    if result.is_ok() { owned.mark_reported(token, raw_observation); }
-                    else { owned.invalidate_report(token); }
+                    if result.is_ok() {
+                        owned.mark_reported(token, raw_observation);
+                    } else {
+                        owned.invalidate_report(token);
+                    }
                 }
                 result
             })
@@ -611,7 +622,8 @@ impl NativeClient {
             }
             q.urgent.push_back(frame);
         }
-        self.owner_pending.insert(request_id, OwnerPending::ApplyResult);
+        self.owner_pending
+            .insert(request_id, OwnerPending::ApplyResult);
         self.next_ack_id += 1;
         self.shared.requests_changed.notify_one();
         Ok(())
@@ -625,7 +637,10 @@ impl NativeClient {
         generation: u64,
         control: WindowControl,
     ) -> Result<(), ClientError> {
-        if operation_id == 0 || self.seen_apply.len() >= 65_536 || !self.seen_apply.insert(operation_id) {
+        if operation_id == 0
+            || self.seen_apply.len() >= 65_536
+            || !self.seen_apply.insert(operation_id)
+        {
             return Err(ClientError::Protocol);
         }
         let result = self
@@ -637,10 +652,10 @@ impl NativeClient {
             Ok(mut response) => {
                 redact_owner_identity(&mut response, false);
                 Reply::Ok {
-                version: PROTOCOL_VERSION,
-                response,
+                    version: PROTOCOL_VERSION,
+                    response,
                 }
-            },
+            }
             Err(error) => Reply::Error {
                 version: PROTOCOL_VERSION,
                 error: Failure {
@@ -746,37 +761,82 @@ impl NativeClient {
                 self.pending.pop_front();
             }
             ServerMessage::OwnerResponse { request_id, reply } => {
-                let pending = self.owner_pending.remove(request_id).ok_or(ClientError::Protocol)?;
+                let pending = self
+                    .owner_pending
+                    .remove(request_id)
+                    .ok_or(ClientError::Protocol)?;
                 match (pending, reply) {
-                    (OwnerPending::Register(token), Reply::Ok { version, response: OwnerResponse::Registered { window } })
-                        if *version == PROTOCOL_VERSION => {
-                            self.owned.as_mut().ok_or(ClientError::Protocol)?.bind_remote(token, *window)?;
-                        }
+                    (
+                        OwnerPending::Register(token),
+                        Reply::Ok {
+                            version,
+                            response: OwnerResponse::Registered { window },
+                        },
+                    ) if *version == PROTOCOL_VERSION => {
+                        self.owned
+                            .as_mut()
+                            .ok_or(ClientError::Protocol)?
+                            .bind_remote(token, *window)?;
+                    }
                     (OwnerPending::Register(token), Reply::Error { version, .. })
-                        if *version == PROTOCOL_VERSION => {
-                            if let Some(owned) = &mut self.owned {
-                                let _ = owned.retire(token);
-                            }
+                        if *version == PROTOCOL_VERSION =>
+                    {
+                        if let Some(owned) = &mut self.owned {
+                            let _ = owned.retire(token);
                         }
-                    (OwnerPending::Refresh(_), Reply::Ok { version, response: OwnerResponse::Window { .. } })
-                    | (OwnerPending::Retire | OwnerPending::ApplyResult, Reply::Ok { version, response: OwnerResponse::Acknowledged })
-                        if *version == PROTOCOL_VERSION => {}
+                    }
+                    (
+                        OwnerPending::Refresh(_),
+                        Reply::Ok {
+                            version,
+                            response: OwnerResponse::Window { .. },
+                        },
+                    )
+                    | (
+                        OwnerPending::Retire | OwnerPending::ApplyResult,
+                        Reply::Ok {
+                            version,
+                            response: OwnerResponse::Acknowledged,
+                        },
+                    ) if *version == PROTOCOL_VERSION => {}
                     (OwnerPending::Refresh(token), Reply::Error { version, .. })
-                        if *version == PROTOCOL_VERSION => {
-                            if let Some(owned) = &mut self.owned { owned.invalidate_report(token); }
+                        if *version == PROTOCOL_VERSION =>
+                    {
+                        if let Some(owned) = &mut self.owned {
+                            owned.invalidate_report(token);
                         }
-                    (OwnerPending::Retire | OwnerPending::ApplyResult, Reply::Error { version, .. })
-                        if *version == PROTOCOL_VERSION => {
-                            if self.uncertain.len() < 64 { self.uncertain.push(*request_id); }
+                    }
+                    (
+                        OwnerPending::Retire | OwnerPending::ApplyResult,
+                        Reply::Error { version, .. },
+                    ) if *version == PROTOCOL_VERSION => {
+                        if self.uncertain.len() < 64 {
+                            self.uncertain.push(*request_id);
                         }
+                    }
                     _ => return Err(ClientError::Protocol),
                 }
             }
-            ServerMessage::WindowApply { operation_id, window, token, generation, control } => {
+            ServerMessage::WindowApply {
+                operation_id,
+                window,
+                token,
+                generation,
+                control,
+            } => {
                 if self.ready.is_none() {
                     return Err(ClientError::Protocol);
                 }
-                if self.apply_on_owner_thread(*operation_id, *window, *token, *generation, control.clone()).is_err() {
+                if self
+                    .apply_on_owner_thread(
+                        *operation_id,
+                        *window,
+                        *token,
+                        *generation,
+                        control.clone(),
+                    )
+                    .is_err()
+                {
                     self.shared.finish(StopReason::DeadlineUncertain);
                     self.observe_terminal();
                     return Err(ClientError::Protocol);
@@ -823,7 +883,10 @@ impl NativeClient {
             pointer_enabled: self.pointer,
             key_enabled: self.keys,
             pending_requests: self.pending.len(),
-            owned_windows: self.owned.as_ref().map_or(0, owned_windows::OwnedWindows::len),
+            owned_windows: self
+                .owned
+                .as_ref()
+                .map_or(0, owned_windows::OwnedWindows::len),
             pending_owner_operations: self.owner_pending.len(),
             local_worker_retired: self.retired(),
             remote_cleanup_unconfirmed: self.terminal.is_some(),
@@ -949,8 +1012,10 @@ fn authorize(
         ClientCommand::Cursor { user, .. } if control.cursor => require_user(user)?,
         ClientCommand::WindowQuery { .. } | ClientCommand::RemoteWindowQuery { .. }
             if ready.events.owned_windows => {}
-        ClientCommand::WindowTrack { .. } | ClientCommand::WindowUntrack { .. }
-        | ClientCommand::RemoteWindowTrack { .. } | ClientCommand::RemoteWindowUntrack { .. }
+        ClientCommand::WindowTrack { .. }
+        | ClientCommand::WindowUntrack { .. }
+        | ClientCommand::RemoteWindowTrack { .. }
+        | ClientCommand::RemoteWindowUntrack { .. }
             if control.window_tracking => {}
         ClientCommand::WindowControl { .. } | ClientCommand::RemoteWindowControl { .. }
             if control.window_control => {}
@@ -975,8 +1040,10 @@ fn response_matches(command: &ClientCommand, response: &ClientResponse) -> bool 
                 ClientResponse::InputAccepted { .. }
             )
             | (
-                ClientCommand::WindowQuery { .. } | ClientCommand::WindowTrack { .. }
-                    | ClientCommand::RemoteWindowQuery { .. } | ClientCommand::RemoteWindowTrack { .. },
+                ClientCommand::WindowQuery { .. }
+                    | ClientCommand::WindowTrack { .. }
+                    | ClientCommand::RemoteWindowQuery { .. }
+                    | ClientCommand::RemoteWindowTrack { .. },
                 ClientResponse::Window { .. }
             )
             | (

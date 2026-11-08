@@ -211,12 +211,19 @@ pub unsafe extern "C" fn pim_app_native_window_register(
         if token_out.is_null() || !token_out.is_aligned() || identity_metadata_consent > 1 {
             return Status::InvalidArgument as i32;
         }
-        with(handle, |entry| match entry.client.register_own_window(own_hwnd, identity_metadata_consent != 0) {
-            Ok(token) => {
-                unsafe { token_out.write(token); }
-                Status::Ok as i32
+        with(handle, |entry| {
+            match entry
+                .client
+                .register_own_window(own_hwnd, identity_metadata_consent != 0)
+            {
+                Ok(token) => {
+                    unsafe {
+                        token_out.write(token);
+                    }
+                    Status::Ok as i32
+                }
+                Err(error) => status(error),
             }
-            Err(error) => status(error),
         })
     })
 }
@@ -232,15 +239,23 @@ pub unsafe extern "C" fn pim_app_native_window_refresh(
     request_id_out: *mut u64,
 ) -> i32 {
     boundary(Some(handle), || {
-        if request_id_out.is_null() || !request_id_out.is_aligned() || identity_metadata_consent > 1 {
+        if request_id_out.is_null() || !request_id_out.is_aligned() || identity_metadata_consent > 1
+        {
             return Status::InvalidArgument as i32;
         }
-        with(handle, |entry| match entry.client.refresh_own_window(token, identity_metadata_consent != 0) {
-            Ok(id) => {
-                unsafe { request_id_out.write(id); }
-                Status::Ok as i32
+        with(handle, |entry| {
+            match entry
+                .client
+                .refresh_own_window(token, identity_metadata_consent != 0)
+            {
+                Ok(id) => {
+                    unsafe {
+                        request_id_out.write(id);
+                    }
+                    Status::Ok as i32
+                }
+                Err(error) => status(error),
             }
-            Err(error) => status(error),
         })
     })
 }
@@ -257,15 +272,23 @@ pub unsafe extern "C" fn pim_app_native_window_notify(
     request_id_out: *mut u64,
 ) -> i32 {
     boundary(Some(handle), || {
-        if request_id_out.is_null() || !request_id_out.is_aligned() || identity_metadata_consent > 1 {
+        if request_id_out.is_null() || !request_id_out.is_aligned() || identity_metadata_consent > 1
+        {
             return Status::InvalidArgument as i32;
         }
-        with(handle, |entry| match entry.client.notify_own_window_changed(token, identity_metadata_consent != 0) {
-            Ok(id) => {
-                unsafe { request_id_out.write(id.unwrap_or(0)); }
-                Status::Ok as i32
+        with(handle, |entry| {
+            match entry
+                .client
+                .notify_own_window_changed(token, identity_metadata_consent != 0)
+            {
+                Ok(id) => {
+                    unsafe {
+                        request_id_out.write(id.unwrap_or(0));
+                    }
+                    Status::Ok as i32
+                }
+                Err(error) => status(error),
             }
-            Err(error) => status(error),
         })
     })
 }
@@ -284,12 +307,16 @@ pub unsafe extern "C" fn pim_app_native_window_retire(
         if request_id_out.is_null() || !request_id_out.is_aligned() {
             return Status::InvalidArgument as i32;
         }
-        with(handle, |entry| match entry.client.retire_own_window(token) {
-            Ok(id) => {
-                unsafe { request_id_out.write(id.unwrap_or(0)); }
-                Status::Ok as i32
+        with(handle, |entry| {
+            match entry.client.retire_own_window(token) {
+                Ok(id) => {
+                    unsafe {
+                        request_id_out.write(id.unwrap_or(0));
+                    }
+                    Status::Ok as i32
+                }
+                Err(error) => status(error),
             }
-            Err(error) => status(error),
         })
     })
 }

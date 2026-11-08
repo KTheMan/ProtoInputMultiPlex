@@ -153,11 +153,18 @@ impl<A: WindowBackend> HostBridge<A> {
 
     pub fn window_inventory(&self) -> Vec<(WindowInfo, RecipientId)> {
         let now = Instant::now();
-        self.host.window_inventory().into_iter().filter(|(window, _)| {
-            self.remote.get(&window.id).is_some_and(|binding| {
-                self.shared.leases().iter().any(|lease| lease.id == binding.lease_id && lease.live(&self.shared, now))
+        self.host
+            .window_inventory()
+            .into_iter()
+            .filter(|(window, _)| {
+                self.remote.get(&window.id).is_some_and(|binding| {
+                    self.shared
+                        .leases()
+                        .iter()
+                        .any(|lease| lease.id == binding.lease_id && lease.live(&self.shared, now))
+                })
             })
-        }).collect()
+            .collect()
     }
 
     pub fn window_status(&self) -> WindowStatus {
@@ -165,11 +172,20 @@ impl<A: WindowBackend> HostBridge<A> {
         WindowStatus {
             registered: self.remote.len(),
             pending: self.pending_controls.len(),
-            stale: self.window_inventory().into_iter().filter(|(window, _)| window.observation.stale).count(),
+            stale: self
+                .window_inventory()
+                .into_iter()
+                .filter(|(window, _)| window.observation.stale)
+                .count(),
             uncertain: self.uncertain_controls,
-            oldest_sample_age_ms: self.remote.values().map(|binding| {
-                u64::try_from(now.duration_since(binding.last_sample).as_millis()).unwrap_or(u64::MAX)
-            }).max(),
+            oldest_sample_age_ms: self
+                .remote
+                .values()
+                .map(|binding| {
+                    u64::try_from(now.duration_since(binding.last_sample).as_millis())
+                        .unwrap_or(u64::MAX)
+                })
+                .max(),
         }
     }
 
@@ -198,7 +214,9 @@ impl<A: WindowBackend> HostBridge<A> {
                     "receiver retired; register a fresh receiver before delegation",
                 ));
             }
-            HostCommand::DelegateWindow { window, access, .. } if access.observe || access.control => {
+            HostCommand::DelegateWindow { window, access, .. }
+                if access.observe || access.control =>
+            {
                 let Some(binding) = self.remote.get(window) else {
                     return Err(failure(FailureCode::Missing, "native window retired"));
                 };
@@ -585,10 +603,14 @@ impl<A: WindowBackend> HostBridge<A> {
                     "event receiver revoked or request expired before apply",
                 ));
             }
-            if let ClientCommand::RemoteWindowControl { reference, control } = &message.request.command
+            if let ClientCommand::RemoteWindowControl { reference, control } =
+                &message.request.command
             {
                 if reference.epoch != lease.epoch {
-                    return Err(failure(FailureCode::StaleRevision, "window session changed"));
+                    return Err(failure(
+                        FailureCode::StaleRevision,
+                        "window session changed",
+                    ));
                 }
                 return self.begin_remote_control(
                     &lease,
@@ -601,7 +623,8 @@ impl<A: WindowBackend> HostBridge<A> {
             }
             self.host.dispatch(lease.recipient, message.request.clone())
         });
-        if matches!(&result, Err(error) if error.code == FailureCode::Uncertain && error.message == "pending owner receipt") {
+        if matches!(&result, Err(error) if error.code == FailureCode::Uncertain && error.message == "pending owner receipt")
+        {
             return;
         }
         if let Ok(response) = &mut result {
@@ -613,7 +636,10 @@ impl<A: WindowBackend> HostBridge<A> {
                         client.last_gap = None;
                     }
                     ClientResponse::Acknowledged
-                        if matches!(&message.request.command, ClientCommand::Unsubscribe { .. }) =>
+                        if matches!(
+                            &message.request.command,
+                            ClientCommand::Unsubscribe { .. }
+                        ) =>
                     {
                         client.subscription = None
                     }
@@ -628,7 +654,8 @@ impl<A: WindowBackend> HostBridge<A> {
         // One FIFO carries reply and stream frames; snapshot replies always precede
         // any events polled for that new subscription in this or later ticks.
         if !lease.live(&self.shared, Instant::now())
-            || output.try_send(ServerMessage::Response {
+            || output
+                .try_send(ServerMessage::Response {
                     request_id: message.request_id,
                     reply: result.into(),
                 })
@@ -652,22 +679,37 @@ impl<A: WindowBackend> HostBridge<A> {
             .host
             .authorize_remote_window_control(lease.recipient, window, &control)
             .map_err(Failure::from)?;
-        let binding = self.remote.get(&window).ok_or_else(|| failure(FailureCode::Missing, "window retired"))?;
+        let binding = self
+            .remote
+            .get(&window)
+            .ok_or_else(|| failure(FailureCode::Missing, "window retired"))?;
         if binding.owner != owner || binding.epoch != lease.epoch {
             return Err(failure(FailureCode::Denied, "window owner changed"));
         }
-        let owner_lease = self.shared.leases().into_iter().find(|value| value.id == binding.lease_id)
+        let owner_lease = self
+            .shared
+            .leases()
+            .into_iter()
+            .find(|value| value.id == binding.lease_id)
             .ok_or_else(|| failure(FailureCode::Ended, "window publisher ended"))?;
-        if !owner_lease.live(&self.shared, Instant::now()) || !self.clients.contains_key(&owner_lease.id) {
+        if !owner_lease.live(&self.shared, Instant::now())
+            || !self.clients.contains_key(&owner_lease.id)
+        {
             return Err(failure(FailureCode::Ended, "window publisher disconnected"));
         }
         if self.pending_controls.len() >= 16
-            || self.pending_controls.values().any(|value| value.window == window)
+            || self
+                .pending_controls
+                .values()
+                .any(|value| value.window == window)
         {
             return Err(failure(FailureCode::Limit, "window action already pending"));
         }
         let operation_id = self.next_operation;
-        self.next_operation = self.next_operation.checked_add(1).ok_or_else(|| failure(FailureCode::Limit, "window operation IDs exhausted"))?;
+        self.next_operation = self
+            .next_operation
+            .checked_add(1)
+            .ok_or_else(|| failure(FailureCode::Limit, "window operation IDs exhausted"))?;
         let frame = ServerMessage::WindowApply {
             operation_id,
             window,
@@ -675,19 +717,30 @@ impl<A: WindowBackend> HostBridge<A> {
             generation: binding.generation,
             control: control.clone(),
         };
-        let output = &self.clients.get(&owner_lease.id).ok_or_else(|| failure(FailureCode::Ended, "window publisher disconnected"))?.output;
-        output.try_send(frame).map_err(|_| failure(FailureCode::Limit, "window publisher output full"))?;
+        let output = &self
+            .clients
+            .get(&owner_lease.id)
+            .ok_or_else(|| failure(FailureCode::Ended, "window publisher disconnected"))?
+            .output;
+        output
+            .try_send(frame)
+            .map_err(|_| failure(FailureCode::Limit, "window publisher output full"))?;
         let _ = self.host.mark_remote_window_stale(window);
-        self.pending_controls.insert(operation_id, PendingControl {
+        self.pending_controls.insert(
             operation_id,
-            request_id,
-            consumer_lease: lease.id,
-            owner_lease: owner_lease.id,
-            window,
-            control,
-            deadline: deadline.checked_sub(Duration::from_millis(250)).unwrap_or(deadline),
-            admission,
-        });
+            PendingControl {
+                operation_id,
+                request_id,
+                consumer_lease: lease.id,
+                owner_lease: owner_lease.id,
+                window,
+                control,
+                deadline: deadline
+                    .checked_sub(Duration::from_millis(250))
+                    .unwrap_or(deadline),
+                admission,
+            },
+        );
         Err(failure(FailureCode::Uncertain, "pending owner receipt"))
     }
 
@@ -699,8 +752,12 @@ impl<A: WindowBackend> HostBridge<A> {
         admission: Arc<Admission>,
         now: Instant,
     ) {
-        if now >= deadline || !lease.live(&self.shared, now)
-            || !self.host.ready_for(lease.recipient).is_ok_and(|ready| lease.matches(&ready))
+        if now >= deadline
+            || !lease.live(&self.shared, now)
+            || !self
+                .host
+                .ready_for(lease.recipient)
+                .is_ok_and(|ready| lease.matches(&ready))
         {
             admission.cancel_queued();
             lease.revoke();
@@ -711,21 +768,30 @@ impl<A: WindowBackend> HostBridge<A> {
             lease.revoke();
             return;
         };
-        if admission.state.compare_exchange(QUEUED, APPLYING, Ordering::AcqRel, Ordering::Acquire).is_err() {
+        if admission
+            .state
+            .compare_exchange(QUEUED, APPLYING, Ordering::AcqRel, Ordering::Acquire)
+            .is_err()
+        {
             return;
         }
         let urgent = matches!(&frame.operation, OwnerOperation::ApplyResult { .. });
         let valid_id = if urgent {
             frame.request_id & (1_u64 << 63) != 0
         } else {
-            frame.request_id != 0 && frame.request_id & (1_u64 << 63) == 0 && frame.request_id > client.last_request
+            frame.request_id != 0
+                && frame.request_id & (1_u64 << 63) == 0
+                && frame.request_id > client.last_request
         };
         if valid_id && !urgent {
             client.last_request = frame.request_id;
         }
         let output = client.output.clone();
         let result = if !valid_id {
-            Err(failure(FailureCode::Invalid, "request IDs must strictly increase"))
+            Err(failure(
+                FailureCode::Invalid,
+                "request IDs must strictly increase",
+            ))
         } else if !lease.live(&self.shared, Instant::now()) || Instant::now() >= deadline {
             Err(failure(FailureCode::Denied, "publisher request expired"))
         } else {
@@ -733,75 +799,147 @@ impl<A: WindowBackend> HostBridge<A> {
         };
         admission.state.store(COMPLETED, Ordering::Release);
         if !lease.live(&self.shared, Instant::now())
-            || output.try_send(ServerMessage::OwnerResponse { request_id: frame.request_id, reply: result.into() }).is_err()
+            || output
+                .try_send(ServerMessage::OwnerResponse {
+                    request_id: frame.request_id,
+                    reply: result.into(),
+                })
+                .is_err()
         {
             admission.uncertain(&self.shared);
             lease.revoke();
         }
     }
 
-    fn owner_operation(&mut self, lease: &Arc<Lease>, operation: OwnerOperation) -> Result<OwnerResponse, Failure> {
+    fn owner_operation(
+        &mut self,
+        lease: &Arc<Lease>,
+        operation: OwnerOperation,
+    ) -> Result<OwnerResponse, Failure> {
         let now = Instant::now();
         if !lease.live(&self.shared, now)
             || !self.clients.contains_key(&lease.id)
-            || !self.host.ready_for(lease.recipient).is_ok_and(|ready| lease.matches(&ready))
+            || !self
+                .host
+                .ready_for(lease.recipient)
+                .is_ok_and(|ready| lease.matches(&ready))
         {
-            return Err(failure(FailureCode::Denied, "window publisher lease is no longer current"));
+            return Err(failure(
+                FailureCode::Denied,
+                "window publisher lease is no longer current",
+            ));
         }
         match operation {
-            OwnerOperation::Register { token, generation, mut observed, identity_metadata_consent } => {
+            OwnerOperation::Register {
+                token,
+                generation,
+                mut observed,
+                identity_metadata_consent,
+            } => {
                 if !lease.events.owned_windows || !lease.controls.window_publication {
-                    return Err(failure(FailureCode::Denied, "window publication is unavailable"));
+                    return Err(failure(
+                        FailureCode::Denied,
+                        "window publication is unavailable",
+                    ));
                 }
-                if token == 0 || generation == 0 || self.remote.values().filter(|value| value.lease_id == lease.id).count() >= 16
-                    || self.remote.values().any(|value| value.lease_id == lease.id && value.token == token)
-                    || self.retired_remote.keys().any(|(lease_id, retired_token, _)| *lease_id == lease.id && *retired_token == token)
+                if token == 0
+                    || generation == 0
+                    || self
+                        .remote
+                        .values()
+                        .filter(|value| value.lease_id == lease.id)
+                        .count()
+                        >= 16
+                    || self
+                        .remote
+                        .values()
+                        .any(|value| value.lease_id == lease.id && value.token == token)
+                    || self
+                        .retired_remote
+                        .keys()
+                        .any(|(lease_id, retired_token, _)| {
+                            *lease_id == lease.id && *retired_token == token
+                        })
                 {
-                    return Err(failure(FailureCode::Limit, "window publication limit or duplicate token"));
+                    return Err(failure(
+                        FailureCode::Limit,
+                        "window publication limit or duplicate token",
+                    ));
                 }
                 let consent = lease.controls.window_identity_metadata && identity_metadata_consent;
                 sanitize_observation(&mut observed, consent);
-                let window = self.host.register_remote_window(lease.recipient, observed).map_err(Failure::from)?;
-                self.remote.insert(window, RemoteBinding {
-                    lease_id: lease.id,
-                    owner: lease.recipient,
-                    epoch: lease.epoch,
-                    token,
-                    generation,
-                    identity_metadata_consent: consent,
-                    last_sample: Instant::now(),
-                });
+                let window = self
+                    .host
+                    .register_remote_window(lease.recipient, observed)
+                    .map_err(Failure::from)?;
+                self.remote.insert(
+                    window,
+                    RemoteBinding {
+                        lease_id: lease.id,
+                        owner: lease.recipient,
+                        epoch: lease.epoch,
+                        token,
+                        generation,
+                        identity_metadata_consent: consent,
+                        last_sample: Instant::now(),
+                    },
+                );
                 Ok(OwnerResponse::Registered { window })
             }
-            OwnerOperation::Refresh { window, token, generation, mut observed, identity_metadata_consent } => {
-                let binding = self.remote.get_mut(&window).ok_or_else(|| failure(FailureCode::Missing, "window retired"))?;
-                if binding.lease_id != lease.id || binding.owner != lease.recipient || binding.epoch != lease.epoch
-                    || binding.token != token || binding.generation != generation
+            OwnerOperation::Refresh {
+                window,
+                token,
+                generation,
+                mut observed,
+                identity_metadata_consent,
+            } => {
+                let binding = self
+                    .remote
+                    .get_mut(&window)
+                    .ok_or_else(|| failure(FailureCode::Missing, "window retired"))?;
+                if binding.lease_id != lease.id
+                    || binding.owner != lease.recipient
+                    || binding.epoch != lease.epoch
+                    || binding.token != token
+                    || binding.generation != generation
                 {
                     return Err(failure(FailureCode::Denied, "stale window binding"));
                 }
                 let consent = lease.controls.window_identity_metadata && identity_metadata_consent;
                 sanitize_observation(&mut observed, consent);
-                let info = self.host.refresh_remote_window(lease.recipient, window, observed).map_err(Failure::from)?;
+                let info = self
+                    .host
+                    .refresh_remote_window(lease.recipient, window, observed)
+                    .map_err(Failure::from)?;
                 binding.identity_metadata_consent = consent;
                 binding.last_sample = Instant::now();
                 Ok(OwnerResponse::Window { window: info })
             }
-            OwnerOperation::Retire { window, token, generation } => {
+            OwnerOperation::Retire {
+                window,
+                token,
+                generation,
+            } => {
                 let Some(binding) = self.remote.get(&window) else {
                     if self.retired_remote.get(&(lease.id, token, generation)) == Some(&window) {
                         return Ok(OwnerResponse::Acknowledged);
                     }
                     return Err(failure(FailureCode::Missing, "window retired"));
                 };
-                if binding.lease_id != lease.id || binding.owner != lease.recipient || binding.epoch != lease.epoch
-                    || binding.token != token || binding.generation != generation
+                if binding.lease_id != lease.id
+                    || binding.owner != lease.recipient
+                    || binding.epoch != lease.epoch
+                    || binding.token != token
+                    || binding.generation != generation
                 {
                     return Err(failure(FailureCode::Denied, "stale window binding"));
                 }
-                self.host.retire_remote_window(lease.recipient, window).map_err(Failure::from)?;
+                self.host
+                    .retire_remote_window(lease.recipient, window)
+                    .map_err(Failure::from)?;
                 self.remote.remove(&window);
-                self.retired_remote.insert((lease.id, token, generation), window);
+                self.retired_remote
+                    .insert((lease.id, token, generation), window);
                 if self.retired_remote.len() > 128
                     && let Some(oldest) = self.retired_remote.keys().next().copied()
                 {
@@ -810,25 +948,63 @@ impl<A: WindowBackend> HostBridge<A> {
                 self.expire_controls(Instant::now());
                 Ok(OwnerResponse::Acknowledged)
             }
-            OwnerOperation::ApplyResult { operation_id, window, token, generation, result } => {
-                let binding = self.remote.get(&window).ok_or_else(|| failure(FailureCode::Missing, "window retired"))?;
-                let pending = self.pending_controls.get(&operation_id).ok_or_else(|| failure(FailureCode::Missing, "window action expired"))?;
-                if binding.lease_id != lease.id || binding.owner != lease.recipient || binding.epoch != lease.epoch
-                    || binding.token != token || binding.generation != generation || pending.window != window
-                    || pending.owner_lease != lease.id || pending.operation_id != operation_id
+            OwnerOperation::ApplyResult {
+                operation_id,
+                window,
+                token,
+                generation,
+                result,
+            } => {
+                let binding = self
+                    .remote
+                    .get(&window)
+                    .ok_or_else(|| failure(FailureCode::Missing, "window retired"))?;
+                let pending = self
+                    .pending_controls
+                    .get(&operation_id)
+                    .ok_or_else(|| failure(FailureCode::Missing, "window action expired"))?;
+                if binding.lease_id != lease.id
+                    || binding.owner != lease.recipient
+                    || binding.epoch != lease.epoch
+                    || binding.token != token
+                    || binding.generation != generation
+                    || pending.window != window
+                    || pending.owner_lease != lease.id
+                    || pending.operation_id != operation_id
                 {
                     return Err(failure(FailureCode::Denied, "stale window action receipt"));
                 }
-                let pending = self.pending_controls.remove(&operation_id).ok_or_else(|| failure(FailureCode::Missing, "window action expired"))?;
+                let pending = self
+                    .pending_controls
+                    .remove(&operation_id)
+                    .ok_or_else(|| failure(FailureCode::Missing, "window action expired"))?;
                 let response = match result {
-                    Reply::Ok { version, mut response } if version == PROTOCOL_VERSION => {
+                    Reply::Ok {
+                        version,
+                        mut response,
+                    } if version == PROTOCOL_VERSION => {
                         sanitize_observation(&mut response, binding.identity_metadata_consent);
-                        match self.host.refresh_remote_window(lease.recipient, window, response) {
-                            Ok(info) => Ok(ClientResponse::WindowControlled { acknowledgement: WindowAcknowledgement { window, action: pending.control.action(), observed: info } }),
-                            Err(_) => Err(failure(FailureCode::Uncertain, "window action outcome unconfirmed; refresh the owner observation")),
+                        match self
+                            .host
+                            .refresh_remote_window(lease.recipient, window, response)
+                        {
+                            Ok(info) => Ok(ClientResponse::WindowControlled {
+                                acknowledgement: WindowAcknowledgement {
+                                    window,
+                                    action: pending.control.action(),
+                                    observed: info,
+                                },
+                            }),
+                            Err(_) => Err(failure(
+                                FailureCode::Uncertain,
+                                "window action outcome unconfirmed; refresh the owner observation",
+                            )),
                         }
                     }
-                    _ => Err(failure(FailureCode::Uncertain, "window action outcome unconfirmed; refresh the owner observation")),
+                    _ => Err(failure(
+                        FailureCode::Uncertain,
+                        "window action outcome unconfirmed; refresh the owner observation",
+                    )),
                 };
                 self.complete_control(pending, response);
                 Ok(OwnerResponse::Acknowledged)
@@ -836,7 +1012,11 @@ impl<A: WindowBackend> HostBridge<A> {
         }
     }
 
-    fn complete_control(&mut self, pending: PendingControl, result: Result<ClientResponse, Failure>) {
+    fn complete_control(
+        &mut self,
+        pending: PendingControl,
+        result: Result<ClientResponse, Failure>,
+    ) {
         if result.is_err() {
             self.uncertain_controls = self.uncertain_controls.saturating_add(1);
             let _ = self.host.mark_remote_window_stale(pending.window);
@@ -845,7 +1025,13 @@ impl<A: WindowBackend> HostBridge<A> {
         pending.admission.state.store(COMPLETED, Ordering::Release);
         if let Some(client) = self.clients.get(&pending.consumer_lease)
             && client.lease.live(&self.shared, Instant::now())
-            && client.output.try_send(ServerMessage::Response { request_id: pending.request_id, reply: result.into() }).is_ok()
+            && client
+                .output
+                .try_send(ServerMessage::Response {
+                    request_id: pending.request_id,
+                    reply: result.into(),
+                })
+                .is_ok()
         {
             return;
         }
@@ -853,21 +1039,47 @@ impl<A: WindowBackend> HostBridge<A> {
     }
 
     fn expire_controls(&mut self, now: Instant) {
-        let expired: Vec<_> = self.pending_controls.iter().filter_map(|(id, pending)| {
-            let owner_live = self.clients.get(&pending.owner_lease).is_some_and(|client| client.lease.live(&self.shared, now));
-            let consumer_live = self.clients.get(&pending.consumer_lease).is_some_and(|client| client.lease.live(&self.shared, now));
-            (now >= pending.deadline || !owner_live || !consumer_live || !self.remote.contains_key(&pending.window)).then_some(*id)
-        }).collect();
+        let expired: Vec<_> = self
+            .pending_controls
+            .iter()
+            .filter_map(|(id, pending)| {
+                let owner_live = self
+                    .clients
+                    .get(&pending.owner_lease)
+                    .is_some_and(|client| client.lease.live(&self.shared, now));
+                let consumer_live = self
+                    .clients
+                    .get(&pending.consumer_lease)
+                    .is_some_and(|client| client.lease.live(&self.shared, now));
+                (now >= pending.deadline
+                    || !owner_live
+                    || !consumer_live
+                    || !self.remote.contains_key(&pending.window))
+                .then_some(*id)
+            })
+            .collect();
         for id in expired {
             if let Some(pending) = self.pending_controls.remove(&id) {
-                self.complete_control(pending, Err(failure(FailureCode::Uncertain, "window action outcome unconfirmed; refresh the owner observation")));
+                self.complete_control(
+                    pending,
+                    Err(failure(
+                        FailureCode::Uncertain,
+                        "window action outcome unconfirmed; refresh the owner observation",
+                    )),
+                );
             }
         }
     }
 
     fn retire_remote_for_lease(&mut self, lease_id: u64) {
         self.retired_remote.retain(|(id, _, _), _| *id != lease_id);
-        let windows: Vec<_> = self.remote.iter().filter_map(|(id, binding)| (binding.lease_id == lease_id).then_some((*id, binding.owner))).collect();
+        let windows: Vec<_> = self
+            .remote
+            .iter()
+            .filter_map(|(id, binding)| {
+                (binding.lease_id == lease_id).then_some((*id, binding.owner))
+            })
+            .collect();
         for (window, owner) in windows {
             let _ = self.host.retire_remote_window(owner, window);
             self.remote.remove(&window);
@@ -885,7 +1097,9 @@ impl<A: WindowBackend> HostBridge<A> {
         self.mark_all_clean();
         while let Ok(request) = self.requests.try_recv() {
             match request {
-                UiRequest::Command { admission, .. } | UiRequest::Owner { admission, .. } => { admission.cancel_queued(); }
+                UiRequest::Command { admission, .. } | UiRequest::Owner { admission, .. } => {
+                    admission.cancel_queued();
+                }
                 UiRequest::Connect { .. } => {}
             }
         }

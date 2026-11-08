@@ -6,7 +6,9 @@ use std::collections::BTreeSet;
 fn remote_window_publication_and_exact_delegation_are_epoch_scoped() {
     let mut host = Host::new(71, screens()).unwrap();
     let publisher = host.register_recipient("native publisher").unwrap();
-    let browser = host.register_recipient("separate browser receiver").unwrap();
+    let browser = host
+        .register_recipient("separate browser receiver")
+        .unwrap();
     let window_only = Grant {
         users: UserScope::Only(Default::default()),
         pointer_events: false,
@@ -53,11 +55,21 @@ fn remote_window_publication_and_exact_delegation_are_epoch_scoped() {
     let window = host.register_remote_window(publisher, observed).unwrap();
     let reference = RemoteWindowRef { epoch: 71, window };
     assert_eq!(
-        host.dispatch(browser, request(ClientCommand::RemoteWindowQuery { reference })),
+        host.dispatch(
+            browser,
+            request(ClientCommand::RemoteWindowQuery { reference })
+        ),
         Err(Error::Denied)
     );
-    host.delegate_window(window, browser, WindowAccess { observe: true, control: false })
-        .unwrap();
+    host.delegate_window(
+        window,
+        browser,
+        WindowAccess {
+            observe: true,
+            control: false,
+        },
+    )
+    .unwrap();
     assert!(matches!(
         host.dispatch(browser, request(ClientCommand::RemoteWindowQuery { reference })),
         Ok(ClientResponse::Window { window: info }) if info.id == window
@@ -70,8 +82,15 @@ fn remote_window_publication_and_exact_delegation_are_epoch_scoped() {
         host.authorize_remote_window_control(browser, window, &WindowControl::Hide),
         Err(Error::Denied)
     );
-    host.delegate_window(window, browser, WindowAccess { observe: true, control: true })
-        .unwrap();
+    host.delegate_window(
+        window,
+        browser,
+        WindowAccess {
+            observe: true,
+            control: true,
+        },
+    )
+    .unwrap();
     assert_eq!(
         host.authorize_remote_window_control(browser, window, &WindowControl::Hide),
         Ok(publisher)
@@ -97,9 +116,13 @@ fn remote_window_publication_and_exact_delegation_are_epoch_scoped() {
         ),
         Err(Error::StaleRevision)
     );
-    host.delegate_window(window, browser, WindowAccess::default()).unwrap();
+    host.delegate_window(window, browser, WindowAccess::default())
+        .unwrap();
     assert_eq!(
-        host.dispatch(browser, request(ClientCommand::RemoteWindowQuery { reference })),
+        host.dispatch(
+            browser,
+            request(ClientCommand::RemoteWindowQuery { reference })
+        ),
         Err(Error::Denied)
     );
 }

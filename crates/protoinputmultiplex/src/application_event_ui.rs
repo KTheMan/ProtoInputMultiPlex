@@ -465,8 +465,16 @@ pub(crate) fn show(
         let label = format!(
             "Native window {:?}{}{}",
             window.id,
-            window.metadata.title.as_deref().map_or(String::new(), |title| format!(" · {title}")),
-            if window.observation.stale { " · stale" } else { "" }
+            window
+                .metadata
+                .title
+                .as_deref()
+                .map_or(String::new(), |title| format!(" · {title}")),
+            if window.observation.stale {
+                " · stale"
+            } else {
+                ""
+            }
         );
         Text::new(label).caption().wrap().show(ui);
         if button(
@@ -492,7 +500,9 @@ pub(crate) fn show(
     }
     if let Some(window) = controller.draft.selected_window {
         Text::new(format!("Selected native window: {window:?}"))
-            .caption().wrap().show(ui);
+            .caption()
+            .wrap()
+            .show(ui);
         if button(
             ui,
             "Copy selected native window reference",

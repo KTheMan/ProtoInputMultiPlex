@@ -308,39 +308,84 @@ pub const NATIVE_FUNCTIONS: &[Function] = &[
         name: "pim_app_native_window_register",
         result: I32,
         parameters: &[
-            Parameter { name: "client", kind: U64 },
-            Parameter { name: "own_hwnd", kind: Size },
-            Parameter { name: "identity_metadata_consent", kind: U32 },
-            Parameter { name: "token_out", kind: MutU64 },
+            Parameter {
+                name: "client",
+                kind: U64,
+            },
+            Parameter {
+                name: "own_hwnd",
+                kind: Size,
+            },
+            Parameter {
+                name: "identity_metadata_consent",
+                kind: U32,
+            },
+            Parameter {
+                name: "token_out",
+                kind: MutU64,
+            },
         ],
     },
     Function {
         name: "pim_app_native_window_refresh",
         result: I32,
         parameters: &[
-            Parameter { name: "client", kind: U64 },
-            Parameter { name: "token", kind: U64 },
-            Parameter { name: "identity_metadata_consent", kind: U32 },
-            Parameter { name: "request_id_out", kind: MutU64 },
+            Parameter {
+                name: "client",
+                kind: U64,
+            },
+            Parameter {
+                name: "token",
+                kind: U64,
+            },
+            Parameter {
+                name: "identity_metadata_consent",
+                kind: U32,
+            },
+            Parameter {
+                name: "request_id_out",
+                kind: MutU64,
+            },
         ],
     },
     Function {
         name: "pim_app_native_window_notify",
         result: I32,
         parameters: &[
-            Parameter { name: "client", kind: U64 },
-            Parameter { name: "token", kind: U64 },
-            Parameter { name: "identity_metadata_consent", kind: U32 },
-            Parameter { name: "request_id_out", kind: MutU64 },
+            Parameter {
+                name: "client",
+                kind: U64,
+            },
+            Parameter {
+                name: "token",
+                kind: U64,
+            },
+            Parameter {
+                name: "identity_metadata_consent",
+                kind: U32,
+            },
+            Parameter {
+                name: "request_id_out",
+                kind: MutU64,
+            },
         ],
     },
     Function {
         name: "pim_app_native_window_retire",
         result: I32,
         parameters: &[
-            Parameter { name: "client", kind: U64 },
-            Parameter { name: "token", kind: U64 },
-            Parameter { name: "request_id_out", kind: MutU64 },
+            Parameter {
+                name: "client",
+                kind: U64,
+            },
+            Parameter {
+                name: "token",
+                kind: U64,
+            },
+            Parameter {
+                name: "request_id_out",
+                kind: MutU64,
+            },
         ],
     },
     Function {

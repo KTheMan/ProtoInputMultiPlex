@@ -15,9 +15,9 @@ fn main() {
 #[cfg(windows)]
 mod fixture {
     use mux_application_sdk::{
-        ClientCommand, ClientRequest, ClientResponse, Event, FailureCode, Input, KeyCode, PROTOCOL_VERSION,
-        OwnerResponse, PointerState, Poll, Reply, ServerMessage, SourceId, Transition, UserId,
-        UserView,
+        ClientCommand, ClientRequest, ClientResponse, Event, FailureCode, Input, KeyCode,
+        OwnerResponse, PROTOCOL_VERSION, PointerState, Poll, Reply, ServerMessage, SourceId,
+        Transition, UserId, UserView,
     };
     use serde::{Deserialize, Serialize};
     use serde_json::{Value, json};
@@ -148,8 +148,16 @@ mod fixture {
             // Data is drained immediately after DispatchMessage on this same UI thread.
             return 0;
         }
-        if WINDOW_TOKEN.get() != 0 && matches!(message,
-            WM_WINDOWPOSCHANGED | WM_SHOWWINDOW | WM_SETTEXT | WM_STYLECHANGED | WM_ENABLE | WM_DPICHANGED)
+        if WINDOW_TOKEN.get() != 0
+            && matches!(
+                message,
+                WM_WINDOWPOSCHANGED
+                    | WM_SHOWWINDOW
+                    | WM_SETTEXT
+                    | WM_STYLECHANGED
+                    | WM_ENABLE
+                    | WM_DPICHANGED
+            )
         {
             // Win32 callbacks can reenter during an SDK action. Defer observation
             // until the next owner-loop turn, outside the SDK TLS borrow.
@@ -249,10 +257,7 @@ mod fixture {
         };
         let observation_seconds = if args.len() == 12 || args.len() == 11 {
             let seconds = if window_route { &args[10] } else { &args[11] };
-            match seconds
-                .to_str()
-                .and_then(|value| value.parse::<u64>().ok())
-            {
+            match seconds.to_str().and_then(|value| value.parse::<u64>().ok()) {
                 Some(seconds) if (20..=60).contains(&seconds) => seconds,
                 _ => std::process::exit(10),
             }
@@ -546,135 +551,136 @@ mod fixture {
         if window_route {
             exercise_owned_window_route(api, token, completion, hwnd, observation_seconds, report)?;
         } else {
-        let response = round_trip(
-            api,
-            token,
-            completion,
-            ClientCommand::Subscribe { capacity: 256 },
-            report,
-        )?;
-        let ClientResponse::Subscribed { snapshot, .. } = response else {
-            return Err("Subscribe returned unexpected response".into());
-        };
-        ensure(
-            snapshot.users.len() == 2,
-            "require exactly two GUI-approved users",
-        )?;
-        let baseline = identities(&snapshot.users);
-        ensure(
-            baseline[0].id != baseline[1].id && baseline[0].source != baseline[1].source,
-            "duplicate GUI identity/source",
-        )?;
-        report.record("gui_snapshot", json!({"epoch": snapshot.epoch, "sequence": snapshot.through_sequence,
+            let response = round_trip(
+                api,
+                token,
+                completion,
+                ClientCommand::Subscribe { capacity: 256 },
+                report,
+            )?;
+            let ClientResponse::Subscribed { snapshot, .. } = response else {
+                return Err("Subscribe returned unexpected response".into());
+            };
+            ensure(
+                snapshot.users.len() == 2,
+                "require exactly two GUI-approved users",
+            )?;
+            let baseline = identities(&snapshot.users);
+            ensure(
+                baseline[0].id != baseline[1].id && baseline[0].source != baseline[1].source,
+                "duplicate GUI identity/source",
+            )?;
+            report.record("gui_snapshot", json!({"epoch": snapshot.epoch, "sequence": snapshot.through_sequence,
             "users": evidence(&snapshot.users), "provenance": "authenticated descriptor-selected subscription; GUI provenance requires paired harness",
             "paired_wasm_verified": false}))?;
-        let model = query(api, token, true)?;
-        ensure(
-            model["status"]["pointer_enabled"] == false && model["status"]["key_enabled"] == false,
-            "input must default off",
-        )?;
-        ensure(
-            model["status"]["live"] == true
-                && model["status"]["terminal"].is_null()
-                && model["status"]["remote_cleanup_unconfirmed"] == false,
-            "expected live native model",
-        )?;
-        let user = snapshot.users[0].id;
-        let probe_key = key.unwrap_or(KeyCode(4));
-        request(
-            api,
-            token,
-            ClientCommand::Input {
-                user,
-                input: Input::Key {
-                    key: probe_key,
-                    transition: Transition::Down,
-                },
-            },
-            INVALID,
-        )?;
-        ensure(
-            query(api, token, false)?["status"]["pending_requests"] == 0,
-            "default-off probe was queued",
-        )?;
-        status(
-            unsafe { (api.enable)(token, 2, 0) },
-            INVALID,
-            "invalid enable flag",
-        )?;
-        status(
-            unsafe { (api.enable)(token, 0, 0) },
-            OK,
-            "explicit disabled flags",
-        )?;
-        report.record(
-            "default_off_checked",
-            json!({"locally_rejected": true,
-            "virtual_input_requested": key.is_some(), "physical_input": false}),
-        )?;
-        if let Some(key) = key {
-            // Explicit opt-in is independent of GUI control/delegation/input consent.
-            status(
-                unsafe { (api.enable)(token, 0, 1) },
-                OK,
-                "explicit key enable",
+            let model = query(api, token, true)?;
+            ensure(
+                model["status"]["pointer_enabled"] == false
+                    && model["status"]["key_enabled"] == false,
+                "input must default off",
             )?;
-            for transition in [Transition::Down, Transition::Up] {
-                let reply = round_trip(
-                    api,
-                    token,
-                    completion,
-                    ClientCommand::Input {
-                        user,
-                        input: Input::Key { key, transition },
+            ensure(
+                model["status"]["live"] == true
+                    && model["status"]["terminal"].is_null()
+                    && model["status"]["remote_cleanup_unconfirmed"] == false,
+                "expected live native model",
+            )?;
+            let user = snapshot.users[0].id;
+            let probe_key = key.unwrap_or(KeyCode(4));
+            request(
+                api,
+                token,
+                ClientCommand::Input {
+                    user,
+                    input: Input::Key {
+                        key: probe_key,
+                        transition: Transition::Down,
                     },
-                    report,
+                },
+                INVALID,
+            )?;
+            ensure(
+                query(api, token, false)?["status"]["pending_requests"] == 0,
+                "default-off probe was queued",
+            )?;
+            status(
+                unsafe { (api.enable)(token, 2, 0) },
+                INVALID,
+                "invalid enable flag",
+            )?;
+            status(
+                unsafe { (api.enable)(token, 0, 0) },
+                OK,
+                "explicit disabled flags",
+            )?;
+            report.record(
+                "default_off_checked",
+                json!({"locally_rejected": true,
+            "virtual_input_requested": key.is_some(), "physical_input": false}),
+            )?;
+            if let Some(key) = key {
+                // Explicit opt-in is independent of GUI control/delegation/input consent.
+                status(
+                    unsafe { (api.enable)(token, 0, 1) },
+                    OK,
+                    "explicit key enable",
                 )?;
-                let ClientResponse::InputAccepted { sequences } = reply else {
-                    return Err("virtual input returned unexpected response".into());
-                };
-                ensure(
-                    !sequences.is_empty(),
-                    "input acknowledgement lacks sequence",
-                )?;
-                report.record(
-                    "virtual_key_acknowledged",
-                    json!({"user": user, "key": key,
+                for transition in [Transition::Down, Transition::Up] {
+                    let reply = round_trip(
+                        api,
+                        token,
+                        completion,
+                        ClientCommand::Input {
+                            user,
+                            input: Input::Key { key, transition },
+                        },
+                        report,
+                    )?;
+                    let ClientResponse::InputAccepted { sequences } = reply else {
+                        return Err("virtual input returned unexpected response".into());
+                    };
+                    ensure(
+                        !sequences.is_empty(),
+                        "input acknowledgement lacks sequence",
+                    )?;
+                    report.record(
+                        "virtual_key_acknowledged",
+                        json!({"user": user, "key": key,
                     "transition": transition, "sequences": sequences,
                     "acknowledged_by_remote_response": true}),
+                    )?;
+                }
+                // Disabling an enabled input family intentionally retires the production
+                // connection. Preserve keys enabled throughout overlap; WM_NCDESTROY's
+                // final Stop fences the producer and begins remote cleanup instead.
+            }
+            // Default 20-second overlap; the explicitly opted-in hook fixture may use up to 60 seconds.
+            let observation_end = Instant::now() + Duration::from_secs(observation_seconds);
+            while Instant::now() < observation_end {
+                let until = (Instant::now() + Duration::from_millis(250)).min(observation_end);
+                pump_wait(completion, until)?;
+                drain_events(api, token, report)?;
+                let model = query(api, token, false)?;
+                ensure(
+                    model["status"]["live"] == true && model["status"]["terminal"].is_null(),
+                    "native consumer ended during overlap",
+                )?;
+                let current: Vec<UserView> = serde_json::from_value(model["users"].clone())
+                    .map_err(|_| "invalid model users")?;
+                ensure(
+                    identities(&current) == baseline,
+                    "GUI user/source identities changed",
                 )?;
             }
-            // Disabling an enabled input family intentionally retires the production
-            // connection. Preserve keys enabled throughout overlap; WM_NCDESTROY's
-            // final Stop fences the producer and begins remote cleanup instead.
-        }
-        // Default 20-second overlap; the explicitly opted-in hook fixture may use up to 60 seconds.
-        let observation_end = Instant::now() + Duration::from_secs(observation_seconds);
-        while Instant::now() < observation_end {
-            let until = (Instant::now() + Duration::from_millis(250)).min(observation_end);
-            pump_wait(completion, until)?;
-            drain_events(api, token, report)?;
-            let model = query(api, token, false)?;
-            ensure(
-                model["status"]["live"] == true && model["status"]["terminal"].is_null(),
-                "native consumer ended during overlap",
-            )?;
-            let current: Vec<UserView> = serde_json::from_value(model["users"].clone())
-                .map_err(|_| "invalid model users")?;
-            ensure(
-                identities(&current) == baseline,
-                "GUI user/source identities changed",
-            )?;
-        }
-        let final_model = query(api, token, false)?;
-        let final_users: Vec<UserView> = serde_json::from_value(final_model["users"].clone())
-            .map_err(|_| "invalid final users")?;
-        report.record(
-            "overlap_snapshot",
-            json!({"users": evidence(&final_users),
+            let final_model = query(api, token, false)?;
+            let final_users: Vec<UserView> = serde_json::from_value(final_model["users"].clone())
+                .map_err(|_| "invalid final users")?;
+            report.record(
+                "overlap_snapshot",
+                json!({"users": evidence(&final_users),
             "sequence": final_model["sequence"].as_u64(),
             "paired_wasm_verified": false, "remote_cleanup_confirmed": false}),
-        )?;
+            )?;
         }
         status(unsafe { (api.query)(token) }, OK, "query for discard")?;
         status(unsafe { (api.discard)(token) }, OK, "response discard")?;
@@ -882,7 +888,10 @@ mod fixture {
     ) -> Check<OwnerResponse> {
         let deadline = Instant::now() + BOUND;
         loop {
-            ensure(Instant::now() < deadline, "owner report deadline exceeded; no replay")?;
+            ensure(
+                Instant::now() < deadline,
+                "owner report deadline exceeded; no replay",
+            )?;
             if let Some(message) = next_message(api, client)? {
                 match message {
                     ServerMessage::OwnerResponse { request_id, reply } => {
@@ -890,7 +899,9 @@ mod fixture {
                             ensure(request_id == expected, "owner response ID mismatch")?;
                         }
                         return match reply {
-                            Reply::Ok { version, response } if version == PROTOCOL_VERSION => Ok(response),
+                            Reply::Ok { version, response } if version == PROTOCOL_VERSION => {
+                                Ok(response)
+                            }
                             Reply::Error { .. } => Err("GUI rejected native owner report".into()),
                             _ => Err("owner response version mismatch".into()),
                         };
@@ -919,7 +930,9 @@ mod fixture {
             "native publisher lacks GUI window approval",
         )?;
         ensure(
-            ready["users"].as_array().is_some_and(|users| users.is_empty()),
+            ready["users"]
+                .as_array()
+                .is_some_and(|users| users.is_empty()),
             "window-only route unexpectedly has virtual users",
         )?;
         let mut local = 0;
@@ -935,13 +948,22 @@ mod fixture {
         else {
             return Err("native registration response kind mismatch".into());
         };
-        report.record("native_window_published", json!({
-            "identity_metadata_consent": false,
-            "source": "native_client_reported", "users_required": false,
-        }))?;
+        report.record(
+            "native_window_published",
+            json!({
+                "identity_metadata_consent": false,
+                "source": "native_client_reported", "users_required": false,
+            }),
+        )?;
         let title: Vec<u16> = "Owned SDK fixture window\0".encode_utf16().collect();
-        ensure(unsafe { SetWindowTextW(hwnd, title.as_ptr()) } != 0, "SetWindowTextW failed")?;
-        ensure(WINDOW_CHANGED.replace(false), "owner WndProc missed title change")?;
+        ensure(
+            unsafe { SetWindowTextW(hwnd, title.as_ptr()) } != 0,
+            "SetWindowTextW failed",
+        )?;
+        ensure(
+            WINDOW_CHANGED.replace(false),
+            "owner WndProc missed title change",
+        )?;
         let mut notify_id = 0;
         status(
             unsafe { (api.window_notify)(client, local, 0, &mut notify_id) },
@@ -954,17 +976,30 @@ mod fixture {
         else {
             return Err("owner change response kind mismatch".into());
         };
-        ensure(changed.id == window && changed.metadata.title.as_deref() == Some("Owned SDK fixture window"),
-            "GUI did not acknowledge the observed title")?;
+        ensure(
+            changed.id == window
+                && changed.metadata.title.as_deref() == Some("Owned SDK fixture window"),
+            "GUI did not acknowledge the observed title",
+        )?;
         report.record("native_window_changed", json!({
             "actual_title_change": true,
             "metadata_identity_absent": changed.metadata.process_id.is_none() && changed.metadata.ui_thread_id.is_none(),
         }))?;
-        ensure(unsafe { SetWindowPos(hwnd, 0, 150, 120, 400, 300, SWP_NOZORDER | SWP_NOACTIVATE) } != 0,
-            "SetWindowPos failed")?;
-        ensure(WINDOW_CHANGED.replace(false), "owner WndProc missed external window move")?;
+        ensure(
+            unsafe { SetWindowPos(hwnd, 0, 150, 120, 400, 300, SWP_NOZORDER | SWP_NOACTIVATE) }
+                != 0,
+            "SetWindowPos failed",
+        )?;
+        ensure(
+            WINDOW_CHANGED.replace(false),
+            "owner WndProc missed external window move",
+        )?;
         let mut move_id = 0;
-        status(unsafe { (api.window_notify)(client, local, 0, &mut move_id) }, OK, "owner move notify")?;
+        status(
+            unsafe { (api.window_notify)(client, local, 0, &mut move_id) },
+            OK,
+            "owner move notify",
+        )?;
         ensure(move_id != 0, "owner move observation was suppressed")?;
         let OwnerResponse::Window { window: moved } =
             await_owner_response(api, client, completion, Some(move_id))?
@@ -972,14 +1007,28 @@ mod fixture {
             return Err("owner move response kind mismatch".into());
         };
         let mut os_rect = unsafe { std::mem::zeroed() };
-        ensure(unsafe { GetWindowRect(hwnd, &mut os_rect) } != 0, "owner OS read after move failed")?;
+        ensure(
+            unsafe { GetWindowRect(hwnd, &mut os_rect) } != 0,
+            "owner OS read after move failed",
+        )?;
         let os_bounds = [os_rect.left, os_rect.top, os_rect.right, os_rect.bottom];
-        ensure(moved.id == window && [moved.bounds.left, moved.bounds.top, moved.bounds.right, moved.bounds.bottom] == os_bounds,
-            "GUI owner observation disagrees with OS move")?;
-        report.record("native_window_moved", json!({
-            "actual_os_move": true,
-            "os_bounds": os_bounds,
-        }))?;
+        ensure(
+            moved.id == window
+                && [
+                    moved.bounds.left,
+                    moved.bounds.top,
+                    moved.bounds.right,
+                    moved.bounds.bottom,
+                ] == os_bounds,
+            "GUI owner observation disagrees with OS move",
+        )?;
+        report.record(
+            "native_window_moved",
+            json!({
+                "actual_os_move": true,
+                "os_bounds": os_bounds,
+            }),
+        )?;
         let mut refresh_id = 0;
         status(
             unsafe { (api.window_refresh)(client, local, 0, &mut refresh_id) },
@@ -1000,45 +1049,87 @@ mod fixture {
         let mut timeout_pause = false;
         let mut last_refresh = Instant::now();
         while Instant::now() < end {
-            pump_wait(completion, (Instant::now() + Duration::from_millis(250)).min(end))?;
+            pump_wait(
+                completion,
+                (Instant::now() + Duration::from_millis(250)).min(end),
+            )?;
             for _ in 0..64 {
                 match next_message(api, client)? {
                     None => break,
-                    Some(ServerMessage::WindowApply { window: selected, control, .. }) => {
+                    Some(ServerMessage::WindowApply {
+                        window: selected,
+                        control,
+                        ..
+                    }) => {
                         ensure(selected == window, "action targeted another window")?;
                         let mut rect = unsafe { std::mem::zeroed() };
-                        ensure(unsafe { GetWindowRect(hwnd, &mut rect) } != 0, "owner OS read after action failed")?;
+                        ensure(
+                            unsafe { GetWindowRect(hwnd, &mut rect) } != 0,
+                            "owner OS read after action failed",
+                        )?;
                         applies += 1;
-                        report.record("native_window_action_executed", json!({
-                            "control": control,
-                            "os_bounds": [rect.left, rect.top, rect.right, rect.bottom],
-                            "os_visible": unsafe { IsWindowVisible(hwnd) } != 0,
-                        }))?;
+                        report.record(
+                            "native_window_action_executed",
+                            json!({
+                                "control": control,
+                                "os_bounds": [rect.left, rect.top, rect.right, rect.bottom],
+                                "os_visible": unsafe { IsWindowVisible(hwnd) } != 0,
+                            }),
+                        )?;
                     }
-                    Some(ServerMessage::OwnerResponse { reply: Reply::Ok { response: OwnerResponse::Acknowledged, .. }, .. }) => {
+                    Some(ServerMessage::OwnerResponse {
+                        reply:
+                            Reply::Ok {
+                                response: OwnerResponse::Acknowledged,
+                                ..
+                            },
+                        ..
+                    }) => {
                         receipts += 1;
                     }
-                    Some(ServerMessage::OwnerResponse { reply: Reply::Error { error, .. }, .. })
-                        if timeout_pause && error.code == FailureCode::Missing => {
-                            late_rejections += 1;
+                    Some(ServerMessage::OwnerResponse {
+                        reply: Reply::Error { error, .. },
+                        ..
+                    }) if timeout_pause && error.code == FailureCode::Missing => {
+                        late_rejections += 1;
                     }
-                    Some(ServerMessage::OwnerResponse { reply: Reply::Ok { response: OwnerResponse::Window { .. }, .. }, .. }) => (),
-                    Some(ServerMessage::Disconnected { .. }) => return Err("GUI disconnected during window route".into()),
+                    Some(ServerMessage::OwnerResponse {
+                        reply:
+                            Reply::Ok {
+                                response: OwnerResponse::Window { .. },
+                                ..
+                            },
+                        ..
+                    }) => (),
+                    Some(ServerMessage::Disconnected { .. }) => {
+                        return Err("GUI disconnected during window route".into());
+                    }
                     _ => return Err("unexpected shared window frame".into()),
                 }
             }
             if WINDOW_CHANGED.replace(false) {
                 let mut id = 0;
-                status(unsafe { (api.window_notify)(client, local, 0, &mut id) }, OK, "owner state notify")?;
+                status(
+                    unsafe { (api.window_notify)(client, local, 0, &mut id) },
+                    OK,
+                    "owner state notify",
+                )?;
             }
             if last_refresh.elapsed() >= Duration::from_secs(1) {
                 let mut id = 0;
-                status(unsafe { (api.window_refresh)(client, local, 0, &mut id) }, OK, "owner observation refresh")?;
+                status(
+                    unsafe { (api.window_refresh)(client, local, 0, &mut id) },
+                    OK,
+                    "owner observation refresh",
+                )?;
                 ensure(id != 0, "missing periodic owner observation")?;
                 last_refresh = Instant::now();
             }
             if applies >= 3 && receipts >= 3 && !timeout_pause {
-                report.record("native_window_timeout_ready", json!({"first_three_actions_executed": true}))?;
+                report.record(
+                    "native_window_timeout_ready",
+                    json!({"first_three_actions_executed": true}),
+                )?;
                 // The owner message loop deliberately pauses after three real controls.
                 // A fourth request can time out at the GUI while its queued owner
                 // dispatch may still run later. The consumer must never replay it.
@@ -1049,27 +1140,44 @@ mod fixture {
                 break;
             }
         }
-        ensure(applies >= 4 && receipts >= 3 && late_rejections >= 1 && timeout_pause,
-            "distinct approved actions and late owner dispatch were not observed")?;
-        report.record("native_window_timeout_late_action", json!({
-            "fourth_action_executed_after_owner_pause": true,
-            "actions": applies,
-            "late_receipt_rejected": late_rejections == 1,
-        }))?;
+        ensure(
+            applies >= 4 && receipts >= 3 && late_rejections >= 1 && timeout_pause,
+            "distinct approved actions and late owner dispatch were not observed",
+        )?;
+        report.record(
+            "native_window_timeout_late_action",
+            json!({
+                "fourth_action_executed_after_owner_pause": true,
+                "actions": applies,
+                "late_receipt_rejected": late_rejections == 1,
+            }),
+        )?;
         // Keep the owned window live briefly so the GUI can revoke one exact
         // observer and the browser can demonstrate its post-revoke fence.
         thread::sleep(Duration::from_secs(5));
         let mut retire_id = 0;
-        status(unsafe { (api.window_retire)(client, local, &mut retire_id) }, OK, "owner window retire")?;
+        status(
+            unsafe { (api.window_retire)(client, local, &mut retire_id) },
+            OK,
+            "owner window retire",
+        )?;
         WINDOW_TOKEN.set(0);
         ensure(retire_id != 0, "missing remote retire report")?;
-        ensure(matches!(await_owner_response(api, client, completion, Some(retire_id))?, OwnerResponse::Acknowledged),
-            "GUI did not acknowledge window retirement")?;
-        report.record("native_window_retired", json!({
-            "actions": applies, "owner_receipts": receipts,
-            "late_rejections": late_rejections,
-            "retired_before_hwnd_destroy": true,
-        }))?;
+        ensure(
+            matches!(
+                await_owner_response(api, client, completion, Some(retire_id))?,
+                OwnerResponse::Acknowledged
+            ),
+            "GUI did not acknowledge window retirement",
+        )?;
+        report.record(
+            "native_window_retired",
+            json!({
+                "actions": applies, "owner_receipts": receipts,
+                "late_rejections": late_rejections,
+                "retired_before_hwnd_destroy": true,
+            }),
+        )?;
         Ok(())
     }
     fn query(api: Api, token: u64, short: bool) -> Check<Value> {

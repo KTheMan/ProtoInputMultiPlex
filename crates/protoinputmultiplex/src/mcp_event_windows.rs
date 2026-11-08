@@ -4,9 +4,9 @@ use anyhow::{Context, Result, bail, ensure};
 use futures_util::{SinkExt, StreamExt};
 use mux_application_sdk::{
     ClientCommand, ClientMessage, ClientRequest, ClientResponse, ClientState, EventHello,
-    EventReady, FailureCode, FoldOutcome, RemoteWindowRef, Reply, ServerMessage, WindowControl,
-    WindowId, WindowInfo, WindowObservationSource,
-    UserScope, MAX_REQUEST_BYTES, MAX_RESPONSE_BYTES, PROTOCOL_VERSION,
+    EventReady, FailureCode, FoldOutcome, MAX_REQUEST_BYTES, MAX_RESPONSE_BYTES, PROTOCOL_VERSION,
+    RemoteWindowRef, Reply, ServerMessage, UserScope, WindowControl, WindowId, WindowInfo,
+    WindowObservationSource,
 };
 use rmcp::{
     ServerHandler, ServiceExt,
@@ -50,11 +50,20 @@ struct Descriptor {
 impl Descriptor {
     fn read(path: &PathBuf) -> Result<(Self, SocketAddr)> {
         let file = std::fs::File::open(path).context("open private event connection")?;
-        ensure!(file.metadata()?.len() <= 4096, "Event connection exceeds its size bound");
+        ensure!(
+            file.metadata()?.len() <= 4096,
+            "Event connection exceeds its size bound"
+        );
         let mut bytes = Vec::with_capacity(4096);
-        file.take(4097).read_to_end(&mut bytes).context("read private event connection")?;
-        ensure!(bytes.len() <= 4096, "Event connection exceeds its size bound");
-        let descriptor: Self = serde_json::from_slice(&bytes).context("invalid event connection")?;
+        file.take(4097)
+            .read_to_end(&mut bytes)
+            .context("read private event connection")?;
+        ensure!(
+            bytes.len() <= 4096,
+            "Event connection exceeds its size bound"
+        );
+        let descriptor: Self =
+            serde_json::from_slice(&bytes).context("invalid event connection")?;
         ensure!(
             descriptor.protoinputmultiplex_application_events == PROTOCOL_VERSION,
             "Event connection version mismatch"
@@ -65,15 +74,27 @@ impl Descriptor {
             .and_then(|value| value.strip_suffix(PATH))
             .context("Event connection must use the local event listener")?;
         let port: u16 = port_text.parse().context("invalid event listener port")?;
-        ensure!(port != 0 && port.to_string() == port_text, "invalid event listener port");
+        ensure!(
+            port != 0 && port.to_string() == port_text,
+            "invalid event listener port"
+        );
         ensure!(
             descriptor.credential.len() == 64
-                && descriptor.credential.bytes().all(|byte| byte.is_ascii_hexdigit()),
+                && descriptor
+                    .credential
+                    .bytes()
+                    .all(|byte| byte.is_ascii_hexdigit()),
             "invalid event connection credential"
         );
-        let origin: Uri = descriptor.exact_origin.parse().context("invalid event origin")?;
+        let origin: Uri = descriptor
+            .exact_origin
+            .parse()
+            .context("invalid event origin")?;
         let scheme = origin.scheme_str().context("missing event origin scheme")?;
-        let authority = origin.authority().context("missing event origin authority")?.as_str();
+        let authority = origin
+            .authority()
+            .context("missing event origin authority")?
+            .as_str();
         ensure!(
             matches!(scheme, "http" | "https")
                 && !authority.is_empty()
@@ -83,7 +104,10 @@ impl Descriptor {
         );
         HeaderValue::from_str(&descriptor.exact_origin).context("invalid event origin header")?;
         let now = SystemTime::now().duration_since(UNIX_EPOCH)?.as_millis();
-        ensure!(now < u128::from(descriptor.expires_unix_ms), "Event connection expired");
+        ensure!(
+            now < u128::from(descriptor.expires_unix_ms),
+            "Event connection expired"
+        );
         Ok((descriptor, SocketAddr::from((Ipv4Addr::LOCALHOST, port))))
     }
 }
@@ -102,9 +126,15 @@ struct Peer {
 
 fn validate_reported_window(window: &WindowInfo) -> Result<()> {
     ensure!(window.bounds.valid_region(), "Invalid native-window bounds");
-    window.metadata.validate().map_err(|error| anyhow::anyhow!("Invalid native-window {error}"))?;
+    window
+        .metadata
+        .validate()
+        .map_err(|error| anyhow::anyhow!("Invalid native-window {error}"))?;
     ensure!(
-        matches!(window.observation.source, WindowObservationSource::NativeClientReported),
+        matches!(
+            window.observation.source,
+            WindowObservationSource::NativeClientReported
+        ),
         "Window observation did not come from the native publisher"
     );
     Ok(())
@@ -137,12 +167,13 @@ impl Peer {
     async fn connect(path: &PathBuf) -> Result<Self> {
         let (mut descriptor, address) = Descriptor::read(path)?;
         timeout(Duration::from_secs(5), async move {
-            let stream = TcpStream::connect(address).await.context("connect to event listener")?;
+            let stream = TcpStream::connect(address)
+                .await
+                .context("connect to event listener")?;
             let mut request = descriptor.endpoint.as_str().into_client_request()?;
-            request.headers_mut().insert(
-                "Origin",
-                HeaderValue::from_str(&descriptor.exact_origin)?,
-            );
+            request
+                .headers_mut()
+                .insert("Origin", HeaderValue::from_str(&descriptor.exact_origin)?);
             let config = WebSocketConfig::default()
                 .max_message_size(Some(MAX_RESPONSE_BYTES))
                 .max_frame_size(Some(MAX_RESPONSE_BYTES));
@@ -162,7 +193,10 @@ impl Peer {
             let ServerMessage::Ready { ready } = Self::read_frame(&mut socket).await? else {
                 bail!("Event listener did not establish an approved receiver");
             };
-            ensure!(window_only_admission(&ready), "This receiver is not a window-only agent observer");
+            ensure!(
+                window_only_admission(&ready),
+                "This receiver is not a window-only agent observer"
+            );
             let mut peer = Self {
                 socket,
                 ready,
@@ -177,7 +211,10 @@ impl Peer {
             let ClientResponse::Subscribed {
                 subscription,
                 snapshot,
-            } = peer.command(ClientCommand::Subscribe { capacity: 128 }, false).await? else {
+            } = peer
+                .command(ClientCommand::Subscribe { capacity: 128 }, false)
+                .await?
+            else {
                 bail!("Window subscription was not acknowledged");
             };
             peer.state.install_snapshot(snapshot, peer.ready.epoch)?;
@@ -202,9 +239,19 @@ impl Peer {
         }
     }
 
-    async fn command(&mut self, command: ClientCommand, action_sent: bool) -> Result<ClientResponse> {
-        ensure!(!self.terminal, "Event connection ended; inspect status and reconnect through a fresh GUI approval");
-        self.next_request = self.next_request.checked_add(1).context("Request IDs exhausted")?;
+    async fn command(
+        &mut self,
+        command: ClientCommand,
+        action_sent: bool,
+    ) -> Result<ClientResponse> {
+        ensure!(
+            !self.terminal,
+            "Event connection ended; inspect status and reconnect through a fresh GUI approval"
+        );
+        self.next_request = self
+            .next_request
+            .checked_add(1)
+            .context("Request IDs exhausted")?;
         let request_id = self.next_request;
         let frame = serde_json::to_string(&ClientMessage {
             request_id,
@@ -213,7 +260,10 @@ impl Peer {
                 command,
             },
         })?;
-        ensure!(frame.len() <= MAX_REQUEST_BYTES, "Window request exceeds size bound");
+        ensure!(
+            frame.len() <= MAX_REQUEST_BYTES,
+            "Window request exceeds size bound"
+        );
         let mut rejected = false;
         let received = timeout(CALL_TIMEOUT, async {
             // This timeout covers the send as well as the receipt. If it fires,
@@ -286,12 +336,17 @@ impl Peer {
         if !self.terminal {
             // Snapshot is diagnostic. Only the current subscription or an
             // explicit Resubscribe can install authoritative tracked state.
-            let ClientResponse::Snapshot { snapshot } = self.command(ClientCommand::Snapshot, false).await? else {
+            let ClientResponse::Snapshot { snapshot } =
+                self.command(ClientCommand::Snapshot, false).await?
+            else {
                 self.fence_protocol();
                 bail!("Unexpected window snapshot reply");
             };
             let mut diagnostic = ClientState::default();
-            if diagnostic.install_snapshot(snapshot, self.ready.epoch).is_err() {
+            if diagnostic
+                .install_snapshot(snapshot, self.ready.epoch)
+                .is_err()
+            {
                 self.fence_protocol();
                 bail!("Invalid window snapshot");
             }
@@ -308,16 +363,34 @@ impl Peer {
     }
 
     async fn refresh_subscription(&mut self) -> Result<Value> {
-        ensure!(!self.terminal, "Event connection ended; inspect status and reconnect through a fresh GUI approval");
-        let subscription = self.subscription.context("Window subscription unavailable")?;
-        let ClientResponse::Subscribed { subscription: fresh, snapshot } = self
-            .command(ClientCommand::Resubscribe { subscription, capacity: 128 }, false)
+        ensure!(
+            !self.terminal,
+            "Event connection ended; inspect status and reconnect through a fresh GUI approval"
+        );
+        let subscription = self
+            .subscription
+            .context("Window subscription unavailable")?;
+        let ClientResponse::Subscribed {
+            subscription: fresh,
+            snapshot,
+        } = self
+            .command(
+                ClientCommand::Resubscribe {
+                    subscription,
+                    capacity: 128,
+                },
+                false,
+            )
             .await?
         else {
             self.fence_protocol();
             bail!("Unexpected refresh subscription reply");
         };
-        if self.state.install_snapshot(snapshot, self.ready.epoch).is_err() {
+        if self
+            .state
+            .install_snapshot(snapshot, self.ready.epoch)
+            .is_err()
+        {
             self.fence_protocol();
             bail!("Invalid refreshed window snapshot");
         }
@@ -367,8 +440,10 @@ impl WindowAgentServer {
         let result = async {
             let mut peer = self.peer.lock().await;
             ensure!(
-                !matches!(args.operation, WindowOperation::Inspect | WindowOperation::Refresh)
-                    || (args.window_id.is_none() && args.epoch.is_none()),
+                !matches!(
+                    args.operation,
+                    WindowOperation::Inspect | WindowOperation::Refresh
+                ) || (args.window_id.is_none() && args.epoch.is_none()),
                 "Inspect and Refresh accept no window reference"
             );
             ensure!(
@@ -384,11 +459,17 @@ impl WindowAgentServer {
             let id = args.window_id.context("Select one approved window ID")?;
             let window: WindowId = serde_json::from_value(json!(id))?;
             let epoch = args.epoch.context("Use the epoch returned by Inspect")?;
-            ensure!(epoch == peer.ready.epoch, "Window reference belongs to a stale session");
+            ensure!(
+                epoch == peer.ready.epoch,
+                "Window reference belongs to a stale session"
+            );
             let reference = RemoteWindowRef { epoch, window };
             let response = match args.operation {
                 WindowOperation::Query => {
-                    ensure!(peer.ready.events.owned_windows, "Window observation is unavailable");
+                    ensure!(
+                        peer.ready.events.owned_windows,
+                        "Window observation is unavailable"
+                    );
                     let ClientResponse::Window { window: observed } = peer
                         .command(ClientCommand::RemoteWindowQuery { reference }, false)
                         .await?
@@ -403,7 +484,10 @@ impl WindowAgentServer {
                     return Ok(json!({"window": observed}));
                 }
                 WindowOperation::Track => {
-                    ensure!(peer.ready.controls.window_tracking, "Window tracking is unavailable");
+                    ensure!(
+                        peer.ready.controls.window_tracking,
+                        "Window tracking is unavailable"
+                    );
                     let ClientResponse::Window { window: observed } = peer
                         .command(ClientCommand::RemoteWindowTrack { reference }, false)
                         .await?
@@ -418,8 +502,13 @@ impl WindowAgentServer {
                     return Ok(json!({"window":observed,"refresh_available":true}));
                 }
                 WindowOperation::Untrack => {
-                    ensure!(peer.ready.controls.window_tracking, "Window tracking is unavailable");
-                    let response = peer.command(ClientCommand::RemoteWindowUntrack { reference }, false).await?;
+                    ensure!(
+                        peer.ready.controls.window_tracking,
+                        "Window tracking is unavailable"
+                    );
+                    let response = peer
+                        .command(ClientCommand::RemoteWindowUntrack { reference }, false)
+                        .await?;
                     if !matches!(&response, ClientResponse::Acknowledged) {
                         peer.fence_protocol();
                         bail!("Unexpected native-window untracking reply");
@@ -427,9 +516,18 @@ impl WindowAgentServer {
                     response
                 }
                 WindowOperation::Control => {
-                    ensure!(peer.ready.controls.window_tracking, "Window tracking is unavailable");
-                    ensure!(peer.ready.controls.window_control, "Window control is unavailable");
-                    ensure!(!peer.needs_refresh, "Refresh the window subscription before another action");
+                    ensure!(
+                        peer.ready.controls.window_tracking,
+                        "Window tracking is unavailable"
+                    );
+                    ensure!(
+                        peer.ready.controls.window_control,
+                        "Window control is unavailable"
+                    );
+                    ensure!(
+                        !peer.needs_refresh,
+                        "Refresh the window subscription before another action"
+                    );
                     let ClientResponse::Window { window: current } = peer
                         .command(ClientCommand::RemoteWindowQuery { reference }, false)
                         .await?
@@ -450,7 +548,10 @@ impl WindowAgentServer {
                     )?;
                     let action = control.action();
                     let ClientResponse::WindowControlled { acknowledgement } = peer
-                        .command(ClientCommand::RemoteWindowControl { reference, control }, true)
+                        .command(
+                            ClientCommand::RemoteWindowControl { reference, control },
+                            true,
+                        )
                         .await?
                     else {
                         peer.fence_protocol();
@@ -474,9 +575,9 @@ impl WindowAgentServer {
         .await;
         match result {
             Ok(value) => CallToolResult::structured(value),
-            Err(error) => CallToolResult::error(vec![rmcp::model::ContentBlock::text(
-                format!("{error:#}"),
-            )]),
+            Err(error) => {
+                CallToolResult::error(vec![rmcp::model::ContentBlock::text(format!("{error:#}"))])
+            }
         }
     }
 }
@@ -503,7 +604,11 @@ pub(crate) fn run(path: PathBuf) -> Result<()> {
                 peer: Arc::new(Mutex::new(peer)),
                 tool_router: WindowAgentServer::tool_router(),
             };
-            server.serve(rmcp::transport::stdio()).await?.waiting().await?;
+            server
+                .serve(rmcp::transport::stdio())
+                .await?
+                .waiting()
+                .await?;
             Ok(())
         })
 }
@@ -517,14 +622,16 @@ mod tests {
         let tools = WindowAgentServer::tool_router().list_all();
         assert_eq!(tools.len(), 1);
         assert_eq!(tools[0].name, "native_windows");
-        assert!(serde_json::from_value::<WindowRequest>(json!({
-            "operation": "control",
-            "epoch": 7,
-            "window_id": 9,
-            "control": {"kind": "restore"},
-            "grant": true
-        }))
-        .is_err());
+        assert!(
+            serde_json::from_value::<WindowRequest>(json!({
+                "operation": "control",
+                "epoch": 7,
+                "window_id": 9,
+                "control": {"kind": "restore"},
+                "grant": true
+            }))
+            .is_err()
+        );
     }
 
     #[test]

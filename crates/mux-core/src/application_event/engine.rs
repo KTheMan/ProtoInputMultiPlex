@@ -818,11 +818,17 @@ impl Engine {
 
     pub fn window_owner(&self, window: WindowId) -> Result<RecipientId, Error> {
         self.active()?;
-        self.windows.get(&window).map(|value| value.owner).ok_or(Error::MissingWindow)
+        self.windows
+            .get(&window)
+            .map(|value| value.owner)
+            .ok_or(Error::MissingWindow)
     }
 
     pub fn window_inventory(&self) -> Vec<(WindowInfo, RecipientId)> {
-        self.windows.values().map(|value| (value.info.clone(), value.owner)).collect()
+        self.windows
+            .values()
+            .map(|value| (value.info.clone(), value.owner))
+            .collect()
     }
 
     pub fn authorize_window_control(
@@ -839,7 +845,11 @@ impl Engine {
         }
         let owner = self.window_owner(window)?;
         if owner != recipient
-            && !self.recipients.get(&recipient).and_then(|value| value.window_access.get(&window)).is_some_and(|access| access.control)
+            && !self
+                .recipients
+                .get(&recipient)
+                .and_then(|value| value.window_access.get(&window))
+                .is_some_and(|access| access.control)
         {
             return Err(Error::Denied);
         }
@@ -847,14 +857,23 @@ impl Engine {
     }
 
     pub fn mark_window_stale(&mut self, window: WindowId) -> Result<(), Error> {
-        if self.windows.get(&window).ok_or(Error::MissingWindow)?.info.observation.stale {
+        if self
+            .windows
+            .get(&window)
+            .ok_or(Error::MissingWindow)?
+            .info
+            .observation
+            .stale
+        {
             return Ok(());
         }
         self.reserve_events(1)?;
         let value = self.windows.get_mut(&window).ok_or(Error::MissingWindow)?;
         value.info.observation.stale = true;
         let info = value.info.clone();
-        self.publish(Event::Window { update: WindowUpdate::Changed { window: info } });
+        self.publish(Event::Window {
+            update: WindowUpdate::Changed { window: info },
+        });
         Ok(())
     }
 
@@ -970,7 +989,10 @@ impl Engine {
         let mut comparison = observed.clone();
         comparison.observation.sampled_at_ms = current.info.observation.sampled_at_ms;
         if comparison == current.info {
-            self.windows.get_mut(&observed.id).ok_or(Error::MissingWindow)?.info = observed;
+            self.windows
+                .get_mut(&observed.id)
+                .ok_or(Error::MissingWindow)?
+                .info = observed;
             Ok(())
         } else {
             self.update_owned_window(owner, observed)
