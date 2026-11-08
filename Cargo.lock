@@ -2026,6 +2026,29 @@ dependencies = [
 ]
 
 [[package]]
+name = "mux-application-sdk"
+version = "0.1.0"
+dependencies = [
+ "mux-core",
+ "mux-windows",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
+name = "mux-application-web"
+version = "0.1.0"
+dependencies = [
+ "js-sys",
+ "mux-application-sdk",
+ "mux-core",
+ "serde",
+ "serde_json",
+ "wasm-bindgen",
+ "web-sys",
+]
+
+[[package]]
 name = "mux-core"
 version = "0.1.0"
 dependencies = [
@@ -2705,6 +2728,7 @@ dependencies = [
  "eframe",
  "futures-util",
  "image",
+ "mux-application-sdk",
  "mux-core",
  "mux-windows",
  "ocrs",

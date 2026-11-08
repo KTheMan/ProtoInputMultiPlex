@@ -1,4 +1,6 @@
 #[cfg(windows)]
+mod application_event_transport;
+#[cfg(windows)]
 use anyhow::Context;
 use anyhow::Result;
 use clap::{Parser, Subcommand};
@@ -32,6 +34,8 @@ mod app_preferences;
 #[cfg(windows)]
 mod app_preferences_ui;
 #[cfg(windows)]
+mod application_event_ui;
+#[cfg(windows)]
 mod automation_probe;
 #[cfg(windows)]
 mod automation_runtime;
@@ -50,6 +54,8 @@ mod gui_activity;
 mod gui_agent_broker;
 #[cfg(windows)]
 mod gui_app_preferences;
+#[cfg(windows)]
+mod gui_application_events;
 #[cfg(windows)]
 mod gui_bridge;
 #[cfg(windows)]

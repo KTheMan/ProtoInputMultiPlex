@@ -1,0 +1,23 @@
+[package]
+name = "mux-application-sdk"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+build = "build.rs"
+
+[lib]
+crate-type = ["rlib", "cdylib", "staticlib"]
+
+[features]
+default = ["native-ffi", "native-windows"]
+native-ffi = []
+native-windows = ["dep:mux-windows"]
+
+[dependencies]
+mux-core.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+
+[target.'cfg(windows)'.dependencies]
+mux-windows = { workspace = true, optional = true }

@@ -1112,6 +1112,23 @@ impl Control {
         }
     }
 
+    fn application_event_status(&mut self) -> Result<Value> {
+        let bridge = self
+            .bridge
+            .as_mut()
+            .context("Application event status requires an authorized live GUI connection")?;
+        let reply = bridge.inspect()?;
+        ensure!(
+            !reply.terminal,
+            "Application event status is unavailable on a terminal GUI connection"
+        );
+        let status = reply.application_events.clone();
+        self.apply_bridge_state(reply)?;
+        Ok(serde_json::to_value(status.context(
+            "No fresh GUI application-event status is available",
+        )?)?)
+    }
+
     fn agent_session(&mut self) -> Result<Value> {
         self.drain()?;
         Ok(json!({
@@ -2118,6 +2135,13 @@ impl AgentServer {
     )]
     async fn agent_session(&self) -> CallToolResult {
         self.execute(Control::agent_session).await
+    }
+    #[tool(
+        description = "Read the GUI-owned cooperative application-event SDK status through the current authenticated Agent Access connection. Returns only virtual user counts, native sequence, separately approved observation flags, listener/cleanup phase and bounded counters, with sample age. No event credentials, connection descriptors, user identities, key/pointer events, HWNDs or authority changes are exposed. This is distinct from command SDK and routing_input. Missing or stale status is unavailable; it is not a native/browser delivery or parity verdict.",
+        annotations(read_only_hint = true)
+    )]
+    async fn application_event_status(&self) -> CallToolResult {
+        self.execute(Control::application_event_status).await
     }
     #[tool(
         description = "Capture the current selected allowed client window for one permitted virtual user. Return a PNG by default; return_image=false returns metadata and optional analysis only. Optional analysis is pixel{x,y} in client coordinates, image_match{template_png_base64,region,min_score}, or ocr{region}; templates are PNG only, at most 128 by 128 pixels and 256 KiB encoded. Image matching is bounded exhaustive RGB mean-absolute similarity, ignoring alpha, with default min_score 0.95 and a null match when none qualifies. OCR uses only bundled hash-verified Latin models, with an optional client-coordinate region, at most 1 Mi-pixel and 4096 pixels per side, 64 lines, 256 words and 4096 UTF-8 text bytes. Excessive line complexity is rejected; text is never silently truncated and confidence is not fabricated. OCR returns text and clipped line/word client and desktop boxes. Missing or invalid models produce a clear error without downloads. Results include capture identity and client/desktop coordinates from that snapshot. Capture permission in Agent Access is required for GUI connections; routing or PID permissions alone do not grant capture. Standalone capture requires explicit process scope. Current permission and exact selected target are rechecked after analysis before delivery. These are snapshot observations and never click, move input, or automatically actuate. This tool captures only the selected client window, never the desktop, OS pointer, unrelated apps, or physical input."

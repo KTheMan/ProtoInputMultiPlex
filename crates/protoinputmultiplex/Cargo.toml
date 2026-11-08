@@ -22,6 +22,7 @@ clap = { version = "4.6", features = ["derive"] }
 
 [target.'cfg(windows)'.dependencies]
 mux-windows.workspace = true
+mux-application-sdk.workspace = true
 eframe = { version = "0.34.1", default-features = false, features = ["default_fonts", "glow", "accesskit"] }
 ouroboros-ui = { git = "https://github.com/Type-zero-labs/ouroboros-ui", rev = "c390d7deffa7955e28b2e3bcb9c22ac0899a261b" }
 image = { version = "0.25", default-features = false, features = ["png"] }

@@ -1,15 +1,64 @@
 name: Rust
 on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+concurrency:
+  group: rust-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+env:
+  CARGO_BUILD_JOBS: '2'
+  CARGO_INCREMENTAL: '0'
+  CARGO_PROFILE_DEV_DEBUG: '0'
+  CARGO_PROFILE_TEST_DEBUG: '0'
 jobs:
   check:
     runs-on: windows-latest
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: 1.92.0
           components: rustfmt, clippy
+          targets: i686-pc-windows-msvc, wasm32-unknown-unknown
       - uses: ilammy/msvc-dev-cmd@v1
       - run: cargo fmt --all --check
       - run: cargo clippy --workspace --all-targets --locked -- -D warnings
       - run: cargo test --workspace --locked
+      - name: Build native workspace (x64)
+        run: cargo build --workspace --locked --target x86_64-pc-windows-msvc
+      - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x86
+      - name: Build native workspace (x86)
+        run: cargo build --workspace --locked --target i686-pc-windows-msvc
+      - name: Check Rust browser client
+        run: cargo clippy -p mux-application-web --locked --target wasm32-unknown-unknown -- -D warnings
+      - name: Build Rust browser client
+        run: cargo build -p mux-application-web --locked --target wasm32-unknown-unknown
+      - name: Generate matching browser bindings
+        shell: pwsh
+        run: |
+          $bindgenRoot = Join-Path $env:RUNNER_TEMP 'wasm-bindgen-0.2.129'
+          New-Item -ItemType Directory -Path $bindgenRoot | Out-Null
+          $bindgenArchive = Join-Path $bindgenRoot 'upstream.tar.gz'
+          Invoke-WebRequest 'https://github.com/wasm-bindgen/wasm-bindgen/releases/download/0.2.129/wasm-bindgen-0.2.129-x86_64-pc-windows-msvc.tar.gz' -OutFile $bindgenArchive
+          if ((Get-FileHash -LiteralPath $bindgenArchive -Algorithm SHA256).Hash.ToLowerInvariant() -ne '79e348c169d0c10c0b287647f1e753d0985353ca96800bc29be8f4261baf13e6') { throw 'Upstream binding tool digest mismatch' }
+          tar -xzf $bindgenArchive -C $bindgenRoot
+          if ($LASTEXITCODE -ne 0) { throw 'Binding tool extraction failed' }
+          $bindgenExe = Join-Path $bindgenRoot 'wasm-bindgen-0.2.129-x86_64-pc-windows-msvc/wasm-bindgen.exe'
+          $bindgenVersion = & $bindgenExe --version
+          if ($LASTEXITCODE -ne 0 -or $bindgenVersion -ne 'wasm-bindgen 0.2.129') { throw 'Binding tool version mismatch' }
+          & $bindgenExe --target web --out-dir target/application-web/pkg --out-name mux_application_web target/wasm32-unknown-unknown/debug/mux_application_web.wasm
+          if ($LASTEXITCODE -ne 0) { throw 'Browser binding generation failed' }
+          Copy-Item crates/mux-application-web/example/index.html,crates/mux-application-web/example/bootstrap.js target/application-web/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: application-sdk-preview-${{ github.sha }}
+          retention-days: 1
+          if-no-files-found: error
+          path: |
+            target/x86_64-pc-windows-msvc/debug/mux_application_sdk.dll
+            target/i686-pc-windows-msvc/debug/mux_application_sdk.dll
+            target/**/build/mux-application-sdk-*/out/protoinputmultiplex_application_sdk.h
+            target/application-web/

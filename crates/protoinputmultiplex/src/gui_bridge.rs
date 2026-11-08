@@ -2,6 +2,10 @@
 //!
 //! The descriptor contains a bearer token and must stay in a user-private location. The
 //! broker creates both it and its pipe with a protected DACL for the current logon SID.
+#[cfg(test)]
+#[path = "gui_application_event_projection_tests.rs"]
+mod application_event_projection_tests;
+
 use crate::{agent_runtime, session};
 use anyhow::{Context, Result, anyhow, bail, ensure};
 use serde::{Deserialize, Serialize};
@@ -46,6 +50,7 @@ pub struct AppHandle {
     activity: Option<crate::gui_activity::Observer>,
     sender: Sender<AppRequest>,
     discovery: Arc<RwLock<(crate::gui_discovery::Status, Instant)>>,
+    application_events: Arc<RwLock<Option<(crate::gui_application_events::PublicStatus, Instant)>>>,
     controller: u64,
     incarnation: u64,
     recovery: Arc<RwLock<RecoveryPublication>>,
@@ -195,6 +200,7 @@ pub fn app_channel() -> (AppHandle, Receiver<AppRequest>) {
             sender,
             controller: 0,
             incarnation: 0,
+            application_events: Arc::new(RwLock::new(None)),
             recovery: Arc::new(RwLock::new(RecoveryPublication::new(0, 0))),
             discovery: Arc::new(RwLock::new((
                 crate::gui_discovery::Status::default(),
@@ -206,6 +212,28 @@ pub fn app_channel() -> (AppHandle, Receiver<AppRequest>) {
 }
 
 impl AppHandle {
+    pub(crate) fn publish_application_events(
+        &self,
+        status: crate::gui_application_events::PublicStatus,
+    ) {
+        *self
+            .application_events
+            .write()
+            .unwrap_or_else(std::sync::PoisonError::into_inner) = Some((status, Instant::now()));
+    }
+
+    fn application_event_status(&self) -> Option<crate::gui_application_events::PublicStatus> {
+        let publication = self.application_events.try_read().ok()?;
+        let (status, sampled) = publication.as_ref()?;
+        let age = sampled.elapsed();
+        if age > Duration::from_secs(2) {
+            return None;
+        }
+        let mut status = status.clone();
+        status.age_by(age);
+        Some(status)
+    }
+
     pub fn attach_activity(&mut self, observer: crate::gui_activity::Observer) {
         self.activity = Some(observer);
     }
@@ -568,6 +596,9 @@ impl AppHandle {
         );
         reply.authority = None;
         reply.recovery = projection;
+        // This branch follows live connection/policy validation above. No event
+        // credential, user identities or input payloads enter this projection.
+        reply.application_events = self.application_event_status().map(Box::new);
         Ok(reply)
     }
     pub fn publish_discovery(&self, status: crate::gui_discovery::Status) {

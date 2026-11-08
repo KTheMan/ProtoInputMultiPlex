@@ -1,3 +1,6 @@
+#[path = "gui_application_event_dashboard.rs"]
+mod application_event_dashboard;
+
 use crate::{
     keyboard_slider,
     session::{Controller, Event as SessionEvent, Request},
@@ -2446,6 +2449,8 @@ struct Dashboard {
     output_page: crate::output_ui::OutputPage,
     agent_broker: crate::gui_agent_broker::Service,
     sdk_service: Option<crate::gui_sdk::Service>,
+    application_events: crate::gui_application_events::Controller,
+    application_event_tab: bool,
     sdk_origins: String,
     agent_sdk_tab: bool,
     agent_session_epoch: u64,
@@ -2748,6 +2753,8 @@ impl Dashboard {
             output_page: crate::output_ui::OutputPage::default(),
             agent_broker,
             sdk_service: None,
+            application_events: crate::gui_application_events::Controller::default(),
+            application_event_tab: false,
             sdk_origins: String::new(),
             agent_sdk_tab: false,
             agent_session_epoch: 0,
@@ -3726,7 +3733,7 @@ impl Dashboard {
                         &self.agent_broker.status().phase,
                     )
                 {
-                    self.close_ready = self.sdk_retired();
+                    self.close_ready = self.all_sdks_retired();
                 } else if self.session.is_none() {
                     self.status = "Routing stopped; Agent Access cleanup is complete.".into();
                 } else if !self.agent_page.snapshot().policy_enabled {
@@ -3870,6 +3877,10 @@ impl Dashboard {
         self.agent_page
             .apply_script_fields(&fields, &self.profile.seats);
         self.app_preferences_page.apply_script_fields(&fields);
+        let event_origin_editable = self.application_events.origin_editable();
+        self.application_events
+            .draft
+            .apply_script_fields(&fields, event_origin_editable);
         if self.sdk_retired()
             && let Some(origins) = fields.get("sdk_origins")
         {
@@ -5638,7 +5649,20 @@ impl Dashboard {
             (&mut self.action_frame, &mut self.frame_actions),
         );
         if self.agent_sdk_tab {
-            self.sdk_controls(ui);
+            crate::application_event_ui::sdk_kind_tabs(
+                ui,
+                &mut self.application_event_tab,
+                self.script.as_mut(),
+                &mut self.action_frame,
+                &mut self.frame_actions,
+            );
+            if self.application_event_tab {
+                egui::ScrollArea::vertical()
+                    .id_salt("application-event-sdk-body")
+                    .show(ui, |ui| self.application_event_controls(ui));
+            } else {
+                self.sdk_controls(ui);
+            }
             if let Some(script) = &self.script {
                 script.agent_state(&self.agent_page.snapshot());
             }
@@ -6124,8 +6148,8 @@ impl Dashboard {
         if !self.preferences_quit_waiting {
             return;
         }
-        if !self.sdk_retired() {
-            self.stop_sdk();
+        if !self.all_sdks_retired() {
+            self.stop_all_sdks();
             self.status = "Finishing SDK requests and input cleanup before quitting.".into();
             return;
         }
@@ -6887,8 +6911,8 @@ impl Dashboard {
                 "Start cancelled. Check targets and stop controls before starting again.".into();
             return;
         }
-        self.stop_sdk();
-        if !self.sdk_retired()
+        self.stop_all_sdks();
+        if !self.all_sdks_retired()
             || !matches!(
                 self.agent_broker.status().phase,
                 crate::gui_agent_broker::Phase::Stopped
@@ -7008,7 +7032,7 @@ impl Dashboard {
 
     fn request_routing_stop(&mut self, quit_after: bool) {
         self.user_pause.reset();
-        self.stop_sdk();
+        self.stop_all_sdks();
         self.restart_requested = false;
         if self.session.is_none() && self.setup_handle.enabled() {
             self.setup_retiring = true;
@@ -7076,7 +7100,7 @@ impl Dashboard {
                     self.agent_broker.status().phase,
                     crate::gui_agent_broker::Phase::Stopped
                 ) {
-                    self.close_ready = self.sdk_retired();
+                    self.close_ready = self.all_sdks_retired();
                 }
             }
         }
@@ -7663,7 +7687,7 @@ impl Dashboard {
                     self.replication_revision = 0;
                     self.session = None;
                     if self.quit_after_stop {
-                        self.close_ready = self.sdk_retired()
+                        self.close_ready = self.all_sdks_retired()
                             && crate::gui_agent_broker::quit_ready(
                                 self.session.is_none(),
                                 &self.agent_broker.status().phase,
@@ -11527,6 +11551,7 @@ impl eframe::App for Dashboard {
         self.poll_session(ctx);
         self.poll_agent_broker();
         self.poll_sdk(ctx);
+        self.poll_application_events(ctx);
         if matches!(
             self.agent_broker.status().phase,
             crate::gui_agent_broker::Phase::Starting | crate::gui_agent_broker::Phase::Stopping
@@ -11539,7 +11564,7 @@ impl eframe::App for Dashboard {
                 &self.agent_broker.status().phase,
             )
         {
-            self.close_ready = self.sdk_retired();
+            self.close_ready = self.all_sdks_retired();
         }
         self.poll_preferences();
         self.poll_profile_file(ctx);
@@ -11568,7 +11593,7 @@ impl eframe::App for Dashboard {
             self.recovery_phase == crate::session_recovery::Phase::Stopped,
             &self.agent_broker.status().phase,
         ) && !self.quit_after_stop
-            && self.sdk_retired()
+            && self.all_sdks_retired()
         {
             self.restart_requested = false;
             self.start_routing();
@@ -11638,6 +11663,7 @@ impl eframe::App for Dashboard {
                     "broker_phase": broker_phase_label(&self.agent_broker.status().phase),
                     "broker_generation": self.agent_broker.status().generation,
                     "sdk": self.sdk_service.as_ref().map(|service| service.snapshot()).unwrap_or_default(),
+                    "application_events": self.application_events.status(),
                     "enabled": self.setup_handle.enabled(),
                     "retiring": self.setup_retiring,
                     "start_order": self.setup_start_order,
