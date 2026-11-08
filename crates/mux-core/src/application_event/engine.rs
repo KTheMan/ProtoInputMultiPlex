@@ -124,14 +124,19 @@ impl Engine {
 
     pub fn hosted_state(&self, recipient: RecipientId, epoch: u64) -> Result<HostedState, Error> {
         self.active()?;
-        let recipient = self.recipients.get(&recipient).ok_or(Error::MissingRecipient)?;
+        let recipient = self
+            .recipients
+            .get(&recipient)
+            .ok_or(Error::MissingRecipient)?;
         if !recipient.grant.host_state {
             return Err(Error::Denied);
         }
         if epoch != self.epoch {
             return Err(Error::StaleRevision);
         }
-        self.hosted.clone().ok_or(Error::Unsupported("GUI hosted state unavailable"))
+        self.hosted
+            .clone()
+            .ok_or(Error::Unsupported("GUI hosted state unavailable"))
     }
 
     pub fn validate_host_revision(
@@ -522,7 +527,11 @@ impl Engine {
             Vec::new()
         };
         Ok(Snapshot {
-            hosted: if recipient.grant.host_state { self.hosted.clone() } else { None },
+            hosted: if recipient.grant.host_state {
+                self.hosted.clone()
+            } else {
+                None
+            },
             version: PROTOCOL_VERSION,
             epoch: self.epoch,
             through_sequence: self.sequence,

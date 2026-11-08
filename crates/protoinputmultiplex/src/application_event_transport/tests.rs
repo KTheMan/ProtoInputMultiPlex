@@ -1613,7 +1613,10 @@ mod connection_path {
             ))
             .await
             .unwrap();
-        client.send(frame(2, ClientCommand::Snapshot)).await.unwrap();
+        client
+            .send(frame(2, ClientCommand::Snapshot))
+            .await
+            .unwrap();
         let intent = timeout(Duration::from_secs(1), async {
             loop {
                 bridge.tick();
@@ -1651,12 +1654,21 @@ mod connection_path {
             }
         ));
         assert!(approved.live());
-        bridge.complete_host_action(intent.ticket, Err(Failure {
-            code: FailureCode::Uncertain,
-            message: "late worker receipt".into(),
-        }));
+        bridge.complete_host_action(
+            intent.ticket,
+            Err(Failure {
+                code: FailureCode::Uncertain,
+                message: "late worker receipt".into(),
+            }),
+        );
         client.close(None).await.unwrap();
-        assert!(timeout(Duration::from_secs(1), driver).await.unwrap().unwrap().is_ok());
+        assert!(
+            timeout(Duration::from_secs(1), driver)
+                .await
+                .unwrap()
+                .unwrap()
+                .is_ok()
+        );
     }
 
     #[tokio::test(flavor = "current_thread")]

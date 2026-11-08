@@ -1197,19 +1197,46 @@ fn hosted_state_requires_separate_consent_and_monotonic_publication() {
     let ordinary = engine.register_recipient("ordinary reader").unwrap();
     assert!(!Grant::default().host_state);
     assert_eq!(engine.snapshot(reader), Err(Error::Denied));
-    engine.approve_grant(reader, Grant { host_state: true, ..Default::default() }).unwrap();
+    engine
+        .approve_grant(
+            reader,
+            Grant {
+                host_state: true,
+                ..Default::default()
+            },
+        )
+        .unwrap();
     engine.approve_grant(ordinary, all(true, false)).unwrap();
     let (subscription, initial) = engine.subscribe(reader, 4).unwrap();
     assert!(initial.hosted.is_none());
     engine.publish_hosted_state(hosted(1)).unwrap();
     assert_eq!(engine.snapshot(reader).unwrap().hosted, Some(hosted(1)));
     assert!(engine.snapshot(ordinary).unwrap().hosted.is_none());
-    assert!(matches!(engine.poll(reader, subscription, 4).unwrap(), Poll::Events { events }
-        if matches!(&events[..], [Envelope { event: Event::HostedStateChanged { state }, .. }] if state == &hosted(1))));
-    assert_eq!(engine.publish_hosted_state(hosted(1)), Err(Error::StaleRevision));
+    assert!(
+        matches!(engine.poll(reader, subscription, 4).unwrap(), Poll::Events { events }
+        if matches!(&events[..], [Envelope { event: Event::HostedStateChanged { state }, .. }] if state == &hosted(1)))
+    );
+    assert_eq!(
+        engine.publish_hosted_state(hosted(1)),
+        Err(Error::StaleRevision)
+    );
     assert_eq!(engine.hosted_state(reader, 70), Err(Error::StaleRevision));
-    assert_eq!(engine.validate_host_revision(reader, HostRevision { epoch: 71, revision: 2 }), Err(Error::StaleRevision));
+    assert_eq!(
+        engine.validate_host_revision(
+            reader,
+            HostRevision {
+                epoch: 71,
+                revision: 2
+            }
+        ),
+        Err(Error::StaleRevision)
+    );
     engine.approve_grant(reader, Grant::default()).unwrap();
     assert_eq!(engine.hosted_state(reader, 71), Err(Error::Denied));
-    assert_eq!(engine.poll(reader, subscription, 4).unwrap(), Poll::Ended { reason: EndReason::Revoked });
+    assert_eq!(
+        engine.poll(reader, subscription, 4).unwrap(),
+        Poll::Ended {
+            reason: EndReason::Revoked
+        }
+    );
 }

@@ -1380,39 +1380,131 @@ fn hosted_model(revision: u64) -> HostedState {
 fn hosted_query_and_standalone_actions_do_not_fabricate_gui_effects() {
     let mut host: Host = Host::new(71, screens()).unwrap();
     let reader = host.register_recipient("host observer").unwrap();
-    host.approve_events(reader, Grant { host_state: true, ..Default::default() }).unwrap();
-    assert_eq!(host.dispatch(reader, request(ClientCommand::HostedStateQuery { epoch: 71 })).unwrap_err().code, FailureCode::Unsupported);
+    host.approve_events(
+        reader,
+        Grant {
+            host_state: true,
+            ..Default::default()
+        },
+    )
+    .unwrap();
+    assert_eq!(
+        host.dispatch(
+            reader,
+            request(ClientCommand::HostedStateQuery { epoch: 71 })
+        )
+        .unwrap_err()
+        .code,
+        FailureCode::Unsupported
+    );
     host.publish_hosted_state(hosted_model(1)).unwrap();
-    assert_eq!(host.dispatch(reader, request(ClientCommand::HostedStateQuery { epoch: 71 })).unwrap(), ClientResponse::HostedState { state: hosted_model(1) });
-    host.approve_controls(reader, ControlGrant { host_mode_control: true, host_viewport_control: true, ..Default::default() }).unwrap();
+    assert_eq!(
+        host.dispatch(
+            reader,
+            request(ClientCommand::HostedStateQuery { epoch: 71 })
+        )
+        .unwrap(),
+        ClientResponse::HostedState {
+            state: hosted_model(1)
+        }
+    );
+    host.approve_controls(
+        reader,
+        ControlGrant {
+            host_mode_control: true,
+            host_viewport_control: true,
+            ..Default::default()
+        },
+    )
+    .unwrap();
     for command in [
-        ClientCommand::HostedSetMode { reference: HostRevision { epoch: 71, revision: 1 }, mode: HostedMode::Native },
-        ClientCommand::HostedViewport { reference: HostRevision { epoch: 71, revision: 1 }, action: HostViewportAction::Minimize },
+        ClientCommand::HostedSetMode {
+            reference: HostRevision {
+                epoch: 71,
+                revision: 1,
+            },
+            mode: HostedMode::Native,
+        },
+        ClientCommand::HostedViewport {
+            reference: HostRevision {
+                epoch: 71,
+                revision: 1,
+            },
+            action: HostViewportAction::Minimize,
+        },
     ] {
-        assert_eq!(host.dispatch(reader, request(command)).unwrap_err().code, FailureCode::Unsupported);
+        assert_eq!(
+            host.dispatch(reader, request(command)).unwrap_err().code,
+            FailureCode::Unsupported
+        );
         assert_eq!(host.hosted_state(reader, 71).unwrap(), hosted_model(1));
     }
-    assert_eq!(host.dispatch(reader, request(ClientCommand::HostedViewport { reference: HostRevision { epoch: 71, revision: 2 }, action: HostViewportAction::Restore })).unwrap_err().code, FailureCode::StaleRevision);
+    assert_eq!(
+        host.dispatch(
+            reader,
+            request(ClientCommand::HostedViewport {
+                reference: HostRevision {
+                    epoch: 71,
+                    revision: 2
+                },
+                action: HostViewportAction::Restore
+            })
+        )
+        .unwrap_err()
+        .code,
+        FailureCode::StaleRevision
+    );
 }
 
 #[test]
 fn hosted_folding_clears_on_gap_disconnect_and_rejects_revision_rollback() {
     let mut host: Host = Host::new(71, screens()).unwrap();
     let reader = host.register_recipient("host fold observer").unwrap();
-    host.approve_events(reader, Grant { host_state: true, ..Default::default() }).unwrap();
+    host.approve_events(
+        reader,
+        Grant {
+            host_state: true,
+            ..Default::default()
+        },
+    )
+    .unwrap();
     host.publish_hosted_state(hosted_model(1)).unwrap();
     let mut client = ClientState::default();
-    client.install_snapshot(snapshot(&mut host, reader), 71).unwrap();
+    client
+        .install_snapshot(snapshot(&mut host, reader), 71)
+        .unwrap();
     assert_eq!(client.hosted(), Some(&hosted_model(1)));
     let sequence = client.last_sequence() + 1;
-    assert!(client.fold_poll(Poll::Events { events: vec![Envelope { version: PROTOCOL_VERSION, epoch: 71, sequence, event: Event::HostedStateChanged { state: hosted_model(1) } }] }).is_err());
+    assert!(
+        client
+            .fold_poll(Poll::Events {
+                events: vec![Envelope {
+                    version: PROTOCOL_VERSION,
+                    epoch: 71,
+                    sequence,
+                    event: Event::HostedStateChanged {
+                        state: hosted_model(1)
+                    }
+                }]
+            })
+            .is_err()
+    );
     assert!(client.hosted().is_none());
-    client.install_snapshot(snapshot(&mut host, reader), 71).unwrap();
+    client
+        .install_snapshot(snapshot(&mut host, reader), 71)
+        .unwrap();
     let sequence = client.last_sequence();
-    client.fold_poll(Poll::Gap { after_sequence: sequence, lost_through: sequence + 1 }).unwrap();
+    client
+        .fold_poll(Poll::Gap {
+            after_sequence: sequence,
+            lost_through: sequence + 1,
+        })
+        .unwrap();
     assert!(client.hosted().is_none());
     host.publish_hosted_state(hosted_model(2)).unwrap();
-    client.install_snapshot(snapshot(&mut host, reader), 71).unwrap();
+    client
+        .install_snapshot(snapshot(&mut host, reader), 71)
+        .unwrap();
     client.disconnect();
     assert!(client.hosted().is_none());
 }
@@ -1428,7 +1520,11 @@ fn hosted_grants_default_off_and_omit_new_false_fields_for_strict_old_ready() {
     let controls: ControlGrant = serde_json::from_value(controls).unwrap();
     assert!(!controls.host_mode_control && !controls.host_viewport_control);
     assert!(capabilities().len() <= 32);
-    assert!(capabilities().iter().any(|entry| entry.capability == Capability::HostVisibility && !entry.available));
+    assert!(
+        capabilities()
+            .iter()
+            .any(|entry| entry.capability == Capability::HostVisibility && !entry.available)
+    );
 }
 
 #[test]
@@ -1458,9 +1554,11 @@ fn default_ready_remains_readable_by_strict_legacy_controls() {
     }
     let mut host: Host = Host::new(71, screens()).unwrap();
     let recipient = host.register_recipient("legacy ready reader").unwrap();
-    host.approve_events(recipient, event_grant(UserScope::AllOwned, false)).unwrap();
+    host.approve_events(recipient, event_grant(UserScope::AllOwned, false))
+        .unwrap();
     let ready = host.ready_for(recipient).unwrap();
-    let legacy: LegacyReady = serde_json::from_value(serde_json::to_value(&ready).unwrap()).unwrap();
+    let legacy: LegacyReady =
+        serde_json::from_value(serde_json::to_value(&ready).unwrap()).unwrap();
     assert_eq!(legacy.version, ready.version);
     assert_eq!(legacy.epoch, ready.epoch);
     assert_eq!(legacy.recipient, ready.recipient);
@@ -1468,10 +1566,15 @@ fn default_ready_remains_readable_by_strict_legacy_controls() {
     assert_eq!(legacy.capabilities, ready.capabilities);
     assert_eq!(legacy.limits, ready.limits);
     assert_eq!(legacy.controls.users, UserScope::Only(Default::default()));
-    assert!(!legacy.controls.delegated_users && !legacy.controls.user_lifecycle
-        && !legacy.controls.cursor && !legacy.controls.pointer_input
-        && !legacy.controls.key_input && !legacy.controls.window_tracking
-        && !legacy.controls.window_control);
+    assert!(
+        !legacy.controls.delegated_users
+            && !legacy.controls.user_lifecycle
+            && !legacy.controls.cursor
+            && !legacy.controls.pointer_input
+            && !legacy.controls.key_input
+            && !legacy.controls.window_tracking
+            && !legacy.controls.window_control
+    );
 }
 
 /// This is the pre-hosted wire enum, intentionally independent of Capability.
@@ -1527,13 +1630,17 @@ fn standalone_ready_and_snapshot_keep_the_pre_hosted_capability_schema() {
         limits: EventLimits,
     }
     let mut host: Host = Host::new(71, screens()).unwrap();
-    let ordinary = host.register_recipient("legacy capability observer").unwrap();
-    host.approve_events(ordinary, event_grant(UserScope::AllOwned, false)).unwrap();
+    let ordinary = host
+        .register_recipient("legacy capability observer")
+        .unwrap();
+    host.approve_events(ordinary, event_grant(UserScope::AllOwned, false))
+        .unwrap();
     // Trusted publication must not leak a new variant to existing recipients.
     host.publish_hosted_state(hosted_model(1)).unwrap();
     let current = snapshot(&mut host, ordinary);
     assert!(current.hosted.is_none());
-    let legacy: LegacySnapshot = serde_json::from_value(serde_json::to_value(&current).unwrap()).unwrap();
+    let legacy: LegacySnapshot =
+        serde_json::from_value(serde_json::to_value(&current).unwrap()).unwrap();
     assert_eq!(legacy.version, current.version);
     assert_eq!(legacy.epoch, current.epoch);
     assert_eq!(legacy.through_sequence, current.through_sequence);
@@ -1543,12 +1650,16 @@ fn standalone_ready_and_snapshot_keep_the_pre_hosted_capability_schema() {
     assert_eq!(legacy.mode, ApplicationMode::Cooperative);
     assert_eq!(legacy.capabilities.len(), current.capabilities.len());
     let ready = host.ready_for(ordinary).unwrap();
-    let legacy: LegacyReady = serde_json::from_value(serde_json::to_value(&ready).unwrap()).unwrap();
+    let legacy: LegacyReady =
+        serde_json::from_value(serde_json::to_value(&ready).unwrap()).unwrap();
     assert_eq!(legacy.version, ready.version);
     assert_eq!(legacy.epoch, ready.epoch);
     assert_eq!(legacy.recipient, ordinary);
     assert_eq!(legacy.events, serde_json::to_value(&ready.events).unwrap());
-    assert_eq!(legacy.controls, serde_json::to_value(&ready.controls).unwrap());
+    assert_eq!(
+        legacy.controls,
+        serde_json::to_value(&ready.controls).unwrap()
+    );
     assert_eq!(legacy.limits, ready.limits);
     assert_eq!(legacy.capabilities.len(), 13);
     for status in legacy.capabilities {
@@ -1559,8 +1670,30 @@ fn standalone_ready_and_snapshot_keep_the_pre_hosted_capability_schema() {
     }
     // Even explicit host-state consent does not invent a standalone executor.
     let hosted = host.register_recipient("standalone host reader").unwrap();
-    host.approve_events(hosted, Grant { host_state: true, ..Default::default() }).unwrap();
-    assert!(host.ready_for(hosted).unwrap().capabilities.iter().all(|entry| entry.capability != Capability::HostedRouting));
-    assert!(snapshot(&mut host, hosted).capabilities.iter().all(|entry| entry.capability != Capability::HostedRouting));
-    assert!(capabilities().iter().all(|entry| entry.capability != Capability::HostedRouting));
+    host.approve_events(
+        hosted,
+        Grant {
+            host_state: true,
+            ..Default::default()
+        },
+    )
+    .unwrap();
+    assert!(
+        host.ready_for(hosted)
+            .unwrap()
+            .capabilities
+            .iter()
+            .all(|entry| entry.capability != Capability::HostedRouting)
+    );
+    assert!(
+        snapshot(&mut host, hosted)
+            .capabilities
+            .iter()
+            .all(|entry| entry.capability != Capability::HostedRouting)
+    );
+    assert!(
+        capabilities()
+            .iter()
+            .all(|entry| entry.capability != Capability::HostedRouting)
+    );
 }

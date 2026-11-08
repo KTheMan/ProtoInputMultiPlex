@@ -4,8 +4,9 @@ use anyhow::{Context, Result, bail, ensure};
 use futures_util::{SinkExt, StreamExt};
 use mux_application_sdk::{
     ClientCommand, ClientMessage, ClientRequest, ClientResponse, ClientState, EventHello,
-    EventReady, FailureCode, FoldOutcome, MAX_REQUEST_BYTES, MAX_RESPONSE_BYTES, PROTOCOL_VERSION,
-    HostRevision, HostedAction, HostedMode, HostedPhase, HostViewportAction, RemoteWindowRef, Reply, ServerMessage, UserScope, WindowControl, WindowId, WindowInfo,
+    EventReady, FailureCode, FoldOutcome, HostRevision, HostViewportAction, HostedAction,
+    HostedMode, HostedPhase, MAX_REQUEST_BYTES, MAX_RESPONSE_BYTES, PROTOCOL_VERSION,
+    RemoteWindowRef, Reply, ServerMessage, UserScope, WindowControl, WindowId, WindowInfo,
     WindowObservationSource,
 };
 use rmcp::{
@@ -257,8 +258,15 @@ impl Peer {
             .checked_add(1)
             .context("Request IDs exhausted")?;
         let request_id = self.next_request;
-        let hosted_action = matches!(&command, ClientCommand::HostedSetMode { .. } | ClientCommand::HostedViewport { .. });
-        let deadline = if hosted_action { Duration::from_secs(60) } else { CALL_TIMEOUT };
+        let hosted_action = matches!(
+            &command,
+            ClientCommand::HostedSetMode { .. } | ClientCommand::HostedViewport { .. }
+        );
+        let deadline = if hosted_action {
+            Duration::from_secs(60)
+        } else {
+            CALL_TIMEOUT
+        };
         let frame = serde_json::to_string(&ClientMessage {
             request_id,
             request: ClientRequest {
@@ -461,7 +469,10 @@ struct WindowAgentServer {
 
 #[tool_router]
 impl WindowAgentServer {
-    #[tool(description = "Inspect the GUI hosted session or explicitly set native/switched/concurrent mode, minimize, or restore. Observation and each action require separate current GUI grants. Supply exact epoch and observed revision. Lost receipts are uncertain and never replayed. Setup is read-only.", annotations(open_world_hint = false))]
+    #[tool(
+        description = "Inspect the GUI hosted session or explicitly set native/switched/concurrent mode, minimize, or restore. Observation and each action require separate current GUI grants. Supply exact epoch and observed revision. Lost receipts are uncertain and never replayed. Setup is read-only.",
+        annotations(open_world_hint = false)
+    )]
     async fn hosted_session(&self, Parameters(args): Parameters<HostedRequest>) -> CallToolResult {
         let result: Result<Value> = async {
             let mut guard = self.peer.lock().await;
@@ -530,7 +541,9 @@ impl WindowAgentServer {
         }.await;
         match result {
             Ok(value) => CallToolResult::structured(value),
-            Err(error) => CallToolResult::error(vec![rmcp::model::ContentBlock::text(error.to_string())]),
+            Err(error) => {
+                CallToolResult::error(vec![rmcp::model::ContentBlock::text(error.to_string())])
+            }
         }
     }
     #[tool(

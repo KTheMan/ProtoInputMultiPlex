@@ -367,15 +367,25 @@ impl NativeClient {
     /// Query the current GUI-owned hosted session through the existing request ABI.
     pub fn query_hosted(&mut self) -> Result<u64, ClientError> {
         let epoch = self.ready.as_ref().ok_or(ClientError::Busy)?.epoch;
-        self.request(ClientRequest { version: PROTOCOL_VERSION, command: ClientCommand::HostedStateQuery { epoch } })
+        self.request(ClientRequest {
+            version: PROTOCOL_VERSION,
+            command: ClientCommand::HostedStateQuery { epoch },
+        })
     }
     /// Explicit, revision-fenced host action; never retried or replayed.
-    pub fn hosted_action(&mut self, reference: HostRevision, action: HostedAction) -> Result<u64, ClientError> {
+    pub fn hosted_action(
+        &mut self,
+        reference: HostRevision,
+        action: HostedAction,
+    ) -> Result<u64, ClientError> {
         let command = match action {
             HostedAction::SetMode(mode) => ClientCommand::HostedSetMode { reference, mode },
             HostedAction::Viewport(action) => ClientCommand::HostedViewport { reference, action },
         };
-        self.request(ClientRequest { version: PROTOCOL_VERSION, command })
+        self.request(ClientRequest {
+            version: PROTOCOL_VERSION,
+            command,
+        })
     }
     pub fn request(&mut self, request: ClientRequest) -> Result<u64, ClientError> {
         self.observe_terminal();
@@ -426,7 +436,10 @@ impl NativeClient {
             q.outgoing.push_back(Outgoing::Client(message));
         }
         self.shared.requests_changed.notify_one();
-        if matches!(&command, ClientCommand::Subscribe { .. } | ClientCommand::Resubscribe { .. }) {
+        if matches!(
+            &command,
+            ClientCommand::Subscribe { .. } | ClientCommand::Resubscribe { .. }
+        ) {
             self.hosted_receipt.clear();
         }
         self.pending.push_back((id, command));
@@ -785,7 +798,13 @@ impl NativeClient {
                         }
                     }
                     Reply::Error { version, error } if *version == PROTOCOL_VERSION => {
-                        if error.code == FailureCode::Uncertain && matches!(command, ClientCommand::HostedSetMode { .. } | ClientCommand::HostedViewport { .. }) {
+                        if error.code == FailureCode::Uncertain
+                            && matches!(
+                                command,
+                                ClientCommand::HostedSetMode { .. }
+                                    | ClientCommand::HostedViewport { .. }
+                            )
+                        {
                             return Err(ClientError::Protocol);
                         }
                     }
@@ -892,11 +911,13 @@ impl NativeClient {
                 if refreshing && matches!(stream, Poll::Events { .. }) {
                     return Ok(());
                 }
-                let outcome = self.model
+                let outcome = self
+                    .model
                     .fold_poll(stream.clone())
                     .map_err(|_| ClientError::Protocol)?;
                 match outcome {
-                    FoldOutcome::Applied(_) => self.hosted_receipt
+                    FoldOutcome::Applied(_) => self
+                        .hosted_receipt
                         .reconcile(&self.model)
                         .map_err(|_| ClientError::Protocol)?,
                     FoldOutcome::NeedsSnapshot | FoldOutcome::Ended(_) => {
@@ -1006,17 +1027,27 @@ fn authorize(
     }
     match command {
         ClientCommand::HostedStateQuery { epoch } => {
-            return if ready.events.host_state && *epoch == ready.epoch { Ok(()) } else { Err(ClientError::Denied) };
+            return if ready.events.host_state && *epoch == ready.epoch {
+                Ok(())
+            } else {
+                Err(ClientError::Denied)
+            };
         }
-        ClientCommand::HostedSetMode { reference, .. } | ClientCommand::HostedViewport { reference, .. } => {
+        ClientCommand::HostedSetMode { reference, .. }
+        | ClientCommand::HostedViewport { reference, .. } => {
             let granted = match command {
                 ClientCommand::HostedSetMode { .. } => ready.controls.host_mode_control,
                 _ => ready.controls.host_viewport_control,
             };
-            return if ready.events.host_state && granted && reference.epoch == ready.epoch
-                && hosted_receipt.permits(model, *reference) {
+            return if ready.events.host_state
+                && granted
+                && reference.epoch == ready.epoch
+                && hosted_receipt.permits(model, *reference)
+            {
                 Ok(())
-            } else { Err(ClientError::Denied) };
+            } else {
+                Err(ClientError::Denied)
+            };
         }
         _ => {}
     }
@@ -1084,15 +1115,40 @@ fn authorize(
 }
 fn response_matches(command: &ClientCommand, response: &ClientResponse) -> bool {
     match (command, response) {
-        (ClientCommand::HostedStateQuery { .. }, ClientResponse::HostedState { state }) => return state.revision != 0,
-        (ClientCommand::HostedSetMode { reference, mode }, ClientResponse::HostedAction { action, state }) => {
-            return *action == HostedAction::SetMode(*mode) && state.revision >= reference.revision && state.mode == Some(*mode) && state.phase == if *mode == HostedMode::Native { HostedPhase::Native } else { HostedPhase::Ready };
+        (ClientCommand::HostedStateQuery { .. }, ClientResponse::HostedState { state }) => {
+            return state.revision != 0;
         }
-        (ClientCommand::HostedViewport { reference, action: requested }, ClientResponse::HostedAction { action, state }) => {
-            return *action == HostedAction::Viewport(*requested) && state.revision >= reference.revision
+        (
+            ClientCommand::HostedSetMode { reference, mode },
+            ClientResponse::HostedAction { action, state },
+        ) => {
+            return *action == HostedAction::SetMode(*mode)
+                && state.revision >= reference.revision
+                && state.mode == Some(*mode)
+                && state.phase
+                    == if *mode == HostedMode::Native {
+                        HostedPhase::Native
+                    } else {
+                        HostedPhase::Ready
+                    };
+        }
+        (
+            ClientCommand::HostedViewport {
+                reference,
+                action: requested,
+            },
+            ClientResponse::HostedAction { action, state },
+        ) => {
+            return *action == HostedAction::Viewport(*requested)
+                && state.revision >= reference.revision
                 && state.minimized == Some(matches!(requested, HostViewportAction::Minimize));
         }
-        (ClientCommand::HostedStateQuery { .. } | ClientCommand::HostedSetMode { .. } | ClientCommand::HostedViewport { .. }, _) => return false,
+        (
+            ClientCommand::HostedStateQuery { .. }
+            | ClientCommand::HostedSetMode { .. }
+            | ClientCommand::HostedViewport { .. },
+            _,
+        ) => return false,
         _ => {}
     }
     matches!(
@@ -1161,27 +1217,38 @@ mod hosted_consumer_tests {
             minimized: Some(false),
         };
         let mut model = EventClientState::default();
-        model.install_snapshot(Snapshot {
-            hosted: Some(first),
-            version: PROTOCOL_VERSION,
-            epoch: 71,
-            through_sequence: 1,
-            users: Vec::new(),
-            screens: ScreenState {
-                revision: 1,
-                desktop: bounds,
-                screens: vec![bounds],
-            },
-            windows: Vec::new(),
-            capabilities: Vec::new(),
-            mode: ApplicationMode::Cooperative,
-        }, 71).unwrap();
+        model
+            .install_snapshot(
+                Snapshot {
+                    hosted: Some(first),
+                    version: PROTOCOL_VERSION,
+                    epoch: 71,
+                    through_sequence: 1,
+                    users: Vec::new(),
+                    screens: ScreenState {
+                        revision: 1,
+                        desktop: bounds,
+                        screens: vec![bounds],
+                    },
+                    windows: Vec::new(),
+                    capabilities: Vec::new(),
+                    mode: ApplicationMode::Cooperative,
+                },
+                71,
+            )
+            .unwrap();
         let ready = EventReady {
             version: PROTOCOL_VERSION,
             epoch: 71,
             recipient: serde_json::from_str("1").unwrap(),
-            events: Grant { host_state: true, ..Default::default() },
-            controls: ControlGrant { host_mode_control: true, ..Default::default() },
+            events: Grant {
+                host_state: true,
+                ..Default::default()
+            },
+            controls: ControlGrant {
+                host_mode_control: true,
+                ..Default::default()
+            },
             capabilities: Vec::new(),
             limits: EventLimits::default(),
         };
@@ -1199,30 +1266,109 @@ mod hosted_consumer_tests {
             mode: HostedMode::Concurrent,
         };
         let pending = VecDeque::new();
-        assert!(authorize(&action(71, 2), &model, &receipt, &ready, None, &pending, (false, false)).is_err());
+        assert!(
+            authorize(
+                &action(71, 2),
+                &model,
+                &receipt,
+                &ready,
+                None,
+                &pending,
+                (false, false)
+            )
+            .is_err()
+        );
         receipt.observe(71, &observed, &model).unwrap();
-        assert!(authorize(&action(71, 2), &model, &receipt, &ready, None, &pending, (false, false)).is_ok());
+        assert!(
+            authorize(
+                &action(71, 2),
+                &model,
+                &receipt,
+                &ready,
+                None,
+                &pending,
+                (false, false)
+            )
+            .is_ok()
+        );
         for (epoch, revision) in [(71, 1), (71, 3), (72, 2)] {
-            assert!(authorize(&action(epoch, revision), &model, &receipt, &ready, None, &pending, (false, false)).is_err());
+            assert!(
+                authorize(
+                    &action(epoch, revision),
+                    &model,
+                    &receipt,
+                    &ready,
+                    None,
+                    &pending,
+                    (false, false)
+                )
+                .is_err()
+            );
         }
         let mut denied = ready.clone();
         denied.controls.host_mode_control = false;
-        assert!(authorize(&action(71, 2), &model, &receipt, &denied, None, &pending, (false, false)).is_err());
+        assert!(
+            authorize(
+                &action(71, 2),
+                &model,
+                &receipt,
+                &denied,
+                None,
+                &pending,
+                (false, false)
+            )
+            .is_err()
+        );
         model.disconnect();
         receipt.reconcile(&model).unwrap();
-        assert!(authorize(&action(71, 2), &model, &receipt, &ready, None, &pending, (false, false)).is_err());
+        assert!(
+            authorize(
+                &action(71, 2),
+                &model,
+                &receipt,
+                &ready,
+                None,
+                &pending,
+                (false, false)
+            )
+            .is_err()
+        );
     }
 
     #[test]
     fn typed_hosted_receipts_require_matching_action_and_new_revision() {
-        let reference = HostRevision { epoch: u64::MAX, revision: 9 };
-        let command = ClientCommand::HostedSetMode { reference, mode: HostedMode::Concurrent };
+        let reference = HostRevision {
+            epoch: u64::MAX,
+            revision: 9,
+        };
+        let command = ClientCommand::HostedSetMode {
+            reference,
+            mode: HostedMode::Concurrent,
+        };
         let state: HostedState = serde_json::from_str(r#"{"revision":10,"routing_generation":4,"phase":"ready","mode":"concurrent","multi_keyboard":true,"minimized":false}"#).unwrap();
-        assert!(response_matches(&command, &ClientResponse::HostedAction { action: HostedAction::SetMode(HostedMode::Concurrent), state: state.clone() }));
-        assert!(!response_matches(&command, &ClientResponse::HostedAction { action: HostedAction::SetMode(HostedMode::Native), state: state.clone() }));
+        assert!(response_matches(
+            &command,
+            &ClientResponse::HostedAction {
+                action: HostedAction::SetMode(HostedMode::Concurrent),
+                state: state.clone()
+            }
+        ));
+        assert!(!response_matches(
+            &command,
+            &ClientResponse::HostedAction {
+                action: HostedAction::SetMode(HostedMode::Native),
+                state: state.clone()
+            }
+        ));
         let mut stale = state;
         stale.revision = reference.revision - 1;
-        assert!(!response_matches(&command, &ClientResponse::HostedAction { action: HostedAction::SetMode(HostedMode::Concurrent), state: stale }));
+        assert!(!response_matches(
+            &command,
+            &ClientResponse::HostedAction {
+                action: HostedAction::SetMode(HostedMode::Concurrent),
+                state: stale
+            }
+        ));
         assert!(!response_matches(&command, &ClientResponse::Acknowledged));
     }
 }

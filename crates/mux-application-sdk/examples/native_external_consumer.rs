@@ -260,7 +260,11 @@ mod fixture {
             None
         };
         let observation_seconds = if args.len() == 12 || args.len() == 11 {
-            let seconds = if window_route || hosted_route { &args[10] } else { &args[11] };
+            let seconds = if window_route || hosted_route {
+                &args[10]
+            } else {
+                &args[11]
+            };
             match seconds.to_str().and_then(|value| value.parse::<u64>().ok()) {
                 Some(seconds) if (20..=60).contains(&seconds) => seconds,
                 _ => std::process::exit(10),
@@ -944,10 +948,14 @@ mod fixture {
             completion,
             ClientCommand::Subscribe { capacity: 32 },
             report,
-        )? else {
+        )?
+        else {
             return Err("hosted subscription response mismatch".into());
         };
-        ensure(snapshot.users.is_empty(), "host-only receiver unexpectedly has users")?;
+        ensure(
+            snapshot.users.is_empty(),
+            "host-only receiver unexpectedly has users",
+        )?;
         let initial = snapshot
             .hosted
             .ok_or("GUI hosted observation unavailable")?;
@@ -963,7 +971,8 @@ mod fixture {
                 epoch: snapshot.epoch,
             },
             report,
-        )? else {
+        )?
+        else {
             return Err("hosted query response mismatch".into());
         };
         ensure(
@@ -990,7 +999,8 @@ mod fixture {
                     action,
                 },
                 report,
-            )? else {
+            )?
+            else {
                 return Err("hosted viewport response mismatch".into());
             };
             ensure(

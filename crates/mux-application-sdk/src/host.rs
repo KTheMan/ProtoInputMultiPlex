@@ -445,12 +445,16 @@ impl<A: WindowBackend> Host<A> {
             HostedSetMode { reference, .. } => {
                 allowed(grant.host_mode_control)?;
                 self.engine.validate_host_revision(recipient, reference)?;
-                return Err(Error::Unsupported("standalone host has no GUI mode executor"));
+                return Err(Error::Unsupported(
+                    "standalone host has no GUI mode executor",
+                ));
             }
             HostedViewport { reference, .. } => {
                 allowed(grant.host_viewport_control)?;
                 self.engine.validate_host_revision(recipient, reference)?;
-                return Err(Error::Unsupported("standalone host has no GUI viewport executor"));
+                return Err(Error::Unsupported(
+                    "standalone host has no GUI viewport executor",
+                ));
             }
             Snapshot => ClientResponse::Snapshot {
                 snapshot: self.engine.snapshot(recipient)?,

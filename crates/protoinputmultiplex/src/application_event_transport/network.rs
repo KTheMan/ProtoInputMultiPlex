@@ -677,8 +677,7 @@ pub(super) async fn drive<S: AsyncRead + AsyncWrite + Unpin>(
         // Keep reading EOF, Close, Ping and urgent owner receipts while a GUI
         // action is pending. Normal requests wait in a bounded local queue so
         // their replies cannot overtake that action's response.
-        let replay = !pending.iter().any(|item| item.host_action)
-            && !deferred_text.is_empty();
+        let replay = !pending.iter().any(|item| item.host_action) && !deferred_text.is_empty();
         let next_deferred = if replay {
             deferred_text.front().cloned()
         } else {

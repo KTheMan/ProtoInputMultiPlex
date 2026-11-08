@@ -255,7 +255,10 @@ pub(super) async fn drive<S: AsyncRead + AsyncWrite + Unpin>(
                 if matches!(
                     &message.request.command,
                     ClientCommand::HostedSetMode { .. } | ClientCommand::HostedViewport { .. }
-                ) => HOST_ACTION,
+                ) =>
+            {
+                HOST_ACTION
+            }
             _ => REQUEST,
         };
         let until = Instant::now() + response_limit;

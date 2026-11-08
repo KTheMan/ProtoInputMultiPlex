@@ -1,8 +1,7 @@
 //! Child of gui: integrates cooperative authority without exposing private host state.
 use super::*;
 use mux_application_sdk::{
-    Failure, FailureCode, HostViewportAction, HostedAction, HostedMode, HostedPhase,
-    HostedState,
+    Failure, FailureCode, HostViewportAction, HostedAction, HostedMode, HostedPhase, HostedState,
 };
 use mux_core::routing::Mode as RoutingMode;
 
@@ -106,31 +105,30 @@ impl Dashboard {
 
     fn publish_hosted_observation(&mut self, ctx: &egui::Context) {
         let recovery = self.recovery.snapshot();
-        let (phase, mode, multi_keyboard) = if recovery.phase
-            == crate::session_recovery::Phase::Quarantined
-        {
-            (HostedPhase::Quarantined, None, None)
-        } else if self.session_stopping
-            || recovery.phase == crate::session_recovery::Phase::Stopping
-        {
-            (HostedPhase::Stopping, None, None)
-        } else if self.session.is_none() {
-            if recovery.can_start {
-                (HostedPhase::Native, Some(HostedMode::Native), None)
+        let (phase, mode, multi_keyboard) =
+            if recovery.phase == crate::session_recovery::Phase::Quarantined {
+                (HostedPhase::Quarantined, None, None)
+            } else if self.session_stopping
+                || recovery.phase == crate::session_recovery::Phase::Stopping
+            {
+                (HostedPhase::Stopping, None, None)
+            } else if self.session.is_none() {
+                if recovery.can_start {
+                    (HostedPhase::Native, Some(HostedMode::Native), None)
+                } else {
+                    (HostedPhase::Unavailable, None, None)
+                }
+            } else if !self.session_ready {
+                (HostedPhase::Starting, None, None)
+            } else if let Some(options) = self.profile.desktop.as_ref() {
+                let mode = match options.mode {
+                    RoutingMode::Switched => HostedMode::Switched,
+                    RoutingMode::Concurrent => HostedMode::Concurrent,
+                };
+                (HostedPhase::Ready, Some(mode), Some(options.multi_keyboard))
             } else {
-                (HostedPhase::Unavailable, None, None)
-            }
-        } else if !self.session_ready {
-            (HostedPhase::Starting, None, None)
-        } else if let Some(options) = self.profile.desktop.as_ref() {
-            let mode = match options.mode {
-                RoutingMode::Switched => HostedMode::Switched,
-                RoutingMode::Concurrent => HostedMode::Concurrent,
+                (HostedPhase::Assigned, None, None)
             };
-            (HostedPhase::Ready, Some(mode), Some(options.multi_keyboard))
-        } else {
-            (HostedPhase::Assigned, None, None)
-        };
         let mut next = HostedState {
             revision: self.hosted_state.as_ref().map_or(1, |state| state.revision),
             routing_generation: self.agent_session_epoch,
@@ -218,8 +216,10 @@ impl Dashboard {
         if completed {
             self.application_events
                 .complete_host_action(pending.ticket, Ok(state));
-        } else if matches!(state.phase, HostedPhase::Quarantined | HostedPhase::Unavailable)
-            && pending.stage != HostStage::Viewport
+        } else if matches!(
+            state.phase,
+            HostedPhase::Quarantined | HostedPhase::Unavailable
+        ) && pending.stage != HostStage::Viewport
         {
             self.application_events.complete_host_action(
                 pending.ticket,
@@ -239,13 +239,16 @@ impl Dashboard {
         ctx: &egui::Context,
     ) {
         let reject = |self_: &mut Self, code, message| {
-            self_.application_events.complete_host_action(
-                intent.ticket,
-                Err(host_failure(code, message)),
-            );
+            self_
+                .application_events
+                .complete_host_action(intent.ticket, Err(host_failure(code, message)));
         };
         let Some(state) = self.hosted_state.clone() else {
-            reject(self, FailureCode::Unsupported, "Host observation is unavailable");
+            reject(
+                self,
+                FailureCode::Unsupported,
+                "Host observation is unavailable",
+            );
             return;
         };
         if self.hosted_pending.is_some() {
@@ -381,7 +384,11 @@ impl Dashboard {
                         );
                     }
                 } else {
-                    reject(self, FailureCode::Denied, "Routing is not ready to change mode");
+                    reject(
+                        self,
+                        FailureCode::Denied,
+                        "Routing is not ready to change mode",
+                    );
                 }
             }
         }

@@ -1,5 +1,6 @@
 use crate::event_hooks::{
-    ClickOptions, ClickPairs, EventFilter, Registry, hosted_deadline_pending, validate_snapshot_query,
+    ClickOptions, ClickPairs, EventFilter, Registry, hosted_deadline_pending,
+    validate_snapshot_query,
 };
 use crate::geometry::CanvasGeometry;
 use crate::local_input::{LocalInput, hid_key, mouse_button, selects};
@@ -325,8 +326,14 @@ impl Inner {
             .ok_or("Request limit reached")?;
         let hosted_pending = match &command {
             ClientCommand::HostedStateQuery { epoch } => Some((*epoch, None)),
-            ClientCommand::HostedSetMode { reference, mode } => Some((reference.epoch, Some((*reference, HostedAction::SetMode(*mode))))),
-            ClientCommand::HostedViewport { reference, action } => Some((reference.epoch, Some((*reference, HostedAction::Viewport(*action))))),
+            ClientCommand::HostedSetMode { reference, mode } => Some((
+                reference.epoch,
+                Some((*reference, HostedAction::SetMode(*mode))),
+            )),
+            ClientCommand::HostedViewport { reference, action } => Some((
+                reference.epoch,
+                Some((*reference, HostedAction::Viewport(*action))),
+            )),
             _ => None,
         };
         if let Some((epoch, action)) = &hosted_pending {
@@ -339,8 +346,13 @@ impl Inner {
                     HostedAction::SetMode(_) => ready.controls.host_mode_control,
                     HostedAction::Viewport(_) => ready.controls.host_viewport_control,
                 };
-                if !granted || !self.hosted_receipt.permits(&self.state, *reference)
-                    || self.pending_hosted.values().any(|(_, action)| action.is_some()) {
+                if !granted
+                    || !self.hosted_receipt.permits(&self.state, *reference)
+                    || self
+                        .pending_hosted
+                        .values()
+                        .any(|(_, action)| action.is_some())
+                {
                     return Err("Hosted action requires current observation and distinct approval");
                 }
             }
@@ -387,7 +399,11 @@ impl Inner {
             return Err("Request exceeds event protocol limit");
         }
         if socket.send_with_str(&json).is_err() {
-            if hosted_pending.as_ref().is_some_and(|(_, action)| action.is_some()) || matches!(window_pending, Some(PendingWindow::Control { .. })) {
+            if hosted_pending
+                .as_ref()
+                .is_some_and(|(_, action)| action.is_some())
+                || matches!(window_pending, Some(PendingWindow::Control { .. }))
+            {
                 self.stop(
                     "Window action outcome unconfirmed after send failure; reconnect and inspect",
                     false,
@@ -736,15 +752,45 @@ impl Inner {
                         }
                         match (&expected_hosted, &response) {
                             (Some((epoch, None)), ClientResponse::HostedState { state })
-                                if self.ready.as_ref().is_some_and(|ready| ready.epoch == *epoch) && state.revision != 0 => {}
-                            (Some((epoch, Some((reference, expected)))), ClientResponse::HostedAction { action, state })
-                                if self.ready.as_ref().is_some_and(|ready| ready.epoch == *epoch)
-                                    && action == expected && state.revision >= reference.revision
-                                    && match action {
-                                        HostedAction::SetMode(mode) => state.mode == Some(*mode) && state.phase == if *mode == HostedMode::Native { HostedPhase::Native } else { HostedPhase::Ready },
-                                        HostedAction::Viewport(action) => state.minimized == Some(matches!(action, HostViewportAction::Minimize)),
-                                    } => {}
-                            (None, ClientResponse::HostedState { .. } | ClientResponse::HostedAction { .. }) | (Some(_), _) => return Err("Hosted receipt does not match pending request; outcome unconfirmed"),
+                                if self
+                                    .ready
+                                    .as_ref()
+                                    .is_some_and(|ready| ready.epoch == *epoch)
+                                    && state.revision != 0 => {}
+                            (
+                                Some((epoch, Some((reference, expected)))),
+                                ClientResponse::HostedAction { action, state },
+                            ) if self
+                                .ready
+                                .as_ref()
+                                .is_some_and(|ready| ready.epoch == *epoch)
+                                && action == expected
+                                && state.revision >= reference.revision
+                                && match action {
+                                    HostedAction::SetMode(mode) => {
+                                        state.mode == Some(*mode)
+                                            && state.phase
+                                                == if *mode == HostedMode::Native {
+                                                    HostedPhase::Native
+                                                } else {
+                                                    HostedPhase::Ready
+                                                }
+                                    }
+                                    HostedAction::Viewport(action) => {
+                                        state.minimized
+                                            == Some(matches!(action, HostViewportAction::Minimize))
+                                    }
+                                } => {}
+                            (
+                                None,
+                                ClientResponse::HostedState { .. }
+                                | ClientResponse::HostedAction { .. },
+                            )
+                            | (Some(_), _) => {
+                                return Err(
+                                    "Hosted receipt does not match pending request; outcome unconfirmed",
+                                );
+                            }
                             _ => {}
                         }
                         match response {
@@ -783,7 +829,9 @@ impl Inner {
                                         .ok_or("Hosted receipt lacked request ownership")?;
                                     self.hosted_receipt
                                         .observe(epoch, &state, &self.state)
-                                        .map_err(|_| "Hosted receipt conflicts with current stream")?;
+                                        .map_err(
+                                            |_| "Hosted receipt conflicts with current stream",
+                                        )?;
                                 }
                                 self.notice("Hosted receipt validated; observe current state before another action");
                             }
@@ -853,8 +901,14 @@ impl Inner {
                         }
                     }
                     Reply::Error { version, error } => {
-                        if expected_hosted.as_ref().is_some_and(|(_, action)| action.is_some()) && error.code == FailureCode::Uncertain {
-                            return Err("Hosted action outcome uncertain; reconnect and inspect without replay");
+                        if expected_hosted
+                            .as_ref()
+                            .is_some_and(|(_, action)| action.is_some())
+                            && error.code == FailureCode::Uncertain
+                        {
+                            return Err(
+                                "Hosted action outcome uncertain; reconnect and inspect without replay",
+                            );
                         }
                         if version != PROTOCOL_VERSION {
                             return Err("Response version mismatch");
@@ -1329,8 +1383,16 @@ impl WebClient {
             }
             Ok(())
         } else {
-            let hosted = matches!(&command, ClientCommand::HostedStateQuery { .. } | ClientCommand::HostedSetMode { .. } | ClientCommand::HostedViewport { .. });
-            let mutation = matches!(&command, ClientCommand::HostedSetMode { .. } | ClientCommand::HostedViewport { .. });
+            let hosted = matches!(
+                &command,
+                ClientCommand::HostedStateQuery { .. }
+                    | ClientCommand::HostedSetMode { .. }
+                    | ClientCommand::HostedViewport { .. }
+            );
+            let mutation = matches!(
+                &command,
+                ClientCommand::HostedSetMode { .. } | ClientCommand::HostedViewport { .. }
+            );
             inner.send(command).map_err(JsValue::from_str)?;
             if hosted {
                 let id = inner.next_request;
@@ -1345,7 +1407,14 @@ impl WebClient {
                         }
                     }
                 });
-                let armed = web_sys::window().is_some_and(|window| window.set_timeout_with_callback_and_timeout_and_arguments_0(callback.unchecked_ref(), if mutation { 60_000 } else { 6_000 }).is_ok());
+                let armed = web_sys::window().is_some_and(|window| {
+                    window
+                        .set_timeout_with_callback_and_timeout_and_arguments_0(
+                            callback.unchecked_ref(),
+                            if mutation { 60_000 } else { 6_000 },
+                        )
+                        .is_ok()
+                });
                 if !armed {
                     inner.stop("Hosted deadline unavailable; action outcome unconfirmed; connection fenced", false);
                     return Err(JsValue::from_str("Hosted deadline unavailable"));
@@ -1398,13 +1467,22 @@ impl WebClient {
 
     /// Pass raw JSON text so epoch/revision u64 values never round through JS Number.
     pub fn query_hosted(&self, epoch_json: &str) -> Result<(), JsValue> {
-        let epoch: u64 = serde_json::from_str(epoch_json).map_err(|_| JsValue::from_str("Invalid epoch JSON integer"))?;
-        self.request(&serde_json::to_string(&ClientCommand::HostedStateQuery { epoch }).map_err(|_| JsValue::from_str("Hosted encoding failed"))?)
+        let epoch: u64 = serde_json::from_str(epoch_json)
+            .map_err(|_| JsValue::from_str("Invalid epoch JSON integer"))?;
+        self.request(
+            &serde_json::to_string(&ClientCommand::HostedStateQuery { epoch })
+                .map_err(|_| JsValue::from_str("Hosted encoding failed"))?,
+        )
     }
     pub fn set_hosted_mode(&self, reference_json: &str, mode_json: &str) -> Result<(), JsValue> {
-        let reference: HostRevision = serde_json::from_str(reference_json).map_err(|_| JsValue::from_str("Invalid HostRevision"))?;
-        let mode: HostedMode = serde_json::from_str(mode_json).map_err(|_| JsValue::from_str("Invalid HostedMode"))?;
-        self.request(&serde_json::to_string(&ClientCommand::HostedSetMode { reference, mode }).map_err(|_| JsValue::from_str("Hosted encoding failed"))?)
+        let reference: HostRevision = serde_json::from_str(reference_json)
+            .map_err(|_| JsValue::from_str("Invalid HostRevision"))?;
+        let mode: HostedMode =
+            serde_json::from_str(mode_json).map_err(|_| JsValue::from_str("Invalid HostedMode"))?;
+        self.request(
+            &serde_json::to_string(&ClientCommand::HostedSetMode { reference, mode })
+                .map_err(|_| JsValue::from_str("Hosted encoding failed"))?,
+        )
     }
     pub fn minimize_hosted(&self, reference_json: &str) -> Result<(), JsValue> {
         self.hosted_viewport(reference_json, HostViewportAction::Minimize)
@@ -1412,9 +1490,17 @@ impl WebClient {
     pub fn restore_hosted(&self, reference_json: &str) -> Result<(), JsValue> {
         self.hosted_viewport(reference_json, HostViewportAction::Restore)
     }
-    fn hosted_viewport(&self, reference_json: &str, action: HostViewportAction) -> Result<(), JsValue> {
-        let reference: HostRevision = serde_json::from_str(reference_json).map_err(|_| JsValue::from_str("Invalid HostRevision"))?;
-        self.request(&serde_json::to_string(&ClientCommand::HostedViewport { reference, action }).map_err(|_| JsValue::from_str("Hosted encoding failed"))?)
+    fn hosted_viewport(
+        &self,
+        reference_json: &str,
+        action: HostViewportAction,
+    ) -> Result<(), JsValue> {
+        let reference: HostRevision = serde_json::from_str(reference_json)
+            .map_err(|_| JsValue::from_str("Invalid HostRevision"))?;
+        self.request(
+            &serde_json::to_string(&ClientCommand::HostedViewport { reference, action })
+                .map_err(|_| JsValue::from_str("Hosted encoding failed"))?,
+        )
     }
     pub fn state_json(&self) -> Result<String, JsValue> {
         let inner = self.inner.borrow();

@@ -6939,12 +6939,10 @@ impl Dashboard {
             self.sdk_retired()
         } else {
             self.all_sdks_retired()
-        })
-            || !matches!(
-                self.agent_broker.status().phase,
-                crate::gui_agent_broker::Phase::Stopped
-            )
-        {
+        }) || !matches!(
+            self.agent_broker.status().phase,
+            crate::gui_agent_broker::Phase::Stopped
+        ) {
             if self.setup_handle.enabled()
                 || self.setup_pending.is_some()
                 || self.setup_page.descriptor.is_some()

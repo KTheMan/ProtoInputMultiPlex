@@ -181,9 +181,10 @@ impl<A: WindowBackend> HostBridge<A> {
                 continue;
             };
             if Instant::now() >= pending.deadline
-                || !self.clients.get(&pending.lease_id).is_some_and(|client| {
-                    client.lease.live(&self.shared, Instant::now())
-                })
+                || !self
+                    .clients
+                    .get(&pending.lease_id)
+                    .is_some_and(|client| client.lease.live(&self.shared, Instant::now()))
             {
                 continue;
             }
@@ -195,9 +196,10 @@ impl<A: WindowBackend> HostBridge<A> {
     pub fn host_action_pending(&self, ticket: u64) -> bool {
         self.pending_host.get(&ticket).is_some_and(|pending| {
             Instant::now() < pending.deadline
-                && self.clients.get(&pending.lease_id).is_some_and(|client| {
-                    client.lease.live(&self.shared, Instant::now())
-                })
+                && self
+                    .clients
+                    .get(&pending.lease_id)
+                    .is_some_and(|client| client.lease.live(&self.shared, Instant::now()))
         })
     }
 
@@ -222,12 +224,12 @@ impl<A: WindowBackend> HostBridge<A> {
         };
         let now = Instant::now();
         let live = self.clients.get(&pending.lease_id).is_some_and(|client| {
-                client.lease.live(&self.shared, now)
-                    && self
-                        .host
-                        .ready_for(client.lease.recipient)
-                        .is_ok_and(|ready| client.lease.matches(&ready))
-            });
+            client.lease.live(&self.shared, now)
+                && self
+                    .host
+                    .ready_for(client.lease.recipient)
+                    .is_ok_and(|ready| client.lease.matches(&ready))
+        });
         if !live {
             pending.admission.uncertain(&self.shared);
             return;
@@ -644,7 +646,8 @@ impl<A: WindowBackend> HostBridge<A> {
                 }
             }
         }
-        report.pending = self.requests.len() + self.pending_controls.len() + self.pending_host.len();
+        report.pending =
+            self.requests.len() + self.pending_controls.len() + self.pending_host.len();
         report
     }
 
@@ -867,9 +870,10 @@ impl<A: WindowBackend> HostBridge<A> {
             .iter()
             .filter_map(|(ticket, pending)| {
                 (now >= pending.deadline
-                    || !self.clients.get(&pending.lease_id).is_some_and(|client| {
-                        client.lease.live(&self.shared, now)
-                    }))
+                    || !self
+                        .clients
+                        .get(&pending.lease_id)
+                        .is_some_and(|client| client.lease.live(&self.shared, now)))
                 .then_some(*ticket)
             })
             .collect();

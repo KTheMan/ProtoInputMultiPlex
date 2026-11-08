@@ -326,7 +326,9 @@ mod hosted_filter_tests {
         let message: ServerMessage = serde_json::from_str(r#"{"kind":"event_stream","subscription":1,"stream":{"kind":"events","events":[{"version":1,"epoch":18446744073709551615,"sequence":1,"event":{"kind":"hosted_state_changed","state":{"revision":18446744073709551615,"routing_generation":9007199254740993,"phase":"ready","mode":"concurrent","multi_keyboard":true,"minimized":false}}}]}}"#).unwrap();
         assert!(filter.matches(Some(&message)));
         assert!(!filter.matches(None));
-        let reference: mux_application_sdk::HostRevision = serde_json::from_str(r#"{"epoch":18446744073709551615,"revision":9007199254740993}"#).unwrap();
+        let reference: mux_application_sdk::HostRevision =
+            serde_json::from_str(r#"{"epoch":18446744073709551615,"revision":9007199254740993}"#)
+                .unwrap();
         assert_eq!(reference.epoch, u64::MAX);
         assert_eq!(reference.revision, 9_007_199_254_740_993);
     }

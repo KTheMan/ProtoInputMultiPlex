@@ -250,7 +250,9 @@ impl ClientState {
             return Err(FoldError::Invalid("unsupported application mode"));
         }
         if let Some(state) = &snapshot.hosted {
-            state.validate().map_err(|_| FoldError::Invalid("hosted state"))?;
+            state
+                .validate()
+                .map_err(|_| FoldError::Invalid("hosted state"))?;
             if self.epoch == Some(expected_epoch)
                 && self.hosted.as_ref().is_some_and(|previous| {
                     state.revision < previous.revision
@@ -399,7 +401,9 @@ impl ClientState {
         let epoch = self.epoch.ok_or(FoldError::Epoch)?;
         match envelope.event {
             Event::HostedStateChanged { state } => {
-                state.validate().map_err(|_| FoldError::Invalid("hosted state"))?;
+                state
+                    .validate()
+                    .map_err(|_| FoldError::Invalid("hosted state"))?;
                 if self.hosted.as_ref().is_some_and(|previous| {
                     state.revision <= previous.revision
                         || state.routing_generation < previous.routing_generation
@@ -683,14 +687,18 @@ mod hosted_receipt_tests {
             .unwrap();
         let mut older_with_future_generation = state(2, HostedMode::Concurrent);
         older_with_future_generation.routing_generation = 5;
-        assert!(generation_receipt
-            .observe(71, &older_with_future_generation, &model)
-            .is_err());
+        assert!(
+            generation_receipt
+                .observe(71, &older_with_future_generation, &model)
+                .is_err()
+        );
         let mut newer_with_rolled_back_generation = state(4, HostedMode::Concurrent);
         newer_with_rolled_back_generation.routing_generation = 3;
-        assert!(generation_receipt
-            .observe(71, &newer_with_rolled_back_generation, &model)
-            .is_err());
+        assert!(
+            generation_receipt
+                .observe(71, &newer_with_rolled_back_generation, &model)
+                .is_err()
+        );
         let mut contradictory_generation_stream = model.clone();
         contradictory_generation_stream
             .fold_poll(Poll::Events {
@@ -704,12 +712,16 @@ mod hosted_receipt_tests {
                 }],
             })
             .unwrap();
-        assert!(generation_receipt
-            .reconcile(&contradictory_generation_stream)
-            .is_err());
-        assert!(generation_receipt
-            .current(&contradictory_generation_stream, 71)
-            .is_none());
+        assert!(
+            generation_receipt
+                .reconcile(&contradictory_generation_stream)
+                .is_err()
+        );
+        assert!(
+            generation_receipt
+                .current(&contradictory_generation_stream, 71)
+                .is_none()
+        );
         let mut receipt = HostedReceipt::default();
         let updated = state(2, HostedMode::Concurrent);
         receipt.observe(71, &updated, &model).unwrap();
