@@ -986,8 +986,9 @@ mod fixture {
             "metadata_identity_absent": changed.metadata.process_id.is_none() && changed.metadata.ui_thread_id.is_none(),
         }))?;
         ensure(
-            unsafe { SetWindowPos(hwnd, 0, 150, 120, 400, 300, SWP_NOZORDER | SWP_NOACTIVATE) }
-                != 0,
+            unsafe {
+                SetWindowPos(hwnd, null_mut(), 150, 120, 400, 300, SWP_NOZORDER | SWP_NOACTIVATE)
+            } != 0,
             "SetWindowPos failed",
         )?;
         ensure(
