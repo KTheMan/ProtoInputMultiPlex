@@ -7014,10 +7014,8 @@ impl Dashboard {
                 self.recovery_dialog_open = false;
                 self.user_pause.reset();
                 self.session = Some(session);
-                if preserve_event {
-                    if let Some(pending) = &mut self.hosted_pending {
-                        pending.expected_generation = Some(self.agent_session_epoch);
-                    }
+                if preserve_event && let Some(pending) = &mut self.hosted_pending {
+                    pending.expected_generation = Some(self.agent_session_epoch);
                 }
                 self.virtual_users_base_seat_count = Some(self.profile.seats.len());
                 self.virtual_users_page.reset_session();

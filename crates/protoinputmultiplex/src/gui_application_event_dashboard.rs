@@ -402,11 +402,9 @@ impl Dashboard {
         error: Option<String>,
         uncertain: bool,
     ) {
-        if error.is_none() {
-            if let Some(options) = self.profile.desktop.as_mut() {
-                options.mode = mode;
-                options.multi_keyboard = multi_keyboard;
-            }
+        if error.is_none() && let Some(options) = self.profile.desktop.as_mut() {
+            options.mode = mode;
+            options.multi_keyboard = multi_keyboard;
         }
         let Some(pending) = self.hosted_pending.as_mut() else {
             return;
