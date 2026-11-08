@@ -72,6 +72,9 @@ class WindowPair(base.Pair):
             "host_pending_expired": False,
             "post_revoke_rejected": False, "rust_mcp_fixture_invoked": False,
             "window_timeout_phase": "not_started", "window_timeout_probe": {},
+            "window_qualification_phase": "not_started",
+            "window_descriptor_predicate": "none",
+            "window_browser_diagnostic": {"stage": "not_started", "predicate": "none", "predicate_failed": False},
         }
         self.expected_timeout = False
 
@@ -93,19 +96,32 @@ class WindowPair(base.Pair):
         return value
 
     def issue_window_descriptor(self, count):
+        def diagnose(predicate):
+            if count == 4:
+                self.result["window_descriptor_predicate"] = predicate
+        diagnose("descriptor_read")
         paths = self.descriptors()
+        diagnose("descriptor_count")
         if len(paths) != count:
             return None
         new = paths - self.issued
+        diagnose("descriptor_unique_new")
         require(len(new) == 1)
         path = new.pop()
+        diagnose("descriptor_json")
         value = self.strict_json("authority_descriptor", path)
+        diagnose("descriptor_keys")
         require(set(value) == {"protoinputmultiplex_application_events", "endpoint", "exact_origin", "credential", "expires_unix_ms"})
+        diagnose("descriptor_version_origin")
         require(value["protoinputmultiplex_application_events"] == 1 and value["exact_origin"] == "http://127.0.0.1:4173")
+        diagnose("descriptor_endpoint")
         endpoint = urlsplit(value["endpoint"])
         require(endpoint.scheme == "ws" and endpoint.hostname == "127.0.0.1" and endpoint.port and endpoint.path == "/application-events/v1" and not (endpoint.query or endpoint.fragment or endpoint.username or endpoint.password))
+        diagnose("descriptor_credential_shape")
         require(re.fullmatch("[0-9a-fA-F]{64}", value["credential"]) is not None)
+        diagnose("descriptor_freshness")
         require(250000 < value["expires_unix_ms"] - time.time() * 1000 <= 301000)
+        diagnose("descriptor_filename")
         match = re.fullmatch(rf"protoinputmultiplex\.application-events\.{self.gui.pid}\.(\d+)\.(\d+)\.json", path.name)
         require(match is not None)
         epoch = int(match[1])
@@ -113,10 +129,12 @@ class WindowPair(base.Pair):
             self.epoch = epoch
             self.endpoint = value["endpoint"]
             self.credentials = set()
+        diagnose("descriptor_session_unique")
         require(epoch == self.epoch and value["endpoint"] == self.endpoint and value["credential"] not in self.credentials)
         self.credentials.add(value["credential"])
         self.issued = paths
         self.connection_paths[count] = path
+        diagnose("complete")
         return True
 
     def observe_publication(self):
@@ -157,9 +175,34 @@ class WindowPair(base.Pair):
         self.wait(lambda: self.event_status("active", 0, 2, 2))
 
     def browser_acceptance(self):
-        self.web("window.pimGate=null; window.runWindowRouteAcceptance(window.pimClient," + json.dumps(self.reference_json) + ").then(x=>window.pimGate=x,()=>window.pimGate={status:'FAIL'}); true")
-        result = self.wait(lambda: self.web("window.pimGate"), 25)
+        self.result["window_qualification_phase"] = "browser_start"
+        self.web("window.pimGate=null; window.pimWindowDiagnostic={stage:'not_started',predicate:'none',predicate_failed:false}; window.runWindowRouteAcceptance(window.pimClient," + json.dumps(self.reference_json) + ",undefined,window.pimWindowDiagnostic).then(x=>window.pimGate=x,()=>window.pimGate={status:'FAIL'}); true")
+        self.result["window_qualification_phase"] = "browser_poll"
+        def browser_gate():
+            observation = self.web("({gate:window.pimGate,diagnostic:window.pimWindowDiagnostic})")
+            diagnostic = observation.get("diagnostic")
+            if isinstance(diagnostic, dict):
+                stage = diagnostic.get("stage")
+                predicate = diagnostic.get("predicate")
+                # Reconstruct only allowlisted decisions; never copy arbitrary JS data.
+                self.result["window_browser_diagnostic"] = {
+                    "stage": stage if isinstance(stage, str) and stage in {
+                        "not_started", "reference_state", "event_handler", "query_request", "query_response", "query_validate",
+                        "track_request", "track_response", "track_validate", "track_event", "control_request",
+                        "control_response", "control_validate", "untrack_request", "untrack_response", "untrack_event", "complete",
+                    } else "unrecognized",
+                    "predicate": predicate if isinstance(predicate, str) and predicate in {
+                        "none", "epoch_current", "window_authority", "request_accepted", "response_before_deadline",
+                        "stream_live", "tracked_state_before_deadline", "query_native_provenance",
+                        "tracked_window_matches", "owner_receipt_fresh",
+                    } else "unrecognized",
+                    "predicate_failed": diagnostic.get("predicate_failed") is True,
+                }
+            return observation.get("gate")
+        result = self.wait(browser_gate, 25)
+        self.result["window_qualification_phase"] = "browser_result"
         require(result == {"status": "PASS", "query": True, "track": True, "owner_action": True, "untrack": True})
+        self.result["window_qualification_phase"] = "browser_native_receipt"
         self.wait(lambda: len([x for x in self.native_rows() if x["stage"] == "native_window_action_executed"]) >= 1)
         self.result["web_query_track_control_untrack"] = True
 
@@ -287,11 +330,15 @@ class WindowPair(base.Pair):
         if step == 33:
             return self.issue_window_descriptor(3)
         if step == 40:
+            self.result["window_qualification_phase"] = "issue_descriptor_four"
             if not self.issue_window_descriptor(4):
                 return None
             self.browser_acceptance()
+            self.result["window_qualification_phase"] = "rust_mcp_fixture"
             self.run_rust_mcp_fixture()
+            self.result["window_qualification_phase"] = "mcp_acceptance"
             self.mcp_acceptance()
+            self.result["window_qualification_phase"] = "checkpoint_complete"
             return True
         if step == 42:
             self.wait(lambda: (value if value and value.get("published_windows") == 1 else None)
@@ -363,10 +410,18 @@ class WindowPair(base.Pair):
         self.issued, self.connection_paths = set(), {}
         for index, step in enumerate(self.steps, 1):
             self.checkpoint = index
+            if index == 40:
+                self.result["window_qualification_phase"] = "checkpoint_receipt_wait"
             self.wait(lambda: len(self.receipts()) >= index)
             rows = self.receipts()
+            if index == 40:
+                self.result["window_qualification_phase"] = "checkpoint_receipt_count"
             require(len(rows) == index or not step.get("wait_for_sample"))
+            if index == 40:
+                self.result["window_qualification_phase"] = "checkpoint_receipt_button"
             require(rows[index - 1]["button"] == step["button"] and rows[index - 1]["clicked"] is True)
+            if index == 40:
+                self.result["window_qualification_phase"] = "checkpoint_receipt_checked"
             if step.get("wait_for_sample"):
                 self.wait(lambda: self.sample(index), 40)
                 self.acknowledge(index)
