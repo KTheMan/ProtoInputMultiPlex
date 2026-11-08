@@ -1050,7 +1050,11 @@ mod fixture {
             SetLastError(0);
         }
         retirement.previous_proc = unsafe {
-            SetWindowLongPtrW(hwnd, GWLP_WNDPROC, retire_on_nc_destroy as *const () as isize)
+            SetWindowLongPtrW(
+                hwnd,
+                GWLP_WNDPROC,
+                retire_on_nc_destroy as *const () as isize,
+            )
         };
         ensure(
             retirement.previous_proc != 0 || unsafe { GetLastError() } == 0,
