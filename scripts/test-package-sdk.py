@@ -67,7 +67,7 @@ class SourceAdmissionTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
-        self.root = Path(self.temp.name)
+        self.root = Path(self.temp.name).resolve()
         self.committed = {"Cargo.toml", "scripts/package-portable.py"}
         self.candidates = set(self.committed)
         for name in self.committed:
