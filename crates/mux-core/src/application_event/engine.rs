@@ -989,8 +989,9 @@ impl Engine {
         let mut comparison = observed.clone();
         comparison.observation.sampled_at_ms = current.info.observation.sampled_at_ms;
         if comparison == current.info {
+            let window = observed.id;
             self.windows
-                .get_mut(&observed.id)
+                .get_mut(&window)
                 .ok_or(Error::MissingWindow)?
                 .info = observed;
             Ok(())
