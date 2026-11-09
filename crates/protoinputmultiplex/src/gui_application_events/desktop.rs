@@ -333,7 +333,10 @@ impl Controller {
             "Desktop binding was cancelled or replaced");
         ensure!(
             self.desktop.screens.as_ref() == Some(&value.screens)
-                && self.bridge.as_ref().is_some_and(|bridge| bridge.screens() == &value.screens),
+                && self
+                    .bridge
+                    .as_ref()
+                    .is_some_and(|bridge| bridge.screens() == &value.screens),
             "Desktop screens changed; create a fresh event session with the current display mapping"
         );
         ensure!(
