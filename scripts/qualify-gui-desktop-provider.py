@@ -265,7 +265,24 @@ class ProviderPair(base.Pair):
             self.wait(ready)
             self.wait(lambda: all(row["frames"] > 0 for row in self.targets()))
         elif name == "command_grant":
-            path = self.wait(lambda: next(iter(self.temp.glob(f"protoinputmultiplex-agent-{self.gui.pid}-*.json")), None))
+            self.check = "command_policy_projection"
+            def command_ready():
+                path = next(iter(self.temp.glob(f"protoinputmultiplex-agent-{self.gui.pid}-*.json")), None)
+                if path is None:
+                    return None
+                raw, _ = base.shared_live_bytes(self.ui / "prepare.agent.acks.jsonl", 4 * 1024 * 1024)
+                acks = [json.loads(line) for line in raw.decode("utf-8-sig").splitlines()]
+                require(len(acks) <= 2)
+                if len(acks) < 2:
+                    return None
+                # Enable then Apply are the only two local policy commands so far.
+                for index, ack in enumerate(acks):
+                    require(ack["pending"] is False and ack["error"] is None and ack["policy_enabled"] is True)
+                    require(set(ack["selected_users"]) == set(self.seat_ids) and set(ack["allowed_pids"]) == set(self.pids))
+                    require(ack["session_control"] is bool(index) and ack["capture"] is False
+                        and ack["desktop_capture"] is False and ack["app_preferences"] is False)
+                return path
+            path = self.wait(command_ready)
             self.command_descriptor = path
             self.check = "command_connection_start"
             self.command = CommandMcp(self.exe, path, self.private / "command-mcp.log")
