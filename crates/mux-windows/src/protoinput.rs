@@ -49,6 +49,34 @@ type QueueFenceExport = QueueFence;
 type Window = unsafe extern "C" fn(u32, u64);
 type BoundsToggle = unsafe extern "C" fn(u32, bool, bool);
 
+fn qualification_first_key_down(packet: &Packet, first: &AtomicBool) -> bool {
+    if packet.kind != 1 || packet.flags & 1 != 0 {
+        return false;
+    }
+    qualification_claim_key_down(
+        packet,
+        first,
+        matches!(
+            std::env::var("PROTOINPUTMULTIPLEX_QUALIFICATION_STDERR").as_deref(),
+            Ok("private-file-v1")
+        ),
+    )
+}
+
+fn qualification_claim_key_down(packet: &Packet, first: &AtomicBool, enabled: bool) -> bool {
+    packet.kind == 1
+        && packet.flags & 1 == 0
+        && enabled
+        && !first.swap(true, std::sync::atomic::Ordering::Relaxed)
+}
+
+fn qualification_stderr(line: std::fmt::Arguments<'_>) {
+    use std::io::Write;
+    // Qualification directs stderr to a private regular file. Do not propagate
+    // a diagnostic write error into the original input/cleanup behavior.
+    let _ = writeln!(std::io::stderr().lock(), "{line}");
+}
+
 /// A motion publication failed for one assigned virtual device. The failed queued
 /// segment is discarded so callers never replay stale motion to a later target.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -2256,8 +2284,31 @@ impl DesktopBackend {
         ensure!(self.alive(index), "target process exited");
         let target = &self.targets[index];
         let selected_window = target.motion.borrow().window;
-        Recipient::validate(hwnd, target.pid)?;
+        let recipient = Recipient::validate(hwnd, target.pid)?;
         self.remember_recipient(index, hwnd)?;
+        static FIRST: AtomicBool = AtomicBool::new(false);
+        if qualification_first_key_down(&packet, &FIRST) {
+            let target_identity_matches = target.pid == target.identity.pid;
+            let recipient_pid_matches = recipient.pid == target.identity.pid;
+            let recipient_window_matches = recipient.hwnd == hwnd;
+            let selected_window_matches = selected_window == hwnd;
+            let instance_binding_matches = target
+                .lifecycle
+                .as_ref()
+                .is_some_and(|attachment| attachment.instance == target.instance);
+            let startup_config_calls_returned = target.startup.get() == TargetStartup::Ready;
+            let requested_keyboard_messages =
+                self.devices.iter().any(|seat| seat.keyboard.is_some());
+            let packet_keyboard_assigned = self
+                .devices
+                .iter()
+                .any(|seat| seat.keyboard == Some(packet.device));
+            let requested_frozen = self.paused || !target.ready_to_unfreeze();
+            let native_backend_selected = self.backend.rust.is_none();
+            qualification_stderr(format_args!(
+                "PIM_QUAL_KEY_CONTEXT_V1 target_identity_matches={target_identity_matches} recipient_pid_matches={recipient_pid_matches} recipient_window_matches={recipient_window_matches} selected_window_matches={selected_window_matches} instance_binding_matches={instance_binding_matches} startup_config_calls_returned={startup_config_calls_returned} requested_keyboard_messages={requested_keyboard_messages} packet_keyboard_assigned={packet_keyboard_assigned} requested_frozen={requested_frozen} native_backend_selected={native_backend_selected}"
+            ));
+        }
         {
             self.backend.window(target.instance, hwnd as u64)?;
         }

@@ -1,6 +1,46 @@
 //! One fixed command implementation per Backend; no fallback after attachment.
 use super::{control, wire::Command, *};
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum NativeKeyCallPhase {
+    Entered,
+    Returned,
+}
+
+fn trace_native_key_call(
+    packet: &Packet,
+    call: impl FnOnce(),
+    mut observe: impl FnMut(NativeKeyCallPhase, &Packet),
+) {
+    observe(NativeKeyCallPhase::Entered, packet);
+    call();
+    observe(NativeKeyCallPhase::Returned, packet);
+}
+
+fn qualification_packet_matches(packet: &Packet) -> [bool; 6] {
+    [
+        packet.device == 0xf1000005,
+        packet.kind == 1,
+        packet.flags == 2,
+        packet.x == 29,
+        packet.y == 0,
+        packet.data == 163,
+    ]
+}
+
+fn qualification_native_key_call(phase: NativeKeyCallPhase, packet: &Packet, instance: u32) {
+    let phase = match phase {
+        NativeKeyCallPhase::Entered => "entered",
+        NativeKeyCallPhase::Returned => "returned",
+    };
+    let [device_matches, kind_matches, flags_match, scan_matches, y_matches, key_matches] =
+        qualification_packet_matches(packet);
+    let instance_nonzero = instance != 0;
+    qualification_stderr(format_args!(
+        "PIM_QUAL_KEY_CALL_V1 phase={phase} instance_nonzero={instance_nonzero} device_matches={device_matches} kind_matches={kind_matches} flags_match={flags_match} scan_matches={scan_matches} y_matches={y_matches} key_matches={key_matches}"
+    ));
+}
+
 impl Backend {
     /// Development pilot for supervised virtual sessions. Does not load the native loader.
     pub fn load_rust_virtual(folder: &Path, cancel: Arc<AtomicBool>) -> Result<Self> {
@@ -310,8 +350,16 @@ impl Backend {
                 data: packet.data,
             },
             |n| {
-                unsafe {
-                    (n.submit.context("backend lacks emulated input support")?)(instance, packet);
+                let submit = n.submit.context("backend lacks emulated input support")?;
+                static FIRST: AtomicBool = AtomicBool::new(false);
+                if qualification_first_key_down(packet, &FIRST) {
+                    trace_native_key_call(
+                        packet,
+                        || unsafe { submit(instance, packet) },
+                        |phase, packet| qualification_native_key_call(phase, packet, instance),
+                    );
+                } else {
+                    unsafe { submit(instance, packet) };
                 }
                 Ok(())
             },
@@ -482,5 +530,65 @@ impl Backend {
             }
         }
         Ok(())
+    }
+}
+
+#[cfg(test)]
+mod qualification_tests {
+    use super::*;
+
+    #[test]
+    fn disabled_or_non_down_calls_do_not_consume_the_single_record() {
+        let packet = Packet::key_scanned(0xf1000005, 163, 29, 2, false);
+        let first = AtomicBool::new(false);
+        assert!(!qualification_claim_key_down(&packet, &first, false));
+        assert!(!qualification_claim_key_down(
+            &Packet::key_scanned(0xf1000005, 163, 29, 2, true),
+            &first,
+            true,
+        ));
+        assert!(!qualification_claim_key_down(
+            &Packet::motion(0xf1000004, 1, 0),
+            &first,
+            true,
+        ));
+        assert!(qualification_claim_key_down(&packet, &first, true));
+        assert!(!qualification_claim_key_down(&packet, &first, true));
+    }
+
+    #[test]
+    fn first_key_packet_facts_reject_each_tuple_near_miss() {
+        let expected = Packet::key_scanned(0xf1000005, 163, 29, 2, false);
+        assert_eq!(qualification_packet_matches(&expected), [true; 6]);
+        let mut packets = [expected; 6];
+        packets[0].device = 0xf1000003;
+        packets[1].kind = 0;
+        packets[2].flags = 3;
+        packets[3].x = 30;
+        packets[4].y = 1;
+        packets[5].data = 17;
+        for (index, packet) in packets.into_iter().enumerate() {
+            let mut wanted = [true; 6];
+            wanted[index] = false;
+            assert_eq!(qualification_packet_matches(&packet), wanted);
+        }
+    }
+
+    #[test]
+    fn native_key_trace_brackets_exactly_one_call_and_keeps_the_packet() {
+        let packet = Packet::key_scanned(0xf1000005, 163, 29, 2, false);
+        let order = std::cell::RefCell::new(Vec::new());
+        trace_native_key_call(
+            &packet,
+            || order.borrow_mut().push("call"),
+            |phase, actual| {
+                assert!(std::ptr::eq(actual, &packet));
+                order.borrow_mut().push(match phase {
+                    NativeKeyCallPhase::Entered => "entered",
+                    NativeKeyCallPhase::Returned => "returned",
+                });
+            },
+        );
+        assert_eq!(order.into_inner(), ["entered", "call", "returned"]);
     }
 }

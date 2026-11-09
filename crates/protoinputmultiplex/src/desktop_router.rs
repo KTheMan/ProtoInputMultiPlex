@@ -108,6 +108,48 @@ fn motion_failure_blocks_input(packet: Packet, affected: bool) -> bool {
 fn pause_reserves_owner(paused: bool, held: bool, gesture: bool) -> bool {
     paused || held || gesture
 }
+
+fn qualification_key_decision(
+    packet: Packet,
+    decision: &str,
+    seat_keyboard_matches: bool,
+    independent_keyboards_requested: bool,
+    keyboard_enabled: bool,
+    recipient_matches_clicked: Option<bool>,
+) {
+    use std::io::Write;
+    use std::sync::atomic::{AtomicBool, Ordering};
+
+    static FIRST: AtomicBool = AtomicBool::new(false);
+    if packet.kind != 1
+        || packet.flags & 1 != 0
+        || !matches!(
+            std::env::var("PROTOINPUTMULTIPLEX_QUALIFICATION_STDERR").as_deref(),
+            Ok("private-file-v1")
+        )
+        || FIRST.swap(true, Ordering::Relaxed)
+    {
+        return;
+    }
+    let recipient = match recipient_matches_clicked {
+        Some(true) => "true",
+        Some(false) => "false",
+        None => "unobserved",
+    };
+    let packet_matches_fixture = packet.device == 0xf1000005
+        && packet.flags == 2
+        && packet.x == 29
+        && packet.y == 0
+        && packet.data == 163;
+    // A qualification-only first decision, never a native acceptance receipt.
+    // The controller already owns a regular private stderr file. Logging errors
+    // must not change routing, and no private values are formatted here.
+    let _ = writeln!(
+        std::io::stderr().lock(),
+        "PIM_QUAL_KEY_ROUTE_V1 decision={decision} seat_keyboard_matches={seat_keyboard_matches} independent_keyboards_requested={independent_keyboards_requested} keyboard_enabled={keyboard_enabled} recipient_matches_clicked={recipient} packet_matches_fixture={packet_matches_fixture}"
+    );
+}
+
 impl DesktopRouter {
     pub fn mapper_delivery(&mut self, active: bool) -> Result<()> {
         self.strict_mapper_delivery = active;
@@ -1456,6 +1498,14 @@ impl DesktopRouter {
         }
         if packet.kind == 1 {
             if self.held.contains_key(&(packet.device, identity)) {
+                qualification_key_decision(
+                    packet,
+                    "duplicate_hold",
+                    self.seats[user].keyboard == Some(packet.device),
+                    self.options.multi_keyboard,
+                    self.users[user].settings.keyboard.enabled,
+                    None,
+                );
                 return Ok(());
             }
             let pointer_user = if self.options.multi_keyboard {
@@ -1480,6 +1530,14 @@ impl DesktopRouter {
             let shared_down = self.held.values().any(|held| {
                 held.target == target && held.packet.kind == 1 && held.packet.data == packet.data
             });
+            qualification_key_decision(
+                packet,
+                if shared_down { "shared_hold" } else { "submit" },
+                self.seats[user].keyboard == Some(packet.device),
+                self.options.multi_keyboard,
+                self.users[user].settings.keyboard.enabled,
+                Some(window == clicked),
+            );
             let before = self.observation_before(user);
             if self.strict_mapper_delivery {
                 // Native submission (including restoring its selected window)

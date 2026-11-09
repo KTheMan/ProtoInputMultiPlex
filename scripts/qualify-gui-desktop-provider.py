@@ -52,6 +52,62 @@ def native_write_failure_lines(raw):
         "body_write_failed": b"Failed to send message body" in lines}
 
 
+KEY_ROUTE_FIELDS = ("seat_keyboard_matches", "independent_keyboards_requested", "keyboard_enabled",
+    "recipient_matches_clicked", "packet_matches_fixture")
+KEY_CONTEXT_FIELDS = ("target_identity_matches", "recipient_pid_matches", "recipient_window_matches",
+    "selected_window_matches", "instance_binding_matches", "startup_config_calls_returned",
+    "requested_keyboard_messages", "packet_keyboard_assigned", "requested_frozen", "native_backend_selected")
+KEY_CALL_FIELDS = ("instance_nonzero", "device_matches", "kind_matches", "flags_match", "scan_matches",
+    "y_matches", "key_matches")
+
+
+def native_key_call_lines(raw):
+    # Only fixed, complete, first-key-down qualification records are admitted.
+    # Missing records remain unobserved; a live/truncated snapshot is inconclusive.
+    result = {"route":None,"context":None,"call_entered":None,"call_returned":None,
+        "malformed_record":False,"duplicate_record":False,"order_valid":None}
+    order = []
+    schemas = {b"PIM_QUAL_KEY_ROUTE_V1":("route", KEY_ROUTE_FIELDS),
+        b"PIM_QUAL_KEY_CONTEXT_V1":("context", KEY_CONTEXT_FIELDS),
+        b"PIM_QUAL_KEY_CALL_V1":("call", KEY_CALL_FIELDS)}
+    for line in raw[:raw.rfind(b"\n")+1].splitlines():
+        parts = line.split(b" ")
+        schema = schemas.get(parts[0])
+        if schema is None:
+            continue
+        stage, fields = schema
+        wanted = (("decision",) if stage == "route" else ("phase",) if stage == "call" else ()) + fields
+        pairs = [part.split(b"=", 1) for part in parts[1:]]
+        if len(pairs) != len(wanted) or any(len(pair) != 2 for pair in pairs):
+            result["malformed_record"] = True
+            continue
+        if [pair[0] for pair in pairs] != [key.encode("ascii") for key in wanted]:
+            result["malformed_record"] = True
+            continue
+        values = dict(zip(wanted, [pair[1] for pair in pairs]))
+        valid = all(values[key] in (b"true", b"false") or
+            (stage == "route" and key == "recipient_matches_clicked" and values[key] == b"unobserved") for key in fields)
+        if stage == "route":
+            valid = valid and values["decision"] in (b"duplicate_hold", b"shared_hold", b"submit")
+        elif stage == "call":
+            valid = valid and values["phase"] in (b"entered", b"returned")
+        if not valid:
+            result["malformed_record"] = True
+            continue
+        destination = stage if stage != "call" else "call_"+values["phase"].decode("ascii")
+        if result[destination] is not None:
+            result["duplicate_record"] = True
+            continue
+        row = {key:None if values[key] == b"unobserved" else values[key] == b"true" for key in fields}
+        if stage == "route":
+            row["decision"] = values["decision"].decode("ascii")
+        result[destination] = row
+        order.append(destination)
+    if order:
+        result["order_valid"] = order == [stage for stage in ("route", "context", "call_entered", "call_returned") if stage in order]
+    return result
+
+
 def public_native_lifecycle(target):
     # Only the owned probe's fixed enum/boolean schema crosses the public boundary.
     result = {"status":"unobserved","present":None,"coherent":None,"header_matches":None,
@@ -237,6 +293,7 @@ class ProviderPair(base.Pair):
             "qualification_stderr_opt_in":getattr(self, "qualification_stderr_opt_in", False),
             "header_write_failed":None,"body_write_failed":None,"snapshot_complete":False,
             "truncated":None,"incomplete_line":None,"gui_exit_observed":False,"read_failure":None}
+        diagnostic["first_key_down"] = None
         self.result["native_submission_diagnostics"] = diagnostic
         try:
             diagnostic["gui_exit_observed"] = self.gui is not None and self.gui.poll() is not None
@@ -248,6 +305,7 @@ class ProviderPair(base.Pair):
             raw = raw[:NATIVE_STDERR_LIMIT]
             diagnostic["incomplete_line"] = bool(raw and not raw.endswith(b"\n"))
             diagnostic.update(native_write_failure_lines(raw))
+            diagnostic["first_key_down"] = native_key_call_lines(raw)
             diagnostic["snapshot_complete"] = (diagnostic["gui_exit_observed"]
                 and not diagnostic["truncated"] and not diagnostic["incomplete_line"])
         except BaseException as error:

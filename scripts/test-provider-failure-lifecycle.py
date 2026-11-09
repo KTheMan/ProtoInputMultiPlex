@@ -168,6 +168,64 @@ class NativeStderrTests(unittest.TestCase):
         self.assertNotIn("private secret path", repr(result))
 
 
+class NativeKeyCallBoundaryTests(unittest.TestCase):
+    route = (b"PIM_QUAL_KEY_ROUTE_V1 decision=submit seat_keyboard_matches=true "
+        b"independent_keyboards_requested=true keyboard_enabled=true "
+        b"recipient_matches_clicked=true packet_matches_fixture=true\n")
+    context = (b"PIM_QUAL_KEY_CONTEXT_V1 target_identity_matches=true recipient_pid_matches=true "
+        b"recipient_window_matches=true selected_window_matches=true instance_binding_matches=true "
+        b"startup_config_calls_returned=true requested_keyboard_messages=true "
+        b"packet_keyboard_assigned=true requested_frozen=false native_backend_selected=true\n")
+    entered = (b"PIM_QUAL_KEY_CALL_V1 phase=entered instance_nonzero=true device_matches=true "
+        b"kind_matches=true flags_match=true scan_matches=true y_matches=true key_matches=true\n")
+    returned = entered.replace(b"phase=entered", b"phase=returned")
+
+    def test_decision_context_and_void_call_are_distinct_ordered_facts(self):
+        raw = self.route+self.context+self.entered+self.returned
+        result = provider.native_key_call_lines(raw)
+        self.assertEqual(result["route"]["decision"], "submit")
+        self.assertTrue(result["context"]["startup_config_calls_returned"])
+        self.assertFalse(result["context"]["requested_frozen"])
+        self.assertTrue(result["call_entered"]["key_matches"])
+        self.assertTrue(result["call_returned"]["key_matches"])
+        self.assertTrue(result["order_valid"])
+        self.assertFalse(result["malformed_record"] or result["duplicate_record"])
+        self.assertNotIn("accepted", repr(result))
+        snapshot = NativeStderrTests().snapshot(Gate(FakeGui()), raw)
+        self.assertEqual(snapshot["first_key_down"], result)
+        self.assertFalse(snapshot["snapshot_complete"])
+
+    def test_suppression_and_incomplete_call_never_invent_completion(self):
+        for decision in (b"duplicate_hold", b"shared_hold"):
+            result = provider.native_key_call_lines(self.route.replace(b"decision=submit", b"decision="+decision))
+            self.assertEqual(result["route"]["decision"], decision.decode("ascii"))
+            self.assertIsNone(result["context"])
+            self.assertIsNone(result["call_entered"])
+            self.assertIsNone(result["call_returned"])
+        result = provider.native_key_call_lines(self.route+self.context+self.entered+self.returned[:-1])
+        self.assertIsNotNone(result["call_entered"])
+        self.assertIsNone(result["call_returned"])
+        mismatch = provider.native_key_call_lines(self.entered.replace(b"key_matches=true", b"key_matches=false"))
+        self.assertFalse(mismatch["call_entered"]["key_matches"])
+
+    def test_near_miss_private_fields_and_invalid_values_are_rejected(self):
+        for raw in (
+            b"private-prefix "+self.entered,
+            self.entered.replace(b"key_matches=true", b"key_matches=1"),
+            self.entered.replace(b"phase=entered", b"phase=accepted"),
+            self.entered.replace(b"key_matches=true", b"private_path=secret"),
+            self.entered[:-1]+b" private_pid=123\n",
+        ):
+            result = provider.native_key_call_lines(raw)
+            self.assertIsNone(result["call_entered"])
+            self.assertNotIn("secret", repr(result))
+            self.assertNotIn("123", repr(result))
+        out_of_order = provider.native_key_call_lines(self.returned+self.entered)
+        self.assertFalse(out_of_order["order_valid"])
+        repeated = provider.native_key_call_lines(self.entered+self.entered)
+        self.assertTrue(repeated["duplicate_record"])
+
+
 class NativeLifecycleBoundaryTests(unittest.TestCase):
     def test_lifecycle_whitelist_preserves_uncertainty_and_rejects_private_or_malformed_values(self):
         observed = {"status":"observed","present":True,"coherent":True,"header_matches":True,
