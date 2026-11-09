@@ -463,9 +463,8 @@ fn retained_readiness_observation_with(
     mut alive: impl FnMut() -> bool,
     read: impl FnOnce() -> OwnReadinessObservation,
 ) -> OwnReadinessObservation {
-    let unavailable = || {
-        OwnReadinessObservation::unavailable(OwnReadinessStatus::IdentityUnavailable, None)
-    };
+    let unavailable =
+        || OwnReadinessObservation::unavailable(OwnReadinessStatus::IdentityUnavailable, None);
     if actual != expected
         || actual.0 == 0
         || actual.1 == 0
