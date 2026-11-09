@@ -36,6 +36,8 @@ struct Snapshot {
     held_keys: Vec<u32>,
     key_events: Vec<KeyEvent>,
     key_event_count: u64,
+    root_key_events: Vec<RootKeyEvent>,
+    root_key_event_count: u64,
     text_events: u64,
     mouse_events: Vec<MouseEvent>,
     mouse_event_count: u64,
@@ -190,6 +192,40 @@ struct KeyEvent {
     scan: u32,
     extended: bool,
     alt: bool,
+}
+impl KeyEvent {
+    fn from_message(message: u32, wparam: usize, lparam: isize) -> Self {
+        Self {
+            vk: wparam as u32,
+            pressed: matches!(message, WM_KEYDOWN | WM_SYSKEYDOWN),
+            scan: ((lparam >> 16) & 255) as u32,
+            extended: lparam & (1 << 24) != 0,
+            alt: lparam & (1 << 29) != 0,
+        }
+    }
+}
+#[derive(Serialize)]
+struct RootKeyEvent {
+    hwnd: usize,
+    message: u32,
+    #[serde(flatten)]
+    key: KeyEvent,
+}
+impl Snapshot {
+    fn root_key(&mut self, hwnd: usize, message: u32, wparam: usize, lparam: isize) {
+        if !matches!(message, WM_KEYDOWN | WM_SYSKEYDOWN | WM_KEYUP | WM_SYSKEYUP) {
+            return;
+        }
+        self.root_key_event_count = self.root_key_event_count.saturating_add(1);
+        if self.root_key_events.len() >= 2048 {
+            self.root_key_events.remove(0);
+        }
+        self.root_key_events.push(RootKeyEvent {
+            hwnd,
+            message,
+            key: KeyEvent::from_message(message, wparam, lparam),
+        });
+    }
 }
 #[derive(Serialize)]
 struct NativeEvent {
@@ -454,6 +490,9 @@ unsafe extern "system" fn root_proc(h: HWND, m: u32, w: WPARAM, l: LPARAM) -> LR
         WM_KEYDOWN | WM_SYSKEYDOWN | WM_KEYUP | WM_SYSKEYUP | WM_CHAR
     ) {
         record_native_event(h, m, w, l);
+        if let Some(snapshot) = SNAPSHOT.get() {
+            snapshot.lock().unwrap().root_key(h as usize, m, w, l);
+        }
     }
     if let Some(result) = fixture_cursor_message(h, m, l) {
         return result;
@@ -547,13 +586,7 @@ unsafe extern "system" fn edit_proc(h: HWND, m: u32, w: WPARAM, l: LPARAM) -> LR
             if snapshot.key_events.len() >= 2048 {
                 snapshot.key_events.remove(0);
             }
-            snapshot.key_events.push(KeyEvent {
-                vk: w as u32,
-                pressed: matches!(m, WM_KEYDOWN | WM_SYSKEYDOWN),
-                scan: ((l >> 16) & 255) as u32,
-                extended: l & (1 << 24) != 0,
-                alt: l & (1 << 29) != 0,
-            });
+            snapshot.key_events.push(KeyEvent::from_message(m, w, l));
         }
         if m == WM_CHAR {
             snapshot.text_events += 1;
@@ -1154,5 +1187,70 @@ pub fn run(
                 std::thread::sleep(Duration::from_millis(5));
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod root_key_tests {
+    use super::*;
+
+    #[test]
+    fn root_history_keeps_native_identity_and_bounds_without_changing_edit_history() {
+        let mut snapshot = Snapshot::default();
+        snapshot.root_key(101, WM_KEYDOWN, 163, (29 << 16) | (1 << 24));
+        snapshot.root_key(
+            202,
+            WM_SYSKEYUP,
+            163,
+            (29 << 16) | (1 << 24) | (1 << 29) | (1isize << 31),
+        );
+        snapshot.root_key(101, WM_CHAR, 163, 1);
+        assert_eq!(snapshot.root_key_event_count, 2);
+        assert!(snapshot.key_events.is_empty());
+        assert_eq!(snapshot.key_event_count, 0);
+        let down = serde_json::to_value(&snapshot.root_key_events[0]).unwrap();
+        assert_eq!(
+            down,
+            serde_json::json!({
+                "hwnd": 101,
+                "message": WM_KEYDOWN,
+                "vk": 163,
+                "pressed": true,
+                "scan": 29,
+                "extended": true,
+                "alt": false
+            })
+        );
+        let up = &snapshot.root_key_events[1];
+        assert_eq!(
+            (up.hwnd, up.message, up.key.vk, up.key.scan),
+            (202, WM_SYSKEYUP, 163, 29)
+        );
+        assert!(!up.key.pressed && up.key.extended && up.key.alt);
+        let edit = serde_json::to_value(KeyEvent::from_message(
+            WM_KEYDOWN,
+            163,
+            (29 << 16) | (1 << 24),
+        ))
+        .unwrap();
+        assert_eq!(
+            edit,
+            serde_json::json!({
+                "vk": 163,
+                "pressed": true,
+                "scan": 29,
+                "extended": true,
+                "alt": false
+            })
+        );
+        for index in 0..2049usize {
+            snapshot.root_key(1000 + index, WM_KEYDOWN, 65, 30 << 16);
+        }
+        assert_eq!(snapshot.root_key_event_count, 2051);
+        assert_eq!(snapshot.root_key_events.len(), 2048);
+        assert_eq!(snapshot.root_key_events.first().unwrap().hwnd, 1001);
+        assert_eq!(snapshot.root_key_events.last().unwrap().hwnd, 3048);
+        assert!(snapshot.key_events.is_empty());
+        assert_eq!(snapshot.key_event_count, 0);
     }
 }

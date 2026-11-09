@@ -303,7 +303,11 @@ class ProviderPair(base.Pair):
                 self.input("select_window", user=index, pid=pid, hwnd=row["hwnd"], creation_token=row["eligibility"]["creation_token"])
                 self.input("move_to", user=index, x=self.points[index][0], y=self.points[index][1])
             diagnostic = {"key_returned":False,"mapped_x1_held":None,"rightctrl_held":None,
-                "exact_rightctrl_down":None,"generic_ctrl_down":None,"rightctrl_down":None}
+                "exact_rightctrl_down":None,"generic_ctrl_down":None,"rightctrl_down":None,
+                "target0_vk163_held":None,"target0_vk163_down":None,
+                "root_history_present":None,"root_detail_fields_present":None,
+                "target1_root_vk163_down":None,"target1_any_root_key_down":None,
+                "target1_root_expected_hwnd":None}
             self.result["prepare_holds_observation"] = diagnostic
             self.input("button", user=0, button="primary", pressed=True)
             reply = self.input("key", user=1, key="rightctrl", pressed=True)
@@ -351,27 +355,40 @@ class ProviderPair(base.Pair):
                 router["projection_valid"] = True
             except (KeyError, TypeError, IndexError, AttributeError):
                 pass  # Diagnostic failure must not replace the original acceptance predicate.
+            def observe_root(target):
+                events = target.get("root_key_events")
+                diagnostic["root_history_present"] = isinstance(events, list)
+                fields = {"hwnd","message","vk","pressed","scan","extended","alt"}
+                valid = isinstance(events, list) and all(isinstance(e, dict) and fields <= e.keys() for e in events)
+                diagnostic["root_detail_fields_present"] = valid if events else None
+                if not valid:
+                    return False
+                down = [e for e in events if e["pressed"] is True and e["message"] in (0x100,0x104)]
+                diagnostic["target1_any_root_key_down"] = bool(down)
+                diagnostic["target1_root_vk163_down"] = any(e["vk"] == 163 for e in down)
+                diagnostic["target1_root_expected_hwnd"] = any(e["vk"] == 163 and e["hwnd"] == selected_windows[1] for e in down)
+                exact = any(e["vk"] == 163 and e["scan"] == 29 and e["extended"] is True and e["hwnd"] == selected_windows[1] for e in down)
+                diagnostic["exact_rightctrl_down"] = exact
+                diagnostic["generic_ctrl_down"] = any(e["vk"] == 17 for e in down)
+                diagnostic["rightctrl_down"] = diagnostic["target1_root_vk163_down"]
+                return exact
             self.check = "prepare_holds_target_held_state"
             def held():
-                button = self.target(0)["buttons"] & 8
+                first = self.target(0)
+                button = first["buttons"] & 8
                 diagnostic["mapped_x1_held"] = bool(button)
+                diagnostic["target0_vk163_held"] = 163 in first["held_keys"]
+                diagnostic["target0_vk163_down"] = any(e["kind"] == "key" and e["code"] == 163 and e["pressed"] is True for e in first["native_events"])
                 if not button:
                     return button
                 target = self.target(1)
                 key = 163 in target["held_keys"]
                 diagnostic["rightctrl_held"] = key
-                diagnostic["exact_rightctrl_down"] = any(e["vk"] == 163 and e["scan"] == 29 and e["extended"] is True and e["pressed"] is True for e in target["key_events"])
-                diagnostic["generic_ctrl_down"] = any(e["vk"] == 17 and e["pressed"] is True for e in target["key_events"])
-                diagnostic["rightctrl_down"] = any(e["vk"] == 163 and e["pressed"] is True for e in target["key_events"])
+                observe_root(target)
                 return key
             self.wait(held)
             self.check = "prepare_holds_exact_rightctrl_event"
-            events = self.target(1)["key_events"]
-            exact = any(e["vk"] == 163 and e["scan"] == 29 and e["extended"] is True and e["pressed"] is True for e in events)
-            diagnostic["exact_rightctrl_down"] = exact
-            diagnostic["generic_ctrl_down"] = any(e["vk"] == 17 and e["pressed"] is True for e in events)
-            diagnostic["rightctrl_down"] = any(e["vk"] == 163 and e["pressed"] is True for e in events)
-            require(exact)
+            require(observe_root(self.target(1)))
         elif name.startswith("bound_"):
             self.wait(lambda: self.bound(int(name[-1])))
         elif name == "native_one":
@@ -482,7 +499,7 @@ class ProviderPair(base.Pair):
                 for kind,delta in (("wheel",120),("horizontal_wheel",-120)):
                     if not any(e["kind"] == kind and e["delta"] == delta and e["wheel_screen"] == [self.points[i][0]+6,self.points[i][1]+3] for e in native): return None
             third = rows[2]["native_events"][before[2]["native_event_count"]:]
-            if rows[2]["key_event_count"] != before[2]["key_event_count"]+2 or rows[2]["held_keys"]: return None
+            if rows[2]["root_key_event_count"] != before[2]["root_key_event_count"]+2 or rows[2]["held_keys"]: return None
             if [e["pressed"] for e in third if e["kind"] == "key" and e["code"] == 119] != [True,False]: return None
             return rows
         self.check = "independent_target_traces"
