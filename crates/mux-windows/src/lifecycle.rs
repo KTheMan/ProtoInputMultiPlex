@@ -1403,11 +1403,7 @@ mod tests {
                 expected,
                 || {
                     alive_calls += 1;
-                    if alive_calls == 1 {
-                        WAIT_TIMEOUT
-                    } else {
-                        wait
-                    }
+                    if alive_calls == 1 { WAIT_TIMEOUT } else { wait }
                 },
                 || {
                     read_calls += 1;
