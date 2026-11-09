@@ -165,6 +165,7 @@ pub(super) fn mock_client() -> (NativeClient, (), Arc<AtomicUsize>) {
     });
     (
         NativeClient {
+            desktop_version: None,
             shared,
             worker: None,
             binding,
