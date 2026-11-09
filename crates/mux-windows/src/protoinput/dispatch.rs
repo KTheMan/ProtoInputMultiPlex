@@ -33,8 +33,14 @@ fn qualification_native_key_call(phase: NativeKeyCallPhase, packet: &Packet, ins
         NativeKeyCallPhase::Entered => "entered",
         NativeKeyCallPhase::Returned => "returned",
     };
-    let [device_matches, kind_matches, flags_match, scan_matches, y_matches, key_matches] =
-        qualification_packet_matches(packet);
+    let [
+        device_matches,
+        kind_matches,
+        flags_match,
+        scan_matches,
+        y_matches,
+        key_matches,
+    ] = qualification_packet_matches(packet);
     let instance_nonzero = instance != 0;
     qualification_stderr(format_args!(
         "PIM_QUAL_KEY_CALL_V1 phase={phase} instance_nonzero={instance_nonzero} device_matches={device_matches} kind_matches={kind_matches} flags_match={flags_match} scan_matches={scan_matches} y_matches={y_matches} key_matches={key_matches}"
