@@ -121,12 +121,16 @@ pub(crate) fn sdk_kind_tabs(
     });
 }
 
+pub(crate) struct DesktopSelection<'a> {
+    pub candidates: &'a [(String, String)],
+    pub available: bool,
+}
+
 pub(crate) fn show(
     ui: &mut egui::Ui,
     controller: &mut Controller,
     allowed: bool,
-    desktop_candidates: &[(String, String)],
-    desktop_available: bool,
+    desktop: DesktopSelection<'_>,
     script: Option<&mut Script>,
     frame: &mut u64,
     actions: &mut BTreeSet<String>,
@@ -226,7 +230,7 @@ pub(crate) fn show(
     .caption()
     .wrap()
     .show(ui);
-    if !desktop_available {
+    if !desktop.available {
         Text::new(
             "Start a desktop routing session with virtual users to make these controls available.",
         )
@@ -234,13 +238,13 @@ pub(crate) fn show(
         .wrap()
         .show(ui);
     }
-    for (index, (identity, name)) in desktop_candidates.iter().enumerate() {
+    for (index, (identity, name)) in desktop.candidates.iter().enumerate() {
         let label = format!("Observe desktop user {}: {}", index + 1, name);
         if button(
             ui,
             &label,
             allowed
-                && desktop_available
+                && desktop.available
                 && controller.active()
                 && !controller.desktop_identity_selected(identity),
             &mut script,

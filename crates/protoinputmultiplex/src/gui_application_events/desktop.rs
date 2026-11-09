@@ -245,6 +245,7 @@ impl Controller {
             self.desktop.bindings.clear();
             return;
         };
+        let generation = worker.desktop_observation_generation();
         // Persistent loss is checked before the inbox and again before each fold.
         let dead = self
             .desktop
@@ -252,6 +253,7 @@ impl Controller {
             .iter()
             .filter_map(|(tag, binding)| {
                 (!self.active()
+                    || tag.routing_generation != generation
                     || matches!(binding.phase, Phase::Cancelled)
                     || (matches!(binding.phase, Phase::Bound { .. })
                         && !worker.desktop_observation_live(*tag)))
@@ -330,7 +332,8 @@ impl Controller {
             matches!(binding.phase, Phase::Pending { request } if request == value.request)),
             "Desktop binding was cancelled or replaced");
         ensure!(
-            self.desktop.screens.as_ref() == Some(&value.screens),
+            self.desktop.screens.as_ref() == Some(&value.screens)
+                && self.bridge.as_ref().is_some_and(|bridge| bridge.screens() == &value.screens),
             "Desktop screens changed; create a fresh event session with the current display mapping"
         );
         ensure!(

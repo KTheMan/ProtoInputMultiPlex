@@ -471,8 +471,10 @@ impl Dashboard {
             ui,
             &mut self.application_events,
             allowed,
-            &desktop_candidates,
-            desktop_available,
+            crate::application_event_ui::DesktopSelection {
+                candidates: &desktop_candidates,
+                available: desktop_available,
+            },
             self.script.as_mut(),
             &mut self.action_frame,
             &mut self.frame_actions,
