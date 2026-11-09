@@ -31,6 +31,7 @@ def module(name, file):
 
 base = module("provider_pair", "qualify-gui-pair.py")
 mcp_helpers = module("provider_mcp", "test-mcp.py")
+crash_events = module("provider_crash_events", "provider-crash-events.py")
 require = base.require
 
 
@@ -473,6 +474,68 @@ class ProviderPair(base.Pair):
                 row["stderr_read_failure"] = public_failure_class(error)
         # A live or incomplete capture has inconclusive negative flags. Even a
         # recognized status/header selects an investigation, not a cause/fix.
+
+    def target_crash_event_diagnostics(self):
+        if getattr(self, "target_crash_events_sampled", False):
+            return
+        self.target_crash_events_sampled = True
+        diagnostic = {"collection_phase":"after_existing_failure_cleanup","query_status":"not_started",
+            "record_limit_reached":False,"render_incomplete":False,"malformed_record_present":False,
+            "failure_class":None,"pdb_identity":"not_inspected","loaded_module_hash_proved":False,
+            "target_a":crash_events.empty_observation(),"target_b":crash_events.empty_observation()}
+        self.result["target_crash_events"] = diagnostic
+        if not (os.name == "nt" and os.environ.get("GITHUB_ACTIONS") == "true"
+                and os.environ.get("RUNNER_ENVIRONMENT") == "github-hosted"):
+            diagnostic["query_status"] = "hosted_windows_required"
+            return
+        if time.monotonic() >= self.end:
+            diagnostic["query_status"] = "deadline_exhausted"
+            return
+        identities = []
+        for index, label in enumerate(("target_a", "target_b")):
+            if index >= len(getattr(self, "targets_processes", ())):
+                diagnostic[label] = crash_events.empty_observation("not_owned")
+                continue
+            if time.monotonic() >= self.end:
+                diagnostic["query_status"] = "deadline_exhausted"
+                return
+            try:
+                identities.append((label,crash_events.original_creation(self.targets_processes[index], self.end)))
+            except TimeoutError:
+                diagnostic["query_status"] = "deadline_exhausted"
+                return
+            except BaseException:
+                diagnostic[label] = crash_events.empty_observation("identity_unavailable")
+        if not identities:
+            diagnostic["query_status"] = "no_owned_identity"
+            return
+        try:
+            query, records = crash_events.query_events(self.end)
+            diagnostic.update(query)
+            # Metadata bounds only; the original qualification deadline is never
+            # extended and there is no poll for a future event-log publication.
+            upper = time.time_ns() // 100 + 116444736000000000
+            for label, identity in identities:
+                if time.monotonic() >= self.end:
+                    diagnostic["query_status"] = "deadline_exhausted"
+                    return
+                public, raw, malformed = crash_events.match_events(records, identity, str(self.exe), upper,
+                    getattr(self, "crash_admitted_modules", {}))
+                diagnostic[label] = public
+                diagnostic["malformed_record_present"] |= malformed
+                if raw is not None:
+                    if time.monotonic() >= self.end:
+                        diagnostic["query_status"] = "deadline_exhausted"
+                        public["record_retention_failed"] = True
+                        return
+                    try:
+                        (self.private / (label+"-matched-crash-event.xml")).write_text(raw, encoding="utf-8")
+                    except BaseException:
+                        public["record_retention_failed"] = True
+        except BaseException as error:
+            diagnostic["failure_class"] = public_failure_class(error)
+        # Exact event identity/time/image matching is not packet receipt or cause.
+        # Event absence, partial query and unverified PDBs stay inconclusive.
 
     def native_submission_diagnostics(self, collection_phase="direct_observation"):
         diagnostic = {"collection_phase":collection_phase,
@@ -1038,6 +1101,11 @@ class ProviderPair(base.Pair):
         gui_meta = self.strict_json("artifact_json",gui_root/"metadata.json"); self.native_meta = self.strict_json("artifact_json",native_root/"metadata.json")
         require(gui_meta["source_commit"] == self.native_meta["source_commit"] == args.commit and gui_meta["features"] == ["software-renderer"] and self.native_meta["native_client_abi_version"] == 3)
         self.exe = self.checked(gui_root,gui_meta["executable"],"protoinputmultiplex.exe")
+        self.crash_admitted_modules = {}
+        try:
+            self.crash_admitted_modules[crash_events.windows_path(str(self.exe))] = gui_meta["executable"]["sha256"]
+        except BaseException:
+            pass  # Optional retained diagnostic metadata cannot fail preparation.
         self.native_exe = self.checked(native_root,self.native_meta["external_fixture"],"native_external_consumer.exe")
         self.dll = self.checked(native_root,self.native_meta["dll"],"mux_application_sdk.dll")
         backend = base.read(args.backend/"provider-backend.json")
@@ -1046,6 +1114,11 @@ class ProviderPair(base.Pair):
         for entry in backend["files"]:
             require(re.fullmatch(r"[A-Za-z0-9_.-]+\.(dll|exe)",entry["file"]) is not None)
             source = self.checked(args.backend,entry,entry["file"]); shutil.copyfile(source,self.private/"runtime"/entry["file"])
+            try:
+                if entry["file"].lower() in crash_events.OWN_MODULES:
+                    self.crash_admitted_modules[crash_events.windows_path(str(self.private/"runtime"/entry["file"]))] = entry["sha256"]
+            except BaseException:
+                pass  # Routing admission and file-copy behavior stay authoritative.
         prefs = self.private/"preferences"; prefs.mkdir(); self.preferences = prefs/"app-preferences.json"
         data = self.strict_json("preferences_json",args.source/"fixtures/gui-sdk-preparation/app-preferences.json")
         data["load_profile_at_startup"] = True
@@ -1144,6 +1217,10 @@ def main():
         except BaseException:
             pass  # Best-effort diagnostics must preserve the frozen FAIL/cleanup.
         gate.failed_group_cleanup()
+        try:
+            gate.target_crash_event_diagnostics()
+        except BaseException:
+            pass  # Preserve the original FAIL and already-completed cleanup.
     else:
         gate.native_submission_diagnostics("after_run")
     require(not args.public_result.exists())

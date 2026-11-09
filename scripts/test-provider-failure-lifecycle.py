@@ -6,6 +6,7 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
+from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
@@ -119,6 +120,257 @@ class FailureLifecycleTests(unittest.TestCase):
         self.assertIsNone(cleanup["gui_exit_zero"])
         self.assertEqual(cleanup["failure_class"], "TimeoutExpired")
         self.assertNotIn("private secret path", repr(cleanup))
+
+
+class CrashEventTests(unittest.TestCase):
+    image = r"D:\private\protoinputmultiplex.exe"
+    module = r"D:\private\runtime\ProtoInputHooks64.dll"
+    creation = 132223104000000000
+
+    def record(self, **changes):
+        values = {"ProcessId":"0x2a","ProcessCreationTime":hex(self.creation),"AppPath":self.image,
+            "ModulePath":self.module,"ModuleName":"ProtoInputHooks64.dll","ExceptionCode":"c0000005",
+            "FaultingOffset":"0000000000001234"}
+        values.update(changes)
+        data = "".join('<Data Name="'+key+'">'+value+'</Data>' for key, value in values.items())
+        return ('<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event"><System>'
+            '<Provider Name="Application Error"/><EventID>1000</EventID><Level>2</Level><Channel>Application</Channel>'
+            '<TimeCreated SystemTime="2020-01-01T00:00:01.0000000Z"/></System><EventData>'+data+'</EventData></Event>')
+
+    def match(self, raw, **changes):
+        helper = provider.crash_events
+        args = {"identity":(42,self.creation),"image":self.image,"upper":self.creation+20000000,
+            "modules":{helper.windows_path(self.module):"a"*64}}
+        args.update(changes)
+        return helper.match_events(raw, **args)
+
+    def test_event_requires_exact_original_identity_image_and_time_with_private_payload(self):
+        public, raw, malformed = self.match([self.record()])
+        self.assertEqual(public["status"], "matched")
+        self.assertEqual(public["module_class"], "protoinput_hooks")
+        self.assertEqual(public["instruction_rva"], 0x1234)
+        self.assertEqual(public["own_module_basename"], "protoinputhooks64.dll")
+        self.assertEqual(public["admitted_module_sha256"], "a"*64)
+        self.assertFalse(malformed)
+        self.assertIn("private", raw)
+        self.assertNotIn("private", repr(public))
+        self.assertNotIn(str(self.creation), repr(public))
+        for altered in (self.record(ProcessId="0x2b"),self.record(ProcessCreationTime=hex(self.creation+1)),
+                self.record(ProcessId="0x2b").replace("<EventID>",'<Execution ProcessID="42"/><EventID>'),
+                self.record(AppPath=r"D:\other\protoinputmultiplex.exe")):
+            self.assertEqual(self.match([altered])[0]["status"], "no_matching_event")
+        self.assertEqual(self.match([self.record()], upper=self.creation)[0]["status"], "no_matching_event")
+        self.assertEqual(self.match([self.record()], identity=(42,self.creation+20000000))[0]["status"], "no_matching_event")
+        self.assertEqual(provider.crash_events.system_filetime("2020-01-01T00:00:01.0000001Z"), self.creation+10000001)
+
+    def test_bad_xml_duplicate_fields_absolute_offsets_and_ambiguous_records_are_suppressed(self):
+        raw = self.record()
+        bad = ["<!DOCTYPE Event [<!ENTITY x 'private'>]>"+raw,raw[:-8],
+            raw.replace("1000</EventID>","1001</EventID>"),raw.replace('Name="Application Error"','Name="other"'),
+            raw.replace("<Level>2</Level>","<Level>4</Level>"),raw.replace("Application</Channel>","Security</Channel>"),
+            raw.replace("<System>","<System><EventID>1000</EventID>"),
+            raw.replace("</EventData>",'<Data Name="ProcessId">0x2a</Data></EventData>'),
+            self.record(ProcessId="0x100000000"),self.record(ProcessCreationTime="private"),
+            "x"*(provider.crash_events.MAX_XML_BYTES+1)]
+        for value in bad:
+            public, private, malformed = self.match([value])
+            self.assertEqual(public["status"], "no_matching_event")
+            self.assertIsNone(private)
+            self.assertTrue(malformed)
+            self.assertNotIn("private", repr(public))
+        public, private, _ = self.match([raw,raw])
+        self.assertEqual(public["status"], "ambiguous")
+        self.assertIsNone(public["instruction_rva"])
+        self.assertIsNone(private)
+
+    def test_matching_identity_with_unknown_module_or_absolute_offset_reports_precise_gap(self):
+        for changes, reason in (({"ModulePath":"unknown"},"module_unavailable"),
+                ({"FaultingOffset":"00007ff8deadbeef"},"offset_unavailable"),
+                ({"ExceptionCode":"private"},"exception_unavailable")):
+            public, private, malformed = self.match([self.record(**changes)])
+            self.assertEqual(public["status"], "matched_unattributable")
+            self.assertEqual(public["attribution_status"], reason)
+            self.assertIsNone(public["instruction_rva"])
+            self.assertIsNotNone(private)
+            self.assertFalse(malformed)
+            self.assertNotIn("deadbeef", repr(public))
+
+    def test_module_hash_requires_fixed_name_and_exact_admitted_path_and_is_not_loaded_identity(self):
+        for changes in ({"ModulePath":r"D:\other\ProtoInputHooks64.dll"},{"ModuleName":"private.dll"},
+                {"ModulePath":r"D:\private\private.dll","ModuleName":"private.dll"}):
+            public, _, _ = self.match([self.record(**changes)])
+            self.assertEqual(public["module_class"], "other_module")
+            self.assertIsNone(public["own_module_basename"])
+            self.assertIsNone(public["admitted_module_sha256"])
+            self.assertNotIn("private", repr(public))
+        public, _, _ = self.match([self.record(ModulePath=r"C:\Windows\System32\ntdll.dll",ModuleName="ntdll.dll")])
+        self.assertEqual(public["module_class"], "windows_system")
+        self.assertIsNone(public["admitted_module_sha256"])
+        self.assertEqual(public["symbolization"], "not_inspected")
+
+    def test_creation_reads_original_popen_handle_once_without_pid_reopen(self):
+        helper, calls = provider.crash_events, []
+        class Times:
+            def __call__(inner, handle, created, *rest):
+                calls.append(handle.value)
+                value = helper.ctypes.cast(created, helper.ctypes.POINTER(helper.wintypes.FILETIME)).contents
+                value.dwHighDateTime, value.dwLowDateTime = self.creation >> 32, self.creation & 0xffffffff
+                return 1
+        kernel = SimpleNamespace(GetProcessTimes=Times())
+        with patch.object(helper.ctypes, "WinDLL", create=True, return_value=kernel), \
+                patch.object(helper.time, "monotonic", return_value=1):
+            identity = helper.original_creation(SimpleNamespace(_handle=123,pid=42), 2)
+        self.assertEqual(calls, [123])
+        self.assertEqual(identity, (42,self.creation))
+
+    def test_single_event_batch_uses_zero_timeout_and_closes_query_and_event_handles(self):
+        helper, raw = provider.crash_events, self.record()
+        cases = ("success","next_failure","oversize","render_failure","render_raise","invalid_count",
+            "expiry_after_bind","expiry_after_query","expiry_after_next","expiry_after_sizing")
+        for case in cases:
+            with self.subTest(case=case):
+                trace, clock = [], [1]
+                def query(*args):
+                    trace.append(("query",args[-1]))
+                    if case == "expiry_after_query": clock[0] = 3
+                    return 101
+                def next_events(query, capacity, handles, timeout, flags, count):
+                    trace.append(("next",capacity,timeout,flags))
+                    handles[0] = 201
+                    helper.ctypes.cast(count, helper.ctypes.POINTER(helper.wintypes.DWORD)).contents.value = 33 if case == "invalid_count" else 1
+                    if case == "expiry_after_next": clock[0] = 3
+                    return case != "next_failure"
+                def render(context, handle, flags, size, buffer, used, properties):
+                    trace.append(("render",size))
+                    amount = helper.MAX_XML_BYTES+2 if case == "oversize" else (len(raw)+1)*helper.ctypes.sizeof(helper.ctypes.c_wchar)
+                    helper.ctypes.cast(used, helper.ctypes.POINTER(helper.wintypes.DWORD)).contents.value = amount
+                    if buffer is None:
+                        if case == "expiry_after_sizing": clock[0] = 3
+                        return 0
+                    if case == "render_raise": raise RuntimeError("private render failure")
+                    if case == "render_failure": return 0
+                    buffer.value = raw
+                    return 1
+                class Call:
+                    def __init__(self, fn): self.fn = fn
+                    def __call__(self, *args): return self.fn(*args)
+                api = SimpleNamespace(EvtQuery=Call(query),EvtNext=Call(next_events),EvtRender=Call(render),
+                    EvtClose=Call(lambda handle: trace.append(("close",handle))))
+                def load(*args, **kwargs):
+                    if case == "expiry_after_bind": clock[0] = 3
+                    return api
+                with patch.object(helper.ctypes, "WinDLL", create=True, side_effect=load), \
+                        patch.object(helper.ctypes, "get_last_error", create=True, return_value=122), \
+                        patch.object(helper.time, "monotonic", side_effect=lambda: clock[0]):
+                    if case == "render_raise":
+                        with self.assertRaises(RuntimeError): helper.query_events(2)
+                    else:
+                        result, records = helper.query_events(2)
+                        self.assertEqual(records, [raw] if case == "success" else [])
+                        if case.startswith("expiry_"): self.assertEqual(result["query_status"], "deadline_exhausted")
+                        if case in ("oversize","render_failure","expiry_after_next","expiry_after_sizing"):
+                            self.assertTrue(result["render_incomplete"])
+                before_next = case in ("expiry_after_bind","expiry_after_query")
+                self.assertEqual([row for row in trace if row[0] == "next"], [] if before_next else [("next",32,0,0)])
+                closes = [] if case == "expiry_after_bind" else [("close",101)] if before_next else [("close",201),("close",101)]
+                self.assertEqual([row for row in trace if row[0] == "close"], closes)
+                renders = [row for row in trace if row[0] == "render"]
+                if case in ("expiry_after_bind","expiry_after_query","expiry_after_next","next_failure","invalid_count"):
+                    self.assertEqual(renders, [])
+                elif case in ("expiry_after_sizing","oversize"):
+                    self.assertEqual(renders, [("render",0)])
+
+    def test_metadata_deadline_after_binding_skips_getprocesstimes(self):
+        helper, clock, calls = provider.crash_events, [1], []
+        class Times:
+            def __call__(self, *args): calls.append(args); raise AssertionError("expired metadata call")
+        def load(*args, **kwargs):
+            clock[0] = 3
+            return SimpleNamespace(GetProcessTimes=Times())
+        with patch.object(helper.ctypes, "WinDLL", create=True, side_effect=load), \
+                patch.object(helper.time, "monotonic", side_effect=lambda: clock[0]):
+            with self.assertRaises(TimeoutError): helper.original_creation(SimpleNamespace(_handle=123,pid=42), 2)
+        self.assertEqual(calls, [])
+
+    def test_query_deadline_and_missing_api_do_not_poll_or_expose_errors(self):
+        helper = provider.crash_events
+        with patch.object(helper.time, "monotonic", return_value=3), \
+                patch.object(helper.ctypes, "WinDLL", create=True, side_effect=AssertionError("expired")) as load:
+            result, records = helper.query_events(2)
+        self.assertEqual(result["query_status"], "deadline_exhausted")
+        self.assertEqual(records, [])
+        self.assertEqual(load.call_count, 0)
+        with patch.object(helper.time, "monotonic", return_value=1), \
+                patch.object(helper.ctypes, "WinDLL", create=True, side_effect=OSError("private secret")) as load:
+            result, records = helper.query_events(2)
+        self.assertEqual(result["query_status"], "api_unavailable")
+        self.assertEqual(load.call_count, 1)
+        self.assertNotIn("private", repr(result))
+
+    def test_controller_requires_host_ownership_and_original_identity_before_event_query(self):
+        helper = provider.crash_events
+        for mode in ("wrong_host","not_owned","identity_unavailable","expired"):
+            gate = Gate(FakeGui())
+            if mode != "not_owned": gate.targets_processes = [object(),object()]
+            with patch.object(provider.os, "name", "nt"), \
+                    patch.dict(provider.os.environ, {"GITHUB_ACTIONS":"true",
+                        "RUNNER_ENVIRONMENT":"self-hosted" if mode == "wrong_host" else "github-hosted"}), \
+                    patch.object(provider.time, "monotonic", return_value=30 if mode == "expired" else 1), \
+                    patch.object(helper, "original_creation", side_effect=OSError("private secret")) as creation, \
+                    patch.object(helper, "query_events", side_effect=AssertionError("no unbound query")) as query:
+                gate.target_crash_event_diagnostics()
+            self.assertEqual(query.call_count, 0)
+            self.assertEqual(creation.call_count, 2 if mode == "identity_unavailable" else 0)
+            self.assertNotIn("private secret", repr(gate.result))
+
+    def test_controller_samples_first_two_after_cleanup_and_retains_only_matched_private_xml(self):
+        gate, helper, reads, written = Gate(FakeGui()), provider.crash_events, [], []
+        gate.exe, gate.targets_processes = Path(self.image), [object(),object(),object()]
+        original = dict(gate.result)
+        gate.crash_admitted_modules = {helper.windows_path(self.module):"a"*64}
+        records = [self.record(),self.record(ProcessId="43",ProcessCreationTime=hex(self.creation+1))]
+        def identity(child, end):
+            self.assertEqual(end, gate.end)
+            reads.append(child)
+            return (42,self.creation) if child is gate.targets_processes[0] else (43,self.creation+1)
+        def save(path, raw, encoding): written.append((path.name,raw)); return len(raw)
+        with patch.object(provider.os, "name", "nt"), \
+                patch.dict(provider.os.environ, {"GITHUB_ACTIONS":"true","RUNNER_ENVIRONMENT":"github-hosted"}), \
+                patch.object(helper, "original_creation", side_effect=identity), \
+                patch.object(helper, "query_events", return_value=({"query_status":"queried"},records)) as query, \
+                patch.object(provider.time, "monotonic", return_value=1), \
+                patch.object(provider.time, "time_ns", return_value=(self.creation+20000000-116444736000000000)*100), \
+                patch.object(Path, "write_text", autospec=True, side_effect=save):
+            gate.target_crash_event_diagnostics()
+            gate.target_crash_event_diagnostics()
+        self.assertEqual(reads, gate.targets_processes[:2])
+        query.assert_called_once_with(gate.end)
+        self.assertEqual([name for name, raw in written], ["target_a-matched-crash-event.xml","target_b-matched-crash-event.xml"])
+        self.assertEqual({key:gate.result[key] for key in original}, original)
+        public = gate.result["target_crash_events"]
+        self.assertEqual(public["target_a"]["status"], "matched")
+        self.assertFalse(public["loaded_module_hash_proved"])
+        self.assertNotIn("private", repr({key:value for key,value in public.items() if key != "target_a" and key != "target_b"}))
+
+    def test_controller_expiry_after_first_metadata_skips_second_target_and_query(self):
+        gate, helper, clock, reads = Gate(FakeGui()), provider.crash_events, [1], []
+        gate.targets_processes = [object(),object()]
+        original = dict(gate.result)
+        def identity(child, end):
+            reads.append(child)
+            self.assertEqual(end, gate.end)
+            clock[0] = 30
+            return 42, self.creation
+        with patch.object(provider.os, "name", "nt"), \
+                patch.dict(provider.os.environ, {"GITHUB_ACTIONS":"true","RUNNER_ENVIRONMENT":"github-hosted"}), \
+                patch.object(provider.time, "monotonic", side_effect=lambda: clock[0]), \
+                patch.object(helper, "original_creation", side_effect=identity), \
+                patch.object(helper, "query_events", side_effect=AssertionError("expired query")) as query:
+            gate.target_crash_event_diagnostics()
+        self.assertEqual(reads, gate.targets_processes[:1])
+        self.assertEqual(query.call_count, 0)
+        self.assertEqual(gate.result["target_crash_events"]["query_status"], "deadline_exhausted")
+        self.assertEqual({key:gate.result[key] for key in original}, original)
 
 
 class TargetTerminationTests(unittest.TestCase):
@@ -629,6 +881,12 @@ class MainObservationOrderTests(unittest.TestCase):
                         self.checkpoint, self.stage, self.check = 99, "cleanup", "cleanup"
                         self.result["failure_cleanup"] = {"outcome":"gui_exit_observed"}
 
+                    def target_crash_event_diagnostics(self):
+                        trace.append("crash_events")
+                        assert self.result["failure_cleanup"]["outcome"] == "gui_exit_observed"
+                        if diagnostic_throws:
+                            raise RuntimeError("private secret event failure")
+
                 root = Path(directory)
                 result_path = root / "public-result.json"
                 argv = ["qualify-gui-desktop-provider.py"]
@@ -639,7 +897,7 @@ class MainObservationOrderTests(unittest.TestCase):
                     with self.assertRaises(SystemExit) as exited:
                         provider.main()
                 self.assertEqual(exited.exception.code, 1 if fail else 0)
-                self.assertEqual(trace, ["run", "before_failure_cleanup", "target_termination", "cleanup"] if fail else ["run", "after_run"])
+                self.assertEqual(trace, ["run", "before_failure_cleanup", "target_termination", "cleanup", "crash_events"] if fail else ["run", "after_run"])
                 self.assertEqual(len(samples), 1)
                 self.assertEqual(len(target_samples), 1 if fail else 0)
                 result = json.loads(result_path.read_text(encoding="utf-8"))
