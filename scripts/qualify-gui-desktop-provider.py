@@ -283,10 +283,33 @@ class ProviderPair(base.Pair):
                 row = rows[0]
                 self.input("select_window", user=index, pid=pid, hwnd=row["hwnd"], creation_token=row["eligibility"]["creation_token"])
                 self.input("move_to", user=index, x=self.points[index][0], y=self.points[index][1])
+            diagnostic = {"key_returned":False,"mapped_x1_held":None,"rightctrl_held":None,
+                "exact_rightctrl_down":None,"generic_ctrl_down":None,"rightctrl_down":None}
+            self.result["prepare_holds_observation"] = diagnostic
             self.input("button", user=0, button="primary", pressed=True)
             self.input("key", user=1, key="rightctrl", pressed=True)
-            self.wait(lambda: self.target(0)["buttons"] & 8 and 163 in self.target(1)["held_keys"])
-            require(any(e["vk"] == 163 and e["scan"] == 29 and e["extended"] is True and e["pressed"] is True for e in self.target(1)["key_events"]))
+            diagnostic["key_returned"] = True
+            self.check = "prepare_holds_target_held_state"
+            def held():
+                button = self.target(0)["buttons"] & 8
+                diagnostic["mapped_x1_held"] = bool(button)
+                if not button:
+                    return button
+                target = self.target(1)
+                key = 163 in target["held_keys"]
+                diagnostic["rightctrl_held"] = key
+                diagnostic["exact_rightctrl_down"] = any(e["vk"] == 163 and e["scan"] == 29 and e["extended"] is True and e["pressed"] is True for e in target["key_events"])
+                diagnostic["generic_ctrl_down"] = any(e["vk"] == 17 and e["pressed"] is True for e in target["key_events"])
+                diagnostic["rightctrl_down"] = any(e["vk"] == 163 and e["pressed"] is True for e in target["key_events"])
+                return key
+            self.wait(held)
+            self.check = "prepare_holds_exact_rightctrl_event"
+            events = self.target(1)["key_events"]
+            exact = any(e["vk"] == 163 and e["scan"] == 29 and e["extended"] is True and e["pressed"] is True for e in events)
+            diagnostic["exact_rightctrl_down"] = exact
+            diagnostic["generic_ctrl_down"] = any(e["vk"] == 17 and e["pressed"] is True for e in events)
+            diagnostic["rightctrl_down"] = any(e["vk"] == 163 and e["pressed"] is True for e in events)
+            require(exact)
         elif name.startswith("bound_"):
             self.wait(lambda: self.bound(int(name[-1])))
         elif name == "native_one":
