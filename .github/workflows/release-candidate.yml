@@ -6,6 +6,13 @@ on:
     branches: [sdk/application-events-20261108]
     paths: [.github/workflows/release-candidate.yml]
   workflow_dispatch:
+    inputs:
+      gui_renderer:
+        description: Qualification package renderer (software-dx12 defaults to strict DX12 CPU)
+        type: choice
+        required: true
+        default: glow
+        options: [glow, software-dx12]
 
 permissions:
   contents: read
@@ -21,6 +28,7 @@ env:
   PYTHONDONTWRITEBYTECODE: '1'
   PYTHONUTF8: '1'
   GIT_TERMINAL_PROMPT: '0'
+  PIM_CANDIDATE_GUI_RENDERER: ${{ inputs.gui_renderer || 'glow' }}
 
 jobs:
   source-checks:
@@ -121,7 +129,7 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
           $root = $env:PIM_CANDIDATE_ROOT
-          & ./scripts/package-portable.ps1 -CargoTargetDir (Join-Path $root 'cargo-target') -OutputDir (Join-Path $root 'portable') -WasmBindgenArchive (Join-Path $root 'wasm-bindgen.tar.gz')
+          & ./scripts/package-portable.ps1 -CargoTargetDir (Join-Path $root 'cargo-target') -OutputDir (Join-Path $root 'portable') -WasmBindgenArchive (Join-Path $root 'wasm-bindgen.tar.gz') -GuiRenderer $env:PIM_CANDIDATE_GUI_RENDERER
           if (-not $?) { throw 'Full release candidate packaging failed.' }
           & ./scripts/package-installer.ps1 -BundleDir (Join-Path $root 'portable') -OutputFile (Join-Path $root 'review/ProtoInputMultiPlex-unsigned-unreleased-setup.exe') -MakeNsis $env:PIM_MAKENSIS
           if (-not $?) { throw 'Unsigned installer packaging failed.' }
@@ -133,12 +141,17 @@ jobs:
           $review = Join-Path $root 'review'
           $manifest = Get-Content -LiteralPath (Join-Path $root 'portable/bundle-manifest.json') -Raw | ConvertFrom-Json
           if ($manifest.source_commit -cne $env:GITHUB_SHA -or -not $manifest.build_inputs_verified) { throw 'Frozen build identity mismatch.' }
+          $expectedFeatures = if ($env:PIM_CANDIDATE_GUI_RENDERER -ceq 'software-dx12') { @('software-renderer') } else { @() }
+          if ($manifest.application_build.gui_renderer -cne $env:PIM_CANDIDATE_GUI_RENDERER -or
+              $manifest.application_build.default_renderer -cne $env:PIM_CANDIDATE_GUI_RENDERER -or
+              (@($manifest.application_build.features) -join ',') -cne (@($expectedFeatures) -join ',') -or
+              $manifest.application_build.executable_sha256 -cne (Get-FileHash -LiteralPath (Join-Path $root 'portable/protoinputmultiplex.exe') -Algorithm SHA256).Hash.ToLowerInvariant()) { throw 'Application renderer build identity mismatch.' }
           # Preserve the exact workflow separately: the accepted source ZIP's
           # fixed workflow allowlist is intentionally unchanged.
           Copy-Item -LiteralPath '.github/workflows/release-candidate.yml' -Destination (Join-Path $review 'build-recipe.yml')
           Copy-Item -LiteralPath (Join-Path $root 'portable/bundle-manifest.json') -Destination (Join-Path $review 'bundle-manifest.json')
           Compress-Archive -LiteralPath (Join-Path $root 'portable') -DestinationPath (Join-Path $review 'ProtoInputMultiPlex-unsigned-unreleased-portable.zip') -CompressionLevel Optimal
-          $record = [ordered]@{ schema='pim.unsigned-candidate-build.v1'; status='UNSIGNED_UNRELEASED_BUILD_ONLY'; source_commit=$env:GITHUB_SHA; run_id=$env:GITHUB_RUN_ID; run_attempt=$env:GITHUB_RUN_ATTEMPT; repository=$env:GITHUB_REPOSITORY; wasm_bindgen_asset_api='https://api.github.com/repos/wasm-bindgen/wasm-bindgen/releases/assets/587769522'; wasm_bindgen_archive_sha256='79e348c169d0c10c0b287647f1e753d0985353ca96800bc29be8f4261baf13e6'; qualification='Build/staging/import inventory only. No product launch, installer execution, GUI/native/browser SDK runtime, real devices, real reboot, signing, release publication, legal redistribution clearance or Ultra parity approval.' }
+          $record = [ordered]@{ schema='pim.unsigned-candidate-build.v1'; status='UNSIGNED_UNRELEASED_BUILD_ONLY'; source_commit=$env:GITHUB_SHA; run_id=$env:GITHUB_RUN_ID; run_attempt=$env:GITHUB_RUN_ATTEMPT; repository=$env:GITHUB_REPOSITORY; application_build=$manifest.application_build; wasm_bindgen_asset_api='https://api.github.com/repos/wasm-bindgen/wasm-bindgen/releases/assets/587769522'; wasm_bindgen_archive_sha256='79e348c169d0c10c0b287647f1e753d0985353ca96800bc29be8f4261baf13e6'; qualification='Build/staging/import inventory only. No product launch, installer execution, GUI/native/browser SDK runtime, real devices, real reboot, signing, release publication, legal redistribution clearance or Ultra parity approval.' }
           $record | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $review 'candidate-status.json') -Encoding utf8
           $hashes = @(Get-ChildItem -LiteralPath $review -File | Sort-Object Name | ForEach-Object { [ordered]@{ file=$_.Name; bytes=$_.Length; sha256=(Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant() } })
           ConvertTo-Json -InputObject $hashes -Depth 5 | Set-Content -LiteralPath (Join-Path $review 'SHA256.json') -Encoding utf8

@@ -53,6 +53,39 @@ def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def app_features(renderer):
+    if renderer not in ("glow", "software-dx12"):
+        raise ValueError("Unknown GUI renderer build choice")
+    return ["software-renderer"] if renderer == "software-dx12" else []
+
+
+def metadata_features(renderer):
+    return ",".join(["mux-application-sdk/native-client"] +
+                    ["protoinputmultiplex/" + name for name in app_features(renderer)])
+
+
+def app_build_record(target, build_inputs, renderer):
+    if build_inputs is None or build_inputs.get("gui_renderer") != renderer:
+        raise ValueError("GUI renderer differs from frozen build inputs")
+    target = target.resolve()
+    log = target/"app-build.jsonl"
+    records = [json.loads(line) for line in log.read_text(encoding="utf-8-sig").splitlines() if line.strip()]
+    artifacts = [row for row in records if row.get("reason") == "compiler-artifact"
+                 and row.get("target", {}).get("name") == "protoinputmultiplex"
+                 and row["target"].get("kind") == ["bin"]]
+    if len(artifacts) != 1:
+        raise ValueError("Expected one exact application compiler artifact")
+    artifact = artifacts[0]
+    executable = target/"x86_64-pc-windows-msvc/release/protoinputmultiplex.exe"
+    if (sorted(artifact["features"]) != app_features(renderer)
+            or not artifact.get("executable") or Path(artifact["executable"]).resolve() != executable
+            or artifact["profile"].get("debug_assertions") is not False):
+        raise ValueError("Application artifact differs from renderer/target/release build")
+    return {"gui_renderer": renderer, "features": artifact["features"],
+            "default_renderer": renderer, "target": "x86_64-pc-windows-msvc", "profile": "release",
+            "cargo_json_sha256": sha(log), "executable_sha256": sha(executable)}
+
+
 def sdk_identity(build_inputs, architecture):
     if build_inputs is None:
         raise ValueError("SDK requires frozen --build-inputs")
@@ -389,11 +422,13 @@ def main():
     parser.add_argument("--record-sdk-native", type=Path, help="Cargo JSON from a fresh isolated native SDK build")
     parser.add_argument("--sdk-target", choices=list(SDK_TARGETS.values())[:2])
     parser.add_argument("--record-sdk-web", action="store_true")
+    parser.add_argument("--gui-renderer", choices=("glow", "software-dx12"), default="glow")
     args = parser.parse_args()
     if args.record_inputs:
         validate_ocrs_license(ROOT/"crates/protoinputmultiplex/notices/ocrs-MIT.txt")
         files = [{"path": p, "sha256": sha(ROOT/p)} for p in source_files()]
         record = {"schema_version": 1, "source_commit": source_commit(), "source_files": files,
+                  "gui_renderer": args.gui_renderer,
                   "rustc": command("rustc", "-Vv"), "cargo": command("cargo", "-V"),
                   "native_tools": native_tools(), "expected_rustflags": "-C target-feature=+crt-static"}
         args.record_inputs.parent.mkdir(parents=True, exist_ok=True)
@@ -405,6 +440,8 @@ def main():
     build_inputs = None
     if args.build_inputs:
         build_inputs = json.loads(args.build_inputs.read_text(encoding="utf-8"))
+        if build_inputs.get("gui_renderer") != args.gui_renderer:
+            raise ValueError("GUI renderer differs from frozen build inputs")
         recorded = {p["path"]: p["sha256"] for p in build_inputs["source_files"]}
         actual = {p: sha(ROOT/p) for p in source_files()}
         if recorded != actual or build_inputs["source_commit"] != source_commit():
@@ -416,6 +453,7 @@ def main():
         return
     output = args.output.resolve()
     if output.exists(): raise ValueError("Output must be a new directory")
+    application_build = app_build_record(args.target_dir, build_inputs, args.gui_renderer)
     binary = args.target_dir.resolve()/"x86_64-pc-windows-msvc/release/protoinputmultiplex.exe"
     ocr_built = binary.parent/"assets/ocr"
     ocr_source = ROOT/"crates/protoinputmultiplex/assets/ocr"
@@ -438,7 +476,7 @@ def main():
     sources = [{"path": p, "sha256": sha(ROOT/p)} for p in source_names]
     # Include web-only dependencies and native-client optional dependencies, too.
     graphs = [json.loads(command("cargo", "--config", 'build.rustc-wrapper=""', "metadata", "--locked", "--offline",
-                                 "--features", "mux-application-sdk/native-client", "--format-version", "1", "--filter-platform", triple))
+                                 "--features", metadata_features(args.gui_renderer), "--format-version", "1", "--filter-platform", triple))
               for triple in SDK_TARGETS.values()]
     metadata = graphs[0]
     nodes = {n["id"] for graph in graphs for n in graph["resolve"]["nodes"]}
@@ -519,8 +557,11 @@ def main():
                 "source_files": sources, "rustc": command("rustc", "-Vv"), "cargo": command("cargo", "-V"),
                 "expected_rustflags": "-C target-feature=+crt-static (native); empty (wasm)", "expected_build_configuration": "Release / app+backend+observer x64/x86; SDK native full defaults+native-client x64/x86 and web wasm32; --locked",
                 "build_inputs_verified": build_inputs is not None, "build_inputs": build_inputs,
+                "application_build": application_build,
                 "runtime_files": RUNTIME + ["protoinputmultiplex_cursor_observer32.dll", "protoinputmultiplex_cursor_observer64.dll"], "binaries": binaries, "host_system_imports": sorted(system),
-                "dynamic_system_dependencies": ["Windows OpenGL implementation and display driver (GUI)"],
+                "dynamic_system_dependencies": ["Windows OpenGL implementation and display driver (Glow GUI)"] +
+                    (["Windows DX12-compatible CPU adapter (default GUI); adapter enumeration may probe hardware drivers"]
+                     if args.gui_renderer == "software-dx12" else []),
                 "application_sdk": sdk_metadata, "rust_dependencies": dependencies, "files": files,
                 "validation_scope": "Packaging and launch only; no routing acceptance implied"}
     (output/"bundle-manifest.json").write_text(json.dumps(manifest, indent=2)+"\n", encoding="utf-8")

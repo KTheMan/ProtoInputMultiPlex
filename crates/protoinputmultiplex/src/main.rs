@@ -142,8 +142,9 @@ const APP_NAME: &str = "ProtoInputMultiPlex";
 /// Native GUI renderer; software mode never falls back to a hardware adapter.
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, clap::ValueEnum)]
 enum GuiRenderer {
-    #[default]
+    #[cfg_attr(not(all(windows, feature = "software-renderer")), default)]
     Glow,
+    #[cfg_attr(all(windows, feature = "software-renderer"), default)]
     SoftwareDx12,
 }
 
@@ -156,6 +157,25 @@ enum GuiRenderer {
 struct Args {
     #[command(subcommand)]
     command: Option<Command>,
+}
+impl Args {
+    #[cfg(any(windows, test))]
+    fn command_or_gui(self) -> Command {
+        self.command.unwrap_or_else(|| Command::Gui {
+            renderer: GuiRenderer::default(),
+            data_dir: None,
+            profile: None,
+            ui_script: None,
+            ui_script_no_screenshots: false,
+            discovery_delay_ms: None,
+            start_preflight_delay_ms: None,
+            profile_file_delay_ms: None,
+            app_preferences_delay_ms: None,
+            bootstrap_delay_ms: None,
+            preferences: None,
+            startup_test_key: None,
+        })
+    }
 }
 #[derive(Subcommand)]
 enum Command {
@@ -200,7 +220,7 @@ enum Command {
     /// Open the device dashboard and live multi-mouse preview (default).
     Gui {
         /// Native GUI renderer (software-dx12 requires the software-renderer build feature).
-        #[arg(long, value_enum, default_value_t = GuiRenderer::Glow)]
+        #[arg(long, value_enum, default_value_t = GuiRenderer::default())]
         renderer: GuiRenderer,
         /// Root for preferences, profiles and macros; defaults to LocalAppData/ProtoInputMultiPlex.
         #[arg(long, conflicts_with = "preferences")]
@@ -332,20 +352,7 @@ fn main() -> Result<()> {
     }
     #[cfg(windows)]
     {
-        windows_main(args.command.unwrap_or(Command::Gui {
-            renderer: GuiRenderer::Glow,
-            data_dir: None,
-            profile: None,
-            ui_script: None,
-            ui_script_no_screenshots: false,
-            discovery_delay_ms: None,
-            start_preflight_delay_ms: None,
-            profile_file_delay_ms: None,
-            app_preferences_delay_ms: None,
-            bootstrap_delay_ms: None,
-            preferences: None,
-            startup_test_key: None,
-        }))
+        windows_main(args.command_or_gui())
     }
     #[cfg(not(windows))]
     {
@@ -562,25 +569,37 @@ mod renderer_cli_tests {
     use super::*;
 
     #[test]
-    fn gui_renderer_is_explicit_and_defaults_to_glow() {
-        let parsed = Args::try_parse_from(["protoinputmultiplex", "gui"]).unwrap();
-        assert!(matches!(
-            parsed.command,
-            Some(Command::Gui {
-                renderer: GuiRenderer::Glow,
-                ..
-            })
-        ));
-        let parsed =
-            Args::try_parse_from(["protoinputmultiplex", "gui", "--renderer", "software-dx12"])
-                .unwrap();
-        assert!(matches!(
-            parsed.command,
-            Some(Command::Gui {
-                renderer: GuiRenderer::SoftwareDx12,
-                ..
-            })
-        ));
+    fn normal_gui_and_startup_arguments_use_the_build_default() {
+        #[cfg(all(windows, feature = "software-renderer"))]
+        let expected = GuiRenderer::SoftwareDx12;
+        #[cfg(not(all(windows, feature = "software-renderer")))]
+        let expected = GuiRenderer::Glow;
+        for arguments in [
+            vec!["protoinputmultiplex"],
+            vec!["protoinputmultiplex", "gui"],
+            vec!["protoinputmultiplex", "gui", "--preferences", "private.json"],
+        ] {
+            let parsed = Args::try_parse_from(arguments).unwrap();
+            let Command::Gui { renderer, .. } = parsed.command_or_gui() else {
+                panic!("normal startup must select the GUI");
+            };
+            assert_eq!(renderer, expected);
+        }
+    }
+
+    #[test]
+    fn explicit_gui_renderer_overrides_the_build_default() {
+        for (name, expected) in [
+            ("glow", GuiRenderer::Glow),
+            ("software-dx12", GuiRenderer::SoftwareDx12),
+        ] {
+            let parsed =
+                Args::try_parse_from(["protoinputmultiplex", "gui", "--renderer", name]).unwrap();
+            let Command::Gui { renderer, .. } = parsed.command_or_gui() else {
+                panic!("renderer option must select the GUI");
+            };
+            assert_eq!(renderer, expected);
+        }
     }
 
     #[test]

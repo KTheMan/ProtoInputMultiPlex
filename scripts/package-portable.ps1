@@ -1,7 +1,8 @@
 param(
     [Parameter(Mandatory)][string]$CargoTargetDir,
     [Parameter(Mandatory)][string]$OutputDir,
-    [Parameter(Mandatory)][string]$WasmBindgenArchive
+    [Parameter(Mandatory)][string]$WasmBindgenArchive,
+    [ValidateSet('glow', 'software-dx12')][string]$GuiRenderer = 'glow'
 )
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
@@ -20,6 +21,12 @@ $archive = (Resolve-Path -LiteralPath $WasmBindgenArchive).Path
 if ((Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash.ToLowerInvariant() -cne '79e348c169d0c10c0b287647f1e753d0985353ca96800bc29be8f4261baf13e6') {
     throw 'Expected official wasm-bindgen 0.2.129 x86_64-pc-windows-msvc archive.'
 }
+$appFeatureArgs = @()
+$metadataFeatures = 'mux-application-sdk/native-client'
+if ($GuiRenderer -ceq 'software-dx12') {
+    $appFeatureArgs = @('--features', 'protoinputmultiplex/software-renderer')
+    $metadataFeatures += ',protoinputmultiplex/software-renderer'
+}
 $oldTarget = $env:CARGO_TARGET_DIR
 $oldWrapper = $env:RUSTC_WRAPPER
 $oldFlags = $env:RUSTFLAGS
@@ -33,16 +40,16 @@ try {
     # including dependencies of packages not compiled for that platform. Warm
     # the exact final metadata graphs online before source freeze/build work.
     foreach ($triple in @('x86_64-pc-windows-msvc', 'i686-pc-windows-msvc', 'wasm32-unknown-unknown')) {
-        & cargo --config 'build.rustc-wrapper=""' metadata --locked --features mux-application-sdk/native-client --format-version 1 --filter-platform $triple | Out-Null
+        & cargo --config 'build.rustc-wrapper=""' metadata --locked --features $metadataFeatures --format-version 1 --filter-platform $triple | Out-Null
         if ($LASTEXITCODE -ne 0) { throw "Release metadata prefetch failed: $triple" }
     }
     # Prepare existing compatibility patches before freezing compilation inputs.
     & (Join-Path $PSScriptRoot 'build-backend.ps1') -PrepareOnly
     if (!$?) { throw 'ProtoInput source preparation failed.' }
     $inputs = Join-Path $target 'portable-build-inputs.json'
-    & python (Join-Path $PSScriptRoot 'package-portable.py') --record-inputs $inputs
+    & python (Join-Path $PSScriptRoot 'package-portable.py') --record-inputs $inputs --gui-renderer $GuiRenderer
     if ($LASTEXITCODE -ne 0) { throw 'Could not record frozen source inputs.' }
-    & cargo --config 'build.rustc-wrapper=""' build --release --locked --target x86_64-pc-windows-msvc -p protoinputmultiplex -p cursor-observer
+    & cargo --config 'build.rustc-wrapper=""' build --release --locked --target x86_64-pc-windows-msvc -p protoinputmultiplex -p cursor-observer @appFeatureArgs --message-format=json-render-diagnostics | Out-File -LiteralPath (Join-Path $target 'app-build.jsonl') -Encoding utf8
     if ($LASTEXITCODE -ne 0) { throw 'Rust release build failed.' }
     & cargo --config 'build.rustc-wrapper=""' build --release --locked --target i686-pc-windows-msvc -p cursor-observer
     if ($LASTEXITCODE -ne 0) { throw '32-bit cursor observer build failed.' }
@@ -57,7 +64,7 @@ try {
         $log = Join-Path $sdkBuild ($architecture.Name + '.jsonl')
         & cargo --config 'build.rustc-wrapper=""' build --release --locked --target $architecture.Triple --target-dir $buildDir -p mux-application-sdk --lib --features native-client --message-format=json-render-diagnostics | Out-File -LiteralPath $log -Encoding utf8
         if ($LASTEXITCODE -ne 0) { throw "SDK release build failed: $($architecture.Name)" }
-        & python (Join-Path $PSScriptRoot 'package-portable.py') --record-sdk-native $log --sdk-target $architecture.Triple --target-dir $target --build-inputs $inputs
+        & python (Join-Path $PSScriptRoot 'package-portable.py') --record-sdk-native $log --sdk-target $architecture.Triple --target-dir $target --build-inputs $inputs --gui-renderer $GuiRenderer
         if ($LASTEXITCODE -ne 0) { throw 'SDK artifact recording failed.' }
     }
     $toolRoot = Join-Path $sdkBuild 'wasm-bindgen-tool'
@@ -78,12 +85,12 @@ try {
     & $bindgen --target web --out-dir (Join-Path $web 'pkg') --out-name mux_application_web (Join-Path $sdkBuild 'web/wasm32-unknown-unknown/release/mux_application_web.wasm')
     if ($LASTEXITCODE -ne 0) { throw 'Browser binding generation failed.' }
     Copy-Item -LiteralPath (Join-Path $repo 'crates/mux-application-web/example/index.html'),(Join-Path $repo 'crates/mux-application-web/example/bootstrap.js') -Destination $web
-    & python (Join-Path $PSScriptRoot 'package-portable.py') --record-sdk-web --target-dir $target --build-inputs $inputs
+    & python (Join-Path $PSScriptRoot 'package-portable.py') --record-sdk-web --target-dir $target --build-inputs $inputs --gui-renderer $GuiRenderer
     if ($LASTEXITCODE -ne 0) { throw 'Browser SDK recording failed.' }
     $env:RUSTFLAGS = '-C target-feature=+crt-static'
     & (Join-Path $PSScriptRoot 'build-backend.ps1') -Architecture both
     if (!$?) { throw 'ProtoInput release build failed.' }
-    & python (Join-Path $PSScriptRoot 'package-portable.py') --target-dir $target --output $output --build-inputs $inputs
+    & python (Join-Path $PSScriptRoot 'package-portable.py') --target-dir $target --output $output --build-inputs $inputs --gui-renderer $GuiRenderer
     if ($LASTEXITCODE -ne 0) { throw 'Portable staging failed; inspect the incomplete output before retrying with a fresh path.' }
 } finally {
     Pop-Location

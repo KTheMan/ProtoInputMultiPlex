@@ -63,6 +63,47 @@ class SdkClosureTests(unittest.TestCase):
             portable.sdk_inputs(self.root, {**self.inputs, "source_commit": "other"})
 
 
+class ApplicationRendererBuildTests(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        self.root = Path(self.temp.name).resolve()
+        self.binary = self.root/"x86_64-pc-windows-msvc/release/protoinputmultiplex.exe"
+        self.binary.parent.mkdir(parents=True)
+        self.binary.write_bytes(b"application-fixture")
+
+    def compiler_artifact(self, features, executable=None):
+        row = {"reason":"compiler-artifact", "target":{"name":"protoinputmultiplex", "kind":["bin"]},
+               "features":features, "executable":str(executable or self.binary),
+               "profile":{"debug_assertions":False}}
+        (self.root/"app-build.jsonl").write_text(json.dumps(row)+"\n", encoding="utf-8")
+
+    def test_both_renderer_builds_bind_actual_features_and_executable(self):
+        for renderer, features in (("glow", []), ("software-dx12", ["software-renderer"])):
+            with self.subTest(renderer=renderer):
+                self.compiler_artifact(features)
+                record = portable.app_build_record(self.root, {"gui_renderer":renderer}, renderer)
+                self.assertEqual(record["features"], features)
+                self.assertEqual(record["default_renderer"], renderer)
+                self.assertEqual(record["executable_sha256"], portable.sha(self.binary))
+        self.assertIn("protoinputmultiplex/software-renderer", portable.metadata_features("software-dx12"))
+        self.assertEqual(portable.metadata_features("glow"), "mux-application-sdk/native-client")
+
+    def test_wrong_feature_or_executable_cannot_claim_software_package(self):
+        self.compiler_artifact([])
+        with self.assertRaisesRegex(ValueError, "artifact differs"):
+            portable.app_build_record(self.root, {"gui_renderer":"software-dx12"}, "software-dx12")
+        self.compiler_artifact(["software-renderer"], self.root/"other.exe")
+        with self.assertRaisesRegex(ValueError, "artifact differs"):
+            portable.app_build_record(self.root, {"gui_renderer":"software-dx12"}, "software-dx12")
+
+    def test_changed_build_choice_is_rejected_before_artifact_access(self):
+        with self.assertRaisesRegex(ValueError, "frozen build inputs"):
+            portable.app_build_record(self.root, {"gui_renderer":"glow"}, "software-dx12")
+        with self.assertRaisesRegex(ValueError, "Unknown GUI renderer"):
+            portable.app_features("hardware")
+
+
 class SourceAdmissionTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()

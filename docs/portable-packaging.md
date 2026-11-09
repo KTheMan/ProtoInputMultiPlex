@@ -255,3 +255,20 @@ The small OCR component adapter's MIT terms are retained separately from the
 model licenses. The packager verifies the fixed upstream notice and stages it
 as `licenses/rust/ocrs-0.12.2/LICENSE-MIT.txt` when the crate has no notice files.
 The pure notice-copy check does not qualify a complete portable release.
+
+## Opt-in software GUI qualification package
+
+The unsigned unreleased candidate workflow has a `gui_renderer` dispatch input. Its default remains `glow`; select `software-dx12` only for the explicit compatibility qualification build. The same full bundle, two native SDK architectures, Web SDK and per-user NSIS installer are produced. This is a build variant, not a renderer-only smoke executable or a shipping qualification.
+
+The equivalent packaging commands, using fresh owned paths and the existing hash-verified official binding archive, are:
+
+```powershell
+./scripts/package-portable.ps1 -CargoTargetDir C:/owned/qualification-target -OutputDir C:/owned/qualification-portable -WasmBindgenArchive C:/owned/wasm-bindgen.tar.gz -GuiRenderer software-dx12
+./scripts/package-installer.ps1 -BundleDir C:/owned/qualification-portable -OutputFile C:/owned/qualification-setup.exe
+```
+
+The app build uses `cargo build --release --locked --target x86_64-pc-windows-msvc -p protoinputmultiplex -p cursor-observer --features protoinputmultiplex/software-renderer --message-format=json-render-diagnostics` under the existing static-CRT configuration. Packaging verifies the exact compiler artifact's features/executable and records them, the executable hash and compiler-JSON hash in `application_build` in the bundle and candidate provenance. The frozen build inputs bind the renderer choice; dependency notices include its selected graph.
+
+In a Windows build with `software-renderer`, no-argument launch, `gui`, and the ordinary startup command `gui --preferences ...` default to strict Software DX12. An explicit `--renderer glow` or `--renderer software-dx12` still overrides the default. Builds without that feature default to Glow. Startup registration and preferences are unchanged; the fixture must not rewrite the Run command to choose a renderer.
+
+Software mode selects a compatible DX12 CPU adapter and rejects hardware fallback. Adapter enumeration may still probe hardware drivers. Required hosted formatting, Clippy, workspace/default-feature tests, software-feature tests, full packaging/source/header/notice checks and exact native/WASM runtime gates remain necessary. A package build is not install/logon/render acceptance: the actual per-user install, normal GUI, saved preferences, OS startup and independent observation must be qualified in the disposable VM. This variant does not establish hardware-free operation, Ultra completion, or a fix for the workstation P1 freeze.
