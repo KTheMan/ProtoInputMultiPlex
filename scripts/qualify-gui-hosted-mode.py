@@ -40,6 +40,9 @@ class HostedModePair(owned.WindowPair):
             "native_viewport_receipts": 0, "native_completed": False,
             "native_retired": False, "native_retirement_phase": "not_started",
             "browser_acceptance_phase": "not_started", "browser_helper_failure": "none",
+            "mcp_native_transition_phase": "not_reached", "mcp_rpc_state": "not_started",
+            "mcp_tool_failure": "none", "mcp_controller_observation": None,
+            "mcp_final_status_passed": None,
             "cdp_bootstrap_failure": "none",
             "deadline_terminal_callback_once": False,
             "old_revision_rejected": False, "old_epoch_rejected": False,
@@ -454,10 +457,13 @@ class HostedModePair(owned.WindowPair):
         self.mcp.stdin.flush()
 
     def rpc(self, method, params):
+        self.result["mcp_rpc_state"] = "send_pending"
+        self.result["mcp_tool_failure"] = "none"
         self.rpc_id += 1
         self.mcp.stdin.write(json.dumps({"jsonrpc": "2.0", "id": self.rpc_id,
                                          "method": method, "params": params}) + "\n")
         self.mcp.stdin.flush()
+        self.result["mcp_rpc_state"] = "waiting"
         hosted_action = (method == "tools/call" and params.get("name") == "hosted_session" and
             params.get("arguments", {}).get("operation") in {"set_mode", "minimize", "restore"})
         until = min(self.end, time.monotonic() + (70 if hosted_action else 8))
@@ -467,10 +473,62 @@ class HostedModePair(owned.WindowPair):
                 result = self.mcp_queue.get(timeout=.1)
             except queue.Empty:
                 continue
+            if result is None:
+                self.result["mcp_rpc_state"] = "eof"
+            elif isinstance(result, dict) and "error" in result:
+                self.result["mcp_rpc_state"] = "jsonrpc_error"
             require(result is not None and "error" not in result)
             if result.get("id") == self.rpc_id:
+                self.result["mcp_rpc_state"] = "matched"
                 return result["result"]
+        self.result["mcp_rpc_state"] = "deadline"
         raise base.Rejected()
+
+    def mcp_tool_result(self, reply):
+        if not isinstance(reply, dict) or reply.get("isError") is not True:
+            return
+        self.result["mcp_tool_failure"] = "unrecognized"
+        content = reply.get("content")
+        if not (isinstance(content, list) and len(content) == 1 and isinstance(content[0], dict)
+                and content[0].get("type") == "text" and isinstance(content[0].get("text"), str)):
+            return
+        # Exact full known Rust messages only; peer text is never exported.
+        text = content[0]["text"]
+        known = {
+            "Event connection ended; inspect status and reconnect through a fresh GUI approval": "connection_ended",
+            "Event request timed out; connection fenced": "request_timeout_fenced",
+            "Action outcome uncertain; inspect fresh authority without replay": "hosted_action_uncertain",
+            "Event connection fenced after request failure (Event authority ended)": "authority_ended_fenced",
+            "Window subscription unavailable": "subscription_unavailable",
+            "Unexpected refresh subscription reply": "refresh_reply_invalid",
+            "Invalid refreshed window snapshot": "refresh_snapshot_invalid",
+            "Unexpected window snapshot reply": "snapshot_reply_invalid",
+            "Invalid window snapshot": "snapshot_invalid",
+            "Refresh the event subscription first": "refresh_required",
+            "Hosted observation unavailable or epoch stale": "epoch_or_observation_unavailable",
+            "Invalid hosted revision": "hosted_revision_invalid",
+            "Hosted query conflicted with the current stream": "hosted_query_conflict",
+            "Hosted observation changed; inspect again": "hosted_observation_changed",
+            "Invalid hosted observation response": "hosted_observation_reply_invalid",
+            "Hosted revision stale; inspect current subscription": "hosted_revision_stale",
+            "Hosted mode control was not approved": "host_mode_not_approved",
+            "Hosted action receipt conflicted with the current stream; outcome uncertain": "hosted_receipt_conflict",
+            "Hosted action outcome uncertain; invalid receipt and connection fenced": "hosted_receipt_invalid",
+        }
+        self.result["mcp_tool_failure"] = known.get(text, "unrecognized")
+        for code, tag in (("Denied", "denied"), ("Invalid", "invalid"), ("Missing", "missing"),
+                          ("Limit", "limit"), ("Ended", "ended"), ("Locked", "locked"),
+                          ("Transition", "transition"), ("StaleRevision", "stale_revision"),
+                          ("Unsupported", "unsupported"), ("Backend", "backend")):
+            if text == "Window request rejected (" + code + ")":
+                self.result["mcp_tool_failure"] = "request_" + tag
+
+    def mcp_launch_status(self):
+        value = self.launch_status()
+        self.result["mcp_controller_observation"] = {
+            name: value.get(name) if type(value.get(name)) is bool else None
+            for name in ("controller_present", "ready", "stopping")}
+        return value
 
     def hosted_tool(self, operation, revision=None, mode=None, epoch=None):
         args = {"operation": operation, "epoch": self.epoch if epoch is None else epoch}
@@ -479,6 +537,7 @@ class HostedModePair(owned.WindowPair):
         if mode is not None:
             args["mode"] = mode
         reply = self.rpc("tools/call", {"name": "hosted_session", "arguments": args})
+        self.mcp_tool_result(reply)
         return reply, reply.get("structuredContent")
 
     def mcp_acceptance(self):
@@ -509,19 +568,33 @@ class HostedModePair(owned.WindowPair):
         require(self.event_status("active", 0, 1, 1))
         require(self.descriptors() == {self.connection_paths[5]})
         self.result["event_epoch_retained"] = True
+        self.result["mcp_native_transition_phase"] = "native_refresh_request"
         refresh = self.rpc("tools/call", {"name": "native_windows", "arguments": {"operation": "refresh"}})
+        self.mcp_tool_result(refresh)
+        self.result["mcp_native_transition_phase"] = "native_refresh_reply"
         require(not refresh.get("isError"))
+        self.result["mcp_native_transition_phase"] = "native_inspect_request"
         reply, observed = self.hosted_tool("inspect")
+        self.result["mcp_native_transition_phase"] = "native_inspect_reply"
         require(not reply.get("isError") and observed["hosted"]["phase"] == "native")
+        self.result["mcp_native_transition_phase"] = "concurrent_request"
         reply, concurrent = self.hosted_tool("set_mode", observed["hosted"]["revision"], "concurrent")
+        self.result["mcp_native_transition_phase"] = "concurrent_action_receipt"
         require(not reply.get("isError") and concurrent["action"] == {"kind": "set_mode", "value": "concurrent"})
+        self.result["mcp_native_transition_phase"] = "concurrent_phase_receipt"
         require(concurrent["hosted"]["phase"] == "ready" and concurrent["hosted"]["mode"] == "concurrent")
+        self.result["mcp_native_transition_phase"] = "concurrent_generation_receipt"
         require(concurrent["hosted"]["routing_generation"] > self.web_generation)
+        self.result["mcp_native_transition_phase"] = "concurrent_controller_ready"
         self.wait(lambda: (value if value and value["controller_present"] and value["ready"] and not value["stopping"] else None)
-                  if (value := self.launch_status()) else None)
-        require(self.event_status("active", 0, 1, 1) and self.descriptors() == {self.connection_paths[5]})
+                  if (value := self.mcp_launch_status()) else None)
+        self.result["mcp_native_transition_phase"] = "concurrent_requester_status_and_descriptor"
+        status = self.event_status("active", 0, 1, 1)
+        self.result["mcp_final_status_passed"] = bool(status)
+        require(status and self.descriptors() == {self.connection_paths[5]})
         self.result["mcp_mode_worker_receipts"] = 2
         self.result["routing_generation_advanced"] = True
+        self.result["mcp_native_transition_phase"] = "complete"
 
     def browser_lost_receipt(self):
         self.stage = "browser_lost_receipt"

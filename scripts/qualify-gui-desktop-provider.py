@@ -267,10 +267,12 @@ class ProviderPair(base.Pair):
         elif name == "command_grant":
             path = self.wait(lambda: next(iter(self.temp.glob(f"protoinputmultiplex-agent-{self.gui.pid}-*.json")), None))
             self.command_descriptor = path
+            self.check = "command_connection_start"
             self.command = CommandMcp(self.exe, path, self.private / "command-mcp.log")
+            self.check = "command_policy_projection"
             def granted():
                 state = self.command.tool("routing_state")
-                policy = state["policy"]
+                policy = state["agent_session"]["policy"]
                 return state if set(policy["user_ids"]) == set(self.seat_ids) and set(policy["allowed_pids"]) == set(self.pids) and policy["session_control"] else None
             self.wait(granted)
         elif name == "prepare_holds":
@@ -642,7 +644,7 @@ def main():
     try:
         gate.run()
     except BaseException as error:
-        allowed={"Rejected","AssertionError","FileNotFoundError","TimeoutError","BrokenPipeError","EOFError","JSONDecodeError"}
+        allowed={"Rejected","AssertionError","FileNotFoundError","TimeoutError","BrokenPipeError","EOFError","JSONDecodeError","KeyError","TypeError","ValueError","Empty","TimeoutExpired"}
         gate.result.update(status="FAIL",checkpoint=gate.checkpoint,failure_stage=gate.stage,failure_predicate=gate.check,failure_class=type(error).__name__ if type(error).__name__ in allowed else "UnexpectedError",
             native_exit_state="not_started" if not hasattr(gate,"native") else "running" if gate.native.poll() is None else "zero" if gate.native.returncode == 0 else "nonzero")
     require(not args.public_result.exists())
