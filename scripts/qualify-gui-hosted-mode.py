@@ -38,7 +38,7 @@ class HostedModePair(owned.WindowPair):
             "hardware_qualified": False, "web_mode_worker_receipts": 0,
             "web_viewport_receipts": 0, "mcp_mode_worker_receipts": 0,
             "native_viewport_receipts": 0, "native_completed": False,
-            "native_retired": False,
+            "native_retired": False, "native_retirement_phase": "not_started",
             "old_revision_rejected": False, "old_epoch_rejected": False,
             "event_epoch_retained": False,
             "routing_generation_advanced": False, "ordinary_quit_clean": False,
@@ -106,11 +106,18 @@ class HostedModePair(owned.WindowPair):
                 self.native_meta["dll"]["sha256"], "--descriptor", self.connection_paths[1],
                 "--report", self.native_report, "--hosted-route", "--observe-seconds", "20"],
                 "native-hosted")
+            self.result["native_retirement_phase"] = "viewport_receipts"
             self.wait(self.native_detail_done, 20)
-            require(self.native.wait(timeout=35) == 0)
+            self.result["native_retirement_phase"] = "native_exit_wait"
+            native_exit = self.native.wait(timeout=35)
+            self.result["native_retirement_phase"] = "native_exit_zero"
+            require(native_exit == 0)
+            self.result["native_retirement_phase"] = "native_unload_markers"
             require(self.native_detail("dll_unloaded_before_owner_exit") and
                     self.native_detail("owner_ready_to_exit_after_unload"))
+            self.result["native_retirement_phase"] = "host_retired_no_connections"
             self.wait(lambda: self.event_status("active", 0, 1, 0))
+            self.result["native_retirement_phase"] = "retired"
             self.result["native_retired"] = True
             return True
         if step == 24:
@@ -179,6 +186,82 @@ class HostedModePair(owned.WindowPair):
         self.result["native_viewport_receipts"] = 2
         self.result["native_completed"] = True
         return True
+
+    def native_retirement_diagnostic(self):
+        # Only fixed enums, booleans and a bounded OS exit code leave the runner.
+        diagnostic = {"schema": "pim.gui-hosted-mode.native-retirement.v1",
+                      "native_exit_code": None, "last_stage": "none",
+                      "last_progress_stage": "none", "failure_reason": "none",
+                      "failed_record_observed": False, "dll_unload_observed": False,
+                      "owner_ready_observed": False, "diagnostic_read_failed": False}
+        self.result["native_retirement_diagnostic"] = diagnostic
+        stages = {
+            "started", "dll_hash_verified", "dll_exports_resolved", "owner_hidden_window_created",
+            "client_connected_completion_retained", "gui_ready", "command_locally_admitted",
+            "command_remotely_completed", "command_remotely_rejected", "native_hosted_action",
+            "native_hosted_completed", "stream_gap", "stream_ended", "hwnd_destroyed_stop_returned",
+            "initial_destroy_schedule", "actual_worker_os_thread_signaled_after_hwnd_death",
+            "client_destroyed_completion_closed", "dll_unloaded_before_owner_exit",
+            "owner_ready_to_exit_after_unload", "failed",
+        }
+        reasons = {
+            "native hosted receiver ended during overlap": "hosted_overlap_ended",
+            "DestroyWindow failed": "destroy_window_failed",
+            "Stop was not successful in WM_NCDESTROY": "stop_not_successful",
+            "Stop must report local termination with remote cleanup unconfirmed": "stop_terminal_state",
+            "Stop must clear local model": "stop_model_not_empty",
+            "Destroy returned neither BUSY nor OK": "destroy_status",
+            "CloseHandle failed": "completion_close_failed", "DPI restore failed": "dpi_restore_failed",
+            "FreeLibrary failed": "free_library_failed",
+            "DLL still loaded after FreeLibrary": "dll_still_loaded",
+            "wake contains payload": "wake_payload",
+            "fixture incoming message budget exceeded": "message_budget",
+            "invalid server message": "server_message_invalid",
+            "invalid retained length": "retained_length_invalid",
+            "response length mismatch": "response_length_mismatch",
+            "invalid retained JSON": "retained_json_invalid",
+            "fixture I/O or encoding failure": "fixture_io_encoding",
+            "report lock poisoned": "report_lock_poisoned",
+            "bounded owner wait timed out": "owner_wait_deadline",
+            "message/completion wait failed": "owner_wait_failed",
+            "unexpected owner quit before cleanup": "owner_quit_before_cleanup",
+            "owner panic; no unload safety established": "owner_panic",
+        }
+        status_actions = {
+            "query for discard", "response discard", "discard consumes response",
+            "retain before window death", "Stop retained-output fence", "terminal query after Stop",
+            "final destroy", "destroy consumes token", "second destroy invalid", "drain",
+            "response_size", "response_read", "full read consumes output",
+        }
+        try:
+            code = self.native.poll()
+            diagnostic["native_exit_code"] = code if type(code) is int and -2147483648 <= code <= 4294967295 else None
+            for row in self.native_rows():
+                if not isinstance(row, dict):
+                    diagnostic["diagnostic_read_failed"] = True
+                    continue
+                stage = row.get("stage")
+                safe_stage = stage if isinstance(stage, str) and stage in stages else "unrecognized"
+                diagnostic["last_stage"] = safe_stage
+                if stage == "dll_unloaded_before_owner_exit":
+                    diagnostic["dll_unload_observed"] = True
+                if stage == "owner_ready_to_exit_after_unload":
+                    diagnostic["owner_ready_observed"] = True
+                if stage != "failed":
+                    diagnostic["last_progress_stage"] = safe_stage
+                    continue
+                diagnostic["failed_record_observed"] = True
+                detail = row.get("detail")
+                reason = detail.get("reason") if isinstance(detail, dict) else None
+                diagnostic["failure_reason"] = "unrecognized"
+                if isinstance(reason, str):
+                    diagnostic["failure_reason"] = reasons.get(reason, "unrecognized")
+                    if any(re.fullmatch(re.escape(action) + r": expected -?[0-9]{1,10}, got -?[0-9]{1,10}", reason)
+                           for action in status_actions):
+                        diagnostic["failure_reason"] = "abi_cleanup_or_drain_status"
+        except BaseException:
+            # Never replace the original acceptance failure with a diagnostic error.
+            diagnostic["diagnostic_read_failed"] = True
 
     def browser_start(self):
         edge = Path(os.environ["ProgramFiles(x86)"]) / "Microsoft/Edge/Application/msedge.exe"
@@ -475,6 +558,8 @@ def main():
     try:
         pair.run()
     except BaseException as error:
+        if pair.checkpoint == 19 and hasattr(pair, "native"):
+            pair.native_retirement_diagnostic()
         pair.result["failure_stage"] = pair.stage
         pair.result["checkpoint"] = pair.checkpoint
         pair.result["failure_class"] = type(error).__name__ if type(error).__name__ in {
