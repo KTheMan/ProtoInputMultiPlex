@@ -15,6 +15,40 @@ use std::{
 use tokio::sync::{mpsc, oneshot};
 use tokio_tungstenite::tungstenite::{handshake::server::Request, http};
 
+#[test]
+fn desktop_optin_is_authenticated_before_ready_and_requires_explicit_consent() {
+    let (mut bridge, endpoint, _, browser, _, _) = setup();
+    let approved = permit(&mut bridge, browser);
+    let token = install_test_credential(&approved, 'c');
+    let hello = EventHello { version: 1, credential: token };
+    assert!(super::network::authenticate_hello_version(&endpoint.shared, ORIGIN, &hello, Instant::now(), Some(1)).is_err());
+    assert!(!approved.lease.connected.load(Ordering::Acquire));
+    // Approval changes retire a pre-existing permit before any new authority is issued.
+    assert!(bridge.approve_desktop_observation(browser, Some(DesktopConsentV1 { version: 1, text_units: false })).is_err());
+    assert!(!approved.live());
+
+    let bounds = Bounds { left: 0, top: 0, right: 640, bottom: 480 };
+    let mut host = Host::<PlatformWindows>::new(71, ScreenState { revision: 1, desktop: bounds, screens: vec![bounds] }).unwrap();
+    let recipient = host.register_recipient("desktop receiver").unwrap();
+    host.approve_events(recipient, events(UserScope::Only(BTreeSet::new()))).unwrap();
+    host.approve_desktop_observation(recipient, Some(DesktopConsentV1 { version: 1, text_units: false })).unwrap();
+    let (mut bridge, endpoint) = HostBridge::new(host);
+    let approved = permit(&mut bridge, recipient);
+    let token = install_test_credential(&approved, 'd');
+    let hello = EventHello { version: 1, credential: token };
+    assert!(super::network::authenticate_hello_version(&endpoint.shared, ORIGIN, &hello, Instant::now(), Some(2)).is_err());
+    let lease = super::network::authenticate_hello_version(&endpoint.shared, ORIGIN, &hello, Instant::now(), Some(1)).unwrap();
+    assert_eq!(lease.desktop_version.load(Ordering::Acquire), 1);
+    let (output, _receiver) = mpsc::channel(OUT_CAPACITY);
+    let (ready, mut response) = oneshot::channel();
+    endpoint.requests.try_send(UiRequest::Connect { lease, output, ready }).unwrap();
+    bridge.tick();
+    let ready = response.try_recv().unwrap().unwrap();
+    assert_eq!(ready.desktop, Some(DesktopConsentV1 { version: 1, text_units: false }));
+    assert!(ready.capabilities.iter().any(|cap| cap.capability == Capability::DesktopObservationV1));
+    assert!(approved.lease.matches(&ready));
+}
+
 const ORIGIN: &str = "https://consumer.example";
 fn controls(users: UserScope, delegated_users: bool) -> ControlGrant {
     ControlGrant {

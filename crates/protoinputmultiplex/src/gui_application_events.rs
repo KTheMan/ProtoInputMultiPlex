@@ -1,9 +1,11 @@
 //! Explicit virtual-only application session, owned by the GUI event thread.
 mod actor;
+mod desktop;
 use crate::application_event_transport::{ClientPermit, HostBridge, HostIntent, NetworkEndpoint};
 use anyhow::{Context, Result, ensure};
 use eframe::egui;
 use mux_application_sdk::*;
+#[cfg(test)]
 use mux_core::desktop::Bounds;
 use std::{
     collections::{BTreeMap, BTreeSet},
@@ -26,6 +28,10 @@ pub struct PublicStatus {
     pub phase: String,
     pub session_active: bool,
     pub local_virtual_users: usize,
+    #[serde(default)]
+    pub desktop_bound_users: usize,
+    #[serde(default)]
+    pub desktop_pending_users: usize,
     pub native_observed_users: usize,
     pub native_sequence: u64,
     pub pointer_export: bool,
@@ -93,6 +99,8 @@ pub(crate) struct Draft {
     pub focus: Option<UserId>,
     pub pointer_events: bool,
     pub key_events: bool,
+    pub desktop_observations: bool,
+    pub desktop_text: bool,
     pub delegated: bool,
     pub lifecycle: bool,
     pub cursor: bool,
@@ -132,6 +140,8 @@ impl Draft {
         // Consent and user scope change only through separately observed controls.
     }
     fn approvals(&self) -> Result<(Grant, ControlGrant)> {
+        ensure!(!self.desktop_text || (self.desktop_observations && self.key_events),
+            "Typed desktop text requires desktop and keyboard observation approval");
         let input_family = self.pointer_events
             || self.key_events
             || self.delegated
@@ -217,6 +227,7 @@ impl Draft {
 pub(crate) struct LocalUser {
     pub id: UserId,
     pub name: String,
+    pub desktop_observed: bool,
 }
 /// Independent master consent for the local owner's users. Receiver edits never
 /// mutate this authority or derive it from a union of receiver grants.
@@ -254,6 +265,7 @@ pub(crate) struct Controller {
     epoch: u64,
     ended: bool,
     copy_pending: Option<(u64, u64)>,
+    desktop: desktop::Sources,
 }
 impl Default for Controller {
     fn default() -> Self {
@@ -279,6 +291,7 @@ impl Default for Controller {
             epoch: 0,
             ended: false,
             copy_pending: None,
+            desktop: desktop::Sources::default(),
         }
     }
 }
@@ -489,7 +502,9 @@ impl Controller {
                 |state| state.phase.clone(),
             ),
             session_active: self.active(),
-            local_virtual_users: self.users.len(),
+            local_virtual_users: self.users.iter().filter(|user| !user.desktop_observed).count(),
+            desktop_bound_users: self.desktop_counts().0,
+            desktop_pending_users: self.desktop_counts().1,
             native_observed_users: self.native.users().len(),
             native_sequence: self.native.last_sequence(),
             pointer_export: owner
@@ -526,7 +541,8 @@ impl Controller {
         status.age_by(Duration::ZERO);
         status
     }
-    pub fn create_session(&mut self, bounds: Bounds) -> Result<()> {
+    pub fn create_session_with_screens(&mut self, screens: ScreenState) -> Result<()> {
+        ensure!(self.desktop.empty(), "Finish desktop observation cleanup first");
         ensure!(
             self.retired(),
             "Finish the previous application-event cleanup first"
@@ -534,20 +550,15 @@ impl Controller {
         let token = crate::gui_bridge::random_token()?;
         let epoch = u64::from_str_radix(&token[..16], 16).context("create cooperative epoch")?;
         ensure!(epoch != 0, "Could not create a fresh cooperative epoch");
-        let mut host = Host::<PlatformWindows>::new(
-            epoch,
-            ScreenState {
-                revision: 1,
-                desktop: bounds,
-                screens: vec![bounds],
-            },
-        )?;
+        screens.validate()?;
+        let mut host = Host::<PlatformWindows>::new(epoch, screens.clone())?;
         let owner = host.register_recipient("GUI cooperative native consumer")?;
         let (bridge, endpoint) = HostBridge::new(host);
         // Retain the endpoint until an explicit network action. Creating a session
         // performs no network work, no grants and no virtual-user creation.
         self.pending_endpoint = Some(endpoint);
         self.bridge = Some(bridge);
+        self.desktop = desktop::Sources::new(screens);
         self.owner = Some(owner);
         self.receivers.clear();
         self.selected = None;
@@ -586,6 +597,7 @@ impl Controller {
         self.users.push(LocalUser {
             id: user,
             name: self.draft.name.clone(),
+            desktop_observed: false,
         });
         Ok(())
     }
@@ -712,19 +724,19 @@ impl Controller {
                 .all(|id| self.users.iter().any(|user| user.id == *id)),
             "User selection is stale"
         );
+        let has_desktop = self.selected_desktop_users();
+        ensure!(!has_desktop || self.draft.desktop_observations,
+            "Approve routed desktop observations for the selected desktop users");
+        ensure!(!has_desktop || !(controls.delegated_users || controls.user_lifecycle
+            || controls.cursor || controls.pointer_input || controls.key_input),
+            "Desktop observed users require observation-only receiver controls");
         let owner = self.owner.context("Native consumer unavailable")?;
         let bridge = self
             .bridge
             .as_ref()
             .context("Cooperative session unavailable")?;
-        let needs_master = !self.draft.users.is_empty()
-            || events.pointer_events
-            || events.key_events
-            || controls.delegated_users
-            || controls.user_lifecycle
-            || controls.cursor
-            || controls.pointer_input
-            || controls.key_input;
+        let needs_master = self.users.iter().any(|user|
+            !user.desktop_observed && self.draft.users.contains(&user.id));
         if needs_master {
             let ready = bridge.host().ready_for(owner)?;
             ensure!(
@@ -791,6 +803,10 @@ impl Controller {
         // Record immediately so any partial approval failure is explicitly retired.
         self.receivers[index].recipient = Some(recipient);
         let approved = (|| -> Result<()> {
+            bridge.approve_desktop_observation(recipient,
+                self.draft.desktop_observations.then_some(DesktopConsentV1 {
+                    version: 1, text_units: self.draft.desktop_text,
+                })).sdk()?;
             bridge
                 .host_command(HostRequest {
                     version: PROTOCOL_VERSION,
@@ -1069,6 +1085,7 @@ impl Controller {
         self.apply_owner_consent()
     }
     pub fn stop(&mut self) {
+        self.retire_all_desktop();
         self.revoke_all();
         if let Some(bridge) = &mut self.bridge {
             if let (Some(owner), Some(subscription)) = (self.owner, self.native_subscription.take())

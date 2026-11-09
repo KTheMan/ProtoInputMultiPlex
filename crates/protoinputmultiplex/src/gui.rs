@@ -7524,6 +7524,11 @@ impl Dashboard {
             ctx.request_repaint();
         }
         for event in events {
+            if matches!(&event, SessionEvent::DesktopObservation(_)) {
+                // Provider payloads belong only to the bounded private inbox.
+                self.application_events.fence_desktop_sources();
+                continue;
+            }
             // Stop is latched for this owned controller. Late readiness or command
             // acknowledgements must not reopen its UI before terminal cleanup.
             if self.session_stopping
@@ -7595,6 +7600,7 @@ impl Dashboard {
                 self.session_busy = false;
             }
             match event {
+                SessionEvent::DesktopObservation(_) => unreachable!("private provider event was intercepted"),
                 SessionEvent::UserPause(state) => {
                     self.user_pause.publish(state);
                 }

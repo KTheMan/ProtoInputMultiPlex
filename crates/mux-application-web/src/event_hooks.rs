@@ -7,12 +7,20 @@ use std::collections::BTreeMap;
 
 /// Snapshot queries are structurally validated but never establish/roll back the
 /// live stream. A delayed query may legitimately precede its latest watermark.
-#[cfg(any(target_arch = "wasm32", test))]
+#[cfg(test)]
 pub(crate) fn validate_snapshot_query(
     snapshot: mux_core::application_event::Snapshot,
     epoch: u64,
 ) -> Result<(), mux_application_sdk::FoldError> {
-    mux_application_sdk::ClientState::default().install_snapshot(snapshot, epoch)
+    validate_snapshot_query_with_desktop(snapshot, epoch, None)
+}
+#[cfg(any(target_arch = "wasm32", test))]
+pub(crate) fn validate_snapshot_query_with_desktop(
+    snapshot: mux_core::application_event::Snapshot, epoch: u64, version: Option<u32>,
+) -> Result<(), mux_application_sdk::FoldError> {
+    let mut query = mux_application_sdk::ClientState::default();
+    if let Some(version) = version { query.enable_desktop_observation(version)?; }
+    query.install_snapshot(snapshot, epoch)
 }
 
 /// Hosted request IDs are monotonic for the WebClient lifetime. Refresh and Gap
@@ -64,7 +72,7 @@ impl EventFilter {
         };
         events.iter().any(|envelope| {
             let (kind, user) = match &envelope.event {
-                Event::Input { user, .. } => (EventKind::Input, Some(*user)),
+                Event::Input { user, .. } | Event::DesktopObserved { user, .. } => (EventKind::Input, Some(*user)),
                 Event::UserCreated { user } | Event::UserUpdated { user } => {
                     (EventKind::Users, Some(user.id))
                 }

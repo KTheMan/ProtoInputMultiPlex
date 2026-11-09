@@ -161,7 +161,7 @@ class WindowPair(base.Pair):
             lines = raw.decode("utf-8-sig").splitlines()
             return lines if len(lines) == 2 and lines[0].isdigit() else None
         lines = self.wait(devtools)
-        self.cdp = base.CDP("ws://127.0.0.1:" + lines[0] + lines[1])
+        self.cdp = base.CDP("ws://127.0.0.1:" + lines[0] + lines[1], deadline=self.end)
         target = self.cdp.call("Target.createTarget", {"url": "http://127.0.0.1:4173/window.html"})["targetId"]
         self.session = self.cdp.call("Target.attachToTarget", {"targetId": target, "flatten": True})["sessionId"]
         self.wait(lambda: self.web("!!window.pimClient && !!window.runWindowRouteAcceptance"))
@@ -578,6 +578,7 @@ def main():
         pair.run()
     except BaseException as error:
         pair.result["failure_stage"] = pair.stage
+        pair.result["cdp_bootstrap_failure"] = base.cdp_bootstrap_failure(error)
         pair.result["checkpoint"] = pair.checkpoint
         pair.result["failure_class"] = type(error).__name__ if type(error).__name__ in {"Rejected", "KeyError", "TypeError", "ValueError", "JSONDecodeError", "FileNotFoundError", "PermissionError", "TimeoutError", "TimeoutExpired", "ConnectionError", "ConnectionResetError", "OSError", "Empty"} else "UnexpectedError"
         pair.result["failure_policy"] = "private partial evidence preserved; no kill, restart, or replay"

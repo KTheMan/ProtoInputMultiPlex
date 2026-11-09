@@ -40,6 +40,7 @@ class HostedModePair(owned.WindowPair):
             "native_viewport_receipts": 0, "native_completed": False,
             "native_retired": False, "native_retirement_phase": "not_started",
             "browser_acceptance_phase": "not_started", "browser_helper_failure": "none",
+            "cdp_bootstrap_failure": "none",
             "deadline_terminal_callback_once": False,
             "old_revision_rejected": False, "old_epoch_rejected": False,
             "event_epoch_retained": False,
@@ -283,7 +284,7 @@ class HostedModePair(owned.WindowPair):
         self.result["browser_acceptance_phase"] = "devtools_wait"
         lines = self.wait(devtools)
         self.result["browser_acceptance_phase"] = "cdp_connect"
-        self.cdp = base.CDP("ws://127.0.0.1:" + lines[0] + lines[1])
+        self.cdp = base.CDP("ws://127.0.0.1:" + lines[0] + lines[1], deadline=self.end)
         self.result["browser_acceptance_phase"] = "cdp_target_create"
         target = self.cdp.call("Target.createTarget", {"url": "http://127.0.0.1:4173/hosted.html"})["targetId"]
         self.result["browser_acceptance_phase"] = "cdp_target_attach"
@@ -685,6 +686,7 @@ def main():
         if pair.checkpoint == 19 and hasattr(pair, "native"):
             pair.native_retirement_diagnostic()
         pair.result["failure_stage"] = pair.stage
+        pair.result["cdp_bootstrap_failure"] = base.cdp_bootstrap_failure(error)
         pair.result["checkpoint"] = pair.checkpoint
         pair.result["failure_class"] = type(error).__name__ if type(error).__name__ in {
             "Rejected", "KeyError", "TypeError", "ValueError", "JSONDecodeError",

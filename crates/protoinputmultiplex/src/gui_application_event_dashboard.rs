@@ -33,6 +33,12 @@ fn host_failure(code: FailureCode, message: &str) -> Failure {
     }
 }
 
+fn virtual_observation_seat(seat: &mux_core::Seat) -> bool {
+    matches!(mux_core::emulated::parse(&seat.mouse), Ok(Some(device)) if device.kind == mux_core::DeviceKind::Mouse)
+        && seat.keyboard.as_ref().is_none_or(|path|
+            matches!(mux_core::emulated::parse(path), Ok(Some(device)) if device.kind == mux_core::DeviceKind::Keyboard))
+}
+
 fn viewport_observed(
     action: HostViewportAction,
     minimized: Option<bool>,
@@ -50,6 +56,7 @@ impl Dashboard {
     }
     pub(super) fn stop_all_sdks(&mut self) {
         self.application_events.stop();
+        self.application_events.poll_desktop_sources(self.session.as_ref());
         self.stop_sdk();
     }
 
@@ -77,6 +84,7 @@ impl Dashboard {
             self.hosted_visible = None;
             self.hosted_pending = None;
         }
+        self.application_events.poll_desktop_sources(self.session.as_ref());
         self.application_events.tick(ctx);
         self.poll_hosted_pending(ctx);
         if let Some(intent) = self.application_events.take_host_intent() {
@@ -441,10 +449,17 @@ impl Dashboard {
             && !self.session_stopping
             && !self.restart_requested
             && !self.allow_close;
+        let desktop_available = allowed && self.session.is_some() && self.session_ready
+            && self.profile.desktop.is_some();
+        let desktop_candidates = self.virtual_users_page.snapshot().state.map_or_else(Vec::new, |state|
+            state.slots.into_iter().filter(|slot| slot.active && virtual_observation_seat(&slot.seat))
+                .map(|slot| (slot.seat.identity(), slot.seat.name)).collect::<Vec<_>>());
         let actions = crate::application_event_ui::show(
             ui,
             &mut self.application_events,
             allowed,
+            &desktop_candidates,
+            desktop_available,
             self.script.as_mut(),
             &mut self.action_frame,
             &mut self.frame_actions,
@@ -452,10 +467,25 @@ impl Dashboard {
         for action in actions {
             use crate::application_event_ui::Action;
             let result = match action {
-                Action::CreateSession => self
-                    .desktop_bounds
+                Action::CreateSession => self.desktop_bounds
                     .context("Desktop bounds are not available yet")
-                    .and_then(|bounds| self.application_events.create_session(bounds)),
+                    .and_then(|bounds| {
+                        let mut screens = self.monitors.iter().map(|monitor| monitor.bounds).collect::<Vec<_>>();
+                        if screens.is_empty() { screens.push(bounds); }
+                        screens.sort_by_key(|bounds| (bounds.left, bounds.top, bounds.right, bounds.bottom));
+                        self.application_events.create_session_with_screens(mux_application_sdk::ScreenState {
+                            revision: 1, desktop: bounds, screens,
+                        })
+                    }),
+                Action::BindDesktop { identity, name } => {
+                    if desktop_available {
+                        self.session.as_ref().context("Desktop routing is unavailable")
+                            .and_then(|worker| self.application_events.bind_desktop_source(worker, identity, name))
+                    } else { Err(anyhow::anyhow!("Start a ready virtual desktop routing session first")) }
+                }
+                Action::UnbindDesktop(token) => self.session.as_ref()
+                    .context("Desktop routing is unavailable")
+                    .and_then(|worker| self.application_events.unbind_desktop_source(worker, token)),
                 Action::CreateUser => self.application_events.create_user(),
                 Action::AddReceiver => self.application_events.add_receiver(),
                 Action::SelectAllVisibleUsers => self.application_events.select_all_visible_users(),
@@ -482,6 +512,7 @@ impl Dashboard {
                 }
                 Action::Stop => {
                     self.application_events.stop();
+                    self.application_events.poll_desktop_sources(self.session.as_ref());
                     Ok(())
                 }
                 Action::Local(command) => self.application_events.local_command(command),

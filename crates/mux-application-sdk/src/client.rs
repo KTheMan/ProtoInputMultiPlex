@@ -39,6 +39,7 @@ pub enum FoldOutcome {
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct ClientState {
+    desktop_version: Option<u32>,
     state: StreamState,
     epoch: Option<u64>,
     last_sequence: u64,
@@ -161,6 +162,7 @@ impl HostedReceipt {
 impl Default for ClientState {
     fn default() -> Self {
         Self {
+            desktop_version: None,
             state: StreamState::AwaitingSnapshot,
             epoch: None,
             last_sequence: 0,
@@ -177,6 +179,12 @@ impl Default for ClientState {
 }
 
 impl ClientState {
+    /// Explicit decoder opt-in before installing any provider snapshot or event.
+    pub fn enable_desktop_observation(&mut self, version: u32) -> Result<(), FoldError> {
+        if version != 1 || self.state == StreamState::Live { return Err(FoldError::Version); }
+        self.desktop_version = Some(version);
+        Ok(())
+    }
     pub fn state(&self) -> &StreamState {
         &self.state
     }
@@ -296,6 +304,13 @@ impl ClientState {
                 return Err(FoldError::Invalid("hosted state rollback"));
             }
         }
+        if self.desktop_version != Some(1) && (snapshot.users.iter().any(|user| user.desktop.is_some())
+            || snapshot.capabilities.iter().any(|status| status.capability == Capability::DesktopObservationV1)) {
+            return Err(FoldError::Version);
+        }
+        if snapshot.users.iter().any(|user| user.desktop.as_ref().is_some_and(|desktop| desktop.screen_revision != snapshot.screens.revision)) {
+            return Err(FoldError::Invalid("desktop screen revision"));
+        }
         let mut users = BTreeMap::new();
         for user in snapshot.users {
             validate_user(&user, expected_epoch, snapshot.screens.desktop)?;
@@ -324,6 +339,7 @@ impl ClientState {
             }
         }
         Ok(Self {
+            desktop_version: self.desktop_version,
             state: StreamState::Live,
             epoch: Some(snapshot.epoch),
             last_sequence: snapshot.through_sequence,
@@ -435,6 +451,13 @@ impl ClientState {
         let screens = self.screens.as_ref().ok_or(FoldError::NotLive)?;
         let epoch = self.epoch.ok_or(FoldError::Epoch)?;
         match envelope.event {
+            Event::DesktopObserved { user, source, record, position } => {
+                if self.desktop_version != Some(1) { return Err(FoldError::Version); }
+                let view = self.users.get_mut(&user).ok_or(FoldError::Invalid("unknown desktop user"))?;
+                if view.source != source { return Err(FoldError::Invalid("desktop source")); }
+                fold_desktop_observation(view, record, screens).map_err(|_| FoldError::Invalid("desktop observation"))?;
+                if view.pointer.as_ref().map(|pointer| pointer.position) != position { return Err(FoldError::Invalid("desktop event position")); }
+            }
             Event::HostedStateChanged { state } => {
                 state
                     .validate()
@@ -448,7 +471,9 @@ impl ClientState {
                 self.hosted = Some(state);
             }
             Event::UserCreated { user } => {
+                if user.desktop.is_some() && self.desktop_version != Some(1) { return Err(FoldError::Version); }
                 validate_user(&user, epoch, screens.desktop)?;
+                if user.desktop.as_ref().is_some_and(|desktop| desktop.screen_revision != screens.revision) { return Err(FoldError::Invalid("desktop screen revision")); }
                 if self.users.len() >= MAX_USERS
                     || self.users.contains_key(&user.id)
                     || self
@@ -461,14 +486,17 @@ impl ClientState {
                 self.users.insert(user.id, user);
             }
             Event::UserUpdated { user } => {
+                if user.desktop.is_some() && self.desktop_version != Some(1) { return Err(FoldError::Version); }
                 validate_user(&user, epoch, screens.desktop)?;
+                if user.desktop.as_ref().is_some_and(|desktop| desktop.screen_revision != screens.revision) { return Err(FoldError::Invalid("desktop screen revision")); }
                 let previous = self
                     .users
                     .get(&user.id)
                     .ok_or(FoldError::Invalid("unknown updated user"))?;
-                if previous.source != user.source {
+                if previous.source != user.source || previous.desktop.is_some() != user.desktop.is_some() {
                     return Err(FoldError::Invalid("source changed"));
                 }
+                if previous.desktop.as_ref().zip(user.desktop.as_ref()).is_some_and(|(old, next)| next.last_sequence < old.last_sequence) { return Err(FoldError::Sequence); }
                 if previous.owned_by_recipient != user.owned_by_recipient {
                     return Err(FoldError::Invalid("user ownership changed"));
                 }
@@ -496,12 +524,13 @@ impl ClientState {
                     .users
                     .get_mut(&user)
                     .ok_or(FoldError::Invalid("unknown input user"))?;
-                if view.source != source {
+                if view.source != source || view.desktop.is_some() {
                     return Err(FoldError::Invalid("input source"));
                 }
                 fold_input(view, input, position, screens.desktop)?;
             }
             Event::ScreensChanged { screens: next } => {
+                if self.users.values().any(|user| user.desktop.is_some()) { return Err(FoldError::Invalid("desktop binding screen change")); }
                 next.validate().map_err(|_| FoldError::Invalid("screens"))?;
                 if next.revision <= screens.revision
                     || self.users.values().any(|user| {
@@ -576,7 +605,17 @@ fn validate_user(user: &UserView, epoch: u64, desktop: Bounds) -> Result<(), Fol
             return Err(FoldError::Invalid("key state"));
         }
     }
-    if user.pointer.is_none() && user.held_keys.is_none() {
+    if let Some(observed) = &user.desktop {
+        if observed.version != 1 || user.owned_by_recipient || user.cursor.is_some() || user.held_keys.is_some()
+            || (observed.configured_cursor.is_some() != user.pointer.is_some())
+            || (observed.text_units && observed.native_held_keys.is_none()) {
+            return Err(FoldError::Invalid("desktop user authority"));
+        }
+        if let Some(cursor) = observed.configured_cursor { cursor.validate().map_err(|_| FoldError::Invalid("configured desktop cursor"))?; }
+        if let Some(keys) = &observed.native_held_keys { validate_native_keys(keys).map_err(|_| FoldError::Invalid("native held keys"))?; }
+    }
+    if user.pointer.is_none() && user.held_keys.is_none()
+        && user.desktop.as_ref().is_none_or(|desktop| desktop.native_held_keys.is_none()) {
         return Err(FoldError::Invalid("empty user authority"));
     }
     Ok(())

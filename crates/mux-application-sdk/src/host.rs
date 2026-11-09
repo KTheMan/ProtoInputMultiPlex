@@ -130,6 +130,10 @@ impl<A: WindowBackend> Host<A> {
         {
             return Err(Error::Invalid("control user scope"));
         }
+        let no_mutations = ControlGrant { users: grant.users.clone(), ..Default::default() };
+        if grant != no_mutations && self.user_owners.iter().any(|(user, owner)| {
+            self.engine.is_desktop_observed(*user) && scope_event(&grant.users, *user, recipient, *owner)
+        }) { return Err(Error::Denied); }
         let retiring: Vec<_> = self
             .held
             .iter()
@@ -149,11 +153,38 @@ impl<A: WindowBackend> Host<A> {
         Ok(())
     }
 
+    pub fn screens(&self) -> &ScreenState { self.engine.screens() }
+    pub fn is_desktop_observed(&self, user: UserId) -> bool { self.engine.is_desktop_observed(user) }
+    pub fn desktop_consent(&self, recipient: RecipientId) -> Result<Option<DesktopConsentV1>, Error> {
+        self.engine.desktop_consent(recipient)
+    }
+    pub fn approve_desktop_observation(&mut self, recipient: RecipientId, consent: Option<DesktopConsentV1>) -> Result<(), Error> {
+        self.engine.approve_desktop_observation(recipient, consent)
+    }
+    pub fn negotiate_desktop_observation(&mut self, recipient: RecipientId, version: Option<u32>) -> Result<(), Error> {
+        self.engine.negotiate_desktop_observation(recipient, version)
+    }
+    pub fn create_desktop_observed(&mut self, owner: RecipientId, name: &str, baseline: DesktopBaselineV1) -> Result<UserId, Error> {
+        let user = self.engine.create_desktop_observed(owner, name, baseline)?;
+        self.user_owners.insert(user, owner);
+        Ok(user)
+    }
+    pub fn publish_desktop_observation(&mut self, owner: RecipientId, user: UserId, record: DesktopRecordV1) -> Result<(), Error> {
+        let result = self.engine.publish_desktop_observation(owner, user, record);
+        if !self.engine.is_desktop_observed(user) { self.user_owners.remove(&user); }
+        result
+    }
+    pub fn retire_desktop_observed(&mut self, owner: RecipientId, user: UserId) -> Result<(), Error> {
+        self.engine.retire_desktop_observed(owner, user)?;
+        self.user_owners.remove(&user);
+        Ok(())
+    }
     /// Describes actual host approvals after transport authentication. It contains
     /// no credential and does not itself authorize a recipient.
     pub fn ready_for(&self, recipient: RecipientId) -> Result<EventReady, Error> {
         let snapshot = self.engine.snapshot(recipient)?;
         Ok(EventReady {
+            desktop: self.engine.effective_desktop_consent(recipient)?,
             version: PROTOCOL_VERSION,
             epoch: self.epoch,
             recipient,
@@ -309,6 +340,7 @@ impl<A: WindowBackend> Host<A> {
         user: UserId,
         family: Family,
     ) -> Result<RecipientId, Error> {
+        if self.engine.is_desktop_observed(user) { return Err(Error::Denied); }
         let owner = *self.user_owners.get(&user).ok_or(Error::MissingUser)?;
         let control = self
             .controls

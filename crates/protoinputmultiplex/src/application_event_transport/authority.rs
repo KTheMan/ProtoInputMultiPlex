@@ -6,7 +6,7 @@ use std::{
     path::PathBuf,
     sync::{
         Arc, Mutex,
-        atomic::{AtomicBool, AtomicU64, Ordering},
+        atomic::{AtomicBool, AtomicU32, AtomicU64, Ordering},
     },
     time::{Duration, Instant},
 };
@@ -117,6 +117,9 @@ impl Shared {
 }
 
 pub(super) struct Lease {
+    pub desktop_consent: Option<mux_application_sdk::DesktopConsentV1>,
+    pub desktop_version: AtomicU32,
+    pub desktop_ready: AtomicBool,
     pub id: u64,
     pub recipient: RecipientId,
     pub origin: String,
@@ -138,6 +141,9 @@ pub(super) struct Lease {
 impl Lease {
     pub fn new(id: u64, origin: String, ready: EventReady, deadline: Instant) -> Self {
         Self {
+            desktop_consent: ready.desktop,
+            desktop_version: AtomicU32::new(0),
+            desktop_ready: AtomicBool::new(false),
             id,
             recipient: ready.recipient,
             origin,
@@ -162,7 +168,9 @@ impl Lease {
             && now < self.deadline
     }
     pub fn matches(&self, ready: &EventReady) -> bool {
-        self.epoch == ready.epoch
+        (!self.desktop_ready.load(Ordering::Acquire)
+            || ready.desktop == if self.desktop_version.load(Ordering::Acquire) == 1 { self.desktop_consent } else { None })
+            && self.epoch == ready.epoch
             && self.recipient == ready.recipient
             && self.events == ready.events
             && self.controls == ready.controls

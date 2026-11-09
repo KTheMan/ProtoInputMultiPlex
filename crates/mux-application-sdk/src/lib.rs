@@ -1,4 +1,5 @@
-//! Cooperative application SDK. No physical-input provider or target-injection sink.
+//! Application SDK with cooperative input and explicit virtual-desktop observations.
+//! No physical identity discovery or target-injection sink.
 //! `Host` is a trusted embedding boundary, not a remote command server. Network
 //! adapters authenticate identities and bind recipients before calling dispatch.
 #[cfg(feature = "native-ffi")]
@@ -24,3 +25,6 @@ pub use mux_core::desktop::{CursorShape, MouseButton};
 
 #[cfg(all(windows, feature = "native-client"))]
 pub mod native_client;
+
+#[cfg(test)]
+mod desktop_tests;

@@ -275,6 +275,7 @@ mod tests {
             hosted: None,
             users: (1..=count)
                 .map(|local| UserView {
+                    desktop: None,
                     id: UserId { epoch, local },
                     owned_by_recipient: false,
                     name: format!("User {local}"),

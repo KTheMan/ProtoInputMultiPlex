@@ -9,6 +9,16 @@ use std::{
     sync::atomic::AtomicU64,
 };
 static NEXT: AtomicU64 = AtomicU64::new(1);
+#[derive(serde::Deserialize)]
+#[serde(deny_unknown_fields)]
+struct NativeConnectRequest {
+    endpoint: String,
+    exact_origin: String,
+    event_credential: String,
+    #[serde(default)]
+    desktop_observation_version: Option<u32>,
+}
+
 struct Entry {
     client: NativeClient,
     response: Option<Vec<u8>>,
@@ -111,7 +121,7 @@ pub unsafe extern "C" fn pim_app_native_connect(
         {
             return Status::InvalidArgument as i32;
         }
-        let config: ConnectConfig = match unsafe { decode(config, length) } {
+        let config: NativeConnectRequest = match unsafe { decode(config, length) } {
             Ok(c) => c,
             Err(s) => return s,
         };
@@ -128,7 +138,13 @@ pub unsafe extern "C" fn pim_app_native_connect(
                 Ok(h) => h,
                 Err(_) => return Status::Limit as i32,
             };
-            let client = match NativeClient::connect(config, own_hwnd) {
+            let version = config.desktop_observation_version;
+            let config = ConnectConfig { endpoint: config.endpoint, exact_origin: config.exact_origin, event_credential: config.event_credential };
+            let connected = match version {
+                Some(version) => NativeClient::connect_desktop(config, own_hwnd, version),
+                None => NativeClient::connect(config, own_hwnd),
+            };
+            let client = match connected {
                 Ok(c) => c,
                 Err(e) => return status(e),
             };

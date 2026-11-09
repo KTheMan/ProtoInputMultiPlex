@@ -213,6 +213,7 @@ mod tests {
 
     fn view(id: UserId, owned_by_recipient: bool) -> UserView {
         UserView {
+                    desktop: None,
             id,
             owned_by_recipient,
             name: "Observed".into(),

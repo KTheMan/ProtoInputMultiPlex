@@ -362,6 +362,17 @@ pub struct EventHello {
     pub version: u32,
     pub credential: String,
 }
+/// Explicit opt-in handshake. Legacy EventHello remains byte-compatible and strict.
+#[derive(Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct DesktopEventHello {
+    pub version: u32,
+    pub credential: String,
+    pub desktop_observation_version: u32,
+}
+impl DesktopEventHello {
+    pub fn into_legacy(self) -> EventHello { EventHello { version: self.version, credential: self.credential } }
+}
 impl std::fmt::Debug for EventHello {
     fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         formatter
@@ -392,6 +403,8 @@ impl Default for EventLimits {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct EventReady {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub desktop: Option<DesktopConsentV1>,
     pub version: u32,
     pub epoch: u64,
     /// Informational opaque identity. The server continues to bind it out of band.

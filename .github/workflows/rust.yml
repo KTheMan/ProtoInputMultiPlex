@@ -64,6 +64,8 @@ jobs:
           $pimParseErrors = $null
           [System.Management.Automation.Language.Parser]::ParseFile((Join-Path $env:GITHUB_WORKSPACE 'scripts/qualify-standalone-host.ps1'), [ref]$pimParseTokens, [ref]$pimParseErrors) | Out-Null
           if ($pimParseErrors.Count -ne 0) { throw 'Standalone controller PowerShell syntax rejected' }
+      - name: Test bounded browser admission with fake transport
+        run: python scripts/test-cdp-bootstrap.py
       - run: cargo fmt --all --check
       - run: cargo clippy --workspace --all-targets --locked -- -D warnings
       - name: Check Rust browser client

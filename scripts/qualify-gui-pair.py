@@ -93,26 +93,70 @@ def shared_live_bytes(path, maximum):
     finally:
         kernel32.CloseHandle(handle)
 
+CDP_BOOTSTRAP_STAGES = frozenset({"address_parse", "tcp_connect", "upgrade_send",
+                                "upgrade_read", "upgrade_parse"})
+
+
+def cdp_bootstrap_failure(error):
+    phase = getattr(error, "pim_cdp_bootstrap_stage", None)
+    return phase if isinstance(phase, str) and phase in CDP_BOOTSTRAP_STAGES else "none"
+
+
 class CDP:
     """Bounded private RFC6455 transport; never emits DevTools or page payloads."""
-    def __init__(self, address):
-        url = urlsplit(address)
-        require(url.scheme == "ws" and url.hostname == "127.0.0.1")
-        self.sock = socket.create_connection((url.hostname, url.port), timeout=2)
-        self.sock.settimeout(2)
-        key = base64.b64encode(os.urandom(16)).decode()
-        request = (f"GET {url.path} HTTP/1.1\r\nHost: 127.0.0.1:{url.port}\r\n"
-                   f"Upgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Key: {key}\r\n"
-                   "Sec-WebSocket-Version: 13\r\n\r\n")
-        self.sock.sendall(request.encode())
-        self.buffer = b""
-        while b"\r\n\r\n" not in self.buffer:
-            self.buffer += self.sock.recv(4096)
-            require(len(self.buffer) < 65536)
-        headers, self.buffer = self.buffer.split(b"\r\n\r\n", 1)
-        accept = base64.b64encode(hashlib.sha1((key + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11").encode()).digest())
-        require(headers.startswith(b"HTTP/1.1 101 ") and accept in headers)
-        self.ident = 0
+    def __init__(self, address, deadline=None):
+        # One bootstrap attempt, bounded in total even for a peer dripping headers.
+        # This does not change the two-second post-upgrade transport timeout or
+        # any product call/receipt deadline. The caller's fixture fence still wins.
+        end = time.monotonic() + 5
+        if deadline is not None:
+            end = min(end, deadline)
+        self.sock = None
+        phase = "address_parse"
+
+        def remaining():
+            value = end - time.monotonic()
+            if value <= 0:
+                raise TimeoutError()
+            return value
+
+        try:
+            url = urlsplit(address)
+            require(url.scheme == "ws" and url.hostname == "127.0.0.1")
+            phase = "tcp_connect"
+            self.sock = socket.create_connection((url.hostname, url.port), timeout=remaining())
+            phase = "upgrade_send"
+            key = base64.b64encode(os.urandom(16)).decode()
+            request = (f"GET {url.path} HTTP/1.1\r\nHost: 127.0.0.1:{url.port}\r\n"
+                       f"Upgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Key: {key}\r\n"
+                       "Sec-WebSocket-Version: 13\r\n\r\n")
+            self.sock.settimeout(remaining())
+            self.sock.sendall(request.encode())
+            self.buffer = b""
+            phase = "upgrade_read"
+            while b"\r\n\r\n" not in self.buffer:
+                self.sock.settimeout(remaining())
+                chunk = self.sock.recv(4096)
+                if not chunk:
+                    raise ConnectionError()
+                self.buffer += chunk
+                require(len(self.buffer) < 65536)
+            phase = "upgrade_parse"
+            remaining()
+            headers, self.buffer = self.buffer.split(b"\r\n\r\n", 1)
+            accept = base64.b64encode(hashlib.sha1((key + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11").encode()).digest())
+            require(headers.startswith(b"HTTP/1.1 101 ") and accept in headers)
+            remaining()
+            self.sock.settimeout(2)
+            self.ident = 0
+        except BaseException as error:
+            if self.sock is not None:
+                try:
+                    self.sock.close()
+                except OSError:
+                    pass
+            error.pim_cdp_bootstrap_stage = phase
+            raise
 
     def exact(self, size):
         while len(self.buffer) < size:
@@ -184,6 +228,7 @@ class Pair:
         self.checkpoint = 0
         self.check = "none"
         self.result = {"schema": "pim.gui-pair.initial.v1", "status": "FAIL",
+                       "cdp_bootstrap_failure": "none",
                        "source_commit": args.commit, "scope": "initial actual GUI/native/Rust-WASM pair",
                        "full_sdk_complete": False, "P1_qualified": False, "release_qualified": False,
                        "hardware_qualified": False}
@@ -1183,7 +1228,7 @@ class Pair:
             lines = raw.decode("utf-8-sig").splitlines()
             return lines if len(lines) == 2 and lines[0].isdigit() else None
         lines = self.wait(devtools)
-        self.cdp = CDP("ws://127.0.0.1:" + lines[0] + lines[1])
+        self.cdp = CDP("ws://127.0.0.1:" + lines[0] + lines[1], deadline=self.end)
         target = self.cdp.call("Target.createTarget", {"url": "http://127.0.0.1:4173/pair.html"})["targetId"]
         self.session = self.cdp.call("Target.attachToTarget", {"targetId": target, "flatten": True})["sessionId"]
         self.wait(lambda: self.web("!!window.pimClient"))
@@ -1374,6 +1419,7 @@ def main():
     except BaseException as error:
         # No exception text, traceback, peer data, secret-bearing expressions or logs.
         pair.result["failure_stage"] = pair.stage
+        pair.result["cdp_bootstrap_failure"] = cdp_bootstrap_failure(error)
         # Capture the original error before diagnostics perform any other reads.
         pair.result["read_failure"] = pair.read_failure(error)
         try:

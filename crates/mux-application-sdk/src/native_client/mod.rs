@@ -203,6 +203,7 @@ pub struct ModelView<'a> {
 }
 
 pub struct NativeClient {
+    desktop_version: Option<u32>,
     shared: Arc<Shared>,
     worker: Option<JoinHandle<()>>,
     binding: wake::Binding,
@@ -226,6 +227,13 @@ impl NativeClient {
     /// Registers an own top-level HWND on this thread, then starts one bounded I/O worker.
     /// Call stop from WM_NCDESTROY before returning. Drain/query only on this thread.
     pub fn connect(config: ConnectConfig, own_hwnd: usize) -> Result<Self, ClientError> {
+        Self::connect_with_desktop(config, own_hwnd, None)
+    }
+    pub fn connect_desktop(config: ConnectConfig, own_hwnd: usize, version: u32) -> Result<Self, ClientError> {
+        if version != 1 { return Err(ClientError::Invalid); }
+        Self::connect_with_desktop(config, own_hwnd, Some(version))
+    }
+    fn connect_with_desktop(config: ConnectConfig, own_hwnd: usize, desktop_version: Option<u32>) -> Result<Self, ClientError> {
         let address = network::validate_config(&config)?;
         let binding = wake::Binding::new(own_hwnd)?;
         let shared = Arc::new(Shared {
@@ -255,6 +263,7 @@ impl NativeClient {
                     {
                         Ok(runtime) => runtime.block_on(network::run(
                             config,
+                            desktop_version,
                             address,
                             Arc::clone(&worker_shared),
                         )),
@@ -267,10 +276,15 @@ impl NativeClient {
             })
             .map_err(|_| ClientError::Limit)?;
         Ok(Self {
+            desktop_version,
             shared,
             worker: Some(worker),
             binding,
-            model: EventClientState::default(),
+            model: {
+                let mut model = EventClientState::default();
+                if let Some(version) = desktop_version { model.enable_desktop_observation(version).map_err(|_| ClientError::Invalid)?; }
+                model
+            },
             hosted_receipt: crate::client::HostedReceipt::default(),
             ready: None,
             subscription: None,
@@ -748,7 +762,10 @@ impl NativeClient {
     fn fold(&mut self, message: &ServerMessage) -> Result<(), ClientError> {
         match message {
             ServerMessage::Ready { ready } => {
-                if self.ready.is_some()
+                if ready.desktop.is_some_and(|grant| grant.version != 1)
+                    || ready.desktop.is_some() != self.desktop_version.is_some()
+                    || (ready.desktop.is_none() && ready.capabilities.iter().any(|cap| cap.capability == Capability::DesktopObservationV1))
+                    || self.ready.is_some()
                     || ready.version != PROTOCOL_VERSION
                     || ready.epoch == 0
                     || ready.limits.max_request_bytes == 0
@@ -1247,6 +1264,7 @@ mod hosted_consumer_tests {
             )
             .unwrap();
         let ready = EventReady {
+            desktop: None,
             version: PROTOCOL_VERSION,
             epoch: 71,
             recipient: serde_json::from_str("1").unwrap(),

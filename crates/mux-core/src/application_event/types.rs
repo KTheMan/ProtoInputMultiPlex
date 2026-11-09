@@ -127,6 +127,8 @@ pub enum CursorControl {
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct UserView {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub desktop: Option<super::DesktopUserState>,
     pub id: UserId,
     /// Recipient-relative ownership hint for control visibility. Server-side
     /// authorization always checks the actual owner independently of this hint.
@@ -180,6 +182,7 @@ impl Grant {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Capability {
+    DesktopObservationV1,
     CooperativeVirtualInput,
     PortableCursorState,
     OwnWindowAdapter,
@@ -352,6 +355,7 @@ impl CanvasTransform {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum Event {
+    DesktopObserved { user: UserId, source: SourceId, record: super::DesktopRecordV1, position: Option<Point> },
     HostedStateChanged {
         state: HostedState,
     },

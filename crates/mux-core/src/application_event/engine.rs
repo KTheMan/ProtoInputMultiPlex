@@ -2,12 +2,18 @@ use super::*;
 use crate::desktop::{CursorShape, MouseButton};
 use std::collections::{BTreeMap, BTreeSet, VecDeque};
 
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum Provenance { Cooperative, Desktop { next_sequence: u64 } }
+
 struct User {
+    provenance: Provenance,
     owner: RecipientId,
     view: UserView,
 }
 
 struct Recipient {
+    desktop_consent: Option<DesktopConsentV1>,
+    desktop_version: Option<u32>,
     /// Local host supplied identity, retained privately and never emitted to clients.
     identity: String,
     grant: Grant,
@@ -98,6 +104,8 @@ impl Engine {
         self.recipients.insert(
             id,
             Recipient {
+                desktop_consent: None,
+                desktop_version: None,
                 identity: local_identity.into(),
                 grant: Grant::default(),
                 tracked: BTreeSet::new(),
@@ -195,7 +203,7 @@ impl Engine {
                 .users
                 .iter()
                 .filter_map(|(id, user)| {
-                    (user.owner == recipient
+                    (user.provenance == Provenance::Cooperative && user.owner == recipient
                         && ((previous.pointer_events
                             && scope_allows(&previous.users, *id, Some(recipient), recipient)
                             && (!grant.pointer_events
@@ -261,6 +269,104 @@ impl Engine {
         }
     }
 
+    pub fn screens(&self) -> &ScreenState { &self.screens }
+
+    pub fn desktop_consent(&self, recipient: RecipientId) -> Result<Option<DesktopConsentV1>, Error> {
+        Ok(self.recipients.get(&recipient).ok_or(Error::MissingRecipient)?.desktop_consent)
+    }
+    pub fn effective_desktop_consent(&self, recipient: RecipientId) -> Result<Option<DesktopConsentV1>, Error> {
+        Ok(effective_desktop(self.recipients.get(&recipient).ok_or(Error::MissingRecipient)?))
+    }
+    pub fn approve_desktop_observation(&mut self, recipient: RecipientId, consent: Option<DesktopConsentV1>) -> Result<(), Error> {
+        self.active()?;
+        if let Some(consent) = consent { consent.validate()?; }
+        let current = self.recipients.get_mut(&recipient).ok_or(Error::MissingRecipient)?;
+        if current.desktop_consent != consent {
+            current.desktop_consent = consent;
+            current.desktop_version = None;
+            self.end_recipient_subscriptions(recipient, EndReason::GrantChanged);
+        }
+        Ok(())
+    }
+    /// Decoder support is authenticated separately from GUI consent, before Ready.
+    pub fn negotiate_desktop_observation(&mut self, recipient: RecipientId, version: Option<u32>) -> Result<(), Error> {
+        self.active()?;
+        let current = self.recipients.get_mut(&recipient).ok_or(Error::MissingRecipient)?;
+        if version.is_some() && (version != Some(1) || current.desktop_consent.is_none()) { return Err(Error::Denied); }
+        if current.desktop_version != version {
+            current.desktop_version = version;
+            self.end_recipient_subscriptions(recipient, EndReason::GrantChanged);
+        }
+        Ok(())
+    }
+    pub fn is_desktop_observed(&self, user: UserId) -> bool {
+        self.users.get(&user).is_some_and(|user| matches!(user.provenance, Provenance::Desktop { .. }))
+    }
+    /// Trusted provider only. This method is absent from every serialized command enum.
+    pub fn create_desktop_observed(&mut self, owner: RecipientId, name: &str, baseline: DesktopBaselineV1) -> Result<UserId, Error> {
+        self.reserve_events(1)?;
+        validate_name(name)?;
+        baseline.validate()?;
+        if baseline.screens != self.screens { return Err(Error::StaleRevision); }
+        if !self.recipients.contains_key(&owner) { return Err(Error::MissingRecipient); }
+        if self.users.len() >= MAX_USERS { return Err(Error::Limit); }
+        let id = UserId { epoch: self.epoch, local: self.id()? };
+        let (pointer, desktop) = super::desktop_observation::baseline_view(&baseline);
+        let view = UserView { desktop: Some(desktop), id, owned_by_recipient: false, name: name.into(),
+            source: SourceId(id.local), pointer: Some(pointer), cursor: None, held_keys: None };
+        self.users.insert(id, User { owner, provenance: Provenance::Desktop { next_sequence: baseline.next_sequence }, view: view.clone() });
+        self.publish(Event::UserCreated { user: view });
+        Ok(id)
+    }
+    /// Invalid or uncertain provider records retire the mapping before returning failure.
+    pub fn publish_desktop_observation(&mut self, owner: RecipientId, user: UserId, record: DesktopRecordV1) -> Result<(), Error> {
+        let current = self.users.get(&user).ok_or(Error::MissingUser)?;
+        let Provenance::Desktop { next_sequence } = current.provenance else { return Err(Error::Denied); };
+        if current.owner != owner { return Err(Error::Denied); }
+        let mut next = current.view.clone();
+        let outcome = (|| {
+            self.reserve_events(1)?;
+            if record.sequence != next_sequence { return Err(Error::StaleRevision); }
+            let following = next_sequence.checked_add(1).ok_or(Error::Limit)?;
+            fold_desktop_observation(&mut next, record, &self.screens)?;
+            Ok(following)
+        })();
+        let following = match outcome {
+            Ok(next) => next,
+            Err(error) => { self.retire_desktop_observed(owner, user)?; return Err(error); }
+        };
+        let value = self.users.get_mut(&user).ok_or(Error::MissingUser)?;
+        value.view = next;
+        value.provenance = Provenance::Desktop { next_sequence: following };
+        let source = value.view.source;
+        let position = value.view.pointer.as_ref().map(|pointer| pointer.position);
+        self.publish(Event::DesktopObserved { user, source, record, position });
+        Ok(())
+    }
+    pub fn retire_desktop_observed(&mut self, owner: RecipientId, user: UserId) -> Result<(), Error> {
+        let value = self.users.get(&user).ok_or(Error::MissingUser)?;
+        if value.owner != owner || !matches!(value.provenance, Provenance::Desktop { .. }) { return Err(Error::Denied); }
+        if let Err(error) = self.reserve_events(1) { self.end(); return Err(error); }
+        let mut never_delivered = BTreeSet::new();
+        for (id, subscriber) in &mut self.subscribers {
+            if subscriber.queue.iter().any(|envelope| matches!(&envelope.event, Event::UserCreated { user: view } if view.id == user)) {
+                never_delivered.insert(*id);
+            }
+            subscriber.queue.retain(|envelope| match &envelope.event {
+                Event::UserCreated { user: view } | Event::UserUpdated { user: view } => view.id != user,
+                Event::DesktopObserved { user: id, .. } | Event::Input { user: id, .. } => *id != user,
+                _ => true,
+            });
+        }
+        self.publish(Event::UserDisposed { user });
+        for id in never_delivered {
+            if let Some(subscriber) = self.subscribers.get_mut(&id) {
+                subscriber.queue.retain(|envelope| !matches!(&envelope.event, Event::UserDisposed { user: id } if *id == user));
+            }
+        }
+        self.users.remove(&user);
+        Ok(())
+    }
     pub fn create_user(&mut self, owner: RecipientId, name: &str) -> Result<UserId, Error> {
         self.reserve_events(1)?;
         validate_name(name)?;
@@ -276,6 +382,7 @@ impl Engine {
             local,
         };
         let view = UserView {
+            desktop: None,
             id,
             owned_by_recipient: false,
             name: name.into(),
@@ -293,6 +400,7 @@ impl Engine {
         self.users.insert(
             id,
             User {
+                provenance: Provenance::Cooperative,
                 owner,
                 view: view.clone(),
             },
@@ -304,7 +412,7 @@ impl Engine {
     fn own_user(&self, owner: RecipientId, user: UserId) -> Result<&User, Error> {
         self.active()?;
         let value = self.users.get(&user).ok_or(Error::MissingUser)?;
-        if value.owner != owner {
+        if value.owner != owner || value.provenance != Provenance::Cooperative {
             return Err(Error::Denied);
         }
         Ok(value)
@@ -515,7 +623,7 @@ impl Engine {
         let users = self
             .users
             .values()
-            .filter_map(|user| view_for(&user.view, &recipient.grant, user.owner, recipient_id))
+            .filter_map(|user| view_for(&user.view, &recipient.grant, effective_desktop(recipient), user.owner, recipient_id))
             .collect();
         let windows = if recipient.grant.owned_windows {
             recipient
@@ -538,7 +646,14 @@ impl Engine {
             users,
             screens: self.screens.clone(),
             windows,
-            capabilities: capabilities(),
+            capabilities: {
+                let mut values = capabilities();
+                if effective_desktop(recipient).is_some() {
+                    values.push(CapabilityStatus { capability: Capability::DesktopObservationV1,
+                        available: true, detail: "Version-1 virtual desktop observation; no mutation or delivery authority".into() });
+                }
+                values
+            },
             mode: ApplicationMode::Cooperative,
         })
     }
@@ -647,10 +762,11 @@ impl Engine {
         self.sequence += 1;
         let user_id = match &event {
             Event::UserCreated { user } | Event::UserUpdated { user } => Some(user.id),
-            Event::UserDisposed { user } | Event::Input { user, .. } => Some(*user),
+            Event::UserDisposed { user } | Event::Input { user, .. } | Event::DesktopObserved { user, .. } => Some(*user),
             _ => None,
         };
         let user_owner = user_id.and_then(|id| self.users.get(&id).map(|user| user.owner));
+        let desktop_user = user_id.and_then(|id| self.users.get(&id)).is_some_and(|user| matches!(user.provenance, Provenance::Desktop { .. }));
         for subscriber in self.subscribers.values_mut() {
             if subscriber.ended.is_some() {
                 continue;
@@ -658,7 +774,7 @@ impl Engine {
             let Some(recipient) = self.recipients.get(&subscriber.recipient) else {
                 continue;
             };
-            let Some(event) = event_for(&event, recipient, subscriber.recipient, user_owner) else {
+            let Some(event) = event_for(&event, recipient, subscriber.recipient, user_owner, desktop_user) else {
                 continue;
             };
             if let Some((_, lost_through)) = subscriber.gap.as_mut() {
@@ -680,6 +796,9 @@ impl Engine {
     }
 
     pub fn update_screens(&mut self, screens: ScreenState) -> Result<(), Error> {
+        if screens != self.screens && self.users.values().any(|user| matches!(user.provenance, Provenance::Desktop { .. })) {
+            return Err(Error::Invalid("retire desktop bindings before screen replacement"));
+        }
         self.reserve_events(1)?;
         screens.validate()?;
         if screens.revision <= self.screens.revision {
@@ -714,6 +833,7 @@ impl Engine {
         self.reserve_events(users.len() as u64 + self.windows.len() as u64)?;
         self.end_recipient_subscriptions(recipient, EndReason::RecipientDisconnected);
         for user in users {
+            if self.is_desktop_observed(user) { self.retire_desktop_observed(recipient, user)?; continue; }
             self.publish(Event::UserDisposed { user });
             self.users.remove(&user);
         }
@@ -1102,6 +1222,7 @@ fn transition_vec<T: PartialEq>(
 fn view_for(
     user: &UserView,
     grant: &Grant,
+    desktop: Option<DesktopConsentV1>,
     owner: RecipientId,
     recipient: RecipientId,
 ) -> Option<UserView> {
@@ -1110,8 +1231,15 @@ fn view_for(
     {
         return None;
     }
+    if user.desktop.is_some() && (desktop.is_none() || !matches!(&grant.users, UserScope::Only(_))) { return None; }
     let mut view = user.clone();
-    view.owned_by_recipient = owner == recipient;
+    if let Some(observed) = view.desktop.as_mut() {
+        view.owned_by_recipient = false;
+        if !grant.pointer_events { observed.configured_cursor = None; }
+        if !grant.key_events { observed.native_held_keys = None; }
+        observed.text_units = grant.key_events && desktop.is_some_and(|grant| grant.text_units);
+    }
+    view.owned_by_recipient = user.desktop.is_none() && owner == recipient;
     if !grant.pointer_events {
         view.pointer = None;
         view.cursor = None;
@@ -1127,14 +1255,17 @@ fn event_for(
     recipient: &Recipient,
     recipient_id: RecipientId,
     user_owner: Option<RecipientId>,
+    desktop_user: bool,
 ) -> Option<Event> {
+    let desktop = effective_desktop(recipient);
+    if desktop_user && (desktop.is_none() || !matches!(&recipient.grant.users, UserScope::Only(_))) { return None; }
     let grant = &recipient.grant;
     match event {
         Event::UserCreated { user } => Some(Event::UserCreated {
-            user: view_for(user, grant, user_owner?, recipient_id)?,
+            user: view_for(user, grant, desktop, user_owner?, recipient_id)?,
         }),
         Event::UserUpdated { user } => Some(Event::UserUpdated {
-            user: view_for(user, grant, user_owner?, recipient_id)?,
+            user: view_for(user, grant, desktop, user_owner?, recipient_id)?,
         }),
         Event::UserDisposed { user }
             if scope_allows(&grant.users, *user, user_owner, recipient_id)
@@ -1158,6 +1289,16 @@ fn event_for(
             }
             Some(event)
         }
+        Event::DesktopObserved { user, record, .. }
+            if desktop.is_some()
+                && scope_allows(&grant.users, *user, user_owner, recipient_id)
+                && (if record.change.is_key() { grant.key_events } else { grant.pointer_events })
+                && (!matches!(record.change, DesktopObservation::TextUnit { .. })
+                    || desktop.is_some_and(|consent| consent.text_units)) => {
+                let mut event = event.clone();
+                if !grant.pointer_events && let Event::DesktopObserved { position, .. } = &mut event { *position = None; }
+                Some(event)
+            },
         Event::HostedStateChanged { .. } if grant.host_state => Some(event.clone()),
         Event::ScreensChanged { .. } if grant.enabled() => Some(event.clone()),
         Event::Window { update } if grant.owned_windows => {
@@ -1181,4 +1322,8 @@ fn scope_allows(
         UserScope::AllOwned => owner == Some(recipient),
         UserScope::Only(users) => owner.is_some() && users.contains(&user),
     }
+}
+
+fn effective_desktop(recipient: &Recipient) -> Option<DesktopConsentV1> {
+    (recipient.desktop_version == Some(1)).then_some(recipient.desktop_consent).flatten()
 }

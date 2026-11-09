@@ -46,6 +46,8 @@ struct Descriptor<'a> {
     exact_origin: &'a str,
     credential: &'a str,
     expires_unix_ms: u64,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    desktop_observation_version: Option<u32>,
 }
 
 /// Retain in a background lifecycle actor. start/issue/finish_stop do file/network
@@ -252,6 +254,7 @@ impl Service {
             exact_origin: &lease.origin,
             credential,
             expires_unix_ms: u64::try_from(expires)?,
+            desktop_observation_version: lease.desktop_consent.map(|consent| consent.version),
         })?)
     }
 
@@ -451,12 +454,17 @@ pub(super) fn origin_allowed(request: &Request, origins: &[String], port: u16) -
     Some(origin.to_owned())
 }
 
+#[cfg(test)]
 pub(super) fn authenticate_hello(
-    shared: &Arc<Shared>,
-    origin: &str,
-    hello: &EventHello,
-    now: Instant,
+    shared: &Arc<Shared>, origin: &str, hello: &EventHello, now: Instant,
 ) -> Result<Arc<Lease>> {
+    authenticate_hello_version(shared, origin, hello, now, None)
+}
+
+pub(super) fn authenticate_hello_version(
+    shared: &Arc<Shared>, origin: &str, hello: &EventHello, now: Instant, version: Option<u32>,
+) -> Result<Arc<Lease>> {
+    ensure!(version.is_none() || version == Some(1), "unsupported desktop observation version");
     ensure!(
         hello.version == PROTOCOL_VERSION
             && hello.credential.len() == 64
@@ -480,11 +488,13 @@ pub(super) fn authenticate_hello(
             .as_deref()
             .is_some_and(|expected| token_equal(&hello.credential, expected));
         if matches
+            && (version.is_none() || lease.desktop_consent.is_some())
             && lease
                 .connected
                 .compare_exchange(false, true, Ordering::AcqRel, Ordering::Acquire)
                 .is_ok()
         {
+            lease.desktop_version.store(version.unwrap_or(0), Ordering::Release);
             lease.network_done.store(false, Ordering::Release);
             return Ok(lease);
         }
@@ -549,13 +559,22 @@ async fn establish(
     let Message::Text(hello) = hello else {
         bail!("event hello must be text");
     };
-    let hello: EventHello =
-        serde_json::from_slice(hello.as_bytes()).context("invalid event hello")?;
-    let lease = authenticate_hello(
+    // Strict legacy decode first; opt-in uses a separate strict shape. No new field
+    // is ever emitted by a new client when it uses a legacy descriptor/constructor.
+    let (hello, desktop_version) = match serde_json::from_slice::<EventHello>(hello.as_bytes()) {
+        Ok(hello) => (hello, None),
+        Err(_) => {
+            let hello: DesktopEventHello = serde_json::from_slice(hello.as_bytes()).context("invalid event hello")?;
+            let version = hello.desktop_observation_version;
+            (hello.into_legacy(), Some(version))
+        }
+    };
+    let lease = authenticate_hello_version(
         &shared,
         approved_origin.as_deref().context("event origin missing")?,
         &hello,
         Instant::now(),
+        desktop_version,
     )?;
     let guard = ConnectionGuard {
         lease: Arc::clone(&lease),

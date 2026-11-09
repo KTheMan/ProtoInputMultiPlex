@@ -1,4 +1,6 @@
 //! Rust desktop routing: click-selected windows, process leases, capture and switched ownership.
+pub(crate) mod observation;
+use observation::{Admission, Change, ConfiguredCursor, Journal, LossReason};
 use crate::router::{State, keyboard_supported, validate_keyboard_settings};
 use anyhow::{Context, Result, ensure};
 use mux_core::{
@@ -14,13 +16,14 @@ use mux_windows::{
     protoinput::DesktopBackend,
     targets::{self, Surface},
 };
-use std::{collections::BTreeMap, time::Instant};
+use std::{collections::{BTreeMap, BTreeSet}, time::Instant};
 
 struct ExplicitSelection {
     identity: targets::ValidatedSelection,
     state: crate::window_selection::AttachmentState,
 }
 struct User {
+    observation_uncertain: bool,
     selection: Option<ExplicitSelection>,
     application_target: Option<usize>,
     active: bool,
@@ -68,6 +71,8 @@ struct Gesture {
     outer: Bounds,
 }
 pub struct DesktopRouter {
+    observation: Journal,
+    observation_generation: u64,
     backend: DesktopBackend,
     seats: Vec<ResolvedSeat>,
     seat_ids: Vec<String>,
@@ -254,6 +259,13 @@ impl DesktopRouter {
     }
     /// Called only after a real, non-filtered action reaches the leaf router.
     fn prepare_selected_input(&mut self, user: usize) -> Result<()> {
+        let before = (self.users[user].cursor.x, self.users[user].cursor.y);
+        let result = self.prepare_selected_input_inner(user);
+        if result.is_err() { self.observation_uncertain(user); }
+        else if before != (self.users[user].cursor.x, self.users[user].cursor.y) { self.observation_motion(user); }
+        result
+    }
+    fn prepare_selected_input_inner(&mut self, user: usize) -> Result<()> {
         let Some(selection) = self.users[user].selection.as_ref() else {
             return Ok(());
         };
@@ -317,6 +329,7 @@ impl DesktopRouter {
                 .position(|seat| seat.mouse == failure.device)
             {
                 self.users[user].status = format!("Motion publication unavailable: {error:#}");
+                self.observation_uncertain(user);
             }
         }
         true
@@ -326,6 +339,7 @@ impl DesktopRouter {
             // A departed target must not stop unrelated automatic users. Failed
             // publications are discarded by the backend and remain visible here.
             if !self.report_motion_failure(&error) {
+                self.observation_uncertain_all();
                 return Err(error);
             }
         }
@@ -505,6 +519,7 @@ impl DesktopRouter {
                 mux_windows::monitors::resolve(&seat.cursor, None)?,
             );
             users.push(User {
+                observation_uncertain: false,
                 selection: None,
                 application_target: None,
                 last_mouse_activity: Instant::now(),
@@ -542,6 +557,8 @@ impl DesktopRouter {
             }
         }).collect();
         Ok(Self {
+            observation: Journal::default(),
+            observation_generation: std::env::var(observation::GENERATION_ENV).ok().and_then(|v| v.parse::<u64>().ok()).unwrap_or(0),
             backend,
             seats,
             seat_ids: profile.seats.iter().map(mux_core::Seat::identity).collect(),
@@ -593,7 +610,7 @@ impl DesktopRouter {
         validate_keyboard_settings(&seat.cursor, &resolved, true)?;
         self.backend
             .validate_application_focus(seat.target_pid, seat.cursor.keyboard.application_focus)?;
-        self.backend.flush_motion()?;
+        self.observation_flush_motion()?;
         ensure!(
             !self.paused,
             "resume the desktop session before adding a user"
@@ -717,6 +734,7 @@ impl DesktopRouter {
         self.seats.push(resolved.clone());
         self.seat_ids.push(seat_id);
         self.users.push(User {
+            observation_uncertain: false,
             selection: None,
             application_target: None,
             last_mouse_activity: Instant::now(),
@@ -750,12 +768,13 @@ impl DesktopRouter {
             self.policy.is_active(user),
             "virtual user is already removed or unknown"
         );
-        self.backend.flush_motion()?;
+        self.observation_flush_motion()?;
         self.release_user(user)
     }
 
     /// Native registrations stay reserved until worker exit.
     pub fn commit_remove_virtual_user(&mut self, user: usize) {
+        self.observation.fence_user(user, LossReason::Removed);
         if let Some(target) = self.users[user].application_target.take() {
             self.backend.cursor_observation(target, 0, false);
         }
@@ -900,6 +919,11 @@ impl DesktopRouter {
         }
     }
     fn position(&mut self, user: usize, surface: &Surface) -> Result<usize> {
+        let result = self.position_inner(user, surface);
+        if result.is_err() { self.observation_uncertain(user); }
+        result
+    }
+    fn position_inner(&mut self, user: usize, surface: &Surface) -> Result<usize> {
         ensure!(
             !self.user_pauses[user].paused,
             "Paused user cannot publish cursor input"
@@ -942,17 +966,21 @@ impl DesktopRouter {
         p
     }
     fn release_token(&mut self, token: (u32, u32)) -> Result<()> {
+        let observed_user = self.held.get(&token).map(|held| held.user);
+        let shared_release = self.held.get(&token).is_some_and(|held| held.packet.kind == 1 && self.held.iter().any(|(other_token, other)| *other_token != token && other.target == held.target && other.packet.kind == 1 && other.packet.data == held.packet.data));
+        let before = observed_user.and_then(|user| self.observation_before(user));
+        let mut submitted = false;
         let backend = &self.backend;
         let without_motion = self
             .held
             .get(&token)
             .is_some_and(|held| self.user_pauses[held.user].paused);
-        release_held_token(
+        let result = release_held_token(
             &mut self.held,
             token,
             |target| backend.alive(target),
             |held| {
-                if without_motion {
+                let result = if without_motion {
                     backend.release_to_without_motion(
                         held.target,
                         held.window.hwnd,
@@ -964,9 +992,18 @@ impl DesktopRouter {
                         held.window.hwnd,
                         Self::release_packet(held.packet),
                     )
-                }
+                };
+                if result.is_ok() { submitted = true; }
+                result
             },
-        )
+        );
+        if let Some(user) = observed_user {
+            if result.is_err() { self.observation_uncertain(user); }
+            else if let Some(before) = before {
+                self.observation_hold_changes(user, before, if submitted { Admission::NativeSubmissionAccepted } else if shared_release { Admission::SharedNativeHold } else { Admission::LogicalOnly }, false);
+            }
+        }
+        result
     }
     fn mouse_held(&self, user: usize) -> bool {
         self.held
@@ -1038,6 +1075,7 @@ impl DesktopRouter {
         let released = self.release_user(user);
         let result = discarded.and(released);
         if let Err(error) = &result {
+            self.observation_uncertain(user);
             self.user_pauses[user].error = Some(format!("{error:#}"));
         }
         result
@@ -1073,7 +1111,7 @@ impl DesktopRouter {
             );
     }
     pub fn release_all(&mut self) -> Result<()> {
-        let mut result = self.backend.flush_motion();
+        let mut result = self.observation_flush_motion();
         for user in 0..self.users.len() {
             let released = self.release_user(user);
             if result.is_ok() {
@@ -1083,6 +1121,7 @@ impl DesktopRouter {
         result
     }
     pub fn shutdown(&mut self) -> Result<()> {
+        self.observation.fence(LossReason::StopIntent);
         if self.shutdown_started {
             return self
                 .shutdown_error
@@ -1097,11 +1136,13 @@ impl DesktopRouter {
         result
     }
     pub fn pause(&mut self, paused: bool) -> Result<()> {
-        self.backend.flush_motion()?;
+        self.observation_flush_motion()?;
         if paused {
             self.release_all()?;
         }
-        self.backend.pause(paused)?;
+        let result = self.backend.pause(paused);
+        if result.is_err() { self.observation_uncertain_all(); }
+        result?;
         self.paused = paused;
         if !paused {
             for user in 0..self.users.len() {
@@ -1133,7 +1174,7 @@ impl DesktopRouter {
             .and_then(|w| targets::surface(w).ok())
             .map(|s| s.client);
         let bounds = mux_windows::monitors::resolve(&settings, window)?;
-        self.backend.flush_motion()?;
+        self.observation_flush_motion()?;
         self.release_user(index)?;
         let user = self.users.get_mut(index).context("unknown user")?;
         user.settings = settings;
@@ -1144,6 +1185,8 @@ impl DesktopRouter {
                 user.cursor.y.clamp(bounds.top, bounds.bottom - 1),
             );
         }
+        self.observation_motion(index);
+        self.observation_record(index, Change::Cursor { cursor: ConfiguredCursor::from(&self.users[index].settings) }, Admission::LogicalOnly);
         if !self.paused && !self.user_pauses[index].paused {
             self.motion(index)?;
         }
@@ -1198,11 +1241,12 @@ impl DesktopRouter {
             }
             return Ok(());
         }
-        self.backend.flush_motion()?;
+        self.observation_flush_motion()?;
         self.note_mouse_activity(user)?;
         let b = self.motion_bounds(user)?;
         self.users[user].cursor =
             Cursor::new(x.clamp(b.left, b.right - 1), y.clamp(b.top, b.bottom - 1));
+        self.observation_motion(user);
         if let Err(error) = self.motion(user) {
             self.users[user].status = format!("Routing unavailable: {error:#}");
             if self.strict_mapper_delivery {
@@ -1248,7 +1292,7 @@ impl DesktopRouter {
             };
         }
         if (packet.kind != 0 || packet.flags != 0)
-            && let Err(error) = self.backend.flush_motion()
+            && let Err(error) = self.observation_flush_motion()
         {
             if !self.report_motion_failure(&error) {
                 return Err(error);
@@ -1280,6 +1324,7 @@ impl DesktopRouter {
         }
         let result = self.route(user, packet, source_buttons);
         if let Err(error) = result {
+            self.observation_uncertain(user);
             self.users[user].status = format!("Routing unavailable: {error:#}");
             if self.strict_mapper_delivery {
                 return Err(error);
@@ -1325,6 +1370,7 @@ impl DesktopRouter {
                 self.position(owner, &surface)?
             };
             self.backend.release_to(target, window.hwnd, packet)?;
+            self.observation_record(user, Change::TextUnit { unit: u16::try_from(packet.data).expect("validated text unit") }, Admission::NativeSubmissionAccepted);
             return Ok(());
         }
         let identity = if packet.kind == 1 {
@@ -1387,6 +1433,7 @@ impl DesktopRouter {
             let shared_down = self.held.values().any(|held| {
                 held.target == target && held.packet.kind == 1 && held.packet.data == packet.data
             });
+            let before = self.observation_before(user);
             if self.strict_mapper_delivery {
                 // Native submission (including restoring its selected window)
                 // can fail after DOWN. Retain the original recipient first so
@@ -1415,6 +1462,7 @@ impl DesktopRouter {
                     },
                 );
             }
+            if let Some(before) = before { self.observation_hold_changes(user, before, if shared_down { Admission::SharedNativeHold } else { Admission::NativeSubmissionAccepted }, true); }
             return Ok(());
         }
         if packet.flags == 0 {
@@ -1430,6 +1478,7 @@ impl DesktopRouter {
             // The terminal logical cursor accepted the source delta. Publication
             // may be coalesced, clamped, or report a later native failure.
             self.forwarded_motion_accepted = true;
+            self.observation_motion(user);
             return self.publish_motion(user, true);
         }
         if self.held.contains_key(&(packet.device, identity)) && identity != 0 {
@@ -1472,6 +1521,7 @@ impl DesktopRouter {
                 packet.data as u16 as i16,
                 modifiers,
             )?;
+            if let Some(change) = observation::wheel(packet) { self.observation_record(user, change, Admission::NativeSubmissionAccepted); }
             return Ok(());
         }
         self.prepare_selected_input(user)?;
@@ -1500,6 +1550,7 @@ impl DesktopRouter {
                     outer: surface.outer,
                     surface: surface.clone(),
                 });
+                self.observation.fence_user(user, LossReason::Uncertain);
                 self.keyboard[user] = Some(surface.window);
                 self.users[user].status = if surface.region == 2 {
                     "Moving window".into()
@@ -1526,6 +1577,7 @@ impl DesktopRouter {
             self.keyboard[user] = Some(surface.window);
         }
         let target = self.position(user, &surface)?;
+        let before = self.observation_before(user);
         if packet.flags != 0x400 {
             self.users[user].capture = Some(surface.clone());
             self.policy.press(user);
@@ -1540,6 +1592,8 @@ impl DesktopRouter {
             );
         }
         self.backend.submit(target, packet)?;
+        if let Some(before) = before { self.observation_hold_changes(user, before, Admission::NativeSubmissionAccepted, true); }
+        if let Some(change) = observation::wheel(packet) { self.observation_record(user, change, Admission::NativeSubmissionAccepted); }
         self.users[user].status = format!(
             "{} · {}",
             if self.policy.mode == Mode::Switched {
@@ -1585,6 +1639,11 @@ impl DesktopRouter {
         self.publish_motion(user, false)
     }
     fn publish_motion(&mut self, user: usize, coalesce: bool) -> Result<()> {
+        let result = self.publish_motion_inner(user, coalesce);
+        if result.is_err() { self.observation_uncertain(user); }
+        result
+    }
+    fn publish_motion_inner(&mut self, user: usize, coalesce: bool) -> Result<()> {
         if self.user_pauses[user].paused {
             return Ok(());
         }
@@ -1622,7 +1681,7 @@ impl DesktopRouter {
                 }
             }
             let window = gesture.surface.window;
-            self.backend.flush_motion()?;
+            self.observation_flush_motion()?;
             targets::place(window, b)?;
             if self.backend.index(window.pid).is_some() {
                 let surface = targets::surface(window)?;
@@ -1662,8 +1721,11 @@ impl DesktopRouter {
         Ok(())
     }
     pub fn tick(&mut self) -> Result<(bool, Vec<State>)> {
+        self.observation_check_screens();
         let stop = self.guard.pump();
         for pid in self.backend.exited() {
+            let affected = self.held.values().filter_map(|held| (held.window.pid == pid && self.observation.observing_user(held.user)).then_some(held.user)).collect::<BTreeSet<_>>();
+            for user in affected { self.observation.fence_user(user, LossReason::Removed); }
             for user in 0..self.users.len() {
                 if self.policy.focus[user].is_some_and(|w| w.pid == pid) {
                     self.users[user].status = "Target exited; click another window".into();
@@ -1765,6 +1827,9 @@ impl DesktopRouter {
                 self.users[user]
                     .cursor
                     .motion(0, 0, &CursorSettings::default(), movement_bounds);
+            }
+            if old != (self.users[user].cursor.x, self.users[user].cursor.y) {
+                self.observation_motion(user);
             }
             if !self.paused
                 && !self.user_pauses[user].paused

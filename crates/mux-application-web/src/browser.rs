@@ -1,6 +1,6 @@
 use crate::event_hooks::{
     ClickOptions, ClickPairs, EventFilter, Registry, hosted_deadline_pending,
-    validate_snapshot_query,
+    validate_snapshot_query_with_desktop,
 };
 use crate::geometry::CanvasGeometry;
 use crate::local_input::{LocalInput, hid_key, mouse_button, selects};
@@ -78,6 +78,7 @@ struct ClickDelivery {
 }
 
 struct Inner {
+    desktop_version: Option<u32>,
     canvas: HtmlCanvasElement,
     context: CanvasRenderingContext2d,
     status: HtmlElement,
@@ -232,7 +233,12 @@ impl Inner {
                     }
                     self.click_deliveries.clear();
                 }
-                ApplicationEvent::Input {
+                ApplicationEvent::DesktopObserved {
+                    user, record: DesktopRecordV1 {
+                        change: DesktopObservation::Button { button, transition },
+                        screen_revision: transform_revision, ..
+                    }, position: Some(position), ..
+                } | ApplicationEvent::Input {
                     user,
                     input: Input::Button { button, transition },
                     position: Some(position),
@@ -705,7 +711,10 @@ impl Inner {
         let accepted = message.clone();
         match message {
             ServerMessage::Ready { ready } => {
-                if self.authenticated
+                if ready.desktop.is_some_and(|grant| grant.version != 1)
+                    || ready.desktop.is_some() != self.desktop_version.is_some()
+                    || (ready.desktop.is_none() && ready.capabilities.iter().any(|cap| cap.capability == Capability::DesktopObservationV1))
+                    || self.authenticated
                     || ready.version != PROTOCOL_VERSION
                     || ready.epoch == 0
                     || ready.limits.max_request_bytes == 0
@@ -816,7 +825,7 @@ impl Inner {
                                 // Queries do not establish the stream, but their
                                 // payload still must validate before notification.
                                 let epoch = self.ready.as_ref().ok_or("Missing handshake")?.epoch;
-                                validate_snapshot_query(snapshot, epoch)
+                                validate_snapshot_query_with_desktop(snapshot, epoch, self.desktop_version)
                                     .map_err(|_| "Snapshot query validation failed")?;
                                 self.notice("Snapshot query acknowledged; subscribe/refresh establishes the live stream");
                             }
@@ -1110,6 +1119,12 @@ impl WebClient {
             .map_err(JsValue::from_str)
     }
 
+    /// Explicit version-1 provider decoder opt-in; consent is still GUI authority.
+    pub fn connect_desktop(&self, endpoint: &str, event_credential: &str, version: u32) -> Result<(), JsValue> {
+        if version != 1 { return Err(JsValue::from_str("Unsupported desktop observation version")); }
+        open_connection_version(&self.inner, endpoint.into(), event_credential.into(), Some(version))
+            .map_err(JsValue::from_str)
+    }
     pub fn disconnect(&self) {
         self.inner.borrow_mut().stop(
             "Disconnected; reconnect explicitly with an event credential",
@@ -1738,10 +1753,12 @@ fn invoke(inner: &Rc<RefCell<Inner>>, callback: &js_sys::Function, payload: &str
     }
 }
 
-fn open_connection(
-    inner_rc: &Rc<RefCell<Inner>>,
-    endpoint: String,
-    credential: String,
+fn open_connection(inner_rc: &Rc<RefCell<Inner>>, endpoint: String, credential: String) -> Result<(), &'static str> {
+    open_connection_version(inner_rc, endpoint, credential, None)
+}
+
+fn open_connection_version(
+    inner_rc: &Rc<RefCell<Inner>>, endpoint: String, credential: String, desktop_version: Option<u32>,
 ) -> Result<(), &'static str> {
     let mut inner = inner_rc.borrow_mut();
     if inner.disposed || inner.generation == u64::MAX {
@@ -1766,6 +1783,8 @@ fn open_connection(
     inner.stop("Opening event connection", false);
     inner.socket_listeners.clear();
     inner.state = ClientState::default();
+    inner.desktop_version = desktop_version;
+    if let Some(version) = desktop_version { inner.state.enable_desktop_observation(version).map_err(|_| "Unsupported desktop decoder")?; }
     inner.credential_once = Some(credential);
     let socket = match WebSocket::new(&endpoint) {
         Ok(socket) => socket,
@@ -1783,11 +1802,15 @@ fn open_connection(
                     inner.stop("Event credential unavailable", false);
                     return;
                 };
-                let hello = EventHello {
+                let mut hello = EventHello {
                     version: PROTOCOL_VERSION,
                     credential,
                 };
-                let sent = serde_json::to_string(&hello)
+                let serialized = if let Some(version) = inner.desktop_version {
+                    serde_json::to_string(&DesktopEventHello { version: hello.version,
+                        credential: std::mem::take(&mut hello.credential), desktop_observation_version: version })
+                } else { serde_json::to_string(&hello) };
+                let sent = serialized
                     .ok()
                     .and_then(|json| inner.socket.as_ref()?.send_with_str(&json).ok());
                 if sent.is_none() {
@@ -1886,6 +1909,7 @@ pub fn mount_demo(container_id: &str) -> Result<WebClient, JsValue> {
         .ok_or_else(|| JsValue::from_str("Canvas 2D unavailable"))?
         .dyn_into::<CanvasRenderingContext2d>()?;
     let inner = Rc::new(RefCell::new(Inner {
+        desktop_version: None,
         canvas: canvas.clone(),
         context,
         status: element(&root, "[data-status]")?,

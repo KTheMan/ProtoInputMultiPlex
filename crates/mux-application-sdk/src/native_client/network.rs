@@ -133,14 +133,15 @@ async fn receive<S: AsyncRead + AsyncWrite + Unpin>(
     }
 }
 
-pub(super) async fn run(config: ConnectConfig, address: SocketAddr, shared: Arc<Shared>) {
-    let result = session(config, address, &shared).await;
+pub(super) async fn run(config: ConnectConfig, desktop_version: Option<u32>, address: SocketAddr, shared: Arc<Shared>) {
+    let result = session(config, desktop_version, address, &shared).await;
     // session's socket is already dropped here. This wake contains no terminal
     // WebSocket write, and local retirement makes no remote-cleanup assertion.
     shared.finish(result.err().unwrap_or(StopReason::RemoteEnd));
 }
 async fn session(
     mut config: ConnectConfig,
+    desktop_version: Option<u32>,
     address: SocketAddr,
     shared: &Shared,
 ) -> Result<(), StopReason> {
@@ -171,11 +172,14 @@ async fn session(
     )
     .await?
     .map_err(|_| StopReason::Transport)?;
-    let hello = EventHello {
+    let mut hello = EventHello {
         version: PROTOCOL_VERSION,
         credential: std::mem::take(&mut config.event_credential),
     };
-    let hello_text = serde_json::to_string(&hello).map_err(|_| StopReason::Protocol)?;
+    let hello_text = if let Some(version) = desktop_version {
+        serde_json::to_string(&DesktopEventHello { version: hello.version,
+            credential: std::mem::take(&mut hello.credential), desktop_observation_version: version })
+    } else { serde_json::to_string(&hello) }.map_err(|_| StopReason::Protocol)?;
     fenced(
         shared,
         handshake.saturating_duration_since(Instant::now()),
