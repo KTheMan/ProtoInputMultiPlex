@@ -91,9 +91,10 @@ def validate_sdk_content(root, architecture):
             "pim_app_native_window_refresh",
             "pim_app_native_window_notify",
             "pim_app_native_window_retire",
+            "pim_app_native_local_toolkit",
         )
         if any(symbol not in header for symbol in required):
-            raise ValueError("SDK header lacks native-client ABI v3 window exports")
+            raise ValueError("SDK header lacks native-client ABI v3 consumer exports")
 
 
 def record_sdk(args, build_inputs):

@@ -671,6 +671,7 @@ fn generated_header_native_exports_are_feature_selected_and_host_abi_stays_stabl
     let _: unsafe extern "C" fn(u64, u64, *mut u64) -> i32 = ffi::pim_app_native_window_retire;
     let _: extern "C" fn(u64) -> i32 = ffi::pim_app_native_drain;
     let _: extern "C" fn(u64) -> i32 = ffi::pim_app_native_query;
+    let _: unsafe extern "C" fn(u64, *const u8, usize) -> i32 = ffi::pim_app_native_local_toolkit;
     let _: unsafe extern "C" fn(u64, *mut usize) -> i32 = ffi::pim_app_native_response_size;
     let _: unsafe extern "C" fn(u64, *mut u8, usize, *mut usize) -> i32 =
         ffi::pim_app_native_response_read;

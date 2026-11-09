@@ -51,6 +51,7 @@ pub struct ClientState {
     capabilities: Vec<CapabilityStatus>,
     mode: Option<ApplicationMode>,
     hosted: Option<HostedState>,
+    toolkit: crate::user_toolkit::UserToolkit,
 }
 
 /// A validated query or action receipt can arrive before its ordered stream
@@ -170,6 +171,7 @@ impl Default for ClientState {
             capabilities: Vec::new(),
             mode: None,
             hosted: None,
+            toolkit: crate::user_toolkit::UserToolkit::default(),
         }
     }
 }
@@ -187,6 +189,35 @@ impl ClientState {
     pub fn users(&self) -> &BTreeMap<UserId, UserView> {
         &self.users
     }
+    /// Executes a versioned consumer-local operation. Never queues a Host request.
+    pub fn local_toolkit(
+        &mut self,
+        request: crate::user_toolkit::ToolkitRequest,
+    ) -> Result<crate::user_toolkit::ToolkitResponse, crate::user_toolkit::ToolkitError> {
+        use crate::user_toolkit::{TOOLKIT_VERSION, ToolkitError};
+        if request.version != TOOLKIT_VERSION {
+            return Err(ToolkitError::Invalid);
+        }
+        if self.state != StreamState::Live {
+            return Err(ToolkitError::NotLive);
+        }
+        self.toolkit.execute(&self.users, request.operation)
+    }
+
+    /// Exact u64 identities remain JSON integers; callers pass text, never JS Number.
+    pub fn local_toolkit_json(
+        &mut self,
+        request: &str,
+    ) -> Result<String, crate::user_toolkit::ToolkitError> {
+        use crate::user_toolkit::{MAX_TOOLKIT_REQUEST_BYTES, ToolkitError, ToolkitRequest};
+        if request.is_empty() || request.len() > MAX_TOOLKIT_REQUEST_BYTES {
+            return Err(ToolkitError::Limit);
+        }
+        let request: ToolkitRequest = serde_json::from_str(request).map_err(|_| ToolkitError::Invalid)?;
+        let response = self.local_toolkit(request)?;
+        serde_json::to_string(&response).map_err(|_| ToolkitError::Invalid)
+    }
+
     pub fn windows(&self) -> &BTreeMap<WindowId, WindowInfo> {
         &self.windows
     }
@@ -211,7 +242,8 @@ impl ClientState {
         expected_epoch: u64,
     ) -> Result<(), FoldError> {
         match self.validated_snapshot(snapshot, expected_epoch) {
-            Ok(next) => {
+            Ok(mut next) => {
+                next.toolkit.reconcile(expected_epoch, &next.users);
                 *self = next;
                 Ok(())
             }
@@ -301,6 +333,7 @@ impl ClientState {
             capabilities: snapshot.capabilities,
             mode: Some(snapshot.mode),
             hosted: snapshot.hosted,
+            toolkit: self.toolkit.clone(),
         })
     }
 
@@ -378,6 +411,7 @@ impl ClientState {
     fn clear(&mut self, state: StreamState) {
         // Removing the complete user state releases all held keys/buttons and
         // prevents stale cursor rendering. Keep the last watermark against rollback.
+        self.toolkit = crate::user_toolkit::UserToolkit::default();
         self.users.clear();
         self.windows.clear();
         self.screens = None;
@@ -442,6 +476,7 @@ impl ClientState {
                 self.users.insert(user.id, user);
             }
             Event::UserDisposed { user } => {
+                self.toolkit.remove(user);
                 if self.users.remove(&user).is_none() {
                     return Err(FoldError::Invalid("unknown disposed user"));
                 }

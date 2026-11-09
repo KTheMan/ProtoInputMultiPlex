@@ -579,6 +579,49 @@ class Pair:
         raw = self.web("JSON.stringify(window.pimHook.data())")
         return json.loads(raw)
 
+    def toolkit(self, operation):
+        request = json.dumps({"version": 1, "operation": operation}, separators=(",", ":"))
+        return json.loads(self.web("window.pimClient.local_toolkit(" + json.dumps(request) + ")"))
+
+    def toolkit_baseline(self, ids):
+        self.check = "toolkit_native_baseline"
+        native = self.wait(lambda: self.native_detail("native_user_toolkit"))
+        require(all(native[key] is True for key in ("exact_lookup", "unknown_denied", "data_local", "data_limit", "host_state_unchanged")))
+        self.check = "toolkit_shared_identities_and_palette"
+        contexts = self.toolkit({"kind": "list"})["result"]["users"]
+        require(self.identities([row["user"] for row in contexts]) == ids)
+        require(self.identities([row["user"] for row in native["contexts"]]) == ids)
+        require([row["badge_rgba"] for row in contexts] == [row["badge_rgba"] for row in native["contexts"]])
+        for row in contexts:
+            user = row["user"]
+            exact = self.toolkit({"kind": "user", "user": user["id"]})
+            source = self.toolkit({"kind": "source", "source": user["source"]})
+            require(exact["result"]["user"]["user"]["id"] == user["id"]
+                    and source["result"]["user"]["user"]["id"] == user["id"]
+                    and exact["result"]["user"]["user"]["source"] == user["source"]
+                    and source["result"]["user"]["user"]["source"] == user["source"])
+            require(exact["result"]["user"]["app_data"] is None)
+        self.check = "toolkit_absent_identity_denied"
+        self.toolkit_user = {"epoch": ids[0][0], "local": ids[0][1]}
+        stale = dict(self.toolkit_user, epoch=self.epoch - 1 if self.epoch > 1 else 2)
+        require(self.toolkit({"kind": "user", "user": stale})["result"]["user"] is None)
+        require(self.toolkit({"kind": "source", "source": 0})["result"]["user"] is None)
+        self.check = "toolkit_local_data_and_limit"
+        self.toolkit({"kind": "set_data", "user": self.toolkit_user, "data": {"consumer": "web"}})
+        request = json.dumps({"version": 1, "operation": {"kind": "set_data", "user": self.toolkit_user, "data": "x" * 4200}})
+        require(self.web("(()=>{try{window.pimClient.local_toolkit(" + json.dumps(request) + ");return false;}catch(error){return error==='Local toolkit limit exceeded';}})()"))
+        require(self.toolkit({"kind": "user", "user": self.toolkit_user})["result"]["user"]["app_data"] == {"consumer": "web"})
+        self.check = "toolkit_badge_palette_no_host_effect"
+        palette = self.toolkit({"kind": "palette"})["result"]["colors"]
+        request = json.dumps({"version": 1, "operation": {"kind": "set_palette", "colors": [[7, 13, 19, 255]]}})
+        require(self.web("(()=>{const c=window.pimClient,before=c.state_json();c.local_toolkit(" + json.dumps(request) + ");return c.state_json()===before;})()"))
+        require(self.toolkit({"kind": "user", "user": self.toolkit_user})["result"]["user"]["badge_rgba"] == [7, 13, 19, 255])
+        self.toolkit({"kind": "set_palette", "colors": palette})
+        self.result["user_toolkit"] = {"status": "PENDING", "shared_exact_identities": True,
+            "same_default_badge_colors": True, "local_data_isolated": True, "data_limit": True,
+            "host_cursor_state_unchanged": True, "reentrant_callback": False,
+            "gap_cleared": False, "terminal_denied": False, "native_data_retained": False}
+
     def hook_prepare(self, ids):
         self.stage = "web-hooks-register"
         self.hook_ids = [{"epoch": value[0], "local": value[1]} for value in ids]
@@ -594,7 +637,7 @@ class Pair:
           h.t.ub=c.add_event_listener(FILTER_B,save('ub'));
           h.t.screens=c.add_event_listener('{"kind":"screens"}',save('screens'));
           h.t.once=c.add_event_listener('{"kind":"input"}',x=>{
-            h.once.push(x);h.read=c.state_json();h.selfRemoved=c.remove_listener(h.t.once);c.invalidate_virtual_clicks();
+            h.once.push(x);h.read=c.state_json();h.toolkitReentrant=JSON.parse(c.local_toolkit('{"version":1,"operation":{"kind":"list"}}')).version===1;h.selfRemoved=c.remove_listener(h.t.once);c.invalidate_virtual_clicks();
           });
           h.t.remover=c.add_event_listener('{"kind":"input"}',()=>{
             h.removed=c.remove_listener(h.t.victim);h.t.late=c.add_event_listener('{"kind":"input"}',save('late'));
@@ -830,7 +873,7 @@ class Pair:
         require(small["subscription"] != previous)
         self.hook_select(user)
         pending = self.hook_input(user, primary_down, gap=True)
-        require(self.web(r'''(()=>{const c=window.pimClient,h=window.pimHook;h.gaps=[];h.t.gap=c.add_event_listener('{"kind":"server"}',raw=>{const m=JSON.parse(raw);if(m.kind==='event_stream' && m.stream.kind==='gap'){if(h.gaps.length>=8)throw Error('gap budget');h.gaps.push({raw,state:c.state_json(),pointer:document.querySelector('[data-pointer]').checked,keys:document.querySelector('[data-keys]').checked,selected:document.querySelector('[data-users]').value});}});return true;})()'''))
+        require(self.web(r'''(()=>{const c=window.pimClient,h=window.pimHook;h.gaps=[];h.t.gap=c.add_event_listener('{"kind":"server"}',raw=>{const m=JSON.parse(raw);if(m.kind==='event_stream' && m.stream.kind==='gap'){if(h.gaps.length>=8)throw Error('gap budget');let toolkitDenied=false;try{c.local_toolkit('{"version":1,"operation":{"kind":"list"}}');}catch(_){toolkitDenied=true;}h.gaps.push({toolkitDenied,raw,state:c.state_json(),pointer:document.querySelector('[data-pointer]').checked,keys:document.querySelector('[data-keys]').checked,selected:document.querySelector('[data-users]').value});}});return true;})()'''))
         before = self.hook_request_id
         require(self.web("window.pimClient.request(" + click + ");true"))
         self.check = "gap_atomic_click_cleanup_overflow"
@@ -853,6 +896,7 @@ class Pair:
             first = json.loads(gaps[0]["raw"])
             require(first["subscription"] == small["subscription"] and first["stream"] == {"kind": "gap", "after_sequence": pending["sequence"], "lost_through": pair[1]})
             for item in gaps:
+                require(item["toolkitDenied"] is True)
                 cleared = json.loads(item["state"])
                 require(cleared["stream_state"] == "NeedsSnapshot" and cleared["users"] == [] and cleared["screens"] is None
                         and cleared["windows"] == [] and cleared["capabilities"] == [] and cleared["mode"] is None
@@ -868,6 +912,8 @@ class Pair:
         self.check = "gap_explicit_resubscribe"
         fresh = self.gap_refresh(None, ids)
         require(fresh["subscription"] != small["subscription"] and fresh["snapshot"]["through_sequence"] >= cleanup_sequence)
+        require(self.toolkit({"kind": "user", "user": self.toolkit_user})["result"]["user"]["app_data"] is None)
+        self.result["user_toolkit"]["gap_cleared"] = True
         require(all(u["held_keys"] == [] and u["pointer"]["held_buttons"] == [] for u in fresh["snapshot"]["users"]))
         require(self.web("window.pimClient.remove_listener(window.pimHook.t.gap)"))
         # Both same GUI-created users resume ordinary virtual motion/pairs, with
@@ -896,7 +942,7 @@ class Pair:
         self.stage = "web-hooks-reentrant-dispose"
         source = r"""(()=>{const c=window.pimClient,h=window.pimHook;
           h.t.cleanup=c.add_event_listener('{"kind":"local"}',()=>{
-            h.cleanup++;h.cleanupState=c.state_json();c.remove_listener(h.t.cleanup);c.dispose();
+            h.cleanup++;h.cleanupState=c.state_json();try{c.local_toolkit('{"version":1,"operation":{"kind":"list"}}');h.toolkitTerminalDenied=false;}catch(_){h.toolkitTerminalDenied=true;}c.remove_listener(h.t.cleanup);c.dispose();
           });
           h.t.after=c.add_event_listener('{"kind":"local"}',()=>{h.afterDispose++;});
           c.disconnect();c.dispose();
@@ -1165,6 +1211,7 @@ class Pair:
         require(ready["version"] == 1 and ready["epoch"] == self.epoch)
         self.native_milestone = "subscribed"
         self.grants(ready["events"], ready["controls"], ids)
+        self.toolkit_baseline(ids)
         self.wait(lambda: self.event_status("active", 2, 2, 2))
         self.mcp_status(2, 2)
         # Browser handler receives raw Rust-validated JSON as strings: no Number parse.
@@ -1191,6 +1238,8 @@ class Pair:
                 require(matches[0]["epoch"] == self.epoch and (event["user"]["epoch"], event["user"]["local"], event["source"]) in ids)
             return True
         self.wait(pulse)
+        require(self.web("window.pimHook.toolkitReentrant===true"))
+        self.result["user_toolkit"]["reentrant_callback"] = True
         require(self.wait(lambda: self.native_detail("default_off_checked"))["locally_rejected"])
         # The fixture records both key acknowledgements before entering its
         # 60-second observation loop, then overlap_snapshot before DestroyWindow.
@@ -1255,6 +1304,8 @@ class Pair:
         self.check = "native_dll_unloaded_before_exit"
         require(self.native_detail("dll_unloaded_before_owner_exit") is not None and self.native_detail("owner_ready_to_exit_after_unload") is not None)
         self.native_milestone = "exited_unloaded"
+        require(self.native_detail("native_user_toolkit_retained") == {"local_data_retained": True})
+        self.result["user_toolkit"]["native_data_retained"] = True
         final_web = self.state()
         self.check = "browser_same_host_identity_and_empty_holds"
         require(final_web is not None and self.identities(final_web["users"]) == ids)
@@ -1265,6 +1316,8 @@ class Pair:
         self.stage = "normal-cleanup"
         self.check = "browser_reentrant_dispose"
         self.hook_cleanup()
+        require(self.web("window.pimHook.toolkitTerminalDenied===true"))
+        self.result["user_toolkit"]["terminal_denied"] = True
         self.native_milestone = "browser_disposed"
         self.check = "authoritative_browser_cleanup"
         self.wait(lambda: self.event_status("active", 2, 0, 0))
@@ -1298,6 +1351,8 @@ class Pair:
             "same_two_users_resume": True, "stale_token_runtime_qualified": False,
             "repeated_gap_family_qualified": False})
         self.check = "none"
+        require(all(value is True for key, value in self.result["user_toolkit"].items() if key != "status"))
+        self.result["user_toolkit"]["status"] = "PASS"
         self.result.update(status="PASS", same_two_gui_users_and_sources=True,
                            independent_gui_credentials=True, native_default_off=True,
                            wasm_default_off=True, native_key_down_up_observed_by_actual_wasm=True,

@@ -75,6 +75,7 @@ mod fixture {
     type Connect = unsafe extern "C" fn(usize, *const u8, usize, *mut u64, *mut u32) -> i32;
     type Enable = unsafe extern "C" fn(u64, u32, u32) -> i32;
     type RequestFn = unsafe extern "C" fn(u64, *const u8, usize, *mut u64) -> i32;
+    type LocalToolkit = unsafe extern "C" fn(u64, *const u8, usize) -> i32;
     type WindowRegister = unsafe extern "C" fn(u64, usize, u32, *mut u64) -> i32;
     type WindowObserve = unsafe extern "C" fn(u64, u64, u32, *mut u64) -> i32;
     type WindowRetire = unsafe extern "C" fn(u64, u64, *mut u64) -> i32;
@@ -94,6 +95,7 @@ mod fixture {
         window_retire: WindowRetire,
         drain: Unary,
         query: Unary,
+        local_toolkit: LocalToolkit,
         size: Size,
         read: ReadFn,
         discard: Unary,
@@ -121,6 +123,7 @@ mod fixture {
                 window_retire: symbol!("pim_app_native_window_retire", WindowRetire),
                 drain: symbol!("pim_app_native_drain", Unary),
                 query: symbol!("pim_app_native_query", Unary),
+                local_toolkit: symbol!("pim_app_native_local_toolkit", LocalToolkit),
                 size: symbol!("pim_app_native_response_size", Size),
                 read: symbol!("pim_app_native_response_read", ReadFn),
                 discard: symbol!("pim_app_native_response_discard", Unary),
@@ -486,7 +489,7 @@ mod fixture {
             "loader resolved another DLL",
         )?;
         let api = unsafe { Api::load(module)? };
-        report.record("dll_exports_resolved", json!({"native_exports": 15, "calling_convention": "C", "native_abi_header_version": 3}))?;
+        report.record("dll_exports_resolved", json!({"native_exports": 16, "calling_convention": "C", "native_abi_header_version": 3}))?;
 
         let previous_dpi =
             unsafe { SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2) };
@@ -610,6 +613,7 @@ mod fixture {
                     && model["status"]["remote_cleanup_unconfirmed"] == false,
                 "expected live native model",
             )?;
+            user_toolkit_baseline(api, token, &snapshot.users, report)?;
             let user = snapshot.users[0].id;
             let probe_key = key.unwrap_or(KeyCode(4));
             request(
@@ -700,6 +704,9 @@ mod fixture {
             let final_model = query(api, token, false)?;
             let final_users: Vec<UserView> = serde_json::from_value(final_model["users"].clone())
                 .map_err(|_| "invalid final users")?;
+            let local = toolkit(api, token, json!({"kind": "user", "user": user}))?;
+            ensure(local["result"]["user"]["app_data"] == json!({"consumer": "native"}), "native local data changed across browser activity")?;
+            report.record("native_user_toolkit_retained", json!({"local_data_retained": true}))?;
             report.record(
                 "overlap_snapshot",
                 json!({"users": evidence(&final_users),
@@ -749,6 +756,8 @@ mod fixture {
                 .is_some_and(|users| users.is_empty()),
             "Stop must clear local model",
         )?;
+        let local = br#"{"version":1,"operation":{"kind":"list"}}"#;
+        status(unsafe { (api.local_toolkit)(token, local.as_ptr(), local.len()) }, INVALID, "local toolkit after Stop")?;
         report.record(
             "hwnd_destroyed_stop_returned",
             json!({"stop_in": "WM_NCDESTROY", "retained_output_cleared": true}),
@@ -1409,6 +1418,38 @@ mod fixture {
         )?;
         Ok(())
     }
+    fn toolkit(api: Api, token: u64, operation: Value) -> Check<Value> {
+        let bytes = serde_json::to_vec(&json!({"version": 1, "operation": operation}))
+            .map_err(|_| "fixture toolkit encoding")?;
+        status(unsafe { (api.local_toolkit)(token, bytes.as_ptr(), bytes.len()) }, OK, "local toolkit")?;
+        retained(api, token, false)
+    }
+    fn user_toolkit_baseline(api: Api, token: u64, users: &[UserView], report: &Report) -> Check {
+        let before = query(api, token, false)?;
+        let listed = toolkit(api, token, json!({"kind": "list"}))?;
+        let contexts = listed["result"]["users"].as_array().ok_or("toolkit users missing")?;
+        ensure(listed["version"] == 1 && contexts.len() == users.len(), "toolkit list mismatch")?;
+        for user in users {
+            let exact = toolkit(api, token, json!({"kind": "user", "user": user.id}))?;
+            let source = toolkit(api, token, json!({"kind": "source", "source": user.source}))?;
+            ensure(exact == source && exact["result"]["user"]["user"]["id"] == json!(user.id), "toolkit exact identity mismatch")?;
+            ensure(exact["result"]["user"]["app_data"].is_null(), "native local data did not start empty")?;
+        }
+        let unknown = toolkit(api, token, json!({"kind": "source", "source": 0}))?;
+        let stale_epoch = if users[0].id.epoch > 1 { users[0].id.epoch - 1 } else { 2 };
+        let stale = toolkit(api, token, json!({"kind": "user", "user": {"epoch": stale_epoch, "local": users[0].id.local}}))?;
+        ensure(unknown["result"]["user"].is_null() && stale["result"]["user"].is_null(), "toolkit exposed unknown identity")?;
+        toolkit(api, token, json!({"kind": "set_data", "user": users[0].id, "data": {"consumer": "native"}}))?;
+        let oversized = serde_json::to_vec(&json!({"version": 1, "operation": {"kind": "set_data", "user": users[0].id, "data": "x".repeat(4200)}}))
+            .map_err(|_| "fixture toolkit encoding")?;
+        status(unsafe { (api.local_toolkit)(token, oversized.as_ptr(), oversized.len()) }, 6, "toolkit data limit")?;
+        let after = query(api, token, false)?;
+        ensure(before["users"] == after["users"] && before["status"]["pending_requests"] == after["status"]["pending_requests"], "toolkit changed Host observation or queued input")?;
+        report.record("native_user_toolkit", json!({"contexts": contexts,
+            "exact_lookup": true, "unknown_denied": true, "data_local": true,
+            "data_limit": true, "host_state_unchanged": true}))
+    }
+
     fn query(api: Api, token: u64, short: bool) -> Check<Value> {
         status(unsafe { (api.query)(token) }, OK, "query")?;
         retained(api, token, short)

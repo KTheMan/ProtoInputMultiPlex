@@ -8,6 +8,7 @@ pub mod client;
 pub mod ffi;
 pub mod host;
 pub mod protocol;
+pub mod user_toolkit;
 mod windows;
 
 pub use client::{ClientState, EventClientState, FoldError, FoldOutcome, StreamState};

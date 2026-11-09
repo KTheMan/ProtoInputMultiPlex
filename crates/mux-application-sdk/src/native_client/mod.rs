@@ -936,6 +936,12 @@ impl NativeClient {
         }
         Ok(())
     }
+    /// Owner-thread, consumer-local operation; does not allocate a remote request ID.
+    pub fn local_toolkit(&mut self, request: &str) -> Result<String, crate::user_toolkit::ToolkitError> {
+        self.observe_terminal();
+        self.model.local_toolkit_json(request)
+    }
+
     pub fn query(&mut self) -> ModelView<'_> {
         self.observe_terminal();
         let status = NativeStatus {

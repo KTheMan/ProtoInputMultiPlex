@@ -104,7 +104,8 @@ jobs:
             'pim_app_native_response_discard', 'pim_app_native_stop',
             'pim_app_native_completion_handle', 'pim_app_native_destroy',
             'pim_app_native_window_register', 'pim_app_native_window_refresh',
-            'pim_app_native_window_notify', 'pim_app_native_window_retire')
+            'pim_app_native_window_notify', 'pim_app_native_window_retire',
+            'pim_app_native_local_toolkit')
           foreach ($architecture in @(
             @{ Name = 'x64'; Triple = 'x86_64-pc-windows-msvc' },
             @{ Name = 'x86'; Triple = 'i686-pc-windows-msvc' }
@@ -155,6 +156,7 @@ jobs:
             int32_t (PIM_APP_CALL *check_request)(uint64_t,const uint8_t *,size_t,uint64_t *) = pim_app_native_request;
             int32_t (PIM_APP_CALL *check_drain)(uint64_t) = pim_app_native_drain;
             int32_t (PIM_APP_CALL *check_query)(uint64_t) = pim_app_native_query;
+            int32_t (PIM_APP_CALL *check_toolkit)(uint64_t,const uint8_t *,size_t) = pim_app_native_local_toolkit;
             int32_t (PIM_APP_CALL *check_size)(uint64_t,size_t *) = pim_app_native_response_size;
             int32_t (PIM_APP_CALL *check_read)(uint64_t,uint8_t *,size_t,size_t *) = pim_app_native_response_read;
             int32_t (PIM_APP_CALL *check_discard)(uint64_t) = pim_app_native_response_discard;

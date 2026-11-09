@@ -1502,6 +1502,19 @@ impl WebClient {
                 .map_err(|_| JsValue::from_str("Hosted encoding failed"))?,
         )
     }
+    /// Versioned consumer-local lookup/data/badge palette API. No Host request,
+    /// callback, cursor change or persistence. Safe to call from an event hook;
+    /// a conflicting synchronous borrow fails with a fixed error rather than panicking.
+    pub fn local_toolkit(&self, request_json: &str) -> Result<String, JsValue> {
+        let mut inner = self.inner.try_borrow_mut()
+            .map_err(|_| JsValue::from_str("Local toolkit is busy"))?;
+        if inner.disposed || !inner.is_live() {
+            return Err(JsValue::from_str("Local toolkit requires a Live client"));
+        }
+        inner.state.local_toolkit_json(request_json)
+            .map_err(|error| JsValue::from_str(&error.to_string()))
+    }
+
     pub fn state_json(&self) -> Result<String, JsValue> {
         let inner = self.inner.borrow();
         serde_json::to_string(&serde_json::json!({
