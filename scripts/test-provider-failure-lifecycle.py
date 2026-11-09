@@ -1,8 +1,11 @@
 """Inert failure cleanup and log-classification regressions; hosted execution only."""
 import importlib.util
 import io
+import json
 from pathlib import Path
 import subprocess
+import sys
+import tempfile
 import unittest
 from unittest.mock import patch
 
@@ -163,6 +166,58 @@ class NativeStderrTests(unittest.TestCase):
         self.assertFalse(result["snapshot_complete"])
         self.assertEqual(result["read_failure"]["read_role"], "gui_stderr")
         self.assertNotIn("private secret path", repr(result))
+
+
+class MainObservationOrderTests(unittest.TestCase):
+    def test_main_collects_once_after_failure_freeze_before_cleanup_or_after_success(self):
+        for fail in (True, False):
+            with self.subTest(fail=fail), tempfile.TemporaryDirectory() as directory:
+                trace, samples = [], []
+
+                class MainGate:
+                    def __init__(self, args):
+                        self.result = {"status":"FAIL"}
+                        self.checkpoint, self.stage, self.check = 11, "prepare_holds", "prepare_holds_target_held_state"
+
+                    def run(self):
+                        trace.append("run")
+                        if fail:
+                            raise provider.base.Rejected("private secret path")
+                        self.result["status"] = "PASS"
+
+                    def native_submission_diagnostics(self, collection_phase="direct_observation"):
+                        trace.append(collection_phase)
+                        samples.append(dict(self.result))
+
+                    def failed_group_cleanup(self):
+                        trace.append("cleanup")
+                        self.checkpoint, self.stage, self.check = 99, "cleanup", "cleanup"
+                        self.result["failure_cleanup"] = {"outcome":"gui_exit_observed"}
+
+                root = Path(directory)
+                result_path = root / "public-result.json"
+                argv = ["qualify-gui-desktop-provider.py"]
+                for name in ("artifacts", "backend", "source", "run"):
+                    argv.extend(["--"+name, str(root / name)])
+                argv.extend(["--public-result", str(result_path), "--commit", "0"*40])
+                with patch.object(provider, "ProviderPair", MainGate), patch.object(sys, "argv", argv):
+                    with self.assertRaises(SystemExit) as exited:
+                        provider.main()
+                self.assertEqual(exited.exception.code, 1 if fail else 0)
+                self.assertEqual(trace, ["run", "before_failure_cleanup", "cleanup"] if fail else ["run", "after_run"])
+                self.assertEqual(len(samples), 1)
+                result = json.loads(result_path.read_text(encoding="utf-8"))
+                if fail:
+                    frozen = {"status":"FAIL","checkpoint":11,"failure_stage":"prepare_holds",
+                        "failure_predicate":"prepare_holds_target_held_state","failure_class":"Rejected",
+                        "native_exit_state":"not_started"}
+                    for key, value in frozen.items():
+                        self.assertEqual(samples[0][key], value)
+                        self.assertEqual(result[key], value)
+                    self.assertNotIn("private secret path", repr(result))
+                else:
+                    self.assertEqual(samples[0]["status"], "PASS")
+                    self.assertNotIn("failure_cleanup", result)
 
 
 if __name__ == "__main__":

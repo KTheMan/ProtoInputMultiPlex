@@ -196,8 +196,9 @@ class ProviderPair(base.Pair):
             # Exit is the only process fact collected here. It does not establish
             # native fence acknowledgement or target hold release.
 
-    def native_submission_diagnostics(self):
-        diagnostic = {"qualification_stderr_opt_in":getattr(self, "qualification_stderr_opt_in", False),
+    def native_submission_diagnostics(self, collection_phase="direct_observation"):
+        diagnostic = {"collection_phase":collection_phase,
+            "qualification_stderr_opt_in":getattr(self, "qualification_stderr_opt_in", False),
             "header_write_failed":None,"body_write_failed":None,"snapshot_complete":False,
             "truncated":None,"incomplete_line":None,"gui_exit_observed":False,"read_failure":None}
         self.result["native_submission_diagnostics"] = diagnostic
@@ -215,6 +216,7 @@ class ProviderPair(base.Pair):
                 and not diagnostic["truncated"] and not diagnostic["incomplete_line"])
         except BaseException as error:
             diagnostic["read_failure"] = self.read_failure(error)
+        # This is a bounded file snapshot, not proof of native stream EOF.
         # No observed error is never an input write/receive/processing receipt.
 
     def launch_status(self):
@@ -836,8 +838,10 @@ def main():
     except BaseException as error:
         gate.result.update(status="FAIL",checkpoint=gate.checkpoint,failure_stage=gate.stage,failure_predicate=gate.check,failure_class=public_failure_class(error),
             native_exit_state="not_started" if not hasattr(gate,"native") else "running" if gate.native.poll() is None else "zero" if gate.native.returncode == 0 else "nonzero")
+        gate.native_submission_diagnostics("before_failure_cleanup")
         gate.failed_group_cleanup()
-    gate.native_submission_diagnostics()
+    else:
+        gate.native_submission_diagnostics("after_run")
     require(not args.public_result.exists())
     args.public_result.write_text(json.dumps(gate.result,indent=2)+"\n",encoding="utf-8")
     raise SystemExit(0 if gate.result["status"] == "PASS" else 1)
