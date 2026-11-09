@@ -2,6 +2,7 @@
 import importlib.util
 import json
 from pathlib import Path
+import sys
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -61,6 +62,98 @@ class SdkClosureTests(unittest.TestCase):
     def test_different_frozen_sources_rejected(self):
         with self.assertRaisesRegex(ValueError, "identity mismatch"):
             portable.sdk_inputs(self.root, {**self.inputs, "source_commit": "other"})
+
+
+class NoticeClosureTests(unittest.TestCase):
+    def setUp(self):
+        self.ocrs_notice = (portable.ROOT/"crates/protoinputmultiplex/notices/ocrs-MIT.txt").read_bytes()
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        self.root = Path(self.temp.name)
+        self.root_patch = patch.object(portable, "ROOT", self.root)
+        self.root_patch.start()
+        self.addCleanup(self.root_patch.stop)
+
+    def package(self, name, version="1.0"):
+        source = self.root/"cache"/(name+"-"+version)
+        source.mkdir(parents=True)
+        (source/"Cargo.toml").write_text("fixture", encoding="utf-8")
+        return {"id":name+"-"+version,"name":name,"version":version,"source":"registry+fixture",
+            "manifest_path":str(source/"Cargo.toml")}
+
+    def test_record_inputs_reports_all_missing_notices_before_tools_or_output(self):
+        packages = [self.package("missing-b"), self.package("missing-a")]
+        ignored = Path(packages[0]["manifest_path"]).parent/"target"
+        ignored.mkdir()
+        (ignored/"LICENSE").write_text("build output must not satisfy closure", encoding="utf-8")
+        output = self.root/"inputs.json"
+        with patch.object(sys, "argv", ["package-portable.py", "--record-inputs", str(output)]), \
+                patch.object(portable, "source_files", return_value=[]), \
+                patch.object(portable, "validate_ocrs_license"), \
+                patch.object(portable, "release_metadata", return_value=({}, packages)), \
+                patch.object(portable, "command") as command, patch.object(portable, "native_tools") as tools:
+            with self.assertRaisesRegex(ValueError, "missing-a-1.0, missing-b-1.0"):
+                portable.main()
+        command.assert_not_called()
+        tools.assert_not_called()
+        self.assertFalse(output.exists())
+
+    def test_upstream_precedes_exact_version_supplement_and_copy_uses_same_paths(self):
+        upstream, supplemental = self.package("upstream"), self.package("supplemental")
+        upstream_root = Path(upstream["manifest_path"]).parent
+        (upstream_root/"LICENSE").write_bytes(b"upstream terms")
+        for package in (upstream, supplemental):
+            supplement = self.root/"packaging/licenses/rust"/package["id"]
+            supplement.mkdir(parents=True)
+            (supplement/"LICENSE").write_bytes(b"supplement terms")
+        sources = portable.package_notice_sources([upstream, supplemental])
+        for package, expected in ((upstream, b"upstream terms"), (supplemental, b"supplement terms")):
+            kind, source = sources[package["id"]]
+            self.assertEqual(kind, "directory")
+            destination = self.root/"output"/package["id"]
+            self.assertEqual(portable.copy_notices(source, destination), ["LICENSE"])
+            self.assertEqual((destination/"LICENSE").read_bytes(), expected)
+        changed_version = dict(supplemental, id="supplemental-2.0", version="2.0")
+        with self.assertRaisesRegex(ValueError, "supplemental-2.0"):
+            portable.package_notice_sources([changed_version])
+
+    def test_ocrs_fallback_keeps_pinned_terms_before_generic_supplement(self):
+        package = self.package("ocrs", "0.12.2")
+        supplement = self.root/"packaging/licenses/rust"/package["id"]
+        supplement.mkdir(parents=True)
+        (supplement/"LICENSE").write_bytes(b"not the approved OCR terms")
+        with self.assertRaises(FileNotFoundError):
+            portable.package_notice_sources([package])
+        source = self.root/"crates/protoinputmultiplex/notices/ocrs-MIT.txt"
+        source.parent.mkdir(parents=True)
+        source.write_bytes(self.ocrs_notice)
+        self.assertEqual(portable.package_notice_sources([package])[package["id"]], ("ocrs", source))
+        destination = self.root/"ocrs-output"
+        self.assertEqual(portable.copy_ocrs_license(source, destination), ["LICENSE-MIT.txt"])
+        self.assertEqual((destination/"LICENSE-MIT.txt").read_bytes(), self.ocrs_notice)
+        source.write_bytes(b"changed")
+        with self.assertRaisesRegex(ValueError, "Unapproved ocrs"):
+            portable.package_notice_sources([package])
+
+    def test_metadata_covers_all_targets_selected_features_and_only_resolved_external_packages(self):
+        for renderer in ("glow", "software-dx12"):
+            calls = []
+            packages = [{"id":name,"name":name,"version":"1.0","source":source} for name, source in (
+                ("native", "registry+fixture"), ("web", "registry+fixture"),
+                ("software", "registry+fixture"), ("unselected", "registry+fixture"), ("local", None))]
+            def metadata(*args):
+                calls.append(args)
+                features = args[args.index("--features")+1]
+                selected = ["web" if args[-1] == portable.SDK_TARGETS["web"] else "native", "local"]
+                if "protoinputmultiplex/software-renderer" in features:
+                    selected.append("software")
+                return json.dumps({"packages":packages,"resolve":{"nodes":[{"id":name} for name in selected]}})
+            with patch.object(portable, "command", side_effect=metadata):
+                _, selected = portable.release_metadata(renderer)
+            self.assertEqual([call[-1] for call in calls], list(portable.SDK_TARGETS.values()))
+            self.assertTrue(all("--locked" in call and "--offline" in call for call in calls))
+            self.assertTrue(all(call[call.index("--features")+1] == portable.metadata_features(renderer) for call in calls))
+            self.assertEqual({p["id"] for p in selected}, {"native", "web", "software"} if renderer == "software-dx12" else {"native", "web"})
 
 
 class ApplicationRendererBuildTests(unittest.TestCase):
@@ -150,6 +243,18 @@ class SourceAdmissionTests(unittest.TestCase):
         name = "examples/rust-mcp-client/src/connection.json"
         self.private_file(name)
         self.assertEqual(portable.source_files(), sorted(self.committed))
+
+    def test_record_inputs_rejects_private_source_before_notice_metadata(self):
+        self.private_file("scripts/private-acceptance/connection.json")
+        output = self.root/"inputs.json"
+        with patch.object(sys, "argv", ["package-portable.py", "--record-inputs", str(output)]), \
+                patch.object(portable, "release_metadata") as metadata, \
+                patch.object(portable, "validate_ocrs_license") as ocrs:
+            with self.assertRaisesRegex(ValueError, "Uncommitted source"):
+                portable.main()
+        metadata.assert_not_called()
+        ocrs.assert_not_called()
+        self.assertFalse(output.exists())
 
     def test_baseline_cannot_admit_private_file(self):
         name = "crates/mux-application-web/private-evidence.json"

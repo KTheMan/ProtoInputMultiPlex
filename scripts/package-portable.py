@@ -64,6 +64,18 @@ def metadata_features(renderer):
                     ["protoinputmultiplex/" + name for name in app_features(renderer)])
 
 
+def release_metadata(renderer):
+    # Same selected native/Web/renderer graph for preflight and final staging.
+    graphs = [json.loads(command("cargo", "--config", 'build.rustc-wrapper=""', "metadata", "--locked", "--offline",
+                                 "--features", metadata_features(renderer), "--format-version", "1", "--filter-platform", triple))
+              for triple in SDK_TARGETS.values()]
+    nodes = {n["id"] for graph in graphs for n in graph["resolve"]["nodes"]}
+    packages = {p["id"]: p for graph in graphs for p in graph["packages"]}
+    selected = [p for p in sorted(packages.values(), key=lambda p: (p["name"], p["version"]))
+                if p["id"] in nodes and p["source"] is not None]
+    return graphs[0], selected
+
+
 def app_build_record(target, build_inputs, renderer):
     if build_inputs is None or build_inputs.get("gui_renderer") != renderer:
         raise ValueError("GUI renderer differs from frozen build inputs")
@@ -303,19 +315,46 @@ def notice(path):
     return any(token in name for token in ("license", "licence", "copying", "copyright", "notice", "credits", "ofl", "lgpl", "gpl-"))
 
 
-def copy_notices(source, destination):
-    copied = []
+def notice_paths(source):
     for base, dirs, files in os.walk(source):
         dirs[:] = sorted(d for d in dirs if d not in (".git", "target", "build", "obj"))
         for name in sorted(files):
             item = Path(base)/name
             if notice(item):
-                relative = item.relative_to(source)
-                target = destination/relative
-                target.parent.mkdir(parents=True, exist_ok=True)
-                shutil.copyfile(item, target)
-                copied.append(relative.as_posix())
+                yield item
+
+
+def copy_notices(source, destination):
+    copied = []
+    for item in notice_paths(source):
+        relative = item.relative_to(source)
+        target = destination/relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(item, target)
+        copied.append(relative.as_posix())
     return copied
+
+
+def package_notice_sources(packages):
+    sources, missing = {}, []
+    for package in packages:
+        label = package["name"]+"-"+package["version"]
+        source = Path(package["manifest_path"]).parent
+        if any(notice_paths(source)):
+            sources[package["id"]] = ("directory", source)
+        elif label == "ocrs-0.12.2":
+            source = ROOT/"crates/protoinputmultiplex/notices/ocrs-MIT.txt"
+            validate_ocrs_license(source)
+            sources[package["id"]] = ("ocrs", source)
+        else:
+            source = ROOT/"packaging/licenses/rust"/label
+            if any(notice_paths(source)):
+                sources[package["id"]] = ("directory", source)
+            else:
+                missing.append(label)
+    if missing:
+        raise ValueError("Missing notice files: "+", ".join(sorted(set(missing)))+"; inspect upstream before packaging")
+    return sources
 
 
 def source_allowed(p):
@@ -425,8 +464,10 @@ def main():
     parser.add_argument("--gui-renderer", choices=("glow", "software-dx12"), default="glow")
     args = parser.parse_args()
     if args.record_inputs:
-        validate_ocrs_license(ROOT/"crates/protoinputmultiplex/notices/ocrs-MIT.txt")
         files = [{"path": p, "sha256": sha(ROOT/p)} for p in source_files()]
+        validate_ocrs_license(ROOT/"crates/protoinputmultiplex/notices/ocrs-MIT.txt")
+        _, packages = release_metadata(args.gui_renderer)
+        package_notice_sources(packages)
         record = {"schema_version": 1, "source_commit": source_commit(), "source_files": files,
                   "gui_renderer": args.gui_renderer,
                   "rustc": command("rustc", "-Vv"), "cargo": command("cargo", "-V"),
@@ -475,12 +516,8 @@ def main():
     source_names = source_files()
     sources = [{"path": p, "sha256": sha(ROOT/p)} for p in source_names]
     # Include web-only dependencies and native-client optional dependencies, too.
-    graphs = [json.loads(command("cargo", "--config", 'build.rustc-wrapper=""', "metadata", "--locked", "--offline",
-                                 "--features", metadata_features(args.gui_renderer), "--format-version", "1", "--filter-platform", triple))
-              for triple in SDK_TARGETS.values()]
-    metadata = graphs[0]
-    nodes = {n["id"] for graph in graphs for n in graph["resolve"]["nodes"]}
-    packages = {p["id"]: p for graph in graphs for p in graph["packages"]}
+    metadata, packages = release_metadata(args.gui_renderer)
+    notice_sources = package_notice_sources(packages)
     output.mkdir(parents=True)
     for path, relative in inputs:
         target = output/relative
@@ -500,16 +537,11 @@ def main():
     copy_notices(ROOT/"vendor/ProtoInput", output/"licenses/ProtoInput")
     copy_notices(ROOT/"packaging/licenses", output/"licenses/supplemental")
     dependencies = []
-    for package in sorted(packages.values(), key=lambda p: (p["name"], p["version"])):
-        if package["id"] not in nodes or package["source"] is None: continue
+    for package in packages:
         label = package["name"]+"-"+package["version"]
-        files = copy_notices(Path(package["manifest_path"]).parent, output/"licenses/rust"/label)
-        if not files and label == "ocrs-0.12.2":
-            files = copy_ocrs_license(ROOT/"crates/protoinputmultiplex/notices/ocrs-MIT.txt",
-                                      output/"licenses/rust"/label)
-        supplement = ROOT/"packaging/licenses/rust"/label
-        if not files and supplement.is_dir():
-            files = copy_notices(supplement, output/"licenses/rust"/label)
+        kind, source = notice_sources[package["id"]]
+        files = (copy_ocrs_license(source, output/"licenses/rust"/label) if kind == "ocrs"
+                 else copy_notices(source, output/"licenses/rust"/label))
         if not files:
             raise ValueError(f"Missing notice files: {label}; inspect upstream before packaging")
         dependencies.append({"name": package["name"], "version": package["version"],

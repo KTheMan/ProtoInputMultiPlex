@@ -28,6 +28,7 @@ struct Snapshot {
     cursor_fixture_kind: Option<u32>,
     keyboard_focus_fixture: Option<KeyboardFocusFixture>,
     pid: u32,
+    native_lifecycle: Option<mux_windows::lifecycle::OwnReadinessObservation>,
     cursor: (i32, i32),
     buttons: u8,
     test_keys: u8,
@@ -1137,6 +1138,7 @@ pub fn run(
                     s.held_keys = (8..=254)
                         .filter(|key| GetAsyncKeyState(*key as i32) < 0)
                         .collect();
+                    s.native_lifecycle = Some(mux_windows::lifecycle::own_readiness_observation());
                     s.frames += 1;
                     std::fs::write(&report, serde_json::to_vec_pretty(&*s)?)
                         .context("Write automation probe report")?;
@@ -1179,6 +1181,7 @@ pub fn run(
                     s.held_keys = (8..=254)
                         .filter(|key| GetAsyncKeyState(*key as i32) < 0)
                         .collect();
+                    s.native_lifecycle = Some(mux_windows::lifecycle::own_readiness_observation());
                     s.frames += 1;
                     std::fs::write(&report, serde_json::to_vec_pretty(&*s)?)
                         .context("Write automation probe report")?;

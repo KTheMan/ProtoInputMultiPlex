@@ -52,6 +52,42 @@ def native_write_failure_lines(raw):
         "body_write_failed": b"Failed to send message body" in lines}
 
 
+def public_native_lifecycle(target):
+    # Only the owned probe's fixed enum/boolean schema crosses the public boundary.
+    result = {"status":"unobserved","present":None,"coherent":None,"header_matches":None,
+        "identity_matches":None,"build_matches":None,"binding_present":None,"state":None,"error":None}
+    if not isinstance(target, dict):
+        result["status"] = "unrecognized"
+        return result
+    row = target.get("native_lifecycle")
+    if row is None:
+        return result
+    result["status"] = "unrecognized"
+    if not isinstance(row, dict) or set(row) != set(result):
+        return result
+    statuses = {"identity_unavailable", "absent", "read_failed", "unstable", "invalid_header",
+        "invalid_identity", "invalid_build", "invalid_state", "observed"}
+    states = {"initializing", "unclaimed", "active", "prepared", "poisoned", "reusable"}
+    errors = {"none", "access_denied", "invalid_handle", "invalid_data", "invalid_parameter",
+        "broken_pipe", "busy", "wait_timeout", "timeout", "unknown"}
+    if type(row["status"]) is not str or row["status"] not in statuses:
+        return result
+    if row["state"] is not None and (type(row["state"]) is not str or row["state"] not in states):
+        return result
+    if row["error"] is not None and (type(row["error"]) is not str or row["error"] not in errors):
+        return result
+    booleans = ("present", "coherent", "header_matches", "identity_matches", "build_matches", "binding_present")
+    if any(row[key] is not None and type(row[key]) is not bool for key in booleans):
+        return result
+    if row["status"] == "observed":
+        if (not all(row[key] is True for key in booleans[:-1])
+                or row["state"] is None or row["error"] is None or type(row["binding_present"]) is not bool):
+            return result
+    elif row["state"] is not None or row["error"] is not None or row["binding_present"] is not None:
+        return result
+    return dict(row)
+
+
 class CommandMcp(mcp_helpers.Client):
     def __init__(self, executable, descriptor, log):
         self.stderr = open(log, "x", encoding="utf-8")
@@ -397,6 +433,9 @@ class ProviderPair(base.Pair):
                 "target1_root_vk163_down":None,"target1_any_root_key_down":None,
                 "target1_root_expected_hwnd":None}
             self.result["prepare_holds_observation"] = diagnostic
+            native_lifecycle = {"collection_phase":"prepare_holds_existing_target_samples",
+                "target_a":public_native_lifecycle({}),"target_b":public_native_lifecycle({})}
+            self.result["prepare_holds_native_lifecycle"] = native_lifecycle
             self.input("button", user=0, button="primary", pressed=True)
             reply = self.input("key", user=1, key="rightctrl", pressed=True)
             diagnostic["key_returned"] = True
@@ -444,6 +483,7 @@ class ProviderPair(base.Pair):
             except (KeyError, TypeError, IndexError, AttributeError):
                 pass  # Diagnostic failure must not replace the original acceptance predicate.
             def observe_root(target):
+                native_lifecycle["target_b"] = public_native_lifecycle(target)
                 events = target.get("root_key_events")
                 diagnostic["root_history_present"] = isinstance(events, list)
                 fields = {"hwnd","message","vk","pressed","scan","extended","alt"}
@@ -463,6 +503,7 @@ class ProviderPair(base.Pair):
             self.check = "prepare_holds_target_held_state"
             def held():
                 first = self.target(0)
+                native_lifecycle["target_a"] = public_native_lifecycle(first)
                 button = first["buttons"] & 8
                 diagnostic["mapped_x1_held"] = bool(button)
                 diagnostic["target0_vk163_held"] = 163 in first["held_keys"]

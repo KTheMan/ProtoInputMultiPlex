@@ -168,6 +168,28 @@ class NativeStderrTests(unittest.TestCase):
         self.assertNotIn("private secret path", repr(result))
 
 
+class NativeLifecycleBoundaryTests(unittest.TestCase):
+    def test_lifecycle_whitelist_preserves_uncertainty_and_rejects_private_or_malformed_values(self):
+        observed = {"status":"observed","present":True,"coherent":True,"header_matches":True,
+            "identity_matches":True,"build_matches":True,"binding_present":True,
+            "state":"poisoned","error":"broken_pipe"}
+        self.assertEqual(provider.public_native_lifecycle({"native_lifecycle":observed}), observed)
+        self.assertEqual(provider.public_native_lifecycle({})["status"], "unobserved")
+        for status, present, coherent in (("absent", False, None), ("unstable", True, False),
+                ("read_failed", None, None), ("invalid_identity", True, True)):
+            row = dict.fromkeys(observed)
+            row.update(status=status, present=present, coherent=coherent)
+            self.assertEqual(provider.public_native_lifecycle({"native_lifecycle":row})["status"], status)
+        rejected = [dict(observed, owner_pid="private secret path"), dict(observed, error=109),
+            dict(observed, state=["active"]), dict(observed, status={"private":"secret"}),
+            dict(observed, identity_matches=False), dict(observed, present=1),
+            dict(observed, status="invalid_identity"), {"status":"observed"}]
+        for row in rejected:
+            result = provider.public_native_lifecycle({"native_lifecycle":row})
+            self.assertEqual(result["status"], "unrecognized")
+            self.assertTrue(all(value is None for key, value in result.items() if key != "status"))
+
+
 class MainObservationOrderTests(unittest.TestCase):
     def test_main_collects_once_after_failure_freeze_before_cleanup_or_after_success(self):
         for fail in (True, False):
