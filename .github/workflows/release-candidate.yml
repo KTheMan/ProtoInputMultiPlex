@@ -1,4 +1,5 @@
 name: Unsigned unreleased build candidate
+# Candidate refresh: SDK source accepted at fd12494952197a8e151ef6f3c00d9594c0004b00.
 
 on:
   push:
