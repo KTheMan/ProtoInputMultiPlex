@@ -1401,9 +1401,17 @@ impl WebClient {
                 let weak = Rc::downgrade(&self.inner);
                 let callback = Closure::once_into_js(move || {
                     if let Some(inner) = weak.upgrade() {
-                        let mut state = inner.borrow_mut();
-                        if hosted_deadline_pending(&state.pending_hosted, id) {
-                            state.stop("Hosted request deadline reached; action outcome unconfirmed; reconnect and inspect without replay", false);
+                        let expired = {
+                            let mut state = inner.borrow_mut();
+                            if hosted_deadline_pending(&state.pending_hosted, id) {
+                                state.stop("Hosted request deadline reached; action outcome unconfirmed; reconnect and inspect without replay", false);
+                                true
+                            } else {
+                                false
+                            }
+                        };
+                        if expired {
+                            notify(&inner);
                         }
                     }
                 });
@@ -1528,6 +1536,8 @@ impl WebClient {
             "capabilities": inner.state.capabilities(), "mode": inner.state.mode(),
             "event_grant": inner.ready.as_ref().map(|ready| &ready.events),
             "control_grant": inner.ready.as_ref().map(|ready| &ready.controls),
+            "hosted_request_pending": !inner.pending_hosted.is_empty(),
+            "subscription_pending": inner.awaiting_subscription,
             "stream_state": format!("{:?}", inner.state.state())
         })).map_err(|_| JsValue::from_str("Could not encode application state"))
     }

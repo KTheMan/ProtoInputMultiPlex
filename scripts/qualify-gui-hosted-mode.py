@@ -40,6 +40,7 @@ class HostedModePair(owned.WindowPair):
             "native_viewport_receipts": 0, "native_completed": False,
             "native_retired": False, "native_retirement_phase": "not_started",
             "browser_acceptance_phase": "not_started", "browser_helper_failure": "none",
+            "deadline_terminal_callback_once": False,
             "old_revision_rejected": False, "old_epoch_rejected": False,
             "event_epoch_retained": False,
             "routing_generation_advanced": False, "ordinary_quit_clean": False,
@@ -308,6 +309,76 @@ class HostedModePair(owned.WindowPair):
         self.result["browser_acceptance_phase"] = "initial_two_client_status"
         self.wait(lambda: self.event_status("active", 0, 2, 2))
 
+    def helper_diagnostic(self, value):
+        # Re-project fixed enums and actual booleans only, never raw browser data.
+        diagnostic = {"schema": "pim.gui-hosted-mode.helper-diagnostic.v1",
+                      "diagnostic_shape_valid": isinstance(value, dict)}
+        value = value if isinstance(value, dict) else {}
+        choices = {
+            "operation": {"initial", "query", "switched", "refresh", "stale_revision",
+                          "concurrent", "minimize", "restore", "complete"},
+            "terminal_reason": {"none", "hosted_deadline", "receipt_stream_conflict",
+                "receipt_correlation", "action_uncertain", "event_receipt_conflict",
+                "response_id", "response_version", "ordered_stream", "snapshot_invalid",
+                "frame_invalid", "socket_closed", "socket_error", "authority_ended",
+                "stale_revision", "denied", "request_limit", "unrecognized"},
+            "last_hosted_phase": {"none", "native", "starting", "ready", "stopping",
+                                 "assigned", "quarantined", "unavailable", "other"},
+            "last_hosted_mode": {"none", "native", "switched", "concurrent", "other"},
+        }
+        for key, allowed in choices.items():
+            item = value.get(key)
+            diagnostic[key] = item if type(item) is str and item in allowed else "unrecognized"
+        for key in ("awaiting_reply", "response_received", "reply_consumed", "terminal_seen",
+                    "frame_budget_exceeded", "state_read_failed", "live", "disconnected",
+                    "needs_snapshot", "hosted_pending", "subscription_pending",
+                    "hosted_present", "last_minimized"):
+            item = value.get(key)
+            diagnostic[key] = item if type(item) is bool else None
+        self.result["browser_helper_diagnostic"] = diagnostic
+        diagnostic["host_read_failed"] = False
+        diagnostic["event_phase"] = "unavailable"
+        host_booleans = ("controller_present", "preflight_pending", "ready", "stopping")
+        for key in host_booleans:
+            diagnostic["host_" + key] = None
+        for key in ("host_launch_fresh", "event_sample_fresh", "transport_sample_fresh",
+                    "event_one_approval", "event_no_clients", "event_cleanup_complete",
+                    "event_no_uncertain_admissions", "event_no_queue_overflows",
+                    "host_progress_fresh", "host_io_fault_present"):
+            diagnostic[key] = None
+        try:
+            launch, modified = self.live_json("diagnostic_gui_launch", self.ui / "prepare.launch.json")
+            diagnostic["host_launch_fresh"] = 0 <= time.time() - modified < 2
+            for key in host_booleans:
+                item = launch.get(key)
+                diagnostic["host_" + key] = item if type(item) is bool else None
+            status = launch["setup"]["application_events"]
+            phase = status.get("phase")
+            diagnostic["event_phase"] = phase if type(phase) is str and phase in {
+                "off", "local", "starting", "active", "stopping", "stopped", "retired",
+                "failed", "cleanup_unconfirmed", "start_failed"} else "unrecognized"
+            for source, target in (("sample_age_ms", "event_sample_fresh"),
+                                   ("transport_sample_age_ms", "transport_sample_fresh")):
+                item = status.get(source)
+                diagnostic[target] = item <= 2000 if type(item) is int and item >= 0 else None
+            for source, expected, target in (
+                    ("approved_receivers", 1, "event_one_approval"),
+                    ("connected_clients", 0, "event_no_clients"),
+                    ("cleanup_pending", 0, "event_cleanup_complete"),
+                    ("uncertain_admissions", 0, "event_no_uncertain_admissions"),
+                    ("queue_overflows", 0, "event_no_queue_overflows")):
+                item = status.get(source)
+                diagnostic[target] = item == expected if type(item) is int and item >= 0 else None
+        except BaseException:
+            diagnostic["host_read_failed"] = True
+        try:
+            progress, modified = self.live_json("diagnostic_gui_progress", self.ui / "prepare.progress.json")
+            diagnostic["host_progress_fresh"] = 0 <= time.time() - modified < 2
+            diagnostic["host_io_fault_present"] = progress["io"]["fault"] is not None
+        except BaseException:
+            # Best-effort diagnostics never replace the original acceptance failure.
+            diagnostic["host_read_failed"] = True
+
     def browser_acceptance(self):
         # Exact existing helper errors become fixed enums; never export error text.
         helper_failures = {
@@ -316,6 +387,7 @@ class HostedModePair(owned.WindowPair):
             "FAIL: event frame budget": "event_frame_budget",
             "FAIL: wrong or uncertain host receipt": "wrong_or_uncertain_receipt",
             "FAIL: hosted receipt deadline": "hosted_receipt_deadline",
+            "FAIL: terminal before hosted receipt": "terminal_before_receipt",
             "FAIL: live host observation missing": "live_observation_missing",
             "FAIL: stale host reference": "stale_host_reference",
             "FAIL: exact hosted receipt revision missing": "receipt_revision_missing",
@@ -328,13 +400,14 @@ class HostedModePair(owned.WindowPair):
             "FAIL: restore observation": "restore_observation",
         }
         self.result["browser_acceptance_phase"] = "helper_start"
-        self.web("window.pimGate=null; window.runHostedModeAcceptance(window.pimClient).then(x=>window.pimGate=x,e=>{const known=" + json.dumps(helper_failures) + "; window.pimGate={status:'FAIL',failure:typeof e?.message==='string'&&Object.prototype.hasOwnProperty.call(known,e.message)?known[e.message]:'unrecognized'};}); true")
+        self.web("window.pimGate=null; window.runHostedModeAcceptance(window.pimClient).then(x=>window.pimGate=x,e=>{const known=" + json.dumps(helper_failures) + "; window.pimGate={status:'FAIL',failure:typeof e?.message==='string'&&Object.prototype.hasOwnProperty.call(known,e.message)?known[e.message]:'unrecognized',diagnostic:window.pimHostedDiagnostic};}); true")
         self.result["browser_acceptance_phase"] = "helper_result_wait"
         result = self.wait(lambda: self.web("window.pimGate"), 85)
         self.result["browser_acceptance_phase"] = "helper_pass_predicate"
         if isinstance(result, dict) and result.get("status") == "FAIL":
             failure = result.get("failure")
             self.result["browser_helper_failure"] = failure if failure in helper_failures.values() else "unrecognized"
+            self.helper_diagnostic(result.get("diagnostic"))
         require(result == {"status": "PASS", "query": True, "switched": True,
                           "concurrent": True, "minimize": True, "restore": True,
                           "stale_revision": True, "refresh_after_receipt": True})
@@ -463,7 +536,7 @@ class HostedModePair(owned.WindowPair):
         require(result == {"status": "PASS", "dropped_reply": True,
                            "fixture_injected_gap": True, "explicit_refresh": True,
                            "browser_deadline": True, "no_replay": True,
-                           "stale_timer_reconnect": True})
+                           "stale_timer_reconnect": True, "terminal_callback_once": True})
         reply, after = self.hosted_tool("inspect")
         require(not reply.get("isError") and after["hosted"]["mode"] == "switched" and
                 after["hosted"]["routing_generation"] == value["hosted"]["routing_generation"] and
@@ -475,6 +548,7 @@ class HostedModePair(owned.WindowPair):
         self.result["browser_no_replay"] = True
         self.result["pending_refresh_correlated"] = True
         self.result["stale_timer_reconnect_isolated"] = True
+        self.result["deadline_terminal_callback_once"] = True
         self.stage = "mcp_native_stop_restart"
 
     def browser_reconnect(self):
@@ -591,6 +665,7 @@ class HostedModePair(owned.WindowPair):
                 self.result["profile_file_unchanged"] and self.result["preferences_file_unchanged"] and self.result["lost_receipt_deadline"] and
                 self.result["fixture_injected_gap"] and self.result["browser_no_replay"] and
                 self.result["stale_timer_reconnect_isolated"])
+        require(self.result["deadline_terminal_callback_once"])
         self.result["status"] = "PASS"
 
 
