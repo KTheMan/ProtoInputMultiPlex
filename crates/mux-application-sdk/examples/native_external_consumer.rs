@@ -18,12 +18,13 @@ mod fixture {
         ClientCommand, ClientRequest, ClientResponse, Event, FailureCode, HostRevision,
         HostViewportAction, HostedAction, HostedPhase, Input, KeyCode, OwnerResponse,
         PROTOCOL_VERSION, PointerState, Poll, Reply, ServerMessage, SourceId, Transition, UserId,
-        UserView,
+        UserView, WindowId,
     };
     use serde::{Deserialize, Serialize};
     use serde_json::{Value, json};
     use std::{
         cell::Cell,
+        collections::BTreeSet,
         fs::{File, OpenOptions},
         io::{Read, Write},
         os::windows::{
@@ -939,6 +940,75 @@ mod fixture {
         }
     }
 
+    // Only replies to observations actually admitted by this fixture may precede
+    // retirement. Foreign, duplicate, failed or wrong-window replies fail closed.
+    fn accept_correlated_owner_response(
+        pending: &mut BTreeSet<u64>,
+        window: WindowId,
+        retire_id: Option<u64>,
+        request_id: u64,
+        reply: &Reply<OwnerResponse>,
+    ) -> Check<bool> {
+        match reply {
+            Reply::Ok {
+                version,
+                response: OwnerResponse::Acknowledged,
+            } if *version == PROTOCOL_VERSION && retire_id == Some(request_id) => {
+                ensure(
+                    pending.is_empty(),
+                    "retirement preceded pending owner observations",
+                )?;
+                Ok(true)
+            }
+            Reply::Ok {
+                version,
+                response: OwnerResponse::Window { window: observed },
+            } if *version == PROTOCOL_VERSION
+                && observed.id == window
+                && pending.remove(&request_id) =>
+            {
+                Ok(false)
+            }
+            _ => Err("unexpected correlated owner response".into()),
+        }
+    }
+
+    fn await_owner_retirement(
+        api: Api,
+        client: u64,
+        completion: HANDLE,
+        retire_id: u64,
+        window: WindowId,
+        pending: &mut BTreeSet<u64>,
+    ) -> Check {
+        let deadline = Instant::now() + BOUND;
+        loop {
+            ensure(
+                Instant::now() < deadline,
+                "owner report deadline exceeded; no replay",
+            )?;
+            if let Some(message) = next_message(api, client)? {
+                match message {
+                    ServerMessage::OwnerResponse { request_id, reply } => {
+                        if accept_correlated_owner_response(
+                            pending,
+                            window,
+                            Some(retire_id),
+                            request_id,
+                            &reply,
+                        )? {
+                            return Ok(());
+                        }
+                    }
+                    ServerMessage::EventStream { .. } => (),
+                    _ => return Err("unexpected owner response frame".into()),
+                }
+            } else {
+                pump_wait(completion, deadline)?;
+            }
+        }
+    }
+
     fn exercise_hosted_route(
         api: Api,
         client: u64,
@@ -1191,6 +1261,8 @@ mod fixture {
         let mut late_rejections = 0;
         let mut timeout_pause = false;
         let mut last_refresh = Instant::now();
+        // Admitted notify/refresh IDs only, bounded like native MAX_PENDING.
+        let mut pending_observations = BTreeSet::new();
         while Instant::now() < end {
             pump_wait(
                 completion,
@@ -1220,6 +1292,17 @@ mod fixture {
                             }),
                         )?;
                     }
+                    Some(ServerMessage::OwnerResponse { request_id, reply })
+                        if pending_observations.contains(&request_id) =>
+                    {
+                        accept_correlated_owner_response(
+                            &mut pending_observations,
+                            window,
+                            None,
+                            request_id,
+                            &reply,
+                        )?;
+                    }
                     Some(ServerMessage::OwnerResponse {
                         reply:
                             Reply::Ok {
@@ -1236,14 +1319,6 @@ mod fixture {
                     }) if timeout_pause && error.code == FailureCode::Missing => {
                         late_rejections += 1;
                     }
-                    Some(ServerMessage::OwnerResponse {
-                        reply:
-                            Reply::Ok {
-                                response: OwnerResponse::Window { .. },
-                                ..
-                            },
-                        ..
-                    }) => (),
                     Some(ServerMessage::Disconnected { .. }) => {
                         return Err("GUI disconnected during window route".into());
                     }
@@ -1257,6 +1332,12 @@ mod fixture {
                     OK,
                     "owner state notify",
                 )?;
+                if id != 0 {
+                    ensure(
+                        pending_observations.len() < 32 && pending_observations.insert(id),
+                        "duplicate or excessive owner observations",
+                    )?;
+                }
             }
             if last_refresh.elapsed() >= Duration::from_secs(1) {
                 let mut id = 0;
@@ -1266,6 +1347,10 @@ mod fixture {
                     "owner observation refresh",
                 )?;
                 ensure(id != 0, "missing periodic owner observation")?;
+                ensure(
+                    pending_observations.len() < 32 && pending_observations.insert(id),
+                    "duplicate or excessive owner observations",
+                )?;
                 last_refresh = Instant::now();
             }
             if applies >= 3 && receipts >= 3 && !timeout_pause {
@@ -1306,12 +1391,13 @@ mod fixture {
         )?;
         WINDOW_TOKEN.set(0);
         ensure(retire_id != 0, "missing remote retire report")?;
-        ensure(
-            matches!(
-                await_owner_response(api, client, completion, Some(retire_id))?,
-                OwnerResponse::Acknowledged
-            ),
-            "GUI did not acknowledge window retirement",
+        await_owner_retirement(
+            api,
+            client,
+            completion,
+            retire_id,
+            window,
+            &mut pending_observations,
         )?;
         report.record(
             "native_window_retired",
@@ -1472,6 +1558,57 @@ mod fixture {
     #[cfg(test)]
     mod tests {
         use super::*;
+        #[test]
+        fn retirement_accounts_only_for_known_pending_observations() {
+            let window: WindowId = serde_json::from_value(json!(7)).expect("window ID");
+            let observation: Reply<OwnerResponse> = serde_json::from_value(json!({
+                "status": "ok", "version": PROTOCOL_VERSION,
+                "response": {"kind": "window", "window": {
+                    "id": 7, "bounds": {"left": 0, "top": 0, "right": 40, "bottom": 30},
+                    "visible": true, "minimized": false, "maximized": false,
+                    "click_through": false, "enabled": true, "topmost": false, "opacity": 255,
+                }},
+            }))
+            .expect("observation reply");
+            let retired = Reply::Ok {
+                version: PROTOCOL_VERSION,
+                response: OwnerResponse::Acknowledged,
+            };
+            let rejected: Reply<OwnerResponse> = serde_json::from_value(json!({
+                "status": "error", "version": PROTOCOL_VERSION,
+                "error": {"code": "missing", "message": "fixed test rejection"},
+            }))
+            .expect("error reply");
+            let mut pending = BTreeSet::from([11]);
+            assert!(
+                accept_correlated_owner_response(&mut pending, window, Some(12), 99, &observation)
+                    .is_err()
+            );
+            assert!(
+                accept_correlated_owner_response(&mut pending, window, Some(12), 11, &rejected)
+                    .is_err()
+            );
+            assert!(
+                accept_correlated_owner_response(&mut pending, window, Some(12), 12, &retired)
+                    .is_err()
+            );
+            assert!(
+                !accept_correlated_owner_response(&mut pending, window, Some(12), 11, &observation)
+                    .expect("known observation before retirement")
+            );
+            assert!(
+                accept_correlated_owner_response(&mut pending, window, Some(12), 11, &observation)
+                    .is_err()
+            );
+            assert!(
+                accept_correlated_owner_response(&mut pending, window, Some(12), 99, &retired)
+                    .is_err()
+            );
+            assert!(
+                accept_correlated_owner_response(&mut pending, window, Some(12), 12, &retired)
+                    .expect("exact retirement after observation")
+            );
+        }
         #[test]
         fn malformed_private_descriptor_has_constant_error() {
             let error = convert_descriptor(
