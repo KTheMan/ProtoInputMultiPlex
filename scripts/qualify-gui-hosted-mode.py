@@ -93,7 +93,7 @@ class HostedModePair(owned.WindowPair):
             return status and not status["pointer_export"] and not status["keyboard_export"]
         if step in (10, 23, 28, 32, 35):
             status = self.event_status("local" if step == 10 else "active", 0,
-                                       {10: 1, 23: 2, 28: 3, 32: 1, 35: 2}[step])
+                                       {10: 1, 23: 1, 28: 2, 32: 1, 35: 2}[step])
             return status and not status["pointer_export"] and not status["keyboard_export"]
         if step == 18:
             return self.event_status("active", 0, 1, 0)
@@ -116,14 +116,15 @@ class HostedModePair(owned.WindowPair):
             require(self.native_detail("dll_unloaded_before_owner_exit") and
                     self.native_detail("owner_ready_to_exit_after_unload"))
             self.result["native_retirement_phase"] = "host_retired_no_connections"
-            self.wait(lambda: self.event_status("active", 0, 1, 0))
+            # A disconnected receiver loses its approval; later counts include only live rows.
+            self.wait(lambda: self.event_status("active", 0, 0, 0))
             self.result["native_retirement_phase"] = "retired"
             self.result["native_retired"] = True
             return True
         if step == 24:
-            return self.issue_host_descriptor(2, 2)
+            return self.issue_host_descriptor(2, 1)
         if step == 29:
-            if not self.issue_host_descriptor(3, 3):
+            if not self.issue_host_descriptor(3, 2):
                 return None
             self.stage = "active_mcp_observer"
             self.retired_mcp_descriptor = self.private / "retired-mcp.json"
@@ -132,7 +133,7 @@ class HostedModePair(owned.WindowPair):
             self.rpc_start()
             reply, value = self.hosted_tool("inspect")
             require(not reply.get("isError") and value["hosted"]["phase"] == "native")
-            self.wait(lambda: self.event_status("active", 0, 3, 1))
+            self.wait(lambda: self.event_status("active", 0, 2, 1))
             return True
         if step == 30:
             self.stage = "browser_mode_and_viewport"
@@ -289,7 +290,7 @@ class HostedModePair(owned.WindowPair):
         require(not state["event_grant"]["pointer_events"] and not state["event_grant"]["key_events"])
         require(not state["control_grant"]["pointer_input"] and not state["control_grant"]["key_input"])
         self.native_generation = state["hosted"]["routing_generation"]
-        self.wait(lambda: self.event_status("active", 0, 3, 2))
+        self.wait(lambda: self.event_status("active", 0, 2, 2))
 
     def browser_acceptance(self):
         self.web("window.pimGate=null; window.runHostedModeAcceptance(window.pimClient).then(x=>window.pimGate=x,()=>window.pimGate={status:'FAIL'}); true")
