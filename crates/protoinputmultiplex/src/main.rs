@@ -577,7 +577,12 @@ mod renderer_cli_tests {
         for arguments in [
             vec!["protoinputmultiplex"],
             vec!["protoinputmultiplex", "gui"],
-            vec!["protoinputmultiplex", "gui", "--preferences", "private.json"],
+            vec![
+                "protoinputmultiplex",
+                "gui",
+                "--preferences",
+                "private.json",
+            ],
         ] {
             let parsed = Args::try_parse_from(arguments).unwrap();
             let Command::Gui { renderer, .. } = parsed.command_or_gui() else {
