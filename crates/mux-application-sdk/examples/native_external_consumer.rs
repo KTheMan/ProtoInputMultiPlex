@@ -705,8 +705,14 @@ mod fixture {
             let final_users: Vec<UserView> = serde_json::from_value(final_model["users"].clone())
                 .map_err(|_| "invalid final users")?;
             let local = toolkit(api, token, json!({"kind": "user", "user": user}))?;
-            ensure(local["result"]["user"]["app_data"] == json!({"consumer": "native"}), "native local data changed across browser activity")?;
-            report.record("native_user_toolkit_retained", json!({"local_data_retained": true}))?;
+            ensure(
+                local["result"]["user"]["app_data"] == json!({"consumer": "native"}),
+                "native local data changed across browser activity",
+            )?;
+            report.record(
+                "native_user_toolkit_retained",
+                json!({"local_data_retained": true}),
+            )?;
             report.record(
                 "overlap_snapshot",
                 json!({"users": evidence(&final_users),
@@ -757,7 +763,11 @@ mod fixture {
             "Stop must clear local model",
         )?;
         let local = br#"{"version":1,"operation":{"kind":"list"}}"#;
-        status(unsafe { (api.local_toolkit)(token, local.as_ptr(), local.len()) }, INVALID, "local toolkit after Stop")?;
+        status(
+            unsafe { (api.local_toolkit)(token, local.as_ptr(), local.len()) },
+            INVALID,
+            "local toolkit after Stop",
+        )?;
         report.record(
             "hwnd_destroyed_stop_returned",
             json!({"stop_in": "WM_NCDESTROY", "retained_output_cleared": true}),
@@ -1421,33 +1431,74 @@ mod fixture {
     fn toolkit(api: Api, token: u64, operation: Value) -> Check<Value> {
         let bytes = serde_json::to_vec(&json!({"version": 1, "operation": operation}))
             .map_err(|_| "fixture toolkit encoding")?;
-        status(unsafe { (api.local_toolkit)(token, bytes.as_ptr(), bytes.len()) }, OK, "local toolkit")?;
+        status(
+            unsafe { (api.local_toolkit)(token, bytes.as_ptr(), bytes.len()) },
+            OK,
+            "local toolkit",
+        )?;
         retained(api, token, false)
     }
     fn user_toolkit_baseline(api: Api, token: u64, users: &[UserView], report: &Report) -> Check {
         let before = query(api, token, false)?;
         let listed = toolkit(api, token, json!({"kind": "list"}))?;
-        let contexts = listed["result"]["users"].as_array().ok_or("toolkit users missing")?;
-        ensure(listed["version"] == 1 && contexts.len() == users.len(), "toolkit list mismatch")?;
+        let contexts = listed["result"]["users"]
+            .as_array()
+            .ok_or("toolkit users missing")?;
+        ensure(
+            listed["version"] == 1 && contexts.len() == users.len(),
+            "toolkit list mismatch",
+        )?;
         for user in users {
             let exact = toolkit(api, token, json!({"kind": "user", "user": user.id}))?;
             let source = toolkit(api, token, json!({"kind": "source", "source": user.source}))?;
-            ensure(exact == source && exact["result"]["user"]["user"]["id"] == json!(user.id), "toolkit exact identity mismatch")?;
-            ensure(exact["result"]["user"]["app_data"].is_null(), "native local data did not start empty")?;
+            ensure(
+                exact == source && exact["result"]["user"]["user"]["id"] == json!(user.id),
+                "toolkit exact identity mismatch",
+            )?;
+            ensure(
+                exact["result"]["user"]["app_data"].is_null(),
+                "native local data did not start empty",
+            )?;
         }
         let unknown = toolkit(api, token, json!({"kind": "source", "source": 0}))?;
-        let stale_epoch = if users[0].id.epoch > 1 { users[0].id.epoch - 1 } else { 2 };
-        let stale = toolkit(api, token, json!({"kind": "user", "user": {"epoch": stale_epoch, "local": users[0].id.local}}))?;
-        ensure(unknown["result"]["user"].is_null() && stale["result"]["user"].is_null(), "toolkit exposed unknown identity")?;
-        toolkit(api, token, json!({"kind": "set_data", "user": users[0].id, "data": {"consumer": "native"}}))?;
+        let stale_epoch = if users[0].id.epoch > 1 {
+            users[0].id.epoch - 1
+        } else {
+            2
+        };
+        let stale = toolkit(
+            api,
+            token,
+            json!({"kind": "user", "user": {"epoch": stale_epoch, "local": users[0].id.local}}),
+        )?;
+        ensure(
+            unknown["result"]["user"].is_null() && stale["result"]["user"].is_null(),
+            "toolkit exposed unknown identity",
+        )?;
+        toolkit(
+            api,
+            token,
+            json!({"kind": "set_data", "user": users[0].id, "data": {"consumer": "native"}}),
+        )?;
         let oversized = serde_json::to_vec(&json!({"version": 1, "operation": {"kind": "set_data", "user": users[0].id, "data": "x".repeat(4200)}}))
             .map_err(|_| "fixture toolkit encoding")?;
-        status(unsafe { (api.local_toolkit)(token, oversized.as_ptr(), oversized.len()) }, 6, "toolkit data limit")?;
+        status(
+            unsafe { (api.local_toolkit)(token, oversized.as_ptr(), oversized.len()) },
+            6,
+            "toolkit data limit",
+        )?;
         let after = query(api, token, false)?;
-        ensure(before["users"] == after["users"] && before["status"]["pending_requests"] == after["status"]["pending_requests"], "toolkit changed Host observation or queued input")?;
-        report.record("native_user_toolkit", json!({"contexts": contexts,
+        ensure(
+            before["users"] == after["users"]
+                && before["status"]["pending_requests"] == after["status"]["pending_requests"],
+            "toolkit changed Host observation or queued input",
+        )?;
+        report.record(
+            "native_user_toolkit",
+            json!({"contexts": contexts,
             "exact_lookup": true, "unknown_denied": true, "data_local": true,
-            "data_limit": true, "host_state_unchanged": true}))
+            "data_limit": true, "host_state_unchanged": true}),
+        )
     }
 
     fn query(api: Api, token: u64, short: bool) -> Check<Value> {

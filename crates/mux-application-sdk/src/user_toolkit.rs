@@ -122,7 +122,13 @@ impl UserToolkit {
         // Fixed-width integer bytes keep results identical in native Rust and WASM.
         // Palette slots may repeat; the palette is a bounded set of badge colors.
         let mut hash = 0xcbf29ce484222325_u64;
-        for byte in user.id.epoch.to_le_bytes().into_iter().chain(user.id.local.to_le_bytes()) {
+        for byte in user
+            .id
+            .epoch
+            .to_le_bytes()
+            .into_iter()
+            .chain(user.id.local.to_le_bytes())
+        {
             hash = (hash ^ u64::from(byte)).wrapping_mul(0x100000001b3);
         }
         UserContext {
@@ -144,7 +150,9 @@ impl UserToolkit {
                 user: users.get(&user).map(|user| Box::new(self.context(user))),
             },
             ToolkitOperation::Source { source } => ToolkitResult::User {
-                user: users.values().find(|user| user.source == source)
+                user: users
+                    .values()
+                    .find(|user| user.source == source)
                     .map(|user| Box::new(self.context(user))),
             },
             ToolkitOperation::SetData { user, data } => {
@@ -157,7 +165,14 @@ impl UserToolkit {
                 {
                     return Err(ToolkitError::Limit);
                 }
-                self.data.insert(user, Annotation { source: view.source, data, bytes });
+                self.data.insert(
+                    user,
+                    Annotation {
+                        source: view.source,
+                        data,
+                        bytes,
+                    },
+                );
                 ToolkitResult::DataUpdated { user }
             }
             ToolkitOperation::ClearData { user } => {
@@ -167,18 +182,26 @@ impl UserToolkit {
                 self.data.remove(&user);
                 ToolkitResult::DataUpdated { user }
             }
-            ToolkitOperation::Palette => ToolkitResult::Palette { colors: self.palette.clone() },
+            ToolkitOperation::Palette => ToolkitResult::Palette {
+                colors: self.palette.clone(),
+            },
             ToolkitOperation::SetPalette { colors } => {
-                if colors.is_empty() || colors.len() > MAX_PALETTE_COLORS
+                if colors.is_empty()
+                    || colors.len() > MAX_PALETTE_COLORS
                     || colors.iter().any(|color| color[3] == 0)
                 {
                     return Err(ToolkitError::Invalid);
                 }
                 self.palette = colors;
-                ToolkitResult::Palette { colors: self.palette.clone() }
+                ToolkitResult::Palette {
+                    colors: self.palette.clone(),
+                }
             }
         };
-        Ok(ToolkitResponse { version: TOOLKIT_VERSION, result })
+        Ok(ToolkitResponse {
+            version: TOOLKIT_VERSION,
+            result,
+        })
     }
 }
 
@@ -192,7 +215,9 @@ fn data_size(value: &Value) -> Result<usize, ToolkitError> {
             return Err(ToolkitError::Limit);
         }
         match value {
-            Value::String(text) if text.len() > MAX_USER_DATA_BYTES => return Err(ToolkitError::Limit),
+            Value::String(text) if text.len() > MAX_USER_DATA_BYTES => {
+                return Err(ToolkitError::Limit);
+            }
             Value::Array(values) => {
                 if values.len() + pending.len() > MAX_USER_DATA_BYTES {
                     return Err(ToolkitError::Limit);
@@ -219,7 +244,9 @@ fn data_size(value: &Value) -> Result<usize, ToolkitError> {
             self.0 += bytes.len();
             Ok(bytes.len())
         }
-        fn flush(&mut self) -> std::io::Result<()> { Ok(()) }
+        fn flush(&mut self) -> std::io::Result<()> {
+            Ok(())
+        }
     }
     let mut budget = Budget(0);
     serde_json::to_writer(&mut budget, value).map_err(|_| ToolkitError::Limit)?;
@@ -235,80 +262,199 @@ mod tests {
 
     const EPOCH: u64 = 9_007_199_254_740_993;
     fn snapshot(epoch: u64, count: u64) -> Snapshot {
-        let bounds = Bounds { left: -100, top: 0, right: 100, bottom: 100 };
+        let bounds = Bounds {
+            left: -100,
+            top: 0,
+            right: 100,
+            bottom: 100,
+        };
         Snapshot {
-            version: 1, epoch, through_sequence: 0, hosted: None,
-            users: (1..=count).map(|local| UserView {
-                id: UserId { epoch, local }, owned_by_recipient: false,
-                name: format!("User {local}"), source: SourceId(EPOCH + local),
-                pointer: None, cursor: None, held_keys: Some(Vec::new()),
-            }).collect(),
-            screens: ScreenState { revision: 1, desktop: bounds, screens: vec![bounds] },
-            windows: Vec::new(), capabilities: Vec::new(), mode: ApplicationMode::Cooperative,
+            version: 1,
+            epoch,
+            through_sequence: 0,
+            hosted: None,
+            users: (1..=count)
+                .map(|local| UserView {
+                    id: UserId { epoch, local },
+                    owned_by_recipient: false,
+                    name: format!("User {local}"),
+                    source: SourceId(EPOCH + local),
+                    pointer: None,
+                    cursor: None,
+                    held_keys: Some(Vec::new()),
+                })
+                .collect(),
+            screens: ScreenState {
+                revision: 1,
+                desktop: bounds,
+                screens: vec![bounds],
+            },
+            windows: Vec::new(),
+            capabilities: Vec::new(),
+            mode: ApplicationMode::Cooperative,
         }
     }
     fn live(count: u64) -> ClientState {
         let mut model = ClientState::default();
-        model.install_snapshot(snapshot(EPOCH, count), EPOCH).unwrap();
+        model
+            .install_snapshot(snapshot(EPOCH, count), EPOCH)
+            .unwrap();
         model
     }
-    fn run(model: &mut ClientState, operation: ToolkitOperation) -> Result<ToolkitResult, ToolkitError> {
-        model.local_toolkit(ToolkitRequest { version: 1, operation }).map(|reply| reply.result)
+    fn run(
+        model: &mut ClientState,
+        operation: ToolkitOperation,
+    ) -> Result<ToolkitResult, ToolkitError> {
+        model
+            .local_toolkit(ToolkitRequest {
+                version: 1,
+                operation,
+            })
+            .map(|reply| reply.result)
     }
     fn context(model: &mut ClientState, user: UserId) -> Option<Box<UserContext>> {
-        let ToolkitResult::User { user } = run(model, ToolkitOperation::User { user }).unwrap() else {
+        let ToolkitResult::User { user } = run(model, ToolkitOperation::User { user }).unwrap()
+        else {
             panic!("user result");
         };
         user
     }
-    fn set(model: &mut ClientState, local: u64, data: Value) -> Result<ToolkitResult, ToolkitError> {
-        run(model, ToolkitOperation::SetData { user: UserId { epoch: EPOCH, local }, data })
+    fn set(
+        model: &mut ClientState,
+        local: u64,
+        data: Value,
+    ) -> Result<ToolkitResult, ToolkitError> {
+        run(
+            model,
+            ToolkitOperation::SetData {
+                user: UserId {
+                    epoch: EPOCH,
+                    local,
+                },
+                data,
+            },
+        )
     }
 
     #[test]
     fn lookup_uses_exact_authorized_u64_identities_and_requires_live_state() {
         let mut model = live(2);
-        let request = format!(r#"{{"version":1,"operation":{{"kind":"source","source":{}}}}}"#, EPOCH + 1);
-        let response: ToolkitResponse = serde_json::from_str(&model.local_toolkit_json(&request).unwrap()).unwrap();
-        let ToolkitResult::User { user: Some(user) } = response.result else { panic!("source lookup") };
-        assert_eq!(user.user.id, UserId { epoch: EPOCH, local: 1 });
-        assert_eq!(run(&mut model, ToolkitOperation::Source { source: SourceId(0) }).unwrap(), ToolkitResult::User { user: None });
-        assert!(context(&mut model, UserId { epoch: EPOCH - 1, local: 1 }).is_none());
-        assert_eq!(set(&mut model, 99, json!(true)), Err(ToolkitError::MissingUser));
-        assert_eq!(model.local_toolkit_json(r#"{"version":2,"operation":{"kind":"list"}}"#), Err(ToolkitError::Invalid));
+        let request = format!(
+            r#"{{"version":1,"operation":{{"kind":"source","source":{}}}}}"#,
+            EPOCH + 1
+        );
+        let response: ToolkitResponse =
+            serde_json::from_str(&model.local_toolkit_json(&request).unwrap()).unwrap();
+        let ToolkitResult::User { user: Some(user) } = response.result else {
+            panic!("source lookup")
+        };
+        assert_eq!(
+            user.user.id,
+            UserId {
+                epoch: EPOCH,
+                local: 1
+            }
+        );
+        assert_eq!(
+            run(
+                &mut model,
+                ToolkitOperation::Source {
+                    source: SourceId(0)
+                }
+            )
+            .unwrap(),
+            ToolkitResult::User { user: None }
+        );
+        assert!(
+            context(
+                &mut model,
+                UserId {
+                    epoch: EPOCH - 1,
+                    local: 1
+                }
+            )
+            .is_none()
+        );
+        assert_eq!(
+            set(&mut model, 99, json!(true)),
+            Err(ToolkitError::MissingUser)
+        );
+        assert_eq!(
+            model.local_toolkit_json(r#"{"version":2,"operation":{"kind":"list"}}"#),
+            Err(ToolkitError::Invalid)
+        );
         model.disconnect();
-        assert_eq!(run(&mut model, ToolkitOperation::List), Err(ToolkitError::NotLive));
+        assert_eq!(
+            run(&mut model, ToolkitOperation::List),
+            Err(ToolkitError::NotLive)
+        );
     }
 
     #[test]
     fn data_is_local_bounded_and_rejected_writes_leave_existing_values_intact() {
         let mut first = live(12);
         let mut second = live(12);
-        let id = UserId { epoch: EPOCH, local: 1 };
+        let id = UserId {
+            epoch: EPOCH,
+            local: 1,
+        };
         set(&mut first, 1, json!({"client": "native"})).unwrap();
         assert!(context(&mut second, id).unwrap().app_data.is_none());
-        assert_eq!(set(&mut first, 1, json!("x".repeat(MAX_USER_DATA_BYTES))), Err(ToolkitError::Limit));
-        assert_eq!(context(&mut first, id).unwrap().app_data, Some(json!({"client": "native"})));
-        for local in 1..=8 { set(&mut first, local, json!("x".repeat(4000))).unwrap(); }
-        assert_eq!(set(&mut first, 9, json!("x".repeat(4000))), Err(ToolkitError::Limit));
-        assert!(context(&mut first, UserId { epoch: EPOCH, local: 9 }).unwrap().app_data.is_none());
+        assert_eq!(
+            set(&mut first, 1, json!("x".repeat(MAX_USER_DATA_BYTES))),
+            Err(ToolkitError::Limit)
+        );
+        assert_eq!(
+            context(&mut first, id).unwrap().app_data,
+            Some(json!({"client": "native"}))
+        );
+        for local in 1..=8 {
+            set(&mut first, local, json!("x".repeat(4000))).unwrap();
+        }
+        assert_eq!(
+            set(&mut first, 9, json!("x".repeat(4000))),
+            Err(ToolkitError::Limit)
+        );
+        assert!(
+            context(
+                &mut first,
+                UserId {
+                    epoch: EPOCH,
+                    local: 9
+                }
+            )
+            .unwrap()
+            .app_data
+            .is_none()
+        );
         run(&mut first, ToolkitOperation::ClearData { user: id }).unwrap();
         set(&mut first, 9, json!("x".repeat(4000))).unwrap();
-        assert_eq!(first.local_toolkit_json(&" ".repeat(MAX_TOOLKIT_REQUEST_BYTES + 1)), Err(ToolkitError::Limit));
+        assert_eq!(
+            first.local_toolkit_json(&" ".repeat(MAX_TOOLKIT_REQUEST_BYTES + 1)),
+            Err(ToolkitError::Limit)
+        );
         let mut nested = Value::Null;
-        for _ in 0..34 { nested = json!([nested]); }
+        for _ in 0..34 {
+            nested = json!([nested]);
+        }
         assert_eq!(set(&mut second, 1, nested), Err(ToolkitError::Limit));
     }
 
     #[test]
     fn refresh_prunes_removed_or_rebound_users_but_preserves_live_rename_data() {
         let mut model = live(2);
-        let id = UserId { epoch: EPOCH, local: 1 };
+        let id = UserId {
+            epoch: EPOCH,
+            local: 1,
+        };
         set(&mut model, 1, json!("application state")).unwrap();
         let mut fresh = snapshot(EPOCH, 2);
         fresh.users[0].name = "Renamed".into();
         model.install_snapshot(fresh.clone(), EPOCH).unwrap();
-        assert_eq!(context(&mut model, id).unwrap().app_data, Some(json!("application state")));
+        assert_eq!(
+            context(&mut model, id).unwrap().app_data,
+            Some(json!("application state"))
+        );
         fresh.users[0].source = SourceId(123);
         model.install_snapshot(fresh, EPOCH).unwrap();
         assert!(context(&mut model, id).unwrap().app_data.is_none());
@@ -321,43 +467,107 @@ mod tests {
     #[test]
     fn disposal_gap_revocation_and_epoch_changes_erase_application_state() {
         let mut model = live(1);
-        let id = UserId { epoch: EPOCH, local: 1 };
+        let id = UserId {
+            epoch: EPOCH,
+            local: 1,
+        };
         set(&mut model, 1, json!(123)).unwrap();
         let user = model.users()[&id].clone();
-        model.fold_poll(Poll::Events { events: vec![
-            Envelope { version: 1, epoch: EPOCH, sequence: 1, event: Event::UserDisposed { user: id } },
-            Envelope { version: 1, epoch: EPOCH, sequence: 2, event: Event::UserCreated { user } },
-        ] }).unwrap();
+        model
+            .fold_poll(Poll::Events {
+                events: vec![
+                    Envelope {
+                        version: 1,
+                        epoch: EPOCH,
+                        sequence: 1,
+                        event: Event::UserDisposed { user: id },
+                    },
+                    Envelope {
+                        version: 1,
+                        epoch: EPOCH,
+                        sequence: 2,
+                        event: Event::UserCreated { user },
+                    },
+                ],
+            })
+            .unwrap();
         assert!(context(&mut model, id).unwrap().app_data.is_none());
         set(&mut model, 1, json!(456)).unwrap();
-        model.fold_poll(Poll::Gap { after_sequence: 2, lost_through: 3 }).unwrap();
-        assert_eq!(run(&mut model, ToolkitOperation::List), Err(ToolkitError::NotLive));
+        model
+            .fold_poll(Poll::Gap {
+                after_sequence: 2,
+                lost_through: 3,
+            })
+            .unwrap();
+        assert_eq!(
+            run(&mut model, ToolkitOperation::List),
+            Err(ToolkitError::NotLive)
+        );
         let mut fresh = snapshot(EPOCH, 1);
         fresh.through_sequence = 3;
         model.install_snapshot(fresh, EPOCH).unwrap();
         assert!(context(&mut model, id).unwrap().app_data.is_none());
         set(&mut model, 1, json!(789)).unwrap();
-        model.fold_poll(Poll::Ended { reason: crate::EndReason::Revoked }).unwrap();
-        model.install_snapshot(snapshot(EPOCH + 1, 1), EPOCH + 1).unwrap();
-        assert!(context(&mut model, UserId { epoch: EPOCH + 1, local: 1 }).unwrap().app_data.is_none());
+        model
+            .fold_poll(Poll::Ended {
+                reason: crate::EndReason::Revoked,
+            })
+            .unwrap();
+        model
+            .install_snapshot(snapshot(EPOCH + 1, 1), EPOCH + 1)
+            .unwrap();
+        assert!(
+            context(
+                &mut model,
+                UserId {
+                    epoch: EPOCH + 1,
+                    local: 1
+                }
+            )
+            .unwrap()
+            .app_data
+            .is_none()
+        );
     }
 
     #[test]
     fn badge_palette_is_deterministic_bounded_and_never_changes_observed_cursors() {
         let mut first = live(2);
         let mut second = live(2);
-        let id = UserId { epoch: EPOCH, local: 1 };
+        let id = UserId {
+            epoch: EPOCH,
+            local: 1,
+        };
         let observed = first.users().clone();
-        assert_eq!(context(&mut first, id).unwrap().badge_rgba, context(&mut second, id).unwrap().badge_rgba);
-        run(&mut first, ToolkitOperation::SetPalette { colors: vec![[1, 2, 3, 255]] }).unwrap();
+        assert_eq!(
+            context(&mut first, id).unwrap().badge_rgba,
+            context(&mut second, id).unwrap().badge_rgba
+        );
+        run(
+            &mut first,
+            ToolkitOperation::SetPalette {
+                colors: vec![[1, 2, 3, 255]],
+            },
+        )
+        .unwrap();
         assert_eq!(context(&mut first, id).unwrap().badge_rgba, [1, 2, 3, 255]);
         assert_eq!(first.users(), &observed);
-        for colors in [vec![], vec![[1, 2, 3, 0]], vec![[0, 0, 0, 255]; MAX_PALETTE_COLORS + 1]] {
-            assert_eq!(run(&mut first, ToolkitOperation::SetPalette { colors }), Err(ToolkitError::Invalid));
+        for colors in [
+            vec![],
+            vec![[1, 2, 3, 0]],
+            vec![[0, 0, 0, 255]; MAX_PALETTE_COLORS + 1],
+        ] {
+            assert_eq!(
+                run(&mut first, ToolkitOperation::SetPalette { colors }),
+                Err(ToolkitError::Invalid)
+            );
         }
         assert_eq!(context(&mut first, id).unwrap().badge_rgba, [1, 2, 3, 255]);
         first.disconnect();
         first.install_snapshot(snapshot(EPOCH, 2), EPOCH).unwrap();
-        assert_eq!(context(&mut first, id).unwrap().badge_rgba, context(&mut second, id).unwrap().badge_rgba);
+        assert_eq!(
+            context(&mut first, id).unwrap().badge_rgba,
+            context(&mut second, id).unwrap().badge_rgba
+        );
     }
 }

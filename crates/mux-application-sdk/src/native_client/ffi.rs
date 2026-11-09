@@ -549,42 +549,114 @@ mod tests {
     #[test]
     fn local_toolkit_retained_buffer_busy_and_short_read_never_reexecute_or_queue() {
         let (mut client, _, _) = super::super::tests::mock_client();
-        let bounds = mux_core::desktop::Bounds { left: 0, top: 0, right: 10, bottom: 10 };
-        client.model.install_snapshot(crate::Snapshot {
-            version: 1, epoch: 91, through_sequence: 0, users: Vec::new(), hosted: None,
-            screens: crate::ScreenState { revision: 1, desktop: bounds, screens: vec![bounds] },
-            windows: Vec::new(), capabilities: Vec::new(), mode: crate::ApplicationMode::Cooperative,
-        }, 91).unwrap();
+        let bounds = mux_core::desktop::Bounds {
+            left: 0,
+            top: 0,
+            right: 10,
+            bottom: 10,
+        };
+        client
+            .model
+            .install_snapshot(
+                crate::Snapshot {
+                    version: 1,
+                    epoch: 91,
+                    through_sequence: 0,
+                    users: Vec::new(),
+                    hosted: None,
+                    screens: crate::ScreenState {
+                        revision: 1,
+                        desktop: bounds,
+                        screens: vec![bounds],
+                    },
+                    windows: Vec::new(),
+                    capabilities: Vec::new(),
+                    mode: crate::ApplicationMode::Cooperative,
+                },
+                91,
+            )
+            .unwrap();
         let handle = NEXT.fetch_add(1, Ordering::Relaxed);
         CLIENTS.with(|clients| {
-            clients.borrow_mut().insert(handle, Entry {
-                client, response: None, response_after_stop: false, poisoned: false,
-            });
+            clients.borrow_mut().insert(
+                handle,
+                Entry {
+                    client,
+                    response: None,
+                    response_after_stop: false,
+                    poisoned: false,
+                },
+            );
         });
         let set = br#"{"version":1,"operation":{"kind":"set_palette","colors":[[4,5,6,255]]}}"#;
         let other = br#"{"version":1,"operation":{"kind":"set_palette","colors":[[7,8,9,255]]}}"#;
-        assert_eq!(unsafe { pim_app_native_local_toolkit(handle, set.as_ptr(), set.len()) }, Status::Ok as i32);
-        assert_eq!(unsafe { pim_app_native_local_toolkit(handle, other.as_ptr(), other.len()) }, Status::Busy as i32);
+        assert_eq!(
+            unsafe { pim_app_native_local_toolkit(handle, set.as_ptr(), set.len()) },
+            Status::Ok as i32
+        );
+        assert_eq!(
+            unsafe { pim_app_native_local_toolkit(handle, other.as_ptr(), other.len()) },
+            Status::Busy as i32
+        );
         let mut length = 0;
         let mut tiny = [0; 1];
-        assert_eq!(unsafe { pim_app_native_response_read(handle, tiny.as_mut_ptr(), tiny.len(), &mut length) }, Status::BufferTooSmall as i32);
+        assert_eq!(
+            unsafe {
+                pim_app_native_response_read(handle, tiny.as_mut_ptr(), tiny.len(), &mut length)
+            },
+            Status::BufferTooSmall as i32
+        );
         assert!(length > 1);
         CLIENTS.with(|clients| {
             let mut clients = clients.borrow_mut();
             let entry = clients.get_mut(&handle).unwrap();
-            let palette: serde_json::Value = serde_json::from_str(&entry.client.local_toolkit(r#"{"version":1,"operation":{"kind":"palette"}}"#).unwrap()).unwrap();
-            assert_eq!(palette["result"]["colors"], serde_json::json!([[4, 5, 6, 255]]));
+            let palette: serde_json::Value = serde_json::from_str(
+                &entry
+                    .client
+                    .local_toolkit(r#"{"version":1,"operation":{"kind":"palette"}}"#)
+                    .unwrap(),
+            )
+            .unwrap();
+            assert_eq!(
+                palette["result"]["colors"],
+                serde_json::json!([[4, 5, 6, 255]])
+            );
             assert_eq!(entry.client.next_id, 1);
             assert!(entry.client.pending.is_empty());
-            assert!(entry.client.shared.mailbox.lock().unwrap().outgoing.is_empty());
+            assert!(
+                entry
+                    .client
+                    .shared
+                    .mailbox
+                    .lock()
+                    .unwrap()
+                    .outgoing
+                    .is_empty()
+            );
         });
         let mut response = vec![0; length];
-        assert_eq!(unsafe { pim_app_native_response_read(handle, response.as_mut_ptr(), response.len(), &mut length) }, Status::Ok as i32);
+        assert_eq!(
+            unsafe {
+                pim_app_native_response_read(
+                    handle,
+                    response.as_mut_ptr(),
+                    response.len(),
+                    &mut length,
+                )
+            },
+            Status::Ok as i32
+        );
         let response: serde_json::Value = serde_json::from_slice(&response).unwrap();
         assert_eq!(response["version"], 1);
-        assert_eq!(response["result"]["colors"], serde_json::json!([[4, 5, 6, 255]]));
+        assert_eq!(
+            response["result"]["colors"],
+            serde_json::json!([[4, 5, 6, 255]])
+        );
         assert_eq!(pim_app_native_stop(handle), Status::Ok as i32);
-        assert_eq!(unsafe { pim_app_native_local_toolkit(handle, set.as_ptr(), set.len()) }, Status::InvalidArgument as i32);
+        assert_eq!(
+            unsafe { pim_app_native_local_toolkit(handle, set.as_ptr(), set.len()) },
+            Status::InvalidArgument as i32
+        );
         assert_eq!(pim_app_native_destroy(handle), Status::Ok as i32);
     }
 

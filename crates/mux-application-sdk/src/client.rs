@@ -213,7 +213,8 @@ impl ClientState {
         if request.is_empty() || request.len() > MAX_TOOLKIT_REQUEST_BYTES {
             return Err(ToolkitError::Limit);
         }
-        let request: ToolkitRequest = serde_json::from_str(request).map_err(|_| ToolkitError::Invalid)?;
+        let request: ToolkitRequest =
+            serde_json::from_str(request).map_err(|_| ToolkitError::Invalid)?;
         let response = self.local_toolkit(request)?;
         serde_json::to_string(&response).map_err(|_| ToolkitError::Invalid)
     }

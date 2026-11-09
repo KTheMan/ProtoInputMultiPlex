@@ -242,9 +242,18 @@ pub const NATIVE_FUNCTIONS: &[Function] = &[
         name: "pim_app_native_local_toolkit",
         result: I32,
         parameters: &[
-            Parameter { name: "client", kind: U64 },
-            Parameter { name: "request_json", kind: ConstBytes },
-            Parameter { name: "length", kind: Size },
+            Parameter {
+                name: "client",
+                kind: U64,
+            },
+            Parameter {
+                name: "request_json",
+                kind: ConstBytes,
+            },
+            Parameter {
+                name: "length",
+                kind: Size,
+            },
         ],
     },
     Function {
