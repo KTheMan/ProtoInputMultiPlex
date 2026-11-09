@@ -39,6 +39,7 @@ class HostedModePair(owned.WindowPair):
             "web_viewport_receipts": 0, "mcp_mode_worker_receipts": 0,
             "native_viewport_receipts": 0, "native_completed": False,
             "native_retired": False, "native_retirement_phase": "not_started",
+            "browser_acceptance_phase": "not_started", "browser_helper_failure": "none",
             "old_revision_rejected": False, "old_epoch_rejected": False,
             "event_epoch_retained": False,
             "routing_generation_advanced": False, "ordinary_quit_clean": False,
@@ -265,9 +266,11 @@ class HostedModePair(owned.WindowPair):
             diagnostic["diagnostic_read_failed"] = True
 
     def browser_start(self):
+        self.result["browser_acceptance_phase"] = "edge_executable"
         edge = Path(os.environ["ProgramFiles(x86)"]) / "Microsoft/Edge/Application/msedge.exe"
         require(edge.is_file())
         profile = self.private / "edge-profile"
+        self.result["browser_acceptance_phase"] = "browser_launch"
         self.browser = self.launch([edge, "--headless=new", "--window-size=1280,1000",
             "--disable-gpu", "--disable-extensions", "--no-first-run",
             "--no-default-browser-check", "--remote-debugging-address=127.0.0.1",
@@ -276,34 +279,78 @@ class HostedModePair(owned.WindowPair):
             raw, _ = self.live_bytes("browser_devtools", profile / "DevToolsActivePort", 4096)
             lines = raw.decode("utf-8-sig").splitlines()
             return lines if len(lines) == 2 and lines[0].isdigit() else None
+        self.result["browser_acceptance_phase"] = "devtools_wait"
         lines = self.wait(devtools)
+        self.result["browser_acceptance_phase"] = "cdp_connect"
         self.cdp = base.CDP("ws://127.0.0.1:" + lines[0] + lines[1])
+        self.result["browser_acceptance_phase"] = "cdp_target_create"
         target = self.cdp.call("Target.createTarget", {"url": "http://127.0.0.1:4173/hosted.html"})["targetId"]
+        self.result["browser_acceptance_phase"] = "cdp_target_attach"
         self.session = self.cdp.call("Target.attachToTarget", {"targetId": target, "flatten": True})["sessionId"]
+        self.result["browser_acceptance_phase"] = "helper_ready_wait"
         self.wait(lambda: self.web("!!window.pimClient && !!window.runHostedModeAcceptance"))
+        self.result["browser_acceptance_phase"] = "descriptor_read"
         descriptor = self.strict_json("authority_descriptor", self.connection_paths[2])
+        self.result["browser_acceptance_phase"] = "browser_connect"
         self.web("window.pimClient.connect(" + json.dumps(descriptor["endpoint"]) + "," + json.dumps(descriptor["credential"]) + "); true")
         del descriptor
+        self.result["browser_acceptance_phase"] = "initial_state_wait"
         state = self.wait(self.state)
+        self.result["browser_acceptance_phase"] = "initial_native_state"
         require(state["epoch"] == self.epoch and state["users"] == [] and state["hosted"]["phase"] == "native")
+        self.result["browser_acceptance_phase"] = "host_only_grants"
         require(state["event_grant"]["host_state"] and state["control_grant"]["host_mode_control"] and state["control_grant"]["host_viewport_control"])
+        self.result["browser_acceptance_phase"] = "event_input_disabled"
         require(not state["event_grant"]["pointer_events"] and not state["event_grant"]["key_events"])
+        self.result["browser_acceptance_phase"] = "control_input_disabled"
         require(not state["control_grant"]["pointer_input"] and not state["control_grant"]["key_input"])
         self.native_generation = state["hosted"]["routing_generation"]
+        self.result["browser_acceptance_phase"] = "initial_two_client_status"
         self.wait(lambda: self.event_status("active", 0, 2, 2))
 
     def browser_acceptance(self):
-        self.web("window.pimGate=null; window.runHostedModeAcceptance(window.pimClient).then(x=>window.pimGate=x,()=>window.pimGate={status:'FAIL'}); true")
+        # Exact existing helper errors become fixed enums; never export error text.
+        helper_failures = {
+            "FAIL: host-only receiver authority": "host_only_authority",
+            "FAIL: initial native observation": "initial_native_observation",
+            "FAIL: event frame budget": "event_frame_budget",
+            "FAIL: wrong or uncertain host receipt": "wrong_or_uncertain_receipt",
+            "FAIL: hosted receipt deadline": "hosted_receipt_deadline",
+            "FAIL: live host observation missing": "live_observation_missing",
+            "FAIL: stale host reference": "stale_host_reference",
+            "FAIL: exact hosted receipt revision missing": "receipt_revision_missing",
+            "FAIL: hosted query was not native": "query_not_native",
+            "FAIL: switched worker completion": "switched_worker_completion",
+            "FAIL: stale hosted revision was accepted": "stale_revision_accepted",
+            "FAIL: concurrent worker completion": "concurrent_worker_completion",
+            "FAIL: minimize observation": "minimize_observation",
+            "FAIL: ordered hosted stream did not reconcile": "stream_not_reconciled",
+            "FAIL: restore observation": "restore_observation",
+        }
+        self.result["browser_acceptance_phase"] = "helper_start"
+        self.web("window.pimGate=null; window.runHostedModeAcceptance(window.pimClient).then(x=>window.pimGate=x,e=>{const known=" + json.dumps(helper_failures) + "; window.pimGate={status:'FAIL',failure:typeof e?.message==='string'&&Object.prototype.hasOwnProperty.call(known,e.message)?known[e.message]:'unrecognized'};}); true")
+        self.result["browser_acceptance_phase"] = "helper_result_wait"
         result = self.wait(lambda: self.web("window.pimGate"), 85)
+        self.result["browser_acceptance_phase"] = "helper_pass_predicate"
+        if isinstance(result, dict) and result.get("status") == "FAIL":
+            failure = result.get("failure")
+            self.result["browser_helper_failure"] = failure if failure in helper_failures.values() else "unrecognized"
         require(result == {"status": "PASS", "query": True, "switched": True,
                           "concurrent": True, "minimize": True, "restore": True,
                           "stale_revision": True, "refresh_after_receipt": True})
+        self.result["browser_acceptance_phase"] = "final_state_wait"
         state = self.wait(self.state)
+        self.result["browser_acceptance_phase"] = "final_concurrent_state"
         require(state["epoch"] == self.epoch and state["hosted"]["phase"] == "ready" and state["hosted"]["mode"] == "concurrent")
+        self.result["browser_acceptance_phase"] = "routing_generation_advanced"
         require(state["hosted"]["routing_generation"] > self.native_generation)
+        self.result["browser_acceptance_phase"] = "launch_status_read"
         launch = self.launch_status()
+        self.result["browser_acceptance_phase"] = "controller_ready"
         require(launch["controller_present"] and launch["ready"] and not launch["stopping"])
+        self.result["browser_acceptance_phase"] = "requester_only_status"
         self.wait(lambda: self.event_status("active", 0, 1, 1))
+        self.result["browser_acceptance_phase"] = "requester_only_descriptor"
         require(self.descriptors() == {self.connection_paths[2]})
         self.web_generation = state["hosted"]["routing_generation"]
         self.result["web_mode_worker_receipts"] = 2
