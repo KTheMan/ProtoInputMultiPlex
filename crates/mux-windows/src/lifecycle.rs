@@ -22,8 +22,8 @@ use windows_sys::Win32::{
             PAGE_READWRITE, UnmapViewOfFile,
         },
         Threading::{
-            CreateEventW, CreateMutexW, GetCurrentProcess, GetProcessTimes, ReleaseMutex, ResetEvent,
-            WaitForMultipleObjects, WaitForSingleObject,
+            CreateEventW, CreateMutexW, GetCurrentProcess, GetProcessTimes, ReleaseMutex,
+            ResetEvent, WaitForMultipleObjects, WaitForSingleObject,
         },
     },
 };
@@ -266,7 +266,7 @@ pub(crate) fn readiness(pid: u32, creation: u64, bits: u32) -> Option<Readiness>
             return (first.header_matches()
                 && first.identity_matches(creation, bits)
                 && first.build_matches())
-                .then_some(first);
+            .then_some(first);
         }
     }
     None
@@ -446,7 +446,10 @@ pub fn own_readiness_observation() -> OwnReadinessObservation {
     let mapping = match Mapping::map(handle, FILE_MAP_READ, size_of::<Readiness>()) {
         Ok(mapping) => mapping,
         Err(_) => {
-            return OwnReadinessObservation::unavailable(OwnReadinessStatus::ReadFailed, Some(true));
+            return OwnReadinessObservation::unavailable(
+                OwnReadinessStatus::ReadFailed,
+                Some(true),
+            );
         }
     };
     let (record, sequence) = readiness_sample(&mapping);
@@ -1308,10 +1311,7 @@ mod tests {
         let valid = own_ready_record();
         let cases = [
             (
-                Readiness {
-                    magic: 0,
-                    ..valid
-                },
+                Readiness { magic: 0, ..valid },
                 OwnReadinessStatus::InvalidHeader,
             ),
             (
@@ -1319,10 +1319,7 @@ mod tests {
                 OwnReadinessStatus::InvalidHeader,
             ),
             (
-                Readiness {
-                    bytes: 64,
-                    ..valid
-                },
+                Readiness { bytes: 64, ..valid },
                 OwnReadinessStatus::InvalidHeader,
             ),
             (
@@ -1333,17 +1330,11 @@ mod tests {
                 OwnReadinessStatus::InvalidIdentity,
             ),
             (
-                Readiness {
-                    bits: 32,
-                    ..valid
-                },
+                Readiness { bits: 32, ..valid },
                 OwnReadinessStatus::InvalidIdentity,
             ),
             (
-                Readiness {
-                    build: 0,
-                    ..valid
-                },
+                Readiness { build: 0, ..valid },
                 OwnReadinessStatus::InvalidBuild,
             ),
             (
