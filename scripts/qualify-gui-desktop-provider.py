@@ -37,11 +37,39 @@ require = base.require
 PUBLIC_FAILURE_CLASSES = frozenset({"Rejected", "AssertionError", "FileNotFoundError", "TimeoutError",
     "BrokenPipeError", "EOFError", "JSONDecodeError", "KeyError", "TypeError", "ValueError", "Empty", "TimeoutExpired"})
 NATIVE_STDERR_LIMIT = 4 * 1024 * 1024
+TARGET_STDERR_LIMIT = 64 * 1024
 
 
 def public_failure_class(error):
     name = type(error).__name__
     return name if name in PUBLIC_FAILURE_CLASSES else "UnexpectedError"
+
+
+def target_exit_class(code):
+    if code is None:
+        return "running"
+    if type(code) is not int or not -0x80000000 <= code <= 0xffffffff:
+        return "unobserved"
+    # Fixed Windows status labels only; neither the number nor a causal claim
+    # crosses the public boundary. Zero/one alone do not identify an exit path.
+    return {0:"zero",1:"one",0xc0000005:"access_violation",0xc00000fd:"stack_overflow",
+        0xc0000409:"fail_fast",0xe06d7363:"cpp_exception",0x40000015:"fatal_app_exit",
+        0xc000001d:"illegal_instruction",0xc0000135:"dll_not_found",
+        0xc0000142:"dll_initialization_failed"}.get(code & 0xffffffff, "other_nonzero")
+
+
+def target_stderr_lines(raw):
+    # Match complete fixed probe error headers, not exception bodies or paths.
+    lines = raw[:raw.rfind(b"\n")+1].splitlines()
+    return {"report_write_error":b"Error: Write automation probe report" in lines,
+        "window_initialization_error":any(line in lines for line in (
+            b"Error: Set fixture DPI context",b"Error: Register automation probe window",
+            b"Error: Create automation probe window",b"Error: Create automation probe Unicode text editor")),
+        "message_loop_error":b"Error: Read automation probe message" in lines,
+        "rust_panic_header":any(re.match(rb"^thread '(?:main|<unnamed>)'(?: \([0-9]{1,10}\))? panicked at(?: |$)", line)
+            is not None for line in lines),
+        "nonunwinding_panic":b"thread caused non-unwinding panic. aborting." in lines,
+        "poisoned_lock_panic":b"called `Result::unwrap()` on an `Err` value: PoisonError { .. }" in lines}
 
 
 def native_write_failure_lines(raw):
@@ -414,6 +442,37 @@ class ProviderPair(base.Pair):
         # The periodic sample may predate GUI exit even when its frame advanced.
         # Prepare can publish a latched hook error from installation OR removal;
         # Prepared/Reusable is not a packet receipt or a cause for the held FAIL.
+
+    def target_termination_diagnostics(self):
+        if getattr(self, "target_termination_sampled", False):
+            return
+        self.target_termination_sampled = True
+        diagnostic = {"collection_phase":"before_failure_cleanup","stream_eof_proved":False,
+            "poll_and_stderr_atomic":False}
+        self.result["target_termination_diagnostics"] = diagnostic
+        for index, label in enumerate(("target_a", "target_b")):
+            row = {"exit_class":"unobserved","poll_failure":None,"stderr_read_failure":None,
+                "truncated":None,"incomplete_line":None,
+                **{key:None for key in target_stderr_lines(b"")}}
+            diagnostic[label] = row
+            if index >= len(getattr(self, "targets_processes", ())):
+                continue
+            try:
+                # Popen owns the original child handle; no numeric PID reopen.
+                row["exit_class"] = target_exit_class(self.targets_processes[index].poll())
+            except BaseException as error:
+                row["poll_failure"] = public_failure_class(error)
+            try:
+                with (self.private / f"target-{index}-stderr.log").open("rb") as source:
+                    raw = source.read(TARGET_STDERR_LIMIT+1)
+                row["truncated"] = len(raw) > TARGET_STDERR_LIMIT
+                raw = raw[:TARGET_STDERR_LIMIT]
+                row["incomplete_line"] = bool(raw and not raw.endswith(b"\n"))
+                row.update(target_stderr_lines(raw))
+            except BaseException as error:
+                row["stderr_read_failure"] = public_failure_class(error)
+        # A live or incomplete capture has inconclusive negative flags. Even a
+        # recognized status/header selects an investigation, not a cause/fix.
 
     def native_submission_diagnostics(self, collection_phase="direct_observation"):
         diagnostic = {"collection_phase":collection_phase,
@@ -1080,6 +1139,10 @@ def main():
         gate.result.update(status="FAIL",checkpoint=gate.checkpoint,failure_stage=gate.stage,failure_predicate=gate.check,failure_class=public_failure_class(error),
             native_exit_state="not_started" if not hasattr(gate,"native") else "running" if gate.native.poll() is None else "zero" if gate.native.returncode == 0 else "nonzero")
         gate.native_submission_diagnostics("before_failure_cleanup")
+        try:
+            gate.target_termination_diagnostics()
+        except BaseException:
+            pass  # Best-effort diagnostics must preserve the frozen FAIL/cleanup.
         gate.failed_group_cleanup()
     else:
         gate.native_submission_diagnostics("after_run")

@@ -121,6 +121,97 @@ class FailureLifecycleTests(unittest.TestCase):
         self.assertNotIn("private secret path", repr(cleanup))
 
 
+class TargetTerminationTests(unittest.TestCase):
+    def test_fixed_exit_classes_reject_noninteger_private_values(self):
+        for value, expected in ((None,"running"),(0,"zero"),(1,"one"),(2,"other_nonzero"),
+                (0xc0000005,"access_violation"),(0xc0000005-0x100000000,"access_violation"),
+                (0xc00000fd,"stack_overflow"),(0xc0000409,"fail_fast"),(0xe06d7363,"cpp_exception"),
+                (0x40000015,"fatal_app_exit"),(0xc000001d,"illegal_instruction"),
+                (0xc0000135,"dll_not_found"),(0xc0000142,"dll_initialization_failed")):
+            self.assertEqual(provider.target_exit_class(value), expected)
+        for value in (True,False,"private secret path",{},[],0x100000000,-0x80000001):
+            self.assertEqual(provider.target_exit_class(value), "unobserved")
+
+    def test_stderr_requires_complete_specific_headers_and_exports_no_content(self):
+        raw = (b"Error: Write automation probe report\r\n\nCaused by:\nprivate secret path\n"
+            b"Error: Create automation probe Unicode text editor\nError: Read automation probe message\n"
+            b"thread 'main' (1234) panicked at private secret path:9:2:\n"
+            b"called `Result::unwrap()` on an `Err` value: PoisonError { .. }\n"
+            b"thread caused non-unwinding panic. aborting.\n")
+        result = provider.target_stderr_lines(raw)
+        self.assertTrue(all(result.values()))
+        self.assertNotIn("private", repr(result))
+        self.assertNotIn("1234", repr(result))
+        for bad in (b"Error: Write automation probe report",b"prefix Error: Write automation probe report\n",
+                b"Error: Write automation probe report private secret path\n",
+                b"Error: Create automation probe window private secret path\n",
+                b"thread 'private' panicked at secret\n",b"prefix thread 'main' panicked at secret\n"):
+            self.assertFalse(any(provider.target_stderr_lines(bad).values()))
+
+    def test_owned_targets_are_polled_and_fixed_logs_read_once_without_wait_or_clock(self):
+        gate = Gate(FakeGui())
+        original = dict(gate.result)
+        polls, paths, sizes = [], [], []
+        class Target:
+            def __init__(self, index, code): self.index, self.code = index, code
+            def poll(self): polls.append(self.index); return self.code
+            def wait(self, *args, **kwargs): raise AssertionError("no target wait")
+        class Log(io.BytesIO):
+            def read(self, size): sizes.append(size); return super().read(size)
+        gate.targets_processes = [Target(0,None),Target(1,0xc0000005),Target(2,0)]
+        def open_log(path, mode):
+            self.assertEqual(mode, "rb")
+            paths.append(path.name)
+            return Log(b"Error: Write automation probe report\n")
+        with patch.object(Path, "open", autospec=True, side_effect=open_log), \
+                patch.object(provider.time, "monotonic", side_effect=AssertionError("no clock")), \
+                patch.object(provider.time, "time", side_effect=AssertionError("no clock")), \
+                patch.object(provider.time, "sleep", side_effect=AssertionError("no sleep")):
+            gate.target_termination_diagnostics()
+            gate.target_termination_diagnostics()
+        self.assertEqual(polls, [0,1])
+        self.assertEqual(paths, ["target-0-stderr.log","target-1-stderr.log"])
+        self.assertEqual(sizes, [provider.TARGET_STDERR_LIMIT+1]*2)
+        self.assertEqual({key:gate.result[key] for key in original}, original)
+        result = gate.result["target_termination_diagnostics"]
+        self.assertEqual(result["collection_phase"], "before_failure_cleanup")
+        self.assertFalse(result["stream_eof_proved"])
+        self.assertEqual(result["target_a"]["exit_class"], "running")
+        self.assertEqual(result["target_b"]["exit_class"], "access_violation")
+        self.assertTrue(result["target_a"]["report_write_error"])
+
+    def test_absent_children_partial_truncated_and_failed_capture_remain_inconclusive(self):
+        gate = Gate(FakeGui())
+        with patch.object(Path, "open", side_effect=AssertionError("no unowned log read")) as opened:
+            gate.target_termination_diagnostics()
+        self.assertEqual(opened.call_count, 0)
+        self.assertEqual(gate.result["target_termination_diagnostics"]["target_a"]["exit_class"], "unobserved")
+        for raw, limit in ((b"Error: Write automation probe report",provider.TARGET_STDERR_LIMIT),
+                (b"private secret path"*10,16)):
+            gate = Gate(FakeGui())
+            gate.targets_processes = [FakeGui(1)]
+            with patch.object(provider, "TARGET_STDERR_LIMIT", limit), patch.object(Path, "open", return_value=io.BytesIO(raw)):
+                gate.target_termination_diagnostics()
+            row = gate.result["target_termination_diagnostics"]["target_a"]
+            self.assertTrue(row["truncated"] or row["incomplete_line"])
+            self.assertFalse(row["report_write_error"])
+            self.assertNotIn("private secret path", repr(row))
+        class BrokenTarget:
+            def poll(self): raise RuntimeError("private secret path")
+        gate = Gate(FakeGui())
+        original = dict(gate.result)
+        gate.targets_processes = [BrokenTarget(),FakeGui(0)]
+        with patch.object(Path, "open", side_effect=OSError("private secret path")) as opened:
+            gate.target_termination_diagnostics()
+        self.assertEqual(opened.call_count, 2)
+        self.assertEqual({key:gate.result[key] for key in original}, original)
+        result = gate.result["target_termination_diagnostics"]
+        self.assertEqual(result["target_a"]["poll_failure"], "UnexpectedError")
+        self.assertEqual(result["target_b"]["exit_class"], "zero")
+        self.assertIsNone(result["target_a"]["report_write_error"])
+        self.assertNotIn("private secret path", repr(result))
+
+
 class DirectReadinessTests(unittest.TestCase):
     def record(self, target=b"target_a", state=b"Prepared", error=b"None"):
         return (b"PIM_QUAL_READY_SHUTDOWN_V1 phase=after_existing_shutdown_attempt_before_worker_terminal target="+target+
@@ -508,9 +599,9 @@ class NativeLifecycleBoundaryTests(unittest.TestCase):
 
 class MainObservationOrderTests(unittest.TestCase):
     def test_main_collects_once_after_failure_freeze_before_cleanup_or_after_success(self):
-        for fail in (True, False):
-            with self.subTest(fail=fail), tempfile.TemporaryDirectory() as directory:
-                trace, samples = [], []
+        for fail, diagnostic_throws in ((True,False),(True,True),(False,False)):
+            with self.subTest(fail=fail, diagnostic_throws=diagnostic_throws), tempfile.TemporaryDirectory() as directory:
+                trace, samples, target_samples = [], [], []
 
                 class MainGate:
                     def __init__(self, args):
@@ -527,6 +618,12 @@ class MainObservationOrderTests(unittest.TestCase):
                         trace.append(collection_phase)
                         samples.append(dict(self.result))
 
+                    def target_termination_diagnostics(self):
+                        trace.append("target_termination")
+                        target_samples.append(dict(self.result))
+                        if diagnostic_throws:
+                            raise RuntimeError("private secret diagnostic failure")
+
                     def failed_group_cleanup(self):
                         trace.append("cleanup")
                         self.checkpoint, self.stage, self.check = 99, "cleanup", "cleanup"
@@ -542,8 +639,9 @@ class MainObservationOrderTests(unittest.TestCase):
                     with self.assertRaises(SystemExit) as exited:
                         provider.main()
                 self.assertEqual(exited.exception.code, 1 if fail else 0)
-                self.assertEqual(trace, ["run", "before_failure_cleanup", "cleanup"] if fail else ["run", "after_run"])
+                self.assertEqual(trace, ["run", "before_failure_cleanup", "target_termination", "cleanup"] if fail else ["run", "after_run"])
                 self.assertEqual(len(samples), 1)
+                self.assertEqual(len(target_samples), 1 if fail else 0)
                 result = json.loads(result_path.read_text(encoding="utf-8"))
                 if fail:
                     frozen = {"status":"FAIL","checkpoint":11,"failure_stage":"prepare_holds",
@@ -551,6 +649,7 @@ class MainObservationOrderTests(unittest.TestCase):
                         "native_exit_state":"not_started"}
                     for key, value in frozen.items():
                         self.assertEqual(samples[0][key], value)
+                        self.assertEqual(target_samples[0][key], value)
                         self.assertEqual(result[key], value)
                     self.assertNotIn("private secret path", repr(result))
                 else:
