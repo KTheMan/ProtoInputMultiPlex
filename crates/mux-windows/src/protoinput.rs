@@ -77,6 +77,56 @@ fn qualification_stderr(line: std::fmt::Arguments<'_>) {
     let _ = writeln!(std::io::stderr().lock(), "{line}");
 }
 
+fn qualification_claim_shutdown(
+    devices: &[ResolvedSeat],
+    native: bool,
+    enabled: bool,
+    first: &AtomicBool,
+) -> Option<[u32; 2]> {
+    if !enabled || !native {
+        return None;
+    }
+    let a = devices.first()?;
+    let b = devices.get(1)?;
+    if a.mouse != 0xf1000002
+        || a.keyboard != Some(0xf1000003)
+        || b.mouse != 0xf1000004
+        || b.keyboard != Some(0xf1000005)
+        || a.target_pid == 0
+        || b.target_pid == 0
+        || a.target_pid == b.target_pid
+        || first.swap(true, std::sync::atomic::Ordering::Relaxed)
+    {
+        return None;
+    }
+    Some([a.target_pid, b.target_pid])
+}
+
+fn qualification_shutdown_record(
+    label: &str,
+    observed: &crate::lifecycle::OwnReadinessObservation,
+) {
+    // Debug formatting here is limited to fixed enums and Option<bool>; no
+    // native code, identifier, nonce, path or exception string is formatted.
+    qualification_stderr(format_args!(
+        "PIM_QUAL_READY_SHUTDOWN_V1 phase=after_existing_shutdown_attempt_before_worker_terminal target={label} status={:?} present={:?} coherent={:?} header_matches={:?} identity_matches={:?} build_matches={:?} binding_present={:?} state={:?} error={:?}",
+        observed.status,
+        observed.present,
+        observed.coherent,
+        observed.header_matches,
+        observed.identity_matches,
+        observed.build_matches,
+        observed.binding_present,
+        observed.state,
+        observed.error,
+    ));
+}
+
+fn observe_shutdown_result<T>(result: Result<T>, observe: impl FnOnce()) -> Result<T> {
+    observe();
+    result
+}
+
 /// A motion publication failed for one assigned virtual device. The failed queued
 /// segment is discarded so callers never replay stale motion to a later target.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -2346,7 +2396,39 @@ impl DesktopBackend {
     /// Stops virtual emission, fences all target GUI threads, and only then removes
     /// the native filters that normalize synthesized keyboard releases.
     pub fn shutdown(&mut self) -> Result<ShutdownReport> {
-        self.shutdown_inner(true)
+        let result = self.shutdown_inner(true);
+        observe_shutdown_result(result, || self.qualification_shutdown_readiness())
+    }
+
+    fn qualification_shutdown_readiness(&self) {
+        static FIRST: AtomicBool = AtomicBool::new(false);
+        let pids = qualification_claim_shutdown(
+            &self.devices,
+            self.backend.native.is_some() && self.backend.rust.is_none(),
+            matches!(
+                std::env::var("PROTOINPUTMULTIPLEX_QUALIFICATION_STDERR").as_deref(),
+                Ok("private-file-v1")
+            ),
+            &FIRST,
+        );
+        let Some(pids) = pids else {
+            return;
+        };
+        for (label, pid) in ["target_a", "target_b"].into_iter().zip(pids) {
+            let mut matches = self.targets.iter().filter(|target| target.pid == pid);
+            let Some(target) = matches.next() else {
+                continue;
+            };
+            if matches.next().is_some() {
+                continue;
+            }
+            if let Some(attachment) = &target.lifecycle
+                && attachment.instance == target.instance
+            {
+                let observed = attachment.readiness_observation(&target.identity);
+                qualification_shutdown_record(label, &observed);
+            }
+        }
     }
     fn shutdown_inner(&mut self, prepare: bool) -> Result<ShutdownReport> {
         ensure!(
@@ -2454,6 +2536,73 @@ impl Drop for DesktopBackend {
     fn drop(&mut self) {
         if !self.shutdown_attempted {
             let _ = self.shutdown_inner(false);
+        }
+    }
+}
+
+#[cfg(test)]
+mod qualification_shutdown_tests {
+    use super::*;
+
+    fn devices() -> Vec<ResolvedSeat> {
+        vec![
+            ResolvedSeat {
+                name: "private A".into(),
+                mouse: 0xf1000002,
+                keyboard: Some(0xf1000003),
+                target_pid: 11,
+            },
+            ResolvedSeat {
+                name: "private B".into(),
+                mouse: 0xf1000004,
+                keyboard: Some(0xf1000005),
+                target_pid: 22,
+            },
+        ]
+    }
+
+    #[test]
+    fn shutdown_observation_requires_native_fixture_scope_and_claims_once() {
+        let first = AtomicBool::new(false);
+        let sources = devices();
+        for (native, enabled) in [(true, false), (false, true)] {
+            let selected = qualification_claim_shutdown(&sources, native, enabled, &first);
+            assert_eq!(selected, None);
+        }
+        let selected = qualification_claim_shutdown(&sources, true, true, &first);
+        assert_eq!(selected, Some([11, 22]));
+        let repeated = qualification_claim_shutdown(&sources, true, true, &first);
+        assert_eq!(repeated, None);
+        let mut swapped = devices();
+        swapped.swap(0, 1);
+        let mut duplicate_pid = devices();
+        duplicate_pid[1].target_pid = 11;
+        let mut wrong_keyboard = devices();
+        wrong_keyboard[1].keyboard = Some(0xf1000007);
+        for invalid in [swapped, duplicate_pid, wrong_keyboard, Vec::new()] {
+            assert_eq!(
+                qualification_claim_shutdown(&invalid, true, true, &AtomicBool::new(false)),
+                None
+            );
+        }
+    }
+
+    #[test]
+    fn shutdown_result_is_observed_after_one_attempt_and_returned_unchanged() {
+        for failed in [false, true] {
+            let mut order = vec!["shutdown_attempt"];
+            let result = if failed {
+                Err(anyhow::anyhow!("original cleanup failure"))
+            } else {
+                Ok(17)
+            };
+            let result = observe_shutdown_result(result, || order.push("observe"));
+            assert_eq!(order, ["shutdown_attempt", "observe"]);
+            if failed {
+                assert_eq!(result.unwrap_err().to_string(), "original cleanup failure");
+            } else {
+                assert_eq!(result.unwrap(), 17);
+            }
         }
     }
 }

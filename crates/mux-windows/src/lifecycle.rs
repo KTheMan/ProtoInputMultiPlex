@@ -426,10 +426,11 @@ pub fn own_readiness_observation() -> OwnReadinessObservation {
         return OwnReadinessObservation::unavailable(OwnReadinessStatus::IdentityUnavailable, None);
     }
     let creation = u64::from(created.dwHighDateTime) << 32 | u64::from(created.dwLowDateTime);
-    let name = format!(
-        "Local\\ProtoInputMultiPlex.Lifecycle.{}.{creation}",
-        std::process::id()
-    );
+    single_readiness_observation(std::process::id(), creation, usize::BITS)
+}
+
+fn single_readiness_observation(pid: u32, creation: u64, bits: u32) -> OwnReadinessObservation {
+    let name = format!("Local\\ProtoInputMultiPlex.Lifecycle.{pid}.{creation}");
     let wide_name = wide(&name);
     let (handle, open_error) = unsafe {
         let handle = OpenFileMappingW(FILE_MAP_READ, 0, wide_name.as_ptr());
@@ -453,7 +454,31 @@ pub fn own_readiness_observation() -> OwnReadinessObservation {
         }
     };
     let (record, sequence) = readiness_sample(&mapping);
-    own_readiness_sample(record, sequence, creation, usize::BITS)
+    own_readiness_sample(record, sequence, creation, bits)
+}
+
+fn retained_readiness_observation_with(
+    actual: (u32, u64, u32),
+    expected: (u32, u64, u32),
+    mut alive: impl FnMut() -> bool,
+    read: impl FnOnce() -> OwnReadinessObservation,
+) -> OwnReadinessObservation {
+    let unavailable = || {
+        OwnReadinessObservation::unavailable(OwnReadinessStatus::IdentityUnavailable, None)
+    };
+    if actual != expected
+        || actual.0 == 0
+        || actual.1 == 0
+        || !matches!(actual.2, 32 | 64)
+        || !alive()
+    {
+        return unavailable();
+    }
+    let observed = read();
+    if !alive() {
+        return unavailable();
+    }
+    observed
 }
 fn lease_name(pid: u32, creation: u64) -> String {
     format!("Local\\ProtoInputMultiPlex.Lease.{pid}.{creation}")
@@ -845,6 +870,20 @@ pub(crate) struct Attachment {
     prepared: bool,
 }
 impl Attachment {
+    /// One read for these retained original identities; never opens a numeric PID.
+    pub(crate) fn readiness_observation(
+        &self,
+        expected: &crate::targets::ProcessIdentity,
+    ) -> OwnReadinessObservation {
+        let identity = &self.identity;
+        retained_readiness_observation_with(
+            (identity.pid, identity.creation, identity.bits),
+            (expected.pid, expected.creation, expected.bits),
+            || identity.ensure_alive().is_ok(),
+            || single_readiness_observation(identity.pid, identity.creation, identity.bits),
+        )
+    }
+
     pub(crate) fn generation(&self) -> u64 {
         self.generation
     }
@@ -1304,6 +1343,68 @@ mod tests {
             build: BUILD,
             ..Readiness::default()
         }
+    }
+
+    #[test]
+    fn retained_ready_rejects_identity_mismatch_or_exit_without_publishing_payload() {
+        let expected = (11, 7, 64);
+        for actual in [(12, 7, 64), (11, 8, 64), (11, 7, 32), (0, 7, 64)] {
+            let observed = retained_readiness_observation_with(
+                actual,
+                expected,
+                || panic!("mismatched original identity must not be probed"),
+                || panic!("mismatched original identity must not read mapping"),
+            );
+            assert_eq!(observed.status, OwnReadinessStatus::IdentityUnavailable);
+            assert_eq!(observed.state, None);
+        }
+        let mut alive_calls = 0;
+        let mut read_calls = 0;
+        let observed = retained_readiness_observation_with(
+            expected,
+            expected,
+            || {
+                alive_calls += 1;
+                alive_calls == 1
+            },
+            || {
+                read_calls += 1;
+                own_readiness_sample(own_ready_record(), 2, 7, 64)
+            },
+        );
+        assert_eq!(alive_calls, 2);
+        assert_eq!(read_calls, 1);
+        assert_eq!(observed.status, OwnReadinessStatus::IdentityUnavailable);
+        assert_eq!(observed.state, None);
+        assert_eq!(observed.error, None);
+        assert_eq!(observed.binding_present, None);
+        let observed = retained_readiness_observation_with(
+            expected,
+            expected,
+            || false,
+            || panic!("exited original must not read mapping"),
+        );
+        assert_eq!(observed.status, OwnReadinessStatus::IdentityUnavailable);
+    }
+
+    #[test]
+    fn retained_ready_reads_once_between_original_process_liveness_checks() {
+        let order = std::cell::RefCell::new(Vec::new());
+        let observed = retained_readiness_observation_with(
+            (11, 7, 64),
+            (11, 7, 64),
+            || {
+                order.borrow_mut().push("alive");
+                true
+            },
+            || {
+                order.borrow_mut().push("read");
+                own_readiness_sample(own_ready_record(), 2, 7, 64)
+            },
+        );
+        assert_eq!(order.into_inner(), ["alive", "read", "alive"]);
+        assert_eq!(observed.status, OwnReadinessStatus::Observed);
+        assert_eq!(observed.state, Some(NativeReadinessState::Active));
     }
 
     #[test]

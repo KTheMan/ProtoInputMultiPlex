@@ -121,6 +121,139 @@ class FailureLifecycleTests(unittest.TestCase):
         self.assertNotIn("private secret path", repr(cleanup))
 
 
+class DirectReadinessTests(unittest.TestCase):
+    def record(self, target=b"target_a", state=b"Prepared", error=b"None"):
+        return (b"PIM_QUAL_READY_SHUTDOWN_V1 phase=after_existing_shutdown_attempt_before_worker_terminal target="+target+
+            b" status=Observed present=Some(true) coherent=Some(true) header_matches=Some(true) "
+            b"identity_matches=Some(true) build_matches=Some(true) binding_present=Some(true) state=Some("+state+
+            b") error=Some("+error+b")\n")
+
+    def test_direct_records_are_fixed_sanitized_facts_and_reject_near_misses(self):
+        record = self.record()
+        result = provider.direct_ready_lines(record+self.record(b"target_b", b"Poisoned", b"Unknown"))
+        self.assertEqual(result["target_a"]["state"], "prepared")
+        self.assertEqual(result["target_b"]["error"], "unknown")
+        self.assertFalse(result["malformed_record"] or result["duplicate_role"])
+        for bad in (record[:-1], b"private-prefix "+record,
+                record.replace(b"present=Some(true)", b"present=1"),
+                record.replace(b"identity_matches=Some(true)", b"identity_matches=Some(false)"),
+                record.replace(b"error=Some(None)", b"error=Some(0xC0000001)"),
+                record.replace(b"target=target_a", b"target=private_pid_123"),
+                record.replace(provider.DIRECT_READY_PHASE, b"after_gui_exit"),
+                record[:-1]+b" private_path=secret\n"):
+            rejected = provider.direct_ready_lines(bad)
+            self.assertEqual(rejected["target_a"]["status"], "unobserved")
+            self.assertNotIn("secret", repr(rejected))
+            self.assertNotIn("0xC000", repr(rejected))
+            self.assertNotIn("123", repr(rejected))
+        duplicate = provider.direct_ready_lines(record+self.record(state=b"Poisoned"))
+        self.assertTrue(duplicate["duplicate_role"])
+        self.assertEqual(duplicate["target_a"]["state"], "prepared")
+
+    def test_late_collection_is_once_after_verified_exit_and_keeps_prior_facts(self):
+        gate = Gate(FakeGui())
+        gate.result["native_submission_diagnostics"] = {"collection_phase":"before_failure_cleanup"}
+        original = json.loads(json.dumps(gate.result))
+        opened = []
+        def open_log(path, mode):
+            self.assertEqual(gate.gui.code, 0)
+            self.assertEqual(gate.close_calls, 1)
+            self.assertEqual(path.name, "gui-stderr.log")
+            self.assertEqual(mode, "rb")
+            opened.append(path.name)
+            return io.BytesIO(self.record()+self.record(b"target_b", b"Poisoned", b"Unknown"))
+        with patch.object(provider.time, "monotonic", return_value=10), \
+                patch.object(provider.time, "sleep", side_effect=AssertionError("no new wait")), \
+                patch.object(Path, "open", autospec=True, side_effect=open_log):
+            gate.failed_group_cleanup()
+            gate.late_direct_readiness()
+        self.assertEqual(opened, ["gui-stderr.log"])
+        self.assertEqual({key:gate.result[key] for key in original}, original)
+        result = gate.result["late_direct_native_readiness"]
+        self.assertEqual(result["producer_phase"], provider.DIRECT_READY_PHASE.decode("ascii"))
+        self.assertEqual(result["collection_phase"], "bounded_stderr_read_after_verified_gui_exit")
+        self.assertEqual(result["target_b"]["state"], "poisoned")
+        self.assertFalse(result["stream_eof_proved"])
+        self.assertFalse(result["truncated"] or result["incomplete_line"])
+
+    def test_late_collection_truncation_partial_tail_and_read_failure_remain_inconclusive(self):
+        for raw, limit in ((self.record(), 64), (self.record()[:-1], provider.NATIVE_STDERR_LIMIT)):
+            gate = Gate(FakeGui(0))
+            with patch.object(provider, "NATIVE_STDERR_LIMIT", limit), \
+                    patch.object(Path, "open", return_value=io.BytesIO(raw)):
+                gate.late_direct_readiness()
+            result = gate.result["late_direct_native_readiness"]
+            self.assertEqual(result["target_a"]["status"], "unobserved")
+            self.assertTrue(result["truncated"] or result["incomplete_line"])
+        gate = Gate(FakeGui(0))
+        with patch.object(Path, "open", side_effect=OSError("private secret 123")):
+            gate.late_direct_readiness()
+        result = gate.result["late_direct_native_readiness"]
+        self.assertIsNotNone(result["failure_class"])
+        self.assertNotIn("secret", repr(result))
+        self.assertNotIn("123", repr(result))
+
+
+class ReportRejectionReasonTests(unittest.TestCase):
+    def gate(self):
+        gate = Gate(FakeGui())
+        gate.stage, gate.check = "prepare_holds", "prepare_holds_target_held_state"
+        return gate
+
+    def test_existing_age_check_and_nested_or_held_expiry_have_distinct_fixed_reasons(self):
+        gate = self.gate()
+        with patch.object(provider.time, "monotonic", return_value=0), \
+                patch.object(provider.time, "time", return_value=3), \
+                patch.object(provider.base, "shared_live_bytes", return_value=(b"{}", 0)) as reads, \
+                patch.object(provider.time, "sleep", side_effect=AssertionError("age rejects immediately")):
+            with self.assertRaises(provider.base.Rejected):
+                gate.target(0)
+        self.assertEqual(reads.call_count, 1)
+        self.assertEqual(gate.result["prepare_holds_failure_reason"], "report_age_rejected")
+        gate = self.gate()
+        with patch.object(provider.time, "monotonic", side_effect=[0, 4]):
+            with self.assertRaises(provider.base.Rejected):
+                gate.target(0)
+        self.assertEqual(gate.result["prepare_holds_failure_reason"], "target_report_wait_expired")
+        gate = self.gate()
+        with patch.object(provider.time, "monotonic", side_effect=[0, 16]):
+            with self.assertRaises(provider.base.Rejected):
+                gate.wait(lambda: False, on_expired=lambda: gate.prepare_holds_reason("held_wait_expired"))
+        self.assertEqual(gate.result["prepare_holds_failure_reason"], "held_wait_expired")
+
+    def test_expiry_callback_failure_cannot_replace_original_rejection_or_result(self):
+        gate = self.gate()
+        def broken():
+            raise RuntimeError("private diagnostic failure")
+        with patch.object(provider.time, "monotonic", side_effect=[0, 16]):
+            with self.assertRaises(provider.base.Rejected) as rejected:
+                gate.wait(lambda: False, on_expired=broken)
+        self.assertEqual(rejected.exception.args, ())
+        result = object()
+        with patch.object(provider.time, "monotonic", return_value=0):
+            self.assertIs(gate.wait(lambda: result, on_expired=broken), result)
+        error = ValueError("original predicate error")
+        def failed():
+            raise error
+        with patch.object(provider.time, "monotonic", return_value=0):
+            with self.assertRaises(ValueError) as original:
+                gate.wait(failed, on_expired=broken)
+        self.assertIs(original.exception, error)
+        gate.prepare_holds_reason("private unrecognized reason")
+        self.assertNotIn("prepare_holds_failure_reason", gate.result)
+        class BrokenDiagnosticDict(dict):
+            def __setitem__(self, key, value):
+                if key == "prepare_holds_failure_reason":
+                    raise RuntimeError("private diagnostic store failure")
+                super().__setitem__(key, value)
+        gate.result = BrokenDiagnosticDict(gate.result)
+        with patch.object(provider.time, "monotonic", return_value=0), \
+                patch.object(provider.time, "time", return_value=3), \
+                patch.object(provider.base, "shared_live_bytes", return_value=(b"{}", 0)):
+            with self.assertRaises(provider.base.Rejected):
+                gate.target(0)
+
+
 class PostCloseNativeLifecycleTests(unittest.TestCase):
     def lifecycle(self, state="poisoned", error="unknown", binding=True):
         return {"status":"observed","present":True,"coherent":True,"header_matches":True,

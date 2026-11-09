@@ -297,7 +297,7 @@ class Pair:
         if self.gui:
             require(self.gui.poll() is None)
 
-    def wait(self, fn, seconds=15):
+    def wait(self, fn, seconds=15, *, on_expired=None):
         end = min(self.end, time.monotonic() + seconds)
         while time.monotonic() < end:
             self.deadline()
@@ -308,6 +308,11 @@ class Pair:
             if value:
                 return value
             time.sleep(.05)
+        if on_expired is not None:
+            try:
+                on_expired()
+            except BaseException:
+                pass  # A diagnostic callback must not replace the original rejection.
         raise Rejected()
 
     def launch(self, argv, name, env=None):

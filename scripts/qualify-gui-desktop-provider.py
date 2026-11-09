@@ -108,6 +108,61 @@ def native_key_call_lines(raw):
     return result
 
 
+DIRECT_READY_PHASE = b"after_existing_shutdown_attempt_before_worker_terminal"
+DIRECT_READY_FIELDS = ("status", "present", "coherent", "header_matches", "identity_matches",
+    "build_matches", "binding_present", "state", "error")
+
+
+def direct_ready_lines(raw):
+    result = {"target_a":public_native_lifecycle({}),"target_b":public_native_lifecycle({}),
+        "malformed_record":False,"duplicate_role":False}
+    statuses = {b"IdentityUnavailable":"identity_unavailable",b"Absent":"absent",b"ReadFailed":"read_failed",
+        b"Unstable":"unstable",b"InvalidHeader":"invalid_header",b"InvalidIdentity":"invalid_identity",
+        b"InvalidBuild":"invalid_build",b"InvalidState":"invalid_state",b"Observed":"observed"}
+    booleans = {b"None":None,b"Some(true)":True,b"Some(false)":False}
+    states = {b"None":None,b"Some(Initializing)":"initializing",b"Some(Unclaimed)":"unclaimed",
+        b"Some(Active)":"active",b"Some(Prepared)":"prepared",b"Some(Poisoned)":"poisoned",b"Some(Reusable)":"reusable"}
+    errors = {b"None":None,b"Some(None)":"none",b"Some(AccessDenied)":"access_denied",
+        b"Some(InvalidHandle)":"invalid_handle",b"Some(InvalidData)":"invalid_data",
+        b"Some(InvalidParameter)":"invalid_parameter",b"Some(BrokenPipe)":"broken_pipe",b"Some(Busy)":"busy",
+        b"Some(WaitTimeout)":"wait_timeout",b"Some(Timeout)":"timeout",b"Some(Unknown)":"unknown"}
+    wanted = ("phase", "target") + DIRECT_READY_FIELDS
+    seen = set()
+    for line in raw[:raw.rfind(b"\n")+1].splitlines():
+        parts = line.split(b" ")
+        if parts[0] != b"PIM_QUAL_READY_SHUTDOWN_V1":
+            continue
+        pairs = [part.split(b"=", 1) for part in parts[1:]]
+        if (len(pairs) != len(wanted) or any(len(pair) != 2 for pair in pairs)
+                or [pair[0] for pair in pairs] != [key.encode("ascii") for key in wanted]):
+            result["malformed_record"] = True
+            continue
+        values = dict(zip(wanted, [pair[1] for pair in pairs]))
+        if values["phase"] != DIRECT_READY_PHASE or values["target"] not in (b"target_a", b"target_b"):
+            result["malformed_record"] = True
+            continue
+        row = {}
+        for key in DIRECT_READY_FIELDS:
+            allowed = statuses if key == "status" else states if key == "state" else errors if key == "error" else booleans
+            if values[key] not in allowed:
+                break
+            row[key] = allowed[values[key]]
+        if len(row) != len(DIRECT_READY_FIELDS):
+            result["malformed_record"] = True
+            continue
+        public = public_native_lifecycle({"native_lifecycle":row})
+        if public["status"] == "unrecognized":
+            result["malformed_record"] = True
+            continue
+        label = values["target"].decode("ascii")
+        if label in seen:
+            result["duplicate_role"] = True
+            continue
+        seen.add(label)
+        result[label] = public
+    return result
+
+
 def public_native_lifecycle(target):
     # Only the owned probe's fixed enum/boolean schema crosses the public boundary.
     result = {"status":"unobserved","present":None,"coherent":None,"header_matches":None,
@@ -291,6 +346,27 @@ class ProviderPair(base.Pair):
             if (cleanup["close_identity_verified"] and cleanup["close_posted"] is True
                     and cleanup["gui_exit_observed"] and cleanup["gui_exit_zero"] is True):
                 self.post_close_target_reports()
+                self.late_direct_readiness()
+
+    def late_direct_readiness(self):
+        if getattr(self, "late_direct_readiness_sampled", False):
+            return
+        self.late_direct_readiness_sampled = True
+        diagnostic = {"collection_phase":"bounded_stderr_read_after_verified_gui_exit",
+            "producer_phase":DIRECT_READY_PHASE.decode("ascii"),"truncated":None,"incomplete_line":None,
+            "failure_class":None,"stream_eof_proved":False,**direct_ready_lines(b"")}
+        self.result["late_direct_native_readiness"] = diagnostic
+        try:
+            with (self.private / "gui-stderr.log").open("rb") as source:
+                raw = source.read(NATIVE_STDERR_LIMIT+1)
+            diagnostic["truncated"] = len(raw) > NATIVE_STDERR_LIMIT
+            raw = raw[:NATIVE_STDERR_LIMIT]
+            diagnostic["incomplete_line"] = bool(raw and not raw.endswith(b"\n"))
+            diagnostic.update(direct_ready_lines(raw))
+        except BaseException as error:
+            diagnostic["failure_class"] = public_failure_class(error)
+        # These records describe one direct mapping read before worker terminal,
+        # not sampling after GUI exit, native packet receipt, or failure cause.
 
     def post_close_target_reports(self):
         if getattr(self, "post_close_reports_sampled", False):
@@ -372,11 +448,23 @@ class ProviderPair(base.Pair):
     def target(self, index):
         def sample():
             raw, modified = base.shared_live_bytes(self.private / f"target-{index}.json", 4 * 1024 * 1024)
-            require(time.time()-modified < 2)
+            fresh = time.time()-modified < 2
+            if not fresh:
+                self.prepare_holds_reason("report_age_rejected")
+            require(fresh)
             return json.loads(raw.decode("utf-8-sig"))
         # Existing probe publishes a whole JSON file by truncation/write. Await
         # only an absent/partial read; no command or input is repeated.
-        return self.wait(sample, 3)
+        return self.wait(sample, 3,
+            on_expired=lambda: self.prepare_holds_reason("target_report_wait_expired"))
+
+    def prepare_holds_reason(self, reason):
+        try:
+            if (self.stage == "prepare_holds" and self.check == "prepare_holds_target_held_state"
+                    and reason in ("report_age_rejected", "target_report_wait_expired", "held_wait_expired")):
+                self.result["prepare_holds_failure_reason"] = reason
+        except BaseException:
+            pass  # Diagnostic classification must not replace the existing rejection.
 
     def targets(self):
         return [self.target(i) for i in range(3)]
@@ -517,6 +605,7 @@ class ProviderPair(base.Pair):
                 return state if set(policy["user_ids"]) == set(self.seat_ids) and set(policy["allowed_pids"]) == set(self.pids) and policy["session_control"] else None
             self.wait(granted)
         elif name == "prepare_holds":
+            self.result["prepare_holds_failure_reason"] = "unobserved"
             windows = self.command.tool("routing_windows")["windows"]
             selected_windows = []
             for index, pid in enumerate(self.pids):
@@ -617,7 +706,7 @@ class ProviderPair(base.Pair):
                 diagnostic["rightctrl_held"] = key
                 observe_root(target)
                 return key
-            self.wait(held)
+            self.wait(held, on_expired=lambda: self.prepare_holds_reason("held_wait_expired"))
             self.check = "prepare_holds_exact_rightctrl_event"
             require(observe_root(self.target(1)))
         elif name.startswith("bound_"):
