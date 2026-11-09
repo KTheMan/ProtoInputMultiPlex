@@ -160,8 +160,12 @@ fn window_only_admission(ready: &EventReady) -> bool {
 }
 
 fn toolkit_only_admission(ready: &EventReady) -> bool {
-    let UserScope::Only(users) = &ready.events.users else { return false; };
-    let UserScope::Only(control_users) = &ready.controls.users else { return false; };
+    let UserScope::Only(users) = &ready.events.users else {
+        return false;
+    };
+    let UserScope::Only(control_users) = &ready.controls.users else {
+        return false;
+    };
     let no_controls = mux_application_sdk::ControlGrant {
         users: ready.controls.users.clone(),
         ..Default::default()
@@ -170,7 +174,9 @@ fn toolkit_only_admission(ready: &EventReady) -> bool {
         && ready.epoch != 0
         && !users.is_empty()
         && users.len() <= mux_application_sdk::MAX_USERS
-        && users.iter().all(|user| user.epoch == ready.epoch && user.local != 0)
+        && users
+            .iter()
+            .all(|user| user.epoch == ready.epoch && user.local != 0)
         && (ready.events.pointer_events || ready.events.key_events)
         && !ready.events.owned_windows
         && !ready.events.host_state
@@ -469,13 +475,19 @@ impl Peer {
 
     async fn toolkit_barrier(&mut self) -> Result<()> {
         ensure!(
-            !self.terminal && !self.needs_refresh
+            !self.terminal
+                && !self.needs_refresh
                 && self.state.epoch() == Some(self.ready.epoch)
                 && self.state.state() == &mux_application_sdk::StreamState::Live,
             "Refresh the event subscription explicitly before local toolkit access"
         );
-        let subscription = self.subscription.context("Toolkit subscription unavailable")?;
-        let response = match self.command(ClientCommand::Stats { subscription }, false).await {
+        let subscription = self
+            .subscription
+            .context("Toolkit subscription unavailable")?;
+        let response = match self
+            .command(ClientCommand::Stats { subscription }, false)
+            .await
+        {
             Ok(response) => response,
             Err(_) => {
                 self.fence_protocol();
@@ -499,9 +511,14 @@ impl Peer {
         // HostBridge applies Stats before polling this turn's event backlog. Earlier
         // stream frames precede its reply in the same output FIFO and command folds
         // them first. A nonempty backlog therefore cannot authorize cached access.
-        ensure!(stats.queued == 0, "Toolkit stream has queued events; inspect again after delivery");
         ensure!(
-            self.subscription == Some(subscription) && !self.terminal && !self.needs_refresh
+            stats.queued == 0,
+            "Toolkit stream has queued events; inspect again after delivery"
+        );
+        ensure!(
+            self.subscription == Some(subscription)
+                && !self.terminal
+                && !self.needs_refresh
                 && self.state.epoch() == Some(self.ready.epoch)
                 && self.state.state() == &mux_application_sdk::StreamState::Live,
             "Toolkit subscription is no longer live"
@@ -511,7 +528,8 @@ impl Peer {
 
     async fn local_toolkit(&mut self, request: &str) -> Result<String> {
         self.toolkit_barrier().await?;
-        self.state.local_toolkit_json(request)
+        self.state
+            .local_toolkit_json(request)
             .map_err(|_| anyhow::anyhow!("Local toolkit request rejected"))
     }
 }
@@ -816,9 +834,14 @@ impl ToolkitAgentServer {
         description = "Use the shared consumer-local user directory, opaque-source lookup, application JSON data and badge palette for the current GUI-approved selected users. Pass version-1 SDK toolkit JSON as request_json text to preserve exact u64 identities. No physical identity, grants, user creation, Host/input controls or persistence. Every operation first checks the current event subscription through an acknowledged server Stats barrier. Gaps require explicit refresh; terminal authority requires fresh GUI admission.",
         annotations(open_world_hint = false)
     )]
-    async fn local_user_toolkit(&self, Parameters(args): Parameters<LocalToolkitRequest>) -> CallToolResult {
+    async fn local_user_toolkit(
+        &self,
+        Parameters(args): Parameters<LocalToolkitRequest>,
+    ) -> CallToolResult {
         if args.request_json.len() > mux_application_sdk::user_toolkit::MAX_TOOLKIT_REQUEST_BYTES {
-            return CallToolResult::error(vec![rmcp::model::ContentBlock::text("Local toolkit request exceeds its size bound")]);
+            return CallToolResult::error(vec![rmcp::model::ContentBlock::text(
+                "Local toolkit request exceeds its size bound",
+            )]);
         }
         let result = {
             let mut peer = self.peer.lock().await;
@@ -829,7 +852,7 @@ impl ToolkitAgentServer {
             // through an MCP wrapper or converting it to a second numeric schema.
             Ok(text) => CallToolResult::success(vec![rmcp::model::ContentBlock::text(text)]),
             Err(_) => CallToolResult::error(vec![rmcp::model::ContentBlock::text(
-                "Local toolkit unavailable or request rejected; inspect the event subscription and refresh explicitly after a gap. Never replay a mutation automatically."
+                "Local toolkit unavailable or request rejected; inspect the event subscription and refresh explicitly after a gap. Never replay a mutation automatically.",
             )]),
         }
     }
@@ -843,7 +866,7 @@ impl ToolkitAgentServer {
         match peer.resubscribe().await {
             Ok(()) => CallToolResult::structured(json!({"refreshed": true})),
             Err(_) => CallToolResult::error(vec![rmcp::model::ContentBlock::text(
-                "Toolkit subscription refresh failed; terminal authority requires fresh GUI admission."
+                "Toolkit subscription refresh failed; terminal authority requires fresh GUI admission.",
             )]),
         }
     }
@@ -871,7 +894,11 @@ pub(crate) fn run_toolkit(path: PathBuf) -> Result<()> {
                 peer: Arc::new(Mutex::new(peer)),
                 tool_router: ToolkitAgentServer::tool_router(),
             };
-            server.serve(rmcp::transport::stdio()).await?.waiting().await?;
+            server
+                .serve(rmcp::transport::stdio())
+                .await?
+                .waiting()
+                .await?;
             Ok(())
         })
 }
@@ -1145,7 +1172,10 @@ mod tests {
             recipient: serde_json::from_value(json!(1)).unwrap(),
             events: mux_application_sdk::Grant {
                 users: UserScope::Only(std::collections::BTreeSet::from([
-                    mux_application_sdk::UserId { epoch: 71, local: 1 },
+                    mux_application_sdk::UserId {
+                        epoch: 71,
+                        local: 1,
+                    },
                 ])),
                 key_events: true,
                 ..Default::default()
@@ -1159,7 +1189,10 @@ mod tests {
     fn toolkit_snapshot(revision: u64) -> mux_application_sdk::Snapshot {
         let mut snapshot = recovery_snapshot(revision);
         snapshot.users.push(mux_application_sdk::UserView {
-            id: mux_application_sdk::UserId { epoch: 71, local: 1 },
+            id: mux_application_sdk::UserId {
+                epoch: 71,
+                local: 1,
+            },
             source: mux_application_sdk::SourceId(9007199254740993),
             name: "Selected user".into(),
             owned_by_recipient: false,
@@ -1175,18 +1208,25 @@ mod tests {
             version: PROTOCOL_VERSION,
             response: ClientResponse::Stats {
                 stats: mux_application_sdk::SubscriberStats {
-                    capacity: 128, queued, delivered: 0, overflowed,
+                    capacity: 128,
+                    queued,
+                    delivered: 0,
+                    overflowed,
                 },
             },
         }
     }
 
-    type ToolkitStep = (ClientCommand, Vec<ServerMessage>, Option<Reply<ClientResponse>>);
+    type ToolkitStep = (
+        ClientCommand,
+        Vec<ServerMessage>,
+        Option<Reply<ClientResponse>>,
+    );
 
-    async fn toolkit_script(
-        steps: Vec<ToolkitStep>,
-    ) -> (Peer, tokio::task::JoinHandle<()>) {
-        let listener = tokio::net::TcpListener::bind((Ipv4Addr::LOCALHOST, 0)).await.unwrap();
+    async fn toolkit_script(steps: Vec<ToolkitStep>) -> (Peer, tokio::task::JoinHandle<()>) {
+        let listener = tokio::net::TcpListener::bind((Ipv4Addr::LOCALHOST, 0))
+            .await
+            .unwrap();
         let address = listener.local_addr().unwrap();
         let server = tokio::spawn(async move {
             let (stream, _) = listener.accept().await.unwrap();
@@ -1199,28 +1239,51 @@ mod tests {
                 assert_eq!(message.request_id, index as u64 + 1);
                 assert_eq!(message.request.command, expected);
                 for frame in prior_frames {
-                    socket.send(Message::Text(serde_json::to_string(&frame).unwrap().into())).await.unwrap();
+                    socket
+                        .send(Message::Text(serde_json::to_string(&frame).unwrap().into()))
+                        .await
+                        .unwrap();
                 }
                 let Some(reply) = reply else {
                     socket.close(None).await.unwrap();
                     return;
                 };
-                socket.send(Message::Text(serde_json::to_string(&ServerMessage::Response {
-                    request_id: message.request_id, reply,
-                }).unwrap().into())).await.unwrap();
+                socket
+                    .send(Message::Text(
+                        serde_json::to_string(&ServerMessage::Response {
+                            request_id: message.request_id,
+                            reply,
+                        })
+                        .unwrap()
+                        .into(),
+                    ))
+                    .await
+                    .unwrap();
             }
         });
         let stream = TcpStream::connect(address).await.unwrap();
-        let (socket, _) = tokio_tungstenite::client_async(format!("ws://{address}"), stream).await.unwrap();
+        let (socket, _) = tokio_tungstenite::client_async(format!("ws://{address}"), stream)
+            .await
+            .unwrap();
         let mut state = ClientState::default();
         state.install_snapshot(toolkit_snapshot(1), 71).unwrap();
         state.local_toolkit_json(r#"{"version":1,"operation":{"kind":"set_data","user":{"epoch":71,"local":1},"data":"before"}}"#).unwrap();
         let subscription = serde_json::from_value(json!(1)).unwrap();
-        (Peer {
-            socket, ready: toolkit_ready(), state, hosted_receipt: Default::default(),
-            subscription: Some(subscription), retired_subscription: None, next_request: 0,
-            terminal: false, needs_refresh: false, last_issue: None,
-        }, server)
+        (
+            Peer {
+                socket,
+                ready: toolkit_ready(),
+                state,
+                hosted_receipt: Default::default(),
+                subscription: Some(subscription),
+                retired_subscription: None,
+                next_request: 0,
+                terminal: false,
+                needs_refresh: false,
+                last_issue: None,
+            },
+            server,
+        )
     }
 
     #[test]
@@ -1235,12 +1298,24 @@ mod tests {
         let mut gui_ready = ready.clone();
         gui_ready.controls.users = gui_ready.events.users.clone();
         assert!(toolkit_only_admission(&gui_ready));
-        for field in ["delegated_users", "user_lifecycle", "cursor", "pointer_input", "key_input",
-            "window_publication", "window_identity_metadata", "window_tracking", "window_control",
-            "host_mode_control", "host_viewport_control"] {
+        for field in [
+            "delegated_users",
+            "user_lifecycle",
+            "cursor",
+            "pointer_input",
+            "key_input",
+            "window_publication",
+            "window_identity_metadata",
+            "window_tracking",
+            "window_control",
+            "host_mode_control",
+            "host_viewport_control",
+        ] {
             let mut value = serde_json::to_value(&ready).unwrap();
             value["controls"][field] = json!(true);
-            assert!(!toolkit_only_admission(&serde_json::from_value(value).unwrap()));
+            assert!(!toolkit_only_admission(
+                &serde_json::from_value(value).unwrap()
+            ));
         }
         for scope in [UserScope::Only(Default::default()), UserScope::AllOwned] {
             let mut broad = ready.clone();
@@ -1250,7 +1325,9 @@ mod tests {
         for field in ["owned_windows", "host_state"] {
             let mut value = serde_json::to_value(&ready).unwrap();
             value["events"][field] = json!(true);
-            assert!(!toolkit_only_admission(&serde_json::from_value(value).unwrap()));
+            assert!(!toolkit_only_admission(
+                &serde_json::from_value(value).unwrap()
+            ));
         }
         let mut controls_all_owned = ready.clone();
         controls_all_owned.controls.users = UserScope::AllOwned;
@@ -1298,27 +1375,61 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn toolkit_folds_prior_disposal_before_zero_backlog_receipt_and_preserves_large_sources() {
+    async fn toolkit_folds_prior_disposal_before_zero_backlog_receipt_and_preserves_large_sources()
+    {
         timeout(Duration::from_secs(5), async {
             let subscription = serde_json::from_value(json!(1)).unwrap();
             let (mut peer, server) = toolkit_script(vec![
-                (ClientCommand::Stats { subscription }, Vec::new(), Some(stats_reply(0, false))),
-                (ClientCommand::Stats { subscription }, vec![ServerMessage::EventStream {
-                    subscription,
-                    stream: mux_application_sdk::Poll::Events { events: vec![mux_application_sdk::Envelope {
-                        version: PROTOCOL_VERSION, epoch: 71, sequence: 2,
-                        event: mux_application_sdk::Event::UserDisposed { user: mux_application_sdk::UserId { epoch: 71, local: 1 } },
-                    }] },
-                }], Some(stats_reply(0, false))),
-            ]).await;
-            let found = peer.local_toolkit(r#"{"version":1,"operation":{"kind":"source","source":9007199254740993}}"#).await.unwrap();
+                (
+                    ClientCommand::Stats { subscription },
+                    Vec::new(),
+                    Some(stats_reply(0, false)),
+                ),
+                (
+                    ClientCommand::Stats { subscription },
+                    vec![ServerMessage::EventStream {
+                        subscription,
+                        stream: mux_application_sdk::Poll::Events {
+                            events: vec![mux_application_sdk::Envelope {
+                                version: PROTOCOL_VERSION,
+                                epoch: 71,
+                                sequence: 2,
+                                event: mux_application_sdk::Event::UserDisposed {
+                                    user: mux_application_sdk::UserId {
+                                        epoch: 71,
+                                        local: 1,
+                                    },
+                                },
+                            }],
+                        },
+                    }],
+                    Some(stats_reply(0, false)),
+                ),
+            ])
+            .await;
+            let found = peer
+                .local_toolkit(
+                    r#"{"version":1,"operation":{"kind":"source","source":9007199254740993}}"#,
+                )
+                .await
+                .unwrap();
             assert!(found.contains("9007199254740993") && found.contains("before"));
-            let absent = peer.local_toolkit(r#"{"version":1,"operation":{"kind":"user","user":{"epoch":71,"local":1}}}"#).await.unwrap();
-            assert_eq!(serde_json::from_str::<Value>(&absent).unwrap()["result"]["user"], Value::Null);
+            let absent = peer
+                .local_toolkit(
+                    r#"{"version":1,"operation":{"kind":"user","user":{"epoch":71,"local":1}}}"#,
+                )
+                .await
+                .unwrap();
+            assert_eq!(
+                serde_json::from_str::<Value>(&absent).unwrap()["result"]["user"],
+                Value::Null
+            );
             assert!(peer.state.users().is_empty());
             assert_eq!(peer.next_request, 2);
             server.await.unwrap();
-        }).await.unwrap();
+        })
+        .await
+        .unwrap();
     }
 
     #[tokio::test]
@@ -1327,24 +1438,65 @@ mod tests {
             let subscription = serde_json::from_value(json!(1)).unwrap();
             let fresh = serde_json::from_value(json!(2)).unwrap();
             let (mut peer, server) = toolkit_script(vec![
-                (ClientCommand::Stats { subscription }, vec![ServerMessage::EventStream {
-                    subscription, stream: mux_application_sdk::Poll::Gap { after_sequence: 1, lost_through: 2 },
-                }], Some(stats_reply(0, false))),
-                (ClientCommand::Resubscribe { subscription, capacity: 128 }, Vec::new(), Some(Reply::Ok {
-                    version: PROTOCOL_VERSION, response: ClientResponse::Subscribed { subscription: fresh, snapshot: toolkit_snapshot(2) },
-                })),
-                (ClientCommand::Stats { subscription: fresh }, Vec::new(), Some(stats_reply(0, false))),
-            ]).await;
-            assert!(peer.local_toolkit(r#"{"version":1,"operation":{"kind":"list"}}"#).await.is_err());
+                (
+                    ClientCommand::Stats { subscription },
+                    vec![ServerMessage::EventStream {
+                        subscription,
+                        stream: mux_application_sdk::Poll::Gap {
+                            after_sequence: 1,
+                            lost_through: 2,
+                        },
+                    }],
+                    Some(stats_reply(0, false)),
+                ),
+                (
+                    ClientCommand::Resubscribe {
+                        subscription,
+                        capacity: 128,
+                    },
+                    Vec::new(),
+                    Some(Reply::Ok {
+                        version: PROTOCOL_VERSION,
+                        response: ClientResponse::Subscribed {
+                            subscription: fresh,
+                            snapshot: toolkit_snapshot(2),
+                        },
+                    }),
+                ),
+                (
+                    ClientCommand::Stats {
+                        subscription: fresh,
+                    },
+                    Vec::new(),
+                    Some(stats_reply(0, false)),
+                ),
+            ])
+            .await;
+            assert!(
+                peer.local_toolkit(r#"{"version":1,"operation":{"kind":"list"}}"#)
+                    .await
+                    .is_err()
+            );
             assert!(peer.needs_refresh);
-            assert!(peer.local_toolkit(r#"{"version":1,"operation":{"kind":"list"}}"#).await.is_err());
+            assert!(
+                peer.local_toolkit(r#"{"version":1,"operation":{"kind":"list"}}"#)
+                    .await
+                    .is_err()
+            );
             assert_eq!(peer.next_request, 1); // No automatic refresh, Snapshot, or replay.
             peer.resubscribe().await.unwrap();
-            let clean = peer.local_toolkit(r#"{"version":1,"operation":{"kind":"user","user":{"epoch":71,"local":1}}}"#).await.unwrap();
+            let clean = peer
+                .local_toolkit(
+                    r#"{"version":1,"operation":{"kind":"user","user":{"epoch":71,"local":1}}}"#,
+                )
+                .await
+                .unwrap();
             assert!(!clean.contains("before"));
             assert_eq!(peer.next_request, 3);
             server.await.unwrap();
-        }).await.unwrap();
+        })
+        .await
+        .unwrap();
     }
 
     #[tokio::test]
@@ -1355,13 +1507,22 @@ mod tests {
                 ClientCommand::Stats { subscription },
                 vec![ServerMessage::EventStream {
                     subscription,
-                    stream: mux_application_sdk::Poll::Ended { reason: mux_application_sdk::EndReason::Revoked },
+                    stream: mux_application_sdk::Poll::Ended {
+                        reason: mux_application_sdk::EndReason::Revoked,
+                    },
                 }],
                 Some(stats_reply(0, false)),
-            )]).await;
-            assert!(peer.local_toolkit(r#"{"version":1,"operation":{"kind":"list"}}"#).await.is_err());
+            )])
+            .await;
+            assert!(
+                peer.local_toolkit(r#"{"version":1,"operation":{"kind":"list"}}"#)
+                    .await
+                    .is_err()
+            );
             assert!(peer.terminal && peer.state.users().is_empty());
             server.await.unwrap();
-        }).await.unwrap();
+        })
+        .await
+        .unwrap();
     }
 }

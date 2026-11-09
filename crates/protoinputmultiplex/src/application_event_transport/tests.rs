@@ -1896,32 +1896,83 @@ fn stats_barrier_distinguishes_unpolled_backlog_from_earlier_fifo_frames() {
     let (mut bridge, endpoint, local, browser, user, _) = setup();
     let approved = permit(&mut bridge, browser);
     let mut output = connect(&mut bridge, &endpoint, &approved);
-    command(&endpoint, &approved, 1, ClientCommand::Subscribe { capacity: 128 });
+    command(
+        &endpoint,
+        &approved,
+        1,
+        ClientCommand::Subscribe { capacity: 128 },
+    );
     bridge.tick();
-    let ServerMessage::Response { reply: Reply::Ok {
-        response: ClientResponse::Subscribed { subscription, .. }, ..
-    }, .. } = output.try_recv().unwrap() else { panic!("subscription receipt"); };
+    let ServerMessage::Response {
+        reply:
+            Reply::Ok {
+                response: ClientResponse::Subscribed { subscription, .. },
+                ..
+            },
+        ..
+    } = output.try_recv().unwrap()
+    else {
+        panic!("subscription receipt");
+    };
 
     motion(&mut bridge, local, user, 100);
-    command(&endpoint, &approved, 2, ClientCommand::Stats { subscription });
+    command(
+        &endpoint,
+        &approved,
+        2,
+        ClientCommand::Stats { subscription },
+    );
     bridge.tick();
-    assert!(matches!(output.try_recv().unwrap(), ServerMessage::Response {
-        request_id: 2, reply: Reply::Ok { response: ClientResponse::Stats {
-            stats: SubscriberStats { queued: 1, overflowed: false, .. }
-        }, .. }
-    }));
-    assert!(matches!(output.try_recv().unwrap(), ServerMessage::EventStream { .. }));
+    assert!(matches!(
+        output.try_recv().unwrap(),
+        ServerMessage::Response {
+            request_id: 2,
+            reply: Reply::Ok {
+                response: ClientResponse::Stats {
+                    stats: SubscriberStats {
+                        queued: 1,
+                        overflowed: false,
+                        ..
+                    }
+                },
+                ..
+            }
+        }
+    ));
+    assert!(matches!(
+        output.try_recv().unwrap(),
+        ServerMessage::EventStream { .. }
+    ));
 
     motion(&mut bridge, local, user, 200);
     bridge.tick(); // Already-polled frames must precede the next zero-backlog Stats.
-    command(&endpoint, &approved, 3, ClientCommand::Stats { subscription });
+    command(
+        &endpoint,
+        &approved,
+        3,
+        ClientCommand::Stats { subscription },
+    );
     bridge.tick();
-    assert!(matches!(output.try_recv().unwrap(), ServerMessage::EventStream { .. }));
-    assert!(matches!(output.try_recv().unwrap(), ServerMessage::Response {
-        request_id: 3, reply: Reply::Ok { response: ClientResponse::Stats {
-            stats: SubscriberStats { queued: 0, overflowed: false, .. }
-        }, .. }
-    }));
+    assert!(matches!(
+        output.try_recv().unwrap(),
+        ServerMessage::EventStream { .. }
+    ));
+    assert!(matches!(
+        output.try_recv().unwrap(),
+        ServerMessage::Response {
+            request_id: 3,
+            reply: Reply::Ok {
+                response: ClientResponse::Stats {
+                    stats: SubscriberStats {
+                        queued: 0,
+                        overflowed: false,
+                        ..
+                    }
+                },
+                ..
+            }
+        }
+    ));
 }
 
 #[test]
@@ -1929,23 +1980,55 @@ fn queued_stats_cannot_acknowledge_an_already_retired_lease() {
     let (mut bridge, endpoint, _, browser, _, _) = setup();
     let approved = permit(&mut bridge, browser);
     let mut output = connect(&mut bridge, &endpoint, &approved);
-    command(&endpoint, &approved, 1, ClientCommand::Subscribe { capacity: 128 });
+    command(
+        &endpoint,
+        &approved,
+        1,
+        ClientCommand::Subscribe { capacity: 128 },
+    );
     bridge.tick();
-    let ServerMessage::Response { reply: Reply::Ok {
-        response: ClientResponse::Subscribed { subscription, .. }, ..
-    }, .. } = output.try_recv().unwrap() else { panic!("subscription receipt"); };
-    let admission = command(&endpoint, &approved, 2, ClientCommand::Stats { subscription });
+    let ServerMessage::Response {
+        reply:
+            Reply::Ok {
+                response: ClientResponse::Subscribed { subscription, .. },
+                ..
+            },
+        ..
+    } = output.try_recv().unwrap()
+    else {
+        panic!("subscription receipt");
+    };
+    let admission = command(
+        &endpoint,
+        &approved,
+        2,
+        ClientCommand::Stats { subscription },
+    );
     // The real GUI mutation boundary retires permits before changing the grant.
-    assert!(bridge.host_command(HostRequest {
-        version: PROTOCOL_VERSION,
-        command: HostCommand::ApproveEvents { recipient: browser, grant: Grant::default() },
-    }).is_err());
+    assert!(
+        bridge
+            .host_command(HostRequest {
+                version: PROTOCOL_VERSION,
+                command: HostCommand::ApproveEvents {
+                    recipient: browser,
+                    grant: Grant::default()
+                },
+            })
+            .is_err()
+    );
     assert!(!approved.live());
     bridge.tick();
     assert_ne!(admission.state.load(Ordering::Acquire), COMPLETED);
     while let Ok(frame) = output.try_recv() {
-        assert!(!matches!(frame, ServerMessage::Response { request_id: 2, reply: Reply::Ok {
-            response: ClientResponse::Stats { .. }, ..
-        } }));
+        assert!(!matches!(
+            frame,
+            ServerMessage::Response {
+                request_id: 2,
+                reply: Reply::Ok {
+                    response: ClientResponse::Stats { .. },
+                    ..
+                }
+            }
+        ));
     }
 }

@@ -554,7 +554,9 @@ mod fixture {
             .collect::<Result<_, _>>()
             .map_err(|_| "invalid local toolkit user identity")?;
         ensure(
-            toolkit["version"] == 1 && toolkit["result"]["kind"] == "users" && toolkit_users == users,
+            toolkit["version"] == 1
+                && toolkit["result"]["kind"] == "users"
+                && toolkit_users == users,
             "local toolkit must list the same two authorized users",
         )?;
         let palette_set = br#"{"version":1,"operation":{"kind":"set_palette","colors":[[17,41,73,255],[91,53,29,255]]}}"#;
@@ -573,7 +575,8 @@ mod fixture {
         let palette_read = retained(api, token, false)?;
         let colors = json!([[17, 41, 73, 255], [91, 53, 29, 255]]);
         ensure(
-            palette_written["version"] == 1 && palette_read["version"] == 1
+            palette_written["version"] == 1
+                && palette_read["version"] == 1
                 && palette_written["result"]["kind"] == "palette"
                 && palette_read["result"]["kind"] == "palette"
                 && palette_written["result"]["colors"] == colors

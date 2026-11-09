@@ -605,11 +605,20 @@ mod toolkit_event_cli_tests {
     #[test]
     fn toolkit_descriptor_is_explicit_and_excludes_every_other_authority() {
         let args = Args::try_parse_from([
-            "protoinputmultiplex", "mcp", "--toolkit-event-connection", "private.json",
-        ]).unwrap();
-        assert!(matches!(args.command, Some(Command::Mcp {
-            toolkit_event_connection: Some(_), event_connection: None, ..
-        })));
+            "protoinputmultiplex",
+            "mcp",
+            "--toolkit-event-connection",
+            "private.json",
+        ])
+        .unwrap();
+        assert!(matches!(
+            args.command,
+            Some(Command::Mcp {
+                toolkit_event_connection: Some(_),
+                event_connection: None,
+                ..
+            })
+        ));
         for extra in [
             vec!["--event-connection", "other.json"],
             vec!["--gui-connection", "other.json"],
@@ -619,7 +628,12 @@ mod toolkit_event_cli_tests {
             vec!["--allow-app-preferences"],
             vec!["--allow-mapper-library", "--data-dir", "data"],
         ] {
-            let mut input = vec!["protoinputmultiplex", "mcp", "--toolkit-event-connection", "private.json"];
+            let mut input = vec![
+                "protoinputmultiplex",
+                "mcp",
+                "--toolkit-event-connection",
+                "private.json",
+            ];
             input.extend(extra);
             assert!(Args::try_parse_from(input).is_err());
         }
