@@ -1,0 +1,22 @@
+[
+  {"button":"Settings","wait_ms":250,"whole_response":true},
+  {"button":"Settings category Agent access","wait_ms":250,"whole_response":true},
+  {"button":"Agent Access","wait_ms":250,"whole_response":true},
+  {"button":"SDK tab","wait_ms":250,"whole_response":true},
+  {"button":"Application event SDK section","wait_ms":250,"whole_response":true,"wait_for_sample":true},
+  {"button":"Create cooperative event session","wait_ms":250,"whole_response":true,"wait_for_sample":true},
+  {"button":"Create cooperative virtual user","wait_ms":250,"whole_response":true,"fields":{"application_event_user_name":"Toolkit acceptance user A"}},
+  {"button":"Create cooperative virtual user","wait_ms":250,"whole_response":true,"wait_for_sample":true,"fields":{"application_event_user_name":"Toolkit acceptance user B"}},
+  {"button":"Master pointer observation","wait_ms":250,"whole_response":true},
+  {"button":"Master keyboard observation separately","wait_ms":250,"whole_response":true},
+  {"button":"Apply master event consent","wait_ms":250,"whole_response":true,"wait_for_sample":true},
+  {"button":"Add event receiver","wait_ms":250,"whole_response":true},
+  {"button":"Select all visible users","wait_ms":250,"whole_response":true,"fields":{"application_event_origin":"http://127.0.0.1:4173","application_event_ttl":"300"}},
+  {"button":"Approve pointer event observation","wait_ms":250,"whole_response":true},
+  {"button":"Approve keyboard event observation separately","wait_ms":250,"whole_response":true},
+  {"button":"Apply selected event receiver approvals","wait_ms":250,"whole_response":true,"wait_for_sample":true},
+  {"button":"Start application event listener","wait_ms":250,"whole_response":true,"wait_for_sample":true},
+  {"button":"Issue private event-only connection","wait_ms":250,"whole_response":true,"wait_for_sample":true},
+  {"button":"Revoke selected event receiver","wait_ms":250,"whole_response":true,"wait_for_sample":true},
+  {"button":"End cooperative event session","wait_ms":250,"whole_response":true,"wait_for_sample":true}
+]

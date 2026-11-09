@@ -181,6 +181,9 @@ enum Command {
         /// Use a GUI-issued application-event descriptor for exact native windows only.
         #[arg(long, conflicts_with_all = ["runtime", "gui_connection", "allow_mapper_library", "allow_app_preferences", "preferences", "data_dir"])]
         event_connection: Option<PathBuf>,
+        /// Use a GUI-approved selected-user event lease for the consumer-local user toolkit only.
+        #[arg(long, conflicts_with_all = ["event_connection", "runtime", "gui_connection", "allow_mapper_library", "allow_app_preferences", "preferences", "data_dir"])]
+        toolkit_event_connection: Option<PathBuf>,
         /// Application-preferences document (separate from seat profiles).
         #[arg(long)]
         preferences: Option<PathBuf>,
@@ -419,11 +422,15 @@ fn windows_main(command: Command) -> Result<()> {
             runtime,
             gui_connection,
             event_connection,
+            toolkit_event_connection,
             preferences,
             allow_app_preferences,
             allow_mapper_library,
             data_dir,
         } => {
+            if let Some(path) = toolkit_event_connection {
+                return mcp_event_windows::run_toolkit(path);
+            }
             if let Some(path) = event_connection {
                 return mcp_event_windows::run(path);
             }
@@ -588,5 +595,33 @@ mod renderer_cli_tests {
             ])
             .is_err()
         );
+    }
+}
+
+#[cfg(test)]
+mod toolkit_event_cli_tests {
+    use super::*;
+
+    #[test]
+    fn toolkit_descriptor_is_explicit_and_excludes_every_other_authority() {
+        let args = Args::try_parse_from([
+            "protoinputmultiplex", "mcp", "--toolkit-event-connection", "private.json",
+        ]).unwrap();
+        assert!(matches!(args.command, Some(Command::Mcp {
+            toolkit_event_connection: Some(_), event_connection: None, ..
+        })));
+        for extra in [
+            vec!["--event-connection", "other.json"],
+            vec!["--gui-connection", "other.json"],
+            vec!["--runtime", "runtime"],
+            vec!["--preferences", "preferences.json"],
+            vec!["--data-dir", "data"],
+            vec!["--allow-app-preferences"],
+            vec!["--allow-mapper-library", "--data-dir", "data"],
+        ] {
+            let mut input = vec!["protoinputmultiplex", "mcp", "--toolkit-event-connection", "private.json"];
+            input.extend(extra);
+            assert!(Args::try_parse_from(input).is_err());
+        }
     }
 }

@@ -312,3 +312,60 @@ The accepted private development candidate adds `routing_input` actions `{"actio
 Pause releases the selected user's saved holds and discards their unpublished motion. Other users continue routing. Resume requires completed cleanup and an unpaused session, and does not replay input. Send matching original UPs for sources held before or received during Pause before fresh DOWNs: repeats stay quarantined across Resume. Source grants remain required for UP; a denied UP leaves the marker intact until authorization is restored or that client retires. On uncertainty, inspect instead of replaying DOWN/Text. Failed saved releases remain retryable; EOF alone is not clean-release proof.
 
 The first native scope is Concurrent automatic routing with independent virtual devices. Stop affected mapper, replication, forwarding, synchronized composite or user-program work before pausing; an unrelated independent program may continue. Consult `supported` and its reason instead of assuming every mode/provider is available. Flags are session-local. [Acceptance and limits](per-user-pause-assessment-2026-10-29.json) distinguish automatic native evidence from assigned/failure/EOF/program source-unit evidence. P1, live Rust-port integration and full Ultra parity remain open.
+
+### Explicit selected-user toolkit agent mode (source candidate)
+
+`protoinputmultiplex mcp --toolkit-event-connection <descriptor.json>` selects a
+separate MCP router exposing only `local_user_toolkit` and `refresh_user_toolkit`.
+It is mutually exclusive with the window/host event connection, GUI routing/Setup
+connection, and standalone runtime/preferences/data-directory options. It returns
+before standalone runtime or preferences initialization. The existing
+`--event-connection` window/host-only admission and tools remain separate.
+
+In the cooperative event GUI, create users explicitly, select the exact current
+users in a receiver row, and approve pointer and/or keyboard observation, Apply,
+then issue that row's private descriptor. User views require an existing event
+observation grant; this mode does not manufacture a directory-only grant. Select
+no Host/window capabilities and no controls of any kind. Admission requires a
+nonempty bounded `Only` user scope and rejects `AllOwned`, all control flags,
+Host grants and window grants. GUI authority and its consent redaction apply.
+Neither starting this MCP mode nor assigning local application data creates or
+selects users, grants permissions, discovers physical devices, or emits input.
+
+Pass the shared SDK's version-1 JSON request as **text** in `request_json`:
+
+```json
+{"request_json":"{\"version\":1,\"operation\":{\"kind\":\"list\"}}"}
+```
+
+The tool returns exact SDK JSON text. Preserve unsigned 64-bit user/source
+identities losslessly; do not round them through JavaScript Number. The shared
+[toolkit contract](../crates/mux-application-sdk/USER-TOOLKIT.md) defines user/source
+lookup, `set_data` (`data` field), clearing data, and badge palettes, including all
+bounds. Data and badge colors belong to this one MCP consumer in memory; they
+are not persisted, synchronized to native/Web consumers, or applied to Host
+cursor colors. Local data can appear only in the explicitly requested result;
+do not store credentials there or log tool payloads.
+
+Every local operation holds the same peer mutex while making one current-token
+`Stats` request, folding preceding authenticated stream frames, validating the
+expected response and subscription bounds, and then checking zero backlog, no
+overflow, Live state and no refresh/terminal fence before synchronous execution.
+There is no await between those final checks and the shared helper. The bridge
+checks lease/recipient authority before accepting Stats; GUI grant changes retire
+leases first. Stats alone is not an authority API. The guarantee is at the
+acknowledged server sampling point, not instantaneous knowledge of revocation
+after that point. A queued backlog rejects the operation without a drain loop or
+automatic retry. A gap/overflow clears local data and resets the palette. EOF,
+revocation, malformed responses and terminal failures deny local access.
+
+After a gap, call `refresh_user_toolkit` explicitly, then make a new observation;
+never replay an uncertain mutation automatically. Refresh uses only the current
+subscription's `Resubscribe` acknowledgement. Diagnostic Snapshot queries never
+install authority. A terminal lease cannot refresh or reconnect itself and needs
+fresh GUI approval. Same-epoch refresh preserves data only for exact still-visible
+bindings; data already cleared by a gap cannot return.
+
+This is authored source support. Required Rust checks and actual GUI/MCP lease
+lifecycle acceptance remain separate gates; native/Web toolkit runtime acceptance
+and full SDK/product qualification are not implied.

@@ -1,0 +1,73 @@
+{
+  "schema": "pim.sdk-bounded-interop-assessment.v1",
+  "assessed_at_utc": "2026-11-09T04:17:33.9983554Z",
+  "source": {
+    "head": "8d934c4b30485499d5f7db0f035caa4e717a902d",
+    "merge": "1ec775881483de8f60ea4ac995a095b491360358",
+    "tree": "bd219d8d0ca716deae1782003c6f598015f188ad"
+  },
+  "run_url": "https://github.com/KTheMan/ProtoInputMultiPlex/actions/runs/42558251561",
+  "aggregate": "NOT_ACCEPTED",
+  "independent_review_sha256": "7f6a8666767c4ca3b6fb1ad8623594bef13a1f240ca9dbb8d507adb0a15de6a0",
+  "integrity": {
+    "archives": 11,
+    "members": 179,
+    "mismatches": 0
+  },
+  "required_checks": "Actual hosted fmt, strict workspace/native/WASM/software Clippy, workspace/feature tests and builds completed. Five shared toolkit tests and native retained-buffer FFI test explicitly ok (native 48 passed/0 failed/1 ignored); dedicated external consumer regression ok (3/0/0). Isolated x64/x86 SDK builds Finished; both C11/W4/WX header compiles ran, ABI3 and 24 pim_app exports including new local_toolkit each. Intended ignored tests remain ignored.",
+  "bounded_groups": {
+    "native_lifecycle": {
+      "verdict": "ACCEPTED",
+      "artifact": 13649350440,
+      "evidence": "Both architectures: 15 ordered rows, HWND death then actual worker OS signal, completion token consumed, all calls returned/peer joined/unload before owner exit; both external exit 0/no timeout."
+    },
+    "standalone_host": {
+      "verdict": "ACCEPTED",
+      "artifact": 13649150658,
+      "evidence": "Both architectures: 18 ordered rows/two cycles, retained reply retirement, zero calls/handles before unload, parent sees owner alive post-unload, second cycle confirms prior OS exit/join; external exit 0."
+    },
+    "owned_window_metadata": {
+      "verdict": "ACCEPTED",
+      "artifact": 13648563575,
+      "evidence": "Both architectures: nine rows, actual HWND/title/physical client/DPI/monitor/query-track-refresh, WM_NCDESTROY/stale missing, unload/parent wait/join; external exit 0."
+    },
+    "software_readback": {
+      "verdict": "ACCEPTED",
+      "artifact": 13648568427,
+      "evidence": "14 rows/six frames/actual Cpu Dx12, own four RGBA colors, 25 matching pixels each, one close/normal native return/external exit 0. No physical presentation/P1 claim."
+    },
+    "legacy_gui_pair": {
+      "verdict": "ACCEPTED",
+      "artifact": 13649400607,
+      "public_sha256": "18b2eeadd2fb70f53bda7c3d638963eaba52cf3db3809d7e97f4401dc549902a",
+      "evidence": "Actual native/Rust-WASM same two GUI users, 17 input + 9 gap acks, hooks/disposal/empty holds, native + GUI exit 0/descriptors removed, source-bound normal browser cleanup; main-close identity rechecks passed."
+    },
+    "owned_window_route": {
+      "verdict": "ACCEPTED_BOUNDED_SINGLE_WINDOW_ROUTE",
+      "artifact": 13649416058,
+      "public_sha256": "14d2f0df9181862db3cc1355ea6b2b917c34d5735a1714b22d30f48e17dffdf5",
+      "evidence": "Three positive Web/Rust-MCP/direct-MCP actions, stale epoch/revoke rejection; Uncertain at 1937 ms, available needs-refresh empty Inspect, late fourth action/receipt rejected. All retirement probes true: 4 actions/3 receipts/1 late rejection before destroy, unload markers and native/MCP/browser/GUI exit 0/descriptor cleanup."
+    },
+    "user_toolkit": {
+      "verdict": "ACCEPTED_BOUNDED_X64_NATIVE_AND_RUST_WASM_CASES",
+      "artifact": 13649400607,
+      "public_sha256": "18b2eeadd2fb70f53bda7c3d638963eaba52cf3db3809d7e97f4401dc549902a",
+      "actual_flags": "status PASS and all nine decisions true: shared_exact_identities, same_default_badge_colors, local_data_isolated, data_limit, host_cursor_state_unchanged, reentrant_callback, gap_cleared, terminal_denied, native_data_retained.",
+      "scope": "Reviewed source-bound assertions establish exact authorized user/source lookup and absent/stale denial in dynamically loaded x64 native C and actual Rust-WASM; independent annotations and native retention across Web activity; oversize local data rejection; matching default palettes; explicit Web palette changes without Host-state change; real Web reentrant hook, overflow gap clears annotation and terminal lookup denied, native Stop rejects local access. Unit tests separately cover >2^53 identities/whole-cache/lifecycle bounds and retained buffer behavior.",
+      "limits": "Actual toolkit runtime is x64 native plus Rust-WASM only. i686 new export compiled/header/export checked, not invoked here. Runtime custom palette change is Web; native uses default colors, with native palette mutation covered by FFI unit test. No claim of complete family/all-architecture API matrix, physical source mapping/Host recoloring/persistence. Separate toolkit MCP mode is private future source, unqualified."
+    }
+  },
+  "hosted_mode": {
+    "verdict": "NOT_ACCEPTED",
+    "artifact": 13648743843,
+    "public_sha256": "984caae9941778a71acb3878b0b3a050ab1d5f40521c6c2ebbc84a1de8f20e64",
+    "checkpoint": 36,
+    "failure_stage": "mcp_native_stop_restart",
+    "failure_class": "UnexpectedError",
+    "elapsed_ms": 54000,
+    "accepted_intermediates": "Native two viewport receipts/completion/retirement; Web query, switched/concurrent mode completions 2, viewport minimize/restore 2, stale revision rejection and refresh/ordered observation passed. Python final same-epoch ready/concurrent, generation/controller/requester-only descriptor checks passed. Entire sample 30 cleanup passed (original MCP exit 0, stale copied descriptor denied, browser disconnect and zero approvals/clients/descriptors). Corrected GUI steps 31\u201336, both fresh descriptors and all 36 receipts/sample acknowledgements completed.",
+    "first_source_boundary": "Run sets mcp_native_stop_restart then mcp_acceptance sets slot 5 and calls rpc_start. That function first opens the unchanged private mcp-hosted-stderr.log with exclusive xb. Sample 29 already created that same path, and source never removes it. Under this owned-file lifecycle, second open necessarily raises FileExistsError before second Popen/RPC initialization. The sanitizer omits FileExistsError from its class allowlist, projecting UnexpectedError. Public artifact lacks raw exception/trace; this is source-bound deterministic harness diagnosis, not an observed product/server error.",
+    "unqualified": "No MCP mode completion, stale epoch rejection, browser lost-receipt/gap/reconnect test, deadline terminal_callback_once, later routing restart/ordinary Quit/file preservation. Notification timer fix remains runtime unexercised. This successful positive Web specimen does not identify or prove repair of the earlier exact 504 generic receipt timeout; historical failure retained."
+  },
+  "limits": "These bounded results apply only to the exact tree above. The toolkit runtime cases are x64 native plus Rust-WASM; i686 new entry and actual native custom-palette mutation were not exercised. Later source changes need their own validation. Full Windows/Web SDK, every native action, physical input/presentation, original workstation freeze, release/signing, real product logon/reboot and Ultra/UI parity remain unqualified."
+}

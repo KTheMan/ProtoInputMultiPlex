@@ -431,19 +431,20 @@ class HostedModePair(owned.WindowPair):
         self.result["old_revision_rejected"] = True
 
     def rpc_start(self):
-        err = open(self.private / "mcp-hosted-stderr.log", "xb")
+        err = open(self.private / f"mcp-hosted-{self.mcp_slot}-stderr.log", "xb")
         self.mcp = subprocess.Popen([str(self.exe), "mcp", "--event-connection", str(self.connection_paths[self.mcp_slot])],
             stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=err, text=True,
             encoding="utf-8", creationflags=subprocess.CREATE_NO_WINDOW)
         err.close()
         self.mcp_queue = queue.Queue()
+        process, responses = self.mcp, self.mcp_queue
         def reader():
             try:
-                for line in self.mcp.stdout:
+                for line in process.stdout:
                     require(len(line) <= 4 * 1024 * 1024)
-                    self.mcp_queue.put(json.loads(line))
+                    responses.put(json.loads(line))
             finally:
-                self.mcp_queue.put(None)
+                responses.put(None)
         threading.Thread(target=reader, daemon=True).start()
         self.rpc_id = 0
         self.rpc("initialize", {"protocolVersion": "2025-11-25", "capabilities": {},

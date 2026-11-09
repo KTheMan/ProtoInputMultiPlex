@@ -74,6 +74,7 @@ mod fixture {
     type Connect = unsafe extern "C" fn(usize, *const u8, usize, *mut u64, *mut u32) -> i32;
     type Enable = unsafe extern "C" fn(u64, u32, u32) -> i32;
     type RequestFn = unsafe extern "C" fn(u64, *const u8, usize, *mut u64) -> i32;
+    type LocalToolkit = unsafe extern "C" fn(u64, *const u8, usize) -> i32;
     type Unary = unsafe extern "C" fn(u64) -> i32;
     type Size = unsafe extern "C" fn(u64, *mut usize) -> i32;
     type ReadFn = unsafe extern "C" fn(u64, *mut u8, usize, *mut usize) -> i32;
@@ -86,6 +87,7 @@ mod fixture {
         request: RequestFn,
         drain: Unary,
         query: Unary,
+        local_toolkit: LocalToolkit,
         size: Size,
         read: ReadFn,
         discard: Unary,
@@ -109,6 +111,7 @@ mod fixture {
                 request: symbol!("pim_app_native_request", RequestFn),
                 drain: symbol!("pim_app_native_drain", Unary),
                 query: symbol!("pim_app_native_query", Unary),
+                local_toolkit: symbol!("pim_app_native_local_toolkit", LocalToolkit),
                 size: symbol!("pim_app_native_response_size", Size),
                 read: symbol!("pim_app_native_response_read", ReadFn),
                 discard: symbol!("pim_app_native_response_discard", Unary),
@@ -374,7 +377,7 @@ mod fixture {
             "loader resolved another DLL",
         )?;
         let api = unsafe { Api::load(module)? };
-        report.record("dll_exports_resolved", json!({"native_exports": 11, "calling_convention": "C", "native_abi_header_version": 3}))?;
+        report.record("dll_exports_resolved", json!({"native_exports": 12, "calling_convention": "C", "native_abi_header_version": 3}))?;
 
         let previous_dpi =
             unsafe { SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2) };
@@ -536,6 +539,47 @@ mod fixture {
                 && model["status"]["remote_cleanup_unconfirmed"] == false,
             "live client must not claim terminal cleanup uncertainty",
         )?;
+        let toolkit_request = br#"{"version":1,"operation":{"kind":"list"}}"#;
+        status(
+            unsafe { (api.local_toolkit)(token, toolkit_request.as_ptr(), toolkit_request.len()) },
+            OK,
+            "local toolkit list",
+        )?;
+        let toolkit = retained(api, token, false)?;
+        let toolkit_users: Vec<UserId> = toolkit["result"]["users"]
+            .as_array()
+            .ok_or("local toolkit users missing")?
+            .iter()
+            .map(|entry| serde_json::from_value(entry["user"]["id"].clone()))
+            .collect::<Result<_, _>>()
+            .map_err(|_| "invalid local toolkit user identity")?;
+        ensure(
+            toolkit["version"] == 1 && toolkit["result"]["kind"] == "users" && toolkit_users == users,
+            "local toolkit must list the same two authorized users",
+        )?;
+        let palette_set = br#"{"version":1,"operation":{"kind":"set_palette","colors":[[17,41,73,255],[91,53,29,255]]}}"#;
+        status(
+            unsafe { (api.local_toolkit)(token, palette_set.as_ptr(), palette_set.len()) },
+            OK,
+            "local toolkit set palette",
+        )?;
+        let palette_written = retained(api, token, false)?;
+        let palette_get = br#"{"version":1,"operation":{"kind":"palette"}}"#;
+        status(
+            unsafe { (api.local_toolkit)(token, palette_get.as_ptr(), palette_get.len()) },
+            OK,
+            "local toolkit get palette",
+        )?;
+        let palette_read = retained(api, token, false)?;
+        let colors = json!([[17, 41, 73, 255], [91, 53, 29, 255]]);
+        ensure(
+            palette_written["version"] == 1 && palette_read["version"] == 1
+                && palette_written["result"]["kind"] == "palette"
+                && palette_read["result"]["kind"] == "palette"
+                && palette_written["result"]["colors"] == colors
+                && palette_read["result"]["colors"] == colors,
+            "local toolkit palette mutation did not round trip",
+        )?;
         for input in [
             Input::Motion {
                 position: Point { x: 7, y: 9 },
@@ -611,6 +655,15 @@ mod fixture {
                 .as_array()
                 .is_some_and(|users| users.is_empty()),
             "Stop must clear local model",
+        )?;
+        status(
+            unsafe { (api.local_toolkit)(token, toolkit_request.as_ptr(), toolkit_request.len()) },
+            INVALID,
+            "local toolkit after Stop",
+        )?;
+        report.record(
+            "native_local_toolkit_smoke",
+            json!({"version": 1, "authorized_users": 2, "list_round_trip": true, "palette_round_trip": true, "stop_denied": true}),
         )?;
         report.record(
             "hwnd_destroyed_stop_returned",

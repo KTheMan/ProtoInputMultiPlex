@@ -305,7 +305,7 @@ jobs:
             $name = $architecture.Name
             $controller = [ordered]@{ status = 'FAIL'; reason = 'validation incomplete'; source_commit = $env:GITHUB_SHA;
               architecture = $name; deadline_ms = 110000; exit_code = $null; timed_out = $false;
-              scope = 'controlled Host/Engine peer DLL lifecycle; no GUI Service/Web acceptance'; normal_unload_qualified = $false }
+              scope = 'controlled Host/Engine peer DLL lifecycle; no GUI Service/Web acceptance'; normal_unload_qualified = $false; local_toolkit_entry_qualified = $false }
             $timer = [Diagnostics.Stopwatch]::StartNew()
             try {
               $root = Join-Path $env:RUNNER_TEMP ('qualification-artifacts/sdk-preview/' + $name)
@@ -341,14 +341,19 @@ jobs:
               $records = @(Get-Content -LiteralPath $report | ForEach-Object { $_ | ConvertFrom-Json })
               $expected = @('started', 'dll_hash_verified', 'dll_exports_resolved', 'owner_hidden_window_created',
                 'client_connected_completion_retained', 'ready_via_data_free_window_wake', 'subscribed_snapshot_folded',
-                'retained_short_buffer_and_default_off_checked', 'hwnd_destroyed_stop_returned', 'initial_destroy_schedule',
+                'retained_short_buffer_and_default_off_checked', 'native_local_toolkit_smoke', 'hwnd_destroyed_stop_returned', 'initial_destroy_schedule',
                 'actual_worker_os_thread_signaled_after_hwnd_death', 'client_destroyed_completion_closed',
                 'bounded_peer_joined', 'dll_unloaded_before_owner_exit', 'owner_ready_to_exit_after_unload')
               if ($records.Count -ne $expected.Count) { throw 'Missing or extra lifecycle milestones' }
               for ($i = 0; $i -lt $expected.Count; $i++) {
                 if ($records[$i].schema -cne 'pim.native-dll-lifecycle.v2' -or $records[$i].stage -cne $expected[$i]) { throw 'Lifecycle milestone order/schema mismatch' }
               }
-              if ($records[1].detail.sha256 -cne $metadata.dll.sha256 -or $records[2].detail.native_exports -ne 11) { throw 'Lifecycle artifact identity mismatch' }
+              if ($records[1].detail.sha256 -cne $metadata.dll.sha256 -or $records[2].detail.native_exports -ne 12) { throw 'Lifecycle artifact identity mismatch' }
+              $toolkit = $records[8].detail
+              if ($toolkit.version -ne 1 -or $toolkit.authorized_users -ne 2 -or
+                  $toolkit.list_round_trip -ne $true -or $toolkit.palette_round_trip -ne $true -or
+                  $toolkit.stop_denied -ne $true) { throw 'Native local toolkit entry smoke incomplete' }
+              $controller.local_toolkit_entry_qualified = $true
               $controller.status = 'PASS'
               $controller.reason = 'All lifecycle milestones and actual external exit 0 observed'
               $controller.normal_unload_qualified = $true
@@ -538,6 +543,37 @@ jobs:
           if ($process.ExitCode -ne 0 -or -not (Test-Path -LiteralPath $result -PathType Leaf)) { throw 'Initial pair failed; private partial evidence preserved' }
           $receipt = Get-Content -LiteralPath $result -Raw | ConvertFrom-Json
           if ($receipt.status -cne 'PASS' -or $receipt.source_commit -cne $env:GITHUB_SHA -or $receipt.gui_exit_code -ne 0 -or $receipt.native_exit_code -ne 0) { throw 'Initial pair receipt incomplete' }
+      - name: Run separate observation-only toolkit MCP lease after normal pair closure
+        env:
+          PAIR_PUBLIC: ${{ runner.temp }}/gui-pair-public-${{ github.run_id }}-${{ github.run_attempt }}
+          TOOLKIT_ROOT: ${{ runner.temp }}/gui-toolkit-${{ github.run_id }}-${{ github.run_attempt }}
+          TOOLKIT_PUBLIC: ${{ runner.temp }}/gui-toolkit-public-${{ github.run_id }}-${{ github.run_attempt }}
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:RUNNER_ENVIRONMENT -cne 'github-hosted') { throw 'Standard disposable hosted runner required' }
+          python -c "import ast,pathlib; p=pathlib.Path('scripts/qualify-gui-toolkit-mcp.py'); ast.parse(p.read_text(encoding='utf-8'),filename=str(p))"
+          if ($LASTEXITCODE -ne 0) { throw 'Toolkit controller source parse failed' }
+          if ((Test-Path -LiteralPath $env:TOOLKIT_ROOT) -or (Test-Path -LiteralPath $env:TOOLKIT_PUBLIC)) { throw 'Fresh owned toolkit roots required' }
+          New-Item -ItemType Directory -Path $env:TOOLKIT_PUBLIC -ErrorAction Stop | Out-Null
+          $pairResult = Join-Path $env:PAIR_PUBLIC 'public-result.json'
+          $prior = Get-Content -LiteralPath $pairResult -Raw | ConvertFrom-Json
+          if ($prior.status -cne 'PASS' -or $prior.source_commit -cne $env:GITHUB_SHA -or $prior.gui_exit_code -ne 0 -or $prior.native_exit_code -ne 0 -or -not $prior.owned_descriptor_cleanup) { throw 'Prior pair must close normally before toolkit fixture' }
+          $result = Join-Path $env:TOOLKIT_PUBLIC 'public-result.json'
+          $artifacts = Join-Path $env:RUNNER_TEMP 'gui-pair-artifacts'
+          $controllerRoot = Join-Path $env:RUNNER_TEMP ('gui-toolkit-controller-' + $env:GITHUB_RUN_ID + '-' + $env:GITHUB_RUN_ATTEMPT)
+          New-Item -ItemType Directory -Path $controllerRoot -ErrorAction Stop | Out-Null
+          $arguments = '"scripts/qualify-gui-toolkit-mcp.py" --artifacts "{0}" --source "{1}" --run "{2}" --public-result "{3}" --pair-result "{4}" --commit {5}' -f $artifacts, $env:GITHUB_WORKSPACE, $env:TOOLKIT_ROOT, $result, $pairResult, $env:GITHUB_SHA
+          $clock = [Diagnostics.Stopwatch]::StartNew()
+          $process = Start-Process -FilePath (Get-Command python).Source -ArgumentList $arguments -WorkingDirectory $env:GITHUB_WORKSPACE -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $controllerRoot 'stdout.log') -RedirectStandardError (Join-Path $controllerRoot 'stderr.log')
+          if (-not $process.WaitForExit(120000)) {
+            [ordered]@{ schema = 'pim.gui-toolkit.external-deadline.v1'; status = 'FAIL'; source_commit = $env:GITHUB_SHA; timed_out = $true; elapsed_ms = $clock.ElapsedMilliseconds; no_kill_restart_or_retry = $true; full_sdk_complete = $false; release_qualified = $false } | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $env:TOOLKIT_PUBLIC 'external-deadline.json') -Encoding utf8
+            throw 'External toolkit deadline exceeded; private evidence preserved; no kill/restart/retry'
+          }
+          $process.Refresh()
+          if ($process.ExitCode -ne 0 -or -not (Test-Path -LiteralPath $result -PathType Leaf)) { throw 'Toolkit MCP lease fixture failed' }
+          $receipt = Get-Content -LiteralPath $result -Raw | ConvertFrom-Json
+          if ($receipt.status -cne 'PASS' -or $receipt.source_commit -cne $env:GITHUB_SHA -or $receipt.gui_exit_code -ne 0 -or $receipt.mcp_exit_code -ne 0 -or -not $receipt.zero_authority_cleanup -or -not $receipt.actual_gui_revocation_denies_local_access) { throw 'Toolkit MCP lease receipt incomplete' }
       - name: Upload only sanitized initial pair decisions
         if: always()
         uses: actions/upload-artifact@v4
@@ -548,6 +584,8 @@ jobs:
           path: |
             ${{ runner.temp }}/gui-pair-public-${{ github.run_id }}-${{ github.run_attempt }}/public-result.json
             ${{ runner.temp }}/gui-pair-public-${{ github.run_id }}-${{ github.run_attempt }}/external-deadline.json
+            ${{ runner.temp }}/gui-toolkit-public-${{ github.run_id }}-${{ github.run_attempt }}/public-result.json
+            ${{ runner.temp }}/gui-toolkit-public-${{ github.run_id }}-${{ github.run_attempt }}/external-deadline.json
 
   qualify-gui-owned-window-route:
     needs: [check, qualify-native-lifecycle, qualify-software-readback, qualify-standalone-host, qualify-gui-native-wasm-initial-pair]

@@ -13,7 +13,7 @@ window operations are restricted to registered windows in the owning process
 and UI thread. The browser client uses the shared protocol, pushed events, a
 canvas, and revision-checked coordinates.
 
-## Owned-window metadata candidate (source only)
+## Owned-window metadata
 
 The isolated metadata candidate extends the existing `WindowInfo` returned by
 owned-window queries, snapshots, tracking, change events, and control
@@ -42,12 +42,11 @@ IDs, inverted or out-of-range client bounds, DPI outside 1–4096, invalid
 monitor bounds, and a work area outside its monitor. No HWND or HMONITOR is
 serialized.
 
-This metadata has source review only under the workstation host freeze. The
-new remote owned-window route below is a separate source candidate; it has
-not been formatted, compiled, tested, or run natively. Its Windows, Web, and
-agent workflows need hosted acceptance before any parity claim.
+The metadata and shared-window route have bounded hosted acceptance at the
+exact source recorded below. That does not qualify every window operation,
+arbitrary cross-process windows, or later source changes.
 
-## Shared native windows (source candidate)
+## Shared native windows
 
 A GUI-approved native publisher may register up to 16 of its own top-level
 windows through the live event connection. Registration binds an owner-local
@@ -98,7 +97,7 @@ lost, times out, or is revoked after dispatch, the outward result is
 run; reconnect, resubscribe, and retry never replay it automatically. An
 explicit fresh observation or registration is required before another action.
 
-## Hosted routing and window actions (source candidate)
+## Hosted routing and window actions (runtime acceptance open)
 
 The GUI can separately approve observation of its current routing state, mode
 changes, and minimize/restore for an exact event receiver. These options start
@@ -131,6 +130,25 @@ approval before later actions. Ordinary Stop and Quit retire
 the event and command SDKs as before. Profile startup loading and exit saving
 remain independent user settings. A standalone Host has no GUI/router adapter
 and reports these actions as unsupported.
+
+## Consumer-local user toolkit
+
+The [local toolkit](../crates/mux-application-sdk/USER-TOOLKIT.md) adds exact
+UserId/opaque SourceId lookup, bounded application-owned JSON data, and local
+badge palettes through shared Rust, native C, and Web methods. All operations
+require the consumer's current authorized Live snapshot. Data is independent
+per consumer and is cleared on gaps, terminal events, disconnect and a new
+epoch; removed or rebound users cannot inherit it. Palette suggestions do not
+change Host cursor state. No physical device identity or persistence is implied.
+
+Use the versioned JSON API without rounding identity integers through a
+JavaScript Number. Native callers use the existing retained-response contract;
+an unread response rejects another toolkit operation before mutation. The
+Web method returns synchronously and supports calls from event callbacks.
+The bounded x64 native C and Rust/WASM cases passed independent acceptance at
+the exact source recorded below. Runtime invocation of the new i686 entry and
+native custom-palette mutation remain separate coverage gaps; neither source
+approval nor one consumer's results qualify every architecture or API family.
 
 ## Local workflow
 
@@ -196,55 +214,43 @@ qualify every native window operation or the standalone Host C ABI lifetime.
 
 ## Builds and qualification
 
-The source at `da98ada7ad454a254fc578e7d2f0016c14679106` passed hosted
-formatting, strict workspace Clippy, workspace tests, x64/x86 builds, native-client
-feature checks, software-renderer feature checks, WebAssembly checks and matching
-browser binding generation in [run 42467047475](https://github.com/KTheMan/ProtoInputMultiPlex/actions/runs/42467047475).
-The pull-request merge commit `1652cbf980b5b23dfe649024fa043f76c10e8e11`
-has the identical Git tree. Ignored tests were not executed. The
-[independent bounded assessment](hosted-sdk-prerequisites-assessment-2026-11-08.json)
-binds the source, artifacts and limits. These results apply only to this tree;
-later source changes require their own build and lifecycle checks.
+The [bounded interoperability assessment](sdk-bounded-interop-assessment-2026-11-09-v2.json)
+binds source `8d934c4b30485499d5f7db0f035caa4e717a902d`, its identical-tree
+merge checkout, and [run 42558251561](https://github.com/KTheMan/ProtoInputMultiPlex/actions/runs/42558251561).
+Independent review accepted these exact-source cases:
 
-That same run separately exercised the actual native-client DLL on hosted x64
-and x86 Windows: explicit connection to a controlled peer, a data-free window
-wake, snapshot folding, retained short-buffer reads, default-off local input,
-Stop on owned-window destruction, actual worker-thread completion, successful
-Destroy and DLL unload before the owner thread exited. Both external processes
-exited normally with code 0. The peer was a fixture Host, not the GUI Service;
-this does not establish native/Web use of the same GUI-created users or the
-separate standalone Host C ABI lifetime.
+- Native-client DLL lifetime and separate standalone Host lifetime on x64/x86,
+  including actual worker/thread completion, explicit destruction, DLL unload
+  and normal external process exit.
+- Owned-window metadata observations on each architecture, with owner-thread
+  lifetime checks and stale-window rejection.
+- A native consumer and actual Rust/WASM browser sharing the same two
+  GUI-created virtual users, input events, explicit gap recovery and cleanup.
+- The local toolkit through dynamically loaded x64 native C and actual
+  Rust/WASM: exact identities, separate annotations, size limits, matching
+  default badge palettes, Web palette mutation without Host changes,
+  reentrant callbacks, real gap cleanup and terminal denial. The new i686
+  entry and native custom-palette mutation were not invoked in that specimen.
+- One GUI-published native window queried, tracked and controlled through Web
+  and MCP, including a late uncertain action, rejected late receipt, revocation
+  and normal native/MCP/browser/GUI shutdown.
+- CPU/DX12 readback of the fixture's own four-color pattern and normal close.
+  This does not qualify physical presentation or the affected workstation.
 
-The renderer-only fixture separately selected a CPU/DX12 adapter, advanced six
-UI frames, read back its own four-color pattern, verified 25 pixels in each
-region, closed once and exited normally with code 0. This validates that bounded
-hosted renderer readback, not the full GUI, physical presentation, workstation
-safety or a fix for the reported freeze. Independent acceptance and the exact
-source/artifact evidence must remain attached to these bounded results.
+The hosted run completed its positive Web mode and viewport cases, then failed
+at checkpoint 36 before the second MCP process started. Source review traced
+that boundary to a second exclusive creation of the first launch's stderr log.
+The original failure remains recorded. MCP mode transitions, deliberately
+lost-receipt behavior, the deadline callback, later ordinary Quit and file
+preservation remain unqualified. This successful Web specimen does not
+establish the cause or repair of the earlier receipt timeout recorded in the
+[previous assessment](sdk-bounded-interop-assessment-2026-11-09.json).
 
-For the later source at `6d7567446f0d754700972f1036df17f7d93b76a3`,
-[run 42471108593](https://github.com/KTheMan/ProtoInputMultiPlex/actions/runs/42471108593)
-passed the full compilation/test job and the bounded native-client, standalone
-Host and renderer jobs. Its actual merge checkout `86128559200e014bad5cd724b8d56062bf5bf143`
-has the same Git tree. The standalone Host fixture exercised all eight base ABI
-exports, retained responses and explicit destruction through the actual DLL,
-then unloaded it before each owner thread exited. Two sequential cycles passed
-on each of x64 and x86; actual OS-thread completion/join and external exit 0
-were required. It created no users or native windows. This qualifies that
-positive lifetime case, not every Host/window operation or transitive TLS case.
-
-**The overall run and actual GUI/native/WASM pair failed.** The pair was rejected
-at GUI preparation checkpoint 37, before private connection issue checkpoint 38
-and before either consumer launched. Source review found that the controller
-read UTF-8 receipt text with Python's default encoding; checkpoint 37 is the
-first expected label containing a middle dot. This is a portability bug, but
-the historical encoding and rejected predicate were not recorded, so the cause
-of that run remains unproven. A reviewed UTF-8 correction and sanitized failure
-observations are required before another specimen. At this assessment, later
-Web acceptance extensions were unpublished, uncompiled and unrun. The
-[new bounded assessment](hosted-sdk-prerequisites-assessment-2026-11-08-v2.json)
-records the accepted prerequisites, failed pair, exact artifacts and exclusions;
-it preserves the earlier assessment above.
+Later corrections, expanded native entry coverage and the explicit toolkit MCP
+mode require their own source-matched validation. Full Windows/Web SDK runtime
+acceptance remains open. Earlier [build/lifetime assessments](hosted-sdk-prerequisites-assessment-2026-11-08.json)
+and the [subsequent prerequisite assessment](hosted-sdk-prerequisites-assessment-2026-11-08-v2.json)
+remain as dated records, including their failures and limits.
 
 Generated source-formatting and dependency-lock artifacts are candidates for
 review and commit. Checks on a runner's modified tree do not qualify the
@@ -260,11 +266,11 @@ still involve graphics drivers. This is not a guarantee of workstation safety,
 proof of rendered frames, or a fix for the reported host freeze. No local
 build or native/graphics testing is being resumed on the affected workstation.
 
-Required acceptance still includes actual native window/C ABI behavior, a
-native consumer and browser canvas concurrently using the same two users,
-real socket authentication and lifecycle failures, GUI/MCP behavior, and
-independent review of the resulting runtime evidence. Unit tests and green
-builds alone do not establish that outcome.
+Current-source acceptance still requires its native/Web/GUI/MCP runtime gates,
+real socket authentication and lifecycle failures, and independent review of
+the resulting evidence. The bounded cases above do not cover every window
+control, target application, input source or API family. Unit tests and green
+builds alone do not establish full SDK parity.
 
 Physical input export, pen/touch, cursor themes/nonzero flags, additional
 application modes, and remaining Windows/Web API families are still parity
