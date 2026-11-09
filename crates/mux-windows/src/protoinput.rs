@@ -105,11 +105,12 @@ fn qualification_claim_shutdown(
 fn qualification_shutdown_record(
     label: &str,
     observed: &crate::lifecycle::OwnReadinessObservation,
+    guard: crate::lifecycle::RetainedReadinessGuard,
 ) {
     // Debug formatting here is limited to fixed enums and Option<bool>; no
     // native code, identifier, nonce, path or exception string is formatted.
     qualification_stderr(format_args!(
-        "PIM_QUAL_READY_SHUTDOWN_V1 phase=after_existing_shutdown_attempt_before_worker_terminal target={label} status={:?} present={:?} coherent={:?} header_matches={:?} identity_matches={:?} build_matches={:?} binding_present={:?} state={:?} error={:?}",
+        "PIM_QUAL_READY_SHUTDOWN_V1 phase=after_existing_shutdown_attempt_before_worker_terminal target={label} status={:?} present={:?} coherent={:?} header_matches={:?} identity_matches={:?} build_matches={:?} binding_present={:?} state={:?} error={:?} identity_guard={guard:?}",
         observed.status,
         observed.present,
         observed.coherent,
@@ -2425,8 +2426,8 @@ impl DesktopBackend {
             if let Some(attachment) = &target.lifecycle
                 && attachment.instance == target.instance
             {
-                let observed = attachment.readiness_observation(&target.identity);
-                qualification_shutdown_record(label, &observed);
+                let (observed, guard) = attachment.readiness_observation(&target.identity);
+                qualification_shutdown_record(label, &observed, guard);
             }
         }
     }

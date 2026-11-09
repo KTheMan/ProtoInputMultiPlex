@@ -126,18 +126,21 @@ class DirectReadinessTests(unittest.TestCase):
         return (b"PIM_QUAL_READY_SHUTDOWN_V1 phase=after_existing_shutdown_attempt_before_worker_terminal target="+target+
             b" status=Observed present=Some(true) coherent=Some(true) header_matches=Some(true) "
             b"identity_matches=Some(true) build_matches=Some(true) binding_present=Some(true) state=Some("+state+
-            b") error=Some("+error+b")\n")
+            b") error=Some("+error+b") identity_guard=IdentityValid\n")
 
     def test_direct_records_are_fixed_sanitized_facts_and_reject_near_misses(self):
         record = self.record()
         result = provider.direct_ready_lines(record+self.record(b"target_b", b"Poisoned", b"Unknown"))
         self.assertEqual(result["target_a"]["state"], "prepared")
         self.assertEqual(result["target_b"]["error"], "unknown")
+        self.assertEqual(result["target_a_identity_guard"], "identity_valid")
         self.assertFalse(result["malformed_record"] or result["duplicate_role"])
         for bad in (record[:-1], b"private-prefix "+record,
                 record.replace(b"present=Some(true)", b"present=1"),
                 record.replace(b"identity_matches=Some(true)", b"identity_matches=Some(false)"),
                 record.replace(b"error=Some(None)", b"error=Some(0xC0000001)"),
+                record.replace(b"identity_guard=IdentityValid", b"identity_guard=ExitedBeforeRead"),
+                record.replace(b"identity_guard=IdentityValid", b"identity_guard=private_pid_123"),
                 record.replace(b"target=target_a", b"target=private_pid_123"),
                 record.replace(provider.DIRECT_READY_PHASE, b"after_gui_exit"),
                 record[:-1]+b" private_path=secret\n"):
@@ -149,6 +152,32 @@ class DirectReadinessTests(unittest.TestCase):
         duplicate = provider.direct_ready_lines(record+self.record(state=b"Poisoned"))
         self.assertTrue(duplicate["duplicate_role"])
         self.assertEqual(duplicate["target_a"]["state"], "prepared")
+
+    def test_direct_identity_guard_classifies_only_fixed_unavailable_records(self):
+        prefix = (b"PIM_QUAL_READY_SHUTDOWN_V1 phase="+provider.DIRECT_READY_PHASE+
+            b" target=target_a status=IdentityUnavailable present=None coherent=None header_matches=None "
+            b"identity_matches=None build_matches=None binding_present=None state=None error=None identity_guard=")
+        guards = {b"IdentityMismatchOrInvalid":"identity_mismatch_or_invalid",b"ExitedBeforeRead":"exited_before_read",
+            b"LivenessCheckFailedBeforeRead":"liveness_check_failed_before_read",b"ExitedAfterRead":"exited_after_read",
+            b"LivenessCheckFailedAfterRead":"liveness_check_failed_after_read"}
+        for value, expected in guards.items():
+            result = provider.direct_ready_lines(prefix+value+b"\n")
+            self.assertEqual(result["target_a_identity_guard"], expected)
+            self.assertEqual(result["target_a"]["status"], "identity_unavailable")
+            self.assertTrue(all(result["target_a"][key] is None for key in provider.DIRECT_READY_FIELDS[1:]))
+            self.assertFalse(result["malformed_record"])
+        for value in (b"IdentityValid", b"4294967295", b"private_pid_123"):
+            result = provider.direct_ready_lines(prefix+value+b"\n")
+            self.assertEqual(result["target_a_identity_guard"], "unobserved")
+            self.assertEqual(result["target_a"]["status"], "unobserved")
+            self.assertTrue(result["malformed_record"])
+            self.assertNotIn("123", repr(result))
+        invalid_payload = prefix.replace(b"present=None", b"present=Some(true)")+b"ExitedBeforeRead\n"
+        self.assertTrue(provider.direct_ready_lines(invalid_payload)["malformed_record"])
+        for missing in (b"", prefix+b"ExitedBeforeRead"):
+            result = provider.direct_ready_lines(missing)
+            self.assertEqual(result["target_a"]["status"], "unobserved")
+            self.assertEqual(result["target_a_identity_guard"], "unobserved")
 
     def test_late_collection_is_once_after_verified_exit_and_keeps_prior_facts(self):
         gate = Gate(FakeGui())

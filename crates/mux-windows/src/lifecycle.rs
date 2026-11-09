@@ -457,27 +457,39 @@ fn single_readiness_observation(pid: u32, creation: u64, bits: u32) -> OwnReadin
     own_readiness_sample(record, sequence, creation, bits)
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum RetainedReadinessGuard {
+    IdentityMismatchOrInvalid,
+    ExitedBeforeRead,
+    LivenessCheckFailedBeforeRead,
+    ExitedAfterRead,
+    LivenessCheckFailedAfterRead,
+    IdentityValid,
+}
+
 fn retained_readiness_observation_with(
     actual: (u32, u64, u32),
     expected: (u32, u64, u32),
-    mut alive: impl FnMut() -> bool,
+    mut alive: impl FnMut() -> u32,
     read: impl FnOnce() -> OwnReadinessObservation,
-) -> OwnReadinessObservation {
+) -> (OwnReadinessObservation, RetainedReadinessGuard) {
+    use RetainedReadinessGuard as Guard;
     let unavailable =
         || OwnReadinessObservation::unavailable(OwnReadinessStatus::IdentityUnavailable, None);
-    if actual != expected
-        || actual.0 == 0
-        || actual.1 == 0
-        || !matches!(actual.2, 32 | 64)
-        || !alive()
-    {
-        return unavailable();
+    if actual != expected || actual.0 == 0 || actual.1 == 0 || !matches!(actual.2, 32 | 64) {
+        return (unavailable(), Guard::IdentityMismatchOrInvalid);
+    }
+    match alive() {
+        WAIT_TIMEOUT => {}
+        WAIT_OBJECT_0 => return (unavailable(), Guard::ExitedBeforeRead),
+        _ => return (unavailable(), Guard::LivenessCheckFailedBeforeRead),
     }
     let observed = read();
-    if !alive() {
-        return unavailable();
+    match alive() {
+        WAIT_TIMEOUT => (observed, Guard::IdentityValid),
+        WAIT_OBJECT_0 => (unavailable(), Guard::ExitedAfterRead),
+        _ => (unavailable(), Guard::LivenessCheckFailedAfterRead),
     }
-    observed
 }
 fn lease_name(pid: u32, creation: u64) -> String {
     format!("Local\\ProtoInputMultiPlex.Lease.{pid}.{creation}")
@@ -873,12 +885,12 @@ impl Attachment {
     pub(crate) fn readiness_observation(
         &self,
         expected: &crate::targets::ProcessIdentity,
-    ) -> OwnReadinessObservation {
+    ) -> (OwnReadinessObservation, RetainedReadinessGuard) {
         let identity = &self.identity;
         retained_readiness_observation_with(
             (identity.pid, identity.creation, identity.bits),
             (expected.pid, expected.creation, expected.bits),
-            || identity.ensure_alive().is_ok(),
+            || unsafe { WaitForSingleObject(identity.handle(), 0) },
             || single_readiness_observation(identity.pid, identity.creation, identity.bits),
         )
     }
@@ -1348,53 +1360,79 @@ mod tests {
     fn retained_ready_rejects_identity_mismatch_or_exit_without_publishing_payload() {
         let expected = (11, 7, 64);
         for actual in [(12, 7, 64), (11, 8, 64), (11, 7, 32), (0, 7, 64)] {
-            let observed = retained_readiness_observation_with(
+            let (observed, guard) = retained_readiness_observation_with(
                 actual,
                 expected,
                 || panic!("mismatched original identity must not be probed"),
                 || panic!("mismatched original identity must not read mapping"),
             );
             assert_eq!(observed.status, OwnReadinessStatus::IdentityUnavailable);
+            assert_eq!(guard, RetainedReadinessGuard::IdentityMismatchOrInvalid);
             assert_eq!(observed.state, None);
         }
-        let mut alive_calls = 0;
-        let mut read_calls = 0;
-        let observed = retained_readiness_observation_with(
-            expected,
-            expected,
-            || {
-                alive_calls += 1;
-                alive_calls == 1
-            },
-            || {
-                read_calls += 1;
-                own_readiness_sample(own_ready_record(), 2, 7, 64)
-            },
-        );
-        assert_eq!(alive_calls, 2);
-        assert_eq!(read_calls, 1);
-        assert_eq!(observed.status, OwnReadinessStatus::IdentityUnavailable);
-        assert_eq!(observed.state, None);
-        assert_eq!(observed.error, None);
-        assert_eq!(observed.binding_present, None);
-        let observed = retained_readiness_observation_with(
-            expected,
-            expected,
-            || false,
-            || panic!("exited original must not read mapping"),
-        );
-        assert_eq!(observed.status, OwnReadinessStatus::IdentityUnavailable);
+        for (wait, before, after) in [
+            (
+                WAIT_OBJECT_0,
+                RetainedReadinessGuard::ExitedBeforeRead,
+                RetainedReadinessGuard::ExitedAfterRead,
+            ),
+            (
+                u32::MAX,
+                RetainedReadinessGuard::LivenessCheckFailedBeforeRead,
+                RetainedReadinessGuard::LivenessCheckFailedAfterRead,
+            ),
+        ] {
+            let mut alive_calls = 0;
+            let (observed, guard) = retained_readiness_observation_with(
+                expected,
+                expected,
+                || {
+                    alive_calls += 1;
+                    wait
+                },
+                || panic!("unavailable original must not read mapping"),
+            );
+            assert_eq!(alive_calls, 1);
+            assert_eq!(guard, before);
+            assert_eq!(observed.status, OwnReadinessStatus::IdentityUnavailable);
+            assert_eq!(observed.state, None);
+            let mut alive_calls = 0;
+            let mut read_calls = 0;
+            let (observed, guard) = retained_readiness_observation_with(
+                expected,
+                expected,
+                || {
+                    alive_calls += 1;
+                    if alive_calls == 1 {
+                        WAIT_TIMEOUT
+                    } else {
+                        wait
+                    }
+                },
+                || {
+                    read_calls += 1;
+                    own_readiness_sample(own_ready_record(), 2, 7, 64)
+                },
+            );
+            assert_eq!(alive_calls, 2);
+            assert_eq!(read_calls, 1);
+            assert_eq!(guard, after);
+            assert_eq!(observed.status, OwnReadinessStatus::IdentityUnavailable);
+            assert_eq!(observed.state, None);
+            assert_eq!(observed.error, None);
+            assert_eq!(observed.binding_present, None);
+        }
     }
 
     #[test]
     fn retained_ready_reads_once_between_original_process_liveness_checks() {
         let order = std::cell::RefCell::new(Vec::new());
-        let observed = retained_readiness_observation_with(
+        let (observed, guard) = retained_readiness_observation_with(
             (11, 7, 64),
             (11, 7, 64),
             || {
                 order.borrow_mut().push("alive");
-                true
+                WAIT_TIMEOUT
             },
             || {
                 order.borrow_mut().push("read");
@@ -1402,6 +1440,7 @@ mod tests {
             },
         );
         assert_eq!(order.into_inner(), ["alive", "read", "alive"]);
+        assert_eq!(guard, RetainedReadinessGuard::IdentityValid);
         assert_eq!(observed.status, OwnReadinessStatus::Observed);
         assert_eq!(observed.state, Some(NativeReadinessState::Active));
     }

@@ -115,7 +115,11 @@ DIRECT_READY_FIELDS = ("status", "present", "coherent", "header_matches", "ident
 
 def direct_ready_lines(raw):
     result = {"target_a":public_native_lifecycle({}),"target_b":public_native_lifecycle({}),
+        "target_a_identity_guard":"unobserved","target_b_identity_guard":"unobserved",
         "malformed_record":False,"duplicate_role":False}
+    guards = {b"IdentityMismatchOrInvalid":"identity_mismatch_or_invalid",b"ExitedBeforeRead":"exited_before_read",
+        b"LivenessCheckFailedBeforeRead":"liveness_check_failed_before_read",b"ExitedAfterRead":"exited_after_read",
+        b"LivenessCheckFailedAfterRead":"liveness_check_failed_after_read",b"IdentityValid":"identity_valid"}
     statuses = {b"IdentityUnavailable":"identity_unavailable",b"Absent":"absent",b"ReadFailed":"read_failed",
         b"Unstable":"unstable",b"InvalidHeader":"invalid_header",b"InvalidIdentity":"invalid_identity",
         b"InvalidBuild":"invalid_build",b"InvalidState":"invalid_state",b"Observed":"observed"}
@@ -126,7 +130,7 @@ def direct_ready_lines(raw):
         b"Some(InvalidHandle)":"invalid_handle",b"Some(InvalidData)":"invalid_data",
         b"Some(InvalidParameter)":"invalid_parameter",b"Some(BrokenPipe)":"broken_pipe",b"Some(Busy)":"busy",
         b"Some(WaitTimeout)":"wait_timeout",b"Some(Timeout)":"timeout",b"Some(Unknown)":"unknown"}
-    wanted = ("phase", "target") + DIRECT_READY_FIELDS
+    wanted = ("phase", "target") + DIRECT_READY_FIELDS + ("identity_guard",)
     seen = set()
     for line in raw[:raw.rfind(b"\n")+1].splitlines():
         parts = line.split(b" ")
@@ -151,7 +155,11 @@ def direct_ready_lines(raw):
             result["malformed_record"] = True
             continue
         public = public_native_lifecycle({"native_lifecycle":row})
-        if public["status"] == "unrecognized":
+        guard = guards.get(values["identity_guard"])
+        if (public["status"] == "unrecognized" or guard is None
+                or (public["status"] == "identity_unavailable") != (guard != "identity_valid")
+                or (public["status"] == "identity_unavailable"
+                    and any(row[key] is not None for key in DIRECT_READY_FIELDS[1:]))):
             result["malformed_record"] = True
             continue
         label = values["target"].decode("ascii")
@@ -160,6 +168,7 @@ def direct_ready_lines(raw):
             continue
         seen.add(label)
         result[label] = public
+        result[label+"_identity_guard"] = guard
     return result
 
 
