@@ -122,6 +122,139 @@ class FailureLifecycleTests(unittest.TestCase):
         self.assertNotIn("private secret path", repr(cleanup))
 
 
+class FatalRecordTests(unittest.TestCase):
+    identity = (42,132223104000000000)
+    mapped = r"\device\harddiskvolume77\private\runtime\protoinputhooks64.dll"
+    address, base = 0x7ff800001234, 0x7ff800000000
+
+    def record(self, identity=None, setup=None, fatal=None, path=None):
+        helper = provider.crash_events
+        identity = self.identity if identity is None else identity
+        words = [helper.FATAL_MAGIC,1,helper.FATAL_SIZE,*identity,1,0x8003,0,0,0,0,0,0,0,0,helper.FATAL_MAGIC]
+        if setup:
+            for key, value in setup.items(): words[key] = value
+        before = helper.struct.pack("<16Q", *words)+bytes(1024)
+        path = self.mapped if path is None else path
+        encoded = path.encode("utf-16-le")
+        words[5:15] = [2,words[6],0,0xc0000005,0,self.address,self.base,0x1000000,len(encoded)//2,1]
+        if fatal:
+            for key, value in fatal.items(): words[key] = value
+        return before+helper.struct.pack("<16Q", *words)+encoded+bytes(1024-len(encoded))
+
+    def decode(self, raw, identity=None, exit_class="access_violation", modules=None):
+        return provider.crash_events.fatal_record(raw, self.identity if identity is None else identity,
+            exit_class, {self.mapped:"a"*64} if modules is None else modules, None)
+
+    def test_complete_record_admits_relative_instruction_only_after_all_guards(self):
+        public = self.decode(self.record())
+        self.assertEqual(public["status"], "observed")
+        self.assertEqual(public["instruction_rva"], 0x1234)
+        self.assertEqual(public["module_class"], "protoinput_hooks")
+        self.assertEqual(public["admitted_module_sha256"], "a"*64)
+        self.assertEqual(public["filter_outcome"], "continue_search")
+        self.assertFalse(public["loaded_module_hash_proved"])
+        self.assertNotIn("private", repr(public))
+        self.assertNotIn(str(self.address), repr(public))
+        self.assertNotIn(str(self.identity[1]), repr(public))
+        self.assertEqual(self.decode(self.record(fatal={9:1}))["filter_outcome"], "execute_handler")
+        for raw in (b"", self.record()[:-1], self.record()+b"x", self.record()[:1151]):
+            self.assertIsNone(self.decode(raw)["instruction_rva"])
+        self.assertEqual(self.decode(self.record()[:1152])["status"], "prepared_no_fatal_record")
+
+    def test_wrong_identity_recovery_unknown_mapping_and_invalid_padding_never_attribute(self):
+        samples = [self.record(setup={0:0}),self.record(setup={6:0x100000000}),
+            self.record(fatal={3:43}),self.record(fatal={4:self.identity[1]+1}),
+            self.record(fatal={8:1}),self.record(fatal={9:0xffffffffffffffff}),
+            self.record(fatal={10:self.base-1}),self.record(fatal={11:0}),self.record(fatal={12:0x20000}),
+            self.record(fatal={13:512}),self.record(fatal={14:2}),self.record(fatal={10:self.base+0x100000000}),
+            self.record()[:-1]+b"x",self.record(path=r"\device\harddiskvolume77\private\unknown.dll")]
+        for raw in samples:
+            public = self.decode(raw)
+            self.assertNotEqual(public["status"], "observed")
+            self.assertIsNone(public["instruction_rva"])
+            self.assertIsNone(public["admitted_module_sha256"])
+            self.assertNotIn("private", repr(public))
+        for exit_class in (None,"running","zero","other_nonzero"):
+            self.assertEqual(self.decode(self.record(), exit_class=exit_class)["status"], "exit_unconfirmed")
+        self.assertIsNone(self.decode(self.record(), identity=(43,self.identity[1]))["instruction_rva"])
+        self.assertEqual(self.decode(self.record(), modules={})["status"], "module_unrecognized")
+
+    def test_opt_in_is_removed_from_third_target_and_inherited_environment(self):
+        helper = provider.crash_events
+        with patch.dict(provider.os.environ, {helper.FATAL_ENV:"private-av-v1","UNCHANGED_TEST":"yes"}):
+            for index in (0,1,2,-1,True,None):
+                environment = provider.provider_target_env(index)
+                self.assertEqual(environment["UNCHANGED_TEST"], "yes")
+                self.assertEqual(environment.get(helper.FATAL_ENV), "private-av-v1" if type(index) is int and index in (0,1) else None)
+            self.assertEqual(provider.os.environ[helper.FATAL_ENV], "private-av-v1")
+
+    def test_owned_records_read_once_with_existing_identity_and_terminal_status_no_poll(self):
+        helper, reads, sizes = provider.crash_events, [], []
+        gate = Gate(FakeGui())
+        gate.targets_processes = [object(),object(),object()]
+        gate.fatal_owned_identities = {"target_a":self.identity,"target_b":(43,self.identity[1]+1)}
+        gate.result["target_termination_diagnostics"] = {label:{"exit_class":"access_violation"} for label in ("target_a","target_b")}
+        original = json.loads(json.dumps(gate.result))
+        class Log(io.BytesIO):
+            def read(self, count): sizes.append(count); return super().read(count)
+        def opened(path, mode):
+            self.assertEqual(mode, "rb")
+            reads.append(path.name)
+            identity = self.identity if path.name.startswith("target-0") else (43,self.identity[1]+1)
+            return Log(self.record(identity=identity))
+        with patch.object(provider.os, "name", "nt"), \
+                patch.dict(provider.os.environ, {"GITHUB_ACTIONS":"true","RUNNER_ENVIRONMENT":"github-hosted"}), \
+                patch.object(helper, "mapped_admissions", return_value=({self.mapped:"a"*64},None)), \
+                patch.object(provider.time, "monotonic", return_value=1), \
+                patch.object(Path, "open", autospec=True, side_effect=opened):
+            gate.target_fatal_record_diagnostics()
+            gate.target_fatal_record_diagnostics()
+        self.assertEqual(reads, ["target-0.fatal.private.bin","target-1.fatal.private.bin"])
+        self.assertEqual(sizes, [2305,2305])
+        self.assertEqual({key:gate.result[key] for key in original}, original)
+        self.assertEqual(gate.result["target_fatal_records"]["target_b"]["status"], "observed")
+
+    def test_mapped_admission_uses_only_known_drives_and_same_deadline(self):
+        helper, calls = provider.crash_events, []
+        class Query:
+            def __call__(self, drive, buffer, capacity):
+                calls.append((drive,capacity))
+                buffer.value = r"\Device\HarddiskVolume77" if drive == "d:" else r"\Device\HarddiskVolume11"
+                return len(buffer.value)+2
+        with patch.object(helper.ctypes, "WinDLL", create=True, return_value=SimpleNamespace(QueryDosDeviceW=Query())), \
+                patch.object(helper.time, "monotonic", return_value=1):
+            mapped, system = helper.mapped_admissions({r"D:\private\runtime\ProtoInputHooks64.dll":"a"*64}, 2)
+        self.assertEqual(calls, [("c:",32768),("d:",32768)])
+        self.assertEqual(mapped, {self.mapped:"a"*64})
+        self.assertEqual(system, r"\device\harddiskvolume11\windows\system32")
+
+    def test_ineligible_exit_never_queries_mapping_or_reads_a_record(self):
+        helper, gate = provider.crash_events, Gate(FakeGui())
+        gate.targets_processes = [object(),object()]
+        gate.fatal_owned_identities = {"target_a":self.identity,"target_b":self.identity}
+        gate.result["target_termination_diagnostics"] = {label:{"exit_class":"zero"} for label in ("target_a","target_b")}
+        with patch.object(provider.os, "name", "nt"), \
+                patch.dict(provider.os.environ, {"GITHUB_ACTIONS":"true","RUNNER_ENVIRONMENT":"github-hosted"}), \
+                patch.object(helper, "mapped_admissions", side_effect=AssertionError("no ineligible mapping")) as mapped, \
+                patch.object(Path, "open", side_effect=AssertionError("no ineligible read")) as opened:
+            gate.target_fatal_record_diagnostics()
+        self.assertEqual(mapped.call_count, 0)
+        self.assertEqual(opened.call_count, 0)
+        self.assertEqual(gate.result["target_fatal_records"]["target_a"]["status"], "exit_unconfirmed")
+
+    def test_mapping_expiry_after_api_binding_starts_no_device_query(self):
+        helper, clock, calls = provider.crash_events, [1], []
+        class Query:
+            def __call__(self, *args): calls.append(args); raise AssertionError("expired query")
+        def load(*args, **kwargs):
+            clock[0] = 3
+            return SimpleNamespace(QueryDosDeviceW=Query())
+        with patch.object(helper.ctypes, "WinDLL", create=True, side_effect=load), \
+                patch.object(helper.time, "monotonic", side_effect=lambda: clock[0]):
+            with self.assertRaises(TimeoutError): helper.mapped_admissions({}, 2)
+        self.assertEqual(calls, [])
+
+
 class CrashEventTests(unittest.TestCase):
     image = r"D:\private\protoinputmultiplex.exe"
     module = r"D:\private\runtime\ProtoInputHooks64.dll"
@@ -887,6 +1020,12 @@ class MainObservationOrderTests(unittest.TestCase):
                         if diagnostic_throws:
                             raise RuntimeError("private secret event failure")
 
+                    def target_fatal_record_diagnostics(self):
+                        trace.append("fatal_record")
+                        assert self.result["failure_cleanup"]["outcome"] == "gui_exit_observed"
+                        if diagnostic_throws:
+                            raise RuntimeError("private secret fatal-record failure")
+
                 root = Path(directory)
                 result_path = root / "public-result.json"
                 argv = ["qualify-gui-desktop-provider.py"]
@@ -897,7 +1036,7 @@ class MainObservationOrderTests(unittest.TestCase):
                     with self.assertRaises(SystemExit) as exited:
                         provider.main()
                 self.assertEqual(exited.exception.code, 1 if fail else 0)
-                self.assertEqual(trace, ["run", "before_failure_cleanup", "target_termination", "cleanup", "crash_events"] if fail else ["run", "after_run"])
+                self.assertEqual(trace, ["run", "before_failure_cleanup", "target_termination", "cleanup", "crash_events", "fatal_record"] if fail else ["run", "after_run"])
                 self.assertEqual(len(samples), 1)
                 self.assertEqual(len(target_samples), 1 if fail else 0)
                 result = json.loads(result_path.read_text(encoding="utf-8"))

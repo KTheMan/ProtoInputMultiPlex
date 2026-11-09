@@ -1,4 +1,6 @@
 //! Explicit opt-in disposable Unicode EDIT target. Records only its test window's input.
+mod fatal;
+
 use anyhow::{Context, Result, ensure};
 use serde::Serialize;
 use std::{
@@ -838,6 +840,7 @@ pub fn run(
     if let Some(parent) = report.parent().filter(|p| !p.as_os_str().is_empty()) {
         std::fs::create_dir_all(parent)?;
     }
+    fatal::install(&report);
     SNAPSHOT
         .set(Mutex::new(Snapshot {
             pid,

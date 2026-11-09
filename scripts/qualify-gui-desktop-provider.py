@@ -35,6 +35,14 @@ crash_events = module("provider_crash_events", "provider-crash-events.py")
 require = base.require
 
 
+def provider_target_env(index):
+    environment = dict(os.environ)
+    environment.pop(crash_events.FATAL_ENV, None)
+    if type(index) is int and index in (0,1):
+        environment[crash_events.FATAL_ENV] = "private-av-v1"
+    return environment
+
+
 PUBLIC_FAILURE_CLASSES = frozenset({"Rejected", "AssertionError", "FileNotFoundError", "TimeoutError",
     "BrokenPipeError", "EOFError", "JSONDecodeError", "KeyError", "TypeError", "ValueError", "Empty", "TimeoutExpired"})
 NATIVE_STDERR_LIMIT = 4 * 1024 * 1024
@@ -492,6 +500,7 @@ class ProviderPair(base.Pair):
             diagnostic["query_status"] = "deadline_exhausted"
             return
         identities = []
+        self.fatal_owned_identities = {}
         for index, label in enumerate(("target_a", "target_b")):
             if index >= len(getattr(self, "targets_processes", ())):
                 diagnostic[label] = crash_events.empty_observation("not_owned")
@@ -500,7 +509,9 @@ class ProviderPair(base.Pair):
                 diagnostic["query_status"] = "deadline_exhausted"
                 return
             try:
-                identities.append((label,crash_events.original_creation(self.targets_processes[index], self.end)))
+                identity = crash_events.original_creation(self.targets_processes[index], self.end)
+                identities.append((label,identity))
+                self.fatal_owned_identities[label] = identity
             except TimeoutError:
                 diagnostic["query_status"] = "deadline_exhausted"
                 return
@@ -536,6 +547,53 @@ class ProviderPair(base.Pair):
             diagnostic["failure_class"] = public_failure_class(error)
         # Exact event identity/time/image matching is not packet receipt or cause.
         # Event absence, partial query and unverified PDBs stay inconclusive.
+
+    def target_fatal_record_diagnostics(self):
+        if getattr(self, "fatal_records_sampled", False):
+            return
+        self.fatal_records_sampled = True
+        diagnostic = {"collection_phase":"after_existing_failure_cleanup","mapping_status":"not_started",
+            "target_a":crash_events.empty_fatal(),"target_b":crash_events.empty_fatal()}
+        self.result["target_fatal_records"] = diagnostic
+        if not (os.name == "nt" and os.environ.get("GITHUB_ACTIONS") == "true"
+                and os.environ.get("RUNNER_ENVIRONMENT") == "github-hosted"):
+            diagnostic["mapping_status"] = "hosted_windows_required"
+            return
+        eligible = []
+        for index, label in enumerate(("target_a", "target_b")):
+            if index >= len(getattr(self, "targets_processes", ())):
+                diagnostic[label] = crash_events.empty_fatal("not_owned")
+                continue
+            identity = getattr(self, "fatal_owned_identities", {}).get(label)
+            exit_class = self.result.get("target_termination_diagnostics", {}).get(label, {}).get("exit_class")
+            if identity is None or exit_class != "access_violation":
+                diagnostic[label] = crash_events.empty_fatal("identity_unavailable" if identity is None else "exit_unconfirmed")
+                continue
+            eligible.append((index,label,identity,exit_class))
+        if not eligible:
+            diagnostic["mapping_status"] = "no_eligible_target"
+            return
+        try:
+            mapped, system = crash_events.mapped_admissions(getattr(self, "crash_admitted_modules", {}), self.end)
+            diagnostic["mapping_status"] = "queried"
+        except BaseException as error:
+            diagnostic["mapping_status"] = "deadline_exhausted" if isinstance(error, TimeoutError) else "unavailable"
+            return
+        for index, label, identity, exit_class in eligible:
+            if time.monotonic() >= self.end:
+                diagnostic[label] = crash_events.empty_fatal("deadline_exhausted")
+                continue
+            try:
+                with (self.private / f"target-{index}.fatal.private.bin").open("rb") as source:
+                    raw = source.read(crash_events.FATAL_TOTAL+1)
+                if time.monotonic() >= self.end:
+                    diagnostic[label] = crash_events.empty_fatal("deadline_exhausted")
+                    continue
+                diagnostic[label] = crash_events.fatal_record(raw, identity, exit_class, mapped, system)
+            except FileNotFoundError:
+                diagnostic[label] = crash_events.empty_fatal("absent")
+            except BaseException:
+                diagnostic[label] = crash_events.empty_fatal("read_failed")
 
     def native_submission_diagnostics(self, collection_phase="direct_observation"):
         diagnostic = {"collection_phase":collection_phase,
@@ -1123,7 +1181,7 @@ class ProviderPair(base.Pair):
         data = self.strict_json("preferences_json",args.source/"fixtures/gui-sdk-preparation/app-preferences.json")
         data["load_profile_at_startup"] = True
         self.preferences.write_text(json.dumps(data),encoding="utf-8"); self.preferences_initial = self.preferences.read_bytes()
-        self.targets_processes = [self.launch([self.exe,"probe","--automation","--report",self.private/f"target-{i}.json"],f"target-{i}") for i in range(3)]
+        self.targets_processes = [self.launch([self.exe,"probe","--automation","--report",self.private/f"target-{i}.json"],f"target-{i}",provider_target_env(i)) for i in range(3)]
         self.pids = [p.pid for p in self.targets_processes]
         self.place_targets()
         self.seat_ids = ["provider-a","provider-b","provider-c"]
@@ -1221,6 +1279,10 @@ def main():
             gate.target_crash_event_diagnostics()
         except BaseException:
             pass  # Preserve the original FAIL and already-completed cleanup.
+        try:
+            gate.target_fatal_record_diagnostics()
+        except BaseException:
+            pass  # A private crash record cannot replace the original failure.
     else:
         gate.native_submission_diagnostics("after_run")
     require(not args.public_result.exists())

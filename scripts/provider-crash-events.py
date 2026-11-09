@@ -4,6 +4,7 @@ from ctypes import wintypes
 from datetime import datetime, timezone
 import ntpath
 import re
+import struct
 import time
 import xml.etree.ElementTree as ET
 
@@ -16,6 +17,90 @@ OWN_MODULES = {"protoinputmultiplex.exe":"product", "protoinputhooks64.dll":"pro
     "protoinputmultiplex_cursor_observer64.dll":"cursor_observer"}
 SYSTEM_MODULES = frozenset({"ntdll.dll","kernelbase.dll","kernel32.dll","user32.dll","win32u.dll",
     "ucrtbase.dll","vcruntime140.dll","vcruntime140_1.dll","msvcp140.dll"})
+FATAL_ENV = "PROTOINPUTMULTIPLEX_QUALIFICATION_FATAL_RECORD"
+FATAL_MAGIC = 0x4c415441464d4950
+FATAL_SIZE = 1152
+FATAL_TOTAL = FATAL_SIZE * 2
+
+
+def mapped_admissions(modules, end):
+    # Only fixed admitted drives plus the fixed system-module directory. No PID
+    # query, process reopen, module load or symbol lookup is performed here.
+    if time.monotonic() >= end:
+        raise TimeoutError()
+    kernel = ctypes.WinDLL("kernel32", use_last_error=True)
+    kernel.QueryDosDeviceW.argtypes = [wintypes.LPCWSTR,wintypes.LPWSTR,wintypes.DWORD]
+    kernel.QueryDosDeviceW.restype = wintypes.DWORD
+    paths = {windows_path(path):sha for path, sha in modules.items()}
+    drives = sorted({ntpath.splitdrive(path)[0] for path in paths} | {"c:"})
+    devices = {}
+    for drive in drives:
+        if re.fullmatch(r"[a-z]:", drive) is None:
+            continue
+        buffer = ctypes.create_unicode_buffer(32768)
+        if time.monotonic() >= end:
+            raise TimeoutError()
+        length = kernel.QueryDosDeviceW(drive, buffer, len(buffer))
+        if 0 < length < len(buffer) and buffer.value.lower().startswith("\\device\\"):
+            devices[drive] = buffer.value.lower()
+    mapped = {devices[path[:2]]+path[2:]:sha for path, sha in paths.items() if path[:2] in devices}
+    system = devices.get("c:")
+    return mapped, None if system is None else system+r"\windows\system32"
+
+
+def empty_fatal(status="unobserved"):
+    return {"status":status,"module_class":None,"own_module_basename":None,
+        "admitted_module_sha256":None,"instruction_rva":None,"exception_class":None,
+        "filter_outcome":None,"loaded_module_hash_proved":False}
+
+
+def fatal_record(raw, identity, exit_class, modules, system):
+    public = empty_fatal()
+    if identity is None:
+        return empty_fatal("identity_unavailable")
+    if exit_class != "access_violation":
+        return empty_fatal("exit_unconfirmed")
+    if len(raw) not in (FATAL_SIZE,FATAL_TOTAL):
+        return empty_fatal("incomplete_or_invalid_size")
+    setup = struct.unpack_from("<16Q", raw)
+    if (setup[:3] != (FATAL_MAGIC,1,FATAL_SIZE) or setup[3:5] != identity
+            or not 0 < setup[3] <= 0xffffffff or setup[4] == 0 or setup[5] != 1
+            or setup[6] > 0xffffffff or any(setup[7:15]) or setup[15] != FATAL_MAGIC
+            or any(raw[128:FATAL_SIZE])):
+        return empty_fatal("invalid_setup_or_identity")
+    if len(raw) == FATAL_SIZE:
+        return empty_fatal("prepared_no_fatal_record")
+    record = struct.unpack_from("<16Q", raw, FATAL_SIZE)
+    if (record[:5] != setup[:5] or record[5] != 2 or record[6] != setup[6]
+            or record[7] not in (0,1) or record[15] != FATAL_MAGIC):
+        return empty_fatal("invalid_record_or_identity")
+    if record[8] != 0xc0000005 or record[9] not in (0,1):
+        return empty_fatal("exception_or_nonresume_unconfirmed")
+    address, base, kind, length, path_status = record[10:15]
+    if kind != 0x1000000 or base == 0 or address < base or address-base > 0xffffffff:
+        return empty_fatal("image_relative_instruction_unavailable")
+    if path_status != 1 or not 0 < length < 512:
+        return empty_fatal("mapped_path_unavailable")
+    path_bytes = raw[FATAL_SIZE+128:]
+    if any(path_bytes[length*2:]):
+        return empty_fatal("invalid_path_padding")
+    try:
+        path = path_bytes[:length*2].decode("utf-16-le").lower()
+    except UnicodeError:
+        return empty_fatal("invalid_mapped_path")
+    if not path.startswith("\\device\\") or "\0" in path or ntpath.normpath(path) != path:
+        return empty_fatal("invalid_mapped_path")
+    basename = ntpath.basename(path)
+    admitted = modules.get(path)
+    if basename in OWN_MODULES and isinstance(admitted, str) and re.fullmatch(r"[0-9a-f]{64}", admitted):
+        public.update(module_class=OWN_MODULES[basename],own_module_basename=basename,admitted_module_sha256=admitted)
+    elif system is not None and ntpath.dirname(path) == system and basename in SYSTEM_MODULES:
+        public["module_class"] = "windows_system"
+    else:
+        return empty_fatal("module_unrecognized")
+    public.update(status="observed",instruction_rva=address-base,exception_class="access_violation",
+        filter_outcome="continue_search" if record[9] == 0 else "execute_handler")
+    return public
 
 
 def windows_path(value):
