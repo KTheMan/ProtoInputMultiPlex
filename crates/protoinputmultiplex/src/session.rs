@@ -2,11 +2,11 @@
 mod backend_selection;
 mod transport;
 
+use crate::desktop_router::observation as desktop_observation;
 use crate::{
     routing_engine::Engine,
     session_recovery::{PreparedRecovery, Recovery},
 };
-use crate::desktop_router::observation as desktop_observation;
 use anyhow::{Context, Result, bail, ensure};
 use mux_core::Profile;
 use mux_windows::{protoinput::Backend, raw_input};
@@ -225,9 +225,12 @@ struct EventBus {
 }
 impl SharedHandle {
     pub fn request(&self, request: Request) {
-        if matches!(&request, Request::DesktopObservation(_)) { return; }
+        if matches!(&request, Request::DesktopObservation(_)) {
+            return;
+        }
         if matches!(&request, Request::Stop) {
-            self.observation.fence(desktop_observation::LossReason::StopIntent);
+            self.observation
+                .fence(desktop_observation::LossReason::StopIntent);
             self.recovery.mark_stopping();
             self.stop_requested.store(true, Ordering::Release);
             return;
@@ -247,7 +250,9 @@ impl SharedHandle {
 impl EventBus {
     /// Publish to subscribers and return whether the direct controller may receive this event.
     fn publish(&mut self, event: &Event) -> bool {
-        if matches!(event, Event::DesktopObservation(_)) { return false; }
+        if matches!(event, Event::DesktopObservation(_)) {
+            return false;
+        }
         if let Event::Agent(state) = event
             && state.mapper_monitors.is_some()
         {
@@ -628,28 +633,64 @@ impl Controller {
     pub fn preflight_pending(&self) -> bool {
         self.preflight_pending.load(Ordering::Acquire)
     }
-    pub fn desktop_observation_generation(&self) -> u64 { self.observation.generation() }
-    pub fn desktop_observation_live(&self, tag: desktop_observation::BindingTag) -> bool { self.observation.live(tag) }
-    pub fn take_desktop_observations(&self) -> Vec<desktop_observation::Delivery> { self.observation.take() }
-    pub fn bind_desktop_observation(&self, request: u64, seat_identity: String) -> Result<desktop_observation::BindingTag, desktop_observation::BindRejection> {
-        if seat_identity.is_empty() || seat_identity.len() > 128 || seat_identity.chars().any(char::is_control) { return Err(desktop_observation::BindRejection::MissingSeat); }
+    pub fn desktop_observation_generation(&self) -> u64 {
+        self.observation.generation()
+    }
+    pub fn desktop_observation_live(&self, tag: desktop_observation::BindingTag) -> bool {
+        self.observation.live(tag)
+    }
+    pub fn take_desktop_observations(&self) -> Vec<desktop_observation::Delivery> {
+        self.observation.take()
+    }
+    pub fn bind_desktop_observation(
+        &self,
+        request: u64,
+        seat_identity: String,
+    ) -> Result<desktop_observation::BindingTag, desktop_observation::BindRejection> {
+        if seat_identity.is_empty()
+            || seat_identity.len() > 128
+            || seat_identity.chars().any(char::is_control)
+        {
+            return Err(desktop_observation::BindRejection::MissingSeat);
+        }
         let tag = self.observation.begin(request)?;
-        if self.requests.send(Request::DesktopObservation(desktop_observation::Command::Bind { request, tag, seat_identity })).is_err() {
+        if self
+            .requests
+            .send(Request::DesktopObservation(
+                desktop_observation::Command::Bind {
+                    request,
+                    tag,
+                    seat_identity,
+                },
+            ))
+            .is_err()
+        {
             self.observation.fence(desktop_observation::LossReason::Eof);
             return Err(desktop_observation::BindRejection::StaleGeneration);
         }
         Ok(tag)
     }
     pub fn unbind_desktop_observation(&self, tag: desktop_observation::BindingTag) {
-        if self.observation.cancel(tag, desktop_observation::LossReason::Unbound)
-            && self.requests.send(Request::DesktopObservation(desktop_observation::Command::Unbind { tag })).is_err() {
+        if self
+            .observation
+            .cancel(tag, desktop_observation::LossReason::Unbound)
+            && self
+                .requests
+                .send(Request::DesktopObservation(
+                    desktop_observation::Command::Unbind { tag },
+                ))
+                .is_err()
+        {
             self.observation.fence(desktop_observation::LossReason::Eof);
         }
     }
     pub fn request(&self, request: Request) {
-        if matches!(&request, Request::DesktopObservation(_)) { return; }
+        if matches!(&request, Request::DesktopObservation(_)) {
+            return;
+        }
         if matches!(&request, Request::Stop) {
-            self.observation.fence(desktop_observation::LossReason::StopIntent);
+            self.observation
+                .fence(desktop_observation::LossReason::StopIntent);
             self.recovery.mark_stopping();
             self.shared.stop_requested.store(true, Ordering::Release);
             return;
@@ -947,7 +988,10 @@ fn supervise(
     }
     let mut worker = Worker(
         Command::new(executable)
-            .env(desktop_observation::GENERATION_ENV, observation.generation().to_string())
+            .env(
+                desktop_observation::GENERATION_ENV,
+                observation.generation().to_string(),
+            )
             .arg("session-worker")
             .arg("--runtime")
             .arg(runtime)
@@ -982,15 +1026,18 @@ fn supervise(
                     reader_observation.receive(delivery);
                     continue;
                 }
-                if matches!(&event, Event::Stopped | Event::Failed(_)) { reader_observation.fence(desktop_observation::LossReason::Eof); }
+                if matches!(&event, Event::Stopped | Event::Failed(_)) {
+                    reader_observation.fence(desktop_observation::LossReason::Eof);
+                }
                 if let Event::Attaching(pid) = &event {
                     reader_recovery.observe_attempt(*pid);
                 }
                 // Even if the supervisor is unwinding, drain through EOF:
                 // later buffered Attaching records still affect quarantine.
                 let _ = messages.send(event);
+            } else if line.starts_with(PREFIX) {
+                reader_observation.fence(desktop_observation::LossReason::Sequence);
             }
-            else if line.starts_with(PREFIX) { reader_observation.fence(desktop_observation::LossReason::Sequence); }
         }
         reader_observation.fence(desktop_observation::LossReason::Eof);
     }));
@@ -1203,9 +1250,21 @@ fn wait_for_worker_exit(worker: &mut Child) -> Result<std::process::ExitStatus> 
 
 pub(crate) fn emit(event: Event) -> Result<()> {
     let json = serde_json::to_string(&event)?;
-    if matches!(&event, Event::DesktopObservation(_)) && json.len() > desktop_observation::MAX_DELIVERY_JSON_BYTES {
-        println!("{PREFIX}{}", serde_json::to_string(&Event::DesktopObservation(desktop_observation::Delivery::Lost { tag: None, reason: desktop_observation::LossReason::Overflow }))?);
-    } else { println!("{PREFIX}{json}"); }
+    if matches!(&event, Event::DesktopObservation(_))
+        && json.len() > desktop_observation::MAX_DELIVERY_JSON_BYTES
+    {
+        println!(
+            "{PREFIX}{}",
+            serde_json::to_string(&Event::DesktopObservation(
+                desktop_observation::Delivery::Lost {
+                    tag: None,
+                    reason: desktop_observation::LossReason::Overflow
+                }
+            ))?
+        );
+    } else {
+        println!("{PREFIX}{json}");
+    }
     std::io::stdout().flush()?;
     Ok(())
 }
@@ -1230,9 +1289,17 @@ fn input_ack(result: Result<()>, automation: &crate::macro_studio::Runtime) -> R
 }
 fn emit_desktop_observations(router: &mut dyn Engine, signals: &WorkerIoSignals) -> Result<()> {
     let operation = if signals.cancel.load(Ordering::Acquire) {
-        desktop_observation::Operation::Fence(if signals.ordinary_stop() { desktop_observation::LossReason::StopIntent } else { desktop_observation::LossReason::Eof })
-    } else { desktop_observation::Operation::Drain };
-    for delivery in router.desktop_observation(operation) { emit(Event::DesktopObservation(delivery))?; }
+        desktop_observation::Operation::Fence(if signals.ordinary_stop() {
+            desktop_observation::LossReason::StopIntent
+        } else {
+            desktop_observation::LossReason::Eof
+        })
+    } else {
+        desktop_observation::Operation::Drain
+    };
+    for delivery in router.desktop_observation(operation) {
+        emit(Event::DesktopObservation(delivery))?;
+    }
     Ok(())
 }
 /// Validation is a command rejection; only failures after validation enter the
@@ -1378,14 +1445,24 @@ pub fn run(runtime: &Path, controller_pid: u32) -> Result<()> {
                     matches!(serde_json::from_str::<Request>(text), Ok(Request::Stop))
                 }) {
                     reader_signals.request_stop();
-                    let _ = emit(Event::DesktopObservation(desktop_observation::Delivery::Lost { tag: None, reason: desktop_observation::LossReason::StopIntent }));
+                    let _ = emit(Event::DesktopObservation(
+                        desktop_observation::Delivery::Lost {
+                            tag: None,
+                            reason: desktop_observation::LossReason::StopIntent,
+                        },
+                    ));
                 }
                 if tx.send(line).is_err() {
                     break;
                 }
             }
             reader_signals.disconnect();
-            let _ = emit(Event::DesktopObservation(desktop_observation::Delivery::Lost { tag: None, reason: desktop_observation::LossReason::Eof }));
+            let _ = emit(Event::DesktopObservation(
+                desktop_observation::Delivery::Lost {
+                    tag: None,
+                    reason: desktop_observation::LossReason::Eof,
+                },
+            ));
         });
         let mut profile: Profile = serde_json::from_str(&rx.recv().context("missing profile")??)?;
         profile.normalize_ids()?;
@@ -1575,7 +1652,11 @@ pub fn run(runtime: &Path, controller_pid: u32) -> Result<()> {
                 Ok(false)
             });
             if background? {
-                for delivery in router.desktop_observation(desktop_observation::Operation::Fence(desktop_observation::LossReason::StopIntent)) { emit(Event::DesktopObservation(delivery))?; }
+                for delivery in router.desktop_observation(desktop_observation::Operation::Fence(
+                    desktop_observation::LossReason::StopIntent,
+                )) {
+                    emit(Event::DesktopObservation(delivery))?;
+                }
                 io_signals.begin_cleanup();
                 agents.cancel_annotation_export();
                 break;
@@ -2149,7 +2230,11 @@ pub fn run(runtime: &Path, controller_pid: u32) -> Result<()> {
                 Ok(false)
             });
             if dispatched? {
-                for delivery in router.desktop_observation(desktop_observation::Operation::Fence(desktop_observation::LossReason::StopIntent)) { emit(Event::DesktopObservation(delivery))?; }
+                for delivery in router.desktop_observation(desktop_observation::Operation::Fence(
+                    desktop_observation::LossReason::StopIntent,
+                )) {
+                    emit(Event::DesktopObservation(delivery))?;
+                }
                 io_signals.begin_cleanup();
                 agents.cancel_annotation_export();
                 break;
@@ -2462,16 +2547,35 @@ mod attachment_event_tests {
     #[test]
     fn observation_stop_fences_pending_before_worker_or_event_backlog() {
         let (controller, _, requests, _) = Controller::test_fixture();
-        let tag = controller.bind_desktop_observation(1, "seat-a".into()).unwrap();
+        let tag = controller
+            .bind_desktop_observation(1, "seat-a".into())
+            .unwrap();
         let shared = controller.shared_handle();
-        shared.request(Request::DesktopObservation(desktop_observation::Command::Unbind { tag }));
-        controller.request(Request::DesktopObservation(desktop_observation::Command::Unbind { tag }));
-        assert_eq!(requests.try_iter().count(), 1, "only the private Bind was admitted");
+        shared.request(Request::DesktopObservation(
+            desktop_observation::Command::Unbind { tag },
+        ));
+        controller.request(Request::DesktopObservation(
+            desktop_observation::Command::Unbind { tag },
+        ));
+        assert_eq!(
+            requests.try_iter().count(),
+            1,
+            "only the private Bind was admitted"
+        );
         shared.request(Request::Stop);
         assert!(!controller.desktop_observation_live(tag));
-        assert_eq!(controller.take_desktop_observations(), vec![desktop_observation::Delivery::Lost { tag: None, reason: desktop_observation::LossReason::StopIntent }]);
+        assert_eq!(
+            controller.take_desktop_observations(),
+            vec![desktop_observation::Delivery::Lost {
+                tag: None,
+                reason: desktop_observation::LossReason::StopIntent
+            }]
+        );
         let observer = shared.subscribe(7, 1);
-        let event = Event::DesktopObservation(desktop_observation::Delivery::Lost { tag: None, reason: desktop_observation::LossReason::Eof });
+        let event = Event::DesktopObservation(desktop_observation::Delivery::Lost {
+            tag: None,
+            reason: desktop_observation::LossReason::Eof,
+        });
         assert!(!shared.bus.lock().unwrap().publish(&event));
         assert!(observer.try_recv().is_err());
         assert!(shared.bus.lock().unwrap().latest.is_empty());

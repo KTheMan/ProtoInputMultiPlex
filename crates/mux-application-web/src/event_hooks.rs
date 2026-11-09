@@ -16,10 +16,14 @@ pub(crate) fn validate_snapshot_query(
 }
 #[cfg(any(target_arch = "wasm32", test))]
 pub(crate) fn validate_snapshot_query_with_desktop(
-    snapshot: mux_core::application_event::Snapshot, epoch: u64, version: Option<u32>,
+    snapshot: mux_core::application_event::Snapshot,
+    epoch: u64,
+    version: Option<u32>,
 ) -> Result<(), mux_application_sdk::FoldError> {
     let mut query = mux_application_sdk::ClientState::default();
-    if let Some(version) = version { query.enable_desktop_observation(version)?; }
+    if let Some(version) = version {
+        query.enable_desktop_observation(version)?;
+    }
     query.install_snapshot(snapshot, epoch)
 }
 
@@ -72,7 +76,9 @@ impl EventFilter {
         };
         events.iter().any(|envelope| {
             let (kind, user) = match &envelope.event {
-                Event::Input { user, .. } | Event::DesktopObserved { user, .. } => (EventKind::Input, Some(*user)),
+                Event::Input { user, .. } | Event::DesktopObserved { user, .. } => {
+                    (EventKind::Input, Some(*user))
+                }
                 Event::UserCreated { user } | Event::UserUpdated { user } => {
                     (EventKind::Users, Some(user.id))
                 }

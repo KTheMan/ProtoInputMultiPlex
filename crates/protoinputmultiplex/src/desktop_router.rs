@@ -1,6 +1,5 @@
 //! Rust desktop routing: click-selected windows, process leases, capture and switched ownership.
 pub(crate) mod observation;
-use observation::{Admission, Change, ConfiguredCursor, Journal, LossReason};
 use crate::router::{State, keyboard_supported, validate_keyboard_settings};
 use anyhow::{Context, Result, ensure};
 use mux_core::{
@@ -16,7 +15,11 @@ use mux_windows::{
     protoinput::DesktopBackend,
     targets::{self, Surface},
 };
-use std::{collections::{BTreeMap, BTreeSet}, time::Instant};
+use observation::{Admission, Change, ConfiguredCursor, Journal, LossReason};
+use std::{
+    collections::{BTreeMap, BTreeSet},
+    time::Instant,
+};
 
 struct ExplicitSelection {
     identity: targets::ValidatedSelection,
@@ -261,8 +264,11 @@ impl DesktopRouter {
     fn prepare_selected_input(&mut self, user: usize) -> Result<()> {
         let before = (self.users[user].cursor.x, self.users[user].cursor.y);
         let result = self.prepare_selected_input_inner(user);
-        if result.is_err() { self.observation_uncertain(user); }
-        else if before != (self.users[user].cursor.x, self.users[user].cursor.y) { self.observation_motion(user); }
+        if result.is_err() {
+            self.observation_uncertain(user);
+        } else if before != (self.users[user].cursor.x, self.users[user].cursor.y) {
+            self.observation_motion(user);
+        }
         result
     }
     fn prepare_selected_input_inner(&mut self, user: usize) -> Result<()> {
@@ -558,7 +564,10 @@ impl DesktopRouter {
         }).collect();
         Ok(Self {
             observation: Journal::default(),
-            observation_generation: std::env::var(observation::GENERATION_ENV).ok().and_then(|v| v.parse::<u64>().ok()).unwrap_or(0),
+            observation_generation: std::env::var(observation::GENERATION_ENV)
+                .ok()
+                .and_then(|v| v.parse::<u64>().ok())
+                .unwrap_or(0),
             backend,
             seats,
             seat_ids: profile.seats.iter().map(mux_core::Seat::identity).collect(),
@@ -920,7 +929,9 @@ impl DesktopRouter {
     }
     fn position(&mut self, user: usize, surface: &Surface) -> Result<usize> {
         let result = self.position_inner(user, surface);
-        if result.is_err() { self.observation_uncertain(user); }
+        if result.is_err() {
+            self.observation_uncertain(user);
+        }
         result
     }
     fn position_inner(&mut self, user: usize, surface: &Surface) -> Result<usize> {
@@ -967,7 +978,15 @@ impl DesktopRouter {
     }
     fn release_token(&mut self, token: (u32, u32)) -> Result<()> {
         let observed_user = self.held.get(&token).map(|held| held.user);
-        let shared_release = self.held.get(&token).is_some_and(|held| held.packet.kind == 1 && self.held.iter().any(|(other_token, other)| *other_token != token && other.target == held.target && other.packet.kind == 1 && other.packet.data == held.packet.data));
+        let shared_release = self.held.get(&token).is_some_and(|held| {
+            held.packet.kind == 1
+                && self.held.iter().any(|(other_token, other)| {
+                    *other_token != token
+                        && other.target == held.target
+                        && other.packet.kind == 1
+                        && other.packet.data == held.packet.data
+                })
+        });
         let before = observed_user.and_then(|user| self.observation_before(user));
         let mut submitted = false;
         let backend = &self.backend;
@@ -993,14 +1012,28 @@ impl DesktopRouter {
                         Self::release_packet(held.packet),
                     )
                 };
-                if result.is_ok() { submitted = true; }
+                if result.is_ok() {
+                    submitted = true;
+                }
                 result
             },
         );
         if let Some(user) = observed_user {
-            if result.is_err() { self.observation_uncertain(user); }
-            else if let Some(before) = before {
-                self.observation_hold_changes(user, before, if submitted { Admission::NativeSubmissionAccepted } else if shared_release { Admission::SharedNativeHold } else { Admission::LogicalOnly }, false);
+            if result.is_err() {
+                self.observation_uncertain(user);
+            } else if let Some(before) = before {
+                self.observation_hold_changes(
+                    user,
+                    before,
+                    if submitted {
+                        Admission::NativeSubmissionAccepted
+                    } else if shared_release {
+                        Admission::SharedNativeHold
+                    } else {
+                        Admission::LogicalOnly
+                    },
+                    false,
+                );
             }
         }
         result
@@ -1141,7 +1174,9 @@ impl DesktopRouter {
             self.release_all()?;
         }
         let result = self.backend.pause(paused);
-        if result.is_err() { self.observation_uncertain_all(); }
+        if result.is_err() {
+            self.observation_uncertain_all();
+        }
         result?;
         self.paused = paused;
         if !paused {
@@ -1186,7 +1221,13 @@ impl DesktopRouter {
             );
         }
         self.observation_motion(index);
-        self.observation_record(index, Change::Cursor { cursor: ConfiguredCursor::from(&self.users[index].settings) }, Admission::LogicalOnly);
+        self.observation_record(
+            index,
+            Change::Cursor {
+                cursor: ConfiguredCursor::from(&self.users[index].settings),
+            },
+            Admission::LogicalOnly,
+        );
         if !self.paused && !self.user_pauses[index].paused {
             self.motion(index)?;
         }
@@ -1370,7 +1411,13 @@ impl DesktopRouter {
                 self.position(owner, &surface)?
             };
             self.backend.release_to(target, window.hwnd, packet)?;
-            self.observation_record(user, Change::TextUnit { unit: u16::try_from(packet.data).expect("validated text unit") }, Admission::NativeSubmissionAccepted);
+            self.observation_record(
+                user,
+                Change::TextUnit {
+                    unit: u16::try_from(packet.data).expect("validated text unit"),
+                },
+                Admission::NativeSubmissionAccepted,
+            );
             return Ok(());
         }
         let identity = if packet.kind == 1 {
@@ -1462,7 +1509,18 @@ impl DesktopRouter {
                     },
                 );
             }
-            if let Some(before) = before { self.observation_hold_changes(user, before, if shared_down { Admission::SharedNativeHold } else { Admission::NativeSubmissionAccepted }, true); }
+            if let Some(before) = before {
+                self.observation_hold_changes(
+                    user,
+                    before,
+                    if shared_down {
+                        Admission::SharedNativeHold
+                    } else {
+                        Admission::NativeSubmissionAccepted
+                    },
+                    true,
+                );
+            }
             return Ok(());
         }
         if packet.flags == 0 {
@@ -1521,7 +1579,9 @@ impl DesktopRouter {
                 packet.data as u16 as i16,
                 modifiers,
             )?;
-            if let Some(change) = observation::wheel(packet) { self.observation_record(user, change, Admission::NativeSubmissionAccepted); }
+            if let Some(change) = observation::wheel(packet) {
+                self.observation_record(user, change, Admission::NativeSubmissionAccepted);
+            }
             return Ok(());
         }
         self.prepare_selected_input(user)?;
@@ -1592,8 +1652,12 @@ impl DesktopRouter {
             );
         }
         self.backend.submit(target, packet)?;
-        if let Some(before) = before { self.observation_hold_changes(user, before, Admission::NativeSubmissionAccepted, true); }
-        if let Some(change) = observation::wheel(packet) { self.observation_record(user, change, Admission::NativeSubmissionAccepted); }
+        if let Some(before) = before {
+            self.observation_hold_changes(user, before, Admission::NativeSubmissionAccepted, true);
+        }
+        if let Some(change) = observation::wheel(packet) {
+            self.observation_record(user, change, Admission::NativeSubmissionAccepted);
+        }
         self.users[user].status = format!(
             "{} · {}",
             if self.policy.mode == Mode::Switched {
@@ -1640,7 +1704,9 @@ impl DesktopRouter {
     }
     fn publish_motion(&mut self, user: usize, coalesce: bool) -> Result<()> {
         let result = self.publish_motion_inner(user, coalesce);
-        if result.is_err() { self.observation_uncertain(user); }
+        if result.is_err() {
+            self.observation_uncertain(user);
+        }
         result
     }
     fn publish_motion_inner(&mut self, user: usize, coalesce: bool) -> Result<()> {
@@ -1724,8 +1790,17 @@ impl DesktopRouter {
         self.observation_check_screens();
         let stop = self.guard.pump();
         for pid in self.backend.exited() {
-            let affected = self.held.values().filter_map(|held| (held.window.pid == pid && self.observation.observing_user(held.user)).then_some(held.user)).collect::<BTreeSet<_>>();
-            for user in affected { self.observation.fence_user(user, LossReason::Removed); }
+            let affected = self
+                .held
+                .values()
+                .filter_map(|held| {
+                    (held.window.pid == pid && self.observation.observing_user(held.user))
+                        .then_some(held.user)
+                })
+                .collect::<BTreeSet<_>>();
+            for user in affected {
+                self.observation.fence_user(user, LossReason::Removed);
+            }
             for user in 0..self.users.len() {
                 if self.policy.focus[user].is_some_and(|w| w.pid == pid) {
                     self.users[user].status = "Target exited; click another window".into();

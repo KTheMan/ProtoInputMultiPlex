@@ -84,10 +84,17 @@ impl ProgramOrigin {
     }
 }
 pub trait Engine {
-    fn desktop_observation(&mut self, operation: crate::desktop_router::observation::Operation) -> Vec<crate::desktop_router::observation::Delivery> {
+    fn desktop_observation(
+        &mut self,
+        operation: crate::desktop_router::observation::Operation,
+    ) -> Vec<crate::desktop_router::observation::Delivery> {
         use crate::desktop_router::observation::{BindRejection, Command, Delivery, Operation};
         match operation {
-            Operation::Command(Command::Bind { request, tag, .. }) => vec![Delivery::Rejected { request, tag, reason: BindRejection::Unsupported }],
+            Operation::Command(Command::Bind { request, tag, .. }) => vec![Delivery::Rejected {
+                request,
+                tag,
+                reason: BindRejection::Unsupported,
+            }],
             _ => Vec::new(),
         }
     }
@@ -377,7 +384,12 @@ impl Engine for Router {
     }
 }
 impl Engine for DesktopRouter {
-    fn desktop_observation(&mut self, operation: crate::desktop_router::observation::Operation) -> Vec<crate::desktop_router::observation::Delivery> { self.desktop_observation(operation) }
+    fn desktop_observation(
+        &mut self,
+        operation: crate::desktop_router::observation::Operation,
+    ) -> Vec<crate::desktop_router::observation::Delivery> {
+        self.desktop_observation(operation)
+    }
     fn user_pause_state(&self, user: usize) -> UserPauseState {
         self.user_pause_state(user)
     }

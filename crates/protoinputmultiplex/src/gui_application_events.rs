@@ -140,8 +140,10 @@ impl Draft {
         // Consent and user scope change only through separately observed controls.
     }
     fn approvals(&self) -> Result<(Grant, ControlGrant)> {
-        ensure!(!self.desktop_text || (self.desktop_observations && self.key_events),
-            "Typed desktop text requires desktop and keyboard observation approval");
+        ensure!(
+            !self.desktop_text || (self.desktop_observations && self.key_events),
+            "Typed desktop text requires desktop and keyboard observation approval"
+        );
         let input_family = self.pointer_events
             || self.key_events
             || self.delegated
@@ -502,7 +504,11 @@ impl Controller {
                 |state| state.phase.clone(),
             ),
             session_active: self.active(),
-            local_virtual_users: self.users.iter().filter(|user| !user.desktop_observed).count(),
+            local_virtual_users: self
+                .users
+                .iter()
+                .filter(|user| !user.desktop_observed)
+                .count(),
             desktop_bound_users: self.desktop_counts().0,
             desktop_pending_users: self.desktop_counts().1,
             native_observed_users: self.native.users().len(),
@@ -542,7 +548,10 @@ impl Controller {
         status
     }
     pub fn create_session_with_screens(&mut self, screens: ScreenState) -> Result<()> {
-        ensure!(self.desktop.empty(), "Finish desktop observation cleanup first");
+        ensure!(
+            self.desktop.empty(),
+            "Finish desktop observation cleanup first"
+        );
         ensure!(
             self.retired(),
             "Finish the previous application-event cleanup first"
@@ -725,18 +734,28 @@ impl Controller {
             "User selection is stale"
         );
         let has_desktop = self.selected_desktop_users();
-        ensure!(!has_desktop || self.draft.desktop_observations,
-            "Approve routed desktop observations for the selected desktop users");
-        ensure!(!has_desktop || !(controls.delegated_users || controls.user_lifecycle
-            || controls.cursor || controls.pointer_input || controls.key_input),
-            "Desktop observed users require observation-only receiver controls");
+        ensure!(
+            !has_desktop || self.draft.desktop_observations,
+            "Approve routed desktop observations for the selected desktop users"
+        );
+        ensure!(
+            !has_desktop
+                || !(controls.delegated_users
+                    || controls.user_lifecycle
+                    || controls.cursor
+                    || controls.pointer_input
+                    || controls.key_input),
+            "Desktop observed users require observation-only receiver controls"
+        );
         let owner = self.owner.context("Native consumer unavailable")?;
         let bridge = self
             .bridge
             .as_ref()
             .context("Cooperative session unavailable")?;
-        let needs_master = self.users.iter().any(|user|
-            !user.desktop_observed && self.draft.users.contains(&user.id));
+        let needs_master = self
+            .users
+            .iter()
+            .any(|user| !user.desktop_observed && self.draft.users.contains(&user.id));
         if needs_master {
             let ready = bridge.host().ready_for(owner)?;
             ensure!(
@@ -803,10 +822,15 @@ impl Controller {
         // Record immediately so any partial approval failure is explicitly retired.
         self.receivers[index].recipient = Some(recipient);
         let approved = (|| -> Result<()> {
-            bridge.approve_desktop_observation(recipient,
-                self.draft.desktop_observations.then_some(DesktopConsentV1 {
-                    version: 1, text_units: self.draft.desktop_text,
-                })).sdk()?;
+            bridge
+                .approve_desktop_observation(
+                    recipient,
+                    self.draft.desktop_observations.then_some(DesktopConsentV1 {
+                        version: 1,
+                        text_units: self.draft.desktop_text,
+                    }),
+                )
+                .sdk()?;
             bridge
                 .host_command(HostRequest {
                     version: PROTOCOL_VERSION,

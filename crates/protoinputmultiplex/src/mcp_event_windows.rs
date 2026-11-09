@@ -3,9 +3,9 @@
 use anyhow::{Context, Result, bail, ensure};
 use futures_util::{SinkExt, StreamExt};
 use mux_application_sdk::{
-    ClientCommand, ClientMessage, ClientRequest, ClientResponse, ClientState, DesktopEventHello, EventHello,
-    EventReady, FailureCode, FoldOutcome, HostRevision, HostViewportAction, HostedAction,
-    HostedMode, HostedPhase, MAX_REQUEST_BYTES, MAX_RESPONSE_BYTES, PROTOCOL_VERSION,
+    ClientCommand, ClientMessage, ClientRequest, ClientResponse, ClientState, DesktopEventHello,
+    EventHello, EventReady, FailureCode, FoldOutcome, HostRevision, HostViewportAction,
+    HostedAction, HostedMode, HostedPhase, MAX_REQUEST_BYTES, MAX_RESPONSE_BYTES, PROTOCOL_VERSION,
     RemoteWindowRef, Reply, ServerMessage, UserScope, WindowControl, WindowId, WindowInfo,
     WindowObservationSource,
 };
@@ -71,8 +71,12 @@ impl Descriptor {
             descriptor.protoinputmultiplex_application_events == PROTOCOL_VERSION,
             "Event connection version mismatch"
         );
-        ensure!(descriptor.desktop_observation_version.is_none_or(|version| version == 1),
-            "Unsupported desktop observation version");
+        ensure!(
+            descriptor
+                .desktop_observation_version
+                .is_none_or(|version| version == 1),
+            "Unsupported desktop observation version"
+        );
         let port_text = descriptor
             .endpoint
             .strip_prefix("ws://127.0.0.1:")
@@ -177,8 +181,9 @@ fn toolkit_only_admission(ready: &EventReady) -> bool {
     };
     ready.version == PROTOCOL_VERSION
         && ready.epoch != 0
-        && ready.desktop.is_none_or(|consent| consent.version == 1
-            && (!consent.text_units || ready.events.key_events))
+        && ready.desktop.is_none_or(|consent| {
+            consent.version == 1 && (!consent.text_units || ready.events.key_events)
+        })
         && !users.is_empty()
         && users.len() <= mux_application_sdk::MAX_USERS
         && users
@@ -203,10 +208,16 @@ impl Peer {
         Self::connect_scoped(path, window_only_admission, false).await
     }
 
-    async fn connect_scoped(path: &PathBuf, admission: fn(&EventReady) -> bool, desktop_allowed: bool) -> Result<Self> {
+    async fn connect_scoped(
+        path: &PathBuf,
+        admission: fn(&EventReady) -> bool,
+        desktop_allowed: bool,
+    ) -> Result<Self> {
         let (mut descriptor, address) = Descriptor::read(path)?;
-        ensure!(desktop_allowed || descriptor.desktop_observation_version.is_none(),
-            "Use the explicit toolkit event mode for desktop observations");
+        ensure!(
+            desktop_allowed || descriptor.desktop_observation_version.is_none(),
+            "Use the explicit toolkit event mode for desktop observations"
+        );
         let desktop_version = descriptor.desktop_observation_version;
         timeout(Duration::from_secs(5), async move {
             let stream = TcpStream::connect(address)
@@ -225,20 +236,32 @@ impl Peer {
             let credential = std::mem::take(&mut descriptor.credential);
             let hello = if let Some(version) = desktop_version {
                 serde_json::to_string(&DesktopEventHello {
-                    version: PROTOCOL_VERSION, credential, desktop_observation_version: version,
+                    version: PROTOCOL_VERSION,
+                    credential,
+                    desktop_observation_version: version,
                 })?
             } else {
-                serde_json::to_string(&EventHello { version: PROTOCOL_VERSION, credential })?
+                serde_json::to_string(&EventHello {
+                    version: PROTOCOL_VERSION,
+                    credential,
+                })?
             };
-            socket.send(Message::Text(hello.into())).await.context("send event admission")?;
+            socket
+                .send(Message::Text(hello.into()))
+                .await
+                .context("send event admission")?;
             drop(descriptor);
             let ServerMessage::Ready { ready } = Self::read_frame(&mut socket).await? else {
                 bail!("Event listener did not establish an approved receiver");
             };
-            ensure!(ready.desktop.map(|consent| consent.version) == desktop_version,
-                "Desktop observation negotiation did not match this receiver");
+            ensure!(
+                ready.desktop.map(|consent| consent.version) == desktop_version,
+                "Desktop observation negotiation did not match this receiver"
+            );
             let mut state = ClientState::default();
-            if let Some(version) = desktop_version { state.enable_desktop_observation(version)?; }
+            if let Some(version) = desktop_version {
+                state.enable_desktop_observation(version)?;
+            }
             ensure!(
                 admission(&ready),
                 "This receiver does not match the requested event mode"
@@ -1206,7 +1229,10 @@ mod tests {
     #[test]
     fn desktop_toolkit_admission_keeps_version_text_and_window_boundaries() {
         let mut ready = toolkit_ready();
-        ready.desktop = Some(mux_application_sdk::DesktopConsentV1 { version: 1, text_units: true });
+        ready.desktop = Some(mux_application_sdk::DesktopConsentV1 {
+            version: 1,
+            text_units: true,
+        });
         assert!(toolkit_only_admission(&ready));
         assert!(!window_only_admission(&ready));
         ready.events.key_events = false;

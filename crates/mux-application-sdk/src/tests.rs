@@ -1636,15 +1636,44 @@ fn standalone_ready_and_snapshot_keep_the_pre_hosted_capability_schema() {
     host.approve_events(ordinary, event_grant(UserScope::AllOwned, false))
         .unwrap();
     let provider = host.register_recipient("private desktop provider").unwrap();
-    let observed = host.create_desktop_observed(provider, "Observed", DesktopBaselineV1 {
-        version: 1, next_sequence: 1, screens: screens(), position: Point { x: 1, y: 1 },
-        cursor: ConfiguredDesktopCursor { shape: CursorShape::System, size: 32.5,
-            color: [1, 2, 3], visible: true, follow_application: false },
-        held_buttons: Vec::new(), native_held_keys: Vec::new(),
-    }).unwrap();
+    let observed = host
+        .create_desktop_observed(
+            provider,
+            "Observed",
+            DesktopBaselineV1 {
+                version: 1,
+                next_sequence: 1,
+                screens: screens(),
+                position: Point { x: 1, y: 1 },
+                cursor: ConfiguredDesktopCursor {
+                    shape: CursorShape::System,
+                    size: 32.5,
+                    color: [1, 2, 3],
+                    visible: true,
+                    follow_application: false,
+                },
+                held_buttons: Vec::new(),
+                native_held_keys: Vec::new(),
+            },
+        )
+        .unwrap();
     let cooperative = host.create_owned_user(ordinary, "Cooperative").unwrap();
-    host.approve_events(ordinary, event_grant(UserScope::Only(BTreeSet::from([observed, cooperative])), false)).unwrap();
-    host.approve_desktop_observation(ordinary, Some(DesktopConsentV1 { version: 1, text_units: false })).unwrap();
+    host.approve_events(
+        ordinary,
+        event_grant(
+            UserScope::Only(BTreeSet::from([observed, cooperative])),
+            false,
+        ),
+    )
+    .unwrap();
+    host.approve_desktop_observation(
+        ordinary,
+        Some(DesktopConsentV1 {
+            version: 1,
+            text_units: false,
+        }),
+    )
+    .unwrap();
     // Consent without decoder negotiation still uses the actual legacy decoder below.
     // Trusted publication must not leak a new variant to existing recipients.
     host.publish_hosted_state(hosted_model(1)).unwrap();
@@ -1652,7 +1681,12 @@ fn standalone_ready_and_snapshot_keep_the_pre_hosted_capability_schema() {
     assert!(current.hosted.is_none());
     assert_eq!(current.users.len(), 1);
     assert_eq!(current.users[0].id, cooperative);
-    assert!(serde_json::to_value(&current.users[0]).unwrap().get("desktop").is_none());
+    assert!(
+        serde_json::to_value(&current.users[0])
+            .unwrap()
+            .get("desktop")
+            .is_none()
+    );
     let legacy: LegacySnapshot =
         serde_json::from_value(serde_json::to_value(&current).unwrap()).unwrap();
     assert_eq!(legacy.version, current.version);

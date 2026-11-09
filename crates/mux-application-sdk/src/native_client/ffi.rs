@@ -139,7 +139,11 @@ pub unsafe extern "C" fn pim_app_native_connect(
                 Err(_) => return Status::Limit as i32,
             };
             let version = config.desktop_observation_version;
-            let config = ConnectConfig { endpoint: config.endpoint, exact_origin: config.exact_origin, event_credential: config.event_credential };
+            let config = ConnectConfig {
+                endpoint: config.endpoint,
+                exact_origin: config.exact_origin,
+                event_credential: config.event_credential,
+            };
             let connected = match version {
                 Some(version) => NativeClient::connect_desktop(config, own_hwnd, version),
                 None => NativeClient::connect(config, own_hwnd),

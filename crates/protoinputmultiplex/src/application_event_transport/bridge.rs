@@ -170,23 +170,50 @@ impl<A: WindowBackend> HostBridge<A> {
         &self.host
     }
 
-    pub fn screens(&self) -> &ScreenState { self.host.screens() }
-    pub fn create_desktop_observed(&mut self, owner: RecipientId, name: &str, baseline: DesktopBaselineV1) -> Result<UserId, Error> {
+    pub fn screens(&self) -> &ScreenState {
+        self.host.screens()
+    }
+    pub fn create_desktop_observed(
+        &mut self,
+        owner: RecipientId,
+        name: &str,
+        baseline: DesktopBaselineV1,
+    ) -> Result<UserId, Error> {
         self.host.create_desktop_observed(owner, name, baseline)
     }
-    pub fn publish_desktop_observation(&mut self, owner: RecipientId, user: UserId, record: DesktopRecordV1) -> Result<(), Error> {
+    pub fn publish_desktop_observation(
+        &mut self,
+        owner: RecipientId,
+        user: UserId,
+        record: DesktopRecordV1,
+    ) -> Result<(), Error> {
         self.host.publish_desktop_observation(owner, user, record)
     }
-    pub fn retire_desktop_observed(&mut self, owner: RecipientId, user: UserId) -> Result<(), Error> {
+    pub fn retire_desktop_observed(
+        &mut self,
+        owner: RecipientId,
+        user: UserId,
+    ) -> Result<(), Error> {
         self.host.retire_desktop_observed(owner, user)
     }
-    pub fn is_desktop_observed(&self, user: UserId) -> bool { self.host.is_desktop_observed(user) }
-    pub fn approve_desktop_observation(&mut self, recipient: RecipientId, consent: Option<DesktopConsentV1>) -> Result<(), Failure> {
+    pub fn is_desktop_observed(&self, user: UserId) -> bool {
+        self.host.is_desktop_observed(user)
+    }
+    pub fn approve_desktop_observation(
+        &mut self,
+        recipient: RecipientId,
+        consent: Option<DesktopConsentV1>,
+    ) -> Result<(), Failure> {
         if self.has_permit(recipient) {
             self.revoke_recipient(recipient);
-            return Err(failure(FailureCode::Ended, "receiver retired; register a fresh receiver before desktop approval"));
+            return Err(failure(
+                FailureCode::Ended,
+                "receiver retired; register a fresh receiver before desktop approval",
+            ));
         }
-        self.host.approve_desktop_observation(recipient, consent).map_err(Failure::from)
+        self.host
+            .approve_desktop_observation(recipient, consent)
+            .map_err(Failure::from)
     }
     pub fn publish_hosted_state(&mut self, state: HostedState) -> Result<(), Error> {
         self.host.publish_hosted_state(state)
@@ -572,11 +599,17 @@ impl<A: WindowBackend> HostBridge<A> {
                     ready,
                 } => {
                     let version = (lease.desktop_version.load(Ordering::Acquire) == 1).then_some(1);
-                    let state = if lease.live(&self.shared, now) && !self.clients.contains_key(&lease.id) {
-                        self.host.negotiate_desktop_observation(lease.recipient, version)
-                            .and_then(|()| self.host.ready_for(lease.recipient))
-                    } else { Err(Error::Denied) };
-                    if state.is_ok() { lease.desktop_ready.store(true, Ordering::Release); }
+                    let state =
+                        if lease.live(&self.shared, now) && !self.clients.contains_key(&lease.id) {
+                            self.host
+                                .negotiate_desktop_observation(lease.recipient, version)
+                                .and_then(|()| self.host.ready_for(lease.recipient))
+                        } else {
+                            Err(Error::Denied)
+                        };
+                    if state.is_ok() {
+                        lease.desktop_ready.store(true, Ordering::Release);
+                    }
                     let result = match state {
                         Ok(mut state)
                             if lease.live(&self.shared, now)

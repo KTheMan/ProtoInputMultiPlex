@@ -169,7 +169,12 @@ impl Lease {
     }
     pub fn matches(&self, ready: &EventReady) -> bool {
         (!self.desktop_ready.load(Ordering::Acquire)
-            || ready.desktop == if self.desktop_version.load(Ordering::Acquire) == 1 { self.desktop_consent } else { None })
+            || ready.desktop
+                == if self.desktop_version.load(Ordering::Acquire) == 1 {
+                    self.desktop_consent
+                } else {
+                    None
+                })
             && self.epoch == ready.epoch
             && self.recipient == ready.recipient
             && self.events == ready.events

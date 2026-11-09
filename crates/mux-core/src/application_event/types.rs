@@ -355,7 +355,12 @@ impl CanvasTransform {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum Event {
-    DesktopObserved { user: UserId, source: SourceId, record: super::DesktopRecordV1, position: Option<Point> },
+    DesktopObserved {
+        user: UserId,
+        source: SourceId,
+        record: super::DesktopRecordV1,
+        position: Option<Point>,
+    },
     HostedStateChanged {
         state: HostedState,
     },

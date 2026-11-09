@@ -229,11 +229,21 @@ impl NativeClient {
     pub fn connect(config: ConnectConfig, own_hwnd: usize) -> Result<Self, ClientError> {
         Self::connect_with_desktop(config, own_hwnd, None)
     }
-    pub fn connect_desktop(config: ConnectConfig, own_hwnd: usize, version: u32) -> Result<Self, ClientError> {
-        if version != 1 { return Err(ClientError::Invalid); }
+    pub fn connect_desktop(
+        config: ConnectConfig,
+        own_hwnd: usize,
+        version: u32,
+    ) -> Result<Self, ClientError> {
+        if version != 1 {
+            return Err(ClientError::Invalid);
+        }
         Self::connect_with_desktop(config, own_hwnd, Some(version))
     }
-    fn connect_with_desktop(config: ConnectConfig, own_hwnd: usize, desktop_version: Option<u32>) -> Result<Self, ClientError> {
+    fn connect_with_desktop(
+        config: ConnectConfig,
+        own_hwnd: usize,
+        desktop_version: Option<u32>,
+    ) -> Result<Self, ClientError> {
         let address = network::validate_config(&config)?;
         let binding = wake::Binding::new(own_hwnd)?;
         let shared = Arc::new(Shared {
@@ -282,7 +292,11 @@ impl NativeClient {
             binding,
             model: {
                 let mut model = EventClientState::default();
-                if let Some(version) = desktop_version { model.enable_desktop_observation(version).map_err(|_| ClientError::Invalid)?; }
+                if let Some(version) = desktop_version {
+                    model
+                        .enable_desktop_observation(version)
+                        .map_err(|_| ClientError::Invalid)?;
+                }
                 model
             },
             hosted_receipt: crate::client::HostedReceipt::default(),
@@ -764,7 +778,11 @@ impl NativeClient {
             ServerMessage::Ready { ready } => {
                 if ready.desktop.is_some_and(|grant| grant.version != 1)
                     || ready.desktop.is_some() != self.desktop_version.is_some()
-                    || (ready.desktop.is_none() && ready.capabilities.iter().any(|cap| cap.capability == Capability::DesktopObservationV1))
+                    || (ready.desktop.is_none()
+                        && ready
+                            .capabilities
+                            .iter()
+                            .any(|cap| cap.capability == Capability::DesktopObservationV1))
                     || self.ready.is_some()
                     || ready.version != PROTOCOL_VERSION
                     || ready.epoch == 0

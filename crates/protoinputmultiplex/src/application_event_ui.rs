@@ -219,24 +219,61 @@ pub(crate) fn show(
     Text::new("Desktop input observations").show(ui);
     Text::new("Select active virtual users from the running desktop session. Binding and unbinding only change observation.")
         .caption().wrap().show(ui);
-    Text::new(format!("{} bound · {} awaiting worker confirmation", status.desktop_bound_users, status.desktop_pending_users))
-        .caption().wrap().show(ui);
+    Text::new(format!(
+        "{} bound · {} awaiting worker confirmation",
+        status.desktop_bound_users, status.desktop_pending_users
+    ))
+    .caption()
+    .wrap()
+    .show(ui);
     if !desktop_available {
-        Text::new("Start a desktop routing session with virtual users to make these controls available.")
-            .caption().wrap().show(ui);
+        Text::new(
+            "Start a desktop routing session with virtual users to make these controls available.",
+        )
+        .caption()
+        .wrap()
+        .show(ui);
     }
     for (index, (identity, name)) in desktop_candidates.iter().enumerate() {
         let label = format!("Observe desktop user {}: {}", index + 1, name);
-        if button(ui, &label, allowed && desktop_available && controller.active()
-            && !controller.desktop_identity_selected(identity), &mut script, frame, actions) {
-            result.push(Action::BindDesktop { identity: identity.clone(), name: name.clone() });
+        if button(
+            ui,
+            &label,
+            allowed
+                && desktop_available
+                && controller.active()
+                && !controller.desktop_identity_selected(identity),
+            &mut script,
+            frame,
+            actions,
+        ) {
+            result.push(Action::BindDesktop {
+                identity: identity.clone(),
+                name: name.clone(),
+            });
         }
     }
     for (token, name, pending) in controller.desktop_rows() {
-        Text::new(format!("{} · {}", name, if pending { "awaiting confirmation" } else { "observed" }))
-            .caption().wrap().show(ui);
-        if button(ui, &format!("Stop observing desktop user {token}: {name}"), allowed,
-            &mut script, frame, actions) {
+        Text::new(format!(
+            "{} · {}",
+            name,
+            if pending {
+                "awaiting confirmation"
+            } else {
+                "observed"
+            }
+        ))
+        .caption()
+        .wrap()
+        .show(ui);
+        if button(
+            ui,
+            &format!("Stop observing desktop user {token}: {name}"),
+            allowed,
+            &mut script,
+            frame,
+            actions,
+        ) {
             result.push(Action::UnbindDesktop(token));
         }
     }
@@ -372,8 +409,14 @@ pub(crate) fn show(
     for user in &controller.users {
         let label = format!(
             "Export {} user {}:{} {}",
-            if user.desktop_observed { "desktop" } else { "cooperative" },
-            user.id.epoch, user.id.local, user.name
+            if user.desktop_observed {
+                "desktop"
+            } else {
+                "cooperative"
+            },
+            user.id.epoch,
+            user.id.local,
+            user.name
         );
         let mut selected = controller.draft.users.contains(&user.id);
         checkbox(ui, &label, &mut selected, &mut script, frame, actions);
@@ -386,7 +429,14 @@ pub(crate) fn show(
             "Control cooperative user {}:{}",
             user.id.epoch, user.id.local
         );
-        if button(ui, &focus, controller.active() && !user.desktop_observed, &mut script, frame, actions) {
+        if button(
+            ui,
+            &focus,
+            controller.active() && !user.desktop_observed,
+            &mut script,
+            frame,
+            actions,
+        ) {
             controller.draft.focus = Some(user.id);
         }
     }
@@ -406,14 +456,28 @@ pub(crate) fn show(
         frame,
         actions,
     );
-    checkbox(ui, "Approve routed desktop observations", &mut controller.draft.desktop_observations,
-        &mut script, frame, actions);
+    checkbox(
+        ui,
+        "Approve routed desktop observations",
+        &mut controller.draft.desktop_observations,
+        &mut script,
+        frame,
+        actions,
+    );
     Text::new("Desktop keyboard observations include exact native key identities. Typed text requires separate approval.")
         .caption().wrap().show(ui);
-    checkbox(ui, "Include typed desktop text separately", &mut controller.draft.desktop_text,
-        &mut script, frame, actions);
-    let observed_selected = controller.users.iter().any(|user|
-        user.desktop_observed && controller.draft.users.contains(&user.id));
+    checkbox(
+        ui,
+        "Include typed desktop text separately",
+        &mut controller.draft.desktop_text,
+        &mut script,
+        frame,
+        actions,
+    );
+    let observed_selected = controller
+        .users
+        .iter()
+        .any(|user| user.desktop_observed && controller.draft.users.contains(&user.id));
     if observed_selected {
         controller.draft.delegated = false;
         controller.draft.lifecycle = false;
@@ -422,50 +486,52 @@ pub(crate) fn show(
         controller.draft.key_control = false;
     }
     ui.add_enabled_ui(!observed_selected, |ui| {
-    checkbox(
-        ui,
-        "Allow delegated event receiver controls for selected users",
-        &mut controller.draft.delegated,
-        &mut script,
-        frame,
-        actions,
-    );
-    checkbox(
-        ui,
-        "Allow cooperative user lifecycle controls",
-        &mut controller.draft.lifecycle,
-        &mut script,
-        frame,
-        actions,
-    );
-    checkbox(
-        ui,
-        "Allow cooperative cursor controls",
-        &mut controller.draft.cursor,
-        &mut script,
-        frame,
-        actions,
-    );
-    checkbox(
-        ui,
-        "Allow cooperative pointer input",
-        &mut controller.draft.pointer_control,
-        &mut script,
-        frame,
-        actions,
-    );
-    checkbox(
-        ui,
-        "Allow cooperative keyboard input separately",
-        &mut controller.draft.key_control,
-        &mut script,
-        frame,
-        actions,
-    );
+        checkbox(
+            ui,
+            "Allow delegated event receiver controls for selected users",
+            &mut controller.draft.delegated,
+            &mut script,
+            frame,
+            actions,
+        );
+        checkbox(
+            ui,
+            "Allow cooperative user lifecycle controls",
+            &mut controller.draft.lifecycle,
+            &mut script,
+            frame,
+            actions,
+        );
+        checkbox(
+            ui,
+            "Allow cooperative cursor controls",
+            &mut controller.draft.cursor,
+            &mut script,
+            frame,
+            actions,
+        );
+        checkbox(
+            ui,
+            "Allow cooperative pointer input",
+            &mut controller.draft.pointer_control,
+            &mut script,
+            frame,
+            actions,
+        );
+        checkbox(
+            ui,
+            "Allow cooperative keyboard input separately",
+            &mut controller.draft.key_control,
+            &mut script,
+            frame,
+            actions,
+        );
     });
     if observed_selected {
         Text::new("Control approval is unavailable for the selected desktop observed users.")
-            .caption().wrap().show(ui);
+            .caption()
+            .wrap()
+            .show(ui);
     }
     Divider::horizontal().show(ui);
     Text::new("Native windows are published by their owning application. Approve each other receiver and window separately.")

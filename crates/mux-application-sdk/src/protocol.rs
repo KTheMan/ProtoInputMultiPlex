@@ -371,7 +371,12 @@ pub struct DesktopEventHello {
     pub desktop_observation_version: u32,
 }
 impl DesktopEventHello {
-    pub fn into_legacy(self) -> EventHello { EventHello { version: self.version, credential: self.credential } }
+    pub fn into_legacy(self) -> EventHello {
+        EventHello {
+            version: self.version,
+            credential: self.credential,
+        }
+    }
 }
 impl std::fmt::Debug for EventHello {
     fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {

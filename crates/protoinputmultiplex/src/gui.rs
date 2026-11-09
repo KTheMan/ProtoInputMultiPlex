@@ -7600,7 +7600,9 @@ impl Dashboard {
                 self.session_busy = false;
             }
             match event {
-                SessionEvent::DesktopObservation(_) => unreachable!("private provider event was intercepted"),
+                SessionEvent::DesktopObservation(_) => {
+                    unreachable!("private provider event was intercepted")
+                }
                 SessionEvent::UserPause(state) => {
                     self.user_pause.publish(state);
                 }

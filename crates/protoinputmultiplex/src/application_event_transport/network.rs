@@ -456,15 +456,25 @@ pub(super) fn origin_allowed(request: &Request, origins: &[String], port: u16) -
 
 #[cfg(test)]
 pub(super) fn authenticate_hello(
-    shared: &Arc<Shared>, origin: &str, hello: &EventHello, now: Instant,
+    shared: &Arc<Shared>,
+    origin: &str,
+    hello: &EventHello,
+    now: Instant,
 ) -> Result<Arc<Lease>> {
     authenticate_hello_version(shared, origin, hello, now, None)
 }
 
 pub(super) fn authenticate_hello_version(
-    shared: &Arc<Shared>, origin: &str, hello: &EventHello, now: Instant, version: Option<u32>,
+    shared: &Arc<Shared>,
+    origin: &str,
+    hello: &EventHello,
+    now: Instant,
+    version: Option<u32>,
 ) -> Result<Arc<Lease>> {
-    ensure!(version.is_none() || version == Some(1), "unsupported desktop observation version");
+    ensure!(
+        version.is_none() || version == Some(1),
+        "unsupported desktop observation version"
+    );
     ensure!(
         hello.version == PROTOCOL_VERSION
             && hello.credential.len() == 64
@@ -494,7 +504,9 @@ pub(super) fn authenticate_hello_version(
                 .compare_exchange(false, true, Ordering::AcqRel, Ordering::Acquire)
                 .is_ok()
         {
-            lease.desktop_version.store(version.unwrap_or(0), Ordering::Release);
+            lease
+                .desktop_version
+                .store(version.unwrap_or(0), Ordering::Release);
             lease.network_done.store(false, Ordering::Release);
             return Ok(lease);
         }
@@ -564,7 +576,8 @@ async fn establish(
     let (hello, desktop_version) = match serde_json::from_slice::<EventHello>(hello.as_bytes()) {
         Ok(hello) => (hello, None),
         Err(_) => {
-            let hello: DesktopEventHello = serde_json::from_slice(hello.as_bytes()).context("invalid event hello")?;
+            let hello: DesktopEventHello =
+                serde_json::from_slice(hello.as_bytes()).context("invalid event hello")?;
             let version = hello.desktop_observation_version;
             (hello.into_legacy(), Some(version))
         }

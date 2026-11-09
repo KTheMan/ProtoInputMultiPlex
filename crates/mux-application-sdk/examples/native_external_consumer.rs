@@ -1714,7 +1714,7 @@ mod fixture {
         #[test]
         fn evidence_excludes_names_and_preserves_exact_identity() {
             let user = UserView {
-                    desktop: None,
+                desktop: None,
                 id: UserId {
                     epoch: 91,
                     local: 17,

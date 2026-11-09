@@ -599,7 +599,12 @@ impl Runtime {
     }
 }
 impl Engine for Runtime {
-    fn desktop_observation(&mut self, operation: crate::desktop_router::observation::Operation) -> Vec<crate::desktop_router::observation::Delivery> { self.inner.desktop_observation(operation) }
+    fn desktop_observation(
+        &mut self,
+        operation: crate::desktop_router::observation::Operation,
+    ) -> Vec<crate::desktop_router::observation::Delivery> {
+        self.inner.desktop_observation(operation)
+    }
     fn user_pause_state(&self, user: usize) -> crate::routing_engine::UserPauseState {
         self.inner.user_pause_state(user)
     }
