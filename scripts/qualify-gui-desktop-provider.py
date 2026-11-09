@@ -520,7 +520,7 @@ class ProviderPair(base.Pair):
         add("Start routing","routing_ready")
         for label in ("Settings","Settings category Agent access","Agent Access"): add(label)
         add("Enable agent access", fields={"agent_users":','.join(self.seat_ids),"agent_pids":','.join(map(str,self.pids)),"agent_session_control":"false","agent_capture":"false","agent_app_preferences":"false"})
-        add("Agent session control permission"); add("Apply access policy","command_grant")
+        add("Additional permissions"); add("Agent session control permission"); add("Apply access policy","command_grant")
         add("SDK tab"); add("Application event SDK section"); add("Create cooperative event session","prepare_holds"); masters()
         add("Observe desktop user 1: Desktop A","bound_1"); add("Observe desktop user 2: Desktop B","bound_2")
         # Receiver rows/origins are authored before listener start; Add is then unavailable.
@@ -569,7 +569,8 @@ class ProviderPair(base.Pair):
         env = dict(os.environ,TEMP=str(self.temp),TMP=str(self.temp),PROTOINPUTMULTIPLEX_CONTROL_BACKEND="native")
         self.gui = self.launch([self.exe,"gui","--renderer","software-dx12","--profile",self.profile,"--preferences",self.preferences,"--ui-script",self.ui/"prepare.json","--ui-script-no-screenshots"],"gui",env)
         for index,step in enumerate(steps,1):
-            self.checkpoint = index; self.wait(lambda: len(self.receipts()) >= index)
+            self.checkpoint = index; self.stage = "ui_receipt"; self.check = "none"
+            self.wait(lambda: len(self.receipts()) >= index)
             row = self.receipts()[index-1]; require(row["button"] == step["button"] and row["clicked"] is True)
             if index in self.phase_steps:
                 # Actions execute exactly once. Only each phase's observations wait.
