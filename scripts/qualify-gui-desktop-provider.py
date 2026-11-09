@@ -294,18 +294,63 @@ class ProviderPair(base.Pair):
             self.wait(granted)
         elif name == "prepare_holds":
             windows = self.command.tool("routing_windows")["windows"]
+            selected_windows = []
             for index, pid in enumerate(self.pids):
                 rows = [row for row in windows if row["pid"] == pid and row.get("eligibility", {}).get("state") in ("fresh","reusable")]
                 require(len(rows) == 1)
                 row = rows[0]
+                selected_windows.append(row["hwnd"])
                 self.input("select_window", user=index, pid=pid, hwnd=row["hwnd"], creation_token=row["eligibility"]["creation_token"])
                 self.input("move_to", user=index, x=self.points[index][0], y=self.points[index][1])
             diagnostic = {"key_returned":False,"mapped_x1_held":None,"rightctrl_held":None,
                 "exact_rightctrl_down":None,"generic_ctrl_down":None,"rightctrl_down":None}
             self.result["prepare_holds_observation"] = diagnostic
             self.input("button", user=0, button="primary", pressed=True)
-            self.input("key", user=1, key="rightctrl", pressed=True)
+            reply = self.input("key", user=1, key="rightctrl", pressed=True)
             diagnostic["key_returned"] = True
+            router = {"projection_valid":False,"saved_vk163":None,"user_pid_matches":None,
+                "keyboard_pid_matches":None,"keyboard_enabled":None,"recipient_matches":None,
+                "paused":None,"user_paused":None,"status":"unrecognized"}
+            self.result["prepare_holds_router"] = router
+            try:
+                user = reply["users"][1]
+                keyboard = user["keyboard"]
+                recipient = keyboard["resolved"]
+                router["saved_vk163"] = 163 in user["keys"]
+                router["user_pid_matches"] = user["pid"] == self.pids[1]
+                router["keyboard_pid_matches"] = user["keyboard_pid"] == self.pids[1]
+                enabled = keyboard["settings"]["enabled"]
+                router["keyboard_enabled"] = enabled if type(enabled) is bool else None
+                router["recipient_matches"] = isinstance(recipient, dict) and recipient.get("pid") == self.pids[1] and recipient.get("hwnd") == selected_windows[1]
+                paused = reply["paused"]
+                router["paused"] = paused if type(paused) is bool else None
+                pauses = [row for row in reply["user_pauses"] if row["user"] == 1]
+                if len(pauses) == 1 and type(pauses[0]["paused"]) is bool:
+                    router["user_paused"] = pauses[0]["paused"]
+                known = {"Selected; ready for first routed input":"selected","Attached":"attached",
+                    "Click a window before typing":"no_keyboard_recipient","No eligible window at cursor":"no_window",
+                    "Target exited; click another window":"target_exited",
+                    "Target closed or hidden; choose another window":"target_closed"}
+                for reason, status in {
+                    "cursor is outside the target client area":"unavailable_cursor_outside",
+                    "target client bounds changed; retry positioning":"unavailable_bounds_changed",
+                    "Keyboard recipient identity changed":"unavailable_recipient_changed",
+                    "requested control is disabled":"unavailable_recipient_disabled",
+                    "requested control is unavailable":"unavailable_recipient_absent",
+                    "clicked window is unavailable":"unavailable_clicked_absent",
+                    "window root is unavailable":"unavailable_root_absent",
+                    "target process exited":"unavailable_target_exited",
+                    "target has no validated input window":"unavailable_input_window",
+                    "Application startup is incomplete; stop routing and restart the target":"unavailable_startup_incomplete",
+                    "unassigned virtual device":"unavailable_unassigned_device"}.items():
+                    known["Routing unavailable: " + reason] = status
+                if isinstance(user["title"], str):
+                    for prefix, status in (("Attached", "attached"),("Concurrent", "concurrent"),("Switched", "switched")):
+                        known[prefix + " · " + user["title"]] = status
+                router["status"] = known.get(user["status"], "unrecognized")
+                router["projection_valid"] = True
+            except (KeyError, TypeError, IndexError, AttributeError):
+                pass  # Diagnostic failure must not replace the original acceptance predicate.
             self.check = "prepare_holds_target_held_state"
             def held():
                 button = self.target(0)["buttons"] & 8
