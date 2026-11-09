@@ -29,7 +29,7 @@
   {"button":"Apply selected event receiver approvals","wait_ms":250,"whole_response":true,"wait_for_sample":true},
   {"button":"Issue private event-only connection","wait_ms":250,"whole_response":true,"wait_for_sample":true},
   {"button":"Event receiver 2 · approved","wait_ms":250,"whole_response":true,"wait_for_sample":true},
-  {"button":"Event receiver 2 · draft","wait_ms":250,"whole_response":true,"fields":{"application_event_ttl":"300"}},
+  {"button":"Event receiver 2 · draft · selected","wait_ms":250,"whole_response":true,"fields":{"application_event_ttl":"300"}},
   {"button":"Apply selected event receiver approvals","wait_ms":250,"whole_response":true,"wait_for_sample":true},
   {"button":"Issue private event-only connection","wait_ms":250,"whole_response":true,"wait_for_sample":true},
   {"button":"Event receiver 3 · draft","wait_ms":250,"whole_response":true,"fields":{"application_event_ttl":"300"}},
