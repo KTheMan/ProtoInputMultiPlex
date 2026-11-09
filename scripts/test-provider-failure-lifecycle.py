@@ -121,6 +121,102 @@ class FailureLifecycleTests(unittest.TestCase):
         self.assertNotIn("private secret path", repr(cleanup))
 
 
+class PostCloseNativeLifecycleTests(unittest.TestCase):
+    def lifecycle(self, state="poisoned", error="unknown", binding=True):
+        return {"status":"observed","present":True,"coherent":True,"header_matches":True,
+            "identity_matches":True,"build_matches":True,"binding_present":binding,"state":state,"error":error}
+
+    def gate(self):
+        gate = Gate(FakeGui())
+        gate.targets_processes = [object(), object()]
+        gate.failure_target_frames = {0:10, 1:20}
+        return gate
+
+    def test_verified_close_then_exactly_one_read_each_preserves_original_failure(self):
+        gate = self.gate()
+        gate.result["prepare_holds_observation"] = {"rightctrl_held":False,"mapped_x1_held":True}
+        gate.result["prepare_holds_router"] = {"recipient_matches":True}
+        original = json.loads(json.dumps(gate.result))
+        calls = []
+        def read(path, maximum):
+            self.assertEqual(gate.gui.code, 0)
+            self.assertEqual(gate.close_calls, 1)
+            self.assertEqual({key:gate.result[key] for key in original}, original)
+            self.assertEqual(maximum, 4*1024*1024)
+            calls.append(path.name)
+            index = len(calls)-1
+            native = self.lifecycle() if index == 0 else self.lifecycle("reusable", "none", False)
+            return json.dumps({"frames":11+10*index,"native_lifecycle":native,
+                "private_path":"secret","pid":123}).encode(), 0
+        with patch.object(provider.time, "monotonic", return_value=10), \
+                patch.object(provider.time, "sleep", side_effect=AssertionError("no new wait")), \
+                patch.object(gate, "target", side_effect=AssertionError("target waits")), \
+                patch.object(provider.base, "shared_live_bytes", side_effect=read):
+            gate.failed_group_cleanup()
+            gate.post_close_target_reports()  # The same observation cannot be repeated.
+        self.assertEqual(calls, ["target-0.json", "target-1.json"])
+        self.assertEqual(gate.gui.waits, [15])
+        result = gate.result["post_close_native_lifecycle"]
+        self.assertEqual(result["collection_phase"], "report_read_after_gui_exit")
+        self.assertFalse(result["periodic_sample_after_gui_exit_proved"])
+        self.assertEqual(result["target_a"]["native_lifecycle"], self.lifecycle())
+        self.assertEqual(result["target_b"]["native_lifecycle"], self.lifecycle("reusable", "none", False))
+        self.assertTrue(result["target_a"]["advanced_since_failure_sample"])
+        self.assertEqual({key:gate.result[key] for key in original}, original)
+        self.assertNotIn("secret", repr(result))
+        self.assertNotIn("123", repr(result))
+
+    def test_partial_and_stale_reports_are_unobserved_without_retry(self):
+        gate = self.gate()
+        stale = json.dumps({"frames":20,"native_lifecycle":self.lifecycle("active", "none")}).encode()
+        with patch.object(provider.time, "monotonic", return_value=10), \
+                patch.object(provider.base, "shared_live_bytes", side_effect=[(b'{"private":', 0), (stale, 0)]) as reads:
+            gate.failed_group_cleanup()
+        self.assertEqual(reads.call_count, 2)
+        result = gate.result["post_close_native_lifecycle"]
+        self.assertEqual(result["target_a"]["read_status"], "read_failed")
+        self.assertEqual(result["target_a"]["failure_class"], "JSONDecodeError")
+        self.assertEqual(result["target_b"]["read_status"], "stale")
+        self.assertFalse(result["target_b"]["advanced_since_failure_sample"])
+        for label in ("target_a", "target_b"):
+            self.assertEqual(result[label]["native_lifecycle"], provider.public_native_lifecycle({}))
+
+    def test_absent_unknown_and_missing_freshness_never_export_private_data(self):
+        for first, second in (
+            (FileNotFoundError("private secret"), {"frames":21,"native_lifecycle":dict(self.lifecycle(), owner_pid=123)}),
+            ({"frames":True,"native_lifecycle":self.lifecycle()}, {"native_lifecycle":self.lifecycle()}),
+        ):
+            gate = self.gate()
+            values = [value if isinstance(value, BaseException) else (json.dumps(value).encode(), 0)
+                for value in (first, second)]
+            with patch.object(provider.time, "monotonic", return_value=10), \
+                    patch.object(provider.base, "shared_live_bytes", side_effect=values) as reads:
+                gate.failed_group_cleanup()
+            self.assertEqual(reads.call_count, 2)
+            result = gate.result["post_close_native_lifecycle"]
+            for label in ("target_a", "target_b"):
+                self.assertIn(result[label]["native_lifecycle"]["status"], ("unobserved", "unrecognized"))
+                self.assertIsNone(result[label]["native_lifecycle"]["state"])
+            self.assertNotIn("secret", repr(result))
+            self.assertNotIn("123", repr(result))
+
+    def test_no_verified_exit_or_owned_targets_never_reads(self):
+        for gui, bad_identity, owned in ((None, False, True),
+                (FakeGui(wait_error=subprocess.TimeoutExpired("private", 15)), False, True),
+                (FakeGui(), True, True), (FakeGui(), False, False)):
+            gate = self.gate()
+            gate.gui = gui
+            if bad_identity:
+                gate.close_error = provider.base.Rejected("private")
+            if not owned:
+                gate.targets_processes = []
+            with patch.object(provider.time, "monotonic", return_value=10), \
+                    patch.object(provider.base, "shared_live_bytes", side_effect=AssertionError("not owned/exited")) as reads:
+                gate.failed_group_cleanup()
+            reads.assert_not_called()
+            self.assertEqual(gate.result["status"], "FAIL")
+
+
 class NativeStderrTests(unittest.TestCase):
     def test_only_complete_exact_fixed_lines_match(self):
         raw = (b"private path token\nFailed to send message header\r\n"

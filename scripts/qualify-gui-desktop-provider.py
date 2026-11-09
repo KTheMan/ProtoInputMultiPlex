@@ -234,6 +234,7 @@ class ProviderPair(base.Pair):
         self.end = self.start + 420
         self.private = args.run.resolve()
         self.paths, self.issued, self.native_runs = {}, set(), []
+        self.failure_target_frames = {}
         self.result = {"schema": "pim.desktop-provider.hosted.v1", "source_commit": args.commit,
             "status": "FAIL", "scope": "two explicitly bound production virtual seats; native DLL and Rust/WASM; owned native targets",
             "full_sdk_complete": False, "release_qualified": False, "hardware_qualified": False,
@@ -285,8 +286,49 @@ class ProviderPair(base.Pair):
             if code is not None:
                 cleanup["gui_exit_observed"] = True
                 cleanup["gui_exit_zero"] = code == 0
-            # Exit is the only process fact collected here. It does not establish
-            # native fence acknowledgement or target hold release.
+            # GUI exit does not establish native fence acknowledgement or hold
+            # release. Only read reports after this already-verified ordinary exit.
+            if (cleanup["close_identity_verified"] and cleanup["close_posted"] is True
+                    and cleanup["gui_exit_observed"] and cleanup["gui_exit_zero"] is True):
+                self.post_close_target_reports()
+
+    def post_close_target_reports(self):
+        if getattr(self, "post_close_reports_sampled", False):
+            return
+        self.post_close_reports_sampled = True
+        diagnostic = {"collection_phase":"report_read_after_gui_exit",
+            "periodic_sample_after_gui_exit_proved":False}
+        self.result["post_close_native_lifecycle"] = diagnostic
+        for index, label in enumerate(("target_a", "target_b")):
+            observation = {"read_status":"unobserved","advanced_since_failure_sample":None,
+                "failure_class":None,"native_lifecycle":public_native_lifecycle({})}
+            diagnostic[label] = observation
+            if index >= len(getattr(self, "targets_processes", ())):
+                continue
+            try:
+                # Exactly one existing report read. target() waits/retries; do not
+                # call it here, add a timer, or wait for a later periodic frame.
+                raw, _ = base.shared_live_bytes(self.private / f"target-{index}.json", 4 * 1024 * 1024)
+                target = json.loads(raw.decode("utf-8-sig"))
+                frame = target.get("frames") if isinstance(target, dict) else None
+                before = getattr(self, "failure_target_frames", {}).get(index)
+                if (type(frame) is not int or not 0 <= frame <= 0xffffffffffffffff
+                        or type(before) is not int or not 0 <= before <= 0xffffffffffffffff):
+                    observation["read_status"] = "freshness_unobserved"
+                    continue
+                advanced = frame > before
+                observation["advanced_since_failure_sample"] = advanced
+                if not advanced:
+                    observation["read_status"] = "stale"
+                    continue
+                observation["read_status"] = "read"
+                observation["native_lifecycle"] = public_native_lifecycle(target)
+            except BaseException as error:
+                observation["read_status"] = "read_failed"
+                observation["failure_class"] = public_failure_class(error)
+        # The periodic sample may predate GUI exit even when its frame advanced.
+        # Prepare can publish a latched hook error from installation OR removal;
+        # Prepared/Reusable is not a packet receipt or a cause for the held FAIL.
 
     def native_submission_diagnostics(self, collection_phase="direct_observation"):
         diagnostic = {"collection_phase":collection_phase,
@@ -541,6 +583,7 @@ class ProviderPair(base.Pair):
             except (KeyError, TypeError, IndexError, AttributeError):
                 pass  # Diagnostic failure must not replace the original acceptance predicate.
             def observe_root(target):
+                self.failure_target_frames[1] = target.get("frames")
                 native_lifecycle["target_b"] = public_native_lifecycle(target)
                 events = target.get("root_key_events")
                 diagnostic["root_history_present"] = isinstance(events, list)
@@ -561,6 +604,7 @@ class ProviderPair(base.Pair):
             self.check = "prepare_holds_target_held_state"
             def held():
                 first = self.target(0)
+                self.failure_target_frames[0] = first.get("frames")
                 native_lifecycle["target_a"] = public_native_lifecycle(first)
                 button = first["buttons"] & 8
                 diagnostic["mapped_x1_held"] = bool(button)
