@@ -34,6 +34,24 @@ mcp_helpers = module("provider_mcp", "test-mcp.py")
 require = base.require
 
 
+PUBLIC_FAILURE_CLASSES = frozenset({"Rejected", "AssertionError", "FileNotFoundError", "TimeoutError",
+    "BrokenPipeError", "EOFError", "JSONDecodeError", "KeyError", "TypeError", "ValueError", "Empty", "TimeoutExpired"})
+NATIVE_STDERR_LIMIT = 4 * 1024 * 1024
+
+
+def public_failure_class(error):
+    name = type(error).__name__
+    return name if name in PUBLIC_FAILURE_CLASSES else "UnexpectedError"
+
+
+def native_write_failure_lines(raw):
+    # The existing native loader emits these fixed lines with std::endl. Ignore
+    # arbitrary/private log text and a partial final line; never publish a tail.
+    lines = raw[:raw.rfind(b"\n")+1].splitlines()
+    return {"header_write_failed": b"Failed to send message header" in lines,
+        "body_write_failed": b"Failed to send message body" in lines}
+
+
 class CommandMcp(mcp_helpers.Client):
     def __init__(self, executable, descriptor, log):
         self.stderr = open(log, "x", encoding="utf-8")
@@ -130,6 +148,74 @@ class ProviderPair(base.Pair):
             "same_process_isolation_qualified": False, "no_action_retry_or_replay": True,
             "provider_core_gap": "unit_coverage_only; prior_cooperative_actual_gap_separate",
             "worker_journal_overflow": "unit_coverage_only"}
+
+    def failed_group_cleanup(self):
+        # This runs only after the original failure is frozen. It neither resumes
+        # the scripted workflow nor retries input, and cannot turn FAIL into PASS.
+        cleanup = {"close_path_entered":False,"close_identity_verified":False,
+            "close_posted":None,"gui_exit_observed":False,"gui_exit_zero":None,
+            "outcome":"unconfirmed","failure_class":None,"read_failure":None,
+            "target_holds":"unobserved"}
+        self.result["failure_cleanup"] = cleanup
+        code = None
+        try:
+            if self.gui is None:
+                cleanup["outcome"] = "gui_not_launched"
+                return
+            code = self.gui.poll()
+            if code is None:
+                if "gui_close_probe" in self.result:
+                    # A late normal-path failure may follow an earlier close
+                    # attempt. Retain that outcome without another post or wait.
+                    cleanup["close_path_entered"] = True
+                    cleanup["outcome"] = "prior_close_unconfirmed"
+                    return
+                self.deadline()
+                cleanup["close_path_entered"] = True
+                # Existing helper rechecks the exact owned main HWND and thread
+                # immediately before its sole ordinary WM_CLOSE.
+                self.close_gui_owned_main()
+                remaining = min(20, self.end-time.monotonic())
+                require(remaining > 0)
+                code = self.gui.wait(timeout=remaining)
+            cleanup["outcome"] = "gui_exit_observed"
+        except BaseException as error:
+            cleanup["failure_class"] = public_failure_class(error)
+            cleanup["read_failure"] = self.read_failure(error)
+        finally:
+            probe = self.result.get("gui_close_probe", {})
+            cleanup["close_identity_verified"] = all(probe.get(key) is True for key in (
+                "owner_pid_matches", "owner_thread_nonzero", "recheck_same_window", "recheck_same_thread",
+                "recheck_owner_pid_matches", "immediate_eligibility_rechecked", "immediate_same_thread",
+                "immediate_owner_pid_matches", "gui_alive_before_post"))
+            posted = probe.get("close_posted")
+            cleanup["close_posted"] = posted if type(posted) is bool else None
+            if code is not None:
+                cleanup["gui_exit_observed"] = True
+                cleanup["gui_exit_zero"] = code == 0
+            # Exit is the only process fact collected here. It does not establish
+            # native fence acknowledgement or target hold release.
+
+    def native_submission_diagnostics(self):
+        diagnostic = {"qualification_stderr_opt_in":getattr(self, "qualification_stderr_opt_in", False),
+            "header_write_failed":None,"body_write_failed":None,"snapshot_complete":False,
+            "truncated":None,"incomplete_line":None,"gui_exit_observed":False,"read_failure":None}
+        self.result["native_submission_diagnostics"] = diagnostic
+        try:
+            diagnostic["gui_exit_observed"] = self.gui is not None and self.gui.poll() is not None
+            def snapshot():
+                with (self.private / "gui-stderr.log").open("rb") as source:
+                    return source.read(NATIVE_STDERR_LIMIT+1)
+            raw = self.strict_observation("gui_stderr", snapshot)
+            diagnostic["truncated"] = len(raw) > NATIVE_STDERR_LIMIT
+            raw = raw[:NATIVE_STDERR_LIMIT]
+            diagnostic["incomplete_line"] = bool(raw and not raw.endswith(b"\n"))
+            diagnostic.update(native_write_failure_lines(raw))
+            diagnostic["snapshot_complete"] = (diagnostic["gui_exit_observed"]
+                and not diagnostic["truncated"] and not diagnostic["incomplete_line"])
+        except BaseException as error:
+            diagnostic["read_failure"] = self.read_failure(error)
+        # No observed error is never an input write/receive/processing receipt.
 
     def launch_status(self):
         progress, modified = self.live_json("gui_progress", self.ui / "prepare.progress.json")
@@ -670,7 +756,9 @@ class ProviderPair(base.Pair):
         self.profile = self.private/"profile.json"; self.profile.write_text(json.dumps(profile),encoding="utf-8"); self.profile_initial = self.profile.read_bytes()
         self.phase_steps = {}; steps = self.steps(); (self.ui/"prepare.json").write_text(json.dumps(steps),encoding="utf-8")
         self.serve_web()
-        env = dict(os.environ,TEMP=str(self.temp),TMP=str(self.temp),PROTOINPUTMULTIPLEX_CONTROL_BACKEND="native")
+        env = dict(os.environ,TEMP=str(self.temp),TMP=str(self.temp),PROTOINPUTMULTIPLEX_CONTROL_BACKEND="native",
+            PROTOINPUTMULTIPLEX_QUALIFICATION_STDERR="private-file-v1")
+        self.qualification_stderr_opt_in = True
         self.gui = self.launch([self.exe,"gui","--renderer","software-dx12","--profile",self.profile,"--preferences",self.preferences,"--ui-script",self.ui/"prepare.json","--ui-script-no-screenshots"],"gui",env)
         for index,step in enumerate(steps,1):
             self.checkpoint = index; self.stage = "ui_receipt"; self.check = "none"
@@ -746,9 +834,10 @@ def main():
     try:
         gate.run()
     except BaseException as error:
-        allowed={"Rejected","AssertionError","FileNotFoundError","TimeoutError","BrokenPipeError","EOFError","JSONDecodeError","KeyError","TypeError","ValueError","Empty","TimeoutExpired"}
-        gate.result.update(status="FAIL",checkpoint=gate.checkpoint,failure_stage=gate.stage,failure_predicate=gate.check,failure_class=type(error).__name__ if type(error).__name__ in allowed else "UnexpectedError",
+        gate.result.update(status="FAIL",checkpoint=gate.checkpoint,failure_stage=gate.stage,failure_predicate=gate.check,failure_class=public_failure_class(error),
             native_exit_state="not_started" if not hasattr(gate,"native") else "running" if gate.native.poll() is None else "zero" if gate.native.returncode == 0 else "nonzero")
+        gate.failed_group_cleanup()
+    gate.native_submission_diagnostics()
     require(not args.public_result.exists())
     args.public_result.write_text(json.dumps(gate.result,indent=2)+"\n",encoding="utf-8")
     raise SystemExit(0 if gate.result["status"] == "PASS" else 1)

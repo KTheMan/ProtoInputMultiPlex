@@ -986,6 +986,17 @@ fn supervise(
         let _ = output.send(Event::Stopped);
         return Ok(());
     }
+    // The hosted qualification controller redirects its own stderr to a private
+    // regular file before opting in. Ordinary callers retain the null sink;
+    // inheriting an undrained caller pipe could block native error reporting.
+    let worker_stderr = if matches!(
+        std::env::var("PROTOINPUTMULTIPLEX_QUALIFICATION_STDERR").as_deref(),
+        Ok("private-file-v1")
+    ) {
+        Stdio::inherit()
+    } else {
+        Stdio::null()
+    };
     let mut worker = Worker(
         Command::new(executable)
             .env(
@@ -1001,7 +1012,7 @@ fn supervise(
             .creation_flags(0x08000000) // CREATE_NO_WINDOW: helper never opens a console.
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
-            .stderr(Stdio::null())
+            .stderr(worker_stderr)
             .spawn()
             .context("start routing worker")?,
         None,

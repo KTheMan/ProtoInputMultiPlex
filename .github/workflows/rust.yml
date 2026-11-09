@@ -62,6 +62,8 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Owned-window controller Python syntax rejected' }
           python -c "import ast,pathlib; p=pathlib.Path('scripts/qualify-gui-desktop-provider.py'); ast.parse(p.read_text(encoding='utf-8'),filename=str(p))"
           if ($LASTEXITCODE -ne 0) { throw 'Provider controller Python syntax rejected' }
+          python scripts/test-provider-failure-lifecycle.py
+          if ($LASTEXITCODE -ne 0) { throw 'Provider failure lifecycle regressions failed' }
           $pimParseTokens = $null
           $pimParseErrors = $null
           [System.Management.Automation.Language.Parser]::ParseFile((Join-Path $env:GITHUB_WORKSPACE 'scripts/qualify-standalone-host.ps1'), [ref]$pimParseTokens, [ref]$pimParseErrors) | Out-Null
