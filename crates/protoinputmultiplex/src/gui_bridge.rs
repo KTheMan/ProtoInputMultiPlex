@@ -2444,6 +2444,8 @@ mod tests {
                 "phase",
                 "session_active",
                 "local_virtual_users",
+                "desktop_bound_users",
+                "desktop_pending_users",
                 "native_observed_users",
                 "native_sequence",
                 "pointer_export",
@@ -2457,6 +2459,10 @@ mod tests {
         );
         let status: crate::gui_application_events::PublicStatus =
             serde_json::from_value(reply.value).unwrap();
+        assert_eq!(
+            (status.desktop_bound_users, status.desktop_pending_users),
+            (0, 0)
+        );
         assert!(status.transport_sample_age_ms.unwrap() >= 3_000);
         assert!(status.connected_clients.is_none() && status.cleanup_pending.is_none());
         assert!(status.uncertain_admissions.is_none() && status.queue_overflows.is_none());

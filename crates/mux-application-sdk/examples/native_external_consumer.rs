@@ -14,6 +14,7 @@ fn main() {
 
 #[cfg(windows)]
 mod fixture {
+    mod desktop_observer { include!("native_external_consumer/desktop_observer.rs"); }
     use mux_application_sdk::{
         ClientCommand, ClientRequest, ClientResponse, Event, FailureCode, HostRevision,
         HostViewportAction, HostedAction, HostedPhase, Input, KeyCode, OwnerResponse,
@@ -71,6 +72,7 @@ mod fixture {
         Input,
         Window,
         Hosted,
+        Desktop,
     }
     type Connect = unsafe extern "C" fn(usize, *const u8, usize, *mut u64, *mut u32) -> i32;
     type Enable = unsafe extern "C" fn(u64, u32, u32) -> i32;
@@ -238,17 +240,18 @@ mod fixture {
             || (args.len() == 11 && args[8] == "--window-route" && args[9] == "--observe-seconds");
         let hosted_args = (args.len() == 9 && args[8] == "--hosted-route")
             || (args.len() == 11 && args[8] == "--hosted-route" && args[9] == "--observe-seconds");
+        let desktop_args = args.len() == 11 && args[8] == "--desktop-route" && args[9] == "--observe-seconds";
         let key_args = args.len() == 8
             || (args.len() == 10 && args[8] == "--virtual-key")
             || (args.len() == 12 && args[8] == "--virtual-key" && args[10] == "--observe-seconds");
-        if !(route_args || hosted_args || key_args)
+        if !(route_args || hosted_args || desktop_args || key_args)
             || args[0] != "--dll"
             || args[2] != "--sha256"
             || args[4] != "--descriptor"
             || args[6] != "--report"
         {
             eprintln!(
-                "usage: native_external_consumer --dll ABSOLUTE_DLL --sha256 64_HEX --descriptor PRIVATE_GUI_JSON --report NEW_PRIVATE_JSONL [--window-route [--observe-seconds 20..60] | --hosted-route [--observe-seconds 20..60] | --virtual-key HID_CODE [--observe-seconds 20..60]]"
+                "usage: native_external_consumer --dll ABSOLUTE_DLL --sha256 64_HEX --descriptor PRIVATE_GUI_JSON --report NEW_PRIVATE_JSONL [--window-route [--observe-seconds 20..60] | --hosted-route [--observe-seconds 20..60] | --desktop-route --observe-seconds 20..60 | --virtual-key HID_CODE [--observe-seconds 20..60]]"
             );
             std::process::exit(10);
         }
@@ -258,14 +261,16 @@ mod fixture {
         let report_path = PathBuf::from(&args[7]);
         let window_route = route_args;
         let hosted_route = hosted_args;
-        let route = if hosted_route {
+        let route = if desktop_args {
+            RouteMode::Desktop
+        } else if hosted_route {
             RouteMode::Hosted
         } else if window_route {
             RouteMode::Window
         } else {
             RouteMode::Input
         };
-        let key = if args.len() >= 10 && !window_route && !hosted_route {
+        let key = if args.len() >= 10 && !window_route && !hosted_route && !desktop_args {
             match args[9]
                 .to_str()
                 .and_then(|s| s.parse::<u16>().ok())
@@ -278,7 +283,7 @@ mod fixture {
             None
         };
         let observation_seconds = if args.len() == 12 || args.len() == 11 {
-            let seconds = if window_route || hosted_route {
+            let seconds = if window_route || hosted_route || desktop_args {
                 &args[10]
             } else {
                 &args[11]
@@ -574,7 +579,9 @@ mod fixture {
         )?;
 
         await_ready(api, token, completion, report)?;
-        if matches!(route, RouteMode::Hosted) {
+        if matches!(route, RouteMode::Desktop) {
+            desktop_observer::exercise(api, token, completion, descriptor_path, observation_seconds, report)?;
+        } else if matches!(route, RouteMode::Hosted) {
             exercise_hosted_route(api, token, completion, observation_seconds, report)?;
         } else if matches!(route, RouteMode::Window) {
             exercise_owned_window_route(api, token, completion, hwnd, observation_seconds, report)?;
@@ -752,7 +759,7 @@ mod fixture {
         let terminal = retained(api, token, false)?;
         ensure(
             terminal["status"]["live"] == false
-                && terminal["status"]["terminal"] == "local_stop"
+                && (terminal["status"]["terminal"] == "local_stop" || matches!(route, RouteMode::Desktop) && matches!(terminal["status"]["terminal"].as_str(), Some("remote_end" | "transport")))
                 && terminal["status"]["remote_cleanup_unconfirmed"] == true,
             "Stop must report local termination with remote cleanup unconfirmed",
         )?;
@@ -842,6 +849,8 @@ mod fixture {
     #[derive(Deserialize)]
     #[serde(deny_unknown_fields)]
     struct GuiDescriptor {
+        #[serde(default)]
+        desktop_observation_version: Option<u32>,
         protoinputmultiplex_application_events: u32,
         endpoint: String,
         exact_origin: String,
@@ -885,8 +894,13 @@ mod fixture {
         )?;
         // Native connect performs the exact loopback endpoint/origin validation.
         // This transient JSON value is never returned through report/log/query.
-        serde_json::to_vec(&json!({"endpoint": descriptor.endpoint,
-            "exact_origin": descriptor.exact_origin, "event_credential": descriptor.credential}))
+        let mut config = json!({"endpoint": descriptor.endpoint,
+            "exact_origin": descriptor.exact_origin, "event_credential": descriptor.credential});
+        if let Some(version) = descriptor.desktop_observation_version {
+            ensure(version == 1, "unsupported desktop observation descriptor")?;
+            config["desktop_observation_version"] = json!(version);
+        }
+        serde_json::to_vec(&config)
         .map_err(|_| "private descriptor conversion failed".to_owned())
     }
 

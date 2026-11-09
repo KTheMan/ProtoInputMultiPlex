@@ -1,5 +1,5 @@
 use crate::event_hooks::{
-    ClickOptions, ClickPairs, EventFilter, Registry, hosted_deadline_pending,
+    ButtonObservation, ClickOptions, ClickPairs, EventFilter, Registry, button_observation, hosted_deadline_pending,
     validate_snapshot_query_with_desktop,
 };
 use crate::geometry::CanvasGeometry;
@@ -233,24 +233,10 @@ impl Inner {
                     }
                     self.click_deliveries.clear();
                 }
-                ApplicationEvent::DesktopObserved {
-                    user,
-                    record:
-                        DesktopRecordV1 {
-                            change: DesktopObservation::Button { button, transition },
-                            screen_revision: transform_revision,
-                            ..
-                        },
-                    position: Some(position),
-                    ..
-                }
-                | ApplicationEvent::Input {
-                    user,
-                    input: Input::Button { button, transition },
-                    position: Some(position),
-                    transform_revision,
-                    ..
-                } => {
+                event => {
+                    let Some(ButtonObservation { user, button, transition, position, transform_revision }) = button_observation(event) else {
+                        continue;
+                    };
                     if !self.is_live()
                         || self.layout_revision == u64::MAX
                         || !self.state.users().contains_key(user)
@@ -312,7 +298,6 @@ impl Inner {
                         }
                     }
                 }
-                _ => {}
             }
         }
     }

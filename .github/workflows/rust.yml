@@ -60,6 +60,8 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Paired controller Python syntax rejected' }
           python -c "import ast,pathlib; p=pathlib.Path('scripts/qualify-gui-owned-window.py'); ast.parse(p.read_text(encoding='utf-8'),filename=str(p))"
           if ($LASTEXITCODE -ne 0) { throw 'Owned-window controller Python syntax rejected' }
+          python -c "import ast,pathlib; p=pathlib.Path('scripts/qualify-gui-desktop-provider.py'); ast.parse(p.read_text(encoding='utf-8'),filename=str(p))"
+          if ($LASTEXITCODE -ne 0) { throw 'Provider controller Python syntax rejected' }
           $pimParseTokens = $null
           $pimParseErrors = $null
           [System.Management.Automation.Language.Parser]::ParseFile((Join-Path $env:GITHUB_WORKSPACE 'scripts/qualify-standalone-host.ps1'), [ref]$pimParseTokens, [ref]$pimParseErrors) | Out-Null
@@ -709,6 +711,87 @@ jobs:
           path: |
             ${{ runner.temp }}/gui-hosted-public-${{ github.run_id }}-${{ github.run_attempt }}/public-result.json
             ${{ runner.temp }}/gui-hosted-public-${{ github.run_id }}-${{ github.run_attempt }}/external-deadline.json
+
+  qualify-gui-desktop-provider:
+    needs: [check]
+    runs-on: windows-2022
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          submodules: recursive
+      - uses: ilammy/msvc-dev-cmd@v1
+      - name: Verify pinned backend and installed ATL prerequisites
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:RUNNER_ENVIRONMENT -cne 'github-hosted') { throw 'Disposable standard hosted runner required' }
+          if ((& git rev-parse HEAD) -cne $env:GITHUB_SHA) { throw 'Source checkout mismatch' }
+          if ((& git -C vendor/ProtoInput rev-parse HEAD) -cne 'dd29bf8d22349605d0e1950c1c5dc4893d72670e') { throw 'Backend pin mismatch' }
+          if ((& git -C vendor/ProtoInput status --porcelain --untracked-files=all)) { throw 'Clean pinned backend required' }
+          if (Test-Path -LiteralPath runtime) { throw 'Prebuilt backend runtime forbidden' }
+          $vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio/Installer/vswhere.exe'
+          $vsRoot = & $vswhere -latest -products '*' -requires Microsoft.Component.MSBuild -property installationPath
+          if ($LASTEXITCODE -ne 0 -or -not $vsRoot) { throw 'VS 2022/v143 required' }
+          $atl = @(Get-ChildItem -Path (Join-Path $vsRoot 'VC/Tools/MSVC/*/atlmfc/include/atlbase.h'))
+          if (-not $atl.Count) { throw 'Installed C++ ATL required; no download fallback' }
+          $atlRoot = Split-Path -Parent (Split-Path -Parent $atl[0].FullName)
+          if (-not (Test-Path -LiteralPath (Join-Path $atlRoot 'lib/x64'))) { throw 'Installed x64 ATL libraries required' }
+      - name: Build actual x64 backend using existing compatibility sequence
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          ./scripts/build-backend.ps1 -Architecture x64 -Toolset v143
+          if ($LASTEXITCODE -ne 0) { throw 'Actual native backend build failed' }
+          $files = @(Get-ChildItem -LiteralPath runtime -File | Where-Object { $_.Extension -in '.dll','.exe' } | Sort-Object Name | ForEach-Object {
+            @{ file = $_.Name; sha256 = (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant() }
+          })
+          if (-not $files.Count -or -not (Test-Path -LiteralPath runtime/ProtoInputLoader64.dll)) { throw 'Native runtime specimen missing' }
+          $patches = @(Get-ChildItem -LiteralPath patches -Recurse -File -Filter '*.patch' | Sort-Object FullName | ForEach-Object {
+            @{ file = [IO.Path]::GetRelativePath($env:GITHUB_WORKSPACE, $_.FullName).Replace('\','/'); sha256 = (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant() }
+          })
+          [ordered]@{ schema = 'pim.provider-backend.v1'; source_commit = $env:GITHUB_SHA; backend_pin = 'dd29bf8d22349605d0e1950c1c5dc4893d72670e'; architecture = 'x64'; existing_compatibility_patches = $patches; files = $files } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath runtime/provider-backend.json -Encoding utf8
+      - uses: actions/download-artifact@v4
+        with:
+          name: application-sdk-preview-${{ github.sha }}
+          path: ${{ runner.temp }}/gui-provider-artifacts
+      - name: Run one actual production virtual provider group
+        env:
+          PROVIDER_ROOT: ${{ runner.temp }}/gui-provider-${{ github.run_id }}-${{ github.run_attempt }}
+          PROVIDER_PUBLIC: ${{ runner.temp }}/gui-provider-public-${{ github.run_id }}-${{ github.run_attempt }}
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:RUNNER_ENVIRONMENT -cne 'github-hosted') { throw 'Disposable standard hosted runner required' }
+          if ((Test-Path -LiteralPath $env:PROVIDER_ROOT) -or (Test-Path -LiteralPath $env:PROVIDER_PUBLIC)) { throw 'Fresh private/public roots required' }
+          New-Item -ItemType Directory -Path $env:PROVIDER_PUBLIC -ErrorAction Stop | Out-Null
+          $controllerRoot = Join-Path $env:RUNNER_TEMP ('gui-provider-controller-' + $env:GITHUB_RUN_ID + '-' + $env:GITHUB_RUN_ATTEMPT)
+          New-Item -ItemType Directory -Path $controllerRoot -ErrorAction Stop | Out-Null
+          $result = Join-Path $env:PROVIDER_PUBLIC 'public-result.json'
+          $artifacts = Join-Path $env:RUNNER_TEMP 'gui-provider-artifacts'
+          $backend = Join-Path $env:GITHUB_WORKSPACE 'runtime'
+          $arguments = '"scripts/qualify-gui-desktop-provider.py" --artifacts "{0}" --backend "{1}" --source "{2}" --run "{3}" --public-result "{4}" --commit {5}' -f $artifacts, $backend, $env:GITHUB_WORKSPACE, $env:PROVIDER_ROOT, $result, $env:GITHUB_SHA
+          $clock = [Diagnostics.Stopwatch]::StartNew()
+          $process = Start-Process -FilePath (Get-Command python).Source -ArgumentList $arguments -WorkingDirectory $env:GITHUB_WORKSPACE -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $controllerRoot 'stdout.log') -RedirectStandardError (Join-Path $controllerRoot 'stderr.log')
+          if (-not $process.WaitForExit(480000)) {
+            [ordered]@{ schema = 'pim.desktop-provider.external-deadline.v1'; status = 'FAIL'; source_commit = $env:GITHUB_SHA; timed_out = $true; elapsed_ms = $clock.ElapsedMilliseconds; no_kill_restart_or_retry = $true; full_sdk_complete = $false; release_qualified = $false } | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $env:PROVIDER_PUBLIC 'external-deadline.json') -Encoding utf8
+            throw 'Original provider fixture deadline exceeded; private evidence retained; no termination or retry'
+          }
+          $process.Refresh()
+          if ($process.ExitCode -ne 0 -or -not (Test-Path -LiteralPath $result -PathType Leaf)) { throw 'Provider fixture failed; private partial evidence retained' }
+          $receipt = Get-Content -LiteralPath $result -Raw | ConvertFrom-Json
+          if ($receipt.status -cne 'PASS' -or $receipt.source_commit -cne $env:GITHUB_SHA -or $receipt.gui_exit_code -ne 0 -or -not $receipt.ordinary_cleanup -or -not $receipt.native_wasm_exact_same_ids -or -not $receipt.atomic_held_bootstrap -or -not $receipt.shared_key_held_bootstrap -or -not $receipt.independent_two_target_traces_and_third_exclusion -or -not $receipt.wasm_selector_uses_historical_event_point -or -not $receipt.observer_mutation_denial_no_target_effect -or -not $receipt.held_unbind_no_target_effect -or -not $receipt.native_revoke_cleared_and_unloaded -or -not $receipt.stop_cleared_native_web_and_target_holds -or -not $receipt.restart_fresh_ids_stale_denied_no_replay -or -not $receipt.text_consent_native_false_web_false -or -not $receipt.text_consent_native_false_web_true -or -not $receipt.text_consent_native_true_web_true -or -not $receipt.profile_and_preferences_unchanged -or @($receipt.native_exit_codes).Count -ne 2 -or @($receipt.native_exit_codes | Where-Object { $_ -ne 0 }).Count -ne 0 -or @($receipt.target_exit_codes).Count -ne 3 -or @($receipt.target_exit_codes | Where-Object { $_ -ne 0 }).Count -ne 0) { throw 'Provider whole-group receipt incomplete' }
+      - name: Upload only sanitized provider decisions
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gui-desktop-provider-${{ github.sha }}-${{ github.run_attempt }}
+          retention-days: 1
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/gui-provider-public-${{ github.run_id }}-${{ github.run_attempt }}/public-result.json
+            ${{ runner.temp }}/gui-provider-public-${{ github.run_id }}-${{ github.run_attempt }}/external-deadline.json
 
   qualify-standalone-host:
     needs: [check]
