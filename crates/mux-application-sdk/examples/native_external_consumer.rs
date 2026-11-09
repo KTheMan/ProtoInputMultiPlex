@@ -14,7 +14,9 @@ fn main() {
 
 #[cfg(windows)]
 mod fixture {
-    mod desktop_observer { include!("native_external_consumer/desktop_observer.rs"); }
+    mod desktop_observer {
+        include!("native_external_consumer/desktop_observer.rs");
+    }
     use mux_application_sdk::{
         ClientCommand, ClientRequest, ClientResponse, Event, FailureCode, HostRevision,
         HostViewportAction, HostedAction, HostedPhase, Input, KeyCode, OwnerResponse,
@@ -240,7 +242,8 @@ mod fixture {
             || (args.len() == 11 && args[8] == "--window-route" && args[9] == "--observe-seconds");
         let hosted_args = (args.len() == 9 && args[8] == "--hosted-route")
             || (args.len() == 11 && args[8] == "--hosted-route" && args[9] == "--observe-seconds");
-        let desktop_args = args.len() == 11 && args[8] == "--desktop-route" && args[9] == "--observe-seconds";
+        let desktop_args =
+            args.len() == 11 && args[8] == "--desktop-route" && args[9] == "--observe-seconds";
         let key_args = args.len() == 8
             || (args.len() == 10 && args[8] == "--virtual-key")
             || (args.len() == 12 && args[8] == "--virtual-key" && args[10] == "--observe-seconds");
@@ -580,7 +583,14 @@ mod fixture {
 
         await_ready(api, token, completion, report)?;
         if matches!(route, RouteMode::Desktop) {
-            desktop_observer::exercise(api, token, completion, descriptor_path, observation_seconds, report)?;
+            desktop_observer::exercise(
+                api,
+                token,
+                completion,
+                descriptor_path,
+                observation_seconds,
+                report,
+            )?;
         } else if matches!(route, RouteMode::Hosted) {
             exercise_hosted_route(api, token, completion, observation_seconds, report)?;
         } else if matches!(route, RouteMode::Window) {
@@ -759,7 +769,12 @@ mod fixture {
         let terminal = retained(api, token, false)?;
         ensure(
             terminal["status"]["live"] == false
-                && (terminal["status"]["terminal"] == "local_stop" || matches!(route, RouteMode::Desktop) && matches!(terminal["status"]["terminal"].as_str(), Some("remote_end" | "transport")))
+                && (terminal["status"]["terminal"] == "local_stop"
+                    || matches!(route, RouteMode::Desktop)
+                        && matches!(
+                            terminal["status"]["terminal"].as_str(),
+                            Some("remote_end" | "transport")
+                        ))
                 && terminal["status"]["remote_cleanup_unconfirmed"] == true,
             "Stop must report local termination with remote cleanup unconfirmed",
         )?;
@@ -900,8 +915,7 @@ mod fixture {
             ensure(version == 1, "unsupported desktop observation descriptor")?;
             config["desktop_observation_version"] = json!(version);
         }
-        serde_json::to_vec(&config)
-        .map_err(|_| "private descriptor conversion failed".to_owned())
+        serde_json::to_vec(&config).map_err(|_| "private descriptor conversion failed".to_owned())
     }
 
     #[derive(Serialize, PartialEq, Eq)]

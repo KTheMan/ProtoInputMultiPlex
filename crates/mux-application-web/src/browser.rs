@@ -1,6 +1,6 @@
 use crate::event_hooks::{
-    ButtonObservation, ClickOptions, ClickPairs, EventFilter, Registry, button_observation, hosted_deadline_pending,
-    validate_snapshot_query_with_desktop,
+    ButtonObservation, ClickOptions, ClickPairs, EventFilter, Registry, button_observation,
+    hosted_deadline_pending, validate_snapshot_query_with_desktop,
 };
 use crate::geometry::CanvasGeometry;
 use crate::local_input::{LocalInput, hid_key, mouse_button, selects};
@@ -234,7 +234,14 @@ impl Inner {
                     self.click_deliveries.clear();
                 }
                 event => {
-                    let Some(ButtonObservation { user, button, transition, position, transform_revision }) = button_observation(event) else {
+                    let Some(ButtonObservation {
+                        user,
+                        button,
+                        transition,
+                        position,
+                        transform_revision,
+                    }) = button_observation(event)
+                    else {
                         continue;
                     };
                     if !self.is_live()

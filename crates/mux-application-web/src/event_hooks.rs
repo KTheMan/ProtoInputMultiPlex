@@ -21,11 +21,12 @@ pub(crate) fn button_observation(event: &Event) -> Option<ButtonObservation<'_>>
     match event {
         Event::DesktopObserved {
             user,
-            record: DesktopRecordV1 {
-                change: DesktopObservation::Button { button, transition },
-                screen_revision: transform_revision,
-                ..
-            },
+            record:
+                DesktopRecordV1 {
+                    change: DesktopObservation::Button { button, transition },
+                    screen_revision: transform_revision,
+                    ..
+                },
             position: Some(position),
             ..
         }
@@ -35,7 +36,13 @@ pub(crate) fn button_observation(event: &Event) -> Option<ButtonObservation<'_>>
             position: Some(position),
             transform_revision,
             ..
-        } => Some(ButtonObservation { user, button, transition, position, transform_revision }),
+        } => Some(ButtonObservation {
+            user,
+            button,
+            transition,
+            position,
+            transform_revision,
+        }),
         _ => None,
     }
 }
@@ -252,8 +259,17 @@ mod tests {
         use mux_core::desktop::{Bounds, CursorShape};
         use std::collections::BTreeSet;
 
-        let bounds = Bounds { left: 0, top: 0, right: 400, bottom: 400 };
-        let screens = ScreenState { revision: 7, desktop: bounds, screens: vec![bounds] };
+        let bounds = Bounds {
+            left: 0,
+            top: 0,
+            right: 400,
+            bottom: 400,
+        };
+        let screens = ScreenState {
+            revision: 7,
+            desktop: bounds,
+            screens: vec![bounds],
+        };
         let click_position = Point { x: 100, y: 110 };
         let later_position = Point { x: 300, y: 310 };
         let mut engine = Engine::new(u64::MAX, screens.clone()).unwrap();
@@ -265,25 +281,57 @@ mod tests {
             next_sequence: 1,
             screens: screens.clone(),
             position: click_position,
-            cursor: ConfiguredDesktopCursor { shape: CursorShape::System, size: 32.5,
-                color: [1, 2, 3], visible: true, follow_application: false },
+            cursor: ConfiguredDesktopCursor {
+                shape: CursorShape::System,
+                size: 32.5,
+                color: [1, 2, 3],
+                visible: true,
+                follow_application: false,
+            },
             held_buttons: Vec::new(),
             native_held_keys: Vec::new(),
         };
-        let a = engine.create_desktop_observed(owner, "A", baseline.clone()).unwrap();
+        let a = engine
+            .create_desktop_observed(owner, "A", baseline.clone())
+            .unwrap();
         // B's baseline hold must not manufacture a selector DOWN or consume A's press.
-        let b = engine.create_desktop_observed(owner, "B", DesktopBaselineV1 {
-            held_buttons: vec![MouseButton::X1], ..baseline
-        }).unwrap();
-        for (recipient, pointer_events, key_events) in [(pointer, true, false), (keyboard, false, true)] {
-            engine.approve_grant(recipient, Grant {
-                users: UserScope::Only(BTreeSet::from([a, b])),
-                pointer_events, key_events, owned_windows: false, host_state: false,
-            }).unwrap();
-            engine.approve_desktop_observation(recipient, Some(DesktopConsentV1 {
-                version: 1, text_units: false,
-            })).unwrap();
-            engine.negotiate_desktop_observation(recipient, Some(1)).unwrap();
+        let b = engine
+            .create_desktop_observed(
+                owner,
+                "B",
+                DesktopBaselineV1 {
+                    held_buttons: vec![MouseButton::X1],
+                    ..baseline
+                },
+            )
+            .unwrap();
+        for (recipient, pointer_events, key_events) in
+            [(pointer, true, false), (keyboard, false, true)]
+        {
+            engine
+                .approve_grant(
+                    recipient,
+                    Grant {
+                        users: UserScope::Only(BTreeSet::from([a, b])),
+                        pointer_events,
+                        key_events,
+                        owned_windows: false,
+                        host_state: false,
+                    },
+                )
+                .unwrap();
+            engine
+                .approve_desktop_observation(
+                    recipient,
+                    Some(DesktopConsentV1 {
+                        version: 1,
+                        text_units: false,
+                    }),
+                )
+                .unwrap();
+            engine
+                .negotiate_desktop_observation(recipient, Some(1))
+                .unwrap();
         }
         let (subscription, snapshot) = engine.subscribe(pointer, 16).unwrap();
         let (key_subscription, key_snapshot) = engine.subscribe(keyboard, 16).unwrap();
@@ -300,57 +348,155 @@ mod tests {
         assert_ne!(source_a, source_b);
 
         for (user, sequence, change) in [
-            (a, 1, DesktopObservation::Button { button: MouseButton::X1, transition: Transition::Down }),
-            (b, 1, DesktopObservation::Button { button: MouseButton::X1, transition: Transition::Up }),
-            (a, 2, DesktopObservation::Button { button: MouseButton::X1, transition: Transition::Up }),
-            (a, 3, DesktopObservation::Motion { position: later_position }),
+            (
+                a,
+                1,
+                DesktopObservation::Button {
+                    button: MouseButton::X1,
+                    transition: Transition::Down,
+                },
+            ),
+            (
+                b,
+                1,
+                DesktopObservation::Button {
+                    button: MouseButton::X1,
+                    transition: Transition::Up,
+                },
+            ),
+            (
+                a,
+                2,
+                DesktopObservation::Button {
+                    button: MouseButton::X1,
+                    transition: Transition::Up,
+                },
+            ),
+            (
+                a,
+                3,
+                DesktopObservation::Motion {
+                    position: later_position,
+                },
+            ),
         ] {
-            engine.publish_desktop_observation(owner, user, DesktopRecordV1 {
-                version: 1, sequence, screen_revision: screens.revision,
-                admission: DesktopAdmission::LogicalOnly, change,
-            }).unwrap();
+            engine
+                .publish_desktop_observation(
+                    owner,
+                    user,
+                    DesktopRecordV1 {
+                        version: 1,
+                        sequence,
+                        screen_revision: screens.revision,
+                        admission: DesktopAdmission::LogicalOnly,
+                        change,
+                    },
+                )
+                .unwrap();
         }
         // One controlled batch, not an assumption about runtime IPC framing.
         let batch = engine.poll(pointer, subscription, 16).unwrap();
         model.fold_poll(batch.clone()).unwrap();
         assert_eq!(model.state(), &StreamState::Live);
-        assert_eq!(model.users()[&a].pointer.as_ref().unwrap().position, later_position);
-        assert!(model.users()[&a].pointer.as_ref().unwrap().held_buttons.is_empty());
-        let message = ServerMessage::EventStream { subscription, stream: batch.clone() };
-        assert!(EventFilter { kind: EventKind::Input, user: Some(a) }.matches(Some(&message)));
-        assert!(!EventFilter { kind: EventKind::Input, user: Some(user(9_007_199_254_740_993)) }.matches(Some(&message)));
+        assert_eq!(
+            model.users()[&a].pointer.as_ref().unwrap().position,
+            later_position
+        );
+        assert!(
+            model.users()[&a]
+                .pointer
+                .as_ref()
+                .unwrap()
+                .held_buttons
+                .is_empty()
+        );
+        let message = ServerMessage::EventStream {
+            subscription,
+            stream: batch.clone(),
+        };
+        assert!(
+            EventFilter {
+                kind: EventKind::Input,
+                user: Some(a)
+            }
+            .matches(Some(&message))
+        );
+        assert!(
+            !EventFilter {
+                kind: EventKind::Input,
+                user: Some(user(9_007_199_254_740_993))
+            }
+            .matches(Some(&message))
+        );
 
-        let geometry = CanvasGeometry { left: 20.0, top: 30.0, width: 400.0,
-            height: 400.0, pixel_ratio: 2.0 };
+        let geometry = CanvasGeometry {
+            left: 20.0,
+            top: 30.0,
+            width: 400.0,
+            height: 400.0,
+            pixel_ratio: 2.0,
+        };
         let transform = geometry.transform(model.screens().unwrap()).unwrap();
-        let options = ClickOptions { selector: "#target".into(), user: None, button: MouseButton::X1 };
+        let options = ClickOptions {
+            selector: "#target".into(),
+            user: None,
+            button: MouseButton::X1,
+        };
         // A deterministic target identity/rectangle stands in for DOM hit_stamp.
         // ClickPairs is the same target/geometry pairing API used by that callback.
-        let hit = |point: [f64; 2]| {
-            ((100.0..160.0).contains(&point[0]) && (120.0..180.0).contains(&point[1]))
-                .then_some((options.selector.as_str(), geometry, screens.revision))
-        };
-        let final_local = transform.to_canvas(later_position, screens.revision).unwrap();
-        let final_point = [final_local[0] + geometry.left, final_local[1] + geometry.top];
+        let hit =
+            |point: [f64; 2]| {
+                ((100.0..160.0).contains(&point[0]) && (120.0..180.0).contains(&point[1]))
+                    .then_some((options.selector.as_str(), geometry, screens.revision))
+            };
+        let final_local = transform
+            .to_canvas(later_position, screens.revision)
+            .unwrap();
+        let final_point = [
+            final_local[0] + geometry.left,
+            final_local[1] + geometry.top,
+        ];
         assert!(hit(final_point).is_none());
-        let Poll::Events { events } = &batch else { panic!("expected provider records") };
+        let Poll::Events { events } = &batch else {
+            panic!("expected provider records")
+        };
         assert_eq!(events.len(), 4);
         let mut pairs = ClickPairs::default();
         let mut deliveries = Vec::new();
         for envelope in events {
-            let Some(edge) = button_observation(&envelope.event) else { continue };
-            let Event::DesktopObserved { user: original_user, source, .. } = &envelope.event
-                else { panic!("expected original provider event") };
+            let Some(edge) = button_observation(&envelope.event) else {
+                continue;
+            };
+            let Event::DesktopObserved {
+                user: original_user,
+                source,
+                ..
+            } = &envelope.event
+            else {
+                panic!("expected original provider event")
+            };
             assert_eq!(edge.user, original_user);
             assert_eq!(*source, model.users()[edge.user].source);
             assert_eq!(*edge.button, options.button);
             assert_eq!(*edge.transform_revision, screens.revision);
-            assert!(transform.to_canvas(*edge.position, screens.revision + 1).is_err());
-            let local = transform.to_canvas(*edge.position, *edge.transform_revision).unwrap();
+            assert!(
+                transform
+                    .to_canvas(*edge.position, screens.revision + 1)
+                    .is_err()
+            );
+            let local = transform
+                .to_canvas(*edge.position, *edge.transform_revision)
+                .unwrap();
             let point = [local[0] + geometry.left, local[1] + geometry.top];
             let stamp = hit(point);
             if pairs.transition(*edge.user, *edge.transition, stamp) {
-                deliveries.push((*edge.user, *source, stamp.unwrap().0, point, envelope.clone()));
+                deliveries.push((
+                    *edge.user,
+                    *source,
+                    stamp.unwrap().0,
+                    point,
+                    envelope.clone(),
+                ));
             }
         }
         assert_eq!(deliveries.len(), 1);
@@ -363,16 +509,26 @@ mod tests {
 
         let key_batch = engine.poll(keyboard, key_subscription, 16).unwrap();
         assert!(matches!(&key_batch, Poll::Events { events } if events.is_empty()));
-        assert!(!EventFilter { kind: EventKind::Input, user: None }.matches(Some(&ServerMessage::EventStream {
-            subscription: key_subscription, stream: key_batch,
-        })));
+        assert!(
+            !EventFilter {
+                kind: EventKind::Input,
+                user: None
+            }
+            .matches(Some(&ServerMessage::EventStream {
+                subscription: key_subscription,
+                stream: key_batch,
+            }))
+        );
         let mut redacted = events[2].event.clone();
-        if let Event::DesktopObserved { position, .. } = &mut redacted { *position = None; }
+        if let Event::DesktopObserved { position, .. } = &mut redacted {
+            *position = None;
+        }
         assert!(button_observation(&redacted).is_none());
 
         let mut wrong_source = batch;
         if let Poll::Events { events } = &mut wrong_source
-            && let Event::DesktopObserved { source, .. } = &mut events[2].event {
+            && let Event::DesktopObserved { source, .. } = &mut events[2].event
+        {
             *source = source_b;
         }
         let mut rejected = original_model;
