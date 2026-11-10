@@ -1,4 +1,7 @@
-//! Private, opt-in hosted probe record. No dump, recovery or exception mutation.
+//! Private, opt-in hosted probe record; a separate diagnostic mode can capture a dump.
+#[cfg(target_arch = "x86_64")]
+#[path = "fatal_dump.rs"]
+mod dump;
 use std::{
     cell::UnsafeCell,
     ffi::c_void,
@@ -76,6 +79,8 @@ fn filter_with(
 
 /// No allocation, formatting, Rust lock, retry or context write in this callback.
 unsafe extern "system" fn unhandled(info: *const EXCEPTION_POINTERS) -> i32 {
+    #[cfg(target_arch = "x86_64")]
+    let dump_snapshot = unsafe { dump::snapshot(info) };
     let exception = unsafe { info.as_ref() }
         .and_then(|pointers| unsafe { pointers.ExceptionRecord.as_ref() })
         .map(|record| {
@@ -96,7 +101,11 @@ unsafe extern "system" fn unhandled(info: *const EXCEPTION_POINTERS) -> i32 {
             }
         },
         &CLAIMED,
-        |address, result| unsafe { capture(address, result, previous != 0) },
+        |address, result| unsafe {
+            capture(address, result, previous != 0);
+            #[cfg(target_arch = "x86_64")]
+            dump::publish(dump_snapshot, result);
+        },
     )
 }
 
@@ -226,6 +235,8 @@ pub(super) fn install(report: &Path) {
         return;
     }
     record.words[5] = 2;
+    #[cfg(target_arch = "x86_64")]
+    dump::prepare(report, std::process::id(), creation);
     // The file and code remain valid for this disposable process's lifetime.
     FILE.store(file.into_raw_handle(), Ordering::Release);
     let previous = unsafe { SetUnhandledExceptionFilter(Some(unhandled)) };

@@ -32,14 +32,18 @@ def module(name, file):
 base = module("provider_pair", "qualify-gui-pair.py")
 mcp_helpers = module("provider_mcp", "test-mcp.py")
 crash_events = module("provider_crash_events", "provider-crash-events.py")
+private_dump = module("provider_private_dump", "provider-private-dump.py")
 require = base.require
 
 
-def provider_target_env(index):
+def provider_target_env(index, private_config=None):
     environment = dict(os.environ)
     environment.pop(crash_events.FATAL_ENV, None)
+    environment.pop(private_dump.CONFIG_ENV, None)
     if type(index) is int and index in (0,1):
         environment[crash_events.FATAL_ENV] = "private-av-v1"
+        if private_config is not None:
+            environment[private_dump.CONFIG_ENV] = str(private_config)
     return environment
 
 
@@ -336,6 +340,7 @@ class ProviderPair(base.Pair):
         self.private = args.run.resolve()
         self.paths, self.issued, self.native_runs = {}, set(), []
         self.failure_target_frames = {}
+        self.private_dump_requested = getattr(args, "private_dump_root", None) is not None
         self.result = {"schema": "pim.desktop-provider.hosted.v1", "source_commit": args.commit,
             "status": "FAIL", "scope": "two explicitly bound production virtual seats; native DLL and Rust/WASM; owned native targets",
             "full_sdk_complete": False, "release_qualified": False, "hardware_qualified": False,
@@ -530,7 +535,7 @@ class ProviderPair(base.Pair):
                 if time.monotonic() >= self.end:
                     diagnostic["query_status"] = "deadline_exhausted"
                     return
-                public, raw, malformed = crash_events.match_events(records, identity, str(self.exe), upper,
+                public, raw, malformed = crash_events.match_events(records, identity, str(getattr(self,"private_dump_probe",self.exe)), upper,
                     getattr(self, "crash_admitted_modules", {}))
                 diagnostic[label] = public
                 diagnostic["malformed_record_present"] |= malformed
@@ -1181,7 +1186,13 @@ class ProviderPair(base.Pair):
         data = self.strict_json("preferences_json",args.source/"fixtures/gui-sdk-preparation/app-preferences.json")
         data["load_profile_at_startup"] = True
         self.preferences.write_text(json.dumps(data),encoding="utf-8"); self.preferences_initial = self.preferences.read_bytes()
-        self.targets_processes = [self.launch([self.exe,"probe","--automation","--report",self.private/f"target-{i}.json"],f"target-{i}",provider_target_env(i)) for i in range(3)]
+        if self.private_dump_requested:
+            try:
+                private_dump.prepare(self)
+                self.crash_admitted_modules[crash_events.windows_path(str(self.private_dump_probe))] = self.private_dump_metadata["probe"]["image_sha256"]
+            except BaseException:
+                pass  # No tool/config failure may replace the original workflow.
+        self.targets_processes = [self.launch([getattr(self,"private_dump_probe",self.exe) if i in (0,1) else self.exe,"probe","--automation","--report",self.private/f"target-{i}.json"],f"target-{i}",provider_target_env(i,getattr(self,"private_dump_config",None))) for i in range(3)]
         self.pids = [p.pid for p in self.targets_processes]
         self.place_targets()
         self.seat_ids = ["provider-a","provider-b","provider-c"]
@@ -1263,6 +1274,7 @@ class ProviderPair(base.Pair):
 def main():
     parser=argparse.ArgumentParser()
     for name in ("artifacts","backend","source","run","public-result"): parser.add_argument("--"+name,type=Path,required=True)
+    for name in ("private-dump-root","private-dump-metadata","private-dump-decision"): parser.add_argument("--"+name,type=Path)
     parser.add_argument("--commit",required=True); args=parser.parse_args(); gate=ProviderPair(args)
     try:
         gate.run()
@@ -1285,6 +1297,15 @@ def main():
             pass  # A private crash record cannot replace the original failure.
     else:
         gate.native_submission_diagnostics("after_run")
+    if args.private_dump_root is not None:
+        try:
+            private_dump.finish(gate)
+        except BaseException:
+            # Even failed diagnostic finalization must never claim acceptance.
+            gate.result["diagnostic_only"] = True
+            gate.result["functional_acceptance"] = False
+            if gate.result.get("status") == "PASS":
+                gate.result["status"] = "DIAGNOSTIC_ONLY"
     require(not args.public_result.exists())
     args.public_result.write_text(json.dumps(gate.result,indent=2)+"\n",encoding="utf-8")
     raise SystemExit(0 if gate.result["status"] == "PASS" else 1)

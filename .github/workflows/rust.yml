@@ -64,6 +64,8 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Provider controller Python syntax rejected' }
           python scripts/test-provider-failure-lifecycle.py
           if ($LASTEXITCODE -ne 0) { throw 'Provider failure lifecycle regressions failed' }
+          python scripts/test-provider-private-dump.py
+          if ($LASTEXITCODE -ne 0) { throw 'Private dump boundary regressions failed' }
           $pimParseTokens = $null
           $pimParseErrors = $null
           [System.Management.Automation.Language.Parser]::ParseFile((Join-Path $env:GITHUB_WORKSPACE 'scripts/qualify-standalone-host.ps1'), [ref]$pimParseTokens, [ref]$pimParseErrors) | Out-Null
@@ -794,6 +796,135 @@ jobs:
           path: |
             ${{ runner.temp }}/gui-provider-public-${{ github.run_id }}-${{ github.run_attempt }}/public-result.json
             ${{ runner.temp }}/gui-provider-public-${{ github.run_id }}-${{ github.run_attempt }}/external-deadline.json
+
+  diagnose-gui-desktop-provider-private-dump:
+    needs: [check]
+    runs-on: windows-latest
+    timeout-minutes: 75
+    env:
+      CARGO_PROFILE_DEV_DEBUG: '2'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          submodules: recursive
+      - uses: ilammy/msvc-dev-cmd@v1
+      - name: Verify pinned backend and installed ATL prerequisites
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:RUNNER_ENVIRONMENT -cne 'github-hosted') { throw 'Disposable standard hosted runner required' }
+          if ((& git rev-parse HEAD) -cne $env:GITHUB_SHA) { throw 'Source checkout mismatch' }
+          if ((& git -C vendor/ProtoInput rev-parse HEAD) -cne 'dd29bf8d22349605d0e1950c1c5dc4893d72670e') { throw 'Backend pin mismatch' }
+          if ((& git -C vendor/ProtoInput status --porcelain --untracked-files=all)) { throw 'Clean pinned backend required' }
+          if (Test-Path -LiteralPath runtime) { throw 'Prebuilt backend runtime forbidden' }
+          $vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio/Installer/vswhere.exe'
+          $vsRoot = & $vswhere -latest -products '*' -requires Microsoft.Component.MSBuild -property installationPath
+          if ($LASTEXITCODE -ne 0 -or -not $vsRoot) { throw 'VS 2022/v143 required' }
+          $atl = @(Get-ChildItem -Path (Join-Path $vsRoot 'VC/Tools/MSVC/*/atlmfc/include/atlbase.h'))
+          if (-not $atl.Count) { throw 'Installed C++ ATL required; no download fallback' }
+          $atlRoot = Split-Path -Parent (Split-Path -Parent $atl[0].FullName)
+          if (-not (Test-Path -LiteralPath (Join-Path $atlRoot 'lib/x64'))) { throw 'Installed x64 ATL libraries required' }
+      - name: Build actual x64 backend using existing compatibility sequence
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $nativeLogRoot = Join-Path $env:RUNNER_TEMP ('provider-dump-native-' + $env:GITHUB_RUN_ID + '-' + $env:GITHUB_RUN_ATTEMPT)
+          New-Item -ItemType Directory -Path $nativeLogRoot -ErrorAction Stop | Out-Null
+          ./scripts/build-backend.ps1 -Architecture x64 -Toolset v143 *> (Join-Path $nativeLogRoot 'build.private.log')
+          if ($LASTEXITCODE -ne 0) { throw 'Actual native backend build failed' }
+          $files = @(Get-ChildItem -LiteralPath runtime -File | Where-Object { $_.Extension -in '.dll','.exe' } | Sort-Object Name | ForEach-Object {
+            @{ file = $_.Name; sha256 = (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant() }
+          })
+          if (-not $files.Count -or -not (Test-Path -LiteralPath runtime/ProtoInputLoader64.dll)) { throw 'Native runtime specimen missing' }
+          $patches = @(Get-ChildItem -LiteralPath patches -Recurse -File -Filter '*.patch' | Sort-Object FullName | ForEach-Object {
+            @{ file = [IO.Path]::GetRelativePath($env:GITHUB_WORKSPACE, $_.FullName).Replace('\','/'); sha256 = (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant() }
+          })
+          [ordered]@{ schema = 'pim.provider-backend.v1'; source_commit = $env:GITHUB_SHA; backend_pin = 'dd29bf8d22349605d0e1950c1c5dc4893d72670e'; architecture = 'x64'; existing_compatibility_patches = $patches; files = $files } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath runtime/provider-backend.json -Encoding utf8
+      - uses: actions/download-artifact@v4
+        with:
+          name: application-sdk-preview-${{ github.sha }}
+          path: ${{ runner.temp }}/gui-provider-dump-artifacts
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.92.0
+      - name: Build private same-source software probe and prepare exact symbol metadata
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $buildRoot = Join-Path $env:RUNNER_TEMP ('provider-dump-build-' + $env:GITHUB_RUN_ID + '-' + $env:GITHUB_RUN_ATTEMPT)
+          New-Item -ItemType Directory -Path $buildRoot -ErrorAction Stop | Out-Null
+          $buildLog = Join-Path $buildRoot 'cargo.private.log'
+          & cargo build -p protoinputmultiplex --features software-renderer --locked --target-dir $buildRoot --bin protoinputmultiplex --example provider_private_dump *> $buildLog
+          if ($LASTEXITCODE -ne 0) { throw 'Private diagnostic Rust build failed' }
+          python scripts/test-provider-private-dump.py *> (Join-Path $buildRoot 'pure-tests.private.log')
+          if ($LASTEXITCODE -ne 0) { throw 'Private dump boundary regressions failed' }
+          $image = Join-Path $buildRoot 'debug/protoinputmultiplex.exe'
+          $pdb = Join-Path $buildRoot 'debug/protoinputmultiplex.pdb'
+          $helper = Join-Path $buildRoot 'debug/examples/provider_private_dump.exe'
+          foreach ($path in @($image,$pdb,$helper)) { if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { throw 'Private diagnostic build specimen missing' } }
+          $probe = @{ image = $image; image_sha256 = (Get-FileHash -LiteralPath $image -Algorithm SHA256).Hash.ToLowerInvariant(); pdb = $pdb; pdb_sha256 = (Get-FileHash -LiteralPath $pdb -Algorithm SHA256).Hash.ToLowerInvariant() }
+          $modules = @($probe)
+          $runRoot = Join-Path $env:RUNNER_TEMP ('gui-provider-dump-' + $env:GITHUB_RUN_ID + '-' + $env:GITHUB_RUN_ATTEMPT)
+          $nativeOutput = Join-Path $env:GITHUB_WORKSPACE 'vendor/ProtoInput/src/ProtoInput/Release'
+          foreach ($name in @('ProtoInputHooks64.dll','ProtoInputLoader64.dll','EasyHook64.dll','protoinputmultiplex_cursor_observer64.dll')) {
+            $nativeImage = Join-Path $env:GITHUB_WORKSPACE ('runtime/' + $name)
+            if (-not (Test-Path -LiteralPath $nativeImage -PathType Leaf)) { continue }
+            $nativePdb = Join-Path $nativeOutput ([IO.Path]::ChangeExtension($name, '.pdb'))
+            # PDB remains at its original native build output. Never copy it to runtime.
+            $modules += @{ image = (Join-Path $runRoot ('runtime/' + $name)); image_sha256 = (Get-FileHash -LiteralPath $nativeImage -Algorithm SHA256).Hash.ToLowerInvariant(); pdb = $nativePdb; pdb_sha256 = $(if (Test-Path -LiteralPath $nativePdb -PathType Leaf) { (Get-FileHash -LiteralPath $nativePdb -Algorithm SHA256).Hash.ToLowerInvariant() } else { $null }) }
+          }
+          $sourceFiles = @{}
+          foreach ($file in @(& git ls-files '*.rs' '*.cpp' '*.h')) {
+            if (Test-Path -LiteralPath $file -PathType Leaf) { $sourceFiles[$file.Replace('\','/')] = (Get-FileHash -LiteralPath $file -Algorithm SHA256).Hash.ToLowerInvariant() }
+          }
+          foreach ($file in @(& git -C vendor/ProtoInput ls-files '*.c' '*.cc' '*.cxx' '*.cpp' '*.h' '*.hpp')) {
+            $relative = 'vendor/ProtoInput/' + $file.Replace('\','/')
+            if (Test-Path -LiteralPath $relative -PathType Leaf) { $sourceFiles[$relative] = (Get-FileHash -LiteralPath $relative -Algorithm SHA256).Hash.ToLowerInvariant() }
+          }
+          if ($sourceFiles.Count -gt 4096) { throw 'Private source whitelist bound exceeded' }
+          $metadata = Join-Path $buildRoot 'build.private.json'
+          [ordered]@{ schema = 'pim.private-dump-build.v1'; source_commit = $env:GITHUB_SHA; source = $env:GITHUB_WORKSPACE; target = 'x86_64-pc-windows-msvc'; profile = 'debug'; dev_debug = 2; features = @('software-renderer'); probe = $probe; helper = @{ file = $helper; sha256 = (Get-FileHash -LiteralPath $helper -Algorithm SHA256).Hash.ToLowerInvariant() }; modules = $modules; source_files = $sourceFiles } | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $metadata -Encoding utf8
+          "PIM_PRIVATE_DUMP_METADATA=$metadata" | Out-File -LiteralPath $env:GITHUB_ENV -Encoding utf8 -Append
+      - name: Run one private diagnostic production virtual provider group
+        env:
+          PROVIDER_ROOT: ${{ runner.temp }}/gui-provider-dump-${{ github.run_id }}-${{ github.run_attempt }}
+          PROVIDER_PUBLIC: ${{ runner.temp }}/gui-provider-dump-public-${{ github.run_id }}-${{ github.run_attempt }}
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:RUNNER_ENVIRONMENT -cne 'github-hosted') { throw 'Disposable standard hosted runner required' }
+          if ((Test-Path -LiteralPath $env:PROVIDER_ROOT) -or (Test-Path -LiteralPath $env:PROVIDER_PUBLIC)) { throw 'Fresh private/public roots required' }
+          New-Item -ItemType Directory -Path $env:PROVIDER_PUBLIC -ErrorAction Stop | Out-Null
+          $controllerRoot = Join-Path $env:RUNNER_TEMP ('gui-provider-dump-controller-' + $env:GITHUB_RUN_ID + '-' + $env:GITHUB_RUN_ATTEMPT)
+          New-Item -ItemType Directory -Path $controllerRoot -ErrorAction Stop | Out-Null
+          $result = Join-Path $controllerRoot 'original-result.private.json'
+          $decision = Join-Path $env:PROVIDER_PUBLIC 'diagnostic-decision.json'
+          $artifacts = Join-Path $env:RUNNER_TEMP 'gui-provider-dump-artifacts'
+          $backend = Join-Path $env:GITHUB_WORKSPACE 'runtime'
+          $diagnosticRoot = Join-Path $env:RUNNER_TEMP ('provider-dump-tools-' + $env:GITHUB_RUN_ID + '-' + $env:GITHUB_RUN_ATTEMPT)
+          $arguments = '"scripts/qualify-gui-desktop-provider.py" --artifacts "{0}" --backend "{1}" --source "{2}" --run "{3}" --public-result "{4}" --commit {5} --private-dump-root "{6}" --private-dump-metadata "{7}" --private-dump-decision "{8}"' -f $artifacts, $backend, $env:GITHUB_WORKSPACE, $env:PROVIDER_ROOT, $result, $env:GITHUB_SHA, $diagnosticRoot, $env:PIM_PRIVATE_DUMP_METADATA, $decision
+          # Original outer fence; no child/process termination, restart, or replay.
+          $process = Start-Process -FilePath (Get-Command python).Source -ArgumentList $arguments -WorkingDirectory $env:GITHUB_WORKSPACE -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $controllerRoot 'stdout.private.log') -RedirectStandardError (Join-Path $controllerRoot 'stderr.private.log')
+          if (-not $process.WaitForExit(480000)) {
+            if (-not (Test-Path -LiteralPath $decision)) {
+              [ordered]@{ schema = 'pim.private-dump-decision.v1'; diagnostic_only = $true; functional_acceptance = $false; capture_perturbed_timing = $true; target_a = @{ status = 'inconclusive'; reason = 'deadline_exhausted'; frames = @(); capture_perturbed_timing = $true; loaded_module_hash_proved = $false; source_mapping_proves_loaded_bytes = $false }; target_b = @{ status = 'inconclusive'; reason = 'deadline_exhausted'; frames = @(); capture_perturbed_timing = $true; loaded_module_hash_proved = $false; source_mapping_proves_loaded_bytes = $false } } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $decision -Encoding utf8
+            }
+            throw 'Private diagnostic original fixture deadline exceeded'
+          }
+          # Baseline functional FAIL remains FAIL in the private original result.
+          # This isolated job accepts only a diagnostic-only sanitized decision.
+          if (-not (Test-Path -LiteralPath $decision -PathType Leaf)) { throw 'Private diagnostic decision unavailable' }
+          $receipt = Get-Content -LiteralPath $decision -Raw | ConvertFrom-Json
+          if ($receipt.schema -cne 'pim.private-dump-decision.v1' -or -not $receipt.diagnostic_only -or $receipt.functional_acceptance -or -not $receipt.capture_perturbed_timing) { throw 'Diagnostic-only boundary rejected' }
+      - name: Upload one sanitized private dump decision only
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gui-desktop-provider-private-dump-${{ github.sha }}-${{ github.run_attempt }}
+          retention-days: 1
+          if-no-files-found: warn
+          path: ${{ runner.temp }}/gui-provider-dump-public-${{ github.run_id }}-${{ github.run_attempt }}/diagnostic-decision.json
 
   qualify-standalone-host:
     needs: [check]
