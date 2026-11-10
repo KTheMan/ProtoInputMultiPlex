@@ -17,7 +17,7 @@ use windows_sys::Win32::{
             EXCEPTION_CONTINUE_SEARCH, EXCEPTION_EXECUTE_HANDLER, EXCEPTION_POINTERS, GetErrorMode,
             SetUnhandledExceptionFilter,
         },
-        Memory::{MEMORY_BASIC_INFORMATION, MEM_IMAGE, VirtualQuery},
+        Memory::{MEM_IMAGE, MEMORY_BASIC_INFORMATION, VirtualQuery},
         ProcessStatus::K32GetMappedFileNameW,
         Threading::{GetCurrentProcess, GetProcessTimes},
     },
@@ -61,7 +61,10 @@ fn filter_with(
 ) -> i32 {
     let result = previous();
     if let Some((AV, address)) = exception
-        && matches!(result, EXCEPTION_CONTINUE_SEARCH | EXCEPTION_EXECUTE_HANDLER)
+        && matches!(
+            result,
+            EXCEPTION_CONTINUE_SEARCH | EXCEPTION_EXECUTE_HANDLER
+        )
         && claimed
             .compare_exchange(false, true, Ordering::AcqRel, Ordering::Acquire)
             .is_ok()
@@ -75,7 +78,12 @@ fn filter_with(
 unsafe extern "system" fn unhandled(info: *const EXCEPTION_POINTERS) -> i32 {
     let exception = unsafe { info.as_ref() }
         .and_then(|pointers| unsafe { pointers.ExceptionRecord.as_ref() })
-        .map(|record| (record.ExceptionCode as u32, record.ExceptionAddress as usize));
+        .map(|record| {
+            (
+                record.ExceptionCode as u32,
+                record.ExceptionAddress as usize,
+            )
+        });
     let previous = PREVIOUS.load(Ordering::Acquire);
     filter_with(
         exception,
@@ -153,7 +161,10 @@ pub(super) fn install(report: &Path) {
         return;
     }
     if !matches!(std::env::var("GITHUB_ACTIONS").as_deref(), Ok("true"))
-        || !matches!(std::env::var("RUNNER_ENVIRONMENT").as_deref(), Ok("github-hosted"))
+        || !matches!(
+            std::env::var("RUNNER_ENVIRONMENT").as_deref(),
+            Ok("github-hosted")
+        )
         || INITIALIZED.swap(true, Ordering::AcqRel)
     {
         return;
@@ -218,7 +229,10 @@ pub(super) fn install(report: &Path) {
     // The file and code remain valid for this disposable process's lifetime.
     FILE.store(file.into_raw_handle(), Ordering::Release);
     let previous = unsafe { SetUnhandledExceptionFilter(Some(unhandled)) };
-    PREVIOUS.store(previous.map_or(0, |filter| filter as usize), Ordering::Release);
+    PREVIOUS.store(
+        previous.map_or(0, |filter| filter as usize),
+        Ordering::Release,
+    );
 }
 
 #[cfg(test)]
