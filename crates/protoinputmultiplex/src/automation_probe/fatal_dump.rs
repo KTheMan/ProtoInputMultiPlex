@@ -28,13 +28,15 @@ use windows_sys::Win32::{
     Storage::FileSystem::{FILE_BEGIN, SetFilePointerEx, WriteFile},
     System::{
         Diagnostics::Debug::{
-            CONTEXT, CONTEXT_AMD64, CancelCallback, EXCEPTION_POINTERS, EXCEPTION_RECORD,
-            IoFinishCallback, IoStartCallback, IoWriteAllCallback, MINIDUMP_CALLBACK_INFORMATION,
-            MINIDUMP_CALLBACK_INPUT, MINIDUMP_CALLBACK_OUTPUT, MINIDUMP_CALLBACK_OUTPUT_0_0,
-            MINIDUMP_CALLBACK_OUTPUT_0_1, MINIDUMP_EXCEPTION_INFORMATION, MINIDUMP_TYPE,
-            MINIDUMP_USER_STREAM_INFORMATION, MemoryCallback, MiniDumpWithCodeSegs,
-            MiniDumpWithFullMemoryInfo, MiniDumpWithThreadInfo, MiniDumpWithUnloadedModules,
-            MiniDumpWithoutAuxiliaryState, ModuleCallback, ModuleWriteCodeSegs, ModuleWriteDataSeg,
+            CONTEXT, CONTEXT_AMD64, CancelCallback as CANCEL_CALLBACK, EXCEPTION_POINTERS,
+            EXCEPTION_RECORD, IoFinishCallback as IO_FINISH_CALLBACK,
+            IoStartCallback as IO_START_CALLBACK, IoWriteAllCallback as IO_WRITE_ALL_CALLBACK,
+            MINIDUMP_CALLBACK_INFORMATION, MINIDUMP_CALLBACK_INPUT, MINIDUMP_CALLBACK_OUTPUT,
+            MINIDUMP_CALLBACK_OUTPUT_0_0, MINIDUMP_CALLBACK_OUTPUT_0_1,
+            MINIDUMP_EXCEPTION_INFORMATION, MINIDUMP_TYPE, MINIDUMP_USER_STREAM_INFORMATION,
+            MemoryCallback as MEMORY_CALLBACK, MiniDumpWithCodeSegs, MiniDumpWithFullMemoryInfo,
+            MiniDumpWithThreadInfo, MiniDumpWithUnloadedModules, MiniDumpWithoutAuxiliaryState,
+            ModuleCallback as MODULE_CALLBACK, ModuleWriteCodeSegs, ModuleWriteDataSeg,
             ModuleWriteTlsData,
         },
         LibraryLoader::{
@@ -585,11 +587,11 @@ unsafe extern "system" fn callback(
     let output = unsafe { &mut *output };
     let expired = unsafe { GetTickCount64() } >= state.end;
     match input.CallbackType as i32 {
-        IoStartCallback => {
+        IO_START_CALLBACK => {
             output.Anonymous.Status = 1;
             1
         }
-        IoWriteAllCallback => {
+        IO_WRITE_ALL_CALLBACK => {
             let io = unsafe { input.Anonymous.Io };
             let Some(end) = extent(io.Offset, io.BufferBytes) else {
                 state.failed = true;
@@ -627,19 +629,19 @@ unsafe extern "system" fn callback(
             output.Anonymous.Status = 0;
             1
         }
-        IoFinishCallback => {
+        IO_FINISH_CALLBACK => {
             state.finished = !state.failed && !expired;
             output.Anonymous.Status = if state.finished { 0 } else { -2147467259 };
             i32::from(state.finished)
         }
-        CancelCallback => {
+        CANCEL_CALLBACK => {
             output.Anonymous.Anonymous2 = MINIDUMP_CALLBACK_OUTPUT_0_1 {
                 CheckCancel: 1,
                 Cancel: i32::from(expired || state.failed),
             };
             1
         }
-        ModuleCallback => {
+        MODULE_CALLBACK => {
             let module = unsafe { input.Anonymous.Module };
             let admitted = unsafe { callback_path(module.FullPath) }
                 .is_some_and(|p| state.modules.iter().any(|m| *m == normalize(&p)));
@@ -651,7 +653,7 @@ unsafe extern "system" fn callback(
             output.Anonymous.ModuleWriteFlags = flags;
             1
         }
-        MemoryCallback => {
+        MEMORY_CALLBACK => {
             if expired {
                 return 0;
             }
