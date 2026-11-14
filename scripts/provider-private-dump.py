@@ -18,6 +18,8 @@ import time
 
 
 CONFIG_ENV = "PROTOINPUTMUX_PRIVATE_DUMP_CONFIG"
+PREPARE_PHASES = frozenset({"not_started", "root", "metadata", "probe_identity",
+    "toolchain_validation", "helper_admission", "module_admission", "deadline_config", "ready"})
 WAIT_MAGIC = 0x31544941574D4950
 FATAL_MAGIC = 0x4C415441464D4950
 MAX_DUMP = 64 * 1024 * 1024
@@ -572,9 +574,11 @@ def prepare(gate):
     if root is None:
         return None
     gate.private_dump_requested = True
+    gate.private_dump_prepare_phase = "root"
     need(not root.exists())
     root.mkdir()
     (root/"empty").mkdir()
+    gate.private_dump_prepare_phase = "metadata"
     metadata = strict_json(bounded(gate.args.private_dump_metadata, 1024*1024))
     need(metadata["schema"] == "pim.private-dump-build.v1" and metadata["source_commit"] == gate.args.commit
         and metadata["profile"] == "debug" and metadata["dev_debug"] == 2
@@ -582,6 +586,7 @@ def prepare(gate):
         and metadata["target"] == "x86_64-pc-windows-msvc"
         and local_path(metadata["source"]) == local_path(str(gate.args.source.resolve()))
         and type(metadata["source_files"]) is dict and len(metadata["source_files"]) <= 4096)
+    gate.private_dump_prepare_phase = "probe_identity"
     probe = metadata["probe"]
     need(ntpath.basename(probe["image"]).lower() == "protoinputmultiplex.exe"
         and digest(probe["image"]) == probe["image_sha256"] and digest(probe["pdb"]) == probe["pdb_sha256"])
@@ -591,16 +596,20 @@ def prepare(gate):
     # Exact diagnostic A/B image admission is independent of dump-tool usability.
     # A later tool failure leaves capture unarmed and the diagnostic result inconclusive.
     gate.private_dump_probe = Path(probe["image"])
+    gate.private_dump_prepare_phase = "toolchain_validation"
     verify_tools(root, gate.end)
+    gate.private_dump_prepare_phase = "helper_admission"
     helper = metadata["helper"]
     need(ntpath.basename(helper["file"]).lower() == "provider_private_dump.exe"
         and digest(helper["file"]) == helper["sha256"])
+    gate.private_dump_prepare_phase = "module_admission"
     modules = metadata["modules"]
     need(type(modules) is list and 1 <= len(modules) <= 8 and probe in modules)
     for item in modules:
         need(ntpath.basename(local_path(item["image"])) in OWN and digest(item["image"]) == item["image_sha256"])
     # Tick sampled BEFORE monotonic gives a conservative projection: elapsed
     # time between samples only shortens the original absolute deadline.
+    gate.private_dump_prepare_phase = "deadline_config"
     kernel = ctypes.WinDLL("kernel32", use_last_error=True)
     kernel.GetTickCount64.restype = ctypes.c_ulonglong
     tick = kernel.GetTickCount64()
@@ -616,6 +625,7 @@ def prepare(gate):
     gate.private_dump_metadata = metadata
     gate.private_dump_config = config_path
     gate.private_dump_probe = Path(probe["image"])
+    gate.private_dump_prepare_phase = "ready"
     return config_path
 
 
@@ -631,6 +641,13 @@ def finish(gate):
         exits = {label:gate.result.get("target_termination_diagnostics", {}).get(label, {}).get("exit_class")
             for label in ("target_a", "target_b")}
         decision = collect(gate.private, metadata, getattr(gate, "fatal_owned_identities", {}), exits, gate.end)
+    phase = getattr(gate, "private_dump_prepare_phase", "not_started")
+    if not isinstance(phase, str) or phase not in PREPARE_PHASES:
+        phase = "not_started"
+    decision["preparation"] = {
+        "status":"ready" if metadata is not None and phase == "ready" else "not_ready",
+        "phase":phase,
+    }
     gate.result["private_dump_diagnostics"] = decision
     # A capture-enabled group can never become functional acceptance, including
     # the otherwise-successful path. Preserve all preexisting FAIL details.

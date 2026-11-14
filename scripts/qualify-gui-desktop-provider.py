@@ -10,6 +10,7 @@ from ctypes import wintypes
 import http.server
 import importlib.util
 import json
+import math
 import os
 from pathlib import Path
 import queue
@@ -642,8 +643,10 @@ class ProviderPair(base.Pair):
     def target(self, index):
         def sample():
             raw, modified = base.shared_live_bytes(self.private / f"target-{index}.json", 4 * 1024 * 1024)
-            fresh = time.time()-modified < 2
+            age_seconds = time.time()-modified
+            fresh = age_seconds < 2
             if not fresh:
+                self.record_report_age_observation(index, age_seconds, raw)
                 self.prepare_holds_reason("report_age_rejected")
             require(fresh)
             return json.loads(raw.decode("utf-8-sig"))
@@ -651,6 +654,38 @@ class ProviderPair(base.Pair):
         # only an absent/partial read; no command or input is repeated.
         return self.wait(sample, 3,
             on_expired=lambda: self.prepare_holds_reason("target_report_wait_expired"))
+
+    def record_report_age_observation(self, index, age_seconds, raw):
+        """Retain only the first bounded stale-report metadata for each fixed target."""
+        try:
+            if (self.stage != "prepare_holds" or self.check != "prepare_holds_target_held_state"
+                    or type(index) is not int or not 0 <= index < 3):
+                return
+            label = ("target_a", "target_b", "target_c")[index]
+            rows = self.result.get("prepare_holds_report_age_observations")
+            if not isinstance(rows, list):
+                rows = []
+            if len(rows) >= 3 or any(isinstance(row, dict) and row.get("target") == label for row in rows):
+                return
+
+            age_ms = None
+            saturated = None
+            if type(age_seconds) in (int, float) and math.isfinite(age_seconds) and age_seconds >= 0:
+                saturated = age_seconds > 86_400
+                age_ms = 86_400_000 if saturated else int(age_seconds * 1000)
+
+            frames = None
+            try:
+                report = json.loads(raw.decode("utf-8-sig"))
+                value = report.get("frames") if isinstance(report, dict) else None
+                if type(value) is int and 0 <= value <= 0xFFFFFFFFFFFFFFFF:
+                    frames = value
+            except (UnicodeError, ValueError, TypeError, AttributeError):
+                pass
+            rows.append({"target":label,"age_ms":age_ms,"age_ms_saturated":saturated,"frames":frames})
+            self.result["prepare_holds_report_age_observations"] = rows
+        except BaseException:
+            pass  # Observability must not replace the existing freshness rejection.
 
     def prepare_holds_reason(self, reason):
         try:

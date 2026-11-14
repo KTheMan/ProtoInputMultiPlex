@@ -709,12 +709,14 @@ class ReportRejectionReasonTests(unittest.TestCase):
         gate = self.gate()
         with patch.object(provider.time, "monotonic", return_value=0), \
                 patch.object(provider.time, "time", return_value=3), \
-                patch.object(provider.base, "shared_live_bytes", return_value=(b"{}", 0)) as reads, \
+                patch.object(provider.base, "shared_live_bytes", return_value=(b'{"frames":17}', 0)) as reads, \
                 patch.object(provider.time, "sleep", side_effect=AssertionError("age rejects immediately")):
             with self.assertRaises(provider.base.Rejected):
                 gate.target(0)
         self.assertEqual(reads.call_count, 1)
         self.assertEqual(gate.result["prepare_holds_failure_reason"], "report_age_rejected")
+        self.assertEqual(gate.result["prepare_holds_report_age_observations"], [
+            {"target":"target_a","age_ms":3000,"age_ms_saturated":False,"frames":17}])
         gate = self.gate()
         with patch.object(provider.time, "monotonic", side_effect=[0, 4]):
             with self.assertRaises(provider.base.Rejected):
@@ -725,6 +727,16 @@ class ReportRejectionReasonTests(unittest.TestCase):
             with self.assertRaises(provider.base.Rejected):
                 gate.wait(lambda: False, on_expired=lambda: gate.prepare_holds_reason("held_wait_expired"))
         self.assertEqual(gate.result["prepare_holds_failure_reason"], "held_wait_expired")
+
+    def test_report_age_observation_is_saturated_bounded_and_idempotent(self):
+        gate = self.gate()
+        gate.record_report_age_observation(2, 1e300,
+            b'{"frames":18446744073709551616,"private_path":"C:\\\\secret"}')
+        gate.record_report_age_observation(2, 1, b'{"frames":1}')
+        observation = gate.result["prepare_holds_report_age_observations"]
+        self.assertEqual(observation, [{"target":"target_c","age_ms":86_400_000,
+            "age_ms_saturated":True,"frames":None}])
+        self.assertNotIn("private_path", json.dumps(observation))
 
     def test_expiry_callback_failure_cannot_replace_original_rejection_or_result(self):
         gate = self.gate()

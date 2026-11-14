@@ -194,6 +194,30 @@ class PreservationTests(unittest.TestCase):
         self.assertEqual(gate.result["status"],"DIAGNOSTIC_ONLY")
         self.assertFalse(gate.result["functional_acceptance"])
 
+    def test_prepare_failure_phase_is_fixed_and_private(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory)/"private-output"
+            gate=SimpleNamespace(args=SimpleNamespace(private_dump_root=root,
+                private_dump_metadata=Path(directory)/"metadata.private.json",commit="a"*40,
+                source=Path(directory),private_dump_decision=None),end=100,
+                result={"status":"FAIL","checkpoint":11})
+            with patch.object(dump,"bounded",side_effect=ValueError("private path and content")):
+                with self.assertRaises(ValueError): dump.prepare(gate)
+            dump.finish(gate)
+        decision=gate.result["private_dump_diagnostics"]
+        self.assertEqual(decision["preparation"],{"status":"not_ready","phase":"metadata"})
+        public=json.dumps(decision)
+        self.assertNotIn(directory,public)
+        self.assertNotIn("private path and content",public)
+        self.assertEqual(gate.result["status"],"FAIL")
+
+    def test_invalid_prepare_phase_is_normalized_to_fixed_enum(self):
+        gate=SimpleNamespace(args=SimpleNamespace(private_dump_decision=None),private_dump_requested=True,
+            private_dump_prepare_phase="private-content",result={"status":"FAIL"})
+        dump.finish(gate)
+        self.assertEqual(gate.result["private_dump_diagnostics"]["preparation"],
+            {"status":"not_ready","phase":"not_started"})
+
     def test_ineligible_and_expired_inputs_start_no_offline_analysis(self):
         with tempfile.TemporaryDirectory() as directory, \
                 patch.object(dump,"analyze",side_effect=AssertionError("no analysis")) as analyze, \
