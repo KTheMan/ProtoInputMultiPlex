@@ -722,6 +722,85 @@ impl StartupRegistration for CurrentUserRunKey {
     }
 }
 
+#[cfg(windows)]
+fn startup_shell_path(path: &Path) -> Result<std::borrow::Cow<'_, str>> {
+    use std::path::{Component, Prefix};
+
+    let text = path.to_str().context("startup path is not valid Unicode")?;
+    let Some(Component::Prefix(prefix)) = path.components().next() else {
+        bail!("startup path is not a Windows drive or network path");
+    };
+    let conventional: std::borrow::Cow<'_, str> = match prefix.kind() {
+        Prefix::Disk(_) | Prefix::UNC(..) if text.contains('/') => text.replace('/', "\\").into(),
+        Prefix::Disk(_) | Prefix::UNC(..) => text.into(),
+        Prefix::VerbatimDisk(_) => text
+            .strip_prefix(r"\\?\")
+            .context("unrecognized verbatim startup drive prefix")?
+            .into(),
+        Prefix::VerbatimUNC(..) => format!(
+            "\\\\{}",
+            text.get(8..)
+                .context("invalid verbatim startup UNC prefix")?
+        )
+        .into(),
+        _ => bail!("startup path is not a Windows drive or network path"),
+    };
+    // A verbatim path can name files the shell would normalize or treat as a
+    // device. Validate the emitted spelling before quoting it for the Run key.
+    let tail = if let Some(tail) = conventional.strip_prefix(r"\\") {
+        ensure!(
+            tail.split('\\').count() >= 3,
+            "startup network path needs a server, share and filename"
+        );
+        tail
+    } else {
+        let bytes = conventional.as_bytes();
+        ensure!(
+            bytes.len() >= 4 && bytes[0].is_ascii_alphabetic() && &bytes[1..3] == b":\\",
+            "startup path must have an absolute drive prefix and filename"
+        );
+        &conventional[3..]
+    };
+    let mut parts = tail.split('\\');
+    ensure!(
+        parts.all(startup_shell_component),
+        "startup path cannot be represented by the Windows shell"
+    );
+    Ok(conventional)
+}
+
+#[cfg(windows)]
+fn startup_shell_component(name: &str) -> bool {
+    if name.is_empty()
+        || name.ends_with([' ', '.'])
+        || name
+            .chars()
+            .any(|ch| ch.is_control() || "<>:\"/|?*".contains(ch))
+    {
+        return false;
+    }
+    let stem = name
+        .split('.')
+        .next()
+        .unwrap_or_default()
+        .trim_end_matches(' ');
+    let stem = stem.to_ascii_uppercase();
+    let numbered_device = stem
+        .strip_prefix("COM")
+        .or_else(|| stem.strip_prefix("LPT"))
+        .is_some_and(|suffix| {
+            matches!(
+                suffix,
+                "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "¹" | "²" | "³"
+            )
+        });
+    !numbered_device
+        && !matches!(
+            stem.as_str(),
+            "CON" | "PRN" | "AUX" | "NUL" | "CONIN$" | "CONOUT$"
+        )
+}
+
 pub fn startup_command_value(executable: &Path, preferences: &Path) -> Result<StartupValue> {
     #[cfg(windows)]
     use windows_sys::Win32::System::Registry::REG_SZ;
@@ -739,9 +818,15 @@ pub fn startup_command_value(executable: &Path, preferences: &Path) -> Result<St
         executable.is_absolute() && preferences.is_absolute(),
         "startup paths must be absolute"
     );
+    #[cfg(windows)]
+    let exe = startup_shell_path(&executable)?;
+    #[cfg(not(windows))]
     let exe = executable
         .to_str()
         .context("executable path is not valid Unicode")?;
+    #[cfg(windows)]
+    let pref = startup_shell_path(&preferences)?;
+    #[cfg(not(windows))]
     let pref = preferences
         .to_str()
         .context("preferences path is not valid Unicode")?;
@@ -778,6 +863,44 @@ pub fn reject_mcp_login_change(current: &Preferences, candidate: &Preferences) -
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[cfg(windows)]
+    #[test]
+    fn startup_uses_shell_paths_without_verbatim_prefixes() {
+        for (input, expected) in [
+            (
+                r"\\?\C:\Program Files\ProtoInputMultiPlex\app.exe",
+                r"C:\Program Files\ProtoInputMultiPlex\app.exe",
+            ),
+            (
+                r"\\?\UNC\server\share\app preferences.json",
+                r"\\server\share\app preferences.json",
+            ),
+            (
+                r"C:/data/app-preferences.json",
+                r"C:\data\app-preferences.json",
+            ),
+        ] {
+            assert_eq!(startup_shell_path(Path::new(input)).unwrap(), expected);
+        }
+        for input in [
+            r"\\?\Volume{1234}\app.exe",
+            r"\\.\C:\app.exe",
+            r"\\?\C:\data.\app.exe",
+            r"\\?\C:\data\..\app.exe",
+            r"\\?\C:\data\NUL.exe",
+            r"\\?\UNC\server\share\LPT².txt",
+            r"C:\data\profile.json:stream",
+            r"C:\data\NUL.json",
+            r"C:\data\prefs.json ",
+            r"C:\data\",
+            r"C:\",
+            r"C:relative.json",
+            r"\\server\share",
+        ] {
+            assert!(startup_shell_path(Path::new(input)).is_err(), "{input}");
+        }
+    }
 
     #[test]
     fn defaults_keep_routing_and_login_opt_in_separate() {
