@@ -677,8 +677,7 @@ def prepare(gate):
     need(now < gate.end)
     deadline = tick+max(0, int((gate.end-now)*1000))
     config = {"schema":"pim.private-dump-config.v1", "source_commit":gate.args.commit,
-        "helper":str(Path(helper["file"]).resolve()), "deadline_tick_ms":deadline,
-        "module_paths":[item["image"] for item in modules]}
+        "helper":str(Path(helper["file"]).resolve()), "deadline_tick_ms":deadline}
     config_path = root/"helper-config.private.json"
     config_path.write_text(json.dumps(config), encoding="utf-8")
     metadata["deadline_tick_ms"] = deadline

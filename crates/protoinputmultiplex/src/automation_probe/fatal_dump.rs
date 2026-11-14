@@ -34,8 +34,8 @@ use windows_sys::Win32::{
             MINIDUMP_CALLBACK_INFORMATION, MINIDUMP_CALLBACK_INPUT, MINIDUMP_CALLBACK_OUTPUT,
             MINIDUMP_CALLBACK_OUTPUT_0_0, MINIDUMP_CALLBACK_OUTPUT_0_1,
             MINIDUMP_EXCEPTION_INFORMATION, MINIDUMP_TYPE, MINIDUMP_USER_STREAM_INFORMATION,
-            MemoryCallback as MEMORY_CALLBACK, MiniDumpWithCodeSegs, MiniDumpWithFullMemoryInfo,
-            MiniDumpWithThreadInfo, MiniDumpWithUnloadedModules, MiniDumpWithoutAuxiliaryState,
+            MemoryCallback as MEMORY_CALLBACK, MiniDumpWithFullMemoryInfo, MiniDumpWithThreadInfo,
+            MiniDumpWithUnloadedModules, MiniDumpWithoutAuxiliaryState,
             ModuleCallback as MODULE_CALLBACK, ModuleWriteCodeSegs, ModuleWriteDataSeg,
             ModuleWriteTlsData,
         },
@@ -80,24 +80,6 @@ struct Config {
     source_commit: String,
     helper: String,
     deadline_tick_ms: u64,
-    module_paths: Vec<String>,
-}
-
-fn own_module(path: &str) -> bool {
-    matches!(
-        Path::new(path)
-            .file_name()
-            .and_then(OsStr::to_str)
-            .map(str::to_ascii_lowercase)
-            .as_deref(),
-        Some(
-            "protoinputmultiplex.exe"
-                | "protoinputhooks64.dll"
-                | "protoinputloader64.dll"
-                | "easyhook64.dll"
-                | "protoinputmultiplex_cursor_observer64.dll"
-        )
-    )
 }
 
 fn config(path: &Path) -> Option<Config> {
@@ -118,14 +100,6 @@ fn config(path: &Path) -> Option<Config> {
             .all(|c| c.is_ascii_hexdigit() && !c.is_ascii_uppercase())
         || !Path::new(&value.helper).is_absolute()
         || Path::new(&value.helper).file_name() != Some(OsStr::new("provider_private_dump.exe"))
-        || value.module_paths.is_empty()
-        || value.module_paths.len() > 8
-        || value.module_paths.iter().any(|p| {
-            !Path::new(p).is_absolute()
-                || !own_module(p)
-                || p.encode_utf16().count() > 1024
-                || p.contains('\0')
-        })
         || value.deadline_tick_ms <= now
         || value.deadline_tick_ms.saturating_sub(now) > 420_000
     {
@@ -549,7 +523,6 @@ struct Output {
     failure: Option<CaptureFailure>,
     finished: bool,
     pc_page: Option<(u64, u32)>,
-    modules: Vec<String>,
 }
 
 #[derive(Clone, Copy, Serialize)]
@@ -626,18 +599,6 @@ fn normalize(path: &str) -> String {
         .replace('/', "\\")
         .to_ascii_lowercase()
 }
-unsafe fn callback_path(path: *const u16) -> Option<String> {
-    if path.is_null() {
-        return None;
-    }
-    for length in 0..=1024 {
-        if unsafe { *path.add(length) } == 0 {
-            return String::from_utf16(unsafe { std::slice::from_raw_parts(path, length) }).ok();
-        }
-    }
-    None
-}
-
 unsafe extern "system" fn callback(
     param: *mut c_void,
     input: *const MINIDUMP_CALLBACK_INPUT,
@@ -722,14 +683,10 @@ unsafe extern "system" fn callback(
             1
         }
         MODULE_CALLBACK => {
-            let module = unsafe { input.Anonymous.Module };
-            let admitted = unsafe { callback_path(module.FullPath) }
-                .is_some_and(|p| state.modules.iter().any(|m| *m == normalize(&p)));
+            // CDB gets exact, admitted PE/PDB images during offline analysis.
+            // Copying all loaded code can exceed the dump's fixed extent cap.
             let mut flags = unsafe { output.Anonymous.ModuleWriteFlags };
-            flags &= !((ModuleWriteDataSeg | ModuleWriteTlsData) as u32);
-            if !admitted {
-                flags &= !(ModuleWriteCodeSegs as u32);
-            }
+            flags &= !((ModuleWriteDataSeg | ModuleWriteTlsData | ModuleWriteCodeSegs) as u32);
             output.Anonymous.ModuleWriteFlags = flags;
             1
         }
@@ -998,12 +955,10 @@ fn helper_inner() -> Option<()> {
         failure: None,
         finished: false,
         pc_page: executable_page(process.0, context.0.Rip),
-        modules: cfg.module_paths.iter().map(|p| normalize(p)).collect(),
     };
     let flags = MiniDumpWithThreadInfo
         | MiniDumpWithFullMemoryInfo
         | MiniDumpWithUnloadedModules
-        | MiniDumpWithCodeSegs
         | MiniDumpWithoutAuxiliaryState;
     shared.state.store(CAPTURING, Ordering::Release);
     let capture = if let Err(failure) = output.check_deadline() {
@@ -1112,15 +1067,13 @@ mod tests {
         assert_eq!(extent(u64::MAX, 1), None);
     }
     #[test]
-    fn code_segments_require_exact_admitted_module_path() {
+    fn normalize_keeps_distinct_paths_distinct() {
         let path = normalize(r"C:\private\runtime\ProtoInputHooks64.dll");
         assert_eq!(
             path,
             normalize(r"\\?\C:\private\runtime\ProtoInputHooks64.dll")
         );
         assert_ne!(path, normalize(r"C:\other\ProtoInputHooks64.dll"));
-        assert!(own_module(&path));
-        assert!(!own_module(r"C:\private\runtime\foreign.dll"));
     }
     #[test]
     fn fixed_context_rejects_wrong_arch_missing_registers_and_exception_chains() {
