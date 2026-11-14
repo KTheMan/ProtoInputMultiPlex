@@ -1,0 +1,51 @@
+name: Renderer dependency lock candidate
+on:
+  push:
+    branches: [sdk/application-events-20261108]
+    paths:
+      - Cargo.toml
+      - crates/**/Cargo.toml
+      - crates/**/*.rs
+      - examples/rust-mcp-client/Cargo.toml
+      - examples/rust-mcp-client/**/*.rs
+      - .github/workflows/renderer-lock.yml
+permissions:
+  contents: read
+concurrency:
+  group: renderer-lock-${{ github.ref_name }}
+  cancel-in-progress: true
+jobs:
+  resolve:
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.92.0
+          components: rustfmt
+      - name: Resolve workspace manifest changes without compiling
+        run: cargo update --workspace
+      - name: Format source candidate for review
+        run: cargo fmt --all
+      - name: Format standalone MCP client candidate for review
+        run: cargo fmt --all --manifest-path examples/rust-mcp-client/Cargo.toml
+      - name: Verify source candidate formatting
+        run: cargo fmt --all --check
+      - name: Verify standalone MCP client candidate formatting
+        run: cargo fmt --all --manifest-path examples/rust-mcp-client/Cargo.toml --check
+      - name: Record source and lock candidate patch
+        run: git diff --binary --output=source-candidate.patch -- Cargo.lock crates examples/rust-mcp-client
+      - name: Record generated lock digest
+        shell: pwsh
+        run: |
+          (Get-FileHash -LiteralPath Cargo.lock -Algorithm SHA256).Hash.ToLowerInvariant() | Set-Content -LiteralPath Cargo.lock.sha256
+      - uses: actions/upload-artifact@v4
+        with:
+          name: renderer-lock-${{ github.sha }}
+          retention-days: 1
+          if-no-files-found: error
+          path: |
+            Cargo.lock
+            Cargo.lock.sha256
+            source-candidate.patch

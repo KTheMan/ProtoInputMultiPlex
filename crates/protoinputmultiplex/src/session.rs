@@ -2,6 +2,7 @@
 mod backend_selection;
 mod transport;
 
+use crate::desktop_router::observation as desktop_observation;
 use crate::{
     routing_engine::Engine,
     session_recovery::{PreparedRecovery, Recovery},
@@ -41,6 +42,8 @@ pub struct SettingsAcknowledgement {
 }
 #[derive(Clone, Serialize, Deserialize)]
 pub enum Request {
+    /// Internal direct-controller operation; SharedHandle cannot issue this.
+    DesktopObservation(desktop_observation::Command),
     SelectWindow(crate::window_selection::Selection),
     Output(crate::output_runtime::Command),
     Agent(crate::agent_runtime::Command),
@@ -67,6 +70,12 @@ pub enum Request {
         text: String,
     },
     Mode {
+        mode: mux_core::routing::Mode,
+        multi_keyboard: bool,
+    },
+    /// GUI event-SDK mode request; the ticket never comes from a remote payload.
+    HostedMode {
+        ticket: u64,
         mode: mux_core::routing::Mode,
         multi_keyboard: bool,
     },
@@ -142,6 +151,8 @@ fn capture_targets(
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum Event {
+    /// Routed by the stdout reader to its separately bounded private inbox.
+    DesktopObservation(desktop_observation::Delivery),
     /// Private local GUI target identity; not an authorization credential.
     ScreenTargets(Vec<CaptureTarget>),
     SettingsAcknowledged(SettingsAcknowledgement),
@@ -168,6 +179,13 @@ pub enum Event {
         error: Option<String>,
     },
     ModeChanged(mux_core::routing::Mode, bool),
+    HostedModeCompleted {
+        ticket: u64,
+        mode: mux_core::routing::Mode,
+        multi_keyboard: bool,
+        error: Option<String>,
+        uncertain: bool,
+    },
     Paused,
     Resumed,
     Stopped,
@@ -183,6 +201,7 @@ pub enum Event {
 }
 
 pub struct Controller {
+    observation: desktop_observation::Inbox,
     requests: Sender<Request>,
     pub events: Receiver<Event>,
     shared: SharedHandle,
@@ -193,6 +212,7 @@ pub struct Controller {
 /// Subscribers do not own the GUI session lifetime. Slow clients are detached.
 #[derive(Clone)]
 pub struct SharedHandle {
+    observation: desktop_observation::Inbox,
     requests: Sender<Request>,
     bus: Arc<Mutex<EventBus>>,
     recovery: Recovery,
@@ -205,7 +225,12 @@ struct EventBus {
 }
 impl SharedHandle {
     pub fn request(&self, request: Request) {
+        if matches!(&request, Request::DesktopObservation(_)) {
+            return;
+        }
         if matches!(&request, Request::Stop) {
+            self.observation
+                .fence(desktop_observation::LossReason::StopIntent);
             self.recovery.mark_stopping();
             self.stop_requested.store(true, Ordering::Release);
             return;
@@ -225,6 +250,9 @@ impl SharedHandle {
 impl EventBus {
     /// Publish to subscribers and return whether the direct controller may receive this event.
     fn publish(&mut self, event: &Event) -> bool {
+        if matches!(event, Event::DesktopObservation(_)) {
+            return false;
+        }
         if let Event::Agent(state) = event
             && state.mapper_monitors.is_some()
         {
@@ -243,6 +271,7 @@ impl EventBus {
                 | Event::UserPauseAcknowledged { .. }
                 | Event::MapperMonitors(_)
                 | Event::ScreenTargets(_)
+                | Event::HostedModeCompleted { .. }
         ) {
             return true;
         }
@@ -435,10 +464,12 @@ mod recovery_relay_tests {
 impl Controller {
     #[cfg(test)]
     pub(crate) fn test_fixture() -> (Self, Sender<Event>, Receiver<Request>, Arc<AtomicBool>) {
+        let observation = desktop_observation::Inbox::new().unwrap();
         let (requests, request_rx) = mpsc::channel();
         let (event_tx, events) = mpsc::channel();
         let recovery = Recovery::default();
         let shared = SharedHandle {
+            observation: observation.clone(),
             requests: requests.clone(),
             bus: Arc::new(Mutex::new(EventBus::default())),
             recovery: recovery.clone(),
@@ -447,6 +478,7 @@ impl Controller {
         let stop_requested = Arc::clone(&shared.stop_requested);
         (
             Self {
+                observation,
                 requests,
                 events,
                 shared,
@@ -506,6 +538,7 @@ impl Controller {
         recovery: Recovery,
         path: StartPath,
     ) -> Result<Self> {
+        let observation = desktop_observation::Inbox::new()?;
         let preflight_pending = Arc::new(AtomicBool::new(matches!(
             &path,
             StartPath::Background { .. }
@@ -514,6 +547,7 @@ impl Controller {
         let (output, worker_events) = mpsc::channel();
         let (gui_output, events) = mpsc::channel();
         let shared = SharedHandle {
+            observation: observation.clone(),
             requests: requests.clone(),
             bus: Arc::new(Mutex::new(EventBus::default())),
             recovery: recovery.clone(),
@@ -523,6 +557,7 @@ impl Controller {
         let relay_recovery = recovery.clone();
         thread::spawn(move || run_recovery_relay(worker_events, gui_output, bus, relay_recovery));
         let supervisor_recovery = recovery.clone();
+        let supervisor_observation = observation.clone();
         let stop_requested = shared.stop_requested.clone();
         let supervisor_preflight_pending = preflight_pending.clone();
         thread::Builder::new()
@@ -540,6 +575,7 @@ impl Controller {
                         &output,
                         options,
                         SupervisorControl {
+                            observation: supervisor_observation.clone(),
                             recovery: supervisor_recovery.clone(),
                             stop_requested: stop_requested.clone(),
                             prepared_recovery: None,
@@ -558,6 +594,7 @@ impl Controller {
                                 &output,
                                 options,
                                 SupervisorControl {
+                                    observation: supervisor_observation.clone(),
                                     recovery: supervisor_recovery.clone(),
                                     stop_requested: stop_requested.clone(),
                                     prepared_recovery: Some(prepared.recovery),
@@ -573,10 +610,12 @@ impl Controller {
                     }
                 };
                 if let Err(error) = result {
+                    supervisor_observation.fence(desktop_observation::LossReason::Eof);
                     let _ = output.send(Event::Failed(format!("{error:#}")));
                 }
             })?;
         Ok(Self {
+            observation,
             requests,
             events,
             shared,
@@ -594,8 +633,64 @@ impl Controller {
     pub fn preflight_pending(&self) -> bool {
         self.preflight_pending.load(Ordering::Acquire)
     }
+    pub fn desktop_observation_generation(&self) -> u64 {
+        self.observation.generation()
+    }
+    pub fn desktop_observation_live(&self, tag: desktop_observation::BindingTag) -> bool {
+        self.observation.live(tag)
+    }
+    pub fn take_desktop_observations(&self) -> Vec<desktop_observation::Delivery> {
+        self.observation.take()
+    }
+    pub fn bind_desktop_observation(
+        &self,
+        request: u64,
+        seat_identity: String,
+    ) -> Result<desktop_observation::BindingTag, desktop_observation::BindRejection> {
+        if seat_identity.is_empty()
+            || seat_identity.len() > 128
+            || seat_identity.chars().any(char::is_control)
+        {
+            return Err(desktop_observation::BindRejection::MissingSeat);
+        }
+        let tag = self.observation.begin(request)?;
+        if self
+            .requests
+            .send(Request::DesktopObservation(
+                desktop_observation::Command::Bind {
+                    request,
+                    tag,
+                    seat_identity,
+                },
+            ))
+            .is_err()
+        {
+            self.observation.fence(desktop_observation::LossReason::Eof);
+            return Err(desktop_observation::BindRejection::StaleGeneration);
+        }
+        Ok(tag)
+    }
+    pub fn unbind_desktop_observation(&self, tag: desktop_observation::BindingTag) {
+        if self
+            .observation
+            .cancel(tag, desktop_observation::LossReason::Unbound)
+            && self
+                .requests
+                .send(Request::DesktopObservation(
+                    desktop_observation::Command::Unbind { tag },
+                ))
+                .is_err()
+        {
+            self.observation.fence(desktop_observation::LossReason::Eof);
+        }
+    }
     pub fn request(&self, request: Request) {
+        if matches!(&request, Request::DesktopObservation(_)) {
+            return;
+        }
         if matches!(&request, Request::Stop) {
+            self.observation
+                .fence(desktop_observation::LossReason::StopIntent);
             self.recovery.mark_stopping();
             self.shared.stop_requested.store(true, Ordering::Release);
             return;
@@ -829,6 +924,7 @@ fn stop_deadline(recovery: &Recovery) -> Instant {
 }
 
 struct SupervisorControl {
+    observation: desktop_observation::Inbox,
     recovery: Recovery,
     stop_requested: Arc<AtomicBool>,
     prepared_recovery: Option<PreparedRecovery>,
@@ -844,6 +940,7 @@ fn supervise(
     control: SupervisorControl,
 ) -> Result<()> {
     let SupervisorControl {
+        observation,
         recovery,
         stop_requested,
         mut prepared_recovery,
@@ -889,8 +986,23 @@ fn supervise(
         let _ = output.send(Event::Stopped);
         return Ok(());
     }
+    // The hosted qualification controller redirects its own stderr to a private
+    // regular file before opting in. Ordinary callers retain the null sink;
+    // inheriting an undrained caller pipe could block native error reporting.
+    let worker_stderr = if matches!(
+        std::env::var("PROTOINPUTMULTIPLEX_QUALIFICATION_STDERR").as_deref(),
+        Ok("private-file-v1")
+    ) {
+        Stdio::inherit()
+    } else {
+        Stdio::null()
+    };
     let mut worker = Worker(
         Command::new(executable)
+            .env(
+                desktop_observation::GENERATION_ENV,
+                observation.generation().to_string(),
+            )
             .arg("session-worker")
             .arg("--runtime")
             .arg(runtime)
@@ -900,7 +1012,7 @@ fn supervise(
             .creation_flags(0x08000000) // CREATE_NO_WINDOW: helper never opens a console.
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
-            .stderr(Stdio::null())
+            .stderr(worker_stderr)
             .spawn()
             .context("start routing worker")?,
         None,
@@ -912,6 +1024,7 @@ fn supervise(
     let stdout = worker.0.stdout.take().context("worker stdout missing")?;
     let (messages, incoming) = mpsc::channel();
     let reader_recovery = recovery.clone();
+    let reader_observation = observation.clone();
     worker.1 = Some(thread::spawn(move || {
         for line in BufReader::new(stdout).lines() {
             let Ok(line) = line else {
@@ -920,14 +1033,24 @@ fn supervise(
             if let Some(json) = line.strip_prefix(PREFIX)
                 && let Ok(event) = serde_json::from_str::<Event>(json)
             {
+                if let Event::DesktopObservation(delivery) = event {
+                    reader_observation.receive(delivery);
+                    continue;
+                }
+                if matches!(&event, Event::Stopped | Event::Failed(_)) {
+                    reader_observation.fence(desktop_observation::LossReason::Eof);
+                }
                 if let Event::Attaching(pid) = &event {
                     reader_recovery.observe_attempt(*pid);
                 }
                 // Even if the supervisor is unwinding, drain through EOF:
                 // later buffered Attaching records still affect quarantine.
                 let _ = messages.send(event);
+            } else if line.starts_with(PREFIX) {
+                reader_observation.fence(desktop_observation::LossReason::Sequence);
             }
         }
+        reader_observation.fence(desktop_observation::LossReason::Eof);
     }));
     let startup_deadline = Instant::now() + Duration::from_secs(45 * profile.seats.len() as u64);
     let serialized_profile = serde_json::to_string(&profile)?;
@@ -979,6 +1102,7 @@ fn supervise(
             false
         };
         if !stopping && (emergency_stop || stop_requested.load(Ordering::Acquire)) {
+            observation.fence(desktop_observation::LossReason::StopIntent);
             recovery.mark_stopping();
             stopping = true;
             let due = stop_deadline(&recovery);
@@ -1092,7 +1216,7 @@ fn supervise(
                     && let Some(tag) = command.tag()
                 {
                     agent_deadlines.insert(tag, due);
-                } else {
+                } else if !matches!(&request, Request::DesktopObservation(_)) {
                     deadline = Some(due);
                 }
                 worker
@@ -1136,7 +1260,22 @@ fn wait_for_worker_exit(worker: &mut Child) -> Result<std::process::ExitStatus> 
 }
 
 pub(crate) fn emit(event: Event) -> Result<()> {
-    println!("{PREFIX}{}", serde_json::to_string(&event)?);
+    let json = serde_json::to_string(&event)?;
+    if matches!(&event, Event::DesktopObservation(_))
+        && json.len() > desktop_observation::MAX_DELIVERY_JSON_BYTES
+    {
+        println!(
+            "{PREFIX}{}",
+            serde_json::to_string(&Event::DesktopObservation(
+                desktop_observation::Delivery::Lost {
+                    tag: None,
+                    reason: desktop_observation::LossReason::Overflow
+                }
+            ))?
+        );
+    } else {
+        println!("{PREFIX}{json}");
+    }
     std::io::stdout().flush()?;
     Ok(())
 }
@@ -1158,6 +1297,21 @@ fn input_ack(result: Result<()>, automation: &crate::macro_studio::Runtime) -> R
         }
         Err(error) => Err(error),
     }
+}
+fn emit_desktop_observations(router: &mut dyn Engine, signals: &WorkerIoSignals) -> Result<()> {
+    let operation = if signals.cancel.load(Ordering::Acquire) {
+        desktop_observation::Operation::Fence(if signals.ordinary_stop() {
+            desktop_observation::LossReason::StopIntent
+        } else {
+            desktop_observation::LossReason::Eof
+        })
+    } else {
+        desktop_observation::Operation::Drain
+    };
+    for delivery in router.desktop_observation(operation) {
+        emit(Event::DesktopObservation(delivery))?;
+    }
+    Ok(())
 }
 /// Validation is a command rejection; only failures after validation enter the
 /// existing effect-failure acknowledgement/worker-termination path.
@@ -1302,12 +1456,24 @@ pub fn run(runtime: &Path, controller_pid: u32) -> Result<()> {
                     matches!(serde_json::from_str::<Request>(text), Ok(Request::Stop))
                 }) {
                     reader_signals.request_stop();
+                    let _ = emit(Event::DesktopObservation(
+                        desktop_observation::Delivery::Lost {
+                            tag: None,
+                            reason: desktop_observation::LossReason::StopIntent,
+                        },
+                    ));
                 }
                 if tx.send(line).is_err() {
                     break;
                 }
             }
             reader_signals.disconnect();
+            let _ = emit(Event::DesktopObservation(
+                desktop_observation::Delivery::Lost {
+                    tag: None,
+                    reason: desktop_observation::LossReason::Eof,
+                },
+            ));
         });
         let mut profile: Profile = serde_json::from_str(&rx.recv().context("missing profile")??)?;
         profile.normalize_ids()?;
@@ -1497,10 +1663,16 @@ pub fn run(runtime: &Path, controller_pid: u32) -> Result<()> {
                 Ok(false)
             });
             if background? {
+                for delivery in router.desktop_observation(desktop_observation::Operation::Fence(
+                    desktop_observation::LossReason::StopIntent,
+                )) {
+                    emit(Event::DesktopObservation(delivery))?;
+                }
                 io_signals.begin_cleanup();
                 agents.cancel_annotation_export();
                 break;
             }
+            emit_desktop_observations(router.as_mut(), &io_signals)?;
             // Wake for the oldest pending native publication, even when input is idle.
             let wait = router
                 .motion_deadline()
@@ -1588,6 +1760,24 @@ pub fn run(runtime: &Path, controller_pid: u32) -> Result<()> {
                     return Ok(false);
                 }
                 match request {
+                    Request::DesktopObservation(command) => {
+                        let rejection = if let desktop_observation::Command::Bind { seat_identity, .. } = &command {
+                            let slots = virtual_users.state();
+                            match slots.slots.iter().find(|slot| slot.active && slot.seat.identity() == *seat_identity) {
+                                None => Some(desktop_observation::BindRejection::MissingSeat),
+                                Some(slot) => {
+                                    let mouse = matches!(mux_core::emulated::parse(&slot.seat.mouse), Ok(Some(device)) if device.kind == mux_core::DeviceKind::Mouse);
+                                    let keyboard = slot.seat.keyboard.as_deref().is_none_or(|path| matches!(mux_core::emulated::parse(path), Ok(Some(device)) if device.kind == mux_core::DeviceKind::Keyboard));
+                                    if !mouse || !keyboard { Some(desktop_observation::BindRejection::NotVirtual) } else { None }
+                                }
+                            }
+                        } else { None };
+                        if let Some(reason) = rejection {
+                            if let desktop_observation::Command::Bind { request, tag, .. } = command { emit(Event::DesktopObservation(desktop_observation::Delivery::Rejected { request, tag, reason }))?; }
+                        } else {
+                            for delivery in router.desktop_observation(desktop_observation::Operation::Command(command)) { emit(Event::DesktopObservation(delivery))?; }
+                        }
+                    }
                     Request::SelectWindow(selection) => {
                         let result = crate::window_selection::apply(
                             &selection,
@@ -1832,6 +2022,44 @@ pub fn run(runtime: &Path, controller_pid: u32) -> Result<()> {
                             Err(error) => input_ack(Err(error), &automation)?,
                         }
                     }
+                    Request::HostedMode {
+                        ticket,
+                        mode,
+                        multi_keyboard,
+                    } => {
+                        if let Err(error) = router.validate_mode_change(multi_keyboard) {
+                            emit(Event::HostedModeCompleted {
+                                ticket,
+                                mode,
+                                multi_keyboard,
+                                error: Some(format!("Mode change rejected: {error:#}")),
+                                uncertain: false,
+                            })?;
+                            return Ok(false);
+                        }
+                        let result = crate::window_selection::change_mode(
+                            router.as_mut(),
+                            mode,
+                            multi_keyboard,
+                            |router| {
+                                automation.cancel(router)?;
+                                automation.stop_recording();
+                                Ok(())
+                            },
+                        );
+                        if result.is_ok() {
+                            agents.note_mode(mode, multi_keyboard);
+                            releases.clear();
+                        }
+                        let uncertain = result.is_err();
+                        emit(Event::HostedModeCompleted {
+                            ticket,
+                            mode,
+                            multi_keyboard,
+                            error: result.err().map(|error| format!("{error:#}")),
+                            uncertain,
+                        })?;
+                    }
                     Request::MoveTo { user, x, y } => {
                         let result = automation.action(
                             mux_core::automation::Action::MoveTo { user, x, y },
@@ -2013,10 +2241,16 @@ pub fn run(runtime: &Path, controller_pid: u32) -> Result<()> {
                 Ok(false)
             });
             if dispatched? {
+                for delivery in router.desktop_observation(desktop_observation::Operation::Fence(
+                    desktop_observation::LossReason::StopIntent,
+                )) {
+                    emit(Event::DesktopObservation(delivery))?;
+                }
                 io_signals.begin_cleanup();
                 agents.cancel_annotation_export();
                 break;
             }
+            emit_desktop_observations(router.as_mut(), &io_signals)?;
         }
         router.shutdown().context(
             "Target cleanup was not acknowledged; restart the affected target applications",
@@ -2304,6 +2538,7 @@ mod attachment_event_tests {
     fn stop_intent_bypasses_ordinary_request_backlog() {
         let (requests, backlog) = mpsc::channel();
         let shared = SharedHandle {
+            observation: desktop_observation::Inbox::new().unwrap(),
             requests,
             bus: Arc::new(Mutex::new(EventBus::default())),
             recovery: Recovery::for_profile(&Profile::default()),
@@ -2319,6 +2554,42 @@ mod attachment_event_tests {
             shared.recovery.snapshot().phase,
             crate::session_recovery::Phase::Stopping
         ));
+    }
+    #[test]
+    fn observation_stop_fences_pending_before_worker_or_event_backlog() {
+        let (controller, _, requests, _) = Controller::test_fixture();
+        let tag = controller
+            .bind_desktop_observation(1, "seat-a".into())
+            .unwrap();
+        let shared = controller.shared_handle();
+        shared.request(Request::DesktopObservation(
+            desktop_observation::Command::Unbind { tag },
+        ));
+        controller.request(Request::DesktopObservation(
+            desktop_observation::Command::Unbind { tag },
+        ));
+        assert_eq!(
+            requests.try_iter().count(),
+            1,
+            "only the private Bind was admitted"
+        );
+        shared.request(Request::Stop);
+        assert!(!controller.desktop_observation_live(tag));
+        assert_eq!(
+            controller.take_desktop_observations(),
+            vec![desktop_observation::Delivery::Lost {
+                tag: None,
+                reason: desktop_observation::LossReason::StopIntent
+            }]
+        );
+        let observer = shared.subscribe(7, 1);
+        let event = Event::DesktopObservation(desktop_observation::Delivery::Lost {
+            tag: None,
+            reason: desktop_observation::LossReason::Eof,
+        });
+        assert!(!shared.bus.lock().unwrap().publish(&event));
+        assert!(observer.try_recv().is_err());
+        assert!(shared.bus.lock().unwrap().latest.is_empty());
     }
 
     #[test]

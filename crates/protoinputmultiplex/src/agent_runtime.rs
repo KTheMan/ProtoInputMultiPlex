@@ -416,6 +416,8 @@ pub struct WorkerAuthority {
 }
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct State {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub application_events: Option<Box<crate::gui_application_events::PublicStatus>>,
     #[serde(default)]
     pub terminal: bool,
     #[serde(default, skip_serializing_if = "Option::is_none")]

@@ -1,3 +1,6 @@
+#[path = "gui_application_event_dashboard.rs"]
+mod application_event_dashboard;
+
 use crate::{
     keyboard_slider,
     session::{Controller, Event as SessionEvent, Request},
@@ -1349,11 +1352,14 @@ pub fn run(
     data_dir: Option<PathBuf>,
     profile: Option<PathBuf>,
     script: Option<PathBuf>,
-    script_screenshots: bool,
+    options: GuiRunOptions,
     preferences_path: Option<PathBuf>,
     startup_test_key: Option<String>,
     delays: WorkerDelays,
 ) -> Result<()> {
+    let renderer = options.renderer;
+    let native_options =
+        crate::renderer_config::renderer_options(renderer == crate::GuiRenderer::SoftwareDx12)?;
     ensure!(
         script.is_some() || delays.discovery.is_zero(),
         "Discovery delay requires the opt-in GUI script"
@@ -1383,7 +1389,7 @@ pub fn run(
         preferences_path,
         startup_test_key,
         script_path: script,
-        script_screenshots,
+        script_screenshots: options.script_screenshots,
         preferences_delay: delays.app_preferences,
         bootstrap_delay: delays.bootstrap,
     };
@@ -1391,12 +1397,16 @@ pub fn run(
         viewport: egui::ViewportBuilder::default()
             .with_inner_size([360.0, 360.0])
             .with_min_inner_size([320.0, 360.0]),
-        ..Default::default()
+        ..native_options
     };
     eframe::run_native(
         crate::APP_NAME,
         options,
         Box::new(move |cc| {
+            crate::renderer_config::verify_renderer(
+                renderer == crate::GuiRenderer::SoftwareDx12,
+                cc,
+            )?;
             Theme::install(
                 &cc.egui_ctx,
                 theme_mode(crate::app_preferences::Preferences::default().appearance_mode),
@@ -2446,6 +2456,11 @@ struct Dashboard {
     output_page: crate::output_ui::OutputPage,
     agent_broker: crate::gui_agent_broker::Service,
     sdk_service: Option<crate::gui_sdk::Service>,
+    application_events: crate::gui_application_events::Controller,
+    hosted_state: Option<mux_application_sdk::HostedState>,
+    hosted_visible: Option<bool>,
+    hosted_pending: Option<application_event_dashboard::HostedPending>,
+    application_event_tab: bool,
     sdk_origins: String,
     agent_sdk_tab: bool,
     agent_session_epoch: u64,
@@ -2748,6 +2763,11 @@ impl Dashboard {
             output_page: crate::output_ui::OutputPage::default(),
             agent_broker,
             sdk_service: None,
+            application_events: crate::gui_application_events::Controller::default(),
+            hosted_state: None,
+            hosted_visible: None,
+            hosted_pending: None,
+            application_event_tab: false,
             sdk_origins: String::new(),
             agent_sdk_tab: false,
             agent_session_epoch: 0,
@@ -3726,7 +3746,7 @@ impl Dashboard {
                         &self.agent_broker.status().phase,
                     )
                 {
-                    self.close_ready = self.sdk_retired();
+                    self.close_ready = self.all_sdks_retired();
                 } else if self.session.is_none() {
                     self.status = "Routing stopped; Agent Access cleanup is complete.".into();
                 } else if !self.agent_page.snapshot().policy_enabled {
@@ -3870,6 +3890,10 @@ impl Dashboard {
         self.agent_page
             .apply_script_fields(&fields, &self.profile.seats);
         self.app_preferences_page.apply_script_fields(&fields);
+        let event_origin_editable = self.application_events.origin_editable();
+        self.application_events
+            .draft
+            .apply_script_fields(&fields, event_origin_editable);
         if self.sdk_retired()
             && let Some(origins) = fields.get("sdk_origins")
         {
@@ -5638,7 +5662,20 @@ impl Dashboard {
             (&mut self.action_frame, &mut self.frame_actions),
         );
         if self.agent_sdk_tab {
-            self.sdk_controls(ui);
+            crate::application_event_ui::sdk_kind_tabs(
+                ui,
+                &mut self.application_event_tab,
+                self.script.as_mut(),
+                &mut self.action_frame,
+                &mut self.frame_actions,
+            );
+            if self.application_event_tab {
+                egui::ScrollArea::vertical()
+                    .id_salt("application-event-sdk-body")
+                    .show(ui, |ui| self.application_event_controls(ui));
+            } else {
+                self.sdk_controls(ui);
+            }
             if let Some(script) = &self.script {
                 script.agent_state(&self.agent_page.snapshot());
             }
@@ -6124,8 +6161,8 @@ impl Dashboard {
         if !self.preferences_quit_waiting {
             return;
         }
-        if !self.sdk_retired() {
-            self.stop_sdk();
+        if !self.all_sdks_retired() {
+            self.stop_all_sdks();
             self.status = "Finishing SDK requests and input cleanup before quitting.".into();
             return;
         }
@@ -6839,6 +6876,12 @@ impl Dashboard {
     }
 
     fn start_routing(&mut self) {
+        self.start_routing_with_event(false);
+    }
+
+    /// A GUI-approved event host action may keep only its own event lease alive
+    /// while the ordinary routing Start continues to retire other SDK owners.
+    fn start_routing_with_event(&mut self, preserve_event: bool) {
         self.restart_requested = false;
         if self.preferences_worker.pending()
             || self.preferences_worker.retiring()
@@ -6887,13 +6930,19 @@ impl Dashboard {
                 "Start cancelled. Check targets and stop controls before starting again.".into();
             return;
         }
-        self.stop_sdk();
-        if !self.sdk_retired()
-            || !matches!(
-                self.agent_broker.status().phase,
-                crate::gui_agent_broker::Phase::Stopped
-            )
-        {
+        if preserve_event {
+            self.stop_sdk();
+        } else {
+            self.stop_all_sdks();
+        }
+        if !(if preserve_event {
+            self.sdk_retired()
+        } else {
+            self.all_sdks_retired()
+        }) || !matches!(
+            self.agent_broker.status().phase,
+            crate::gui_agent_broker::Phase::Stopped
+        ) {
             if self.setup_handle.enabled()
                 || self.setup_pending.is_some()
                 || self.setup_page.descriptor.is_some()
@@ -6965,6 +7014,9 @@ impl Dashboard {
                 self.recovery_dialog_open = false;
                 self.user_pause.reset();
                 self.session = Some(session);
+                if preserve_event && let Some(pending) = &mut self.hosted_pending {
+                    pending.expected_generation = Some(self.agent_session_epoch);
+                }
                 self.virtual_users_base_seat_count = Some(self.profile.seats.len());
                 self.virtual_users_page.reset_session();
                 self.session_ready = false;
@@ -7007,8 +7059,18 @@ impl Dashboard {
     }
 
     fn request_routing_stop(&mut self, quit_after: bool) {
+        self.request_routing_stop_with_event(quit_after, false);
+    }
+
+    /// Only an admitted hosted Native action uses this continuation. Ordinary
+    /// Stop and Quit keep the existing full SDK retirement ordering.
+    fn request_routing_stop_with_event(&mut self, quit_after: bool, preserve_event: bool) {
         self.user_pause.reset();
-        self.stop_sdk();
+        if preserve_event && !quit_after {
+            self.stop_sdk();
+        } else {
+            self.stop_all_sdks();
+        }
         self.restart_requested = false;
         if self.session.is_none() && self.setup_handle.enabled() {
             self.setup_retiring = true;
@@ -7076,7 +7138,7 @@ impl Dashboard {
                     self.agent_broker.status().phase,
                     crate::gui_agent_broker::Phase::Stopped
                 ) {
-                    self.close_ready = self.sdk_retired();
+                    self.close_ready = self.all_sdks_retired();
                 }
             }
         }
@@ -7462,6 +7524,11 @@ impl Dashboard {
             ctx.request_repaint();
         }
         for event in events {
+            if matches!(&event, SessionEvent::DesktopObservation(_)) {
+                // Provider payloads belong only to the bounded private inbox.
+                self.application_events.fence_desktop_sources();
+                continue;
+            }
             // Stop is latched for this owned controller. Late readiness or command
             // acknowledgements must not reopen its UI before terminal cleanup.
             if self.session_stopping
@@ -7533,6 +7600,9 @@ impl Dashboard {
                 self.session_busy = false;
             }
             match event {
+                SessionEvent::DesktopObservation(_) => {
+                    unreachable!("private provider event was intercepted")
+                }
                 SessionEvent::UserPause(state) => {
                     self.user_pause.publish(state);
                 }
@@ -7616,6 +7686,21 @@ impl Dashboard {
                     }
                     self.status = format!("{mode:?} routing · held input released");
                 }
+                SessionEvent::HostedModeCompleted {
+                    ticket,
+                    mode,
+                    multi_keyboard,
+                    error,
+                    uncertain,
+                } => {
+                    self.receive_hosted_mode_completion(
+                        ticket,
+                        mode,
+                        multi_keyboard,
+                        error,
+                        uncertain,
+                    );
+                }
                 SessionEvent::Configured(count) => {
                     if self.startup_window_selection_active {
                         self.continue_startup_window_selection();
@@ -7663,7 +7748,7 @@ impl Dashboard {
                     self.replication_revision = 0;
                     self.session = None;
                     if self.quit_after_stop {
-                        self.close_ready = self.sdk_retired()
+                        self.close_ready = self.all_sdks_retired()
                             && crate::gui_agent_broker::quit_ready(
                                 self.session.is_none(),
                                 &self.agent_broker.status().phase,
@@ -11049,6 +11134,7 @@ impl Dashboard {
         use crate::gui_setup::PreparedCommand as Command;
         enum Admitted {
             Immediate,
+            ApplicationEventStatus(serde_json::Value),
             File(u64),
             Persistence(u64, crate::app_preferences_ui::PreferencesEditorSubmission),
         }
@@ -11058,6 +11144,9 @@ impl Dashboard {
                 self.setup_guard(&request)?;
                 match &request.command {
                     Command::Inspect => Ok(Admitted::Immediate),
+                    Command::ApplicationEventStatus => Ok(Admitted::ApplicationEventStatus(
+                        serde_json::to_value(self.application_events.status())?,
+                    )),
                     Command::RefreshDiscovery => {
                         self.refresh();
                         Ok(Admitted::Immediate)
@@ -11145,6 +11234,9 @@ impl Dashboard {
                         request: None,
                         setup_request: Some(request),
                     });
+                }
+                Ok(Admitted::ApplicationEventStatus(status)) => {
+                    request.reply(status, None, None);
                 }
                 Ok(Admitted::Immediate) => {
                     let profile =
@@ -11520,13 +11612,17 @@ impl eframe::App for Dashboard {
             self.initial_profile_size = None;
         }
     }
-    fn logic(&mut self, ctx: &egui::Context, _: &mut eframe::Frame) {
+    fn logic(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
         // eframe skips `ui` while hidden. Keep tray actions, connected requests,
         // target cleanup, and device-disconnect handling alive independently of painting.
         self.staged_window_locks.prune(&self.profile);
         self.poll_session(ctx);
         self.poll_agent_broker();
         self.poll_sdk(ctx);
+        self.poll_application_events(
+            ctx,
+            frame.winit_window().and_then(|window| window.is_visible()),
+        );
         if matches!(
             self.agent_broker.status().phase,
             crate::gui_agent_broker::Phase::Starting | crate::gui_agent_broker::Phase::Stopping
@@ -11539,7 +11635,7 @@ impl eframe::App for Dashboard {
                 &self.agent_broker.status().phase,
             )
         {
-            self.close_ready = self.sdk_retired();
+            self.close_ready = self.all_sdks_retired();
         }
         self.poll_preferences();
         self.poll_profile_file(ctx);
@@ -11568,10 +11664,11 @@ impl eframe::App for Dashboard {
             self.recovery_phase == crate::session_recovery::Phase::Stopped,
             &self.agent_broker.status().phase,
         ) && !self.quit_after_stop
-            && self.sdk_retired()
+            && (self.all_sdks_retired()
+                || (self.hosted_start_preserves_event() && self.sdk_retired()))
         {
             self.restart_requested = false;
-            self.start_routing();
+            self.start_routing_with_event(self.hosted_start_preserves_event());
         }
         self.poll_discovery();
         if !self.shortcut_status().active && self.session.is_some() && !self.session_stopping {
@@ -11638,6 +11735,7 @@ impl eframe::App for Dashboard {
                     "broker_phase": broker_phase_label(&self.agent_broker.status().phase),
                     "broker_generation": self.agent_broker.status().generation,
                     "sdk": self.sdk_service.as_ref().map(|service| service.snapshot()).unwrap_or_default(),
+                    "application_events": self.application_events.status(),
                     "enabled": self.setup_handle.enabled(),
                     "retiring": self.setup_retiring,
                     "start_order": self.setup_start_order,
@@ -12914,4 +13012,9 @@ mod scroll_context_tests {
             }
         }
     }
+}
+
+pub(crate) struct GuiRunOptions {
+    pub renderer: crate::GuiRenderer,
+    pub script_screenshots: bool,
 }

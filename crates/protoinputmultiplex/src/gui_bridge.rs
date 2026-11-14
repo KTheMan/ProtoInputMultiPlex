@@ -2,6 +2,10 @@
 //!
 //! The descriptor contains a bearer token and must stay in a user-private location. The
 //! broker creates both it and its pipe with a protected DACL for the current logon SID.
+#[cfg(test)]
+#[path = "gui_application_event_projection_tests.rs"]
+mod application_event_projection_tests;
+
 use crate::{agent_runtime, session};
 use anyhow::{Context, Result, anyhow, bail, ensure};
 use serde::{Deserialize, Serialize};
@@ -46,6 +50,7 @@ pub struct AppHandle {
     activity: Option<crate::gui_activity::Observer>,
     sender: Sender<AppRequest>,
     discovery: Arc<RwLock<(crate::gui_discovery::Status, Instant)>>,
+    application_events: Arc<RwLock<Option<(crate::gui_application_events::PublicStatus, Instant)>>>,
     controller: u64,
     incarnation: u64,
     recovery: Arc<RwLock<RecoveryPublication>>,
@@ -195,6 +200,7 @@ pub fn app_channel() -> (AppHandle, Receiver<AppRequest>) {
             sender,
             controller: 0,
             incarnation: 0,
+            application_events: Arc::new(RwLock::new(None)),
             recovery: Arc::new(RwLock::new(RecoveryPublication::new(0, 0))),
             discovery: Arc::new(RwLock::new((
                 crate::gui_discovery::Status::default(),
@@ -206,6 +212,28 @@ pub fn app_channel() -> (AppHandle, Receiver<AppRequest>) {
 }
 
 impl AppHandle {
+    pub(crate) fn publish_application_events(
+        &self,
+        status: crate::gui_application_events::PublicStatus,
+    ) {
+        *self
+            .application_events
+            .write()
+            .unwrap_or_else(std::sync::PoisonError::into_inner) = Some((status, Instant::now()));
+    }
+
+    fn application_event_status(&self) -> Option<crate::gui_application_events::PublicStatus> {
+        let publication = self.application_events.try_read().ok()?;
+        let (status, sampled) = publication.as_ref()?;
+        let age = sampled.elapsed();
+        if age > Duration::from_secs(2) {
+            return None;
+        }
+        let mut status = status.clone();
+        status.age_by(age);
+        Some(status)
+    }
+
     pub fn attach_activity(&mut self, observer: crate::gui_activity::Observer) {
         self.activity = Some(observer);
     }
@@ -568,6 +596,9 @@ impl AppHandle {
         );
         reply.authority = None;
         reply.recovery = projection;
+        // This branch follows live connection/policy validation above. No event
+        // credential, user identities or input payloads enter this projection.
+        reply.application_events = self.application_event_status().map(Box::new);
         Ok(reply)
     }
     pub fn publish_discovery(&self, status: crate::gui_discovery::Status) {
@@ -2343,6 +2374,101 @@ mod tests {
         })).is_err());
     }
 
+    #[test]
+    fn stopped_event_status_traverses_real_broker_and_returns_only_safe_aged_summary() {
+        let directory = std::env::temp_dir().join(format!(
+            "protoinputmultiplex-event-status-{}-{}",
+            std::process::id(),
+            random_token().unwrap()
+        ));
+        fs::create_dir(&directory).unwrap();
+        let descriptor = directory.join("connection.json");
+        let (setup, requests) = crate::gui_setup::channel();
+        setup.enable();
+        let broker = Broker::start_setup_cancellable(
+            setup.clone(),
+            descriptor.clone(),
+            Arc::new(AtomicU64::new(1)),
+            1,
+            Arc::new(AtomicBool::new(false)),
+        )
+        .unwrap();
+        let (sent, received) = mpsc::sync_channel(1);
+        let worker = thread::spawn(move || {
+            let result = (|| -> Result<crate::gui_setup::Reply> {
+                let mut client = Client::connect_setup(descriptor)?;
+                client.setup(crate::gui_setup::Command::ApplicationEventStatus)
+            })();
+            let _ = sent.send(result);
+        });
+        let queued = requests.recv_timeout(Duration::from_secs(2));
+        // Exercise the actual authenticated Setup request/reply transport. This
+        // responder stands in for the GUI event loop; it does not launch a GUI.
+        let admitted = queued.as_ref().is_ok_and(|request| {
+            matches!(
+                &request.command,
+                crate::gui_setup::PreparedCommand::ApplicationEventStatus
+            ) && setup.permits(request.client, request.epoch)
+        });
+        if let Ok(request) = queued {
+            let mut status = crate::gui_application_events::Controller::default().status();
+            status.transport_sample_age_ms = Some(3_000);
+            status.connected_clients = Some(2);
+            status.cleanup_pending = Some(1);
+            status.uncertain_admissions = Some(7);
+            status.queue_overflows = Some(3);
+            status.age_by(Duration::ZERO);
+            request.reply(serde_json::to_value(status).unwrap(), None, None);
+        }
+        let result = received.recv_timeout(Duration::from_secs(2));
+        broker.shutdown().unwrap();
+        worker.join().unwrap();
+        assert!(
+            admitted,
+            "Event status did not use the admitted setup queue"
+        );
+        let reply = result
+            .expect("Setup status did not complete its queued reply")
+            .unwrap();
+        assert!(reply.error.is_none() && reply.profile.is_none());
+        let keys: BTreeSet<_> = reply
+            .value
+            .as_object()
+            .unwrap()
+            .keys()
+            .map(String::as_str)
+            .collect();
+        assert_eq!(
+            keys,
+            BTreeSet::from([
+                "phase",
+                "session_active",
+                "local_virtual_users",
+                "desktop_bound_users",
+                "desktop_pending_users",
+                "native_observed_users",
+                "native_sequence",
+                "pointer_export",
+                "keyboard_export",
+                "browser_approved",
+                "approved_receivers",
+                "transport_sample_age_ms",
+                "retired",
+                "sample_age_ms",
+            ])
+        );
+        let status: crate::gui_application_events::PublicStatus =
+            serde_json::from_value(reply.value).unwrap();
+        assert_eq!(
+            (status.desktop_bound_users, status.desktop_pending_users),
+            (0, 0)
+        );
+        assert!(status.transport_sample_age_ms.unwrap() >= 3_000);
+        assert!(status.connected_clients.is_none() && status.cleanup_pending.is_none());
+        assert!(status.uncertain_admissions.is_none() && status.queue_overflows.is_none());
+        assert!(!status.session_active && !status.pointer_export && !status.keyboard_export);
+        fs::remove_dir(directory).unwrap();
+    }
     #[test]
     fn stopped_activity_uses_real_broker_without_draining_gui_requests() {
         let directory = std::env::temp_dir().join(format!(

@@ -1,0 +1,67 @@
+name: Packaging source checks
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/packaging.yml'
+      - 'scripts/package-portable.ps1'
+      - 'scripts/package-portable.py'
+      - 'scripts/test-package-sdk*.py'
+      - 'scripts/build-backend.ps1'
+      - 'patches/**'
+      - '.gitmodules'
+      - '.gitignore'
+      - 'vendor/ProtoInput'
+  pull_request:
+    paths:
+      - '.github/workflows/packaging.yml'
+      - 'scripts/package-portable.ps1'
+      - 'scripts/package-portable.py'
+      - 'scripts/test-package-sdk*.py'
+      - 'scripts/build-backend.ps1'
+      - 'patches/**'
+      - '.gitmodules'
+      - '.gitignore'
+      - 'vendor/ProtoInput'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: packaging-source-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
+env:
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONUTF8: '1'
+  GIT_TERMINAL_PROMPT: '0'
+
+jobs:
+  source-checks:
+    runs-on: windows-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          persist-credentials: false
+      - name: Parse packaging Python source
+        shell: pwsh
+        run: >-
+          python -c "import ast,pathlib; names=['package-portable.py','test-package-sdk.py','test-package-sdk-source.py']; [ast.parse((pathlib.Path('scripts')/name).read_text(encoding='utf-8-sig'),filename=name) for name in names]"
+      - name: Parse packaging PowerShell source
+        shell: pwsh
+        run: |
+          $tokens = $null
+          $parseErrors = $null
+          [System.Management.Automation.Language.Parser]::ParseFile(
+            (Resolve-Path -LiteralPath 'scripts/package-portable.ps1').Path,
+            [ref]$tokens, [ref]$parseErrors) | Out-Null
+          if (@($parseErrors).Count -ne 0) { throw 'Packaging PowerShell parser errors.' }
+      - name: Run pure packaging rejection checks
+        shell: pwsh
+        run: python scripts/test-package-sdk.py
+      - name: Verify actual pinned native source preparation and inventory
+        shell: pwsh
+        run: python scripts/test-package-sdk-source.py

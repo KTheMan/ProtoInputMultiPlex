@@ -22,6 +22,31 @@ pub struct StdioRpc {
     deadline: Duration,
 }
 impl StdioRpc {
+    /// Connect only to a GUI-approved window or host event descriptor. This is a
+    /// separate MCP process from the ordinary routing and stopped-Setup modes.
+    pub async fn connect_event(executable: PathBuf, descriptor: PathBuf) -> Result<Self> {
+        if !executable.is_absolute() || !descriptor.is_absolute() {
+            return Err(Failure::Scope);
+        }
+        let mut command = Command::new(executable);
+        command
+            .arg("mcp")
+            .arg("--event-connection")
+            .arg(descriptor)
+            .kill_on_drop(true);
+        let (transport, _) = TokioChildProcess::builder(command)
+            .stderr(Stdio::null())
+            .spawn()
+            .map_err(|_| Failure::Transport)?;
+        let service = tokio::time::timeout(Duration::from_secs(8), ().serve(transport))
+            .await
+            .map_err(|_| Failure::Timeout)?
+            .map_err(|_| Failure::Transport)?;
+        Ok(Self {
+            service,
+            deadline: Duration::from_secs(8),
+        })
+    }
     pub async fn connect(config: &Config) -> Result<Self> {
         if [&config.executable, &config.runtime, &config.preferences]
             .iter()

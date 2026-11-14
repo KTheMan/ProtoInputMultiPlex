@@ -7,6 +7,21 @@ backup; failures keep the window open. See the [contract](profile-persistence-co
 and [bounded independent assessment](profile-persistence-assessment-2026-11-07.json).
 The historical GUI-stall P1 and full Ultra/UI parity remain open.
 
+The application-event SDK is under development in [draft PR #1](https://github.com/KTheMan/ProtoInputMultiPlex/pull/1).
+Its [guide](application-event-sdk.md) covers one cooperative host, shared virtual
+user IDs, a native push client, Rust/WASM events, independently approved receiver
+rows, and read-only MCP status. Source approval and hosted build/unit gates do
+not establish actual DLL/window/browser interoperability or full Windows/Web
+SDK parity. Remaining API families and runtime acceptance stay open.
+
+Following the reported November 7 host display freeze, local builds and
+native/Sandbox/input tests on that workstation are held. Source work and
+GitHub-hosted checks continue. The opt-in CPU/DX12 renderer needs separate
+rendered-frame and normal-close qualification; it is not a proven freeze fix.
+The original Sandbox instance is no longer available, so its reboot qualification
+cannot continue. Real logon/reboot validation, signing, public release and the
+whole-product UX review remain pending.
+
 Generated clone Stop now keeps the roster revision available for retry if a
 release fails. The worker retires the clone once cleanup succeeds, while
 preserving other users' independent input. The release fault was simulated.
@@ -198,7 +213,7 @@ References reviewed October 13, 2026: [official edition comparison](https://www.
 | Remote desktop/screen sharing | Planned | RustDesk and transport/compositor |
 | Multi-user apps/browser workflows | Planned | Independent integrations |
 | Profiles, tray/startup, hotkeys | Independent startup load and save-on-Quit policies passed the bounded [persistence assessment](profile-persistence-assessment-2026-11-07.json). Profile maintenance passed its bounded [assessment](profile-maintenance-assessment-2026-10-14.json). Separate application preferences, tray behavior, seven typed shortcuts, explicit local startup opt-in and cleanup/recovery passed bounded independent virtual acceptance in the [application lifecycle assessment](app-lifecycle-assessment-2026-10-14.json); the [producer record](hidden-lifecycle-rust-checks-2026-10-14.json) records formatting, strict Clippy, 135 tests and x64/i686 builds. Eight earlier aggregate artifacts remain NOT ACCEPTED; the accepted assessment uses passed subgroups and later focused tails without relabeling them. MCP can inspect the persisted login preference but cannot alter startup registration. | Broader profiles, migrations, backups, accessibility and real logon/reboot validation |
-| External automation interfaces | Current Rust MCP source exposes 23 tools, including `routing_output` and `app_preferences`. Output Rules passed bounded virtual acceptance in the [independent assessment](output-rules-assessment-2026-10-14.json). Application preferences and lifecycle passed bounded independent virtual acceptance in the [lifecycle assessment](app-lifecycle-assessment-2026-10-14.json); app-preference writes use a separate explicit grant, and startup registration remains local-only. Standalone agents keep a separate supervised session. Optional GUI connection uses the dashboard session for virtual input, current state, read-only inspection and selected-target capture when explicitly enabled. GUI access and capture passed bounded virtual acceptance in the [independent assessment](gui-agents-assessment-2026-10-14.json), limited to one x64 GUI controller and cooperative targets. Capture and session-control permissions default off. See the [scope contract](gui-agent-plan.md). Earlier Macro Studio, stable-ID graph and GUI-agent assessments refer to their respective frozen 16-, 17- and 20-tool builds. | Broader live mutations, remote workflows and broader agent workflows remain |
+| External automation interfaces | Current Rust MCP source exposes 25 tools, including `routing_output`, `app_preferences` and read-only `application_event_status`. The accepted cohorts below remain tied to their frozen source and permissions. Output Rules passed bounded virtual acceptance in the [independent assessment](output-rules-assessment-2026-10-14.json). Application preferences and lifecycle passed bounded independent virtual acceptance in the [lifecycle assessment](app-lifecycle-assessment-2026-10-14.json); app-preference writes use a separate explicit grant, and startup registration remains local-only. Standalone agents keep a separate supervised session. Optional GUI connection uses the dashboard session for virtual input, current state, read-only inspection and selected-target capture when explicitly enabled. GUI access and capture passed bounded virtual acceptance in the [independent assessment](gui-agents-assessment-2026-10-14.json), limited to one x64 GUI controller and cooperative targets. Capture and session-control permissions default off. See the [scope contract](gui-agent-plan.md). Earlier Macro Studio, stable-ID graph and GUI-agent assessments refer to their respective frozen 16-, 17- and 20-tool builds. | Broader live mutations, remote workflows and broader agent workflows remain |
 
 Initial saved-shortcut registration conflicts now have bounded recovery acceptance: the GUI stays visible with the complete set inactive, Start disabled, and local Retry or preference correction available. See the [contract](startup-shortcut-recovery-contract.md) and [assessment](startup-shortcut-recovery-assessment-2026-10-15.json). Tray/native-window startup failures and actual Run-key/logon/reboot validation remain open.
 

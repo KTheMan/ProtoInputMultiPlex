@@ -13,6 +13,19 @@ records retain the names and paths of the snapshots they describe.
 
 A Windows multi-input project with a Rust application layer and [ProtoInput](https://github.com/Ilyaki/ProtoInput) as its native hooking backend. The current build provides independent desktop cursors, click-selected application ownership, switched/concurrent virtual routing, and an agent-facing MCP server. Full MouseMux Ultra parity remains in progress.
 
+## Clean-room implementation
+
+ProtoInputMultiPlex follows a clean-room development policy. Public documentation
+and published screenshots inform its functional and UI workflow goals. Development
+and testing must not use or run MouseMux itself, inspect or decompile its binaries,
+incorporate its source code or assets, or rely on other MouseMux cloning or
+reimplementation efforts. New application behavior and UI use independently
+authored Rust code, branding, visuals and wording.
+
+The separately licensed ProtoInput backend, Ouroboros UI framework and other
+declared open-source dependencies are used with attribution. See
+[third-party notices](THIRD_PARTY_NOTICES.md) for their provenance and licenses.
+
 Compact Ouroboros utility pages passed [bounded independent UX acceptance](docs/productivity-ux-assessment-2026-10-15.json): state-relevant macro actions, readable replica states and wrapped stable IDs, a clearer graph workflow, and successful target-setup completion without stale progress or lost page errors. See the [layout contract](docs/productivity-ux-contract.md) and accepted [Macro Studio](docs/productivity-ux-macro-studio.png), [Virtual Replicas](docs/productivity-ux-virtual-replicas.png) and [Graph](docs/productivity-ux-graph.png) captures. Full UX/Ultra parity remains open.
 
 Shared utility chrome now uses a subdued **Back to Home** action and derives category breadcrumbs from the existing page destinations. The Graph shows a short queue summary and a default-closed diagnostics section with all eight queue values; recovery warnings stay visible outside it. The bounded stopped-window pixel gate passed 25 phase control observations (16 plus a nine-control Graph tail; not 25 distinct controls) across four retained originals. Its minimum Graph view kept the error, queue summary and whole Apply button visible after ordinary resize normalization to 320×360; this does not establish automatic error reveal or maximum-scroll reachability. See the [contract](docs/shared-utility-chrome-contract.md), [validation](docs/validation.md#shared-utility-chrome--october-15) and approved bounded [assessment](docs/shared-utility-chrome-assessment-2026-10-15.json). Broader UX/Ultra parity remains open.

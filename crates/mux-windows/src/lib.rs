@@ -4,6 +4,8 @@ pub mod annotation_overlay;
 #[cfg(windows)]
 pub mod app_cursor;
 #[cfg(windows)]
+pub mod application_window;
+#[cfg(windows)]
 pub mod desktop_capture;
 #[cfg(windows)]
 pub mod job;

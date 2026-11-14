@@ -1,0 +1,68 @@
+{
+  "schema": "pim.sdk-bounded-interop-assessment.v1",
+  "assessed_at_utc": "2026-11-09T03:32:14.4632646Z",
+  "source": {
+    "head": "5041157dac2cf890d508af7f8422cbac8ffe7268",
+    "merge": "d5e7946e4f9366e8fd1a0c0d7862a6ee2e3c9099",
+    "tree": "004f616e9c3cb7ebea9dd7bc359ffa2cbd2304bd"
+  },
+  "run_url": "https://github.com/KTheMan/ProtoInputMultiPlex/actions/runs/42553756371",
+  "aggregate": "NOT_ACCEPTED",
+  "independent_review_sha256": "2beb6742e4c6232d564e12cc099ae735f2be98c1c6b9929c35bc672ca677fb01",
+  "integrity": {
+    "archives": 11,
+    "members": 179,
+    "mismatches": 0
+  },
+  "required_checks": {
+    "verdict": "ACCEPTED_EXACT_HEAD_HOSTED_CHECKS",
+    "actual": "Hosted fmt, workspace all-target Clippy -D warnings, workspace tests and required browser/native-client/software feature checks/builds passed; intended ignored tests remain. Named retirement_accounts_only_for_known_pending_observations actually reports ok in dedicated example tests: 3 passed/0 failed/0 ignored. Isolated full-feature x64/x86 builds finished; both C11/W4/WX header compiles ran, ABI3 and 23 pim_app exports each."
+  },
+  "bounded_groups": {
+    "native_lifecycle": {
+      "verdict": "ACCEPTED",
+      "artifact": 13646789567,
+      "evidence": "15 ordered rows/architecture: exact DLL/ABI3, HWND death, actual worker OS signal, consumed completion token, peer join, all calls returned, unload before owner exit; both external exit 0/no timeout."
+    },
+    "standalone_host": {
+      "verdict": "ACCEPTED",
+      "artifact": 13646929025,
+      "evidence": "18 rows/architecture, two cycles: retained reply/stale retirement, zero calls/handles before unload, parent observes owner alive afterward, next cycle confirms prior OS exit/join; both external exit 0."
+    },
+    "owned_window_metadata": {
+      "verdict": "ACCEPTED",
+      "artifact": 13646844411,
+      "evidence": "Nine rows/architecture: real UI-thread HWND/title/physical geometry/DPI/monitor/query-track-refresh; WM_NCDESTROY and stale missing; host retirement/unload/parent OS wait/join, both external exit 0."
+    },
+    "software_readback": {
+      "verdict": "ACCEPTED",
+      "artifact": 13647321504,
+      "evidence": "14 rows/six frame advances/six principal milestones, actual Cpu Dx12 adapter; own nonuniform RGBA four colors each 25 matching pixels, one close, normal native return and external exit 0. No physical presentation/P1 claim."
+    },
+    "legacy_gui_pair": {
+      "verdict": "ACCEPTED",
+      "artifact": 13647286729,
+      "public_sha256": "db659f87125355f9e7066b707587b2acda9e49665f299baf343e98ec7543ef58",
+      "evidence": "Actual Rust WASM/native pair: 17 input + 9 gap acks; two users, hooks/invalidation/refresh/disposal/empty-hold cleanup. Native + GUI exit 0/descriptors gone. Main-close v2: two visible/one eligible, all identity rechecks true. Source-bound PASS path checks browser normal disposal/exit."
+    },
+    "owned_window_route": {
+      "verdict": "ACCEPTED_BOUNDED_SINGLE_WINDOW_ROUTE",
+      "artifact": 13647047945,
+      "public_sha256": "2f226041e1f9dac2c4d48b14a2a2b56f771940b210d6f9f1fea8a69e01274388",
+      "evidence": "Three positive owner actions through Web/Rust-MCP/direct MCP, query/track/control/untrack, stale epoch/revoke rejection. Uncertain at 1875 ms, Inspect available/needs-refresh/empty; late fourth action/receipt rejected. All retirement probes true: 4 actions/3 receipts/1 late rejection before destroy, native exit 0/unload markers, host retired with 1 then 0 clients, MCP/browser/GUI exit 0/descriptors gone, main-close rechecks passed."
+    }
+  },
+  "hosted_mode": {
+    "verdict": "NOT_ACCEPTED",
+    "artifact": 13647836174,
+    "public_sha256": "fbfa15199f337295570f9c0f5e11b876b1576d63c6977ec45f7df33e23859043",
+    "checkpoint": 30,
+    "browser_acceptance_phase": "helper_pass_predicate",
+    "browser_helper_failure": "hosted_receipt_deadline",
+    "failure_class": "Rejected",
+    "elapsed_ms": 113297,
+    "unobserved": "The same reply() error is used for hosted query, mode, subscribe and viewport calls. Actual awaited kind/request/action/private frames are unexported: do not infer which action timed out, why no matching receipt arrived, or whether side effects occurred. Web completion counters 0/old_revision=false mean acceptance did not complete, not that all JS actions were absent.",
+    "not_reached": "Final Python hosted-state/generation/controller/requester-only checks; later sample 30 stale-MCP denial/browser disconnect/final cleanup/acknowledgement; corrected step 31 label; future MCP/epoch/lost-receipt/reconnect/ordinary quit/file preservation remain unqualified. Preserve whole hosted group failure."
+  },
+  "limits": "Bounded results apply only to the exact source tree above. Later toolkit and deadline-notification changes require their own checks and runtime acceptance. This does not qualify full Windows/Web SDK parity, every native window action, hardware input, physical presentation, the workstation freeze, release packaging/signing, product logon/reboot, or Ultra/UI parity."
+}

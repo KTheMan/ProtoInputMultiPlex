@@ -1,0 +1,64 @@
+{
+  "schema": "protoinputmultiplex.authored-browser-acceptance.v1",
+  "status": "unexecuted_actions_and_expected_results",
+  "named_group": "Rust Application Event SDK with Cooperative Native and Web Consumers",
+  "fixture_requirements": {
+    "native": "One cooperative Rust host process explicitly creates user A and user B, gives them distinct visible colors and initial positions, consumes both in-process, owns its test windows, and loads no ProtoInput backend.",
+    "web": "One separately served loopback page at an exact host-approved HTTP origin; generated Rust WASM bindings present; server credentials supplied at runtime through protected harness memory only.",
+    "observation": "Host event grant explicitly scopes both users and pointer events; keyboard observation is a distinct later approval. Browser control grant explicitly scopes only A initially; B is not implicitly owned by browser.",
+    "instrumentation": "Record typed request/response ids and event sequences without credentials; native injection count must remain zero. Capture authoritative and browser state independently."
+  },
+  "actions": [
+    {
+      "name": "default_off",
+      "do": ["Mount the page without clicking Connect.", "Move, press five buttons, wheel and type over the canvas."],
+      "expect": ["No network socket or input commands.", "No users created and no export/control grant changed.", "Pointer and keyboard controls visibly disabled; physical, pen and touch unavailability visible."]
+    },
+    {
+      "name": "initial_two_user_snapshot",
+      "do": ["Native fixture creates A and B explicitly.", "Approve exact page origin and issue a short-lived event-only credential.", "Enter endpoint and event credential, then explicitly Connect."],
+      "expect": ["Credential field is empty immediately after Connect; no URL/storage/log token.", "One typed Hello, Ready, Subscribe and Subscribed snapshot.", "A and B render on the same canvas in their authoritative distinct colors, names, ids and initial positions.", "Native receiver remains live; browser does not create users or submit host commands."]
+    },
+    {
+      "name": "pushed_independent_users",
+      "do": ["Native fixture moves A and B to different positions and changes each cursor setting through supported SDK methods.", "Do not call any browser getter or Poll request."],
+      "expect": ["Asynchronous EventStream handlers fold ordered per-user lifecycle/input/settings events.", "Both cursors move and update independently from authoritative data.", "Native same-process event consumer sees the same user identities; injected target count stays zero.", "Unsupported cursor values return typed errors without corrupting the other user."]
+    },
+    {
+      "name": "explicit_pointer_buttons_wheels_click",
+      "do": ["Select A but leave Enable canvas pointer off and move/click.", "Enable approved A canvas pointer and focus canvas.", "Move, press/release primary, middle, secondary, X1, X2; release once outside captured canvas.", "Scroll vertical and horizontal wheels.", "Exercise explicit typed Click for A through SDK request.", "Select B without extending browser control scope and attempt enable."],
+      "expect": ["Off produces no input; selected granted enable is required.", "A receives correctly attributed motion, exactly balanced five-button transitions and both signed wheel axes.", "Click generates balanced server-side transitions; browser observes events separately from acknowledgement.", "B control remains unavailable and any direct out-of-scope command is denied by server.", "Observation of B continues without unauthorized mutation."]
+    },
+    {
+      "name": "separate_keyboard_focus_and_cleanup",
+      "do": ["With only pointer approval, select A and attempt keyboard enable/type.", "Host explicitly approves both distinct key observation and key input authority, then reconnect using a fresh scoped credential.", "Select A, explicitly enable keyboard, focus canvas, press/release KeyA and ShiftRight.", "Hold a key/button and blur the canvas; then press Tab to leave.", "Type into the endpoint input while canvas is unfocused."],
+      "expect": ["No key data or key command exists before separate approvals.", "Mapped HID usages and down/up events are attributed to A.", "Blur releases only this browser client's held transitions, with no replay.", "Tab exits; non-canvas typing is never captured or published.", "Other native consumer holds are not released by browser blur."]
+    },
+    {
+      "name": "coordinate_revision_resize_negative_origin",
+      "do": ["Use a supplied desktop spanning a negative origin with revision R.", "At DPR 1, 1.25 and 2, resize CSS canvas and check its backing extent.", "Send corner/center points, including just inside bottom-right.", "Publish ScreensChanged at R+1 and then new-revision motion.", "Feed an independently authored stale-R input frame after R+1."],
+      "expect": ["CSS viewport offset is subtracted exactly once; backing pixel ratio does not multiply desktop coordinates.", "Positions round-trip to CSS positions within rounding tolerance; last pixel remains inside half-open desktop bounds.", "ResizeObserver updates backing extent with no desktop revision invention.", "Stale revision fails closed, clears rendering and requires explicit recovery."]
+    },
+    {
+      "name": "gap_and_explicit_refresh",
+      "do": ["Overflow the bounded browser subscription while native receiver drains normally.", "Observe Gap, then publish more events before browser refresh.", "Click Refresh subscription once.", "Deliver any queued old-subscription frames before the Subscribed response."],
+      "expect": ["Gap is explicit, clears state and disables controls; no stale cursor or held client keys remain.", "No auto-resubscribe or Poll loop occurs.", "Explicit refresh fences old frames and installs a fresh atomic snapshot; input stays off until reselected/enabled.", "Native consumer is unaffected and no queued local DOM input is replayed."]
+    },
+    {
+      "name": "authentication_denials",
+      "do": ["Repeat connections from wrong exact Origin, missing credential, expired credential and a command MCP bearer.", "Try forged JSON host registration, control approval or recipient identity fields.", "Use a valid recipient with no B event scope and no key grant."],
+      "expect": ["Server rejects before user/event data leaves the trust boundary.", "Unknown or host-only command fields fail typed decoding.", "B and key data never appear in frames, callbacks, state getters or canvas.", "Errors are visible without echoing credentials; reconnect requires an explicit action."]
+    },
+    {
+      "name": "end_revoke_disconnect_and_backpressure",
+      "do": ["Disconnect browser while native consumer stays connected.", "Reconnect explicitly with a newly issued credential and fresh snapshot.", "Hold input then revoke browser scope, stop owning session and normal Quit in separate trials.", "Force response/socket backpressure during blur releases.", "Call WebClient.dispose and inspect registered listeners/ResizeObserver."],
+      "expect": ["Normal disconnect sends authorized releases then Unsubscribe/Disconnect and closes; no automatic retry.", "Revoke/End clears users, cursor rendering, held client state and capabilities immediately, with no stale replay.", "Other consumer and its users remain unaffected by one consumer disconnect until the owning session ends.", "Failed release retires the connection so server cleanup releases controller holds.", "Dispose unregisters DOM/socket handlers and observer; no callback/input production after disposal."]
+    },
+    {
+      "name": "typed_controls_and_handler_api",
+      "do": ["Register and unregister a generated-binding event handler; call state_json inside the handler.", "Exercise explicit typed user/cursor/window controls on scoped owned fixture windows.", "Attempt arbitrary window ids and unsupported host visibility/physical/pen/touch operations."],
+      "expect": ["Handler receives only validated shared ServerMessage payloads and connection state; reentrant getters do not panic.", "Acknowledgements are distinct from event delivery and authoritative state changes.", "Window query/track/untrack/change/destroy and allowed window controls respect native host scope.", "Unsupported or unauthorized operations return typed failure; browser does not infer or expand authority."]
+    }
+  ],
+  "release_gate": "Root launcher must record actual independent native+Web concurrent browser, Windows, GUI/MCP and security/cleanup results. This authored fixture is not an acceptance result or a full parity claim."
+}

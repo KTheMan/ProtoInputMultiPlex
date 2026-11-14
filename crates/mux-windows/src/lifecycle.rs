@@ -12,8 +12,9 @@ use std::{
 };
 use windows_sys::Win32::{
     Foundation::{
-        CloseHandle, DUPLICATE_CLOSE_SOURCE, DUPLICATE_SAME_ACCESS, DuplicateHandle, HANDLE,
-        INVALID_HANDLE_VALUE, WAIT_ABANDONED, WAIT_OBJECT_0, WAIT_TIMEOUT,
+        CloseHandle, DUPLICATE_CLOSE_SOURCE, DUPLICATE_SAME_ACCESS, DuplicateHandle,
+        ERROR_FILE_NOT_FOUND, FILETIME, GetLastError, HANDLE, INVALID_HANDLE_VALUE, WAIT_ABANDONED,
+        WAIT_OBJECT_0, WAIT_TIMEOUT,
     },
     System::{
         Memory::{
@@ -21,8 +22,8 @@ use windows_sys::Win32::{
             PAGE_READWRITE, UnmapViewOfFile,
         },
         Threading::{
-            CreateEventW, CreateMutexW, GetCurrentProcess, ReleaseMutex, ResetEvent,
-            WaitForMultipleObjects, WaitForSingleObject,
+            CreateEventW, CreateMutexW, GetCurrentProcess, GetProcessTimes, ReleaseMutex,
+            ResetEvent, WaitForMultipleObjects, WaitForSingleObject,
         },
     },
 };
@@ -230,6 +231,28 @@ pub(crate) struct Readiness {
     pub build: u64,
     pub reserved: [u64; 8],
 }
+
+impl Readiness {
+    fn header_matches(&self) -> bool {
+        self.magic == READY_MAGIC && self.abi == 1 && self.bytes == 128
+    }
+
+    fn identity_matches(&self, creation: u64, bits: u32) -> bool {
+        self.creation == creation && self.bits == bits
+    }
+
+    fn build_matches(&self) -> bool {
+        self.build == BUILD
+    }
+}
+
+fn readiness_sample(mapping: &Mapping) -> (Readiness, u32) {
+    let first: Readiness = unsafe { ptr::read_volatile(mapping.view.cast()) };
+    std::sync::atomic::fence(Ordering::Acquire);
+    let sequence = unsafe { ptr::read_volatile(mapping.view.add(12).cast::<u32>()) };
+    (first, sequence)
+}
+
 pub(crate) fn readiness(pid: u32, creation: u64, bits: u32) -> Option<Readiness> {
     let mapping = Mapping::open(
         &format!("Local\\ProtoInputMultiPlex.Lifecycle.{pid}.{creation}"),
@@ -238,20 +261,235 @@ pub(crate) fn readiness(pid: u32, creation: u64, bits: u32) -> Option<Readiness>
     )
     .ok()?;
     for _ in 0..4 {
-        let first: Readiness = unsafe { ptr::read_volatile(mapping.view.cast()) };
-        std::sync::atomic::fence(Ordering::Acquire);
-        let sequence = unsafe { ptr::read_volatile(mapping.view.add(12).cast::<u32>()) };
+        let (first, sequence) = readiness_sample(&mapping);
         if first.sequence == sequence && sequence & 1 == 0 {
-            return (first.magic == READY_MAGIC
-                && first.abi == 1
-                && first.bytes == 128
-                && first.creation == creation
-                && first.bits == bits
-                && first.build == BUILD)
-                .then_some(first);
+            return (first.header_matches()
+                && first.identity_matches(creation, bits)
+                && first.build_matches())
+            .then_some(first);
         }
     }
     None
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, serde::Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum OwnReadinessStatus {
+    IdentityUnavailable,
+    Absent,
+    ReadFailed,
+    Unstable,
+    InvalidHeader,
+    InvalidIdentity,
+    InvalidBuild,
+    InvalidState,
+    Observed,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, serde::Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum NativeReadinessState {
+    Initializing,
+    Unclaimed,
+    Active,
+    Prepared,
+    Poisoned,
+    Reusable,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, serde::Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum NativeReadinessError {
+    None,
+    AccessDenied,
+    InvalidHandle,
+    InvalidData,
+    InvalidParameter,
+    BrokenPipe,
+    Busy,
+    WaitTimeout,
+    Timeout,
+    Unknown,
+}
+
+/// Current native lifecycle facts for this process only, never an input receipt.
+#[derive(Clone, Copy, Debug, serde::Serialize)]
+pub struct OwnReadinessObservation {
+    pub status: OwnReadinessStatus,
+    pub present: Option<bool>,
+    pub coherent: Option<bool>,
+    pub header_matches: Option<bool>,
+    pub identity_matches: Option<bool>,
+    pub build_matches: Option<bool>,
+    pub binding_present: Option<bool>,
+    pub state: Option<NativeReadinessState>,
+    pub error: Option<NativeReadinessError>,
+}
+
+impl OwnReadinessObservation {
+    fn unavailable(status: OwnReadinessStatus, present: Option<bool>) -> Self {
+        Self {
+            status,
+            present,
+            coherent: None,
+            header_matches: None,
+            identity_matches: None,
+            build_matches: None,
+            binding_present: None,
+            state: None,
+            error: None,
+        }
+    }
+}
+
+fn own_readiness_sample(
+    record: Readiness,
+    sequence: u32,
+    creation: u64,
+    bits: u32,
+) -> OwnReadinessObservation {
+    let mut observed =
+        OwnReadinessObservation::unavailable(OwnReadinessStatus::Unstable, Some(true));
+    let coherent = record.sequence == sequence && sequence & 1 == 0;
+    observed.coherent = Some(coherent);
+    if !coherent {
+        return observed;
+    }
+    let header_matches = record.header_matches();
+    let identity_matches = record.identity_matches(creation, bits);
+    let build_matches = record.build_matches();
+    observed.header_matches = Some(header_matches);
+    observed.identity_matches = Some(identity_matches);
+    observed.build_matches = Some(build_matches);
+    observed.status = if !header_matches {
+        OwnReadinessStatus::InvalidHeader
+    } else if !identity_matches {
+        OwnReadinessStatus::InvalidIdentity
+    } else if !build_matches {
+        OwnReadinessStatus::InvalidBuild
+    } else {
+        OwnReadinessStatus::InvalidState
+    };
+    if !(header_matches && identity_matches && build_matches) {
+        return observed;
+    }
+    observed.state = match record.state {
+        0 => Some(NativeReadinessState::Initializing),
+        1 => Some(NativeReadinessState::Unclaimed),
+        2 => Some(NativeReadinessState::Active),
+        3 => Some(NativeReadinessState::Prepared),
+        4 => Some(NativeReadinessState::Poisoned),
+        5 => Some(NativeReadinessState::Reusable),
+        _ => None,
+    };
+    if observed.state.is_none() {
+        return observed;
+    }
+    observed.binding_present =
+        Some(record.owner_pid != 0 && record.generation != 0 && record.session != 0);
+    observed.error = Some(match record.error {
+        0 => NativeReadinessError::None,
+        5 => NativeReadinessError::AccessDenied,
+        6 => NativeReadinessError::InvalidHandle,
+        13 => NativeReadinessError::InvalidData,
+        87 => NativeReadinessError::InvalidParameter,
+        109 => NativeReadinessError::BrokenPipe,
+        170 => NativeReadinessError::Busy,
+        258 => NativeReadinessError::WaitTimeout,
+        1460 => NativeReadinessError::Timeout,
+        _ => NativeReadinessError::Unknown,
+    });
+    observed.status = OwnReadinessStatus::Observed;
+    observed
+}
+
+/// Attempt one native Ready sample for the calling process's own creation.
+/// Missing, unstable and rejected records remain distinct; this never takes a lease.
+pub fn own_readiness_observation() -> OwnReadinessObservation {
+    let mut created = FILETIME {
+        dwLowDateTime: 0,
+        dwHighDateTime: 0,
+    };
+    let mut exited = created;
+    let mut kernel = created;
+    let mut user = created;
+    if unsafe {
+        GetProcessTimes(
+            GetCurrentProcess(),
+            &mut created,
+            &mut exited,
+            &mut kernel,
+            &mut user,
+        )
+    } == 0
+    {
+        return OwnReadinessObservation::unavailable(OwnReadinessStatus::IdentityUnavailable, None);
+    }
+    let creation = u64::from(created.dwHighDateTime) << 32 | u64::from(created.dwLowDateTime);
+    single_readiness_observation(std::process::id(), creation, usize::BITS)
+}
+
+fn single_readiness_observation(pid: u32, creation: u64, bits: u32) -> OwnReadinessObservation {
+    let name = format!("Local\\ProtoInputMultiPlex.Lifecycle.{pid}.{creation}");
+    let wide_name = wide(&name);
+    let (handle, open_error) = unsafe {
+        let handle = OpenFileMappingW(FILE_MAP_READ, 0, wide_name.as_ptr());
+        let error = if handle.is_null() { GetLastError() } else { 0 };
+        (handle, error)
+    };
+    if handle.is_null() {
+        return if open_error == ERROR_FILE_NOT_FOUND {
+            OwnReadinessObservation::unavailable(OwnReadinessStatus::Absent, Some(false))
+        } else {
+            OwnReadinessObservation::unavailable(OwnReadinessStatus::ReadFailed, None)
+        };
+    }
+    let mapping = match Mapping::map(handle, FILE_MAP_READ, size_of::<Readiness>()) {
+        Ok(mapping) => mapping,
+        Err(_) => {
+            return OwnReadinessObservation::unavailable(
+                OwnReadinessStatus::ReadFailed,
+                Some(true),
+            );
+        }
+    };
+    let (record, sequence) = readiness_sample(&mapping);
+    own_readiness_sample(record, sequence, creation, bits)
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum RetainedReadinessGuard {
+    IdentityMismatchOrInvalid,
+    ExitedBeforeRead,
+    LivenessCheckFailedBeforeRead,
+    ExitedAfterRead,
+    LivenessCheckFailedAfterRead,
+    IdentityValid,
+}
+
+fn retained_readiness_observation_with(
+    actual: (u32, u64, u32),
+    expected: (u32, u64, u32),
+    mut alive: impl FnMut() -> u32,
+    read: impl FnOnce() -> OwnReadinessObservation,
+) -> (OwnReadinessObservation, RetainedReadinessGuard) {
+    use RetainedReadinessGuard as Guard;
+    let unavailable =
+        || OwnReadinessObservation::unavailable(OwnReadinessStatus::IdentityUnavailable, None);
+    if actual != expected || actual.0 == 0 || actual.1 == 0 || !matches!(actual.2, 32 | 64) {
+        return (unavailable(), Guard::IdentityMismatchOrInvalid);
+    }
+    match alive() {
+        WAIT_TIMEOUT => {}
+        WAIT_OBJECT_0 => return (unavailable(), Guard::ExitedBeforeRead),
+        _ => return (unavailable(), Guard::LivenessCheckFailedBeforeRead),
+    }
+    let observed = read();
+    match alive() {
+        WAIT_TIMEOUT => (observed, Guard::IdentityValid),
+        WAIT_OBJECT_0 => (unavailable(), Guard::ExitedAfterRead),
+        _ => (unavailable(), Guard::LivenessCheckFailedAfterRead),
+    }
 }
 fn lease_name(pid: u32, creation: u64) -> String {
     format!("Local\\ProtoInputMultiPlex.Lease.{pid}.{creation}")
@@ -643,6 +881,20 @@ pub(crate) struct Attachment {
     prepared: bool,
 }
 impl Attachment {
+    /// One read for these retained original identities; never opens a numeric PID.
+    pub(crate) fn readiness_observation(
+        &self,
+        expected: &crate::targets::ProcessIdentity,
+    ) -> (OwnReadinessObservation, RetainedReadinessGuard) {
+        let identity = &self.identity;
+        retained_readiness_observation_with(
+            (identity.pid, identity.creation, identity.bits),
+            (expected.pid, expected.creation, expected.bits),
+            || unsafe { WaitForSingleObject(identity.handle(), 0) },
+            || single_readiness_observation(identity.pid, identity.creation, identity.bits),
+        )
+    }
+
     pub(crate) fn generation(&self) -> u64 {
         self.generation
     }
@@ -1086,6 +1338,230 @@ impl Drop for SetupChannel {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    fn own_ready_record() -> Readiness {
+        Readiness {
+            magic: READY_MAGIC,
+            abi: 1,
+            bytes: 128,
+            sequence: 2,
+            state: 2,
+            owner_pid: 0x1234_abcd,
+            bits: 64,
+            creation: 7,
+            generation: 0x8877_6655,
+            session: 0x1122_3344_5566_7788,
+            build: BUILD,
+            ..Readiness::default()
+        }
+    }
+
+    #[test]
+    fn retained_ready_rejects_identity_mismatch_or_exit_without_publishing_payload() {
+        let expected = (11, 7, 64);
+        for actual in [(12, 7, 64), (11, 8, 64), (11, 7, 32), (0, 7, 64)] {
+            let (observed, guard) = retained_readiness_observation_with(
+                actual,
+                expected,
+                || panic!("mismatched original identity must not be probed"),
+                || panic!("mismatched original identity must not read mapping"),
+            );
+            assert_eq!(observed.status, OwnReadinessStatus::IdentityUnavailable);
+            assert_eq!(guard, RetainedReadinessGuard::IdentityMismatchOrInvalid);
+            assert_eq!(observed.state, None);
+        }
+        for (wait, before, after) in [
+            (
+                WAIT_OBJECT_0,
+                RetainedReadinessGuard::ExitedBeforeRead,
+                RetainedReadinessGuard::ExitedAfterRead,
+            ),
+            (
+                u32::MAX,
+                RetainedReadinessGuard::LivenessCheckFailedBeforeRead,
+                RetainedReadinessGuard::LivenessCheckFailedAfterRead,
+            ),
+        ] {
+            let mut alive_calls = 0;
+            let (observed, guard) = retained_readiness_observation_with(
+                expected,
+                expected,
+                || {
+                    alive_calls += 1;
+                    wait
+                },
+                || panic!("unavailable original must not read mapping"),
+            );
+            assert_eq!(alive_calls, 1);
+            assert_eq!(guard, before);
+            assert_eq!(observed.status, OwnReadinessStatus::IdentityUnavailable);
+            assert_eq!(observed.state, None);
+            let mut alive_calls = 0;
+            let mut read_calls = 0;
+            let (observed, guard) = retained_readiness_observation_with(
+                expected,
+                expected,
+                || {
+                    alive_calls += 1;
+                    if alive_calls == 1 { WAIT_TIMEOUT } else { wait }
+                },
+                || {
+                    read_calls += 1;
+                    own_readiness_sample(own_ready_record(), 2, 7, 64)
+                },
+            );
+            assert_eq!(alive_calls, 2);
+            assert_eq!(read_calls, 1);
+            assert_eq!(guard, after);
+            assert_eq!(observed.status, OwnReadinessStatus::IdentityUnavailable);
+            assert_eq!(observed.state, None);
+            assert_eq!(observed.error, None);
+            assert_eq!(observed.binding_present, None);
+        }
+    }
+
+    #[test]
+    fn retained_ready_reads_once_between_original_process_liveness_checks() {
+        let order = std::cell::RefCell::new(Vec::new());
+        let (observed, guard) = retained_readiness_observation_with(
+            (11, 7, 64),
+            (11, 7, 64),
+            || {
+                order.borrow_mut().push("alive");
+                WAIT_TIMEOUT
+            },
+            || {
+                order.borrow_mut().push("read");
+                own_readiness_sample(own_ready_record(), 2, 7, 64)
+            },
+        );
+        assert_eq!(order.into_inner(), ["alive", "read", "alive"]);
+        assert_eq!(guard, RetainedReadinessGuard::IdentityValid);
+        assert_eq!(observed.status, OwnReadinessStatus::Observed);
+        assert_eq!(observed.state, Some(NativeReadinessState::Active));
+    }
+
+    #[test]
+    fn own_ready_rejects_scope_header_build_and_unknown_state_before_publication() {
+        let valid = own_ready_record();
+        let cases = [
+            (
+                Readiness { magic: 0, ..valid },
+                OwnReadinessStatus::InvalidHeader,
+            ),
+            (
+                Readiness { abi: 2, ..valid },
+                OwnReadinessStatus::InvalidHeader,
+            ),
+            (
+                Readiness { bytes: 64, ..valid },
+                OwnReadinessStatus::InvalidHeader,
+            ),
+            (
+                Readiness {
+                    creation: 8,
+                    ..valid
+                },
+                OwnReadinessStatus::InvalidIdentity,
+            ),
+            (
+                Readiness { bits: 32, ..valid },
+                OwnReadinessStatus::InvalidIdentity,
+            ),
+            (
+                Readiness { build: 0, ..valid },
+                OwnReadinessStatus::InvalidBuild,
+            ),
+            (
+                Readiness {
+                    state: u32::MAX,
+                    ..valid
+                },
+                OwnReadinessStatus::InvalidState,
+            ),
+        ];
+        for (record, status) in cases {
+            let observed = own_readiness_sample(record, 2, 7, 64);
+            assert_eq!(observed.status, status);
+            assert_eq!(observed.present, Some(true));
+            assert_eq!(observed.coherent, Some(true));
+            assert_eq!(observed.state, None);
+            assert_eq!(observed.error, None);
+            assert_eq!(observed.binding_present, None);
+        }
+    }
+
+    #[test]
+    fn own_ready_unstable_sequence_never_publishes_payload_facts() {
+        for (first, last) in [(2, 4), (3, 3)] {
+            let observed = own_readiness_sample(
+                Readiness {
+                    sequence: first,
+                    ..own_ready_record()
+                },
+                last,
+                7,
+                64,
+            );
+            assert_eq!(observed.status, OwnReadinessStatus::Unstable);
+            assert_eq!(observed.coherent, Some(false));
+            assert_eq!(observed.header_matches, None);
+            assert_eq!(observed.identity_matches, None);
+            assert_eq!(observed.build_matches, None);
+            assert_eq!(observed.state, None);
+            assert_eq!(observed.error, None);
+        }
+    }
+
+    #[test]
+    fn own_ready_observation_serializes_only_fixed_facts_and_sanitized_error() {
+        let observed = own_readiness_sample(
+            Readiness {
+                state: 4,
+                error: u32::MAX,
+                ..own_ready_record()
+            },
+            2,
+            7,
+            64,
+        );
+        let value = serde_json::to_value(observed).unwrap();
+        assert_eq!(value["state"], "poisoned");
+        assert_eq!(value["error"], "unknown");
+        assert_eq!(value["binding_present"], true);
+        let mut keys = value
+            .as_object()
+            .unwrap()
+            .keys()
+            .map(String::as_str)
+            .collect::<Vec<_>>();
+        keys.sort_unstable();
+        assert_eq!(
+            keys,
+            [
+                "binding_present",
+                "build_matches",
+                "coherent",
+                "error",
+                "header_matches",
+                "identity_matches",
+                "present",
+                "state",
+                "status"
+            ]
+        );
+        let broken_pipe = own_readiness_sample(
+            Readiness {
+                state: 4,
+                error: 109,
+                ..own_ready_record()
+            },
+            2,
+            7,
+            64,
+        );
+        assert_eq!(broken_pipe.error, Some(NativeReadinessError::BrokenPipe));
+    }
 
     mod native_open_contract {
         use super::*;
