@@ -414,6 +414,8 @@ def verify_tools(private, end):
 
 def empty(reason="unavailable"):
     need(reason in {"unavailable", "deadline_exhausted", "ineligible", "unmatched_or_partial",
+        "capture_records_unavailable", "capture_identity_unconfirmed",
+        "dump_bytes_unconfirmed", "dump_structure_unconfirmed",
         "analysis_unavailable", "no_credible_own_frame", "observed"})
     return {"status":"inconclusive", "reason":reason, "frames":[],
         "capture_perturbed_timing":True, "loaded_module_hash_proved":False,
@@ -561,16 +563,21 @@ def collect(private, metadata, identities, exit_classes, end):
             result[label] = empty("ineligible")
             continue
         try:
-            status = owned_records(bounded(private/f"target-{index}.fatal.private.bin", 2304),
-                bounded(private/f"target-{index}.dump-status.private.json", 4096),
-                bounded(private/f"target-{index}.dump-wait.private.bin", 64), identity,
+            reason = "capture_records_unavailable"
+            fatal = bounded(private/f"target-{index}.fatal.private.bin", 2304)
+            status_raw = bounded(private/f"target-{index}.dump-status.private.json", 4096)
+            wait = bounded(private/f"target-{index}.dump-wait.private.bin", 64)
+            reason = "capture_identity_unconfirmed"
+            status = owned_records(fatal, status_raw, wait, identity,
                 exit_classes[label], metadata["deadline_tick_ms"], metadata["source_commit"])
+            reason = "dump_bytes_unconfirmed"
             dump_path = private/f"target-{index}.dump.private.dmp"
             raw = bounded(dump_path, MAX_DUMP)
             need(len(raw) == status["dump_bytes"])
+            reason = "dump_structure_unconfirmed"
             snapshot = dump(raw, status)
         except (ValueError, OSError, UnicodeError, struct.error):
-            result[label] = empty("unmatched_or_partial")
+            result[label] = empty(reason)
             continue
         try:
             target_root = private/(label+"-offline-private")

@@ -280,6 +280,27 @@ class PreservationTests(unittest.TestCase):
             self.assertEqual(output["target_a"]["reason"],"deadline_exhausted")
             analyze.assert_not_called(); read.assert_not_called()
 
+    def test_collection_reports_fixed_rejection_boundaries(self):
+        identity = (42, 133000000000000000)
+        fatal, status, wait = records(identity)
+        metadata = {"deadline_tick_ms": 9999, "source_commit": "a" * 40}
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for name, content, reason in (
+                ("fatal.private.bin", fatal, "capture_records_unavailable"),
+                ("dump-wait.private.bin", wait[:-1], "capture_records_unavailable"),
+                ("dump-status.private.json", json.dumps(status).encode(), "capture_identity_unconfirmed"),
+                ("dump-wait.private.bin", wait, "dump_bytes_unconfirmed"),
+                ("dump.private.dmp", b"private payload", "dump_bytes_unconfirmed"),
+                ("dump.private.dmp", bytes(4096), "dump_structure_unconfirmed"),
+            ):
+                with self.subTest(reason=reason, name=name), \
+                        patch.object(dump, "analyze", side_effect=AssertionError("no analysis")):
+                    (root / f"target-0.{name}").write_bytes(content)
+                    result = dump.collect(root, metadata, {"target_a": identity},
+                                          {"target_a": "access_violation"}, float("inf"))
+                    self.assertEqual(result["target_a"], dump.empty(reason))
+
     def test_symbol_source_proxy_environment_never_inherited(self):
         with patch.dict(dump.os.environ,{"_NT_SYMBOL_PATH":"srv*https://private", "HTTPS_PROXY":"private", "TOKEN":"private"}):
             environment=dump.clean_environment(Path("C:/private"))
