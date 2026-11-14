@@ -18,7 +18,7 @@ def records(identity=(42, 133000000000000000), rip=0xDEAD, rsp=0x1000):
     setup = [dump.FATAL_MAGIC, 1, 1152, *identity, 1, 0]+[0]*8+[dump.FATAL_MAGIC]
     fatal = setup[:5]+[2, 0, 0, 0xC0000005, 0, rip, 0, 0, 0, 0, dump.FATAL_MAGIC]
     raw = struct.pack("<16Q", *setup)+bytes(1024)+struct.pack("<16Q", *fatal)+bytes(1024)
-    status = {"schema":"pim.private-owned-minidump.v1", "status":"complete", "pid":identity[0],
+    status = {"schema":"pim.private-owned-minidump.v1", "status":"complete", "failure_reason":None, "pid":identity[0],
         "creation":identity[1], "thread_id":44, "exception_code":0xC0000005, "filter_result":0,
         "original_rip":rip, "original_rsp":rsp, "original_context_flags":0x100003,
         "basic_context_only":True, "thread_owner_pid_verified":True, "dump_bytes":4096,
@@ -312,9 +312,13 @@ class PreservationTests(unittest.TestCase):
             for status_raw, wait_raw, reason in (
                 (b"", wait, "capture_status_empty"),
                 (encoded_status, b"", "capture_wait_empty"),
-                (json.dumps(dict(status, status="failed", dump_bytes=0)).encode(), wait,
-                 "capture_writer_failed"),
-                (json.dumps(dict(status, status="failed", pid=43)).encode(), wait,
+                (json.dumps(dict(status, status="failed", failure_reason="dump_partial_copy", dump_bytes=0)).encode(), wait,
+                 "capture_writer_dump_partial_copy"),
+                (json.dumps(dict(status, status="failed", failure_reason="callback_write", pid=43)).encode(), wait,
+                 "capture_identity_unconfirmed"),
+                (json.dumps(dict(status, status="failed", failure_reason="raw unexpected text")).encode(), wait,
+                 "capture_identity_unconfirmed"),
+                (json.dumps(dict(status, failure_reason="sync")).encode(), wait,
                  "capture_identity_unconfirmed"),
                 (encoded_status, struct.pack("<8Q", dump.WAIT_MAGIC, 1, *identity, 44, 258, 4, 9999),
                  "capture_wait_timeout"),

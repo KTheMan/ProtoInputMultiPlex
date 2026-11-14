@@ -546,11 +546,75 @@ struct Output {
     file: File,
     end: u64,
     extent: u64,
-    failed: bool,
+    failure: Option<CaptureFailure>,
     finished: bool,
     pc_page: Option<(u64, u32)>,
     modules: Vec<String>,
 }
+
+#[derive(Clone, Copy, Serialize)]
+#[serde(rename_all = "snake_case")]
+enum CaptureFailure {
+    Deadline,
+    CallbackExtent,
+    CallbackBuffer,
+    CallbackSeek,
+    CallbackWrite,
+    CallbackShortWrite,
+    DumpInvalidParameter,
+    DumpAccessDenied,
+    DumpPartialCopy,
+    DumpCancelled,
+    DumpOther,
+    CallbackIncomplete,
+    InvalidExtent,
+    Truncate,
+    Sync,
+}
+
+impl CaptureFailure {
+    fn from_dump_error(error: u32) -> Self {
+        match error {
+            0x8007_0057 => Self::DumpInvalidParameter,
+            0x8007_0005 => Self::DumpAccessDenied,
+            0x8007_012b => Self::DumpPartialCopy,
+            0x8007_04c7 => Self::DumpCancelled,
+            _ => Self::DumpOther,
+        }
+    }
+}
+
+impl Output {
+    fn fail(&mut self, failure: CaptureFailure) -> i32 {
+        self.failure.get_or_insert(failure);
+        0
+    }
+
+    fn persist(&self) -> Result<(), CaptureFailure> {
+        if !self.finished {
+            return Err(CaptureFailure::CallbackIncomplete);
+        }
+        if self.extent == 0 || self.extent > MAX_DUMP {
+            return Err(CaptureFailure::InvalidExtent);
+        }
+        self.check_deadline()?;
+        self.file
+            .set_len(self.extent)
+            .map_err(|_| CaptureFailure::Truncate)?;
+        self.check_deadline()?;
+        self.file.sync_all().map_err(|_| CaptureFailure::Sync)?;
+        self.check_deadline()
+    }
+
+    fn check_deadline(&self) -> Result<(), CaptureFailure> {
+        if unsafe { GetTickCount64() } < self.end {
+            Ok(())
+        } else {
+            Err(CaptureFailure::Deadline)
+        }
+    }
+}
+
 fn extent(offset: u64, length: u32) -> Option<u64> {
     offset
         .checked_add(u64::from(length))
@@ -593,51 +657,67 @@ unsafe extern "system" fn callback(
         }
         IO_WRITE_ALL_CALLBACK => {
             let io = unsafe { input.Anonymous.Io };
-            let Some(end) = extent(io.Offset, io.BufferBytes) else {
-                state.failed = true;
-                return 0;
-            };
-            if expired || state.failed || (io.BufferBytes != 0 && io.Buffer.is_null()) {
-                state.failed = true;
+            if state.failure.is_some() {
                 return 0;
             }
-            let mut written = 0;
-            let ok = unsafe {
+            if expired {
+                return state.fail(CaptureFailure::Deadline);
+            }
+            let Some(end) = extent(io.Offset, io.BufferBytes) else {
+                return state.fail(CaptureFailure::CallbackExtent);
+            };
+            if io.BufferBytes != 0 && io.Buffer.is_null() {
+                return state.fail(CaptureFailure::CallbackBuffer);
+            }
+            if unsafe {
                 SetFilePointerEx(
                     state.file.as_raw_handle(),
                     io.Offset as i64,
                     ptr::null_mut(),
                     FILE_BEGIN,
                 )
-            } != 0
-                && unsafe { GetTickCount64() } < state.end
-                && unsafe {
-                    WriteFile(
-                        state.file.as_raw_handle(),
-                        io.Buffer.cast(),
-                        io.BufferBytes,
-                        &mut written,
-                        ptr::null_mut(),
-                    )
-                } != 0
-                && written == io.BufferBytes;
-            if !ok {
-                state.failed = true;
-                return 0;
+            } == 0
+            {
+                return state.fail(CaptureFailure::CallbackSeek);
+            }
+            if unsafe { GetTickCount64() } >= state.end {
+                return state.fail(CaptureFailure::Deadline);
+            }
+            let mut written = 0;
+            if unsafe {
+                WriteFile(
+                    state.file.as_raw_handle(),
+                    io.Buffer.cast(),
+                    io.BufferBytes,
+                    &mut written,
+                    ptr::null_mut(),
+                )
+            } == 0
+            {
+                return state.fail(CaptureFailure::CallbackWrite);
+            }
+            if written != io.BufferBytes {
+                return state.fail(CaptureFailure::CallbackShortWrite);
             }
             state.extent = state.extent.max(end);
             output.Anonymous.Status = 0;
             1
         }
         IO_FINISH_CALLBACK => {
-            state.finished = !state.failed && !expired;
+            if expired {
+                state.fail(CaptureFailure::Deadline);
+            }
+            state.finished = state.failure.is_none();
             output.Anonymous.Status = if state.finished { 0 } else { -2147467259 };
             i32::from(state.finished)
         }
         CANCEL_CALLBACK => {
+            if expired {
+                state.fail(CaptureFailure::Deadline);
+            }
             output.Anonymous.Anonymous2 = MINIDUMP_CALLBACK_OUTPUT_0_1 {
                 CheckCancel: 1,
-                Cancel: i32::from(expired || state.failed),
+                Cancel: i32::from(state.failure.is_some()),
             };
             1
         }
@@ -705,6 +785,7 @@ struct Status {
     schema: &'static str,
     source_commit: String,
     status: &'static str,
+    failure_reason: Option<CaptureFailure>,
     pid: u32,
     creation: u64,
     thread_id: u32,
@@ -914,14 +995,10 @@ fn helper_inner() -> Option<()> {
         file: dump,
         end: shared.end,
         extent: 0,
-        failed: false,
+        failure: None,
         finished: false,
         pc_page: executable_page(process.0, context.0.Rip),
         modules: cfg.module_paths.iter().map(|p| normalize(p)).collect(),
-    };
-    let callbacks = MINIDUMP_CALLBACK_INFORMATION {
-        CallbackRoutine: Some(callback),
-        CallbackParam: ptr::from_mut(&mut output).cast(),
     };
     let flags = MiniDumpWithThreadInfo
         | MiniDumpWithFullMemoryInfo
@@ -929,33 +1006,41 @@ fn helper_inner() -> Option<()> {
         | MiniDumpWithCodeSegs
         | MiniDumpWithoutAuxiliaryState;
     shared.state.store(CAPTURING, Ordering::Release);
-    let ok = unsafe { GetTickCount64() } < shared.end
-        && unsafe {
+    let capture = if let Err(failure) = output.check_deadline() {
+        Err(failure)
+    } else {
+        let file_handle = output.file.as_raw_handle();
+        let callbacks = MINIDUMP_CALLBACK_INFORMATION {
+            CallbackRoutine: Some(callback),
+            CallbackParam: ptr::from_mut(&mut output).cast(),
+        };
+        let written = unsafe {
             write_dump(
                 process.0,
                 shared.pid,
-                output.file.as_raw_handle(),
+                file_handle,
                 flags,
                 &exception,
                 ptr::null(),
                 &callbacks,
             )
-        } != 0;
-    let persisted = ok
-        && output.finished
-        && !output.failed
-        && output.extent > 0
-        && output.extent <= MAX_DUMP
-        && unsafe { GetTickCount64() } < shared.end
-        && output.file.set_len(output.extent).is_ok()
-        && unsafe { GetTickCount64() } < shared.end
-        && output.file.sync_all().is_ok()
-        && unsafe { GetTickCount64() } < shared.end;
+        };
+        let error = (written == 0).then(|| unsafe { GetLastError() });
+        if let Some(failure) = output.failure {
+            Err(failure)
+        } else if let Some(error) = error {
+            Err(CaptureFailure::from_dump_error(error))
+        } else {
+            output.persist()
+        }
+    };
+    let persisted = capture.is_ok();
     let context = &snapshot.context.0;
     let result = Status {
         schema: "pim.private-owned-minidump.v1",
         source_commit: cfg.source_commit,
         status: if persisted { "complete" } else { "failed" },
+        failure_reason: capture.err(),
         pid: shared.pid,
         creation: shared.creation,
         thread_id: snapshot.thread_id,

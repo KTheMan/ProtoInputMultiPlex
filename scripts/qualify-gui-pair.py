@@ -892,6 +892,48 @@ class Pair:
         require(self.web("!document.querySelector('[data-pointer]').checked && !document.querySelector('[data-keys]').checked && document.querySelector('[data-users]').value===''") )
         return response
 
+    def gap_overflow_click(self, subscription, user, pending, primary_up, click):
+        before = self.hook_request_id
+        require(self.web("window.pimClient.request(" + click + ");true"))
+
+        def observed():
+            messages = self.hook_messages()
+            replies = [x for x in messages if x.get("kind") == "response" and x["request_id"] > before]
+            gaps = json.loads(self.web("JSON.stringify(window.pimHook.gaps)"))
+            if len(replies) < 2 or not gaps:
+                return None
+            require(len(replies) == 2 and [x["request_id"] for x in replies] == [before + 1, before + 2])
+            responses = [x["reply"] for x in replies]
+            require(all(x["status"] == "ok" and x["response"]["kind"] == "input_accepted" for x in responses))
+            pair, cleanup = [x["response"]["sequences"] for x in responses]
+            require(len(pair) == 2 and pair == [pending["sequence"] + 1, pending["sequence"] + 2]
+                    and cleanup == [pair[1] + 1])
+            for sequence, value in ((pair[0], {"kind": "button", "button": "secondary", "transition": "down"}),
+                                    (pair[1], {"kind": "button", "button": "secondary", "transition": "up"}),
+                                    (cleanup[0], primary_up)):
+                if self.hook_native_input(sequence, user, value) is None:
+                    return None
+            first = json.loads(gaps[0]["raw"])
+            require(first["subscription"] == subscription and first["stream"] == {
+                "kind": "gap", "after_sequence": pending["sequence"], "lost_through": pair[1]})
+            for item in gaps:
+                require(item["toolkitDenied"] is True)
+                cleared = json.loads(item["state"])
+                require(cleared["stream_state"] == "NeedsSnapshot" and cleared["users"] == []
+                        and cleared["screens"] is None and cleared["windows"] == []
+                        and cleared["capabilities"] == [] and cleared["mode"] is None
+                        and not item["pointer"] and not item["keys"] and item["selected"] == "")
+            visible = [e["sequence"] for x in messages if x.get("kind") == "event_stream"
+                       and x["stream"]["kind"] == "events" for e in x["stream"]["events"]]
+            # No partial overflow prefix may reach input callbacks or rendering.
+            require(not set(pair + cleanup).intersection(visible))
+            return cleanup[0]
+
+        cleanup_sequence = self.wait(observed, 5)
+        self.hook_request_id = before + 2
+        self.hook_counts(2, 1, 1, 2)
+        return cleanup_sequence
+
     def gap_cases(self, ids):
         # Separate bounded group: the original 17 InputAtRevision cases stay intact.
         self.stage = "web-real-core-gap-recovery"
@@ -924,48 +966,34 @@ class Pair:
         self.hook_select(user)
         pending = self.hook_input(user, primary_down, gap=True)
         require(self.web(r'''(()=>{const c=window.pimClient,h=window.pimHook;h.gaps=[];h.t.gap=c.add_event_listener('{"kind":"server"}',raw=>{const m=JSON.parse(raw);if(m.kind==='event_stream' && m.stream.kind==='gap'){if(h.gaps.length>=8)throw Error('gap budget');let toolkitDenied=false;try{c.local_toolkit('{"version":1,"operation":{"kind":"list"}}');}catch(_){toolkitDenied=true;}h.gaps.push({toolkitDenied,raw,state:c.state_json(),pointer:document.querySelector('[data-pointer]').checked,keys:document.querySelector('[data-keys]').checked,selected:document.querySelector('[data-users]').value});}});return true;})()'''))
-        before = self.hook_request_id
-        require(self.web("window.pimClient.request(" + click + ");true"))
         self.check = "gap_atomic_click_cleanup_overflow"
-        def overflowed():
-            messages = self.hook_messages()
-            replies = [x for x in messages if x.get("kind") == "response" and x["request_id"] > before]
-            gaps = json.loads(self.web("JSON.stringify(window.pimHook.gaps)"))
-            if len(replies) < 2 or not gaps:
-                return None
-            require(len(replies) == 2 and [x["request_id"] for x in replies] == [before + 1, before + 2])
-            responses = [x["reply"] for x in replies]
-            require(all(x["status"] == "ok" and x["response"]["kind"] == "input_accepted" for x in responses))
-            pair, cleanup = [x["response"]["sequences"] for x in responses]
-            require(len(pair) == 2 and pair == [pending["sequence"] + 1, pending["sequence"] + 2] and cleanup == [pair[1] + 1])
-            for sequence, value in ((pair[0], {"kind": "button", "button": "secondary", "transition": "down"}),
-                                    (pair[1], {"kind": "button", "button": "secondary", "transition": "up"}),
-                                    (cleanup[0], primary_up)):
-                if self.hook_native_input(sequence, user, value) is None:
-                    return None
-            first = json.loads(gaps[0]["raw"])
-            require(first["subscription"] == small["subscription"] and first["stream"] == {"kind": "gap", "after_sequence": pending["sequence"], "lost_through": pair[1]})
-            for item in gaps:
-                require(item["toolkitDenied"] is True)
-                cleared = json.loads(item["state"])
-                require(cleared["stream_state"] == "NeedsSnapshot" and cleared["users"] == [] and cleared["screens"] is None
-                        and cleared["windows"] == [] and cleared["capabilities"] == [] and cleared["mode"] is None
-                        and not item["pointer"] and not item["keys"] and item["selected"] == "")
-            # No partial overflow prefix may reach input callbacks or rendering.
-            visible = [e["sequence"] for x in messages if x.get("kind") == "event_stream" and x["stream"]["kind"] == "events" for e in x["stream"]["events"]]
-            require(not set(pair + cleanup).intersection(visible))
-            return cleanup[0]
-        cleanup_sequence = self.wait(overflowed, 5)
-        self.hook_request_id = before + 2
-        self.hook_counts(2, 1, 1, 2)
+        cleanup_sequence = self.gap_overflow_click(small["subscription"], user, pending, primary_up, click)
         require(self.web("(()=>{const c=window.pimClient,s=c.state_json();let rejected=false;try{c.request(" + click + ");}catch(_){rejected=true;}return rejected && c.state_json()===s;})()"))
         self.check = "gap_explicit_resubscribe"
-        fresh = self.gap_refresh(None, ids)
+        fresh = self.gap_refresh(1, ids)
         require(fresh["subscription"] != small["subscription"] and fresh["snapshot"]["through_sequence"] >= cleanup_sequence)
         require(self.toolkit({"kind": "user", "user": self.toolkit_user})["result"]["user"]["app_data"] is None)
         self.result["user_toolkit"]["gap_cleared"] = True
         require(all(u["held_keys"] == [] and u["pointer"]["held_buttons"] == [] for u in fresh["snapshot"]["users"]))
         require(self.web("window.pimClient.remove_listener(window.pimHook.t.gap)"))
+        # Exercise a second real core overflow on the recovered capacity-one
+        # token. Keep every observed gap frame and verify the core's automatic
+        # release natively before taking another fresh snapshot.
+        self.check = "gap_recovered_capacity_one_overflow"
+        self.hook_select(user)
+        pending_again = self.hook_input(user, primary_down, gap=True)
+        require(self.web(r'''(()=>{const c=window.pimClient,h=window.pimHook;h.gaps=[];h.t.gapAgain=c.add_event_listener('{"kind":"server"}',raw=>{const m=JSON.parse(raw);if(m.kind==='event_stream'&&m.stream.kind==='gap'){if(h.gaps.length>=8)throw Error('gap budget');let toolkitDenied=false;try{c.local_toolkit('{"version":1,"operation":{"kind":"list"}}');}catch(_){toolkitDenied=true;}h.gaps.push({toolkitDenied,raw,state:c.state_json(),pointer:document.querySelector('[data-pointer]').checked,keys:document.querySelector('[data-keys]').checked,selected:document.querySelector('[data-users]').value});}});return true;})()'''))
+        self.check = "gap_recovered_capacity_one_cleanup_receipts"
+        cleanup_sequence_again = self.gap_overflow_click(fresh["subscription"], user, pending_again, primary_up, click)
+        require(self.web("window.pimClient.remove_listener(window.pimHook.t.gapAgain)"))
+        self.check = "gap_second_explicit_resubscribe"
+        fresh_again = self.gap_refresh(1, ids)
+        require(fresh_again["subscription"] != fresh["subscription"]
+                and fresh_again["snapshot"]["through_sequence"] >= cleanup_sequence_again)
+        require(len({small["subscription"], fresh["subscription"], fresh_again["subscription"]}) == 3)
+        require(all(u["held_keys"] == [] and u["pointer"]["held_buttons"] == []
+                    for u in fresh_again["snapshot"]["users"]))
+        self.stale_gap_subscriptions = (fresh["subscription"], fresh_again["subscription"])
         # Both same GUI-created users resume ordinary virtual motion/pairs, with
         # exact native source attribution and callback release envelopes.
         self.check = "gap_two_user_resume"
@@ -977,16 +1005,57 @@ class Pair:
             resumed = self.hook_input(current, primary_up, gap=True)
             data = self.hook_counts(2, 1, 1, 3 + index)
             require(json.loads(data["lateClicks"][-1])["event"] == resumed)
-        require(self.identities(self.state()["users"]) == ids and self.hook_acknowledgments == 17 and self.gap_acknowledgments == 9)
+        require(self.identities(self.state()["users"]) == ids and self.hook_acknowledgments == 17 and self.gap_acknowledgments == 10)
         require(all(u["held_keys"] == [] and u["pointer"]["held_buttons"] == [] for u in self.state()["users"]))
         self.result["web_event_hooks"]["gap_runtime_qualified"] = True
-        self.result["web_gap_recovery"] = {"status": "PASS", "actual_core_overflow": True, "queue_capacity": 1,
-            "invalid_capacity_no_effect": 2, "locally_rejected_clicks": 2, "atomic_click_acks": 1,
-            "automatic_release_acks": 1, "input_at_revision_acks": self.gap_acknowledgments,
-            "explicit_resubscriptions": 2, "gap_callback_cleared_model": True,
+        self.result["web_gap_recovery"] = {"status": "PENDING_STALE_TOKEN", "actual_core_overflow": True,
+            "actual_core_overflows": 2, "queue_capacity": 1,
+            "invalid_capacity_no_effect": 2, "locally_rejected_clicks": 2, "atomic_click_acks": 2,
+            "automatic_release_acks": 2, "input_at_revision_acks": self.gap_acknowledgments,
+            "explicit_resubscriptions": 3, "capacity_one_recoveries": 2,
+            "distinct_capacity_one_tokens": 3, "gap_stream_receipts": 2,
+            "native_cleanup_receipts": 2, "gap_callback_cleared_model": True,
             "pending_click_suppressed": True, "same_two_users_resume": True,
-            "stale_token_runtime_qualified": False, "repeated_gap_family_qualified": False}
+            "current_token_stats_acknowledged": False, "stale_token_denied": False,
+            "stale_token_closed_client": False, "stale_token_runtime_qualified": False,
+            "repeated_gap_family_qualified": True}
         self.check = "none"
+
+    def stale_token_cases(self):
+        self.stage = "web-stale-subscription-token"
+        require(hasattr(self, "stale_gap_subscriptions"))
+        old_subscription, current_subscription = self.stale_gap_subscriptions
+        require(old_subscription != current_subscription)
+
+        def request_stats(subscription, request_id):
+            command = json.dumps(json.dumps({"kind": "stats", "subscription": subscription}, separators=(",", ":")))
+            require(self.web("window.pimClient.request(" + command + ");true"))
+            def response():
+                replies = [x for x in self.hook_messages() if x.get("kind") == "response" and x["request_id"] == request_id]
+                if not replies:
+                    return None
+                require(len(replies) == 1)
+                return replies[0]["reply"]
+            reply = self.wait(response, 5)
+            self.hook_request_id = request_id
+            return reply
+
+        self.check = "current_subscription_stats_ack"
+        current = request_stats(current_subscription, self.hook_request_id + 1)
+        require(current["status"] == "ok" and current["version"] == 1
+                and current["response"]["kind"] == "stats"
+                and current["response"]["stats"]["capacity"] == 1
+                and current["response"]["stats"]["overflowed"] is False)
+        self.result["web_gap_recovery"]["current_token_stats_acknowledged"] = True
+
+        self.check = "stale_subscription_stats_denied"
+        stale = request_stats(old_subscription, self.hook_request_id + 1)
+        require(stale["status"] == "error" and stale["version"] == 1 and stale["error"]["code"] == "denied")
+        self.check = "stale_subscription_fail_closed"
+        require(not self.state() and self.web("JSON.parse(window.pimClient.state_json()).stream_state") == "Disconnected")
+        require(self.web("!document.querySelector('[data-pointer]').checked && !document.querySelector('[data-keys]').checked && document.querySelector('[data-users]').value===''"))
+        self.result["web_gap_recovery"].update(status="PASS", stale_token_denied=True,
+            stale_token_closed_client=True, stale_token_runtime_qualified=True)
 
     def hook_cleanup(self):
         self.stage = "web-hooks-reentrant-dispose"
@@ -1363,6 +1432,8 @@ class Pair:
         self.check = "authoritative_native_cleanup"
         self.wait(lambda: self.event_status("active", 2, 1, 1))
         self.mcp_status(1, 1)
+        self.check = "web_stale_token_current_and_old_stats"
+        self.stale_token_cases()
         self.stage = "normal-cleanup"
         self.check = "browser_reentrant_dispose"
         self.hook_cleanup()
@@ -1392,14 +1463,18 @@ class Pair:
         # invocation or incomplete gap group can never qualify this controller.
         self.check = "exact_hook_and_gap_receipts"
         require(self.result.get("web_event_hooks", {}).get("gap_runtime_qualified") is True)
+        require(self.result.get("web_gap_recovery", {}).get("stale_token_runtime_qualified") is True)
         require(self.result["web_event_hooks"]["web_to_native_correlated_input_acks"] == 17)
         require(self.result.get("web_gap_recovery") == {
-            "status": "PASS", "actual_core_overflow": True, "queue_capacity": 1,
-            "invalid_capacity_no_effect": 2, "locally_rejected_clicks": 2, "atomic_click_acks": 1,
-            "automatic_release_acks": 1, "input_at_revision_acks": 9, "explicit_resubscriptions": 2,
+            "status": "PASS", "actual_core_overflow": True, "actual_core_overflows": 2, "queue_capacity": 1,
+            "invalid_capacity_no_effect": 2, "locally_rejected_clicks": 2, "atomic_click_acks": 2,
+            "automatic_release_acks": 2, "input_at_revision_acks": 10, "explicit_resubscriptions": 3,
+            "capacity_one_recoveries": 2, "distinct_capacity_one_tokens": 3,
+            "gap_stream_receipts": 2, "native_cleanup_receipts": 2,
             "gap_callback_cleared_model": True, "pending_click_suppressed": True,
-            "same_two_users_resume": True, "stale_token_runtime_qualified": False,
-            "repeated_gap_family_qualified": False})
+            "same_two_users_resume": True, "current_token_stats_acknowledged": True,
+            "stale_token_denied": True, "stale_token_closed_client": True,
+            "stale_token_runtime_qualified": True, "repeated_gap_family_qualified": True})
         self.check = "none"
         require(all(value is True for key, value in self.result["user_toolkit"].items() if key != "status"))
         self.result["user_toolkit"]["status"] = "PASS"

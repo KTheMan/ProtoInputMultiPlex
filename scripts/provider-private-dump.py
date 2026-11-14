@@ -301,7 +301,12 @@ def dump(raw, status):
     return {"rip":rip, "rsp":rsp, "modules":modules, "candidates":candidates[:32]}
 
 
-STATUS_FIELDS = frozenset({"schema", "status", "pid", "creation", "thread_id", "exception_code",
+WRITER_FAILURES = frozenset({
+    "deadline", "callback_extent", "callback_buffer", "callback_seek", "callback_write",
+    "callback_short_write", "dump_invalid_parameter", "dump_access_denied", "dump_partial_copy",
+    "dump_cancelled", "dump_other", "callback_incomplete", "invalid_extent", "truncate", "sync",
+})
+STATUS_FIELDS = frozenset({"schema", "status", "failure_reason", "pid", "creation", "thread_id", "exception_code",
     "filter_result", "original_rip", "original_rsp", "original_context_flags", "basic_context_only",
     "thread_owner_pid_verified", "dump_bytes", "one_attempt", "deadline_tick_ms", "source_commit",
     "thread_creation", "exception_address", "exception_flags", "exception_parameter_count",
@@ -353,7 +358,10 @@ def owned_records(fatal, status_raw, wait_raw, identity, exit_class, expected_de
         and status["one_attempt"] is True and status["dump_bytes"] <= MAX_DUMP
         and status["deadline_tick_ms"] == expected_deadline)
     if status["status"] == "failed":
-        raise CaptureRejected("capture_writer_failed")
+        reason = status["failure_reason"]
+        need(type(reason) is str and reason in WRITER_FAILURES)
+        raise CaptureRejected("capture_writer_" + reason)
+    need(status["failure_reason"] is None)
     need(status["dump_bytes"] >= 32)
     wait = unpack("<8Q", wait_raw)
     need(wait[:5] == (WAIT_MAGIC, 1, *identity, status["thread_id"])
@@ -433,10 +441,11 @@ def verify_tools(private, end):
 def empty(reason="unavailable"):
     need(reason in {"unavailable", "deadline_exhausted", "ineligible", "unmatched_or_partial",
         "capture_records_unavailable", "capture_identity_unconfirmed",
-        "capture_status_empty", "capture_wait_empty", "capture_writer_failed",
+        "capture_status_empty", "capture_wait_empty",
         "capture_wait_timeout", "capture_wait_not_complete",
         "dump_bytes_unconfirmed", "dump_structure_unconfirmed",
-        "analysis_unavailable", "no_credible_own_frame", "observed"})
+        "analysis_unavailable", "no_credible_own_frame", "observed"}
+        | {"capture_writer_" + failure for failure in WRITER_FAILURES})
     return {"status":"inconclusive", "reason":reason, "frames":[],
         "capture_perturbed_timing":True, "loaded_module_hash_proved":False,
         "source_mapping_proves_loaded_bytes":False}
