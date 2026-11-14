@@ -301,6 +301,36 @@ class PreservationTests(unittest.TestCase):
                                           {"target_a": "access_violation"}, float("inf"))
                     self.assertEqual(result["target_a"], dump.empty(reason))
 
+    def test_collection_distinguishes_capture_completion_failures(self):
+        identity = (42, 133000000000000000)
+        fatal, status, wait = records(identity)
+        metadata = {"deadline_tick_ms": 9999, "source_commit": "a" * 40}
+        encoded_status = json.dumps(status).encode()
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "target-0.fatal.private.bin").write_bytes(fatal)
+            for status_raw, wait_raw, reason in (
+                (b"", wait, "capture_status_empty"),
+                (encoded_status, b"", "capture_wait_empty"),
+                (json.dumps(dict(status, status="failed", dump_bytes=0)).encode(), wait,
+                 "capture_writer_failed"),
+                (json.dumps(dict(status, status="failed", pid=43)).encode(), wait,
+                 "capture_identity_unconfirmed"),
+                (encoded_status, struct.pack("<8Q", dump.WAIT_MAGIC, 1, *identity, 44, 258, 4, 9999),
+                 "capture_wait_timeout"),
+                (encoded_status, struct.pack("<8Q", dump.WAIT_MAGIC, 1, *identity, 44, 0, 5, 9999),
+                 "capture_wait_not_complete"),
+                (encoded_status, struct.pack("<8Q", dump.WAIT_MAGIC, 1, *identity, 45, 258, 4, 9999),
+                 "capture_identity_unconfirmed"),
+            ):
+                with self.subTest(reason=reason), \
+                        patch.object(dump, "analyze", side_effect=AssertionError("no analysis")):
+                    (root / "target-0.dump-status.private.json").write_bytes(status_raw)
+                    (root / "target-0.dump-wait.private.bin").write_bytes(wait_raw)
+                    result = dump.collect(root, metadata, {"target_a": identity},
+                                          {"target_a": "access_violation"}, float("inf"))
+                    self.assertEqual(result["target_a"], dump.empty(reason))
+
     def test_symbol_source_proxy_environment_never_inherited(self):
         with patch.dict(dump.os.environ,{"_NT_SYMBOL_PATH":"srv*https://private", "HTTPS_PROXY":"private", "TOKEN":"private"}):
             environment=dump.clean_environment(Path("C:/private"))

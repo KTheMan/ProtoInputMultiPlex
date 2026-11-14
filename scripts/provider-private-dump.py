@@ -51,6 +51,11 @@ class Rejected(ValueError):
     pass
 
 
+class CaptureRejected(Rejected):
+    def __init__(self, reason):
+        self.reason = reason
+
+
 def need(condition):
     if not condition:
         raise Rejected()
@@ -316,10 +321,15 @@ def owned_records(fatal, status_raw, wait_raw, identity, exit_class, expected_de
     length, path_status = record[13:15]
     need(((path_status == 0 and length == 0) or (path_status == 1 and 0 < length < 512)
         or (path_status == 2 and length == 512)) and not any(fatal[1152+128+length*2:]))
+    if not status_raw:
+        raise CaptureRejected("capture_status_empty")
+    if not wait_raw:
+        raise CaptureRejected("capture_wait_empty")
     need(len(status_raw) <= 4096 and len(wait_raw) == 64)
     status = strict_json(status_raw)
     need(type(status) is dict and set(status) == STATUS_FIELDS
-        and status["schema"] == "pim.private-owned-minidump.v1" and status["status"] == "complete")
+        and status["schema"] == "pim.private-owned-minidump.v1")
+    need(status["status"] in ("complete", "failed"))
     for key in ("pid", "creation", "thread_id", "exception_code", "filter_result", "original_rip",
             "original_rsp", "original_context_flags", "dump_bytes", "deadline_tick_ms", "thread_creation",
             "exception_address", "exception_flags", "exception_parameter_count"):
@@ -340,10 +350,18 @@ def owned_records(fatal, status_raw, wait_raw, identity, exit_class, expected_de
         and status["exception_code"] == record[8] and status["filter_result"] == record[9]
         and status["exception_address"] == record[10] and status["original_rsp"] > 0
         and status["basic_context_only"] is True and status["thread_owner_pid_verified"] is True
-        and status["one_attempt"] is True and 32 <= status["dump_bytes"] <= MAX_DUMP
+        and status["one_attempt"] is True and status["dump_bytes"] <= MAX_DUMP
         and status["deadline_tick_ms"] == expected_deadline)
+    if status["status"] == "failed":
+        raise CaptureRejected("capture_writer_failed")
+    need(status["dump_bytes"] >= 32)
     wait = unpack("<8Q", wait_raw)
-    need(wait == (WAIT_MAGIC, 1, *identity, status["thread_id"], 0, 4, expected_deadline))
+    need(wait[:5] == (WAIT_MAGIC, 1, *identity, status["thread_id"])
+         and wait[7] == expected_deadline)
+    if wait[5] == 258:
+        raise CaptureRejected("capture_wait_timeout")
+    if wait[5:7] != (0, 4):
+        raise CaptureRejected("capture_wait_not_complete")
     return status
 
 
@@ -415,6 +433,8 @@ def verify_tools(private, end):
 def empty(reason="unavailable"):
     need(reason in {"unavailable", "deadline_exhausted", "ineligible", "unmatched_or_partial",
         "capture_records_unavailable", "capture_identity_unconfirmed",
+        "capture_status_empty", "capture_wait_empty", "capture_writer_failed",
+        "capture_wait_timeout", "capture_wait_not_complete",
         "dump_bytes_unconfirmed", "dump_structure_unconfirmed",
         "analysis_unavailable", "no_credible_own_frame", "observed"})
     return {"status":"inconclusive", "reason":reason, "frames":[],
@@ -576,6 +596,9 @@ def collect(private, metadata, identities, exit_classes, end):
             need(len(raw) == status["dump_bytes"])
             reason = "dump_structure_unconfirmed"
             snapshot = dump(raw, status)
+        except CaptureRejected as failure:
+            result[label] = empty(failure.reason)
+            continue
         except (ValueError, OSError, UnicodeError, struct.error):
             result[label] = empty(reason)
             continue
