@@ -1,5 +1,5 @@
-//! Source-authored deterministic tests: no sockets, helper process, credential IO
-//! or product launch. Actual loopback/browser/native acceptance is a separate gate.
+//! Deterministic bridge and transport tests. The loopback test exercises the
+//! production listener with disposable in-memory credentials and virtual users.
 use super::{
     authority::*,
     bridge::*,
@@ -155,9 +155,8 @@ fn events(users: UserScope) -> Grant {
         host_state: false,
     }
 }
-fn setup() -> (
-    HostBridge,
-    NetworkEndpoint,
+fn fixture_host() -> (
+    Host<PlatformWindows>,
     RecipientId,
     RecipientId,
     UserId,
@@ -191,6 +190,17 @@ fn setup() -> (
         .unwrap();
     host.approve_controls(browser, controls(selected, true))
         .unwrap();
+    (host, local, browser, a, b)
+}
+fn setup() -> (
+    HostBridge,
+    NetworkEndpoint,
+    RecipientId,
+    RecipientId,
+    UserId,
+    UserId,
+) {
+    let (host, local, browser, a, b) = fixture_host();
     let (bridge, endpoint) = HostBridge::new(host);
     (bridge, endpoint, local, browser, a, b)
 }
@@ -726,6 +736,254 @@ fn hello_requires_fresh_event_only_credential_origin_version_and_single_connecti
     assert_eq!(snapshot(&mut bridge, local).users.len(), 2); // Authentication creates no users.
     lease.revoke();
     assert!(authenticate_hello(&endpoint.shared, ORIGIN, &hello, Instant::now()).is_err());
+}
+
+mod loopback_acceptance {
+    use super::*;
+    use crate::application_event_transport::network::Service;
+    use futures_util::{SinkExt, StreamExt};
+    use tokio::{net::TcpStream, time::timeout};
+    use tokio_tungstenite::{
+        WebSocketStream, client_async,
+        tungstenite::{
+            Error, Message, client::IntoClientRequest, error::ProtocolError, http::StatusCode,
+        },
+    };
+
+    type Client = WebSocketStream<TcpStream>;
+    const ENDPOINT: &str = "/application-events/v1";
+
+    async fn upgrade(
+        port: u16,
+        origin: Option<&'static str>,
+        bearer: bool,
+    ) -> Result<Client, Error> {
+        let mut request = format!("ws://127.0.0.1:{port}{ENDPOINT}")
+            .into_client_request()
+            .unwrap();
+        if let Some(origin) = origin {
+            request
+                .headers_mut()
+                .insert("origin", origin.parse().unwrap());
+        }
+        if bearer {
+            request.headers_mut().insert(
+                "authorization",
+                "Bearer disposable-command-token".parse().unwrap(),
+            );
+        }
+        let tcp = TcpStream::connect((std::net::Ipv4Addr::LOCALHOST, port)).await?;
+        client_async(request, tcp).await.map(|(socket, _)| socket)
+    }
+
+    async fn send_json(socket: &mut Client, value: &impl serde::Serialize) {
+        socket
+            .send(Message::Text(serde_json::to_string(value).unwrap().into()))
+            .await
+            .expect("send test frame");
+    }
+
+    async fn deny_hello(port: u16, frame: &impl serde::Serialize) {
+        let mut socket = upgrade(port, Some(ORIGIN), false)
+            .await
+            .expect("approved Origin upgrades");
+        send_json(&mut socket, frame).await;
+        assert!(
+            matches!(
+                socket.next().await,
+                None | Some(Ok(Message::Close(_)))
+                    | Some(Err(Error::Protocol(
+                        ProtocolError::ResetWithoutClosingHandshake
+                    )))
+            ),
+            "authentication failure must close without sending data"
+        );
+    }
+
+    async fn hello(port: u16, credential: String) -> Client {
+        let mut socket = upgrade(port, Some(ORIGIN), false).await.unwrap();
+        send_json(
+            &mut socket,
+            &EventHello {
+                version: 1,
+                credential,
+            },
+        )
+        .await;
+        socket
+    }
+
+    async fn receive(socket: &mut Client) -> ServerMessage {
+        let Some(Ok(Message::Text(frame))) = socket.next().await else {
+            panic!("expected typed server message");
+        };
+        serde_json::from_str(&frame).expect("decode server message")
+    }
+
+    #[tokio::test(flavor = "current_thread")]
+    async fn production_loopback_rejects_unauthorized_clients_and_releases_eof_holds() {
+        let (mut host, owner, browser, a, b) = fixture_host();
+        let expired_recipient = host.register_recipient("expired receiver").unwrap();
+        let expired_scope = UserScope::Only(BTreeSet::from([a]));
+        host.approve_events(expired_recipient, events(expired_scope.clone()))
+            .unwrap();
+        host.approve_controls(expired_recipient, controls(expired_scope, false))
+            .unwrap();
+        let (mut bridge, endpoint) = HostBridge::new(host);
+        let expired = bridge
+            .approve_client_at(
+                expired_recipient,
+                ORIGIN,
+                Duration::from_secs(1),
+                Instant::now() - Duration::from_secs(2),
+            )
+            .unwrap();
+        let expired_credential = install_test_credential(&expired, 'e');
+        let approved = permit(&mut bridge, browser);
+        let credential = install_test_credential(&approved, 'c');
+        let mut service = Service::start(
+            Config {
+                allowed_origins: vec![ORIGIN.to_owned()],
+            },
+            endpoint,
+        )
+        .unwrap();
+        let port = service.snapshot().port;
+        let key = KeyCode(4);
+        let hold = |user| ClientRequest {
+            version: 1,
+            command: ClientCommand::Input {
+                user,
+                input: Input::Key {
+                    key,
+                    transition: Transition::Down,
+                },
+            },
+        };
+        bridge.dispatch_local(owner, hold(b)).unwrap();
+        let network = async {
+            for (origin, bearer) in [
+                (None, false),
+                (Some("https://consumer.example.evil"), false),
+                (Some(ORIGIN), true),
+            ] {
+                assert!(matches!(
+                    upgrade(port, origin, bearer).await,
+                    Err(Error::Http(response)) if response.status() == StatusCode::FORBIDDEN
+                ));
+            }
+            deny_hello(port, &serde_json::json!({"version": 1})).await;
+            deny_hello(
+                port,
+                &EventHello {
+                    version: 1,
+                    credential: "0".repeat(64),
+                },
+            )
+            .await;
+            deny_hello(
+                port,
+                &EventHello {
+                    version: 1,
+                    credential: expired_credential,
+                },
+            )
+            .await;
+
+            let mut socket = hello(port, credential.clone()).await;
+            assert!(matches!(
+                receive(&mut socket).await,
+                ServerMessage::Ready { ready } if ready.recipient == browser
+            ));
+            deny_hello(
+                port,
+                &EventHello {
+                    version: 1,
+                    credential,
+                },
+            )
+            .await;
+            send_json(
+                &mut socket,
+                &ClientMessage {
+                    request_id: 1,
+                    request: hold(a),
+                },
+            )
+            .await;
+            assert!(matches!(
+                receive(&mut socket).await,
+                ServerMessage::Response {
+                    request_id: 1,
+                    reply: Reply::Ok { response: ClientResponse::InputAccepted { sequences }, .. },
+                } if sequences.len() == 1
+            ));
+            socket
+        };
+        let socket = timeout(Duration::from_secs(8), async {
+            tokio::pin!(network);
+            loop {
+                bridge.tick();
+                tokio::select! {
+                    socket = &mut network => break socket,
+                    _ = tokio::time::sleep(Duration::from_millis(2)) => {}
+                }
+            }
+        })
+        .await
+        .expect("loopback acceptance deadline");
+
+        let state = snapshot(&mut bridge, owner);
+        assert_eq!(state.users.len(), 2);
+        assert!(
+            state
+                .users
+                .iter()
+                .all(|u| u.held_keys.as_deref() == Some(&[key]))
+        );
+        assert_eq!(service.snapshot().connected_clients, 1);
+        drop(socket); // Abrupt TCP EOF with a browser-produced hold.
+        timeout(Duration::from_secs(3), async {
+            while !approved.lease.cleanup_done.load(Ordering::Acquire) {
+                bridge.tick();
+                tokio::time::sleep(Duration::from_millis(2)).await;
+            }
+        })
+        .await
+        .expect("producer cleanup deadline");
+        let state = snapshot(&mut bridge, owner);
+        assert_eq!(state.users.len(), 2);
+        assert_eq!(
+            state
+                .users
+                .iter()
+                .find(|u| u.id == a)
+                .unwrap()
+                .held_keys
+                .as_deref(),
+            Some(&[][..])
+        );
+        assert_eq!(
+            state
+                .users
+                .iter()
+                .find(|u| u.id == b)
+                .unwrap()
+                .held_keys
+                .as_deref(),
+            Some(&[key][..])
+        );
+        assert_eq!(service.snapshot().connected_clients, 0);
+        bridge.stop();
+        timeout(Duration::from_secs(3), async {
+            while !service.snapshot().retired {
+                tokio::time::sleep(Duration::from_millis(2)).await;
+            }
+        })
+        .await
+        .expect("event service retirement deadline");
+        service.finish_stop().unwrap();
+    }
 }
 
 #[test]

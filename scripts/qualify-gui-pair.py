@@ -892,6 +892,153 @@ class Pair:
         require(self.web("!document.querySelector('[data-pointer]').checked && !document.querySelector('[data-keys]').checked && document.querySelector('[data-users]').value===''") )
         return response
 
+    def canvas_dom_input(self, ids):
+        self.stage = "web-canvas-dom-input"
+        self.check = "canvas_input_setup"
+        user = self.hook_ids[0]
+        self.hook_select(user)
+        state = self.state()
+        require(state is not None and self.identities(state["users"]) == ids)
+        screens = state["screens"]
+        require(screens["revision"] == self.hook_revision)
+        geometry = json.loads(self.web(r'''JSON.stringify((()=>{
+          const canvas=document.querySelector('[data-canvas]'),r=canvas.getBoundingClientRect();
+          window.pimHook.preCanvasFocus=document.activeElement;
+          canvas.focus({preventScroll:true});
+          const x=Math.floor(r.left+r.width*.8),y=Math.floor(r.top+r.height*.6);
+          return {rect:[r.left,r.top,r.width,r.height],point:[x,y],
+            focused:document.activeElement===canvas};
+        })())'''))
+        require(geometry["focused"])
+        x, y = geometry["point"]
+        left, top, width, height = geometry["rect"]
+        require(0 <= x - left < width and 0 <= y - top < height)
+        bounds = screens["desktop"]
+
+        def coordinate(value, origin, extent, low, high):
+            mapped = low + (value - origin) / extent * (high - low)
+            rounded = int(mapped + .5) if mapped >= 0 else int(mapped - .5)
+            return min(high - 1, max(low, rounded))
+
+        position = {"x": coordinate(x, left, width, bounds["left"], bounds["right"]),
+                    "y": coordinate(y, top, height, bounds["top"], bounds["bottom"])}
+
+        def pointer(name, button, held):
+            return (name, {"pointerType": "mouse", "pointerId": 1, "isPrimary": True,
+                           "button": button, "buttons": held, "clientX": x, "clientY": y})
+
+        def dispatch(events, *, consumed=True):
+            # Synthetic events go to the generated WASM's actual DOM listeners.
+            # They neither move the OS pointer nor call the SDK request method.
+            return self.web(r'''(()=>{
+              const canvas=document.querySelector('[data-canvas]');
+              return EVENTS.every(([name, init])=>{
+                const EventType=name==='wheel'?WheelEvent:name.startsWith('key')?KeyboardEvent:PointerEvent;
+                const event=new EventType(name,{...init,bubbles:true,cancelable:true});
+                canvas.dispatchEvent(event);
+                return !event.isTrusted && event.defaultPrevented===CONSUMED;
+              });
+            })()'''.replace("EVENTS", json.dumps(events)).replace("CONSUMED", json.dumps(consumed)))
+
+        acknowledgments = 0
+
+        def observe(expected, action):
+            nonlocal acknowledgments
+            before = self.hook_request_id
+            require(self.native.poll() is None and action())
+
+            def observed():
+                messages = self.hook_messages()
+                replies = [m for m in messages if m.get("kind") == "response" and m["request_id"] > before]
+                require(len(replies) <= len(expected))
+                if len(replies) != len(expected):
+                    return None
+                require([m["request_id"] for m in replies] == list(range(before + 1, before + 1 + len(expected))))
+                streamed = [e for m in messages if m.get("kind") == "event_stream"
+                            and m["stream"]["kind"] == "events" for e in m["stream"]["events"]]
+                sequences = []
+                for message, value in zip(replies, expected, strict=True):
+                    reply = message["reply"]
+                    require(reply["status"] == "ok" and reply["version"] == 1
+                            and reply["response"]["kind"] == "input_accepted")
+                    accepted = reply["response"]["sequences"]
+                    require(len(accepted) == 1)
+                    sequence = accepted[0]
+                    sequences.append(sequence)
+                    matches = [e for e in streamed if e["sequence"] == sequence]
+                    require(len(matches) <= 1)
+                    if not matches:
+                        return None
+                    envelope = matches[0]
+                    event = envelope["event"]
+                    require(envelope["version"] == 1 and envelope["epoch"] == self.epoch
+                            and event["kind"] == "input" and event["user"] == user and event["input"] == value
+                            and event["transform_revision"] == self.hook_revision)
+                    native = self.hook_native_input(sequence, user, value)
+                    if native is None:
+                        return None
+                    require(all(native[key] == event[key] for key in
+                                ("user", "source", "input", "position", "transform_revision")))
+                require(sequences == sorted(set(sequences)))
+                return True
+
+            self.wait(observed, 5)
+            self.hook_request_id = before + len(expected)
+            acknowledgments += len(expected)
+
+        def button(name, transition):
+            return {"kind": "button", "button": name, "transition": transition}
+
+        def key(code, transition):
+            return {"kind": "key", "key": code, "transition": transition}
+
+        motion = {"kind": "motion", "position": position}
+        self.check = "canvas_keyboard_default_off"
+        require(dispatch([("keydown", {"code": "KeyA"})], consumed=False))
+        self.check = "canvas_five_pointer_buttons"
+        for code, mask, name in ((0, 1, "primary"), (1, 4, "middle"), (2, 2, "secondary"),
+                                 (3, 8, "x1"), (4, 16, "x2")):
+            observe([motion, button(name, "down"), button(name, "up")],
+                    lambda: dispatch([pointer("pointerdown", code, mask), pointer("pointerup", code, 0)]))
+        self.check = "canvas_wheel_axes"
+        observe([{"kind": "wheel", "axis": "vertical", "units": 120},
+                 {"kind": "wheel", "axis": "horizontal", "units": -120}],
+                lambda: dispatch([("wheel", {"deltaY": -120, "deltaX": -120, "deltaMode": 0})]))
+        self.check = "canvas_focused_keys"
+        require(self.web("window.pimClient.enable_keyboard(true);document.querySelector('[data-keys]').checked && document.activeElement===document.querySelector('[data-canvas]')"))
+        observe([key(4, "down"), key(4, "up"), key(229, "down"), key(229, "up")],
+                lambda: dispatch([("keydown", {"code": "KeyA"}), ("keyup", {"code": "KeyA"}),
+                                  ("keydown", {"code": "ShiftRight"}), ("keyup", {"code": "ShiftRight"})]))
+        self.check = "canvas_held_input_before_blur"
+        observe([motion, button("primary", "down"), key(4, "down")],
+                lambda: dispatch([pointer("pointerdown", 0, 1), ("keydown", {"code": "KeyA"})]))
+        held = self.state()
+        require(held is not None and self.identities(held["users"]) == ids)
+        selected = next(row for row in held["users"] if row["id"] == user)
+        require(selected["pointer"]["held_buttons"] == ["primary"] and selected["held_keys"] == [4])
+        self.check = "canvas_blur_releases"
+        observe([button("primary", "up"), key(4, "up")], lambda: self.web(r'''(()=>{
+          const canvas=document.querySelector('[data-canvas]');
+          if(document.activeElement!==canvas)return false;
+          canvas.blur();
+          return document.activeElement!==canvas;
+        })()'''))
+        final = self.state()
+        require(final is not None and self.identities(final["users"]) == ids
+                and all(row["held_keys"] == [] and row["pointer"]["held_buttons"] == [] for row in final["users"]))
+        require(self.web(r'''(()=>{
+          const h=window.pimHook;
+          if(document.activeElement!==h.preCanvasFocus)h.preCanvasFocus.focus({preventScroll:true});
+          delete h.preCanvasFocus;
+          return document.activeElement===h.focus;
+        })()'''))
+        self.hook_counts(2, 1, 1, 1)
+        self.result["web_canvas_dom_input"] = {
+            "status": "PASS", "pointer_button_pairs": 5, "wheel_axes": 2, "hid_key_pairs": 2,
+            "blur_releases": 2, "keyboard_default_off": True, "native_correlated_acks": acknowledgments,
+            "shared_users_retained": True, "holds_empty": True,
+        }
+
     def gap_overflow_click(self, subscription, user, pending, primary_up, click):
         before = self.hook_request_id
         require(self.web("window.pimClient.request(" + click + ");true"))
@@ -1387,6 +1534,7 @@ class Pair:
         self.native_milestone = "live_sampled"
         self.check = "none"
         self.hook_cases(ids)
+        self.canvas_dom_input(ids)
         self.gap_cases(ids)
         # Continue the full 2/2 check until the native pre-destruction marker.
         # Reread that marker after a status read to resolve teardown races.
@@ -1461,10 +1609,14 @@ class Pair:
         # Names, IDs, payloads, endpoints, paths, credentials and raw logs stay private.
         # The final public PASS requires the separate group receipt. A missing
         # invocation or incomplete gap group can never qualify this controller.
-        self.check = "exact_hook_and_gap_receipts"
+        self.check = "exact_hook_canvas_and_gap_receipts"
         require(self.result.get("web_event_hooks", {}).get("gap_runtime_qualified") is True)
         require(self.result.get("web_gap_recovery", {}).get("stale_token_runtime_qualified") is True)
         require(self.result["web_event_hooks"]["web_to_native_correlated_input_acks"] == 17)
+        require(self.result.get("web_canvas_dom_input") == {
+            "status": "PASS", "pointer_button_pairs": 5, "wheel_axes": 2, "hid_key_pairs": 2,
+            "blur_releases": 2, "keyboard_default_off": True, "native_correlated_acks": 26,
+            "shared_users_retained": True, "holds_empty": True})
         require(self.result.get("web_gap_recovery") == {
             "status": "PASS", "actual_core_overflow": True, "actual_core_overflows": 2, "queue_capacity": 1,
             "invalid_capacity_no_effect": 2, "locally_rejected_clicks": 2, "atomic_click_acks": 2,
