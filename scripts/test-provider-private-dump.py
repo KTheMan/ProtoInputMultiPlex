@@ -134,7 +134,8 @@ class SymbolIdentityTests(unittest.TestCase):
         row = {"path":r"C:\private\protoinputmultiplex.exe", "cv":cv, "size":8192,"stamp":123}
         item = {"image":row["path"],"pdb":r"C:\private\protoinputmultiplex.pdb", "image_sha256":"a"*64,"pdb_sha256":"b"*64}
         image = {"cv":cv,"size":8192,"stamp":123,"pdb_path":item["pdb"]}
-        for mutation in ({}, {"cv":(cv[0],2)}, {"size":8193}, {"stamp":124}, {"pdb_path":r"C:\other\secret.pdb"}):
+        for mutation in ({}, {"cv":(cv[0],2)}, {"size":8193}, {"stamp":124},
+                {"pdb_path":r"C:\other\secret.pdb"}, {"pdb_path":"other.pdb"}):
             with patch.object(dump,"digest",side_effect=["a"*64,"b"*64]), \
                     patch.object(dump,"bounded",return_value=b"fixture"), \
                     patch.object(dump,"pe",return_value=dict(image,**mutation)), \
@@ -143,6 +144,28 @@ class SymbolIdentityTests(unittest.TestCase):
                     with self.assertRaises(ValueError): dump.admitted_module(row,[item])
                 else:
                     self.assertEqual(dump.admitted_module(row,[item]),(item,image))
+
+    def test_relative_codeview_basename_matches_exact_admitted_pdb(self):
+        cv=(bytes(range(16)),1)
+        row={"path":r"C:\private\protoinputmultiplex.exe","cv":cv,"size":8192,"stamp":123}
+        item={"image":row["path"],"pdb":r"C:\private\protoinputmultiplex.pdb",
+            "image_sha256":"a"*64,"pdb_sha256":"b"*64}
+        image={"cv":cv,"size":8192,"stamp":123,"pdb_path":"protoinputmultiplex.pdb"}
+        with patch.object(dump,"digest",side_effect=["a"*64,"b"*64]), \
+                patch.object(dump,"bounded",return_value=b"fixture"), \
+                patch.object(dump,"pe",return_value=image), \
+                patch.object(dump,"pdb_identity",return_value=cv):
+            self.assertEqual(dump.admitted_module(row,[item]),(item,image))
+
+    def test_relative_codeview_path_must_be_bare_and_pdb_adjacent(self):
+        image=r"C:\private\protoinputmultiplex.exe"
+        pdb_path=r"C:\private\protoinputmultiplex.pdb"
+        self.assertTrue(dump.pdb_path_matches("protoinputmultiplex.pdb",image,pdb_path))
+        for codeview_path in (r"..\private\protoinputmultiplex.pdb",
+                r"symbols\protoinputmultiplex.pdb",r"C:protoinputmultiplex.pdb"):
+            self.assertFalse(dump.pdb_path_matches(codeview_path,image,pdb_path))
+        self.assertFalse(dump.pdb_path_matches("protoinputmultiplex.pdb",image,
+            r"C:\symbols\protoinputmultiplex.pdb"))
 
     def test_source_requires_exact_allowlisted_same_source_hash(self):
         raw = json.dumps([{"Symbol":[{"FileName":r"C:\source\crates\probe.rs", "FunctionName":"probe::run", "Line":12}]}]).encode()
@@ -217,6 +240,34 @@ class PreservationTests(unittest.TestCase):
         dump.finish(gate)
         self.assertEqual(gate.result["private_dump_diagnostics"]["preparation"],
             {"status":"not_ready","phase":"not_started"})
+
+    def test_probe_identity_rejection_has_bounded_subphase(self):
+        cases=("probe_file_hashes", "probe_pe_codeview", "probe_pdb_identity", "probe_identity_match")
+        for phase in cases:
+            with self.subTest(phase=phase), tempfile.TemporaryDirectory() as directory:
+                root=Path(directory)/"private-output"
+                source=Path(directory)
+                probe={"image":r"C:\build\protoinputmultiplex.exe","image_sha256":"a"*64,
+                    "pdb":r"C:\build\protoinputmultiplex.pdb","pdb_sha256":"b"*64}
+                metadata={"schema":"pim.private-dump-build.v1","source_commit":"a"*40,
+                    "profile":"debug","dev_debug":2,"features":["software-renderer"],
+                    "target":"x86_64-pc-windows-msvc","source":str(source.resolve()),
+                    "source_files":{},"probe":probe}
+                gate=SimpleNamespace(args=SimpleNamespace(private_dump_root=root,
+                    private_dump_metadata=Path(directory)/"metadata.private.json",commit="a"*40,
+                    source=source,private_dump_decision=None),end=100,result={"status":"FAIL"})
+                digest_patch=patch.object(dump,"digest",side_effect=ValueError) if phase == "probe_file_hashes" else \
+                    patch.object(dump,"digest",side_effect=["a"*64,"b"*64])
+                pe_patch=patch.object(dump,"pe",side_effect=ValueError) if phase == "probe_pe_codeview" else \
+                    patch.object(dump,"pe",return_value={"cv":(bytes(range(16)),1),"pdb_path":probe["pdb"]})
+                pdb_patch=patch.object(dump,"pdb_identity",side_effect=ValueError) if phase == "probe_pdb_identity" else \
+                    patch.object(dump,"pdb_identity",return_value=(b"Z"*16,1))
+                with patch.object(dump,"strict_json",return_value=metadata), \
+                        patch.object(dump,"bounded",return_value=b"fixture"), digest_patch, pe_patch, pdb_patch:
+                    with self.assertRaises(ValueError): dump.prepare(gate)
+                dump.finish(gate)
+                self.assertEqual(gate.result["private_dump_diagnostics"]["preparation"],
+                    {"status":"not_ready","phase":phase})
 
     def test_ineligible_and_expired_inputs_start_no_offline_analysis(self):
         with tempfile.TemporaryDirectory() as directory, \

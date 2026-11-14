@@ -18,8 +18,9 @@ import time
 
 
 CONFIG_ENV = "PROTOINPUTMUX_PRIVATE_DUMP_CONFIG"
-PREPARE_PHASES = frozenset({"not_started", "root", "metadata", "probe_identity",
-    "toolchain_validation", "helper_admission", "module_admission", "deadline_config", "ready"})
+PREPARE_PHASES = frozenset({"not_started", "root", "metadata", "probe_identity", "probe_file_hashes",
+    "probe_pe_codeview", "probe_pdb_identity", "probe_identity_match", "toolchain_validation",
+    "helper_admission", "module_admission", "deadline_config", "ready"})
 WAIT_MAGIC = 0x31544941574D4950
 FATAL_MAGIC = 0x4C415441464D4950
 MAX_DUMP = 64 * 1024 * 1024
@@ -98,6 +99,22 @@ def local_path(value):
         and re.match(r"^[A-Za-z]:[\\/]", value) is not None and not value.startswith("\\\\"))
     need(not any(c in value for c in '\r\n;"'))
     return ntpath.normcase(ntpath.normpath(value))
+
+
+def pdb_path_matches(codeview_path, image_path, admitted_path):
+    """Accept a relative CodeView basename while binding absolute paths exactly."""
+    expected = local_path(admitted_path)
+    image = local_path(image_path)
+    if type(codeview_path) is not str or not 0 < len(codeview_path) <= 1024 or "\0" in codeview_path:
+        return False
+    if ntpath.splitdrive(codeview_path)[0] or codeview_path.startswith(("\\", "/")):
+        try:
+            return local_path(codeview_path) == expected
+        except ValueError:
+            return False
+    return ("\\" not in codeview_path and "/" not in codeview_path and ":" not in codeview_path
+        and ntpath.normcase(codeview_path) == ntpath.basename(expected)
+        and ntpath.dirname(image) == ntpath.dirname(expected))
 
 
 def rsds(raw):
@@ -342,7 +359,7 @@ def admitted_module(row, admissions):
     pdb_cv = pdb_identity(bounded(item["pdb"], MAX_BINARY))
     need(row["cv"] is not None and row["cv"] == image["cv"] == pdb_cv
         and row["size"] == image["size"] and row["stamp"] == image["stamp"]
-        and local_path(image["pdb_path"]) == local_path(item["pdb"]))
+        and pdb_path_matches(image["pdb_path"], item["image"], item["pdb"]))
     return item, image
 
 
@@ -586,13 +603,17 @@ def prepare(gate):
         and metadata["target"] == "x86_64-pc-windows-msvc"
         and local_path(metadata["source"]) == local_path(str(gate.args.source.resolve()))
         and type(metadata["source_files"]) is dict and len(metadata["source_files"]) <= 4096)
-    gate.private_dump_prepare_phase = "probe_identity"
+    gate.private_dump_prepare_phase = "probe_file_hashes"
     probe = metadata["probe"]
     need(ntpath.basename(probe["image"]).lower() == "protoinputmultiplex.exe"
         and digest(probe["image"]) == probe["image_sha256"] and digest(probe["pdb"]) == probe["pdb_sha256"])
+    gate.private_dump_prepare_phase = "probe_pe_codeview"
     probe_image = pe(bounded(probe["image"], MAX_BINARY))
-    need(probe_image["cv"] == pdb_identity(bounded(probe["pdb"], MAX_BINARY))
-        and local_path(probe_image["pdb_path"]) == local_path(probe["pdb"]))
+    gate.private_dump_prepare_phase = "probe_pdb_identity"
+    probe_pdb_identity = pdb_identity(bounded(probe["pdb"], MAX_BINARY))
+    gate.private_dump_prepare_phase = "probe_identity_match"
+    need(probe_image["cv"] == probe_pdb_identity
+        and pdb_path_matches(probe_image["pdb_path"], probe["image"], probe["pdb"]))
     # Exact diagnostic A/B image admission is independent of dump-tool usability.
     # A later tool failure leaves capture unarmed and the diagnostic result inconclusive.
     gate.private_dump_probe = Path(probe["image"])
