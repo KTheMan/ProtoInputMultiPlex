@@ -906,13 +906,13 @@ class Pair:
           window.pimHook.preCanvasFocus=document.activeElement;
           canvas.focus({preventScroll:true});
           const x=Math.floor(r.left+r.width*.8),y=Math.floor(r.top+r.height*.6);
-          return {rect:[r.left,r.top,r.width,r.height],point:[x,y],
+          const target=window.pimHook.target.getBoundingClientRect();
+          const restore=[Math.floor(target.left+target.width/2),Math.floor(target.top+target.height/2)];
+          return {rect:[r.left,r.top,r.width,r.height],point:[x,y],restore,
             focused:document.activeElement===canvas};
         })())'''))
         require(geometry["focused"])
-        x, y = geometry["point"]
         left, top, width, height = geometry["rect"]
-        require(0 <= x - left < width and 0 <= y - top < height)
         bounds = screens["desktop"]
 
         def coordinate(value, origin, extent, low, high):
@@ -920,10 +920,16 @@ class Pair:
             rounded = int(mapped + .5) if mapped >= 0 else int(mapped - .5)
             return min(high - 1, max(low, rounded))
 
-        position = {"x": coordinate(x, left, width, bounds["left"], bounds["right"]),
-                    "y": coordinate(y, top, height, bounds["top"], bounds["bottom"])}
+        def motion_at(point):
+            x, y = point
+            require(0 <= x - left < width and 0 <= y - top < height)
+            return {"kind": "motion", "position": {
+                "x": coordinate(x, left, width, bounds["left"], bounds["right"]),
+                "y": coordinate(y, top, height, bounds["top"], bounds["bottom"]),
+            }}
 
-        def pointer(name, button, held):
+        def pointer(name, button, held, point):
+            x, y = point
             return (name, {"pointerType": "mouse", "pointerId": 1, "isPrimary": True,
                            "button": button, "buttons": held, "clientX": x, "clientY": y})
 
@@ -992,14 +998,16 @@ class Pair:
         def key(code, transition):
             return {"kind": "key", "key": code, "transition": transition}
 
-        motion = {"kind": "motion", "position": position}
+        point = geometry["point"]
+        motion = motion_at(point)
         self.check = "canvas_keyboard_default_off"
         require(dispatch([("keydown", {"code": "KeyA"})], consumed=False))
         self.check = "canvas_five_pointer_buttons"
         for code, mask, name in ((0, 1, "primary"), (1, 4, "middle"), (2, 2, "secondary"),
                                  (3, 8, "x1"), (4, 16, "x2")):
             observe([motion, button(name, "down"), button(name, "up")],
-                    lambda: dispatch([pointer("pointerdown", code, mask), pointer("pointerup", code, 0)]))
+                    lambda: dispatch([pointer("pointerdown", code, mask, point),
+                                      pointer("pointerup", code, 0, point)]))
         self.check = "canvas_wheel_axes"
         observe([{"kind": "wheel", "axis": "vertical", "units": 120},
                  {"kind": "wheel", "axis": "horizontal", "units": -120}],
@@ -1011,7 +1019,7 @@ class Pair:
                                   ("keydown", {"code": "ShiftRight"}), ("keyup", {"code": "ShiftRight"})]))
         self.check = "canvas_held_input_before_blur"
         observe([motion, button("primary", "down"), key(4, "down")],
-                lambda: dispatch([pointer("pointerdown", 0, 1), ("keydown", {"code": "KeyA"})]))
+                lambda: dispatch([pointer("pointerdown", 0, 1, point), ("keydown", {"code": "KeyA"})]))
         held = self.state()
         require(held is not None and self.identities(held["users"]) == ids)
         selected = next(row for row in held["users"] if row["id"] == user)
@@ -1026,6 +1034,11 @@ class Pair:
         final = self.state()
         require(final is not None and self.identities(final["users"]) == ids
                 and all(row["held_keys"] == [] and row["pointer"]["held_buttons"] == [] for row in final["users"]))
+        # The following gap test starts a click pair inside the hook target.
+        self.check = "canvas_restore_hook_target"
+        restore = geometry["restore"]
+        observe([motion_at(restore)],
+                lambda: dispatch([pointer("pointermove", -1, 0, restore)]))
         require(self.web(r'''(()=>{
           const h=window.pimHook;
           if(document.activeElement!==h.preCanvasFocus)h.preCanvasFocus.focus({preventScroll:true});
@@ -1036,7 +1049,7 @@ class Pair:
         self.result["web_canvas_dom_input"] = {
             "status": "PASS", "pointer_button_pairs": 5, "wheel_axes": 2, "hid_key_pairs": 2,
             "blur_releases": 2, "keyboard_default_off": True, "native_correlated_acks": acknowledgments,
-            "shared_users_retained": True, "holds_empty": True,
+            "shared_users_retained": True, "holds_empty": True, "hook_target_position_restored": True,
         }
 
     def gap_overflow_click(self, subscription, user, pending, primary_up, click):
@@ -1615,8 +1628,8 @@ class Pair:
         require(self.result["web_event_hooks"]["web_to_native_correlated_input_acks"] == 17)
         require(self.result.get("web_canvas_dom_input") == {
             "status": "PASS", "pointer_button_pairs": 5, "wheel_axes": 2, "hid_key_pairs": 2,
-            "blur_releases": 2, "keyboard_default_off": True, "native_correlated_acks": 26,
-            "shared_users_retained": True, "holds_empty": True})
+            "blur_releases": 2, "keyboard_default_off": True, "native_correlated_acks": 27,
+            "shared_users_retained": True, "holds_empty": True, "hook_target_position_restored": True})
         require(self.result.get("web_gap_recovery") == {
             "status": "PASS", "actual_core_overflow": True, "actual_core_overflows": 2, "queue_capacity": 1,
             "invalid_capacity_no_effect": 2, "locally_rejected_clicks": 2, "atomic_click_acks": 2,

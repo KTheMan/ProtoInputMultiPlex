@@ -582,12 +582,61 @@ jobs:
           if ($process.ExitCode -ne 0 -or -not (Test-Path -LiteralPath $result -PathType Leaf)) { throw 'Toolkit MCP lease fixture failed' }
           $receipt = Get-Content -LiteralPath $result -Raw | ConvertFrom-Json
           if ($receipt.status -cne 'PASS' -or $receipt.source_commit -cne $env:GITHUB_SHA -or $receipt.gui_exit_code -ne 0 -or $receipt.mcp_exit_code -ne 0 -or -not $receipt.zero_authority_cleanup -or -not $receipt.actual_gui_revocation_denies_local_access) { throw 'Toolkit MCP lease receipt incomplete' }
+      - name: Log sanitized canvas qualification state
+        if: always()
+        env:
+          PAIR_PUBLIC: ${{ runner.temp }}/gui-pair-public-${{ github.run_id }}-${{ github.run_attempt }}
+        shell: pwsh
+        run: |
+          $result = Join-Path $env:PAIR_PUBLIC 'public-result.json'
+          if (-not (Test-Path -LiteralPath $result -PathType Leaf)) {
+            $deadline = Test-Path -LiteralPath (Join-Path $env:PAIR_PUBLIC 'external-deadline.json') -PathType Leaf
+            Write-Output "Initial pair receipt absent (external deadline: $deadline)"
+            return
+          }
+          try {
+            $receipt = Get-Content -LiteralPath $result -Raw -ErrorAction Stop | ConvertFrom-Json -ErrorAction Stop
+          } catch { throw 'Initial pair log receipt unreadable' }
+          if ($receipt.schema -isnot [string] -or $receipt.schema -cne 'pim.gui-pair.initial.v1' -or
+              $receipt.source_commit -isnot [string] -or $receipt.source_commit -cne $env:GITHUB_SHA) {
+            throw 'Initial pair log receipt identity mismatch'
+          }
+          function Select-Label($value, [string[]]$labels) {
+            if ($value -is [string] -and $value -cin $labels) { $value } else { 'unreported' }
+          }
+          $status = Select-Label $receipt.status ('PASS', 'FAIL')
+          $stage = Select-Label $receipt.failure_stage @(
+            'preflight', 'gui-preparation', 'actual-rust-wasm-connect', 'native-pulse-overlap',
+            'native-live-overlap-samples', 'web-hooks-register', 'web-hooks-actual-virtual-input',
+            'web-canvas-dom-input', 'web-real-core-gap-recovery', 'web-stale-subscription-token',
+            'web-hooks-reentrant-dispose', 'native-observation-until-marker', 'native-retirement', 'normal-cleanup'
+          )
+          $check = Select-Label $receipt.failure_observations.check @(
+            'none', 'receipt_count', 'receipt_count_or_order', 'receipt_label', 'receipt_clicked',
+            'sample', 'sample_ack', 'native_observation_before_sample', 'same_host_live_identity',
+            'fresh_live_gui_status', 'native_observation_after_sample', 'canvas_input_setup',
+            'canvas_keyboard_default_off', 'canvas_five_pointer_buttons', 'canvas_wheel_axes',
+            'canvas_focused_keys', 'canvas_held_input_before_blur', 'canvas_blur_releases',
+            'canvas_restore_hook_target', 'gap_local_click_gate', 'gap_held_pair_and_capacity',
+            'gap_capacity_one_refresh', 'gap_atomic_click_cleanup_overflow', 'gap_explicit_resubscribe',
+            'gap_recovered_capacity_one_overflow', 'gap_recovered_capacity_one_cleanup_receipts',
+            'gap_second_explicit_resubscribe', 'gap_two_user_resume', 'current_subscription_stats_ack',
+            'stale_subscription_stats_denied', 'stale_subscription_fail_closed', 'exact_hook_canvas_and_gap_receipts'
+          )
+          $failure = Select-Label $receipt.failure_class @(
+            'Rejected', 'KeyError', 'TypeError', 'ValueError', 'JSONDecodeError', 'FileNotFoundError',
+            'PermissionError', 'TimeoutError', 'TimeoutExpired', 'ConnectionError',
+            'ConnectionResetError', 'OSError', 'Empty', 'UnexpectedError'
+          )
+          $canvas = Select-Label $receipt.web_canvas_dom_input.status ('PASS', 'FAIL')
+          $gap = Select-Label $receipt.web_gap_recovery.status ('PASS', 'PENDING_STALE_TOKEN')
+          Write-Output "Initial pair=$status stage=$stage check=$check failure=$failure canvas=$canvas gap=$gap"
       - name: Upload only sanitized initial pair decisions
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: gui-native-wasm-initial-pair-${{ github.sha }}-${{ github.run_attempt }}
-          retention-days: 1
+          retention-days: 14
           if-no-files-found: warn
           path: |
             ${{ runner.temp }}/gui-pair-public-${{ github.run_id }}-${{ github.run_attempt }}/public-result.json
@@ -917,12 +966,62 @@ jobs:
           if (-not (Test-Path -LiteralPath $decision -PathType Leaf)) { throw 'Private diagnostic decision unavailable' }
           $receipt = Get-Content -LiteralPath $decision -Raw | ConvertFrom-Json
           if ($receipt.schema -cne 'pim.private-dump-decision.v1' -or -not $receipt.diagnostic_only -or $receipt.functional_acceptance -or -not $receipt.capture_perturbed_timing) { throw 'Diagnostic-only boundary rejected' }
+      - name: Log sanitized private dump outcome
+        if: always()
+        env:
+          PROVIDER_PUBLIC: ${{ runner.temp }}/gui-provider-dump-public-${{ github.run_id }}-${{ github.run_attempt }}
+        shell: pwsh
+        run: |
+          $decision = Join-Path $env:PROVIDER_PUBLIC 'diagnostic-decision.json'
+          if (-not (Test-Path -LiteralPath $decision -PathType Leaf)) {
+            Write-Output 'Private dump decision absent'
+            return
+          }
+          try {
+            $receipt = Get-Content -LiteralPath $decision -Raw -ErrorAction Stop | ConvertFrom-Json -ErrorAction Stop
+          } catch { throw 'Private dump log receipt unreadable' }
+          if ($receipt.schema -isnot [string] -or $receipt.schema -cne 'pim.private-dump-decision.v1' -or
+              $receipt.diagnostic_only -isnot [bool] -or -not $receipt.diagnostic_only -or
+              $receipt.functional_acceptance -isnot [bool] -or $receipt.functional_acceptance -or
+              $receipt.capture_perturbed_timing -isnot [bool] -or -not $receipt.capture_perturbed_timing) {
+            throw 'Diagnostic-only log boundary rejected'
+          }
+          function Select-Label($value, [string[]]$labels) {
+            if ($value -is [string] -and $value -cin $labels) { $value } else { 'unreported' }
+          }
+          $phase = Select-Label $receipt.preparation.phase @(
+            'not_started', 'root', 'metadata', 'probe_identity', 'probe_file_hashes', 'probe_pe_codeview',
+            'probe_pdb_identity', 'probe_identity_match', 'toolchain_validation', 'helper_admission',
+            'module_admission', 'deadline_config', 'ready'
+          )
+          $reasons = @(
+            'unavailable', 'deadline_exhausted', 'ineligible', 'unmatched_or_partial',
+            'capture_records_unavailable', 'capture_identity_unconfirmed', 'capture_status_empty',
+            'capture_wait_empty', 'capture_wait_timeout', 'capture_wait_not_complete',
+            'dump_bytes_unconfirmed', 'dump_structure_unconfirmed', 'analysis_unavailable',
+            'no_credible_own_frame', 'observed'
+          )
+          $reasons += @(
+            'deadline', 'callback_extent', 'callback_buffer', 'callback_seek', 'callback_write',
+            'callback_short_write', 'dump_invalid_parameter', 'dump_access_denied', 'dump_partial_copy',
+            'dump_cancelled', 'dump_other', 'callback_incomplete', 'invalid_extent', 'truncate', 'sync'
+          ) | ForEach-Object { 'capture_writer_' + $_ }
+          Write-Output "Private dump diagnostic only; preparation=$phase"
+          foreach ($label in 'target_a', 'target_b') {
+            $target = $receipt.$label
+            $status = Select-Label $target.status ('observed', 'inconclusive')
+            $reason = Select-Label $target.reason $reasons
+            $frames = 0
+            if ($target.frames -is [array]) { $frames = $target.frames.Length }
+            if ($frames -gt 32) { throw 'Private dump frame count out of bounds' }
+            Write-Output "$label status=$status reason=$reason frame_count=$frames"
+          }
       - name: Upload one sanitized private dump decision only
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: gui-desktop-provider-private-dump-${{ github.sha }}-${{ github.run_attempt }}
-          retention-days: 1
+          retention-days: 14
           if-no-files-found: warn
           path: ${{ runner.temp }}/gui-provider-dump-public-${{ github.run_id }}-${{ github.run_attempt }}/diagnostic-decision.json
 
