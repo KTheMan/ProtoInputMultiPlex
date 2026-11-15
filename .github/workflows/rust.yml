@@ -998,7 +998,9 @@ jobs:
             'unavailable', 'deadline_exhausted', 'ineligible', 'unmatched_or_partial',
             'capture_records_unavailable', 'capture_identity_unconfirmed', 'capture_status_empty',
             'capture_wait_empty', 'capture_wait_timeout', 'capture_wait_not_complete',
-            'dump_bytes_unconfirmed', 'dump_structure_unconfirmed', 'analysis_unavailable',
+            'dump_bytes_unconfirmed', 'dump_structure_unconfirmed', 'dump_structure_header',
+            'dump_structure_directory', 'dump_structure_exception', 'dump_structure_context',
+            'dump_structure_thread', 'dump_structure_stack', 'dump_structure_modules', 'analysis_unavailable',
             'no_credible_own_frame', 'observed'
           )
           $reasons += @(

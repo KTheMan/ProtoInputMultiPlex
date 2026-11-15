@@ -5,6 +5,7 @@ functional qualification. A retained dump is useful only after all four owned
 identity records agree. No live process is opened, waited on, or debugged here.
 """
 import argparse
+from contextlib import contextmanager
 import ctypes
 import hashlib
 import json
@@ -225,72 +226,98 @@ def pdb_identity(raw):
     return span(info, 12, 16), age
 
 
+DUMP_STRUCTURE_FAILURES = frozenset({
+    "dump_structure_header", "dump_structure_directory", "dump_structure_exception",
+    "dump_structure_context", "dump_structure_thread", "dump_structure_stack",
+    "dump_structure_modules",
+})
+
+
+@contextmanager
+def dump_section(reason):
+    try:
+        yield
+    except (Rejected, UnicodeError, struct.error):
+        raise CaptureRejected(reason) from None
+
+
 def dump(raw, status):
-    need(32 <= len(raw) <= MAX_DUMP and raw[:4] == b"MDMP")
-    version, count, directory, _, _, flags = unpack("<IIIIIQ", raw, 4)
-    need(version & 0xFFFF == 0xA793 and 1 <= count <= 64)
-    # Reject full-memory, full-memory-info is metadata and intentionally allowed.
-    need(flags & ~0x7820 == 0)
-    streams = {}
-    for index in range(count):
-        kind, size, rva = unpack("<III", raw, directory+index*12)
-        need(kind not in streams and rva >= 32)
-        streams[kind] = span(raw, rva, size)
-    need(all(kind in streams for kind in (3, 4, 6, 7, 17)))
-    need(unpack("<H", streams[7])[0] == 9)  # PROCESSOR_ARCHITECTURE_AMD64
-    exception = streams[6]
-    need(len(exception) == 168)
-    thread, padding = unpack("<II", exception)
-    code, exception_flags, chain, address, parameters, unused = unpack("<IIQQII", exception, 8)
-    need(padding == unused == chain == 0 and code == 0xC0000005 and parameters <= 15
-        and thread == status["thread_id"] and address == status["exception_address"]
-        and exception_flags == status["exception_flags"] and parameters == status["exception_parameter_count"])
-    exception_parameters = list(unpack("<15Q", exception, 40))
-    need(exception_parameters[:parameters] == status["exception_parameters"][:parameters]
-        and not any(exception_parameters[parameters:]))
-    size, rva = unpack("<II", exception, 160)
-    need(256 <= size <= 4096)
-    context = span(raw, rva, size)
-    context_flags, = unpack("<I", context, 48)
-    rsp, = unpack("<Q", context, 152)
-    rip, = unpack("<Q", context, 248)
-    need(context_flags == 0x100003 and rip == status["original_rip"] and rsp == status["original_rsp"]
-        and list(unpack("<17Q", context, 120)) == status["integer_registers"])
-    threads = streams[3]
-    thread_count, = unpack("<I", threads)
-    need(1 <= thread_count <= 4096 and len(threads) == 4+48*thread_count)
-    matching = []
-    for index in range(thread_count):
-        row = span(threads, 4+48*index, 48)
-        if unpack("<I", row)[0] == thread:
-            matching.append(row)
-    need(len(matching) == 1)
-    thread_info = streams[17]
-    header_size, entry_size, entry_count = unpack("<III", thread_info)
-    need(header_size == 12 and entry_size == 64 and 1 <= entry_count <= 4096
-        and len(thread_info) == header_size+entry_count*entry_size)
-    matching_info = [span(thread_info, header_size+index*entry_size, entry_size) for index in range(entry_count)
-        if unpack("<I", thread_info, header_size+index*entry_size)[0] == thread]
-    need(len(matching_info) == 1 and unpack("<Q", matching_info[0], 16)[0] == status["thread_creation"])
-    stack_base, stack_size, stack_rva = unpack("<QII", matching[0], 24)
-    stack = span(raw, stack_rva, stack_size)
-    need(0 < stack_size <= MAX_DUMP and stack_base <= rsp < stack_base+stack_size)
-    modules = []
-    rows = streams[4]
-    module_count, = unpack("<I", rows)
-    need(1 <= module_count <= 4096 and len(rows) == 4+108*module_count)
-    for index in range(module_count):
-        row = span(rows, 4+108*index, 108)
-        base, size, _, stamp, name_rva = unpack("<QIIII", row)
-        need(base > 0 and 0 < size <= 0xFFFFFFFF and base+size <= 0xFFFFFFFFFFFFFFFF)
-        name_size, = unpack("<I", raw, name_rva)
-        need(0 < name_size <= 2048 and name_size % 2 == 0)
-        name = span(raw, name_rva+4, name_size).decode("utf-16-le")
-        need("\0" not in name)
-        cv_size, cv_rva = unpack("<II", row, 76)
-        cv = rsds(span(raw, cv_rva, cv_size)) if cv_size else None
-        need(not any(base < old["base"]+old["size"] and old["base"] < base+size for old in modules))
-        modules.append({"base":base, "size":size, "stamp":stamp, "path":name, "cv":cv})
+    with dump_section("dump_structure_header"):
+        need(32 <= len(raw) <= MAX_DUMP and raw[:4] == b"MDMP")
+        version, count, directory, _, _, flags = unpack("<IIIIIQ", raw, 4)
+        need(version & 0xFFFF == 0xA793 and 1 <= count <= 64 and directory >= 32)
+        # Reject full-memory, full-memory-info is metadata and intentionally allowed.
+        need(flags & ~0x7820 == 0)
+    with dump_section("dump_structure_directory"):
+        streams = {}
+        for index in range(count):
+            kind, size, rva = unpack("<III", raw, directory+index*12)
+            # DbgHelp may count unused directory slots. They describe no stream.
+            if kind == 0:
+                need(size == rva == 0)
+                continue
+            need(kind not in streams and rva >= 32)
+            streams[kind] = span(raw, rva, size)
+        need(all(kind in streams for kind in (3, 4, 6, 7, 17)))
+        need(unpack("<H", streams[7])[0] == 9)  # PROCESSOR_ARCHITECTURE_AMD64
+    with dump_section("dump_structure_exception"):
+        exception = streams[6]
+        need(len(exception) == 168)
+        thread, padding = unpack("<II", exception)
+        code, exception_flags, chain, address, parameters, unused = unpack("<IIQQII", exception, 8)
+        need(padding == unused == chain == 0 and code == 0xC0000005 and parameters <= 15
+            and thread == status["thread_id"] and address == status["exception_address"]
+            and exception_flags == status["exception_flags"] and parameters == status["exception_parameter_count"])
+        exception_parameters = list(unpack("<15Q", exception, 40))
+        need(exception_parameters[:parameters] == status["exception_parameters"][:parameters]
+            and not any(exception_parameters[parameters:]))
+    with dump_section("dump_structure_context"):
+        size, rva = unpack("<II", exception, 160)
+        need(256 <= size <= 4096)
+        context = span(raw, rva, size)
+        context_flags, = unpack("<I", context, 48)
+        rsp, = unpack("<Q", context, 152)
+        rip, = unpack("<Q", context, 248)
+        need(context_flags == 0x100003 and rip == status["original_rip"] and rsp == status["original_rsp"]
+            and list(unpack("<17Q", context, 120)) == status["integer_registers"])
+    with dump_section("dump_structure_thread"):
+        threads = streams[3]
+        thread_count, = unpack("<I", threads)
+        need(1 <= thread_count <= 4096 and len(threads) == 4+48*thread_count)
+        matching = []
+        for index in range(thread_count):
+            row = span(threads, 4+48*index, 48)
+            if unpack("<I", row)[0] == thread:
+                matching.append(row)
+        need(len(matching) == 1)
+        thread_info = streams[17]
+        header_size, entry_size, entry_count = unpack("<III", thread_info)
+        need(header_size == 12 and entry_size == 64 and 1 <= entry_count <= 4096
+            and len(thread_info) == header_size+entry_count*entry_size)
+        matching_info = [span(thread_info, header_size+index*entry_size, entry_size) for index in range(entry_count)
+            if unpack("<I", thread_info, header_size+index*entry_size)[0] == thread]
+        need(len(matching_info) == 1 and unpack("<Q", matching_info[0], 16)[0] == status["thread_creation"])
+    with dump_section("dump_structure_stack"):
+        stack_base, stack_size, stack_rva = unpack("<QII", matching[0], 24)
+        stack = span(raw, stack_rva, stack_size)
+        need(0 < stack_size <= MAX_DUMP and stack_base <= rsp < stack_base+stack_size)
+    with dump_section("dump_structure_modules"):
+        modules = []
+        rows = streams[4]
+        module_count, = unpack("<I", rows)
+        need(1 <= module_count <= 4096 and len(rows) == 4+108*module_count)
+        for index in range(module_count):
+            row = span(rows, 4+108*index, 108)
+            base, size, _, stamp, name_rva = unpack("<QIIII", row)
+            need(base > 0 and 0 < size <= 0xFFFFFFFF and base+size <= 0xFFFFFFFFFFFFFFFF)
+            name_size, = unpack("<I", raw, name_rva)
+            need(0 < name_size <= 2048 and name_size % 2 == 0)
+            name = span(raw, name_rva+4, name_size).decode("utf-16-le")
+            need("\0" not in name)
+            cv_size, cv_rva = unpack("<II", row, 76)
+            cv = rsds(span(raw, cv_rva, cv_size)) if cv_size else None
+            need(not any(base < old["base"]+old["size"] and old["base"] < base+size for old in modules))
+            modules.append({"base":base, "size":size, "stamp":stamp, "path":name, "cv":cv})
     # Candidates are private raw stack values, never caller proofs by themselves.
     candidates = []
     start = rsp-stack_base
@@ -445,7 +472,7 @@ def empty(reason="unavailable"):
         "capture_wait_timeout", "capture_wait_not_complete",
         "dump_bytes_unconfirmed", "dump_structure_unconfirmed",
         "analysis_unavailable", "no_credible_own_frame", "observed"}
-        | {"capture_writer_" + failure for failure in WRITER_FAILURES})
+        | DUMP_STRUCTURE_FAILURES | {"capture_writer_" + failure for failure in WRITER_FAILURES})
     return {"status":"inconclusive", "reason":reason, "frames":[],
         "capture_perturbed_timing":True, "loaded_module_hash_proved":False,
         "source_mapping_proves_loaded_bytes":False}

@@ -99,6 +99,19 @@ class OwnedIdentityTests(unittest.TestCase):
             with self.subTest(status=bad_status), self.assertRaises(ValueError):
                 self.validate(bad_fatal, bad_status, bad_wait, identity, exit_class)
 
+    def test_empty_unused_directory_slots_are_not_streams(self):
+        _, status, _ = records()
+        good = minidump(status)
+        padded = bytearray(good)
+        struct.pack_into("<I", padded, 8, 7)  # Two additional all-zero directory slots.
+        self.assertEqual(dump.dump(padded, status), dump.dump(good, status))
+        for entry in ((0, 1, 0), (0, 0, 1024), (3, 52, 128)):
+            malformed = bytearray(padded)
+            struct.pack_into("<III", malformed, 32+5*12, *entry)
+            with self.subTest(entry=entry), self.assertRaises(dump.CaptureRejected) as result:
+                dump.dump(malformed, status)
+            self.assertEqual(result.exception.reason, "dump_structure_directory")
+
     def test_context_and_directory_bounds_reject_before_any_tool(self):
         _, status, _ = records()
         good = minidump(status)
@@ -292,7 +305,7 @@ class PreservationTests(unittest.TestCase):
                 ("dump-status.private.json", json.dumps(status).encode(), "capture_identity_unconfirmed"),
                 ("dump-wait.private.bin", wait, "dump_bytes_unconfirmed"),
                 ("dump.private.dmp", b"private payload", "dump_bytes_unconfirmed"),
-                ("dump.private.dmp", bytes(4096), "dump_structure_unconfirmed"),
+                ("dump.private.dmp", bytes(4096), "dump_structure_header"),
             ):
                 with self.subTest(reason=reason, name=name), \
                         patch.object(dump, "analyze", side_effect=AssertionError("no analysis")):
