@@ -120,7 +120,7 @@ struct SelectedTarget {
     creation: u64,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
 struct MessageEvidence {
     buttons_down: usize,
     buttons_up: usize,
@@ -555,8 +555,19 @@ fn controller() -> Result<()> {
     if kind == "build-reject" {
         return incompatible::controller(backend, &seats, &targets, &mode);
     }
-    if kind == "providers" {
-        provider_pilot::controller(backend, &seats, &targets)?;
+    if matches!(
+        kind.as_str(),
+        "providers" | provider_pilot::IDLE | provider_pilot::FIRST_INPUT
+    ) {
+        if kind == "providers" {
+            provider_pilot::controller(backend, &seats, &targets)?;
+        } else {
+            ensure!(
+                mode == "rust",
+                "provider boundary uses supervised virtual control"
+            );
+            provider_pilot::boundary_controller(backend, &seats, &targets, &kind)?;
+        }
         println!(
             "MIGRATION_STOPPED {mode} {} {}",
             targets.len(),
@@ -827,8 +838,13 @@ fn finish_cycle(
         })?;
         validate_owned_target(&fixture.selected, std::process::id())?;
         let observed = evidence(&fixture.selected)?;
+        let expected = match kind {
+            provider_pilot::IDLE => MessageEvidence::default(),
+            provider_pilot::FIRST_INPUT => provider_pilot::first_input_evidence(),
+            _ => expected_evidence(),
+        };
         ensure!(
-            observed == expected_evidence(),
+            observed == expected,
             "wrong real target messages: {observed:?}"
         );
         observations.push(observed);

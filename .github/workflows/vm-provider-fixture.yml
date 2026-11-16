@@ -1,0 +1,67 @@
+name: VM provider fixture
+
+on:
+  push:
+    branches: ['qualification/vm105-provider-boundary-*']
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    env:
+      CARGO_BUILD_JOBS: '2'
+      CARGO_PROFILE_DEV_DEBUG: '0'
+      CARGO_PROFILE_TEST_DEBUG: '0'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          submodules: recursive
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.92.0
+          components: rustfmt, clippy
+      - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+      - name: Build owned virtual fixture and pinned x64 runtime
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ((git rev-parse HEAD) -cne $env:GITHUB_SHA) { throw 'Checkout does not match workflow commit' }
+          $pin = 'dd29bf8d22349605d0e1950c1c5dc4893d72670e'
+          if ((git -C vendor/ProtoInput rev-parse HEAD) -cne $pin -or (git -C vendor/ProtoInput status --porcelain)) {
+            throw 'Clean pinned ProtoInput source required'
+          }
+          if (Test-Path -LiteralPath runtime) { throw 'Fresh runtime directory required' }
+          cargo fmt --all --check
+          if ($LASTEXITCODE -ne 0) { throw 'Rust formatting check failed' }
+          cargo clippy -p mux-windows --test rust_control_native --target x86_64-pc-windows-msvc --locked -- -D warnings
+          if ($LASTEXITCODE -ne 0) { throw 'Rust fixture lint failed' }
+          $messages = cargo test -p mux-windows --test rust_control_native --target x86_64-pc-windows-msvc --no-run --locked --message-format=json
+          if ($LASTEXITCODE -ne 0) { throw 'Rust fixture build failed' }
+          $test = @($messages | ForEach-Object { ConvertFrom-Json -InputObject $_ } | Where-Object {
+            $_.reason -ceq 'compiler-artifact' -and $_.target.name -ceq 'rust_control_native' -and $_.profile.test -and $_.executable
+          })
+          if ($test.Count -ne 1) { throw 'Expected one compiled Rust integration test' }
+          ./scripts/build-backend.ps1 -Architecture x64 -Toolset v143
+          if ($LASTEXITCODE -ne 0) { throw 'Native runtime build failed' }
+          $output = Join-Path $env:RUNNER_TEMP 'vm-provider-fixture'
+          New-Item -ItemType Directory -Path $output -ErrorAction Stop | Out-Null
+          Copy-Item -LiteralPath $test[0].executable -Destination (Join-Path $output 'rust-control-native.exe')
+          Copy-Item -LiteralPath runtime -Destination (Join-Path $output 'runtime') -Recurse
+          $files = @(Get-ChildItem -LiteralPath $output -File -Recurse | Sort-Object FullName | ForEach-Object {
+            [ordered]@{ file = [IO.Path]::GetRelativePath($output, $_.FullName).Replace('\','/'); bytes = $_.Length; sha256 = (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant() }
+          })
+          [ordered]@{ schema = 'pim.vm-provider-fixture.v1'; source_commit = $env:GITHUB_SHA; backend_pin = $pin; architecture = 'x64'; fixture_executed = $false; files = $files } |
+            ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $output 'manifest.json') -Encoding utf8
+      - uses: actions/upload-artifact@v4
+        with:
+          name: vm-provider-fixture-${{ github.sha }}
+          path: ${{ runner.temp }}/vm-provider-fixture
+          retention-days: 14
+          if-no-files-found: error
+

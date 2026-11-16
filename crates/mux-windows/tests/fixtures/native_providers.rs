@@ -4,6 +4,12 @@ use cursor_snapshot_protocol::STATUS_VALID;
 use mux_core::keyboard::ApplicationFocus;
 use mux_windows::{app_cursor::AppCursorObservation, protoinput::DesktopBackend};
 
+pub(super) const IDLE: &str = "provider-attach-idle";
+pub(super) const FIRST_INPUT: &str = "provider-first-input";
+const A_DOWN_RECIPIENT: usize = 33;
+const A_UP_RECIPIENT: usize = 34;
+const ATTACHED_IDLE: Duration = Duration::from_secs(8);
+
 pub(super) const TABLE_A: usize = 20;
 pub(super) const SECONDARY_HWND: usize = 21;
 pub(super) const SHIFT_WORD: usize = 22;
@@ -243,6 +249,136 @@ pub(super) fn controller(
         "provider cleanup did not acknowledge each original GUI queue: {report:?}"
     );
     Ok(())
+}
+
+pub(super) fn first_input_evidence() -> MessageEvidence {
+    MessageEvidence {
+        keys_down: 1,
+        keys_up: 1,
+        ..Default::default()
+    }
+}
+
+pub(super) fn boundary_controller(
+    backend: Backend,
+    seats: &[ResolvedSeat],
+    targets: &[SelectedTarget],
+    kind: &str,
+) -> Result<()> {
+    let [seat] = seats else {
+        bail!("provider boundary needs one virtual seat");
+    };
+    let [target] = targets else {
+        bail!("provider boundary needs one owned target");
+    };
+    let mut desktop = backend.desktop_session(seats.to_vec())?;
+    reset(target)?;
+    println!("MIGRATION_PROVIDER_BOUNDARY {kind} attach_start");
+    ensure!(
+        desktop.open_expected_with_focus(
+            target.pid,
+            target.creation,
+            ApplicationFocus::Compatibility,
+        )? == 0,
+        "unexpected provider target index"
+    );
+    println!("MIGRATION_PROVIDER_BOUNDARY {kind} attach_returned");
+    let until = Instant::now() + ATTACHED_IDLE;
+    while Instant::now() < until {
+        ensure!(desktop.alive(0), "target exited while attached and idle");
+        std::thread::sleep(Duration::from_millis(50));
+    }
+    ensure!(desktop.alive(0), "target exited at end of attached idle");
+    ensure!(
+        evidence(target)? == MessageEvidence::default() && query(target, 0)? == 0,
+        "target saw routed input during attach and idle"
+    );
+    println!("MIGRATION_PROVIDER_BOUNDARY {kind} idle_verified");
+    if kind == FIRST_INPUT {
+        let bounds = targets::client_bounds(target.hwnd, target.pid)?;
+        println!("MIGRATION_PROVIDER_BOUNDARY {kind} first_motion_start");
+        desktop.position(
+            0,
+            target.hwnd,
+            seat.mouse,
+            bounds.left + 17,
+            bounds.top + 21,
+            bounds,
+        )?;
+        wait_for(
+            "first consumed virtual motion",
+            || Ok(query(target, 0)? > 0),
+        )?;
+        println!("MIGRATION_PROVIDER_BOUNDARY {kind} first_motion_observed");
+        let keyboard = seat
+            .keyboard
+            .context("provider boundary virtual keyboard")?;
+        println!("MIGRATION_PROVIDER_BOUNDARY {kind} first_key_start");
+        let down = desktop
+            .release_to(
+                0,
+                target.hwnd,
+                Packet::key_scanned(keyboard, 0x41, 0x1e, 0, false),
+            )
+            .and_then(|()| {
+                wait_for("first consumed virtual key-down", || {
+                    Ok(query(target, 3)? == 1
+                        && query(target, A_DOWN_RECIPIENT)? == target.hwnd
+                        && query(target, KEY_STATE)? == 1)
+                })
+            });
+        // Once DOWN is submitted, issue the original recipient's UP even if
+        // observation fails. The cleanup fence still owns the selected process.
+        let up = desktop.release_to(
+            0,
+            target.hwnd,
+            Packet::key_scanned(keyboard, 0x41, 0x1e, 0, true),
+        );
+        down?;
+        up?;
+        wait_for("first consumed virtual key-up", || {
+            Ok(evidence(target)? == first_input_evidence()
+                && query(target, A_UP_RECIPIENT)? == target.hwnd
+                && query(target, KEY_STATE)? == 0)
+        })?;
+        println!("MIGRATION_PROVIDER_BOUNDARY {kind} first_key_observed");
+    }
+    let report = desktop.shutdown()?;
+    ensure!(
+        report.acknowledged == 1 && report.targets_exited == 0,
+        "provider boundary cleanup did not acknowledge the original live target: {report:?}"
+    );
+    Ok(())
+}
+
+fn boundary_pilot(kind: &str) -> Result<()> {
+    let runtime = PathBuf::from(
+        std::env::var_os(RUNTIME).context("set PROTOINPUTMULTIPLEX_MIGRATION_RUNTIME to opt in")?,
+    )
+    .canonicalize()?;
+    let mut fixtures = [spawn_target()?];
+    let run = run_cycle(&runtime, "rust", &mut fixtures, kind);
+    let target_exit = fixtures[0]
+        .process
+        .child
+        .try_wait()?
+        .map(|status| status.code());
+    println!("MIGRATION_PROVIDER_BOUNDARY {kind} target_exit={target_exit:?}");
+    run?;
+    println!("MIGRATION_PROVIDER_BOUNDARY {kind} committed_reuse");
+    Ok(())
+}
+
+#[test]
+#[ignore = "opt-in attach/idle in a newly spawned owned virtual fixture only"]
+fn desktop_provider_attach_idle() -> Result<()> {
+    boundary_pilot(IDLE)
+}
+
+#[test]
+#[ignore = "opt-in first input in a newly spawned owned virtual fixture only"]
+fn desktop_provider_first_input() -> Result<()> {
+    boundary_pilot(FIRST_INPUT)
 }
 
 #[test]
