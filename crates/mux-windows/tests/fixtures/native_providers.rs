@@ -344,9 +344,12 @@ pub(super) fn boundary_controller(
         println!("MIGRATION_PROVIDER_BOUNDARY {kind} first_key_observed");
     }
     let report = desktop.shutdown()?;
+    // Shutdown fences only windows that received routed input. Both arms still
+    // require the supervisor to commit and verify the live target is reusable.
+    let expected_acks = usize::from(kind == FIRST_INPUT);
     ensure!(
-        report.acknowledged == 1 && report.targets_exited == 0,
-        "provider boundary cleanup did not acknowledge the original live target: {report:?}"
+        report.acknowledged == expected_acks && report.targets_exited == 0,
+        "provider boundary cleanup expected {expected_acks} queue acknowledgements without a target exit: {report:?}"
     );
     Ok(())
 }
