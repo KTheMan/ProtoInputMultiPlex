@@ -49,10 +49,13 @@ jobs:
           if ($test.Count -ne 1) { throw 'Expected one compiled Rust integration test' }
           ./scripts/build-backend.ps1 -Architecture x64 -Toolset v143
           if ($LASTEXITCODE -ne 0) { throw 'Native runtime build failed' }
+          cargo build -p cursor-observer --target x86_64-pc-windows-msvc --locked
+          if ($LASTEXITCODE -ne 0) { throw 'Native-controls provider build failed' }
           $output = Join-Path $env:RUNNER_TEMP 'vm-provider-fixture'
           New-Item -ItemType Directory -Path $output -ErrorAction Stop | Out-Null
           Copy-Item -LiteralPath $test[0].executable -Destination (Join-Path $output 'rust-control-native.exe')
           Copy-Item -LiteralPath runtime -Destination (Join-Path $output 'runtime') -Recurse
+          Copy-Item -LiteralPath 'target/x86_64-pc-windows-msvc/debug/cursor_observer.dll' -Destination (Join-Path $output 'runtime/protoinputmultiplex_cursor_observer64.dll')
           $files = @(Get-ChildItem -LiteralPath $output -File -Recurse | Sort-Object FullName | ForEach-Object {
             [ordered]@{ file = [IO.Path]::GetRelativePath($output, $_.FullName).Replace('\','/'); bytes = $_.Length; sha256 = (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant() }
           })
