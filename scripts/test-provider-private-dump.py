@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 import struct
 import tempfile
+import time
 from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
@@ -210,6 +211,35 @@ class CallerEvidenceTests(unittest.TestCase):
         self.assertEqual(dump.parse_cdb(self.transcript(instruction="00000000`00002504 90 nop"),snapshot),[])
         self.assertEqual(dump.parse_cdb(self.transcript().replace(b"PIM_REG 00000000`00002505",b"PIM_REG 00000000`00002506"),snapshot),[])
 
+    def test_user_mode_debugger_keeps_local_symbol_guards_and_reports_fixed_phases(self):
+        image = {"image": r"C:\private\protoinputmultiplex.exe",
+                 "pdb": r"C:\private\protoinputmultiplex.pdb"}
+        row = {"base": 0x2000, "size": 0x1000}
+        snapshot = {"rip": 0xDEAD, "rsp": 0x1000, "modules": [row]}
+        with tempfile.TemporaryDirectory() as directory:
+            private = Path(directory)
+            args = (snapshot, [image], private / "dump.private.dmp", private, private, {},
+                    time.monotonic() + 60)
+            with patch.object(dump, "admitted_module", side_effect=ValueError("raw-private-string")):
+                with self.assertRaises(dump.CaptureRejected) as result:
+                    dump.analyze(*args)
+                self.assertEqual(result.exception.reason, "analysis_module_admission")
+            with patch.object(dump, "admitted_module", return_value=(image, {})):
+                with patch.object(dump, "private_tool", side_effect=OSError("raw-private-string")) as tool:
+                    with self.assertRaises(dump.CaptureRejected) as result:
+                        dump.analyze(*args)
+                    self.assertEqual(result.exception.reason, "analysis_cdb_process")
+                    flags = tool.call_args.args[0]
+                    self.assertNotIn("-secure", flags)
+                    options = int(flags[flags.index("-sflags") + 1], 16)
+                    self.assertFalse(options & 0x00040000)  # Kernel-only secure mode.
+                    self.assertEqual(options & 0x02000080, 0x02000080)  # No auto symbol server or embedded CV path.
+                    self.assertEqual(flags[flags.index("-y") + 1], r"C:\private")
+                    self.assertEqual(flags[flags.index("-i") + 1], r"C:\private")
+                with patch.object(dump, "private_tool", return_value=(b"raw-private-string", b"")):
+                    with self.assertRaises(dump.CaptureRejected) as result:
+                        dump.analyze(*args)
+                    self.assertEqual(result.exception.reason, "analysis_cdb_parse")
 
 class PreservationTests(unittest.TestCase):
     def test_frozen_fail_and_cleanup_preserved_and_no_new_process_poll(self):

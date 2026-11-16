@@ -234,21 +234,21 @@ DUMP_STRUCTURE_FAILURES = frozenset({
 
 
 @contextmanager
-def dump_section(reason):
+def diagnostic_section(reason):
     try:
         yield
-    except (Rejected, UnicodeError, struct.error):
+    except (ValueError, OSError, struct.error, subprocess.SubprocessError):
         raise CaptureRejected(reason) from None
 
 
 def dump(raw, status):
-    with dump_section("dump_structure_header"):
+    with diagnostic_section("dump_structure_header"):
         need(32 <= len(raw) <= MAX_DUMP and raw[:4] == b"MDMP")
         version, count, directory, _, _, flags = unpack("<IIIIIQ", raw, 4)
         need(version & 0xFFFF == 0xA793 and 1 <= count <= 64 and directory >= 32)
         # Reject full-memory, full-memory-info is metadata and intentionally allowed.
         need(flags & ~0x7820 == 0)
-    with dump_section("dump_structure_directory"):
+    with diagnostic_section("dump_structure_directory"):
         streams = {}
         for index in range(count):
             kind, size, rva = unpack("<III", raw, directory+index*12)
@@ -260,7 +260,7 @@ def dump(raw, status):
             streams[kind] = span(raw, rva, size)
         need(all(kind in streams for kind in (3, 4, 6, 7, 17)))
         need(unpack("<H", streams[7])[0] == 9)  # PROCESSOR_ARCHITECTURE_AMD64
-    with dump_section("dump_structure_exception"):
+    with diagnostic_section("dump_structure_exception"):
         exception = streams[6]
         need(len(exception) == 168)
         thread, padding = unpack("<II", exception)
@@ -271,7 +271,7 @@ def dump(raw, status):
         exception_parameters = list(unpack("<15Q", exception, 40))
         need(exception_parameters[:parameters] == status["exception_parameters"][:parameters]
             and not any(exception_parameters[parameters:]))
-    with dump_section("dump_structure_context"):
+    with diagnostic_section("dump_structure_context"):
         size, rva = unpack("<II", exception, 160)
         need(256 <= size <= 4096)
         context = span(raw, rva, size)
@@ -280,7 +280,7 @@ def dump(raw, status):
         rip, = unpack("<Q", context, 248)
         need(context_flags == 0x100003 and rip == status["original_rip"] and rsp == status["original_rsp"]
             and list(unpack("<17Q", context, 120)) == status["integer_registers"])
-    with dump_section("dump_structure_thread"):
+    with diagnostic_section("dump_structure_thread"):
         threads = streams[3]
         thread_count, = unpack("<I", threads)
         need(1 <= thread_count <= 4096 and len(threads) == 4+48*thread_count)
@@ -297,11 +297,11 @@ def dump(raw, status):
         matching_info = [span(thread_info, header_size+index*entry_size, entry_size) for index in range(entry_count)
             if unpack("<I", thread_info, header_size+index*entry_size)[0] == thread]
         need(len(matching_info) == 1 and unpack("<Q", matching_info[0], 16)[0] == status["thread_creation"])
-    with dump_section("dump_structure_stack"):
+    with diagnostic_section("dump_structure_stack"):
         stack_base, stack_size, stack_rva = unpack("<QII", matching[0], 24)
         stack = span(raw, stack_rva, stack_size)
         need(0 < stack_size <= MAX_DUMP and stack_base <= rsp < stack_base+stack_size)
-    with dump_section("dump_structure_modules"):
+    with diagnostic_section("dump_structure_modules"):
         modules = []
         rows = streams[4]
         module_count, = unpack("<I", rows)
@@ -471,7 +471,8 @@ def empty(reason="unavailable"):
         "capture_status_empty", "capture_wait_empty",
         "capture_wait_timeout", "capture_wait_not_complete",
         "dump_bytes_unconfirmed", "dump_structure_unconfirmed",
-        "analysis_unavailable", "no_credible_own_frame", "observed"}
+        "analysis_unavailable", "analysis_module_admission", "analysis_cdb_process",
+        "analysis_cdb_parse", "no_credible_own_frame", "observed"}
         | DUMP_STRUCTURE_FAILURES | {"capture_writer_" + failure for failure in WRITER_FAILURES})
     return {"status":"inconclusive", "reason":reason, "frames":[],
         "capture_perturbed_timing":True, "loaded_module_hash_proved":False,
@@ -549,32 +550,35 @@ def source_location(raw, source, allowed):
 
 
 def analyze(snapshot, admissions, dump_path, private, source, source_files, end):
-    verified = []
-    for row in snapshot["modules"]:
-        try:
-            item, image = admitted_module(row, admissions)
-            verified.append((row, item, image))
-        except (ValueError, OSError, UnicodeError, struct.error):
-            continue
-    need(verified)
-    # Explicit local symbol/image search. IGNORE_CVREC prevents embedded PDB paths;
-    # SECURE+DISABLE_SYMSRV_AUTODETECT prohibit automatic symbol-server use.
-    # No source path, extension command, shell command, or source-server loading.
-    symbol_dirs = sorted({str(Path(item["pdb"]).parent) for _, item, _ in verified})
-    image_dirs = sorted({str(Path(item["image"]).parent) for _, item, _ in verified})
-    for path in symbol_dirs+image_dirs:
-        local_path(path)
-    commands = [".srcpath", ".ecxr", ".echo PIM_STACK_BEGIN", "kn 20", ".echo PIM_STACK_END"]
-    for index in range(1, 32):
-        commands.extend([f".echo PIM_FRAME_{index:02d}_BEGIN", f".frame /r {index:x}",
-            '.printf "PIM_REG %p %p\\n", @rip, @rsp', "ub @rip L8", f".echo PIM_FRAME_{index:02d}_END"])
-    commands.append("q")
-    command_file = private/"offline.commands.private.txt"
-    command_file.write_text(";".join(commands)+"\n", encoding="ascii")
-    raw, _ = private_tool([ntpath.join(KITS, "cdb.exe"), "-sins", "-snul", "-secure",
-        "-sflags", "0x020e1784", "-y", ";".join(symbol_dirs), "-i", ";".join(image_dirs),
-        "-z", str(dump_path), "-cf", str(command_file)], private, "cdb", end)
-    evidence = parse_cdb(raw, snapshot)
+    with diagnostic_section("analysis_module_admission"):
+        verified = []
+        for row in snapshot["modules"]:
+            try:
+                item, image = admitted_module(row, admissions)
+                verified.append((row, item, image))
+            except (ValueError, OSError, UnicodeError, struct.error):
+                continue
+        need(verified)
+        # CDB is opening a user-mode dump. The kernel-only secure mode is incompatible.
+        # Explicit local paths, IGNORE_CVREC and DISABLE_SYMSRV_AUTODETECT keep searches
+        # local. The fixed script has no extension, shell or source-server commands.
+        symbol_dirs = sorted({ntpath.dirname(item["pdb"]) for _, item, _ in verified})
+        image_dirs = sorted({ntpath.dirname(item["image"]) for _, item, _ in verified})
+        for path in symbol_dirs+image_dirs:
+            local_path(path)
+    with diagnostic_section("analysis_cdb_process"):
+        commands = [".srcpath", ".ecxr", ".echo PIM_STACK_BEGIN", "kn 20", ".echo PIM_STACK_END"]
+        for index in range(1, 32):
+            commands.extend([f".echo PIM_FRAME_{index:02d}_BEGIN", f".frame /r {index:x}",
+                '.printf "PIM_REG %p %p\\n", @rip, @rsp', "ub @rip L8", f".echo PIM_FRAME_{index:02d}_END"])
+        commands.append("q")
+        command_file = private/"offline.commands.private.txt"
+        command_file.write_text(";".join(commands)+"\n", encoding="ascii")
+        raw, _ = private_tool([ntpath.join(KITS, "cdb.exe"), "-sins", "-snul",
+            "-sflags", "0x020a1784", "-y", ";".join(symbol_dirs), "-i", ";".join(image_dirs),
+            "-z", str(dump_path), "-cf", str(command_file)], private, "cdb", end)
+    with diagnostic_section("analysis_cdb_parse"):
+        evidence = parse_cdb(raw, snapshot)
     frames = []
     # The original exception PC itself is valid source evidence only in an
     # admitted image. Callsite evidence may still identify a caller for bad PCs.
@@ -644,6 +648,8 @@ def collect(private, metadata, identities, exit_classes, end):
             (target_root/"empty").mkdir()
             result[label] = analyze(snapshot, metadata["modules"], dump_path, target_root,
                 metadata["source"], metadata["source_files"], end)
+        except CaptureRejected as failure:
+            result[label] = empty(failure.reason)
         except (ValueError, OSError, UnicodeError, struct.error, subprocess.SubprocessError):
             result[label] = empty("analysis_unavailable")
         if time.monotonic() >= end:

@@ -1001,6 +1001,7 @@ jobs:
             'dump_bytes_unconfirmed', 'dump_structure_unconfirmed', 'dump_structure_header',
             'dump_structure_directory', 'dump_structure_exception', 'dump_structure_context',
             'dump_structure_thread', 'dump_structure_stack', 'dump_structure_modules', 'analysis_unavailable',
+            'analysis_module_admission', 'analysis_cdb_process', 'analysis_cdb_parse',
             'no_credible_own_frame', 'observed'
           )
           $reasons += @(
