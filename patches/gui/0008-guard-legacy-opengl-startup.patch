@@ -1,0 +1,274 @@
+diff --git a/src/ProtoInput/ProtoInputHooks/GuiImpl.cpp b/src/ProtoInput/ProtoInputHooks/GuiImpl.cpp
+--- a/src/ProtoInput/ProtoInputHooks/GuiImpl.cpp
++++ b/src/ProtoInput/ProtoInputHooks/GuiImpl.cpp
+@@ -1,5 +1,8 @@
+ //https://github.com/ocornut/imgui/issues/2022
+ #include <Windows.h>
++#include <atomic>
++#include <cstdint>
++#include <cstring>
+ #include "Gui.h"
+ #include <stdio.h>
+ #include "imgui.h"
+@@ -19,12 +22,12 @@
+ HGLRC   g_GLRenderContext;
+ HDC     g_HDCDeviceContext;
+ HWND Proto::ProtoGuiHwnd = nullptr;
++static std::atomic<bool> guiReady{false};
+ int     g_display_w = 800;
+ int     g_display_h = 600;
+ 
+-void CreateGlContext();
++bool CreateGlContext();
+ bool SetSwapInterval(int interval);
+-bool WGLExtensionSupported(const char* extension_name);
+ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+ 
+ unsigned long Proto::GuiThreadID = 0;
+@@ -118,11 +121,17 @@
+ 
+ void Proto::ToggleWindow()
+ {
++    if (!guiReady.load(std::memory_order_acquire))
++        return;
++
+     SetWindowVisible(!IsWindowVisible(ProtoGuiHwnd));
+ }
+ 
+ void Proto::SetWindowVisible(bool visible)
+ {
++    if (!guiReady.load(std::memory_order_acquire))
++        return;
++
+     RawInput::rawInputState.guiOpened = visible;
+     ShowWindow(ProtoGuiHwnd, visible ? SW_SHOW : SW_HIDE);
+ }
+@@ -152,48 +161,75 @@
+         return 1;
+     ProtoGuiHwnd = CreateWindowW(wc.lpszClassName, L"Proto Input", WS_OVERLAPPEDWINDOW | WS_VISIBLE, 0, 0, 950, 700, 0, 0, hInstance, 0);
+ 
++    if (ProtoGuiHwnd == nullptr)
++    {
++        UnregisterClassW(className, wc.hInstance);
++        return 1;
++    }
++
+     // Show the window
+     // ShowWindow(ProtoGuiHwnd, SW_SHOWDEFAULT);
+     ShowWindow(ProtoGuiHwnd, SW_HIDE);
+     UpdateWindow(ProtoGuiHwnd);
+ 
+-    //Prepare OpenGlContext
+-    CreateGlContext();
+-
+-	//TODO: this doesn't seem to work? (maybe needs newer opengl version)
+-    SetSwapInterval(1); //0 - No Interval, 1 - Sync with VSYNC, n - n times Sync with VSYNC
+-    glewInit();
+-
+-    // Setup Dear ImGui binding
+-    IMGUI_CHECKVERSION();
+-    ImGui::CreateContext();
+-    ImGuiIO& io = ImGui::GetIO(); (void)io;
+-
+-    //Init Win32
+-    ImGui_ImplWin32_Init(ProtoGuiHwnd);
+-
+-    //Init OpenGL Imgui Implementation
+-    // GL 3.0 + GLSL 130
+-    const char* glsl_version = "#version 130";
+-    ImGui_ImplOpenGL3_Init(glsl_version);
+-
+-    //Set Window bg color
+-    ImVec4 clear_color = ImVec4(0.1f, 0.0f, 0.0f, 1.0f);
+-
+-    // Setup style
+-    //ImGui::StyleColorsDark();
+-    SetupImGuiStyle(true, 0.9f);
+-	
+-    wglMakeCurrent(g_HDCDeviceContext, g_GLRenderContext);
+-
+-    //Font
+-    ImFont* font = io.Fonts->AddFontFromMemoryCompressedTTF(Sweet16_compressed_data, Sweet16_compressed_size, 16);
+-    io.Fonts->Build();
+-
+-
+-    SetWindowVisible(!defaultGuiToHidden);
+-
+-	
++    const auto releaseGl = []
++    {
++        if (g_GLRenderContext != nullptr)
++        {
++            if (wglGetCurrentContext() == g_GLRenderContext)
++                wglMakeCurrent(nullptr, nullptr);
++            wglDeleteContext(g_GLRenderContext);
++            g_GLRenderContext = nullptr;
++        }
++        if (g_HDCDeviceContext != nullptr)
++        {
++            ReleaseDC(Proto::ProtoGuiHwnd, g_HDCDeviceContext);
++            g_HDCDeviceContext = nullptr;
++        }
++    };
++
++    const bool rendererReady = []
++    {
++        if (!CreateGlContext() || glewInit() != GLEW_OK || !GLEW_VERSION_3_0)
++            return false;
++
++        SetSwapInterval(1);
++        IMGUI_CHECKVERSION();
++        ImGui::CreateContext();
++        if (!ImGui_ImplWin32_Init(Proto::ProtoGuiHwnd))
++        {
++            ImGui::DestroyContext();
++            return false;
++        }
++
++        if (!ImGui_ImplOpenGL3_Init("#version 130"))
++        {
++            ImGui_ImplWin32_Shutdown();
++            ImGui::DestroyContext();
++            return false;
++        }
++
++        SetupImGuiStyle(true, 0.9f);
++        ImGuiIO& io = ImGui::GetIO();
++        io.Fonts->AddFontFromMemoryCompressedTTF(Sweet16_compressed_data, Sweet16_compressed_size, 16);
++        io.Fonts->Build();
++        return true;
++    }();
++
++    if (rendererReady)
++    {
++        guiReady.store(true, std::memory_order_release);
++        SetWindowVisible(!defaultGuiToHidden);
++    }
++    else
++    {
++        // Controller hooks need the cooperative HWND even on a desktop that
++        // cannot render the optional GUI. Keep its message pump running.
++        releaseGl();
++    }
++
++    const ImVec4 clear_color = ImVec4(0.1f, 0.0f, 0.0f, 1.0f);
++
+     // Main loop
+     MSG msg;
+     ZeroMemory(&msg, sizeof(msg));
+@@ -228,7 +264,7 @@
+     	//TODO: implement a proper frame cap
+         Sleep(15);
+ 
+-        if (IsWindowVisible(ProtoGuiHwnd))
++        if (rendererReady && IsWindowVisible(ProtoGuiHwnd))
+         {
+             // Start the Dear ImGui frame
+             ImGui_ImplOpenGL3_NewFrame();
+@@ -261,13 +297,18 @@
+ 
+     }
+ 
+-    // Cleanup
+-    ImGui_ImplOpenGL3_Shutdown();
+-    wglDeleteContext(g_GLRenderContext);
+-    ImGui::DestroyContext();
+-    ImGui_ImplWin32_Shutdown();
++    guiReady.store(false, std::memory_order_release);
++    if (rendererReady)
++    {
++        RawInput::rawInputState.guiOpened = false;
++        ImGui_ImplOpenGL3_Shutdown();
++        ImGui_ImplWin32_Shutdown();
++        ImGui::DestroyContext();
++        releaseGl();
++    }
+ 
+     DestroyWindow(ProtoGuiHwnd);
++    ProtoGuiHwnd = nullptr;
+     UnregisterClassW(className, wc.hInstance);
+ 
+ 	//TODO: this is never actually called, need a new system for cleanup
+@@ -304,7 +345,7 @@
+     return DefWindowProc(hWnd, msg, wParam, lParam);
+ }
+ 
+-void CreateGlContext()
++bool CreateGlContext()
+ {
+ 
+     PIXELFORMATDESCRIPTOR pfd =
+@@ -328,46 +369,35 @@
+     };
+ 
+     g_HDCDeviceContext = GetDC(Proto::ProtoGuiHwnd);
+-
+-    int pixelFormal = ChoosePixelFormat(g_HDCDeviceContext, &pfd);
+-    SetPixelFormat(g_HDCDeviceContext, pixelFormal, &pfd);
++    if (g_HDCDeviceContext == nullptr)
++        return false;
++
++    const int pixelFormat = ChoosePixelFormat(g_HDCDeviceContext, &pfd);
++    if (pixelFormat == 0 || !SetPixelFormat(g_HDCDeviceContext, pixelFormat, &pfd))
++        return false;
++
+     g_GLRenderContext = wglCreateContext(g_HDCDeviceContext);
+-    wglMakeCurrent(g_HDCDeviceContext, g_GLRenderContext);
++    return g_GLRenderContext != nullptr && wglMakeCurrent(g_HDCDeviceContext, g_GLRenderContext);
++}
++
++static bool IsWglProcAvailable(PROC address)
++{
++    // Windows drivers can use small integers or -1 as unavailable sentinels.
++    const auto value = reinterpret_cast<std::uintptr_t>(address);
++    return value > 3 && value != static_cast<std::uintptr_t>(-1);
+ }
+ 
+ bool SetSwapInterval(int interval)
+ {
+-    if (WGLExtensionSupported("WGL_EXT_swap_control"))
+-    {
+-        // Extension is supported, init pointers.
+-        wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)wglGetProcAddress("wglSwapIntervalEXT");
+-
+-        // this is another function from WGL_EXT_swap_control extension
+-        wglGetSwapIntervalEXT = (PFNWGLGETSWAPINTERVALEXTPROC)wglGetProcAddress("wglGetSwapIntervalEXT");
+-
+-        wglSwapIntervalEXT(interval);
+-        return true;
+-    }
+-
+-    return false;
+-
+-}
+-
+-//Got from https://stackoverflow.com/questions/589064/how-to-enable-vertical-sync-in-opengl/589232
+-bool WGLExtensionSupported(const char* extension_name)
+-{
+-    // this is pointer to function which returns pointer to string with list of all wgl extensions
+-    PFNWGLGETEXTENSIONSSTRINGEXTPROC _wglGetExtensionsStringEXT = NULL;
+-
+-    // determine pointer to wglGetExtensionsStringEXT function
+-    _wglGetExtensionsStringEXT = (PFNWGLGETEXTENSIONSSTRINGEXTPROC)wglGetProcAddress("wglGetExtensionsStringEXT");
+-
+-    if (strstr(_wglGetExtensionsStringEXT(), extension_name) == NULL)
+-    {
+-        // string was not found
++    const auto getExtensions = wglGetProcAddress("wglGetExtensionsStringEXT");
++    if (!IsWglProcAvailable(getExtensions))
+         return false;
+-    }
+-
+-    // extension is supported
+-    return true;
+-}
+\ No newline at end of file
++
++    const auto extensions = reinterpret_cast<PFNWGLGETEXTENSIONSSTRINGEXTPROC>(getExtensions)();
++    if (extensions == nullptr || std::strstr(extensions, "WGL_EXT_swap_control") == nullptr)
++        return false;
++
++    const auto setInterval = wglGetProcAddress("wglSwapIntervalEXT");
++    return IsWglProcAvailable(setInterval) &&
++        reinterpret_cast<PFNWGLSWAPINTERVALEXTPROC>(setInterval)(interval) != FALSE;
++}

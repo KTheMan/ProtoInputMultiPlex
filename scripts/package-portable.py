@@ -44,6 +44,7 @@ BACKEND_PATCH_SEQUENCE = (
     "patches/keyboard-state/0005-consumed-keyboard-state.patch",
     "patches/lifecycle/0006-checked-message-filter-setup.patch",
     "patches/stdio/0007-preserve-target-stdio.patch",
+    "patches/gui/0008-guard-legacy-opengl-startup.patch",
 )
 # OS components only. Unknown imports fail staging, including VC redistributables.
 SYSTEM = set("advapi32 avrt bcrypt bcryptprimitives cfgmgr32 combase comctl32 comdlg32 crypt32 cryptbase d2d1 d3d11 d3d12 d3dcompiler_47 dbghelp dbgcore dcomp dhcpcsvc dinput8 dnsapi dwrite dwmapi dxgi gdi32 hid imm32 iphlpapi kernel32 kernelbase mpr msvcrt mswsock ncrypt netapi32 normaliz ntdll ole32 oleaut32 opengl32 powrprof propsys psapi rpcrt4 secur32 setupapi shell32 shcore shlwapi ucrtbase uiautomationcore user32 userenv usp10 uxtheme version winhttp wininet winmm winspool wintrust wldap32 ws2_32 wtsapi32".split())

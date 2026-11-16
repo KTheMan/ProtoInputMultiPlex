@@ -66,7 +66,7 @@ On the future hosted runner, the exact build entry points are:
 ```
 
 The portable builder prepares only the existing approved `0001`, `0004`, `0005`,
-`0006`, `0007` compatibility sequence and calls the existing v143 backend builder
+`0006`, `0007`, and `0008` compatibility sequence and calls the existing v143 backend builder
 for x64/x86. No vendor change is introduced here. It builds the x64 Rust app,
 x64/x86 Rust observer DLLs, full-default/native-client SDK DLLs and matching
 generated headers for x64/x86, and the web WASM/JS/types/example. The source ZIP

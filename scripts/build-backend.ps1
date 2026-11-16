@@ -25,7 +25,8 @@ $setupAckPatch = Join-Path $repoRoot 'patches\lifecycle\0006-checked-message-fil
 $stdioPatch = Join-Path $repoRoot 'patches\stdio\0007-preserve-target-stdio.patch'
 # Overlays are relative to their predecessor. Remove in reverse order before
 # checking the frozen base, then restore in order even if base verification fails.
-$overlays = @($lifecyclePatch, $keyboardPatch, $setupAckPatch, $stdioPatch)
+$legacyGuiPatch = Join-Path $repoRoot 'patches\gui\0008-guard-legacy-opengl-startup.patch'
+$overlays = @($lifecyclePatch, $keyboardPatch, $setupAckPatch, $stdioPatch, $legacyGuiPatch)
 $removedOverlays = @()
 $baseVerified = $false
 try {

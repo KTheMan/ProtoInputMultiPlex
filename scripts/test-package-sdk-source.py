@@ -17,6 +17,7 @@ PATCHES = (
     "patches/keyboard-state/0005-consumed-keyboard-state.patch",
     "patches/lifecycle/0006-checked-message-filter-setup.patch",
     "patches/stdio/0007-preserve-target-stdio.patch",
+    "patches/gui/0008-guard-legacy-opengl-startup.patch",
 )
 ADDED = tuple("vendor/ProtoInput/src/ProtoInput/ProtoInputHooks/"+name for name in (
     "MuxCursorObserverBridge.h", "MuxLifecycleNative.h", "pipeinclude/MuxLifecycleProtocol.h",

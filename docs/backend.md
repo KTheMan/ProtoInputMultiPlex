@@ -21,6 +21,8 @@ Compatibility is isolated in `scripts/native-compat.targets` and `patches/`:
 - Queue-fence compatibility adds a fixed-width 24-byte `MuxQueueFence` pipe packet and serializes complete loader pipe frames. Its isolated delta is nested in the consolidated top-level compatibility patch; original vendor patch bytes are retained. See the [compatibility record](queue-fence-compatibility-2026-10-14.json).
 - The development [native keyboard-state adapter](keyboard-state-backend-patch.md) forwards consumed message facts to Rust and acknowledges provider startup/shutdown. Its isolated overlay follows the lifecycle overlay. The [bounded keyboard assessment](native-keyboard-assessment-2026-10-20.json) accepts an owned Ctrl+S accelerator and two-process classic WordPad typing/save/Stop workflow; broader API/application support remains open.
 
+- The optional injected GUI validates its OpenGL context and WGL extension pointers before calling them. If its renderer is unavailable, it releases its OpenGL resources and keeps the hidden controller window and routing hooks running.
+
 Patches apply idempotently. A conflict fails the build rather than resetting vendor edits. The vendored checkout shows these documented modifications; its base commit stays pinned.
 
 ## ABI
