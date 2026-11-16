@@ -7465,6 +7465,7 @@ impl Dashboard {
             .id(ui.id().with("routing-mode-menu"))
             .open_memory(toggle.then_some(egui::SetOpenCommand::Toggle))
             .align_alternatives(&[])
+            .gap(core::SPACE_2)
             .width(216.0)
             .close_behavior(egui::PopupCloseBehavior::CloseOnClickOutside)
             .show(|menu| {
@@ -7514,32 +7515,35 @@ impl Dashboard {
             }
         }
         if let Some(options) = self.profile.desktop.clone() {
-            for (label, mode) in [
-                ("Switched", RoutingMode::Switched),
-                ("Concurrent", RoutingMode::Concurrent),
-            ] {
-                let enabled = self.session.is_none() || self.session_ready && !self.session_busy;
-                let response = ouroboros_ui::atoms::Radio::new(mode == options.mode)
-                    .label(label)
-                    .enabled(enabled)
-                    .sm()
-                    .show(ui);
-                let accepted = self
-                    .script
-                    .as_mut()
-                    .is_none_or(|script| script.observe(label, &response));
-                if response.clicked() && accepted && self.consume_action(ui.ctx(), label) {
-                    if let Some(session) = &self.session {
-                        session.request(Request::Mode {
-                            mode,
-                            multi_keyboard: options.multi_keyboard,
-                        });
-                        self.session_busy = true;
-                    } else {
-                        self.profile.desktop.as_mut().unwrap().mode = mode;
+            ui.horizontal_wrapped(|ui| {
+                for (label, mode) in [
+                    ("Switched", RoutingMode::Switched),
+                    ("Concurrent", RoutingMode::Concurrent),
+                ] {
+                    let enabled =
+                        self.session.is_none() || self.session_ready && !self.session_busy;
+                    let response = ouroboros_ui::atoms::Radio::new(mode == options.mode)
+                        .label(label)
+                        .enabled(enabled)
+                        .sm()
+                        .show(ui);
+                    let accepted = self
+                        .script
+                        .as_mut()
+                        .is_none_or(|script| script.observe(label, &response));
+                    if response.clicked() && accepted && self.consume_action(ui.ctx(), label) {
+                        if let Some(session) = &self.session {
+                            session.request(Request::Mode {
+                                mode,
+                                multi_keyboard: options.multi_keyboard,
+                            });
+                            self.session_busy = true;
+                        } else {
+                            self.profile.desktop.as_mut().unwrap().mode = mode;
+                        }
                     }
                 }
-            }
+            });
             let mut multi = options.multi_keyboard;
             let response = Checkbox::new(&mut multi)
                 .label("Multi keyboard")
