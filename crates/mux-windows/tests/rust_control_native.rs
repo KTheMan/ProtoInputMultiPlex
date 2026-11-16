@@ -557,7 +557,10 @@ fn controller() -> Result<()> {
     }
     if matches!(
         kind.as_str(),
-        "providers" | provider_pilot::IDLE | provider_pilot::FIRST_INPUT
+        "providers"
+            | provider_pilot::IDLE
+            | provider_pilot::FIRST_INPUT
+            | provider_pilot::TWO_SEATS
     ) {
         if kind == "providers" {
             provider_pilot::controller(backend, &seats, &targets)?;
@@ -566,7 +569,11 @@ fn controller() -> Result<()> {
                 mode == "rust",
                 "provider boundary uses supervised virtual control"
             );
-            provider_pilot::boundary_controller(backend, &seats, &targets, &kind)?;
+            if kind == provider_pilot::TWO_SEATS {
+                provider_pilot::two_seat_controller(backend, &seats, &targets)?;
+            } else {
+                provider_pilot::boundary_controller(backend, &seats, &targets, &kind)?;
+            }
         }
         println!(
             "MIGRATION_STOPPED {mode} {} {}",
@@ -841,6 +848,7 @@ fn finish_cycle(
         let expected = match kind {
             provider_pilot::IDLE => MessageEvidence::default(),
             provider_pilot::FIRST_INPUT => provider_pilot::first_input_evidence(),
+            provider_pilot::TWO_SEATS => provider_pilot::two_seat_evidence(),
             _ => expected_evidence(),
         };
         ensure!(

@@ -6,6 +6,9 @@ use mux_windows::{app_cursor::AppCursorObservation, protoinput::DesktopBackend};
 
 pub(super) const IDLE: &str = "provider-attach-idle";
 pub(super) const FIRST_INPUT: &str = "provider-first-input";
+pub(super) const TWO_SEATS: &str = "provider-two-seats";
+const BUTTON_DOWN_RECIPIENT: usize = 31;
+const BUTTON_UP_RECIPIENT: usize = 32;
 const A_DOWN_RECIPIENT: usize = 33;
 const A_UP_RECIPIENT: usize = 34;
 const ATTACHED_IDLE: Duration = Duration::from_secs(8);
@@ -257,6 +260,139 @@ pub(super) fn first_input_evidence() -> MessageEvidence {
         keys_up: 1,
         ..Default::default()
     }
+}
+
+pub(super) fn two_seat_evidence() -> MessageEvidence {
+    MessageEvidence {
+        authored_text: 0,
+        ..expected_evidence()
+    }
+}
+
+pub(super) fn two_seat_controller(
+    backend: Backend,
+    seats: &[ResolvedSeat],
+    targets: &[SelectedTarget],
+) -> Result<()> {
+    let [first, second] = targets else {
+        bail!("two-seat routing needs two owned targets");
+    };
+    ensure!(
+        first.pid != second.pid && seats.len() == 2,
+        "expected distinct targets and two seats"
+    );
+    let mut desktop = backend.desktop_session(seats.to_vec())?;
+    for (index, target) in targets.iter().enumerate() {
+        ensure!(
+            desktop.open_expected_with_focus(
+                target.pid,
+                target.creation,
+                ApplicationFocus::NativeControls
+            )? == index,
+            "two-seat target attachment index changed"
+        );
+        reset(target)?;
+    }
+    println!(
+        "MIGRATION_TWO_SEATS attached pid_a={} pid_b={}",
+        first.pid, second.pid
+    );
+
+    let held = MessageEvidence {
+        buttons_down: 1,
+        keys_down: 1,
+        ..MessageEvidence::default()
+    };
+    let released = two_seat_evidence();
+    let client = [(17, 21), (31, 35)];
+    let mut motion_counts = [0; 2];
+    for (index, target) in targets.iter().enumerate() {
+        let seat = &seats[index];
+        let keyboard = seat.keyboard.context("two-seat virtual keyboard")?;
+        let bounds = targets::client_bounds(target.hwnd, target.pid)?;
+        desktop.position(
+            index,
+            target.hwnd,
+            seat.mouse,
+            bounds.left + client[index].0,
+            bounds.top + client[index].1,
+            bounds,
+        )?;
+        desktop.submit(index, Packet::button(seat.mouse, 0, false))?;
+        desktop.submit(index, Packet::key_scanned(keyboard, 0x41, 0x1e, 0, false))?;
+        wait_for("two-seat mouse and key down at original window", || {
+            Ok(evidence(target)? == held
+                && key_a(target, true)?
+                && query(target, BUTTON_DOWN_RECIPIENT)? == target.hwnd
+                && query(target, A_DOWN_RECIPIENT)? == target.hwnd
+                && query(target, CURSOR_X)? == client[index].0 as usize
+                && query(target, CURSOR_Y)? == client[index].1 as usize
+                && query(target, 0)? > 0)
+        })?;
+        motion_counts[index] = query(target, 0)?;
+        if index == 0 {
+            ensure!(
+                evidence(second)? == MessageEvidence::default()
+                    && key_a(second, false)?
+                    && query(second, 0)? == 0,
+                "seat A input reached seat B"
+            );
+        }
+    }
+    ensure!(
+        evidence(first)? == held
+            && key_a(first, true)?
+            && query(first, 0)? == motion_counts[0]
+            && query(first, CURSOR_X)? == client[0].0 as usize
+            && query(first, CURSOR_Y)? == client[0].1 as usize,
+        "seat B input changed held state or cursor of seat A"
+    );
+    println!("MIGRATION_TWO_SEATS both_held_independently");
+
+    for (index, target) in targets.iter().enumerate() {
+        let seat = &seats[index];
+        let keyboard = seat.keyboard.context("two-seat virtual keyboard")?;
+        desktop.submit(index, Packet::button(seat.mouse, 0, true))?;
+        desktop.submit(index, Packet::key_scanned(keyboard, 0x41, 0x1e, 0, true))?;
+        wait_for("two-seat mouse and key up at original window", || {
+            Ok(evidence(target)? == released
+                && key_a(target, false)?
+                && query(target, BUTTON_UP_RECIPIENT)? == target.hwnd
+                && query(target, A_UP_RECIPIENT)? == target.hwnd)
+        })?;
+        if index == 0 {
+            ensure!(
+                evidence(second)? == held
+                    && key_a(second, true)?
+                    && query(second, 0)? == motion_counts[1],
+                "releasing seat A changed seat B"
+            );
+            println!("MIGRATION_TWO_SEATS seat_a_released_seat_b_held");
+        }
+    }
+    ensure!(
+        evidence(first)? == released && key_a(first, false)?,
+        "releasing seat B changed seat A"
+    );
+    let report = desktop.shutdown()?;
+    ensure!(
+        report.acknowledged == 2 && report.targets_exited == 0,
+        "two-seat shutdown did not fence both live windows: {report:?}"
+    );
+    Ok(())
+}
+
+#[test]
+#[ignore = "opt-in concurrent routing in two newly spawned owned virtual fixtures only"]
+fn desktop_provider_two_virtual_seats() -> Result<()> {
+    let runtime = PathBuf::from(
+        std::env::var_os(RUNTIME).context("set PROTOINPUTMULTIPLEX_MIGRATION_RUNTIME to opt in")?,
+    )
+    .canonicalize()?;
+    let mut fixtures = [spawn_target()?, spawn_target()?];
+    run_cycle(&runtime, "rust", &mut fixtures, TWO_SEATS)?;
+    println!("MIGRATION_TWO_SEATS committed_reuse_both");
+    Ok(())
 }
 
 pub(super) fn boundary_controller(
