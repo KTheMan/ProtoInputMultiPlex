@@ -122,7 +122,11 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
           $archive = Join-Path $env:PIM_CANDIDATE_ROOT 'wasm-bindgen.tar.gz'
-          & curl.exe --fail --location --silent --show-error --retry 2 --retry-delay 2 --retry-max-time 120 --connect-timeout 15 --max-time 60 --output $archive --header 'Accept: application/octet-stream' --header 'X-GitHub-Api-Version: 2026-03-10' 'https://api.github.com/repos/wasm-bindgen/wasm-bindgen/releases/assets/587769522'
+          if ($env:GITHUB_REF -ceq 'refs/heads/qualification/vm105-ouroboros-home-20261116') {
+            & curl.exe --fail --location --silent --show-error --retry 2 --retry-delay 2 --retry-max-time 120 --connect-timeout 15 --max-time 60 --output $archive 'https://github.com/wasm-bindgen/wasm-bindgen/releases/download/0.2.129/wasm-bindgen-0.2.129-x86_64-pc-windows-msvc.tar.gz'
+          } else {
+            & curl.exe --fail --location --silent --show-error --retry 2 --retry-delay 2 --retry-max-time 120 --connect-timeout 15 --max-time 60 --output $archive --header 'Accept: application/octet-stream' --header 'X-GitHub-Api-Version: 2026-03-10' 'https://api.github.com/repos/wasm-bindgen/wasm-bindgen/releases/assets/587769522'
+          }
           if ($LASTEXITCODE -ne 0) { throw 'Pinned binding archive download failed.' }
           if ((Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash.ToLowerInvariant() -cne '79e348c169d0c10c0b287647f1e753d0985353ca96800bc29be8f4261baf13e6') { throw 'Pinned binding archive digest mismatch.' }
       - name: Build and stage the full unsigned candidate using accepted packaging scripts
