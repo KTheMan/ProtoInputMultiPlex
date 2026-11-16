@@ -3,7 +3,7 @@ name: Unsigned unreleased build candidate
 
 on:
   push:
-    branches: [sdk/application-events-20261108]
+    branches: [sdk/application-events-20261108, qualification/vm105-ouroboros-home-20261116]
     paths: [.github/workflows/release-candidate.yml]
   workflow_dispatch:
     inputs:
@@ -28,7 +28,8 @@ env:
   PYTHONDONTWRITEBYTECODE: '1'
   PYTHONUTF8: '1'
   GIT_TERMINAL_PROMPT: '0'
-  PIM_CANDIDATE_GUI_RENDERER: ${{ inputs.gui_renderer || 'glow' }}
+  PIM_CANDIDATE_SOURCE_SHA: ${{ github.ref == 'refs/heads/qualification/vm105-ouroboros-home-20261116' && 'ef6c93d75b518b2590034b9389afc890fe9dde83' || github.sha }}
+  PIM_CANDIDATE_GUI_RENDERER: ${{ github.ref == 'refs/heads/qualification/vm105-ouroboros-home-20261116' && 'software-dx12' || inputs.gui_renderer || 'glow' }}
 
 jobs:
   source-checks:
@@ -37,7 +38,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.sha }}
+          ref: ${{ env.PIM_CANDIDATE_SOURCE_SHA }}
           submodules: recursive
           persist-credentials: false
       - name: Check packaging without compiling or starting the product
@@ -66,7 +67,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.sha }}
+          ref: ${{ env.PIM_CANDIDATE_SOURCE_SHA }}
           submodules: recursive
           persist-credentials: false
       - uses: dtolnay/rust-toolchain@stable
@@ -81,7 +82,7 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
           $actual = & git rev-parse HEAD
-          if ($LASTEXITCODE -ne 0 -or $actual -cne $env:GITHUB_SHA) { throw 'Checkout commit mismatch.' }
+          if ($LASTEXITCODE -ne 0 -or $actual -cne $env:PIM_CANDIDATE_SOURCE_SHA) { throw 'Checkout commit mismatch.' }
           $native = & git -C vendor/ProtoInput rev-parse HEAD
           if ($LASTEXITCODE -ne 0 -or $native -cne 'dd29bf8d22349605d0e1950c1c5dc4893d72670e') { throw 'Backend pin mismatch.' }
           if ((& git status --porcelain --untracked-files=all)) { throw 'Build requires a clean root checkout.' }
@@ -134,6 +135,7 @@ jobs:
           & ./scripts/package-installer.ps1 -BundleDir (Join-Path $root 'portable') -OutputFile (Join-Path $root 'review/ProtoInputMultiPlex-unsigned-unreleased-setup.exe') -MakeNsis $env:PIM_MAKENSIS
           if (-not $?) { throw 'Unsigned installer packaging failed.' }
       - name: Retain only completed deliverables and sanitized build provenance
+        if: github.ref != 'refs/heads/qualification/vm105-ouroboros-home-20261116'
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
@@ -156,10 +158,110 @@ jobs:
           $hashes = @(Get-ChildItem -LiteralPath $review -File | Sort-Object Name | ForEach-Object { [ordered]@{ file=$_.Name; bytes=$_.Length; sha256=(Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant() } })
           ConvertTo-Json -InputObject $hashes -Depth 5 | Set-Content -LiteralPath (Join-Path $review 'SHA256.json') -Encoding utf8
       - name: Upload unsigned unreleased artifacts for CI review
+        if: github.ref != 'refs/heads/qualification/vm105-ouroboros-home-20261116'
         uses: actions/upload-artifact@v4
         with:
           name: unsigned-unreleased-candidate-${{ github.sha }}-${{ github.run_attempt }}
           path: ${{ env.PIM_CANDIDATE_ROOT }}/review/*
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 0
+      - name: Hash and encrypt the loose x64 candidate
+        if: github.ref == 'refs/heads/qualification/vm105-ouroboros-home-20261116'
+        shell: pwsh
+        env:
+          PIM_REVIEW_RSA_MODULUS: 'vkdloO9SVoNkr86H7fMwf1pGN5uXl1p45pRbxSXUwCIKQE1kqHCUN2kk2KHB438vckmHdiquYPTOzMq2FF9cMf//QjRvwOTkv4kEg8QptPgVGd4kyRyz2K73dgEhKXeTkbPjgLMbOg8JdIyFxcEGZ9rv1KcOjYfSZbQ985q7mJyLcAkHXaZm7ap/l/DAyr6eOLHo2Xq1RIPHnNjliDNKYfPUGE0MQm1KjZEdWysP39xtzVTl40ZwvJ3O3ShbFSRbBm11UIe08X3f7eqEOXeytuC+vJ3HBhHks4UTWrrtPaVN9yX01vFh0jaJw81HrYPEE6YtUjHKa4obMPTQv4p9RVyjK+tGJhwGFAfJaYgLi9goEPVNmKoLvkH+PbczDxAREbpx/5HtIro+BrynEhD4s9JWOZdl+yNT6gcZ4LPPCdr8pIgHDjr2P1xLgJFvONEigoUIexSp32GE7qIKEYMJ09pmPbHfRT5IGDi8Ed7/fEbBl5XMyOpBcInX2iUUddPx'
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $root = $env:PIM_CANDIDATE_ROOT
+          $portable = Join-Path $root 'portable'
+          $review = Join-Path $root 'review'
+          $setupName = 'ProtoInputMultiPlex-unsigned-unreleased-setup.exe'
+          $manifestPath = Join-Path $portable 'bundle-manifest.json'
+          $manifest = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
+          if ($manifest.source_commit -cne $env:PIM_CANDIDATE_SOURCE_SHA -or
+              $manifest.protoinput_commit -cne 'dd29bf8d22349605d0e1950c1c5dc4893d72670e' -or
+              $manifest.platform -cne 'windows-x64' -or -not $manifest.build_inputs_verified -or
+              $manifest.application_build.gui_renderer -cne 'software-dx12' -or
+              $manifest.application_build.default_renderer -cne 'software-dx12' -or
+              ($manifest.application_build.features -join ',') -cne 'software-renderer') {
+            throw 'Unexpected candidate source, runtime, architecture, or renderer.'
+          }
+          function Measure-File($rootPath, $relative) {
+            $file = Get-Item -LiteralPath (Join-Path $rootPath $relative)
+            if ($file.PSIsContainer -or $file.Length -le 0) { throw "Incomplete candidate member: $relative" }
+            [ordered]@{ path=$relative; bytes=$file.Length; sha256=(Get-FileHash -LiteralPath $file.FullName -Algorithm SHA256).Hash.ToLowerInvariant() }
+          }
+          $runtimeNames = @(Get-ChildItem -LiteralPath (Join-Path $portable 'runtime') -File -Recurse |
+            ForEach-Object { [IO.Path]::GetRelativePath($portable, $_.FullName).Replace('\','/') } | Sort-Object)
+          $expectedRuntime = @($manifest.runtime_files | ForEach-Object { "runtime/$_" } | Sort-Object)
+          if (-not $runtimeNames.Count -or (Compare-Object $expectedRuntime $runtimeNames -CaseSensitive)) { throw 'Runtime inventory mismatch.' }
+          $payload = @(foreach ($relative in (@('protoinputmultiplex.exe') + $runtimeNames)) {
+            $item = Measure-File $portable $relative
+            $bound = @($manifest.files | Where-Object { $_.path -ceq $relative })
+            if ($bound.Count -ne 1 -or $bound[0].bytes -ne $item.bytes -or $bound[0].sha256 -cne $item.sha256) {
+              throw "Candidate hash does not match manifest: $relative"
+            }
+            if ($relative -ceq 'protoinputmultiplex.exe' -and $item.sha256 -cne $manifest.application_build.executable_sha256) {
+              throw 'Portable executable does not match the renderer build record.'
+            }
+            $item.path = "portable/$relative"
+            $item
+          })
+          $payload += Measure-File $review $setupName
+          Copy-Item -LiteralPath $manifestPath -Destination (Join-Path $review 'bundle-manifest.json')
+          $record = [ordered]@{
+            schema='pim.vm105-release-candidate.v1'; status='UNSIGNED_UNRELEASED_BUILD_ONLY'
+            source_commit=$env:PIM_CANDIDATE_SOURCE_SHA; workflow_commit=$env:GITHUB_WORKFLOW_SHA
+            qualification_branch=$env:GITHUB_REF_NAME; run_id=$env:GITHUB_RUN_ID; run_attempt=$env:GITHUB_RUN_ATTEMPT
+            platform=$manifest.platform; protoinput_commit=$manifest.protoinput_commit; application_build=$manifest.application_build
+            qualification='Hosted build and integrity checks only. No product or installer execution and no release publication.'
+            hashes=$payload
+          }
+          $tar = Join-Path $root 'candidate-review.tar'
+          & tar.exe -cf $tar -C $root portable -C $review $setupName
+          if ($LASTEXITCODE -ne 0) { throw 'Could not collect the loose candidate for encrypted review.' }
+          $archive = [IO.File]::ReadAllBytes($tar)
+          if ($archive.Length -lt 1 -or $archive.Length -gt 536870912) { throw 'Unexpected candidate collection size.' }
+          $key = [Security.Cryptography.RandomNumberGenerator]::GetBytes(32)
+          $nonce = [Security.Cryptography.RandomNumberGenerator]::GetBytes(12)
+          $tag = [byte[]]::new(16)
+          $ciphertext = [byte[]]::new($archive.Length)
+          $rsa = [Security.Cryptography.RSA]::Create()
+          $aes = [Security.Cryptography.AesGcm]::new($key,16)
+          try {
+            $recipient = [Security.Cryptography.RSAParameters]::new()
+            $recipient.Modulus = [Convert]::FromBase64String($env:PIM_REVIEW_RSA_MODULUS)
+            $recipient.Exponent = [byte[]]@(1,0,1)
+            $rsa.ImportParameters($recipient)
+            $wrapped = $rsa.Encrypt($key,[Security.Cryptography.RSAEncryptionPadding]::OaepSHA256)
+            if ($wrapped.Length -ne 384) { throw 'Unexpected review recipient key size.' }
+            $aes.Encrypt($nonce,$archive,$ciphertext,$tag)
+            $sealed = Join-Path $review 'candidate-review.tar.enc'
+            $stream = [IO.File]::Open($sealed,[IO.FileMode]::CreateNew)
+            try {
+              foreach ($part in @([Text.Encoding]::ASCII.GetBytes('PIMRC1'),$wrapped,$nonce,$tag,$ciphertext)) {
+                $stream.Write($part,0,$part.Length)
+              }
+            } finally { $stream.Dispose() }
+            $record.encrypted_review = Measure-File $review 'candidate-review.tar.enc'
+          } finally {
+            $aes.Dispose()
+            $rsa.Dispose()
+            [Array]::Clear($key,0,$key.Length)
+          }
+          $record | ConvertTo-Json -Depth 12 | Set-Content -LiteralPath (Join-Path $review 'candidate-status.json') -Encoding utf8NoBOM
+          Get-Content -LiteralPath (Join-Path $review 'candidate-status.json') -Raw
+      - name: Retain encrypted candidate and hash receipt in Actions
+        if: github.ref == 'refs/heads/qualification/vm105-ouroboros-home-20261116'
+        uses: actions/upload-artifact@v4
+        with:
+          name: vm105-x64-software-dx12-review-${{ env.PIM_CANDIDATE_SOURCE_SHA }}-${{ github.run_attempt }}
+          path: |
+            ${{ env.PIM_CANDIDATE_ROOT }}/review/candidate-review.tar.enc
+            ${{ env.PIM_CANDIDATE_ROOT }}/review/candidate-status.json
+            ${{ env.PIM_CANDIDATE_ROOT }}/review/bundle-manifest.json
+            ${{ env.PIM_CANDIDATE_ROOT }}/review/build-tools.json
           if-no-files-found: error
           retention-days: 7
           compression-level: 0
