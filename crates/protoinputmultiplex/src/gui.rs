@@ -6809,6 +6809,7 @@ impl Dashboard {
                 ) {
                     self.start_routing();
                 }
+                self.routing_mode_menu(ui);
                 if self.restart_requested
                     && self.home_button(ui, "Stop routing", true, ButtonVariant::Outline)
                 {
@@ -6856,6 +6857,7 @@ impl Dashboard {
                 {
                     self.request_routing_stop(false);
                 }
+                self.routing_mode_menu(ui);
                 let secondary = Theme::get(ui).muted_foreground;
                 ui.label(
                     RichText::new(if self.session_stopping {
@@ -7437,6 +7439,52 @@ impl Dashboard {
         for action in actions {
             self.handle_lifecycle_action(action, ctx);
         }
+    }
+
+    fn routing_mode_menu(&mut self, ui: &mut egui::Ui) {
+        let mode = match self.profile.desktop.as_ref().map(|options| options.mode) {
+            Some(mux_core::routing::Mode::Switched) => "Switched",
+            Some(mux_core::routing::Mode::Concurrent) => "Concurrent",
+            None if self.profile.concurrent => "Assigned concurrent",
+            None => "Assigned",
+        };
+        const ACTION: &str = "Routing options";
+        let trigger = Button::new(format!("Mode: {mode}"))
+            .sm()
+            .variant(ButtonVariant::Outline)
+            .icon_right(ouroboros_ui::egui_phosphor::light::CARET_DOWN)
+            .show(ui)
+            .on_hover_text(ACTION);
+        let accepted = self
+            .script
+            .as_mut()
+            .is_none_or(|script| script.observe(ACTION, &trigger));
+        let toggle = trigger.clicked() && accepted && self.consume_action(ui.ctx(), ACTION);
+        // Keep the menu below the routing row so it cannot replace the roster's layout.
+        egui::Popup::menu(&trigger)
+            .id(ui.id().with("routing-mode-menu"))
+            .open_memory(toggle.then_some(egui::SetOpenCommand::Toggle))
+            .align_alternatives(&[])
+            .width(216.0)
+            .close_behavior(egui::PopupCloseBehavior::CloseOnClickOutside)
+            .show(|menu| {
+                self.desktop_controls(menu);
+                if self.profile.desktop.is_none() {
+                    menu.add_enabled_ui(self.session.is_none(), |ui| {
+                        Checkbox::new(&mut self.profile.concurrent)
+                            .label("Concurrent desktop cursors")
+                            .show(ui);
+                    });
+                    Text::new("Switched and multi keyboard use automatic targeting.")
+                        .caption()
+                        .wrap()
+                        .show(menu);
+                }
+                if self.button(menu, "Device status", true) {
+                    self.show_devices = true;
+                    menu.close();
+                }
+            });
     }
 
     fn desktop_controls(&mut self, ui: &mut egui::Ui) {
@@ -8480,6 +8528,7 @@ impl Dashboard {
             && ui.input(|input| input.focused && input.modifiers == egui::Modifiers::ALT);
         let mut clicked = None;
         let mut exit = false;
+        let mut add_devices = false;
         let launcher_visible = self.app_preferences.show_app_launcher;
         egui::Panel::bottom("home-actions").show_inside(ui, |ui| {
             Divider::horizontal().show(ui);
@@ -8491,7 +8540,13 @@ impl Dashboard {
                 ) {
                     clicked = Some(HomeAccess::Configure);
                 }
-                ui.horizontal(|ui| {
+                ui.horizontal_wrapped(|ui| {
+                    add_devices = self.home_button(
+                        ui,
+                        "Add devices",
+                        allow_access && self.session.is_none(),
+                        ButtonVariant::Outline,
+                    );
                     for (action, variant) in [
                         (HomeAccess::Settings, ButtonVariant::Outline),
                         (HomeAccess::Hide, ButtonVariant::Ghost),
@@ -8523,6 +8578,10 @@ impl Dashboard {
                 });
             });
         });
+        if add_devices {
+            self.go_to_page(ui.ctx(), Page::Users);
+            return;
+        }
         if exit {
             self.handle_lifecycle_action(crate::app_lifecycle::LifecycleAction::Quit, ui.ctx());
             return;
@@ -8549,142 +8608,31 @@ impl Dashboard {
             return;
         }
 
-        // Route controls get their own pinned panel. Its disclosure viewport is
-        // budgeted from the space left after the footer so the roster retains
-        // room for the table heading and one compact row.
-        const ROSTER_RESERVE: f32 = 64.0;
-        const MIN_OPTIONS_VIEWPORT: f32 = 32.0;
-        const MAX_OPTIONS_VIEWPORT: f32 = 96.0;
-        let available_after_footer = ui.available_height().max(0.0);
-        let routing_open_id = egui::Id::new("home-routing-options-open");
+        // The popup is outside this panel. Reserve space only for the
+        // routing row and any readiness or recovery messages.
         let routing_height_id = egui::Id::new("home-routing-controls-height");
-        let routing_options_open = ui
-            .ctx()
-            .data(|data| data.get_temp::<bool>(routing_open_id).unwrap_or(false));
-        let measured_routing_height = ui
-            .ctx()
-            .data(|data| data.get_temp::<f32>(routing_height_id));
         let routing_frame = egui::Frame::side_top_panel(ui.style());
-        let frame_height = routing_frame.inner_margin.sum().y;
         let spacing = ui.spacing().item_spacing.y;
-        // Before the first route measurement, reserve two rows for wrapping
-        // controls plus the warnings that are already known to be visible.
-        let action_rows = 2.0;
-        let warning_rows = (self.recovery.snapshot().phase
-            == crate::session_recovery::Phase::Quarantined) as usize
-            + (self.session.is_none()
-                && self
-                    .profile
-                    .replication
-                    .resolve(&self.profile.seats)
-                    .is_err()) as usize;
         let row_height = ui.spacing().interact_size.y;
-        let warning_height = ui.text_style_height(&egui::TextStyle::Body);
-        let routing_rows = action_rows + warning_rows as f32;
-        let estimated_routing_height = action_rows * row_height
-            + warning_rows as f32 * warning_height
-            + (routing_rows - 1.0).max(0.0) * spacing;
-        let routing_chrome = measured_routing_height
-            .filter(|height| height.is_finite() && *height > 0.0)
-            .unwrap_or(estimated_routing_height);
-        // CollapsingHeader includes vertical button padding around its text.
-        let header_height = (ui.text_style_height(&egui::TextStyle::Button)
-            + 2.0 * ui.spacing().button_padding.y)
-            .max(row_height);
-        let divider_height = ouroboros_ui::tokens::core::BORDER_THIN + spacing;
-        let fixed_panel_height =
-            frame_height + routing_chrome + divider_height + header_height + 2.0 * spacing;
-        let options_viewport = if routing_options_open {
-            (available_after_footer - fixed_panel_height - ROSTER_RESERVE)
-                .clamp(MIN_OPTIONS_VIEWPORT, MAX_OPTIONS_VIEWPORT)
-                .min((available_after_footer - fixed_panel_height).max(0.0))
-        } else {
-            0.0
-        };
-        let routing_panel_height =
-            (fixed_panel_height + options_viewport).min(available_after_footer);
-        let mode_label = self.profile.desktop.as_ref().map_or_else(
-            || {
-                if self.profile.concurrent {
-                    "Assigned / concurrent".to_owned()
-                } else {
-                    "Assigned / fixed".to_owned()
-                }
-            },
-            |options| {
-                format!(
-                    "{}{}",
-                    match options.mode {
-                        mux_core::routing::Mode::Switched => "Switched",
-                        mux_core::routing::Mode::Concurrent => "Concurrent",
-                    },
-                    if options.multi_keyboard {
-                        " + keyboards"
-                    } else {
-                        ""
-                    }
-                )
-            },
-        );
-        let secondary = Theme::get(ui).muted_foreground;
-        let routing_options = egui::Panel::bottom("home-routing")
+        let routing_height = ui
+            .ctx()
+            .data(|data| data.get_temp::<f32>(routing_height_id))
+            .unwrap_or(2.0 * row_height + spacing);
+        let routing_panel_height = (routing_frame.inner_margin.sum().y
+            + ouroboros_ui::tokens::core::BORDER_THIN
+            + spacing
+            + routing_height)
+            .min(ui.available_height().max(0.0));
+        egui::Panel::bottom("home-routing")
             .frame(routing_frame)
             .exact_size(routing_panel_height)
             .show_inside(ui, |ui| {
-                let divider = Divider::horizontal().show(ui);
-                let current_divider_height = divider.rect.height() + spacing;
-                let route_controls = ui.scope_builder(
-                    egui::UiBuilder::new().id_salt("home-routing-controls"),
-                    |ui| self.routing(ui),
-                );
-                let current_routing_height = route_controls.response.rect.height();
+                Divider::horizontal().show(ui);
+                let controls = ui.scope(|ui| self.routing(ui));
                 ui.ctx().data_mut(|data| {
-                    data.insert_temp(routing_height_id, current_routing_height)
+                    data.insert_temp(routing_height_id, controls.response.rect.height())
                 });
-                let current_fixed_height = frame_height
-                    + current_divider_height
-                    + current_routing_height
-                    + header_height
-                    + 2.0 * spacing;
-                let current_options_viewport = if routing_options_open {
-                    (available_after_footer - current_fixed_height - ROSTER_RESERVE)
-                        .clamp(MIN_OPTIONS_VIEWPORT, MAX_OPTIONS_VIEWPORT)
-                        .min((available_after_footer - current_fixed_height).max(0.0))
-                } else {
-                    0.0
-                };
-                egui::CollapsingHeader::new(
-                    RichText::new(format!("Routing options · {mode_label}"))
-                        .color(secondary),
-                )
-                .id_salt("routing-options")
-                .show(ui, |ui| {
-                    egui::ScrollArea::vertical()
-                        .id_salt("home-routing-options")
-                        .min_scrolled_height(0.0)
-                        .max_height(current_options_viewport)
-                        .show(ui, |ui| {
-                            self.desktop_controls(ui);
-                            if self.button(ui, "Device status", true) { self.show_devices = true; }
-                            if self.profile.desktop.is_none() {
-                                ui.add_enabled_ui(false, |ui| {
-                                    ui.label("Mode switching and the Multi keyboard option require automatic targeting.");
-                                });
-                                ui.add_enabled_ui(self.session.is_none(), |ui| {
-                                    Checkbox::new(&mut self.profile.concurrent)
-                                        .label("Concurrent desktop cursors")
-                                        .show(ui);
-                                });
-                            }
-                        });
-                })
             });
-        let options_open = routing_options.inner.body_response.is_some();
-        ui.ctx()
-            .data_mut(|data| data.insert_temp(routing_open_id, options_open));
-        if let Some(script) = &mut self.script {
-            script.observe("Routing options", &routing_options.inner.header_response);
-        }
 
         // The remaining central region must not paint or accept input in either
         // pinned panel, even when warning rows leave very little roster space.
@@ -10817,6 +10765,11 @@ impl Dashboard {
             && keyboard_apply_supported
             && validation_error.is_none();
         let cursor_conflict = self.cursor_settings.conflict(&self.profile.seats[index]);
+        let settings_name = if self.user_tab == UserTab::Keyboard {
+            "keyboard settings"
+        } else {
+            "cursor settings"
+        };
         ui.scope_builder(
             egui::UiBuilder::new()
                 .max_rect(footer_rect)
@@ -10827,7 +10780,7 @@ impl Dashboard {
                     if let Some(error) = &validation_error {
                         let display = bounded_display_text(
                             ui,
-                            &format!("Cannot apply cursor settings: {error}"),
+                            &format!("Cannot apply {settings_name}: {error}"),
                             ui.style().text_styles[&egui::TextStyle::Small].clone(),
                             ui.available_width(),
                         );
@@ -10871,7 +10824,7 @@ impl Dashboard {
                                 };
                                 format!("Apply {mode} bounds")
                             } else {
-                                "Apply cursor settings".to_owned()
+                                format!("Apply {settings_name}")
                             };
                     let can_use_applied = !self.session_busy;
                     (apply_requested, use_applied_requested) = crate::cursor_settings_ui::footer_buttons(

@@ -226,8 +226,8 @@ def workflow(args, producer):
         profile = {"version":1,"concurrent":True,"desktop":{"mode":"concurrent","multi_keyboard":True,"allowed_pids":g.pids},"replication":{"version":1,"edges":[{"source":ids[0],"target":ids[1],"mouse":False,"keyboard":True,"text":True}]},"seats":[{"id":ids[i],"name":"Keyboard "+("Alpha" if i==0 else "Beta"),"mouse":f"virtual://mouse/{i+1}","keyboard":f"virtual://keyboard/{i+1}","desktop_start":[60+460*i,110],"cursor":{"lock_window":False,"keyboard":{"enabled":True,"focus":"clicked"}},"output":output if i==0 else {"buttons":[{"type":"legacy"} for _ in range(5)],"keys":{}}} for i in range(2)]}
         steps = [ui.step("start","Start routing"),ui.step("settings","Settings"),ui.step("agent-category","Settings category Agent access"),ui.step("agent","Agent Access"),ui.step("enable","Enable agent access",{"agent_users":','.join(ids),"agent_pids":','.join(map(str,g.pids)),"agent_session_control":"true","agent_capture":"false","agent_app_preferences":"false"}),ui.step("home-configure","Back to Home"),ui.step("select-a","Select user 1"),ui.step("configure","Configure user"),ui.step("keyboard","Keyboard")]
         for key, label in [("focused","Focused control"),("clicked","Clicked control"),("caret","Caret window"),("native","Direct focus lookup"),("active","Active application window")]:
-            steps += [ui.step("draft-"+key,label),ui.step("apply-"+key,"Apply cursor settings")]
-        steps += [ui.step("disable","Keyboard enabled"),ui.step("apply-disabled","Apply cursor settings"),ui.step("dirty-clicked","Clicked control"),ui.step("home-stop","Back to Home"),ui.step("stop","Stop routing")]
+            steps += [ui.step("draft-"+key,label),ui.step("apply-"+key,"Apply keyboard settings")]
+        steps += [ui.step("disable","Keyboard enabled"),ui.step("apply-disabled","Apply keyboard settings"),ui.step("dirty-clicked","Clicked control"),ui.step("home-stop","Back to Home"),ui.step("stop","Stop routing")]
         assert len(steps) == 24
         def verify(name, sample):
             strict.strict_equal(ui.read_json(g.preferences_path), prefs)

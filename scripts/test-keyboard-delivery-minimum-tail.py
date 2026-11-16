@@ -83,7 +83,7 @@ def workflow(args,producer,prior):
     try:
         g.fixture()
         profile={"version":1,"concurrent":True,"desktop":None,"seats":[{"id":"keyboard-minimum-a","name":"Keyboard Alpha","mouse":"virtual://mouse/1","keyboard":"virtual://keyboard/1","target_pid":g.target.pid,"cursor":{"lock_window":False,"keyboard":{"enabled":True,"focus":"clicked"}}}]}
-        steps=[ui.step("start","Start routing"),ui.step("select","Select user 1"),ui.step("configure","Configure user"),ui.step("keyboard","Keyboard"),ui.step("checkbox","Keyboard enabled"),ui.step("apply","Apply cursor settings"),ui.step("home","Back to Home"),ui.step("stop","Stop routing")];assert len(steps)==8
+        steps=[ui.step("start","Start routing"),ui.step("select","Select user 1"),ui.step("configure","Configure user"),ui.step("keyboard","Keyboard"),ui.step("checkbox","Keyboard enabled"),ui.step("apply","Apply keyboard settings"),ui.step("home","Back to Home"),ui.step("stop","Stop routing")];assert len(steps)==8
         def verify(name,sample):
             strict.strict_equal(ui.read_json(g.preferences_path),prefs)
             if g.expected is None:g.expected=copy.deepcopy(sample["profile_state"]["profile"])
