@@ -1,0 +1,826 @@
+//! Ouroboros UI for a separate default-off cooperative event authority.
+use crate::{gui_application_events::Controller, ui_script::Script};
+use eframe::egui;
+use mux_application_sdk::{
+    ClientCommand, CursorControl, Input as VirtualInput, MouseButton, WheelAxis,
+};
+use ouroboros_ui::{
+    atoms::{Button, ButtonVariant, Checkbox, Divider, Heading, Input, Text},
+    tokens::core,
+};
+use std::collections::BTreeSet;
+
+pub(crate) enum Action {
+    CreateSession,
+    CreateUser,
+    BindDesktop { identity: String, name: String },
+    UnbindDesktop(u64),
+    AddReceiver,
+    SelectAllVisibleUsers,
+    ApplyOwner,
+    Apply,
+    DisablePublication,
+    StartListener,
+    Issue,
+    Copy,
+    CopyWindowReference,
+    Revoke,
+    Stop,
+    Local(ClientCommand),
+    Move,
+    KeyPulse,
+}
+
+fn consume(ui: &egui::Ui, label: &str, frame: &mut u64, actions: &mut BTreeSet<String>) -> bool {
+    let current = ui.ctx().cumulative_frame_nr();
+    if *frame != current {
+        *frame = current;
+        actions.clear();
+    }
+    actions.insert(label.into())
+}
+fn button(
+    ui: &mut egui::Ui,
+    label: &str,
+    enabled: bool,
+    script: &mut Option<&mut Script>,
+    frame: &mut u64,
+    actions: &mut BTreeSet<String>,
+) -> bool {
+    let response = Button::new(label)
+        .sm()
+        .variant(ButtonVariant::Outline)
+        .enabled(enabled)
+        .show(ui);
+    let accepted = script
+        .as_deref_mut()
+        .is_none_or(|script| script.observe(label, &response));
+    response.clicked() && accepted && consume(ui, label, frame, actions)
+}
+fn checkbox(
+    ui: &mut egui::Ui,
+    label: &str,
+    value: &mut bool,
+    script: &mut Option<&mut Script>,
+    frame: &mut u64,
+    actions: &mut BTreeSet<String>,
+) {
+    let mut draft = *value;
+    let response = Checkbox::new(&mut draft).label(label).show(ui);
+    let accepted = script
+        .as_deref_mut()
+        .is_none_or(|script| script.observe(label, &response));
+    if response.changed() && accepted && consume(ui, label, frame, actions) {
+        *value = draft;
+    }
+}
+fn input(
+    ui: &mut egui::Ui,
+    label: &str,
+    value: &mut String,
+    enabled: bool,
+    script: &mut Option<&mut Script>,
+) {
+    Text::new(label).caption().show(ui);
+    ui.add_enabled_ui(enabled, |ui| {
+        let response = Input::new(value).sm().id_source(label).show(ui);
+        if let Some(script) = script.as_deref_mut() {
+            script.observe(label, &response);
+        }
+    });
+}
+
+pub(crate) fn sdk_kind_tabs(
+    ui: &mut egui::Ui,
+    application: &mut bool,
+    script: Option<&mut Script>,
+    frame: &mut u64,
+    actions: &mut BTreeSet<String>,
+) {
+    let mut script = script;
+    ui.horizontal(|ui| {
+        for (label, control, selected) in [
+            ("Command connections", "Command SDK section", false),
+            ("Application events", "Application event SDK section", true),
+        ] {
+            let response = Button::new(label)
+                .sm()
+                .variant(if *application == selected {
+                    ButtonVariant::Secondary
+                } else {
+                    ButtonVariant::Ghost
+                })
+                .show(ui);
+            let accepted = script
+                .as_deref_mut()
+                .is_none_or(|script| script.observe(control, &response));
+            if response.clicked() && accepted && consume(ui, control, frame, actions) {
+                *application = selected;
+            }
+        }
+    });
+}
+
+pub(crate) struct DesktopSelection<'a> {
+    pub candidates: &'a [(String, String)],
+    pub available: bool,
+}
+
+pub(crate) fn show(
+    ui: &mut egui::Ui,
+    controller: &mut Controller,
+    allowed: bool,
+    desktop: DesktopSelection<'_>,
+    script: Option<&mut Script>,
+    frame: &mut u64,
+    actions: &mut BTreeSet<String>,
+) -> Vec<Action> {
+    let mut script = script;
+    let mut result = Vec::new();
+    let status = controller.status();
+    Heading::new("Application event SDK").show(ui);
+    Text::new("A cooperative session for virtual input and approved native windows. Each receiver starts without window or input access.").caption().wrap().show(ui);
+    let network = match (status.connected_clients, status.cleanup_pending) {
+        (Some(connected), Some(pending)) => {
+            format!("{connected} event receiver connections · {pending} pending cleanup")
+        }
+        _ => "Listener metrics unavailable".into(),
+    };
+    let summary = Text::new(format!(
+        "{} · {} local users · {} native observed users · {} published windows · sequence {} · {}",
+        status.phase,
+        status.local_virtual_users,
+        status.native_observed_users,
+        status.published_windows.unwrap_or(0),
+        status.native_sequence,
+        network
+    ))
+    .caption()
+    .wrap()
+    .show(ui);
+    if let Some(script) = script.as_deref_mut() {
+        script.observe("Application event SDK status", &summary);
+    }
+    if let (Some(pending), Some(stale), Some(uncertain)) = (
+        status.window_pending,
+        status.window_stale,
+        status.window_uncertain,
+    ) {
+        Text::new(format!(
+            "Native windows: {pending} actions pending · {stale} stale · {uncertain} outcomes unconfirmed"
+        ))
+        .caption()
+        .wrap()
+        .show(ui);
+    }
+    if let Some(error) = &controller.error {
+        Text::new(error)
+            .caption()
+            .color(core::RED_500)
+            .wrap()
+            .show(ui);
+    }
+    if button(
+        ui,
+        "Create cooperative event session",
+        allowed && controller.retired(),
+        &mut script,
+        frame,
+        actions,
+    ) {
+        result.push(Action::CreateSession);
+    }
+    if button(
+        ui,
+        "End cooperative event session",
+        controller.active() || !controller.retired(),
+        &mut script,
+        frame,
+        actions,
+    ) {
+        result.push(Action::Stop);
+    }
+    Divider::horizontal().show(ui);
+    let edit_user_name = allowed && controller.active();
+    input(
+        ui,
+        "Application event user name",
+        &mut controller.draft.name,
+        edit_user_name,
+        &mut script,
+    );
+    if button(
+        ui,
+        "Create cooperative virtual user",
+        allowed && controller.active() && controller.users.len() < 64,
+        &mut script,
+        frame,
+        actions,
+    ) {
+        result.push(Action::CreateUser);
+    }
+    Divider::horizontal().show(ui);
+    Text::new("Desktop input observations").show(ui);
+    Text::new("Select active virtual users from the running desktop session. Binding and unbinding only change observation.")
+        .caption().wrap().show(ui);
+    Text::new(format!(
+        "{} bound · {} awaiting worker confirmation",
+        status.desktop_bound_users, status.desktop_pending_users
+    ))
+    .caption()
+    .wrap()
+    .show(ui);
+    if !desktop.available {
+        Text::new(
+            "Start a desktop routing session with virtual users to make these controls available.",
+        )
+        .caption()
+        .wrap()
+        .show(ui);
+    }
+    for (index, (identity, name)) in desktop.candidates.iter().enumerate() {
+        let label = format!("Observe desktop user {}: {}", index + 1, name);
+        if button(
+            ui,
+            &label,
+            allowed
+                && desktop.available
+                && controller.active()
+                && !controller.desktop_identity_selected(identity),
+            &mut script,
+            frame,
+            actions,
+        ) {
+            result.push(Action::BindDesktop {
+                identity: identity.clone(),
+                name: name.clone(),
+            });
+        }
+    }
+    for (token, name, pending) in controller.desktop_rows() {
+        Text::new(format!(
+            "{} · {}",
+            name,
+            if pending {
+                "awaiting confirmation"
+            } else {
+                "observed"
+            }
+        ))
+        .caption()
+        .wrap()
+        .show(ui);
+        if button(
+            ui,
+            &format!("Stop observing desktop user {token}: {name}"),
+            allowed,
+            &mut script,
+            frame,
+            actions,
+        ) {
+            result.push(Action::UnbindDesktop(token));
+        }
+    }
+    Divider::horizontal().show(ui);
+    Text::new("Master local-owner consent · applies to cooperative users")
+        .caption()
+        .wrap()
+        .show(ui);
+    ui.add_enabled_ui(allowed && controller.active(), |ui| {
+        for (label, value) in [
+            (
+                "Master pointer observation",
+                &mut controller.owner_consent.pointer_events,
+            ),
+            (
+                "Master keyboard observation separately",
+                &mut controller.owner_consent.key_events,
+            ),
+            (
+                "Master lifecycle controls",
+                &mut controller.owner_consent.lifecycle,
+            ),
+            (
+                "Master cursor controls",
+                &mut controller.owner_consent.cursor,
+            ),
+            (
+                "Master pointer input",
+                &mut controller.owner_consent.pointer_control,
+            ),
+            (
+                "Master keyboard input separately",
+                &mut controller.owner_consent.key_control,
+            ),
+        ] {
+            checkbox(ui, label, value, &mut script, frame, actions);
+        }
+    });
+    Text::new("Applying master consent revokes every event receiver before changing owner authority. Reapprove receivers explicitly afterward.")
+        .caption().wrap().show(ui);
+    if button(
+        ui,
+        "Apply master event consent",
+        allowed && controller.active(),
+        &mut script,
+        frame,
+        actions,
+    ) {
+        result.push(Action::ApplyOwner);
+    }
+    if button(
+        ui,
+        "Disable application event publication",
+        controller.active() && (status.pointer_export || status.keyboard_export),
+        &mut script,
+        frame,
+        actions,
+    ) {
+        result.push(Action::DisablePublication);
+    }
+    Divider::horizontal().show(ui);
+    Text::new(format!(
+        "Event receivers (native/browser) · {} approved · up to 8 rows",
+        status.approved_receivers
+    ))
+    .caption()
+    .wrap()
+    .show(ui);
+    if button(
+        ui,
+        "Add event receiver",
+        allowed
+            && controller.active()
+            && controller.origin_editable()
+            && controller.receiver_rows().len() < 8,
+        &mut script,
+        frame,
+        actions,
+    ) {
+        result.push(Action::AddReceiver);
+    }
+    let selected_row = controller.selected_row();
+    ui.horizontal_wrapped(|ui| {
+        for (row, approved) in controller.receiver_rows() {
+            let label = format!(
+                "Event receiver {row} · {}{}",
+                if approved { "approved" } else { "draft" },
+                if selected_row == Some(row) {
+                    " · selected"
+                } else {
+                    ""
+                }
+            );
+            if button(
+                ui,
+                &label,
+                allowed && controller.active(),
+                &mut script,
+                frame,
+                actions,
+            ) && let Err(error) = controller.select_receiver(row)
+            {
+                controller.error = Some(error.to_string());
+            }
+        }
+    });
+    Text::new("Selected receiver details. Each row has independent origin, exact user scope, observation, delegation and control approvals. Configure all receiver rows and origins before starting the listener; adding origins or rows then requires a new session.")
+        .caption().wrap().show(ui);
+    let editable = allowed
+        && controller.active()
+        && controller.selected_row().is_some()
+        && controller.origin_editable();
+    input(
+        ui,
+        "Exact application event receiver origin",
+        &mut controller.draft.origin,
+        editable,
+        &mut script,
+    );
+    Text::new("Select only users this event receiver (native/browser) may observe. Creation never selects or grants a user automatically.").caption().wrap().show(ui);
+    if button(
+        ui,
+        "Select all visible users",
+        allowed && controller.active() && controller.selected_row().is_some(),
+        &mut script,
+        frame,
+        actions,
+    ) {
+        result.push(Action::SelectAllVisibleUsers);
+    }
+    Text::new("Selects only the current users in this draft. New users stay unselected; consent and Apply are still required.")
+        .caption().wrap().show(ui);
+    for user in &controller.users {
+        let label = format!(
+            "Export {} user {}:{} {}",
+            if user.desktop_observed {
+                "desktop"
+            } else {
+                "cooperative"
+            },
+            user.id.epoch,
+            user.id.local,
+            user.name
+        );
+        let mut selected = controller.draft.users.contains(&user.id);
+        checkbox(ui, &label, &mut selected, &mut script, frame, actions);
+        if selected {
+            controller.draft.users.insert(user.id);
+        } else {
+            controller.draft.users.remove(&user.id);
+        }
+        let focus = format!(
+            "Control cooperative user {}:{}",
+            user.id.epoch, user.id.local
+        );
+        if button(
+            ui,
+            &focus,
+            controller.active() && !user.desktop_observed,
+            &mut script,
+            frame,
+            actions,
+        ) {
+            controller.draft.focus = Some(user.id);
+        }
+    }
+    checkbox(
+        ui,
+        "Approve pointer event observation",
+        &mut controller.draft.pointer_events,
+        &mut script,
+        frame,
+        actions,
+    );
+    checkbox(
+        ui,
+        "Approve keyboard event observation separately",
+        &mut controller.draft.key_events,
+        &mut script,
+        frame,
+        actions,
+    );
+    checkbox(
+        ui,
+        "Approve routed desktop observations",
+        &mut controller.draft.desktop_observations,
+        &mut script,
+        frame,
+        actions,
+    );
+    Text::new("Desktop keyboard observations include exact native key identities. Typed text requires separate approval.")
+        .caption().wrap().show(ui);
+    checkbox(
+        ui,
+        "Include typed desktop text separately",
+        &mut controller.draft.desktop_text,
+        &mut script,
+        frame,
+        actions,
+    );
+    let observed_selected = controller
+        .users
+        .iter()
+        .any(|user| user.desktop_observed && controller.draft.users.contains(&user.id));
+    if observed_selected {
+        controller.draft.delegated = false;
+        controller.draft.lifecycle = false;
+        controller.draft.cursor = false;
+        controller.draft.pointer_control = false;
+        controller.draft.key_control = false;
+    }
+    ui.add_enabled_ui(!observed_selected, |ui| {
+        checkbox(
+            ui,
+            "Allow delegated event receiver controls for selected users",
+            &mut controller.draft.delegated,
+            &mut script,
+            frame,
+            actions,
+        );
+        checkbox(
+            ui,
+            "Allow cooperative user lifecycle controls",
+            &mut controller.draft.lifecycle,
+            &mut script,
+            frame,
+            actions,
+        );
+        checkbox(
+            ui,
+            "Allow cooperative cursor controls",
+            &mut controller.draft.cursor,
+            &mut script,
+            frame,
+            actions,
+        );
+        checkbox(
+            ui,
+            "Allow cooperative pointer input",
+            &mut controller.draft.pointer_control,
+            &mut script,
+            frame,
+            actions,
+        );
+        checkbox(
+            ui,
+            "Allow cooperative keyboard input separately",
+            &mut controller.draft.key_control,
+            &mut script,
+            frame,
+            actions,
+        );
+    });
+    if observed_selected {
+        Text::new("Control approval is unavailable for the selected desktop observed users.")
+            .caption()
+            .wrap()
+            .show(ui);
+    }
+    Divider::horizontal().show(ui);
+    Text::new("Native windows are published by their owning application. Approve each other receiver and window separately.")
+        .caption().wrap().show(ui);
+    checkbox(
+        ui,
+        "Allow this native receiver to publish its own windows",
+        &mut controller.draft.publish_windows,
+        &mut script,
+        frame,
+        actions,
+    );
+    checkbox(
+        ui,
+        "Include client-reported process and thread details",
+        &mut controller.draft.window_identity_metadata,
+        &mut script,
+        frame,
+        actions,
+    );
+    checkbox(
+        ui,
+        "Allow observation of an approved native window",
+        &mut controller.draft.window_observation,
+        &mut script,
+        frame,
+        actions,
+    );
+    checkbox(
+        ui,
+        "Allow tracking of an approved native window",
+        &mut controller.draft.window_tracking,
+        &mut script,
+        frame,
+        actions,
+    );
+    checkbox(
+        ui,
+        "Allow control of an approved native window",
+        &mut controller.draft.window_control,
+        &mut script,
+        frame,
+        actions,
+    );
+    Text::new("Choose one currently published window for this receiver. Its state is reported by the native client; it may be stale.")
+        .caption().wrap().show(ui);
+    for window in controller.published_windows() {
+        let label = format!(
+            "Native window {:?}{}{}",
+            window.id,
+            window
+                .metadata
+                .title
+                .as_deref()
+                .map_or(String::new(), |title| format!(" · {title}")),
+            if window.observation.stale {
+                " · stale"
+            } else {
+                ""
+            }
+        );
+        Text::new(label).caption().wrap().show(ui);
+        if button(
+            ui,
+            "Select native window",
+            allowed && controller.active() && controller.selected_row().is_some(),
+            &mut script,
+            frame,
+            actions,
+        ) {
+            controller.draft.selected_window = Some(window.id);
+        }
+    }
+    if button(
+        ui,
+        "Clear selected native window",
+        allowed && controller.active() && controller.draft.selected_window.is_some(),
+        &mut script,
+        frame,
+        actions,
+    ) {
+        controller.draft.selected_window = None;
+    }
+    if let Some(window) = controller.draft.selected_window {
+        Text::new(format!("Selected native window: {window:?}"))
+            .caption()
+            .wrap()
+            .show(ui);
+        if button(
+            ui,
+            "Copy selected native window reference",
+            allowed && controller.active(),
+            &mut script,
+            frame,
+            actions,
+        ) {
+            result.push(Action::CopyWindowReference);
+        }
+    }
+    Divider::horizontal().show(ui);
+    Text::new("Host routing and this window need separate receiver approval. A mode change may start or stop routing; it does not save your profile.")
+        .caption()
+        .wrap()
+        .show(ui);
+    checkbox(
+        ui,
+        "Observe host routing and window state",
+        &mut controller.draft.host_state,
+        &mut script,
+        frame,
+        actions,
+    );
+    checkbox(
+        ui,
+        "Allow changing host routing mode",
+        &mut controller.draft.host_mode_control,
+        &mut script,
+        frame,
+        actions,
+    );
+    checkbox(
+        ui,
+        "Allow minimizing and restoring this window",
+        &mut controller.draft.host_viewport_control,
+        &mut script,
+        frame,
+        actions,
+    );
+    Text::new("Draft checkboxes change no live authority. Apply replaces only the selected receiver and retires its previous connection. Other receiver approvals, master consent and local virtual user IDs remain stable.").caption().wrap().show(ui);
+    if button(
+        ui,
+        "Apply selected event receiver approvals",
+        allowed && controller.active() && controller.selected_row().is_some(),
+        &mut script,
+        frame,
+        actions,
+    ) {
+        result.push(Action::Apply);
+    }
+    if button(
+        ui,
+        "Revoke selected event receiver",
+        controller.selected_approved(),
+        &mut script,
+        frame,
+        actions,
+    ) {
+        result.push(Action::Revoke);
+    }
+    Divider::horizontal().show(ui);
+    input(
+        ui,
+        "Event connection lifetime in seconds (1-300)",
+        &mut controller.draft.ttl,
+        true,
+        &mut script,
+    );
+    if button(
+        ui,
+        "Start application event listener",
+        allowed && controller.can_start_listener(),
+        &mut script,
+        frame,
+        actions,
+    ) {
+        result.push(Action::StartListener);
+    }
+    if button(
+        ui,
+        "Issue private event-only connection",
+        allowed && controller.can_issue(),
+        &mut script,
+        frame,
+        actions,
+    ) {
+        result.push(Action::Issue);
+    }
+    if button(
+        ui,
+        "Copy private application event connection",
+        allowed
+            && controller.selected_approved()
+            && controller.listener_active()
+            && controller.connection_issued(),
+        &mut script,
+        frame,
+        actions,
+    ) {
+        result.push(Action::Copy);
+    }
+    Text::new("Connection details are returned only to the explicit GUI Copy action. Status, Script observations and MCP contain no event credential. Reconnect requires a fresh approved receiver.").caption().wrap().show(ui);
+    Divider::horizontal().show(ui);
+    Text::new("Explicit native cooperative input (select a Control cooperative user button first)")
+        .caption()
+        .wrap()
+        .show(ui);
+    let pointer = allowed && controller.can_control(false, false);
+    let keys = allowed && controller.can_control(true, false);
+    let cursor = allowed && controller.can_control(false, true);
+    if button(
+        ui,
+        "Move cooperative virtual pointer",
+        pointer,
+        &mut script,
+        frame,
+        actions,
+    ) {
+        result.push(Action::Move);
+    }
+    if let Some(user) = controller.draft.focus {
+        if button(
+            ui,
+            "Click cooperative primary button",
+            pointer,
+            &mut script,
+            frame,
+            actions,
+        ) {
+            result.push(Action::Local(ClientCommand::Click {
+                user,
+                button: MouseButton::Primary,
+            }));
+        }
+        for (label, axis) in [
+            ("Cooperative vertical wheel +120", WheelAxis::Vertical),
+            ("Cooperative horizontal wheel +120", WheelAxis::Horizontal),
+        ] {
+            if button(ui, label, pointer, &mut script, frame, actions) {
+                result.push(Action::Local(ClientCommand::Input {
+                    user,
+                    input: VirtualInput::Wheel { axis, units: 120 },
+                }));
+            }
+        }
+        for (label, color) in [
+            ("Set cooperative cursor blue", [40, 150, 255, 255]),
+            ("Set cooperative cursor orange", [255, 150, 40, 255]),
+        ] {
+            if button(ui, label, cursor, &mut script, frame, actions) {
+                result.push(Action::Local(ClientCommand::Cursor {
+                    user,
+                    control: CursorControl::Color(color),
+                }));
+            }
+        }
+    }
+    if button(
+        ui,
+        "Send cooperative Key A pulse",
+        keys,
+        &mut script,
+        frame,
+        actions,
+    ) {
+        result.push(Action::KeyPulse);
+    }
+    for user in controller.native.users().values() {
+        let color = user
+            .cursor
+            .as_ref()
+            .map_or([160, 160, 160, 255], |cursor| cursor.color);
+        Text::new(format!(
+            "{} [{}:{}] · {:?} · {} held keys",
+            user.name,
+            user.id.epoch,
+            user.id.local,
+            user.pointer.as_ref().map(|pointer| pointer.position),
+            user.held_keys.as_ref().map_or(0, Vec::len)
+        ))
+        .caption()
+        .color(egui::Color32::from_rgba_unmultiplied(
+            color[0], color[1], color[2], color[3],
+        ))
+        .wrap()
+        .show(ui);
+    }
+    ui.add_enabled_ui(false, |ui| {
+        let _ = Button::new("Desktop-wide window control unavailable")
+            .sm()
+            .enabled(false)
+            .show(ui);
+        let _ = Button::new("Physical input, pen, touch and target injection unavailable")
+            .sm()
+            .enabled(false)
+            .show(ui);
+    });
+    result
+}

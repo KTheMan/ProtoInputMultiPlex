@@ -1,0 +1,168 @@
+{
+  "schema": "pim.hosted-sdk-prerequisites-assessment.v2",
+  "assessment": "BOUNDED_PREREQUISITES_ACCEPTED_OVERALL_WORKFLOW_AND_GUI_PAIR_FAILED",
+  "run": {
+    "id": 42471108593,
+    "url": "https://github.com/KTheMan/ProtoInputMultiPlex/actions/runs/42471108593",
+    "attempt": 1,
+    "conclusion": "failure",
+    "head_commit": "6d7567446f0d754700972f1036df17f7d93b76a3",
+    "checkout_commit": "86128559200e014bad5cd724b8d56062bf5bf143",
+    "identical_git_tree": "92e85583775cba2cf1c488bbde6d48b66529bdbc"
+  },
+  "accepted": {
+    "compiled_source": "Formatting, strict workspace Clippy, workspace tests, native-client/software feature checks and tests, x64/x86 workspace and isolated full-feature SDK builds, native exports and strict C11 header checks, Rust WASM build and matching browser bindings passed. Ignored tests were not run.",
+    "standalone_host": {
+      "architectures": [
+        "x64",
+        "x86"
+      ],
+      "cycles_per_architecture": 2,
+      "base_exports_exercised": 8,
+      "base_abi_version": 1,
+      "external_exit_codes": [
+        0,
+        0
+      ],
+      "timeouts": false,
+      "scope": "Explicit exported Host creation, minimal empty-user observation approval, retained replies/discard/destroy, actual DLL unload while owner thread alive, actual owner OS-thread signal and join before external exit. No users or native windows created."
+    },
+    "native_client": {
+      "architectures": [
+        "x64",
+        "x86"
+      ],
+      "native_exports": 11,
+      "abi_version": 2,
+      "external_exit_codes": [
+        0,
+        0
+      ],
+      "timeouts": false,
+      "scope": "Controlled fixture peer, own hidden HWND/wake, snapshot folding/short reads/default-off input, Stop, actual worker completion/Destroy and DLL unload before owner exit. Peer is not the GUI Service."
+    },
+    "renderer": {
+      "external_exit_code": 0,
+      "timed_out": false,
+      "adapter": "Microsoft Basic Render Driver",
+      "device_type": "Cpu",
+      "backend": "Dx12",
+      "ui_frames": 6,
+      "readback_size": [
+        400,
+        280
+      ],
+      "matching_pixels_per_region": [
+        25,
+        25,
+        25,
+        25
+      ],
+      "scope": "Renderer-only own four-color readback and normal close; no physical presentation/full GUI/P1 claim."
+    }
+  },
+  "not_accepted": {
+    "gui_pair": {
+      "status": "FAIL",
+      "failure_stage": "gui-preparation",
+      "checkpoint": 37,
+      "failure_class": "Rejected",
+      "elapsed_ms": 22296,
+      "before_issue_checkpoint": 38,
+      "before_native_or_browser_consumers": true,
+      "reason_limit": "Sanitized result does not identify the rejected predicate or record the runtime text encoding. Private GUI buffers were not uploaded."
+    },
+    "source_finding": {
+      "status": "CONFIRMED_PORTABILITY_DEFECT_HISTORICAL_CAUSE_UNPROVEN",
+      "path": "scripts/qualify-gui-pair.py",
+      "issue": "Pair.receipts reads UTF-8 Rust JSONL using default text encoding, while expected steps use explicit UTF-8. Checkpoint37 is the first expected label with U+00B7. A non-UTF-8 default can corrupt equality. Exact historical encoding and rejection predicate are unknown.",
+      "next_requirement": "Explicit UTF-8 receipt decoding and bounded sanitized failure observations require independent source review before a new specimen; no unchanged retry."
+    },
+    "later_web_acceptance_extensions": "Source-only, unpublished, uncompiled and unrun at this assessment; not covered by this run.",
+    "exclusions": [
+      "Actual concurrent native/Rust-WASM use of the same GUI users and event/command/disposal behavior",
+      "Full GUI Service/MCP acceptance and real socket authentication/failure/gap/hold cleanup",
+      "Standalone Host own-window/property cases, orphan-negative cases and exhaustive transitive TLS/CRT safety",
+      "Physical input/devices, hardware isolation/parity, workstation safety or historical freeze/stall cause/fix",
+      "Complete SDK, product release, signed installer, reboot or P1 qualification"
+    ]
+  },
+  "source_paths": {
+    "workflow": {
+      "file": ".github/workflows/rust.yml",
+      "sha256": "881214041fc1452814c0360ff36967e847efd9e441bf0fafcfcb7bfc075d984d"
+    },
+    "standalone_fixture": {
+      "file": "crates/mux-application-sdk/examples/standalone_host_dll_lifecycle.rs",
+      "sha256": "f3efa133c0faa4ed38577eba07a4bb549615cdca044d8308141044a551a2f4e6"
+    },
+    "standalone_controller": {
+      "file": "scripts/qualify-standalone-host.ps1",
+      "sha256": "3f654ff4c15577b6d684eff556156016c832e1962bdd311115a6f7d8eb78dc4c"
+    },
+    "native_fixture": {
+      "file": "crates/mux-application-sdk/examples/native_dll_lifecycle.rs",
+      "sha256": "7ffd883b0318438d0662441372e0773587d570ab95183c14ed957d1c024ec82b"
+    },
+    "renderer_fixture": {
+      "file": "crates/protoinputmultiplex/examples/software_renderer_smoke.rs",
+      "sha256": "de6833728135d2cd1bff99983307bf78356350add10deccb5121d42fd3733b3e"
+    },
+    "paired_controller": {
+      "file": "scripts/qualify-gui-pair.py",
+      "sha256": "a8f538b19cf0c477600bb852d97d3f1b08eda8acf02b49dfc3e93d028c15a00a"
+    }
+  },
+  "artifacts": [
+    {
+      "id": 13613334292,
+      "role": "compiled preview used by all four downstream jobs",
+      "archive_sha256": "59cb2daf6637fc1b8f0123dbb39a9eb89a5c1bf1b63dba536c3f5c8d058cb6f0"
+    },
+    {
+      "id": 13614037662,
+      "role": "standalone Host x64/x86 reports and external controllers",
+      "archive_sha256": "0009378b0bef42b9d4a322a7a53cc1bcd38e490c796924847dfcc8ff46d5d418"
+    },
+    {
+      "id": 13613858945,
+      "role": "native-client x64/x86 reports and external controllers",
+      "archive_sha256": "4e182e28e59c1cde3fce47805c1252f47c92db69a618202bbd3a281433cb39e2"
+    },
+    {
+      "id": 13614087395,
+      "role": "CPU renderer report and external controller",
+      "archive_sha256": "a756bb4671c54b3700d12f5426b6ff0ebe732c79b2bb13be50992325ad3d6976"
+    },
+    {
+      "id": 13614371732,
+      "role": "sanitized GUI pair failure only",
+      "archive_sha256": "ecc8a8bd8309f6e4b85e00ecfbab949b4615ba737104cf12639d86b96fdb6406"
+    }
+  ],
+  "binary_sha256": {
+    "x64_dll": "f0bc4245e6ba449d07858ad9acb652488aa0da8da82c03720154abe910560643",
+    "x86_dll": "66f88eb429d254a85daa00dcc22389870b035180d483f62045576ac279826bff",
+    "matching_native_header": "1e2841fd89bb886af38f78260fc213390de796ba334e8fecc1b05c6021b404c4",
+    "x64_standalone_fixture": "23a19c47aa6637441fc19aca3fc0ab1ba552e2b5abbc92dd7c6a3d0fcfbd5496",
+    "x86_standalone_fixture": "43b4b8b3337f51552d6a5c9226a25b75fc1bb5cb36b0e05584c31dfa9758a669",
+    "x64_native_fixture": "70d933b6c8caf7be81d6bb7631f575a98780f3901fed9ac753ac63fc440794e7",
+    "x86_native_fixture": "ebba7b853f2164a75177a7b7b77b11781ca4d8f7a158382a7e884f8959630d66",
+    "renderer_fixture": "c0962c75380e7bca0ac89da4dd2e5ab5c20fd90a2661dcb264b2d0f4d50ea115",
+    "gui_compiled_only": "1fbc34f5e5e26d5edad02a94b6157b52ac25944fd5afad89c97e00510d7f3292"
+  },
+  "evidence_integrity": {
+    "zip_archives_verified": 6,
+    "members_verified": 116,
+    "archive_member_and_saved_copy_hashes_verified": true,
+    "same_run_success_preview_only": true,
+    "partial_artifact_used": false,
+    "fixture_restart_or_retry_observed": false
+  },
+  "prior_assessment": "hosted-sdk-prerequisites-assessment-2026-11-08.json",
+  "full_sdk_complete": false,
+  "gui_pair_accepted": false,
+  "release_qualified": false,
+  "P1_qualified": false,
+  "local_product_execution": false
+}

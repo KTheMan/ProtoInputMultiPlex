@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "crate": "egui-wgpu",
+  "version": "0.34.3",
+  "declared_license": "MIT OR Apache-2.0",
+  "repository": "https://github.com/emilk/egui/tree/main/crates/egui-wgpu",
+  "repository_root": "https://github.com/emilk/egui",
+  "cargo_archive": {
+    "url": "https://static.crates.io/crates/egui-wgpu/egui-wgpu-0.34.3.crate",
+    "bytes": 53180,
+    "sha256": "9f0c0559ac5598a1b887a6206dccbab7e3e6246c57cb00ae287262bd44776c9c",
+    "cargo_lock_checksum": "9f0c0559ac5598a1b887a6206dccbab7e3e6246c57cb00ae287262bd44776c9c",
+    "notice_members": []
+  },
+  "cargo_vcs_info": {
+    "git": {
+      "sha1": "65cb282a198d2dd72b6ca2346cc73eba45b7a830"
+    },
+    "path_in_vcs": "crates/egui-wgpu"
+  },
+  "reason": "The checksum-verified published crate omits the root license files referenced by ../../LICENSE-APACHE and ../../LICENSE-MIT in Cargo.toml.orig. These are the complete root license texts from the exact revision recorded in the archive.",
+  "files": [
+    {
+      "path": "LICENSE-MIT",
+      "upstream_path": "LICENSE-MIT",
+      "url": "https://raw.githubusercontent.com/emilk/egui/65cb282a198d2dd72b6ca2346cc73eba45b7a830/LICENSE-MIT",
+      "bytes": 1092,
+      "sha256": "95ca92f5f8ea5231f1580b3a2a799e8260af3114b900e1def5355a7f44bcf60c"
+    },
+    {
+      "path": "LICENSE-APACHE",
+      "upstream_path": "LICENSE-APACHE",
+      "url": "https://raw.githubusercontent.com/emilk/egui/65cb282a198d2dd72b6ca2346cc73eba45b7a830/LICENSE-APACHE",
+      "bytes": 10850,
+      "sha256": "8173d5c29b4f956d532781d2b86e4e30f83e6b7878dce18c919451d6ba707c90"
+    }
+  ],
+  "crate_authors": [
+    "Nils Hasenbanck <nils@hasenbanck.de>",
+    "embotech <opensource@embotech.com>",
+    "Emil Ernerfeldt <emil.ernerfeldt@gmail.com>"
+  ]
+}

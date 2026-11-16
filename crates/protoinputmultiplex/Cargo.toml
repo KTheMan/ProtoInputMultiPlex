@@ -9,7 +9,13 @@ rust-version.workspace = true
 name = "protoinputmultiplex"
 path = "src/main.rs"
 
+[[example]]
+name = "software_renderer_smoke"
+path = "examples/software_renderer_smoke.rs"
+required-features = ["software-renderer"]
+
 [features]
+software-renderer = ["eframe/wgpu_no_default_features", "dep:wgpu"]
 cursor-presentation-evidence = ["mux-windows/cursor-presentation-evidence"]
 
 [dependencies]
@@ -21,7 +27,9 @@ serde.workspace = true
 clap = { version = "4.6", features = ["derive"] }
 
 [target.'cfg(windows)'.dependencies]
+wgpu = { version = "=29.0.1", optional = true, default-features = false, features = ["std", "dx12", "wgsl"] }
 mux-windows.workspace = true
+mux-application-sdk.workspace = true
 eframe = { version = "0.34.1", default-features = false, features = ["default_fonts", "glow", "accesskit"] }
 ouroboros-ui = { git = "https://github.com/Type-zero-labs/ouroboros-ui", rev = "c390d7deffa7955e28b2e3bcb9c22ac0899a261b" }
 image = { version = "0.25", default-features = false, features = ["png"] }
@@ -34,4 +42,4 @@ tokio = { version = "1", features = ["rt", "io-std", "sync", "net", "time", "mac
 futures-util = { version = "0.3", features = ["sink"] }
 tokio-tungstenite = { version = "0.30", default-features = false, features = ["handshake"] }
 url = "2.5"
-windows-sys = { version = "0.61", features = ["Win32_Foundation", "Win32_UI_WindowsAndMessaging", "Win32_UI_Input_KeyboardAndMouse", "Win32_Graphics_Gdi", "Win32_System_LibraryLoader", "Win32_UI_HiDpi", "Win32_Security", "Win32_Security_Authorization", "Win32_Security_Cryptography", "Win32_Storage_FileSystem", "Win32_System_Memory", "Win32_System_IO", "Win32_System_Pipes", "Win32_System_Threading", "Win32_System_Registry", "Win32_UI_Shell"] }
+windows-sys = { version = "0.61", features = ["Win32_Foundation", "Win32_UI_WindowsAndMessaging", "Win32_UI_Input_KeyboardAndMouse", "Win32_Graphics_Gdi", "Win32_System_LibraryLoader", "Win32_UI_HiDpi", "Win32_Security", "Win32_Security_Authorization", "Win32_Security_Cryptography", "Win32_Storage_FileSystem", "Win32_System_Memory", "Win32_System_IO", "Win32_System_Pipes", "Win32_System_Threading", "Win32_System_Diagnostics_Debug", "Win32_System_Kernel", "Win32_System_ProcessStatus", "Win32_System_SystemInformation", "Win32_System_Registry", "Win32_UI_Shell"] }

@@ -1,0 +1,4 @@
+interface:
+  display_name: "ProtoInputMultiPlex"
+  short_description: "Control virtual input, macros, drawing and magnification"
+  default_prompt: "Use $protoinputmultiplex to control virtual Windows users, macros, replication, drawing and magnification. Inspect only explicitly authorized targets or pixel regions, verify results and stop when finished."

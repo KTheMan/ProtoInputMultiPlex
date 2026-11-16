@@ -1,4 +1,6 @@
 #[cfg(windows)]
+mod application_event_transport;
+#[cfg(windows)]
 use anyhow::Context;
 use anyhow::Result;
 use clap::{Parser, Subcommand};
@@ -32,6 +34,8 @@ mod app_preferences;
 #[cfg(windows)]
 mod app_preferences_ui;
 #[cfg(windows)]
+mod application_event_ui;
+#[cfg(windows)]
 mod automation_probe;
 #[cfg(windows)]
 mod automation_runtime;
@@ -50,6 +54,8 @@ mod gui_activity;
 mod gui_agent_broker;
 #[cfg(windows)]
 mod gui_app_preferences;
+#[cfg(windows)]
+mod gui_application_events;
 #[cfg(windows)]
 mod gui_bridge;
 #[cfg(windows)]
@@ -91,11 +97,15 @@ mod mapper_ui;
 #[cfg(windows)]
 mod mcp;
 #[cfg(windows)]
+mod mcp_event_windows;
+#[cfg(windows)]
 mod output_runtime;
 #[cfg(windows)]
 mod output_ui;
 #[cfg(windows)]
 mod probe;
+#[cfg(windows)]
+mod renderer_config;
 #[cfg(windows)]
 mod replication_queue;
 #[cfg(windows)]
@@ -129,6 +139,15 @@ mod window_selection;
 #[cfg(windows)]
 const APP_NAME: &str = "ProtoInputMultiPlex";
 
+/// Native GUI renderer; software mode never falls back to a hardware adapter.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, clap::ValueEnum)]
+enum GuiRenderer {
+    #[cfg_attr(not(all(windows, feature = "software-renderer")), default)]
+    Glow,
+    #[cfg_attr(all(windows, feature = "software-renderer"), default)]
+    SoftwareDx12,
+}
+
 #[derive(Parser)]
 #[command(
     name = "protoinputmultiplex",
@@ -138,6 +157,25 @@ const APP_NAME: &str = "ProtoInputMultiPlex";
 struct Args {
     #[command(subcommand)]
     command: Option<Command>,
+}
+impl Args {
+    #[cfg(any(windows, test))]
+    fn command_or_gui(self) -> Command {
+        self.command.unwrap_or_else(|| Command::Gui {
+            renderer: GuiRenderer::default(),
+            data_dir: None,
+            profile: None,
+            ui_script: None,
+            ui_script_no_screenshots: false,
+            discovery_delay_ms: None,
+            start_preflight_delay_ms: None,
+            profile_file_delay_ms: None,
+            app_preferences_delay_ms: None,
+            bootstrap_delay_ms: None,
+            preferences: None,
+            startup_test_key: None,
+        })
+    }
 }
 #[derive(Subcommand)]
 enum Command {
@@ -160,6 +198,12 @@ enum Command {
         /// Connect to an enabled GUI-owned session using its private descriptor file.
         #[arg(long)]
         gui_connection: Option<PathBuf>,
+        /// Use a GUI-issued application-event descriptor for exact native windows only.
+        #[arg(long, conflicts_with_all = ["runtime", "gui_connection", "allow_mapper_library", "allow_app_preferences", "preferences", "data_dir"])]
+        event_connection: Option<PathBuf>,
+        /// Use a GUI-approved selected-user event lease for the consumer-local user toolkit only.
+        #[arg(long, conflicts_with_all = ["event_connection", "runtime", "gui_connection", "allow_mapper_library", "allow_app_preferences", "preferences", "data_dir"])]
+        toolkit_event_connection: Option<PathBuf>,
         /// Application-preferences document (separate from seat profiles).
         #[arg(long)]
         preferences: Option<PathBuf>,
@@ -175,6 +219,9 @@ enum Command {
     },
     /// Open the device dashboard and live multi-mouse preview (default).
     Gui {
+        /// Native GUI renderer (software-dx12 requires the software-renderer build feature).
+        #[arg(long, value_enum, default_value_t = GuiRenderer::default())]
+        renderer: GuiRenderer,
         /// Root for preferences, profiles and macros; defaults to LocalAppData/ProtoInputMultiPlex.
         #[arg(long, conflicts_with = "preferences")]
         data_dir: Option<PathBuf>,
@@ -305,19 +352,7 @@ fn main() -> Result<()> {
     }
     #[cfg(windows)]
     {
-        windows_main(args.command.unwrap_or(Command::Gui {
-            data_dir: None,
-            profile: None,
-            ui_script: None,
-            ui_script_no_screenshots: false,
-            discovery_delay_ms: None,
-            start_preflight_delay_ms: None,
-            profile_file_delay_ms: None,
-            app_preferences_delay_ms: None,
-            bootstrap_delay_ms: None,
-            preferences: None,
-            startup_test_key: None,
-        }))
+        windows_main(args.command_or_gui())
     }
     #[cfg(not(windows))]
     {
@@ -336,6 +371,7 @@ fn windows_main(command: Command) -> Result<()> {
             return config_maintenance::run(command);
         }
         Command::Gui {
+            renderer,
             data_dir,
             profile,
             ui_script,
@@ -352,7 +388,10 @@ fn windows_main(command: Command) -> Result<()> {
                 data_dir,
                 profile,
                 ui_script,
-                !ui_script_no_screenshots,
+                gui::GuiRunOptions {
+                    renderer,
+                    script_screenshots: !ui_script_no_screenshots,
+                },
                 preferences,
                 startup_test_key,
                 gui::WorkerDelays {
@@ -389,11 +428,19 @@ fn windows_main(command: Command) -> Result<()> {
         Command::Mcp {
             runtime,
             gui_connection,
+            event_connection,
+            toolkit_event_connection,
             preferences,
             allow_app_preferences,
             allow_mapper_library,
             data_dir,
         } => {
+            if let Some(path) = toolkit_event_connection {
+                return mcp_event_windows::run_toolkit(path);
+            }
+            if let Some(path) = event_connection {
+                return mcp_event_windows::run(path);
+            }
             let runtime = runtime.unwrap_or_else(app_paths::runtime_dir);
             let custom_document = preferences.is_some();
             let preferences = app_paths::preferences_path(data_dir, preferences)?;
@@ -513,6 +560,106 @@ fn windows_main(command: Command) -> Result<()> {
             std::io::stdin().read_line(&mut line)?;
             drop(session);
             Ok(())
+        }
+    }
+}
+
+#[cfg(test)]
+mod renderer_cli_tests {
+    use super::*;
+
+    #[test]
+    fn normal_gui_and_startup_arguments_use_the_build_default() {
+        #[cfg(all(windows, feature = "software-renderer"))]
+        let expected = GuiRenderer::SoftwareDx12;
+        #[cfg(not(all(windows, feature = "software-renderer")))]
+        let expected = GuiRenderer::Glow;
+        for arguments in [
+            vec!["protoinputmultiplex"],
+            vec!["protoinputmultiplex", "gui"],
+            vec![
+                "protoinputmultiplex",
+                "gui",
+                "--preferences",
+                "private.json",
+            ],
+        ] {
+            let parsed = Args::try_parse_from(arguments).unwrap();
+            let Command::Gui { renderer, .. } = parsed.command_or_gui() else {
+                panic!("normal startup must select the GUI");
+            };
+            assert_eq!(renderer, expected);
+        }
+    }
+
+    #[test]
+    fn explicit_gui_renderer_overrides_the_build_default() {
+        for (name, expected) in [
+            ("glow", GuiRenderer::Glow),
+            ("software-dx12", GuiRenderer::SoftwareDx12),
+        ] {
+            let parsed =
+                Args::try_parse_from(["protoinputmultiplex", "gui", "--renderer", name]).unwrap();
+            let Command::Gui { renderer, .. } = parsed.command_or_gui() else {
+                panic!("renderer option must select the GUI");
+            };
+            assert_eq!(renderer, expected);
+        }
+    }
+
+    #[test]
+    fn renderer_option_rejects_typos_and_does_not_apply_to_probe() {
+        assert!(Args::try_parse_from(["protoinputmultiplex", "gui", "--renderer", "cpu"]).is_err());
+        assert!(
+            Args::try_parse_from([
+                "protoinputmultiplex",
+                "probe",
+                "--renderer",
+                "software-dx12",
+            ])
+            .is_err()
+        );
+    }
+}
+
+#[cfg(test)]
+mod toolkit_event_cli_tests {
+    use super::*;
+
+    #[test]
+    fn toolkit_descriptor_is_explicit_and_excludes_every_other_authority() {
+        let args = Args::try_parse_from([
+            "protoinputmultiplex",
+            "mcp",
+            "--toolkit-event-connection",
+            "private.json",
+        ])
+        .unwrap();
+        assert!(matches!(
+            args.command,
+            Some(Command::Mcp {
+                toolkit_event_connection: Some(_),
+                event_connection: None,
+                ..
+            })
+        ));
+        for extra in [
+            vec!["--event-connection", "other.json"],
+            vec!["--gui-connection", "other.json"],
+            vec!["--runtime", "runtime"],
+            vec!["--preferences", "preferences.json"],
+            vec!["--data-dir", "data"],
+            vec!["--allow-app-preferences"],
+            vec!["--allow-mapper-library", "--data-dir", "data"],
+        ] {
+            let mut input = vec![
+                "protoinputmultiplex",
+                "mcp",
+                "--toolkit-event-connection",
+                "private.json",
+            ];
+            input.extend(extra);
+            assert!(Args::try_parse_from(input).is_err());
         }
     }
 }

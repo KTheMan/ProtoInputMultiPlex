@@ -4,6 +4,10 @@ on: [push, pull_request]
 permissions:
   contents: read
 
+concurrency:
+  group: rust-mcp-client-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
 jobs:
   check:
     name: Standalone client checks

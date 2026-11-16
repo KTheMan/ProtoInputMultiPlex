@@ -1,2 +1,3 @@
 # Preserve upstream notice bytes and their recorded SHA-256 provenance across clones.
 packaging/licenses/** -text
+crates/protoinputmultiplex/notices/ocrs-MIT.txt -text

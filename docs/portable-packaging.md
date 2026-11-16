@@ -1,5 +1,93 @@
 # Portable packaging
 
+## Application SDK release closure
+
+The builder now requires Rust targets `i686-pc-windows-msvc` and
+`wasm32-unknown-unknown` alongside the Windows x64 toolchain. Supply the official
+[wasm-bindgen 0.2.129 Windows x64 archive](https://github.com/wasm-bindgen/wasm-bindgen/releases/download/0.2.129/wasm-bindgen-0.2.129-x86_64-pc-windows-msvc.tar.gz)
+using `-WasmBindgenArchive`; SHA-256 must be
+`79e348c169d0c10c0b287647f1e753d0985353ca96800bc29be8f4261baf13e6`,
+matching `.github/workflows/rust.yml` and the pinned Rust dependency. Acquire the
+archive before invoking packaging. The builder verifies the copied archive and
+tool version, uses this tool directly, and never installs a replacement CLI.
+Cargo builds retain `--locked`; dependency downloads use the existing build
+semantics. Before source-input freezing or compilation, the builder runs online
+`cargo metadata --locked --features mux-application-sdk/native-client
+--format-version 1 --filter-platform <target>` for each of the same x64, i686 and
+wasm32 platforms used by the final notice inventory. This warms the full
+workspace metadata graphs, including dependencies of packages that are not built
+for that platform, such as the i686 GUI graph. A failed prefetch stops before
+expensive builds. Final staging still requires `--locked --offline` metadata for
+all three platforms; the notice dependency union and offline rejection remain
+mandatory. This does not change features, the lockfile or compiler targets.
+
+Use a target directory without `sdk-release-build` or `sdk-release` children.
+Each native SDK builds in its own fresh Cargo target directory with full default
+`native-ffi`/`native-windows` features plus `native-client`. The builder records
+the DLL and header from the exact Cargo JSON artifact/build-script pair and
+rejects ambiguous or misplaced outputs. This replaces header directory globbing
+and does not select a similarly named debug or feature-reduced artifact.
+
+The final bundle includes `sdk/x64` and `sdk/x86` with their respective
+`mux_application_sdk.dll`, generated `protoinputmultiplex_application_sdk.h` and
+`metadata.json`. `sdk/web` includes the example HTML/bootstrap, generated web JS,
+WASM and both TypeScript declarations under `pkg`, plus metadata. The browser
+example needs an HTTP server; connection setup remains explicit and carries no
+packaged credentials. Native lifecycle fixture executables are qualification
+tools and are excluded from this payload.
+
+Each SDK metadata record binds its target, release profile, features, source
+commit, frozen input digest and fixed payload hashes. Web metadata also records
+the pinned binding tool archive hash. Staging rejects missing, extra, mixed or
+modified SDK payloads, validates PE architecture/native-client header identity,
+and repeats SDK hash checks after copying. Every native DLL participates in the
+existing PE import and colocated dependency checks, even when x64/x86 DLL names
+match. The bundle manifest includes these SDK records and all staged hashes.
+
+Notices cover the union of x64, x86 and wasm Cargo metadata with native-client
+enabled; missing notices fail packaging. The corresponding-source ZIP adds the
+relevant Rust workflows, source/tests for the root Rust client example and
+explicit agent skill files. Example evidence directories, runtime connection
+descriptors and private state are not added to that source allowlist. Installer
+packaging consumes the completed portable tree, including `sdk`, using its
+existing bundle embedding path.
+
+Source admission uses paths committed in Git `HEAD`, including the native
+submodule's own `HEAD` inventory when present. Sources created by the builder's
+approved compatibility patch sequence also need to accompany a normal pinned
+submodule. The packager requires native `HEAD` to match the pinned commit and
+each supported patch to be committed and unchanged from root `HEAD`. It verifies
+the root patch set, then replays the complete builder order (base `0001`, followed
+by `0004`, `0005`, `0006`, `0007`) through Git's patch engine in a fresh temporary
+index and object database. The native object database is a read-only alternate;
+the real index, working tree and Git configuration are not modified. Temporary
+Git overrides apply only to replay commands.
+
+Only final added source files under `src/ProtoInput` are candidates for this
+exception. Their prepared working bytes must match the final indexed blobs after
+all later patch edits, allowing LF/CRLF differences. Git handles both unified
+new-file sections and `diff --git` additions; no partial patch text parser is
+used. Missing, changed, outside-tree or non-source additions fail. The frozen
+source inventory records the committed patch files and complete prepared source
+hashes. Committed flattened snapshots use their existing committed inventory.
+
+Other new indexed or nonignored untracked files matching the source allowlist
+cause packaging to fail before freezing or archiving. Commit the complete
+release source first and keep private
+acceptance/configuration files outside source directories. In a flattened
+checkout, commit the pinned vendor files, even when upstream ignore rules would
+normally hide them. `source-baseline.json` is provenance data and cannot add
+files to the archive. Required SDK/build source paths must be committed; missing
+working files fail packaging. The root example's `src` and `tests` additions
+admit only committed Rust source files. Current bytes of already committed
+compatibility patch paths remain included and frozen, preserving the existing
+backend preparation workflow.
+
+This recipe has not yet been executed or accepted as a complete release.
+Packaging hashes and feature identity do not establish native/browser runtime
+acceptance. Preserve the outstanding qualification caveats in
+[Application event SDK](application-event-sdk.md).
+
 The current installer and Rust maintenance commands extend this workflow; see
 [Installation and recovery](installation-recovery.md). The October 15 source
 adds both cursor observer DLLs to the eight ProtoInput runtime components,
@@ -29,7 +117,8 @@ the recorded task baseline includes its existing feature patches unchanged.
 Set-Location 'E:\Kenny\Documents\GitHub\ProtoInputMultiPlex'
 .\scripts\package-portable.ps1 `
   -CargoTargetDir 'E:\Kenny\Documents\GitHub\ProtoInputMultiPlex-portable-target' `
-  -OutputDir 'E:\Kenny\Documents\GitHub\ProtoInputMultiPlex-portable-dist'
+  -OutputDir 'E:\Kenny\Documents\GitHub\ProtoInputMultiPlex-portable-dist' `
+  -WasmBindgenArchive 'E:\tools\wasm-bindgen-0.2.129-x86_64-pc-windows-msvc.tar.gz'
 python .\scripts\test-portable.py `
   --bundle 'E:\Kenny\Documents\GitHub\ProtoInputMultiPlex-portable-dist' `
   --output 'E:\Kenny\Documents\GitHub\ProtoInputMultiPlex-portable-verification.json'
@@ -46,16 +135,15 @@ needed. Python staging can also be rerun on already-built outputs:
 
 ```powershell
 $env:CARGO_TARGET_DIR = 'E:\Kenny\Documents\GitHub\ProtoInputMultiPlex-portable-target'
-python .\scripts\package-portable.py --target-dir $env:CARGO_TARGET_DIR --output 'E:\new-bundle'
+python .\scripts\package-portable.py --target-dir $env:CARGO_TARGET_DIR --output 'E:\new-bundle' --build-inputs "$env:CARGO_TARGET_DIR/portable-build-inputs.json"
 ```
 
 This is repeatable staging with recorded hashes, not a byte-identical MSVC build
 claim. Build toolchain versions, source hashes, lockfile and runtime hashes are in
 the manifest; rebuild with the same tools and inputs.
 The PowerShell workflow records source hashes before compilation and checks them
-again before staging. Manual Python-only staging records expected build settings
-and observed PE imports; it does not assert how arbitrary prebuilt outputs were
-compiled or that their sources match the current files.
+again before staging. Python-only staging requires the same frozen input record
+and SDK metadata from the builder. Arbitrary prebuilt SDK outputs are rejected.
 Staging requires the local
 Cargo dependency cache populated by the build. Unknown non-system PE imports
 fail packaging. Import and delay-import tables are read from every final EXE/DLL;
@@ -167,3 +255,20 @@ The small OCR component adapter's MIT terms are retained separately from the
 model licenses. The packager verifies the fixed upstream notice and stages it
 as `licenses/rust/ocrs-0.12.2/LICENSE-MIT.txt` when the crate has no notice files.
 The pure notice-copy check does not qualify a complete portable release.
+
+## Opt-in software GUI qualification package
+
+The unsigned unreleased candidate workflow has a `gui_renderer` dispatch input. Its default remains `glow`; select `software-dx12` only for the explicit compatibility qualification build. The same full bundle, two native SDK architectures, Web SDK and per-user NSIS installer are produced. This is a build variant, not a renderer-only smoke executable or a shipping qualification.
+
+The equivalent packaging commands, using fresh owned paths and the existing hash-verified official binding archive, are:
+
+```powershell
+./scripts/package-portable.ps1 -CargoTargetDir C:/owned/qualification-target -OutputDir C:/owned/qualification-portable -WasmBindgenArchive C:/owned/wasm-bindgen.tar.gz -GuiRenderer software-dx12
+./scripts/package-installer.ps1 -BundleDir C:/owned/qualification-portable -OutputFile C:/owned/qualification-setup.exe
+```
+
+The app build uses `cargo build --release --locked --target x86_64-pc-windows-msvc -p protoinputmultiplex -p cursor-observer --features protoinputmultiplex/software-renderer --message-format=json-render-diagnostics` under the existing static-CRT configuration. Packaging verifies the exact compiler artifact's features/executable and records them, the executable hash and compiler-JSON hash in `application_build` in the bundle and candidate provenance. The frozen build inputs bind the renderer choice; dependency notices include its selected graph.
+
+In a Windows build with `software-renderer`, no-argument launch, `gui`, and the ordinary startup command `gui --preferences ...` default to strict Software DX12. An explicit `--renderer glow` or `--renderer software-dx12` still overrides the default. Builds without that feature default to Glow. Startup registration and preferences are unchanged; the fixture must not rewrite the Run command to choose a renderer.
+
+Software mode selects a compatible DX12 CPU adapter and rejects hardware fallback. Adapter enumeration may still probe hardware drivers. Required hosted formatting, Clippy, workspace/default-feature tests, software-feature tests, full packaging/source/header/notice checks and exact native/WASM runtime gates remain necessary. A package build is not install/logon/render acceptance: the actual per-user install, normal GUI, saved preferences, OS startup and independent observation must be qualified in the disposable VM. This variant does not establish hardware-free operation, Ultra completion, or a fix for the workstation P1 freeze.

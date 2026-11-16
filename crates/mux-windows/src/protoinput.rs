@@ -49,6 +49,85 @@ type QueueFenceExport = QueueFence;
 type Window = unsafe extern "C" fn(u32, u64);
 type BoundsToggle = unsafe extern "C" fn(u32, bool, bool);
 
+fn qualification_first_key_down(packet: &Packet, first: &AtomicBool) -> bool {
+    if packet.kind != 1 || packet.flags & 1 != 0 {
+        return false;
+    }
+    qualification_claim_key_down(
+        packet,
+        first,
+        matches!(
+            std::env::var("PROTOINPUTMULTIPLEX_QUALIFICATION_STDERR").as_deref(),
+            Ok("private-file-v1")
+        ),
+    )
+}
+
+fn qualification_claim_key_down(packet: &Packet, first: &AtomicBool, enabled: bool) -> bool {
+    packet.kind == 1
+        && packet.flags & 1 == 0
+        && enabled
+        && !first.swap(true, std::sync::atomic::Ordering::Relaxed)
+}
+
+fn qualification_stderr(line: std::fmt::Arguments<'_>) {
+    use std::io::Write;
+    // Qualification directs stderr to a private regular file. Do not propagate
+    // a diagnostic write error into the original input/cleanup behavior.
+    let _ = writeln!(std::io::stderr().lock(), "{line}");
+}
+
+fn qualification_claim_shutdown(
+    devices: &[ResolvedSeat],
+    native: bool,
+    enabled: bool,
+    first: &AtomicBool,
+) -> Option<[u32; 2]> {
+    if !enabled || !native {
+        return None;
+    }
+    let a = devices.first()?;
+    let b = devices.get(1)?;
+    if a.mouse != 0xf1000002
+        || a.keyboard != Some(0xf1000003)
+        || b.mouse != 0xf1000004
+        || b.keyboard != Some(0xf1000005)
+        || a.target_pid == 0
+        || b.target_pid == 0
+        || a.target_pid == b.target_pid
+        || first.swap(true, std::sync::atomic::Ordering::Relaxed)
+    {
+        return None;
+    }
+    Some([a.target_pid, b.target_pid])
+}
+
+fn qualification_shutdown_record(
+    label: &str,
+    observed: &crate::lifecycle::OwnReadinessObservation,
+    guard: crate::lifecycle::RetainedReadinessGuard,
+) {
+    // Debug formatting here is limited to fixed enums and Option<bool>; no
+    // native code, identifier, nonce, path or exception string is formatted.
+    qualification_stderr(format_args!(
+        "PIM_QUAL_READY_SHUTDOWN_V1 phase=after_existing_shutdown_attempt_before_worker_terminal target={label} status={:?} present={:?} coherent={:?} header_matches={:?} identity_matches={:?} build_matches={:?} binding_present={:?} state={:?} error={:?} identity_guard={guard:?}",
+        observed.status,
+        observed.present,
+        observed.coherent,
+        observed.header_matches,
+        observed.identity_matches,
+        observed.build_matches,
+        observed.binding_present,
+        observed.state,
+        observed.error,
+    ));
+}
+
+fn observe_shutdown_result<T>(result: Result<T>, observe: impl FnOnce()) -> Result<T> {
+    observe();
+    result
+}
+
 /// A motion publication failed for one assigned virtual device. The failed queued
 /// segment is discarded so callers never replay stale motion to a later target.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -2256,8 +2335,31 @@ impl DesktopBackend {
         ensure!(self.alive(index), "target process exited");
         let target = &self.targets[index];
         let selected_window = target.motion.borrow().window;
-        Recipient::validate(hwnd, target.pid)?;
+        let recipient = Recipient::validate(hwnd, target.pid)?;
         self.remember_recipient(index, hwnd)?;
+        static FIRST: AtomicBool = AtomicBool::new(false);
+        if qualification_first_key_down(&packet, &FIRST) {
+            let target_identity_matches = target.pid == target.identity.pid;
+            let recipient_pid_matches = recipient.pid == target.identity.pid;
+            let recipient_window_matches = recipient.hwnd == hwnd;
+            let selected_window_matches = selected_window == hwnd;
+            let instance_binding_matches = target
+                .lifecycle
+                .as_ref()
+                .is_some_and(|attachment| attachment.instance == target.instance);
+            let startup_config_calls_returned = target.startup.get() == TargetStartup::Ready;
+            let requested_keyboard_messages =
+                self.devices.iter().any(|seat| seat.keyboard.is_some());
+            let packet_keyboard_assigned = self
+                .devices
+                .iter()
+                .any(|seat| seat.keyboard == Some(packet.device));
+            let requested_frozen = self.paused || !target.ready_to_unfreeze();
+            let native_backend_selected = self.backend.rust.is_none();
+            qualification_stderr(format_args!(
+                "PIM_QUAL_KEY_CONTEXT_V1 target_identity_matches={target_identity_matches} recipient_pid_matches={recipient_pid_matches} recipient_window_matches={recipient_window_matches} selected_window_matches={selected_window_matches} instance_binding_matches={instance_binding_matches} startup_config_calls_returned={startup_config_calls_returned} requested_keyboard_messages={requested_keyboard_messages} packet_keyboard_assigned={packet_keyboard_assigned} requested_frozen={requested_frozen} native_backend_selected={native_backend_selected}"
+            ));
+        }
         {
             self.backend.window(target.instance, hwnd as u64)?;
         }
@@ -2295,7 +2397,39 @@ impl DesktopBackend {
     /// Stops virtual emission, fences all target GUI threads, and only then removes
     /// the native filters that normalize synthesized keyboard releases.
     pub fn shutdown(&mut self) -> Result<ShutdownReport> {
-        self.shutdown_inner(true)
+        let result = self.shutdown_inner(true);
+        observe_shutdown_result(result, || self.qualification_shutdown_readiness())
+    }
+
+    fn qualification_shutdown_readiness(&self) {
+        static FIRST: AtomicBool = AtomicBool::new(false);
+        let pids = qualification_claim_shutdown(
+            &self.devices,
+            self.backend.native.is_some() && self.backend.rust.is_none(),
+            matches!(
+                std::env::var("PROTOINPUTMULTIPLEX_QUALIFICATION_STDERR").as_deref(),
+                Ok("private-file-v1")
+            ),
+            &FIRST,
+        );
+        let Some(pids) = pids else {
+            return;
+        };
+        for (label, pid) in ["target_a", "target_b"].into_iter().zip(pids) {
+            let mut matches = self.targets.iter().filter(|target| target.pid == pid);
+            let Some(target) = matches.next() else {
+                continue;
+            };
+            if matches.next().is_some() {
+                continue;
+            }
+            if let Some(attachment) = &target.lifecycle
+                && attachment.instance == target.instance
+            {
+                let (observed, guard) = attachment.readiness_observation(&target.identity);
+                qualification_shutdown_record(label, &observed, guard);
+            }
+        }
     }
     fn shutdown_inner(&mut self, prepare: bool) -> Result<ShutdownReport> {
         ensure!(
@@ -2403,6 +2537,73 @@ impl Drop for DesktopBackend {
     fn drop(&mut self) {
         if !self.shutdown_attempted {
             let _ = self.shutdown_inner(false);
+        }
+    }
+}
+
+#[cfg(test)]
+mod qualification_shutdown_tests {
+    use super::*;
+
+    fn devices() -> Vec<ResolvedSeat> {
+        vec![
+            ResolvedSeat {
+                name: "private A".into(),
+                mouse: 0xf1000002,
+                keyboard: Some(0xf1000003),
+                target_pid: 11,
+            },
+            ResolvedSeat {
+                name: "private B".into(),
+                mouse: 0xf1000004,
+                keyboard: Some(0xf1000005),
+                target_pid: 22,
+            },
+        ]
+    }
+
+    #[test]
+    fn shutdown_observation_requires_native_fixture_scope_and_claims_once() {
+        let first = AtomicBool::new(false);
+        let sources = devices();
+        for (native, enabled) in [(true, false), (false, true)] {
+            let selected = qualification_claim_shutdown(&sources, native, enabled, &first);
+            assert_eq!(selected, None);
+        }
+        let selected = qualification_claim_shutdown(&sources, true, true, &first);
+        assert_eq!(selected, Some([11, 22]));
+        let repeated = qualification_claim_shutdown(&sources, true, true, &first);
+        assert_eq!(repeated, None);
+        let mut swapped = devices();
+        swapped.swap(0, 1);
+        let mut duplicate_pid = devices();
+        duplicate_pid[1].target_pid = 11;
+        let mut wrong_keyboard = devices();
+        wrong_keyboard[1].keyboard = Some(0xf1000007);
+        for invalid in [swapped, duplicate_pid, wrong_keyboard, Vec::new()] {
+            assert_eq!(
+                qualification_claim_shutdown(&invalid, true, true, &AtomicBool::new(false)),
+                None
+            );
+        }
+    }
+
+    #[test]
+    fn shutdown_result_is_observed_after_one_attempt_and_returned_unchanged() {
+        for failed in [false, true] {
+            let mut order = vec!["shutdown_attempt"];
+            let result = if failed {
+                Err(anyhow::anyhow!("original cleanup failure"))
+            } else {
+                Ok(17)
+            };
+            let result = observe_shutdown_result(result, || order.push("observe"));
+            assert_eq!(order, ["shutdown_attempt", "observe"]);
+            if failed {
+                assert_eq!(result.unwrap_err().to_string(), "original cleanup failure");
+            } else {
+                assert_eq!(result.unwrap(), 17);
+            }
         }
     }
 }

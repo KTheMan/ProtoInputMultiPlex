@@ -4,11 +4,14 @@ ProtoInputMultiPlex is preparing an application to the free SignPath Foundation
 program. Acceptance and trusted release signing are pending. Current development
 builds are unsigned; a checksum or successful test is not a trusted signature.
 
-The proposed signing scope is the project's Rust application, Rust cursor helpers
-and installer. The modified ProtoInput backend is separately identified upstream
-software; no Foundation signature for those binaries is claimed. Eligibility of
-the bundled backend and separately licensed OCR models requires provider review.
-See [third-party notices](../THIRD_PARTY_NOTICES.md).
+The proposed signing scope is the project's Rust application, Rust cursor helpers,
+native SDK DLLs for x64 and x86, and project-authored installer generated using
+NSIS. The web SDK JavaScript/WASM files may be packaged but are not Authenticode
+targets. The modified ProtoInput backend is separately identified upstream
+software; its documented compatibility patches are described in [backend
+integration](backend.md). No Foundation signature for those upstream binaries is
+claimed. Eligibility of the bundled backend and separately licensed OCR models
+requires provider review. See [third-party notices](../THIRD_PARTY_NOTICES.md).
 
 Kenneth Gordon ([KTheMan](https://github.com/KTheMan)) is the maintainer and proposed
 author, reviewer and release approver. GitHub account MFA has been verified. SignPath enrollment, account MFA and signing configuration have not been qualified. Signing must follow review of the exact

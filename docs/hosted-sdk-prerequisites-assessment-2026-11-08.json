@@ -1,0 +1,227 @@
+{
+  "schema": "protoinputmultiplex.hosted_sdk_prerequisites_assessment.v1",
+  "assessment_date": "2026-11-08",
+  "result": "ACCEPTED_BOUNDED_HOSTED_PREREQUISITES",
+  "source": {
+    "head_commit": "da98ada7ad454a254fc578e7d2f0016c14679106",
+    "tested_pull_request_merge_commit": "1652cbf980b5b23dfe649024fa043f76c10e8e11",
+    "identical_git_tree": "d8ddc5ebb398e8910af2dc88626a8788d738e168",
+    "tree_identity_verified": true,
+    "scope": "These results apply only to this source tree. Later standalone Host registry or other code changes require new checks.",
+    "files_sha256": {
+      ".github/workflows/rust.yml": "65bf84dbd762a3090df2876e0aee62ee39ec06cb33ba380a197f97e26a7d8000",
+      "crates/mux-application-sdk/examples/native_dll_lifecycle.rs": "7ffd883b0318438d0662441372e0773587d570ab95183c14ed957d1c024ec82b",
+      "crates/protoinputmultiplex/examples/software_renderer_smoke.rs": "de6833728135d2cd1bff99983307bf78356350add10deccb5121d42fd3733b3e",
+      "crates/protoinputmultiplex/src/renderer_config.rs": "a0f7b7c91f823a270779046de568754029ea3b27a680bb7e09f4d02e61d3d8e8"
+    }
+  },
+  "workflow": {
+    "run_id": 42467047475,
+    "url": "https://github.com/KTheMan/ProtoInputMultiPlex/actions/runs/42467047475",
+    "event": "pull_request",
+    "attempt": 1,
+    "conclusion": "success",
+    "jobs": [
+      {
+        "name": "check",
+        "id": 128689957149,
+        "conclusion": "success"
+      },
+      {
+        "name": "qualify-native-lifecycle",
+        "id": 128693528698,
+        "conclusion": "success"
+      },
+      {
+        "name": "qualify-software-readback",
+        "id": 128693528735,
+        "conclusion": "success"
+      }
+    ],
+    "log_archive_sha256": "d5d5566bd7b66620ebafb7f7e87460cfe3db7517a1044de6ed702341af9aa312",
+    "all_48_saved_log_members_verified": true,
+    "error_markers_or_failed_test_summaries": 0,
+    "partial_artifacts_consumed": false,
+    "fixture_process_retries_observed": 0
+  },
+  "compile_and_test_scope": {
+    "result": "PASS_FOR_COMMANDS_RUN",
+    "accepted": [
+      "cargo fmt --all --check",
+      "strict workspace all-target Clippy",
+      "workspace tests",
+      "native-client all-target Clippy/tests",
+      "external native consumer pure helper tests",
+      "software-renderer Clippy/tests/build",
+      "full-default/native-client Windows x64/x86 workspace and isolated SDK library/example builds",
+      "native C11 header/signature/width and eleven-export gates",
+      "WASM Clippy/build",
+      "pinned wasm-bindgen generation"
+    ],
+    "test_command_summaries": [
+      {
+        "command": "workspace tests",
+        "passed": 1022,
+        "failed": 0,
+        "ignored": 19
+      },
+      {
+        "command": "native-client all-target tests",
+        "passed": 33,
+        "failed": 0,
+        "ignored": 1
+      },
+      {
+        "command": "external native consumer helper tests",
+        "passed": 2,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "command": "software-renderer tests",
+        "passed": 709,
+        "failed": 0,
+        "ignored": 0
+      }
+    ],
+    "counts_are_per_command_not_unique_tests": true,
+    "ignored_tests_not_qualified": "Explicit hardware-overlay and opt-in native/runtime cases, including the ignored native-client own-window unit test, were not executed by these test commands.",
+    "build_profile": "debug"
+  },
+  "artifact_integrity": {
+    "preview": {
+      "id": 13612408497,
+      "name": "application-sdk-preview-1652cbf980b5b23dfe649024fa043f76c10e8e11",
+      "sha256": "2758f3615d4d8a7586e3ec3dc37a2b9355793d02a08c3e7581a33945e0f45729",
+      "members": 20
+    },
+    "native_receipts": {
+      "id": 13612805835,
+      "name": "native-lifecycle-qualification-1652cbf980b5b23dfe649024fa043f76c10e8e11-1",
+      "sha256": "783130cd3fd8943a298e7650a1211244d28d9735db6105fd861996e70da40287",
+      "members": 8
+    },
+    "renderer_receipts": {
+      "id": 13611948547,
+      "name": "software-readback-qualification-1652cbf980b5b23dfe649024fa043f76c10e8e11-1",
+      "sha256": "ae03a1af52514a76ea8c426e24d3e885ea8116ce081c75486960beb907810995",
+      "members": 4
+    },
+    "every_archive_digest_inventory_length_and_member_hash_verified": true,
+    "controllers_downloaded_exact_preview_id_and_digest": true,
+    "no_partial_or_substituted_artifact_used": true
+  },
+  "native_client_DLL_lifecycle": {
+    "result": "PASS_BOUNDED_CONTROLLED_PEER",
+    "receiver": "Actual loaded native-client DLL connected to a fixture Host/Engine peer; not GUI Service.",
+    "features": [
+      "native-ffi",
+      "native-windows",
+      "native-client"
+    ],
+    "default_features": true,
+    "native_client_ABI": 2,
+    "required_native_exports_once_each": 11,
+    "common_header_sha256": "34a4aca676556ca52a27cd891d89fdb1c1f44513209e2d5e832950fcdc8e39ac",
+    "specimens": [
+      {
+        "architecture": "x64",
+        "target": "x86_64-pc-windows-msvc",
+        "dll_sha256": "feade39e9f706993d54a25ddff98c0527d066c804714c8db6fd7e1b50a450d64",
+        "fixture_sha256": "08ef55018dda54ef4aaeb774c121de697e0f506652e98b65b7a40e589adb33d1",
+        "controller_sha256": "ef0a5d61a71f0e3ae79f2d49edbbae271da5365be0a3872d9b1563c1ffc248c0",
+        "report_sha256": "17fc3ac0728b08855d2be0f4c0f69789d25ec1b74fbd85a4ad4fc9be60d30e18",
+        "exit_code": 0,
+        "timed_out": false,
+        "elapsed_ms": 857,
+        "initial_destroy_status": 0
+      },
+      {
+        "architecture": "x86",
+        "target": "i686-pc-windows-msvc",
+        "dll_sha256": "f80a8c312460e63bc16cb81f48ed47083fea1a831f84cb157504583a296a6d43",
+        "fixture_sha256": "f30fa8637808df8fedcdf5bc191ae9f403efc55ac0eccfef9d333af070da12f4",
+        "controller_sha256": "ac4d24b1651339cd3de55b2eedac157763750d83c815bb744db16808ba0be58e",
+        "report_sha256": "79d821933a5ddce3b8fa39fa64113fae6653f9a3e5354a1f7aa13a838fd993c6",
+        "exit_code": 0,
+        "timed_out": false,
+        "elapsed_ms": 553,
+        "initial_destroy_status": 3
+      }
+    ],
+    "milestones": "Exactly fifteen ordered schema-v2 records: exact DLL/hash/export binding, own HWND/data-free wake, real snapshot fold, retained short-buffer/default-off checks, Stop in WM_NCDESTROY, actual worker OS completion, Destroy/token consumption, peer join, FreeLibrary before owner exit and synced owner-ready marker.",
+    "exit_fence": "Reviewed executable waits on actual owner OS thread HANDLE then joins before returning; external controller observed actual process exit0. A pre-exit marker alone was not accepted.",
+    "schedule_note": "Initial Destroy OK on x64 and BUSY on x86 are both permitted; both completed the actual OS-thread fence and final destruction.",
+    "scope_exclusions": [
+      "GUI Service admission",
+      "same GUI-created users in native and WASM",
+      "authoritative remote held-input cleanup",
+      "standalone base Host C ABI registry lifetime",
+      "universal DLL unload safety",
+      "physical input"
+    ]
+  },
+  "software_renderer_readback": {
+    "result": "PASS_BOUNDED_OWN_PATTERN_READBACK",
+    "target": "x86_64-pc-windows-msvc",
+    "feature": "software-renderer",
+    "fixture_sha256": "cde5156a7125e277913f7906a7c93d0601d14f360b60fde8bb0f111d271a75f7",
+    "controller_sha256": "0e19f9fb7f9c8b980d4cf9f0c5f82c618ac65ace7416a03673ee563d8e72dd56",
+    "report_sha256": "dadb9e76cca12ecd5ea1e830cdf747d508a6dbcf1bf8211438fb3fe0ced96548",
+    "adapter": {
+      "backend": "Dx12",
+      "device_type": "Cpu",
+      "name": "Microsoft Basic Render Driver",
+      "vendor": 5140,
+      "device": 140,
+      "driver": "10.0.26100.33648",
+      "hardware_fallback": false
+    },
+    "evidence": {
+      "ordered_rows": 14,
+      "sequences": "1 through14",
+      "ui_frames": 6,
+      "readback_pixels": [
+        400,
+        280
+      ],
+      "regions": 4,
+      "pixels_verified_per_region": 25,
+      "colors": [
+        "red",
+        "green",
+        "blue",
+        "yellow"
+      ],
+      "pixel_match": "all reported center channels exact; fixture validates each5x5 region within12",
+      "close_requests": 1,
+      "run_native_returned_normally": true,
+      "external_exit_code": 0,
+      "timed_out": false,
+      "elapsed_ms": 1307
+    },
+    "scope_exclusions": [
+      "full Dashboard GUI",
+      "physical presentation/scanout",
+      "hardware GPU qualification",
+      "workstation safety",
+      "P1/freeze root cause or fix"
+    ]
+  },
+  "open_requirements": [
+    "Actual GUI preparation/controller and Service/MCP acceptance.",
+    "Concurrent actual native DLL and Rust/WASM browser consuming the same two GUI-created users with independent grants/credentials.",
+    "Real authentication/lifecycle failure, revoke/reapproval, held-input cleanup and explicit gap acceptance.",
+    "Separate standalone base Host C ABI actual DLL create/destroy/FreeLibrary/actual-owner-OS-exit qualification; later registry changes need new checks.",
+    "Full portable/installer release, signing, reboot, complete UX and MouseMux Ultra parity qualification."
+  ],
+  "acceptance_method": "Independent saved source/log/archive/artifact reads and hash/contract checks only; no downloaded executable/DLL, local Cargo/test, GUI, browser, input or network execution.",
+  "completion_claims": {
+    "full_SDK": false,
+    "actual_GUI_Service": false,
+    "paired_native_WASM": false,
+    "standalone_Host_lifetime": false,
+    "full_release": false,
+    "P1_fixed": false
+  }
+}

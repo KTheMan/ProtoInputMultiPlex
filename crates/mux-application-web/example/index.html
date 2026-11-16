@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; connect-src 'self' ws://127.0.0.1:* ws://localhost:*; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Cooperative application events</title>
+<style>
+  :root { color-scheme: dark; font-family: system-ui, sans-serif; color: #e1eafa; background: #0a101b; }
+  body { max-width: 1100px; margin: 2rem auto; padding: 0 1rem; }
+  label { display: inline-block; margin: .4rem .6rem .4rem 0; }
+  input, select, button { font: inherit; padding: .4rem; }
+  button { margin: .3rem; } button:disabled, input:disabled { opacity: .5; }
+  canvas:focus { outline: 2px solid #72acff; outline-offset: 3px; }
+  [role=status] { min-height: 1.5rem; color: #b6d1f5; }
+</style>
+<main id="application-demo"></main>
+<script type="module" src="./bootstrap.js"></script>
+</html>

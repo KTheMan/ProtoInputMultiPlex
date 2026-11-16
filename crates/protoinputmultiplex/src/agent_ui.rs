@@ -401,8 +401,8 @@ impl SetupPage {
             .id_salt("setup-access-body")
             .auto_shrink([false, false])
             .show(ui, |ui| {
-        Heading::new("Stopped profile setup").heading().show(ui);
-        Text::new("Allow a local MCP client to inspect and configure this stopped GUI profile, change startup/exit profile-saving preferences, and Save/Load or Import/Export through the paths selected in the GUI. Profile edits may stage target PIDs; GUI Start checks them. This access is separate from live routing permissions and turns off before Start.")
+        Heading::new("Stopped GUI setup").heading().show(ui);
+        Text::new("Allow a local MCP client to inspect and configure this stopped GUI profile, change startup/exit profile-saving preferences, and Save/Load or Import/Export through the paths selected in the GUI. Profile edits may stage target PIDs; GUI Start checks them. This access also reads cooperative application-event status counts and ages, without user identities, event credentials or consent changes. It is separate from live routing permissions and turns off before Start.")
             .wrap().show(ui);
         Text::new(if enabled {
             "Applied: setup access enabled."

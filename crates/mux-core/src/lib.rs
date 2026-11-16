@@ -7,6 +7,7 @@ use std::{
     time::{SystemTime, UNIX_EPOCH},
 };
 pub mod annotation;
+pub mod application_event;
 pub mod automation;
 pub mod desktop;
 pub mod emulated;

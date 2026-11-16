@@ -1,0 +1,155 @@
+name: Hosted crash tool inventory
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - sdk/application-events-20261108
+    paths:
+      - .github/workflows/hosted-crash-tools.yml
+permissions:
+  contents: read
+jobs:
+  inventory:
+    runs-on: windows-latest
+    timeout-minutes: 5
+    steps:
+      - uses: ilammy/msvc-dev-cmd@v1
+      - name: Inspect fixed installed tool candidates without executing them
+        shell: pwsh
+        env:
+          INVENTORY_DIR: ${{ runner.temp }}/pim-hosted-crash-tools-${{ github.run_id }}-${{ github.run_attempt }}
+          SOURCE_COMMIT: ${{ github.sha }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:GITHUB_ACTIONS -cne 'true' -or $env:RUNNER_ENVIRONMENT -cne 'github-hosted') { throw 'Disposable hosted runner required' }
+          if ($env:SOURCE_COMMIT -cnotmatch '^[0-9a-f]{40}$') { throw 'Source binding invalid' }
+          if (Test-Path -LiteralPath $env:INVENTORY_DIR) { throw 'Fresh inventory directory required' }
+          New-Item -ItemType Directory -Path $env:INVENTORY_DIR -ErrorAction Stop | Out-Null
+          $destination = Join-Path $env:INVENTORY_DIR 'inventory.json'
+          $rows = [Collections.Generic.List[object]]::new()
+          $candidates = [Collections.Generic.List[object]]::new()
+          $maximumFileBytes = 512MB
+          $maximumJsonBytes = 64KB
+          function Add-Candidate([string]$id, [string]$path) {
+            $candidates.Add([ordered]@{ id = $id; path = $path })
+          }
+          foreach ($architecture in @('x64','x86')) {
+            foreach ($name in @('cdb.exe','dbghelp.dll','dbgcore.dll','dbgeng.dll','symchk.exe','dumpchk.exe')) {
+              Add-Candidate ('kits-debuggers-' + $architecture + '-' + $name) ('C:\Program Files (x86)\Windows Kits\10\Debuggers\' + $architecture + '\' + $name)
+            }
+          }
+          foreach ($name in @('dbghelp.dll','dbgcore.dll','dbgeng.dll')) {
+            Add-Candidate ('system32-' + $name) ('C:\Windows\System32\' + $name)
+          }
+          foreach ($sdk in @('10.0.20348.0','10.0.22621.0','10.0.26100.0')) {
+            Add-Candidate ('kits-bin-' + $sdk + '-x64-dbghelp.dll') ('C:\Program Files (x86)\Windows Kits\10\bin\' + $sdk + '\x64\dbghelp.dll')
+          }
+          $llvmRoots = @(
+            @{ id = 'llvm'; path = 'C:\Program Files\LLVM\bin' },
+            @{ id = 'vs2022-llvm'; path = 'C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\Llvm\bin' },
+            @{ id = 'vs2022-llvm-x64'; path = 'C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\Llvm\x64\bin' },
+            @{ id = 'vs2026-llvm'; path = 'C:\Program Files\Microsoft Visual Studio\2026\Enterprise\VC\Tools\Llvm\bin' },
+            @{ id = 'vs2026-llvm-x64'; path = 'C:\Program Files\Microsoft Visual Studio\2026\Enterprise\VC\Tools\Llvm\x64\bin' }
+          )
+          foreach ($root in $llvmRoots) {
+            foreach ($name in @('llvm-pdbutil.exe','llvm-readobj.exe','llvm-symbolizer.exe','llvm-objdump.exe','lldb.exe')) {
+              Add-Candidate ($root.id + '-' + $name) (Join-Path $root.path $name)
+            }
+          }
+          if ($candidates.Count -ne 43) { throw 'Fixed candidate table invalid' }
+          function Save-Inventory([bool]$complete) {
+            $document = [ordered]@{
+              schema = 'pim.hosted-crash-tool-inventory.v1'
+              source_commit = $env:SOURCE_COMMIT
+              runs_on = 'windows-latest'
+              process_is_64_bit = [Environment]::Is64BitProcess
+              complete = $complete
+              fixed_candidates = 43
+              tools_executed = $false
+              products_or_targets_started = $false
+              installation_or_symbol_download_attempted = $false
+              path_or_environment_values_exported = $false
+              rows = @($rows.ToArray())
+            }
+            $bytes = [Text.UTF8Encoding]::new($false).GetBytes(($document | ConvertTo-Json -Depth 6) + "`n")
+            if ($bytes.Length -gt $maximumJsonBytes) { throw 'Inventory output bound exceeded' }
+            [IO.File]::WriteAllBytes($destination, $bytes)
+          }
+          Save-Inventory $false
+          foreach ($candidate in $candidates) {
+            $row = [ordered]@{
+              candidate_id = $candidate.id
+              discovery = 'fixed_path'
+              exists = $null
+              read_status = 'unobserved'
+              file_bytes = $null
+              file_version = $null
+              sha256 = $null
+              signature_status = 'unobserved'
+            }
+            try {
+              $row.exists = Test-Path -LiteralPath $candidate.path -PathType Leaf -ErrorAction Stop
+              if (-not $row.exists) {
+                $row.read_status = 'absent'
+              } else {
+                $file = Get-Item -LiteralPath $candidate.path -ErrorAction Stop
+                if ($file.Length -gt $maximumFileBytes) {
+                  $row.read_status = 'file_over_bound'
+                } elseif (($file.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0) {
+                  $row.read_status = 'reparse_point_rejected'
+                } else {
+                  $row.file_bytes = $file.Length
+                  $version = $file.VersionInfo.FileVersionRaw
+                  if ($null -ne $version -and $version.Major -ge 0 -and $version.Minor -ge 0 -and $version.Build -ge 0 -and $version.Revision -ge 0) {
+                    $row.file_version = '{0}.{1}.{2}.{3}' -f $version.Major,$version.Minor,$version.Build,$version.Revision
+                  }
+                  $digest = (Get-FileHash -LiteralPath $candidate.path -Algorithm SHA256 -ErrorAction Stop).Hash.ToLowerInvariant()
+                  if ($digest -cnotmatch '^[0-9a-f]{64}$') { throw 'Digest shape invalid' }
+                  $row.sha256 = $digest
+                  try {
+                    $signature = (Get-AuthenticodeSignature -LiteralPath $candidate.path -ErrorAction Stop).Status.ToString()
+                    $row.signature_status = if ($signature -cin @('Valid','NotSigned','HashMismatch','NotTrusted','NotSupportedFileFormat','Incompatible','UnknownError')) { $signature } else { 'unknown_status' }
+                  } catch {
+                    $row.signature_status = 'read_failed'
+                  }
+                  $row.read_status = 'metadata_read'
+                }
+              }
+            } catch {
+              $row.read_status = 'read_failed'
+            }
+            $rows.Add($row)
+            Save-Inventory $false
+          }
+          foreach ($name in @('cdb.exe','symchk.exe','dumpchk.exe','llvm-pdbutil.exe','llvm-readobj.exe','llvm-symbolizer.exe','llvm-objdump.exe','lldb.exe')) {
+            $row = [ordered]@{ candidate_id = 'command-' + $name; discovery = 'get_command_after_vs_devcmd'; resolution_status = 'unobserved'; fixed_candidate_id = $null }
+            try {
+              $command = Get-Command -Name $name -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1
+              if ($null -eq $command) {
+                $row.resolution_status = 'not_resolved'
+              } else {
+                $matches = @($candidates | Where-Object { [string]::Equals($_.path, $command.Source, [StringComparison]::OrdinalIgnoreCase) })
+                if ($matches.Count -eq 1) {
+                  $row.resolution_status = 'resolved_to_fixed_candidate'
+                  $row.fixed_candidate_id = $matches[0].id
+                } else {
+                  $row.resolution_status = 'resolved_outside_fixed_candidates_uninspected'
+                }
+              }
+            } catch {
+              $row.resolution_status = 'resolution_failed'
+            }
+            $rows.Add($row)
+            Save-Inventory $false
+          }
+          if ($rows.Count -ne 51) { throw 'Inventory row count invalid' }
+          Save-Inventory $true
+          Write-Host 'Bounded installed-tool metadata collected; no diagnostic tool or target executed.'
+      - name: Upload only bounded tool metadata
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hosted-crash-tools-${{ github.sha }}-${{ github.run_attempt }}
+          retention-days: 1
+          if-no-files-found: warn
+          path: ${{ runner.temp }}/pim-hosted-crash-tools-${{ github.run_id }}-${{ github.run_attempt }}/inventory.json

@@ -1,15 +1,988 @@
 name: Rust
 on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+concurrency:
+  group: rust-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+env:
+  CARGO_BUILD_JOBS: '2'
+  CARGO_INCREMENTAL: '0'
+  CARGO_PROFILE_DEV_DEBUG: '0'
+  CARGO_PROFILE_TEST_DEBUG: '0'
 jobs:
   check:
     runs-on: windows-latest
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: 1.92.0
           components: rustfmt, clippy
+          targets: i686-pc-windows-msvc, wasm32-unknown-unknown
       - uses: ilammy/msvc-dev-cmd@v1
+      - name: Cache pinned browser binding tool archive
+        id: pim-wasm-bindgen-cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/wasm-bindgen-0.2.129/upstream.tar.gz
+          key: wasm-bindgen-0.2.129-x86_64-pc-windows-msvc-79e348c169d0c10c0b287647f1e753d0985353ca96800bc29be8f4261baf13e6
+      - name: Prepare verified browser binding tool before Cargo checks
+        env:
+          PIM_WASM_BINDGEN_CACHE_HIT: ${{ steps.pim-wasm-bindgen-cache.outputs.cache-hit }}
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $bindgenRoot = Join-Path $env:RUNNER_TEMP 'wasm-bindgen-0.2.129'
+          New-Item -ItemType Directory -Path $bindgenRoot -Force | Out-Null
+          $bindgenArchive = Join-Path $bindgenRoot 'upstream.tar.gz'
+          if ($env:PIM_WASM_BINDGEN_CACHE_HIT -cne 'true') {
+            & curl.exe --fail --location --silent --show-error --retry 2 --retry-delay 2 --retry-max-time 120 --connect-timeout 15 --max-time 60 --output $bindgenArchive --header 'Accept: application/octet-stream' --header 'X-GitHub-Api-Version: 2026-03-10' 'https://api.github.com/repos/wasm-bindgen/wasm-bindgen/releases/assets/587769522'
+            if ($LASTEXITCODE -ne 0) { throw "Pinned binding tool download failed (curl exit $LASTEXITCODE)" }
+          }
+          if (-not (Test-Path -LiteralPath $bindgenArchive -PathType Leaf)) { throw 'Pinned binding tool archive missing' }
+          if ((Get-FileHash -LiteralPath $bindgenArchive -Algorithm SHA256).Hash.ToLowerInvariant() -cne '79e348c169d0c10c0b287647f1e753d0985353ca96800bc29be8f4261baf13e6') { throw 'Upstream binding tool digest mismatch' }
+          & tar -xzf $bindgenArchive -C $bindgenRoot
+          if ($LASTEXITCODE -ne 0) { throw 'Binding tool extraction failed' }
+          $bindgenExe = Join-Path $bindgenRoot 'wasm-bindgen-0.2.129-x86_64-pc-windows-msvc/wasm-bindgen.exe'
+          if (-not (Test-Path -LiteralPath $bindgenExe -PathType Leaf)) { throw 'Binding tool executable missing' }
+          $bindgenVersion = & $bindgenExe --version
+          if ($LASTEXITCODE -ne 0 -or $bindgenVersion -cne 'wasm-bindgen 0.2.129') { throw 'Binding tool version mismatch' }
+          $bindgenHash = (Get-FileHash -LiteralPath $bindgenExe -Algorithm SHA256).Hash.ToLowerInvariant()
+          "PIM_WASM_BINDGEN_EXE=$bindgenExe" | Out-File -LiteralPath $env:GITHUB_ENV -Encoding utf8 -Append
+          "PIM_WASM_BINDGEN_SHA256=$bindgenHash" | Out-File -LiteralPath $env:GITHUB_ENV -Encoding utf8 -Append
+      - name: Validate qualification controller syntax before compilation
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -c "import ast,pathlib; p=pathlib.Path('scripts/qualify-gui-pair.py'); ast.parse(p.read_text(encoding='utf-8'),filename=str(p))"
+          if ($LASTEXITCODE -ne 0) { throw 'Paired controller Python syntax rejected' }
+          python -c "import ast,pathlib; p=pathlib.Path('scripts/qualify-gui-owned-window.py'); ast.parse(p.read_text(encoding='utf-8'),filename=str(p))"
+          if ($LASTEXITCODE -ne 0) { throw 'Owned-window controller Python syntax rejected' }
+          python -c "import ast,pathlib; p=pathlib.Path('scripts/qualify-gui-desktop-provider.py'); ast.parse(p.read_text(encoding='utf-8'),filename=str(p))"
+          if ($LASTEXITCODE -ne 0) { throw 'Provider controller Python syntax rejected' }
+          python scripts/test-provider-failure-lifecycle.py
+          if ($LASTEXITCODE -ne 0) { throw 'Provider failure lifecycle regressions failed' }
+          python scripts/test-provider-private-dump.py
+          if ($LASTEXITCODE -ne 0) { throw 'Private dump boundary regressions failed' }
+          $pimParseTokens = $null
+          $pimParseErrors = $null
+          [System.Management.Automation.Language.Parser]::ParseFile((Join-Path $env:GITHUB_WORKSPACE 'scripts/qualify-standalone-host.ps1'), [ref]$pimParseTokens, [ref]$pimParseErrors) | Out-Null
+          if ($pimParseErrors.Count -ne 0) { throw 'Standalone controller PowerShell syntax rejected' }
+      - name: Test bounded browser admission with fake transport
+        run: python scripts/test-cdp-bootstrap.py
       - run: cargo fmt --all --check
       - run: cargo clippy --workspace --all-targets --locked -- -D warnings
+      - name: Check Rust browser client
+        run: cargo clippy -p mux-application-web --locked --target wasm32-unknown-unknown -- -D warnings
       - run: cargo test --workspace --locked
+      - name: Check native event client feature (Windows)
+        run: cargo clippy -p mux-application-sdk --all-targets --features native-client --locked -- -D warnings
+      - name: Test native event client feature (no ignored own-window qualification)
+        run: cargo test -p mux-application-sdk --all-targets --features native-client --locked
+      - name: Test external native consumer parsing and evidence helpers
+        run: cargo test -p mux-application-sdk --example native_external_consumer --features native-client --locked
+      - name: Check software renderer feature
+        run: cargo clippy -p protoinputmultiplex --all-targets --features software-renderer --locked -- -D warnings
+      - name: Test software renderer feature (no adapter initialization)
+        run: cargo test -p protoinputmultiplex --all-targets --features software-renderer --locked
+      - name: Build software renderer feature
+        run: cargo build -p protoinputmultiplex --features software-renderer --locked
+      - name: Build native workspace (x64)
+        run: cargo build --workspace --locked --features mux-application-sdk/native-client --target x86_64-pc-windows-msvc
+      - name: Build x64 native lifecycle DLL and example with full default SDK features
+        run: cargo build -p mux-application-sdk --lib --example native_dll_lifecycle --example native_external_consumer --example standalone_host_dll_lifecycle --features native-client --locked --target-dir target/sdk-native-build --target x86_64-pc-windows-msvc
+      - name: Build x64 renderer-only example
+        run: cargo build -p protoinputmultiplex --example software_renderer_smoke --features software-renderer --locked --target x86_64-pc-windows-msvc
+      - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x86
+      - name: Build x86 native lifecycle DLL and example with full default SDK features
+        run: cargo build -p mux-application-sdk --lib --example native_dll_lifecycle --example native_external_consumer --example standalone_host_dll_lifecycle --features native-client --locked --target-dir target/sdk-native-build --target i686-pc-windows-msvc
+      - name: Build native workspace (x86)
+        run: cargo build --workspace --locked --features mux-application-sdk/native-client --target i686-pc-windows-msvc
+      - name: Package and compile-check native lifecycle artifacts
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $nativeExports = @('pim_app_native_connect', 'pim_app_native_enable_input',
+            'pim_app_native_request', 'pim_app_native_drain', 'pim_app_native_query',
+            'pim_app_native_response_size', 'pim_app_native_response_read',
+            'pim_app_native_response_discard', 'pim_app_native_stop',
+            'pim_app_native_completion_handle', 'pim_app_native_destroy',
+            'pim_app_native_window_register', 'pim_app_native_window_refresh',
+            'pim_app_native_window_notify', 'pim_app_native_window_retire',
+            'pim_app_native_local_toolkit')
+          foreach ($architecture in @(
+            @{ Name = 'x64'; Triple = 'x86_64-pc-windows-msvc' },
+            @{ Name = 'x86'; Triple = 'i686-pc-windows-msvc' }
+          )) {
+            $debugRoot = Join-Path 'target/sdk-native-build' ($architecture.Triple + '/debug')
+            $headers = @(Get-ChildItem -LiteralPath (Join-Path $debugRoot 'build') -Directory -Filter 'mux-application-sdk-*' |
+              ForEach-Object { Join-Path $_.FullName 'out/protoinputmultiplex_application_sdk.h' } |
+              Where-Object { (Test-Path -LiteralPath $_ -PathType Leaf) -and
+                (Select-String -LiteralPath $_ -SimpleMatch 'pim_app_native_completion_handle' -Quiet) })
+            if ($headers.Count -eq 0) { throw "No native-client header for $($architecture.Triple)" }
+            $headerHashes = @($headers | ForEach-Object {
+              (Get-FileHash -LiteralPath $_ -Algorithm SHA256).Hash.ToLowerInvariant()
+            } | Sort-Object -Unique)
+            if ($headerHashes.Count -ne 1) { throw "Conflicting native-client headers for $($architecture.Triple)" }
+            $packageRoot = Join-Path 'target/sdk-preview' $architecture.Name
+            New-Item -ItemType Directory -Path $packageRoot -ErrorAction Stop | Out-Null
+            $dll = Join-Path $packageRoot 'mux_application_sdk.dll'
+            $header = Join-Path $packageRoot 'protoinputmultiplex_application_sdk.h'
+            $fixture = Join-Path $packageRoot 'native_dll_lifecycle.exe'
+            $externalFixture = Join-Path $packageRoot 'native_external_consumer.exe'
+            $standaloneHostFixture = Join-Path $packageRoot 'standalone_host_dll_lifecycle.exe'
+            Copy-Item -LiteralPath (Join-Path $debugRoot 'mux_application_sdk.dll') -Destination $dll
+            Copy-Item -LiteralPath $headers[0] -Destination $header
+            Copy-Item -LiteralPath (Join-Path $debugRoot 'examples/native_dll_lifecycle.exe') -Destination $fixture
+            Copy-Item -LiteralPath (Join-Path $debugRoot 'examples/native_external_consumer.exe') -Destination $externalFixture
+            Copy-Item -LiteralPath (Join-Path $debugRoot 'examples/standalone_host_dll_lifecycle.exe') -Destination $standaloneHostFixture
+            $toolsRoot = Join-Path $env:VCToolsInstallDir 'bin/Hostx64'
+            $cl = Join-Path $toolsRoot ($architecture.Name + '/cl.exe')
+            $dumpbin = Join-Path $toolsRoot 'x64/dumpbin.exe'
+            $exports = & $dumpbin /nologo /exports $dll
+            if ($LASTEXITCODE -ne 0) { throw 'DLL export inspection failed' }
+            $exports | Set-Content -LiteralPath (Join-Path $packageRoot 'exports.txt') -Encoding utf8
+            $exports | Write-Output
+            foreach ($symbol in $nativeExports) {
+              $found = @($exports | Where-Object { $_ -match ('^\s+\d+\s+[0-9A-Fa-f]+\s+[0-9A-Fa-f]+\s+' + [regex]::Escape($symbol) + '\s*$') })
+              if ($found.Count -ne 1) { throw "Missing or ambiguous native export for $($architecture.Name): $symbol ($($found.Count) matches)" }
+            }
+            $compileRoot = Join-Path $env:RUNNER_TEMP ('sdk-header-' + $architecture.Name)
+            New-Item -ItemType Directory -Path $compileRoot | Out-Null
+            $smoke = Join-Path $compileRoot 'header-smoke.c'
+            @'
+            #include "protoinputmultiplex_application_sdk.h"
+            _Static_assert(PIM_APP_NATIVE_CLIENT_ABI_VERSION == 3u, "native ABI");
+            _Static_assert(sizeof(size_t) == sizeof(void *) && sizeof(void *) == PIM_APP_EXPECTED_POINTER_SIZE, "pointer width");
+            _Static_assert(sizeof(uint64_t) == 8 && sizeof(uint32_t) == 4 && sizeof(int32_t) == 4, "ABI widths");
+            int32_t (PIM_APP_CALL *check_connect)(size_t,const uint8_t *,size_t,uint64_t *,uint32_t *) = pim_app_native_connect;
+            int32_t (PIM_APP_CALL *check_enable)(uint64_t,uint32_t,uint32_t) = pim_app_native_enable_input;
+            int32_t (PIM_APP_CALL *check_request)(uint64_t,const uint8_t *,size_t,uint64_t *) = pim_app_native_request;
+            int32_t (PIM_APP_CALL *check_drain)(uint64_t) = pim_app_native_drain;
+            int32_t (PIM_APP_CALL *check_query)(uint64_t) = pim_app_native_query;
+            int32_t (PIM_APP_CALL *check_toolkit)(uint64_t,const uint8_t *,size_t) = pim_app_native_local_toolkit;
+            int32_t (PIM_APP_CALL *check_size)(uint64_t,size_t *) = pim_app_native_response_size;
+            int32_t (PIM_APP_CALL *check_read)(uint64_t,uint8_t *,size_t,size_t *) = pim_app_native_response_read;
+            int32_t (PIM_APP_CALL *check_discard)(uint64_t) = pim_app_native_response_discard;
+            int32_t (PIM_APP_CALL *check_stop)(uint64_t) = pim_app_native_stop;
+            int32_t (PIM_APP_CALL *check_completion)(uint64_t,size_t *) = pim_app_native_completion_handle;
+            int32_t (PIM_APP_CALL *check_destroy)(uint64_t) = pim_app_native_destroy;
+            int32_t (PIM_APP_CALL *check_window_register)(uint64_t,size_t,uint32_t,uint64_t *) = pim_app_native_window_register;
+            int32_t (PIM_APP_CALL *check_window_refresh)(uint64_t,uint64_t,uint32_t,uint64_t *) = pim_app_native_window_refresh;
+            int32_t (PIM_APP_CALL *check_window_notify)(uint64_t,uint64_t,uint32_t,uint64_t *) = pim_app_native_window_notify;
+            int32_t (PIM_APP_CALL *check_window_retire)(uint64_t,uint64_t,uint64_t *) = pim_app_native_window_retire;
+          '@ | Set-Content -LiteralPath $smoke -Encoding utf8
+            $object = Join-Path $compileRoot 'header-smoke.obj'
+            $pointerSize = if ($architecture.Name -ceq 'x64') { 8 } else { 4 }
+            & $cl /nologo /std:c11 /W4 /WX /c "/DPIM_APP_EXPECTED_POINTER_SIZE=$pointerSize" "/I$packageRoot" "/Fo$object" $smoke
+            if ($LASTEXITCODE -ne 0) { throw "Header compilation failed for $($architecture.Name)" }
+            $dllHash = (Get-FileHash -LiteralPath $dll -Algorithm SHA256).Hash.ToLowerInvariant()
+            $headerHash = (Get-FileHash -LiteralPath $header -Algorithm SHA256).Hash.ToLowerInvariant()
+            if ($headerHash -ne $headerHashes[0]) { throw 'Packaged header digest mismatch' }
+            [ordered]@{
+              source_commit = $env:GITHUB_SHA
+              target = $architecture.Triple
+              profile = 'debug'
+              features = @('native-ffi', 'native-windows', 'native-client')
+              default_features = $true
+              isolated_sdk_build = $true
+              header_compile_and_native_exports_checked = $true
+              native_client_abi_version = 3
+              dll = @{ file = 'mux_application_sdk.dll'; sha256 = $dllHash }
+              header = @{ file = 'protoinputmultiplex_application_sdk.h'; sha256 = $headerHash }
+              fixture = @{ file = 'native_dll_lifecycle.exe'; sha256 = (Get-FileHash -LiteralPath $fixture -Algorithm SHA256).Hash.ToLowerInvariant() }
+              external_fixture = @{ file = 'native_external_consumer.exe'; sha256 = (Get-FileHash -LiteralPath $externalFixture -Algorithm SHA256).Hash.ToLowerInvariant() }
+              standalone_host_fixture = @{ file = 'standalone_host_dll_lifecycle.exe'; sha256 = (Get-FileHash -LiteralPath $standaloneHostFixture -Algorithm SHA256).Hash.ToLowerInvariant() }
+              qualification = 'compile-and-unit-tests-only; runtime qualification separate'
+            } | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $packageRoot 'metadata.json') -Encoding utf8
+          }
+      - name: Package renderer-only example
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $root = 'target/sdk-preview/renderer'
+          New-Item -ItemType Directory -Path $root | Out-Null
+          $exe = Join-Path $root 'software_renderer_smoke.exe'
+          Copy-Item -LiteralPath 'target/x86_64-pc-windows-msvc/debug/examples/software_renderer_smoke.exe' -Destination $exe
+          [ordered]@{
+            source_commit = $env:GITHUB_SHA
+            target = 'x86_64-pc-windows-msvc'
+            profile = 'debug'
+            features = @('software-renderer')
+            fixture = @{ file = 'software_renderer_smoke.exe'; sha256 = (Get-FileHash -LiteralPath $exe -Algorithm SHA256).Hash.ToLowerInvariant() }
+            qualification = 'renderer readback only; no physical presentation or P1 fix claim'
+          } | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $root 'metadata.json') -Encoding utf8
+      - name: Package exact full GUI software executable
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $root = 'target/sdk-preview/gui'
+          New-Item -ItemType Directory -Path $root -ErrorAction Stop | Out-Null
+          $exe = Join-Path $root 'protoinputmultiplex.exe'
+          Copy-Item -LiteralPath 'target/debug/protoinputmultiplex.exe' -Destination $exe
+          [ordered]@{
+            source_commit = $env:GITHUB_SHA
+            target = 'x86_64-pc-windows-msvc'
+            profile = 'debug'
+            features = @('software-renderer')
+            default_features = $true
+            executable = @{ file = 'protoinputmultiplex.exe'; sha256 = (Get-FileHash -LiteralPath $exe -Algorithm SHA256).Hash.ToLowerInvariant() }
+            qualification = 'compiled full GUI; initial paired hosted smoke is separate; no P1 or full SDK claim'
+          } | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $root 'metadata.json') -Encoding utf8
+      - name: Build Rust browser client
+        run: cargo build -p mux-application-web --locked --target wasm32-unknown-unknown
+      - name: Generate matching browser bindings
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $bindgenRoot = Join-Path $env:RUNNER_TEMP 'wasm-bindgen-0.2.129'
+          $expectedBindgenExe = Join-Path $bindgenRoot 'wasm-bindgen-0.2.129-x86_64-pc-windows-msvc/wasm-bindgen.exe'
+          if ([string]::IsNullOrWhiteSpace($env:PIM_WASM_BINDGEN_EXE) -or $env:PIM_WASM_BINDGEN_EXE -cne $expectedBindgenExe) { throw 'Verified binding tool path mismatch' }
+          $bindgenExe = $env:PIM_WASM_BINDGEN_EXE
+          if (-not (Test-Path -LiteralPath $bindgenExe -PathType Leaf)) { throw 'Verified binding tool executable missing' }
+          if ($env:PIM_WASM_BINDGEN_SHA256 -cnotmatch '^[0-9a-f]{64}$' -or
+              (Get-FileHash -LiteralPath $bindgenExe -Algorithm SHA256).Hash.ToLowerInvariant() -cne $env:PIM_WASM_BINDGEN_SHA256) { throw 'Verified binding tool executable digest mismatch' }
+          $bindgenVersion = & $bindgenExe --version
+          if ($LASTEXITCODE -ne 0 -or $bindgenVersion -cne 'wasm-bindgen 0.2.129') { throw 'Binding tool version mismatch' }
+          & $bindgenExe --target web --out-dir target/application-web/pkg --out-name mux_application_web target/wasm32-unknown-unknown/debug/mux_application_web.wasm
+          if ($LASTEXITCODE -ne 0) { throw 'Browser binding generation failed' }
+          Copy-Item crates/mux-application-web/example/index.html,crates/mux-application-web/example/bootstrap.js target/application-web/
+      - name: Bind exact Rust WASM distribution hashes
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $root = 'target/application-web'
+          $files = @('index.html', 'bootstrap.js', 'pkg/mux_application_web.js', 'pkg/mux_application_web_bg.wasm')
+          [ordered]@{
+            source_commit = $env:GITHUB_SHA
+            rust_wasm = $true
+            target = 'wasm32-unknown-unknown'
+            profile = 'debug'
+            wasm_bindgen_version = '0.2.129'
+            files = @($files | ForEach-Object { @{ file = $_; sha256 = (Get-FileHash -LiteralPath (Join-Path $root $_) -Algorithm SHA256).Hash.ToLowerInvariant() } })
+          } | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $root 'metadata.json') -Encoding utf8
+      - uses: actions/upload-artifact@v4
+        with:
+          name: application-sdk-preview-${{ github.sha }}
+          retention-days: 1
+          if-no-files-found: error
+          path: |
+            target/sdk-preview/
+            target/application-web/
+
+      - name: Preserve partial native SDK artifacts on check failure
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: application-sdk-preview-${{ github.sha }}-partial
+          retention-days: 1
+          if-no-files-found: warn
+          path: target/sdk-preview/
+
+  qualify-native-lifecycle:
+    needs: [check]
+    runs-on: windows-latest
+    timeout-minutes: 5
+    steps:
+      - name: Create fresh qualification evidence directory
+        env:
+          QUALIFICATION_ROOT: ${{ runner.temp }}/native-lifecycle-${{ github.run_id }}-${{ github.run_attempt }}
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if (Test-Path -LiteralPath $env:QUALIFICATION_ROOT) { throw 'Evidence directory already exists' }
+          New-Item -ItemType Directory -Path $env:QUALIFICATION_ROOT | Out-Null
+      - uses: actions/download-artifact@v4
+        with:
+          name: application-sdk-preview-${{ github.sha }}
+          path: ${{ runner.temp }}/qualification-artifacts
+      - name: Qualify each exact native lifecycle specimen once
+        env:
+          QUALIFICATION_ROOT: ${{ runner.temp }}/native-lifecycle-${{ github.run_id }}-${{ github.run_attempt }}
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          foreach ($architecture in @(
+            @{ Name = 'x64'; Triple = 'x86_64-pc-windows-msvc' },
+            @{ Name = 'x86'; Triple = 'i686-pc-windows-msvc' }
+          )) {
+            $name = $architecture.Name
+            $controller = [ordered]@{ status = 'FAIL'; reason = 'validation incomplete'; source_commit = $env:GITHUB_SHA;
+              architecture = $name; deadline_ms = 110000; exit_code = $null; timed_out = $false;
+              scope = 'controlled Host/Engine peer DLL lifecycle; no GUI Service/Web acceptance'; normal_unload_qualified = $false; local_toolkit_entry_qualified = $false }
+            $timer = [Diagnostics.Stopwatch]::StartNew()
+            try {
+              $root = Join-Path $env:RUNNER_TEMP ('qualification-artifacts/sdk-preview/' + $name)
+              $metadata = Get-Content -LiteralPath (Join-Path $root 'metadata.json') -Raw | ConvertFrom-Json
+              if ($metadata.source_commit -cne $env:GITHUB_SHA -or $metadata.target -cne $architecture.Triple -or
+                  $metadata.profile -cne 'debug' -or $metadata.native_client_abi_version -ne 3 -or
+                  $metadata.default_features -ne $true -or $metadata.header_compile_and_native_exports_checked -ne $true -or
+                  (@($metadata.features) -join ',') -cne 'native-ffi,native-windows,native-client') { throw 'Metadata identity mismatch' }
+              foreach ($entry in @(
+                @{ Value = $metadata.dll; File = 'mux_application_sdk.dll' },
+                @{ Value = $metadata.header; File = 'protoinputmultiplex_application_sdk.h' },
+                @{ Value = $metadata.fixture; File = 'native_dll_lifecycle.exe' }
+              )) {
+                if ($entry.Value.file -cne $entry.File -or $entry.Value.sha256 -cnotmatch '^[0-9a-f]{64}$') { throw 'Invalid artifact metadata' }
+                $actual = (Get-FileHash -LiteralPath (Join-Path $root $entry.File) -Algorithm SHA256).Hash.ToLowerInvariant()
+                if ($actual -cne $entry.Value.sha256) { throw "Artifact digest mismatch: $($entry.File)" }
+              }
+              $controller.artifacts = $metadata
+              $exe = Join-Path $root 'native_dll_lifecycle.exe'
+              $dll = Join-Path $root 'mux_application_sdk.dll'
+              $report = Join-Path $env:QUALIFICATION_ROOT ($name + '-lifecycle.jsonl')
+              if (Test-Path -LiteralPath $report) { throw 'Report path already exists' }
+              $arguments = '--dll "{0}" --sha256 {1} --report "{2}"' -f $dll, $metadata.dll.sha256, $report
+              $process = Start-Process -FilePath $exe -ArgumentList $arguments -WorkingDirectory $root -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $env:QUALIFICATION_ROOT ($name + '-stdout.log')) -RedirectStandardError (Join-Path $env:QUALIFICATION_ROOT ($name + '-stderr.log'))
+              $controller.pid = $process.Id
+              if (-not $process.WaitForExit(110000)) {
+                $controller.timed_out = $true
+                throw 'External process deadline exceeded; partial evidence retained; no cleanup/unload claim'
+              }
+              $process.Refresh()
+              $controller.exit_code = $process.ExitCode
+              if ($process.ExitCode -ne 0) { throw "Fixture exited $($process.ExitCode); cleanup/unload not qualified" }
+              $records = @(Get-Content -LiteralPath $report | ForEach-Object { $_ | ConvertFrom-Json })
+              $expected = @('started', 'dll_hash_verified', 'dll_exports_resolved', 'owner_hidden_window_created',
+                'client_connected_completion_retained', 'ready_via_data_free_window_wake', 'subscribed_snapshot_folded',
+                'retained_short_buffer_and_default_off_checked', 'native_local_toolkit_smoke', 'hwnd_destroyed_stop_returned', 'initial_destroy_schedule',
+                'actual_worker_os_thread_signaled_after_hwnd_death', 'client_destroyed_completion_closed',
+                'bounded_peer_joined', 'dll_unloaded_before_owner_exit', 'owner_ready_to_exit_after_unload')
+              if ($records.Count -ne $expected.Count) { throw 'Missing or extra lifecycle milestones' }
+              for ($i = 0; $i -lt $expected.Count; $i++) {
+                if ($records[$i].schema -cne 'pim.native-dll-lifecycle.v2' -or $records[$i].stage -cne $expected[$i]) { throw 'Lifecycle milestone order/schema mismatch' }
+              }
+              if ($records[1].detail.sha256 -cne $metadata.dll.sha256 -or $records[2].detail.native_exports -ne 12) { throw 'Lifecycle artifact identity mismatch' }
+              $toolkit = $records[8].detail
+              if ($toolkit.version -ne 1 -or $toolkit.authorized_users -ne 2 -or
+                  $toolkit.list_round_trip -ne $true -or $toolkit.palette_round_trip -ne $true -or
+                  $toolkit.stop_denied -ne $true) { throw 'Native local toolkit entry smoke incomplete' }
+              $controller.local_toolkit_entry_qualified = $true
+              $controller.status = 'PASS'
+              $controller.reason = 'All lifecycle milestones and actual external exit 0 observed'
+              $controller.normal_unload_qualified = $true
+            } catch {
+              $controller.reason = $_.Exception.Message
+              throw
+            } finally {
+              $controller.elapsed_ms = $timer.ElapsedMilliseconds
+              $controller | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $env:QUALIFICATION_ROOT ($name + '-controller.json')) -Encoding utf8
+            }
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-lifecycle-qualification-${{ github.sha }}-${{ github.run_attempt }}
+          retention-days: 1
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/native-lifecycle-${{ github.run_id }}-${{ github.run_attempt }}/*.json
+            ${{ runner.temp }}/native-lifecycle-${{ github.run_id }}-${{ github.run_attempt }}/*.jsonl
+            ${{ runner.temp }}/native-lifecycle-${{ github.run_id }}-${{ github.run_attempt }}/*.log
+
+  qualify-software-readback:
+    needs: [check]
+    runs-on: windows-latest
+    timeout-minutes: 5
+    steps:
+      - name: Create fresh renderer evidence directory
+        env:
+          QUALIFICATION_ROOT: ${{ runner.temp }}/software-readback-${{ github.run_id }}-${{ github.run_attempt }}
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if (Test-Path -LiteralPath $env:QUALIFICATION_ROOT) { throw 'Evidence directory already exists' }
+          New-Item -ItemType Directory -Path $env:QUALIFICATION_ROOT | Out-Null
+      - uses: actions/download-artifact@v4
+        with:
+          name: application-sdk-preview-${{ github.sha }}
+          path: ${{ runner.temp }}/qualification-artifacts
+      - name: Qualify only the explicit Cpu DX12 renderer readback fixture once
+        env:
+          QUALIFICATION_ROOT: ${{ runner.temp }}/software-readback-${{ github.run_id }}-${{ github.run_attempt }}
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $controller = [ordered]@{ status = 'FAIL'; reason = 'validation incomplete'; source_commit = $env:GITHUB_SHA;
+            deadline_ms = 30000; exit_code = $null; timed_out = $false;
+            scope = 'own renderer readback; no physical presentation, full GUI, or P1 fix claim' }
+          $timer = [Diagnostics.Stopwatch]::StartNew()
+          try {
+            $root = Join-Path $env:RUNNER_TEMP 'qualification-artifacts/sdk-preview/renderer'
+            $metadata = Get-Content -LiteralPath (Join-Path $root 'metadata.json') -Raw | ConvertFrom-Json
+            if ($metadata.source_commit -cne $env:GITHUB_SHA -or $metadata.target -cne 'x86_64-pc-windows-msvc' -or
+                $metadata.profile -cne 'debug' -or @($metadata.features).Count -ne 1 -or
+                $metadata.features[0] -cne 'software-renderer' -or $metadata.fixture.file -cne 'software_renderer_smoke.exe' -or
+                $metadata.fixture.sha256 -cnotmatch '^[0-9a-f]{64}$') { throw 'Renderer metadata identity mismatch' }
+            $exe = Join-Path $root 'software_renderer_smoke.exe'
+            $hash = (Get-FileHash -LiteralPath $exe -Algorithm SHA256).Hash.ToLowerInvariant()
+            if ($hash -cne $metadata.fixture.sha256) { throw 'Renderer fixture digest mismatch' }
+            $controller.artifacts = $metadata
+            $report = Join-Path $env:QUALIFICATION_ROOT 'renderer-readback.jsonl'
+            if (Test-Path -LiteralPath $report) { throw 'Report path already exists' }
+            $arguments = '--renderer software-dx12 --report "{0}"' -f $report
+            $process = Start-Process -FilePath $exe -ArgumentList $arguments -WorkingDirectory $root -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $env:QUALIFICATION_ROOT 'renderer-stdout.log') -RedirectStandardError (Join-Path $env:QUALIFICATION_ROOT 'renderer-stderr.log')
+            $controller.pid = $process.Id
+            if (-not $process.WaitForExit(30000)) {
+              $controller.timed_out = $true
+              throw 'External renderer deadline exceeded; partial evidence retained'
+            }
+            $process.Refresh()
+            $controller.exit_code = $process.ExitCode
+            if ($process.ExitCode -ne 0) {
+              $controller.fixture_failure_classifications = @('unexpected_nonzero_exit')
+              if (Test-Path -LiteralPath $report -PathType Leaf) {
+                $partial = @(Get-Content -LiteralPath $report | ForEach-Object { $_ | ConvertFrom-Json })
+                $classified = @($partial | Where-Object { $_.milestone -cin @('unsupported', 'initialization_or_native_error', 'readback_error', 'timeout', 'incomplete', 'evidence_or_ui_error') } | ForEach-Object { $_.milestone })
+                if ($classified.Count -gt 0) { $controller.fixture_failure_classifications = $classified }
+              }
+              throw "Renderer fixture exited $($process.ExitCode)"
+            }
+            $records = @(Get-Content -LiteralPath $report | ForEach-Object { $_ | ConvertFrom-Json })
+            $allowed = @('requested_mode', 'actual_adapter_verified', 'ui_frame_progress', 'screenshot_requested',
+              'screenshot_readback_received', 'known_pattern_pixels_verified', 'close_requested', 'run_native_returned', 'clean_exit_ready')
+            $lastElapsed = -1
+            for ($i = 0; $i -lt $records.Count; $i++) {
+              $record = $records[$i]
+              if ($record.schema -cne 'software-renderer-smoke-v1' -or $record.sequence -ne ($i + 1) -or
+                  $null -eq $record.elapsed_ms -or $record.elapsed_ms -lt $lastElapsed -or
+                  $record.milestone -cnotin $allowed) { throw 'Invalid/error renderer evidence' }
+              $lastElapsed = $record.elapsed_ms
+            }
+            $single = @{}
+            foreach ($milestone in @($allowed | Where-Object { $_ -cne 'ui_frame_progress' })) {
+              $matches = @($records | Where-Object { $_.milestone -ceq $milestone })
+              if ($matches.Count -ne 1) { throw "Missing or duplicate renderer milestone: $milestone" }
+              $single[$milestone] = $matches[0]
+            }
+            $order = @('requested_mode', 'actual_adapter_verified', 'screenshot_requested', 'screenshot_readback_received',
+              'known_pattern_pixels_verified', 'close_requested', 'run_native_returned', 'clean_exit_ready')
+            for ($i = 1; $i -lt $order.Count; $i++) {
+              if ($single[$order[$i]].sequence -le $single[$order[$i - 1]].sequence) { throw 'Renderer milestone order mismatch' }
+            }
+            $frames = @($records | Where-Object { $_.milestone -ceq 'ui_frame_progress' })
+            if ($frames.Count -ne 6) { throw 'Six UI frame milestones required' }
+            for ($i = 0; $i -lt 6; $i++) {
+              if ($frames[$i].details.frame -ne ($i + 1) -or $frames[$i].sequence -le $single.actual_adapter_verified.sequence -or
+                  $frames[$i].sequence -ge $single.close_requested.sequence) { throw 'UI frame progression mismatch' }
+            }
+            $adapter = $single.actual_adapter_verified.details
+            $pixels = $single.known_pattern_pixels_verified.details
+            if ($single.requested_mode.details.mode -cne 'software-dx12' -or $single.requested_mode.details.hardware_fallback -ne $false -or
+                $adapter.backend -cne 'Dx12' -or $adapter.device_type -cne 'Cpu' -or $adapter.cpu_and_dx12 -ne $true -or
+                $pixels.verified_nonuniform -ne $true -or $pixels.physical_display_or_presentation_proof -ne $false -or
+                $single.close_requested.details.count -ne 1 -or $single.run_native_returned.details.normal -ne $true -or
+                $single.clean_exit_ready.details.intended_exit_code -ne 0) { throw 'Renderer success conditions absent' }
+            if (@($pixels.size_px).Count -ne 2 -or $pixels.size_px[0] -le 0 -or $pixels.size_px[1] -le 0 -or
+                @($pixels.regions).Count -ne 4) { throw 'Invalid renderer dimensions or regions' }
+            $colors = @('255,0,0,255', '0,255,0,255', '0,0,255,255', '255,255,0,255')
+            for ($i = 0; $i -lt 4; $i++) {
+              $region = $pixels.regions[$i]
+              if ($region.matching_pixels -ne 25 -or ($region.expected_rgba -join ',') -cne $colors[$i] -or
+                  @($region.actual_rgba).Count -ne 4) { throw 'Known color region evidence absent' }
+              for ($channel = 0; $channel -lt 4; $channel++) {
+                if ([Math]::Abs($region.actual_rgba[$channel] - $region.expected_rgba[$channel]) -gt 12) { throw 'Color sample mismatch' }
+              }
+            }
+            $controller.status = 'PASS'
+            $controller.reason = 'Cpu DX12 own-pattern readback milestones and actual external exit 0 observed'
+          } catch {
+            $controller.reason = $_.Exception.Message
+            throw
+          } finally {
+            $controller.elapsed_ms = $timer.ElapsedMilliseconds
+            $controller | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $env:QUALIFICATION_ROOT 'renderer-controller.json') -Encoding utf8
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: software-readback-qualification-${{ github.sha }}-${{ github.run_attempt }}
+          retention-days: 1
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/software-readback-${{ github.run_id }}-${{ github.run_attempt }}/*.json
+            ${{ runner.temp }}/software-readback-${{ github.run_id }}-${{ github.run_attempt }}/*.jsonl
+            ${{ runner.temp }}/software-readback-${{ github.run_id }}-${{ github.run_attempt }}/*.log
+            ${{ runner.temp }}/software-readback-${{ github.run_id }}-${{ github.run_attempt }}/own-viewport-pattern*.png
+
+  qualify-gui-native-wasm-initial-pair:
+    needs: [check, qualify-native-lifecycle, qualify-software-readback, qualify-standalone-host]
+    runs-on: windows-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: application-sdk-preview-${{ github.sha }}
+          path: ${{ runner.temp }}/gui-pair-artifacts
+      - name: Parse exact controller source on disposable hosted runner
+        shell: pwsh
+        run: python -c "import ast,pathlib; p=pathlib.Path('scripts/qualify-gui-pair.py'); ast.parse(p.read_text(encoding='utf-8'),filename=str(p))"
+      - name: Run single owned GUI native and actual Rust WASM initial pair
+        env:
+          PAIR_ROOT: ${{ runner.temp }}/gui-pair-${{ github.run_id }}-${{ github.run_attempt }}
+          PAIR_PUBLIC: ${{ runner.temp }}/gui-pair-public-${{ github.run_id }}-${{ github.run_attempt }}
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:RUNNER_ENVIRONMENT -cne 'github-hosted') { throw 'Standard disposable hosted runner required' }
+          if ((Test-Path -LiteralPath $env:PAIR_ROOT) -or (Test-Path -LiteralPath $env:PAIR_PUBLIC)) { throw 'Fresh owned roots required' }
+          New-Item -ItemType Directory -Path $env:PAIR_PUBLIC -ErrorAction Stop | Out-Null
+          $result = Join-Path $env:PAIR_PUBLIC 'public-result.json'
+          $artifacts = Join-Path $env:RUNNER_TEMP 'gui-pair-artifacts'
+          $controllerRoot = Join-Path $env:RUNNER_TEMP ('gui-pair-controller-' + $env:GITHUB_RUN_ID + '-' + $env:GITHUB_RUN_ATTEMPT)
+          New-Item -ItemType Directory -Path $controllerRoot -ErrorAction Stop | Out-Null
+          $arguments = '"scripts/qualify-gui-pair.py" --artifacts "{0}" --source "{1}" --run "{2}" --public-result "{3}" --commit {4}' -f $artifacts, $env:GITHUB_WORKSPACE, $env:PAIR_ROOT, $result, $env:GITHUB_SHA
+          # This stopwatch/process fence is independent of Python, GUI, native owner,
+          # browser, report locks, fsync and every child-side timeout. No termination.
+          $clock = [Diagnostics.Stopwatch]::StartNew()
+          $process = Start-Process -FilePath (Get-Command python).Source -ArgumentList $arguments -WorkingDirectory $env:GITHUB_WORKSPACE -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $controllerRoot 'stdout.log') -RedirectStandardError (Join-Path $controllerRoot 'stderr.log')
+          if (-not $process.WaitForExit(240000)) {
+            [ordered]@{ schema = 'pim.gui-pair.external-deadline.v1'; status = 'FAIL'; source_commit = $env:GITHUB_SHA; timed_out = $true; elapsed_ms = $clock.ElapsedMilliseconds; no_kill_restart_or_retry = $true; full_sdk_complete = $false; release_qualified = $false } | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $env:PAIR_PUBLIC 'external-deadline.json') -Encoding utf8
+            throw 'External initial pair deadline exceeded; private partial evidence preserved; no kill/restart/retry'
+          }
+          $process.Refresh()
+          if ($process.ExitCode -ne 0 -or -not (Test-Path -LiteralPath $result -PathType Leaf)) { throw 'Initial pair failed; private partial evidence preserved' }
+          $receipt = Get-Content -LiteralPath $result -Raw | ConvertFrom-Json
+          if ($receipt.status -cne 'PASS' -or $receipt.source_commit -cne $env:GITHUB_SHA -or $receipt.gui_exit_code -ne 0 -or $receipt.native_exit_code -ne 0) { throw 'Initial pair receipt incomplete' }
+      - name: Run separate observation-only toolkit MCP lease after normal pair closure
+        env:
+          PAIR_PUBLIC: ${{ runner.temp }}/gui-pair-public-${{ github.run_id }}-${{ github.run_attempt }}
+          TOOLKIT_ROOT: ${{ runner.temp }}/gui-toolkit-${{ github.run_id }}-${{ github.run_attempt }}
+          TOOLKIT_PUBLIC: ${{ runner.temp }}/gui-toolkit-public-${{ github.run_id }}-${{ github.run_attempt }}
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:RUNNER_ENVIRONMENT -cne 'github-hosted') { throw 'Standard disposable hosted runner required' }
+          python -c "import ast,pathlib; p=pathlib.Path('scripts/qualify-gui-toolkit-mcp.py'); ast.parse(p.read_text(encoding='utf-8'),filename=str(p))"
+          if ($LASTEXITCODE -ne 0) { throw 'Toolkit controller source parse failed' }
+          if ((Test-Path -LiteralPath $env:TOOLKIT_ROOT) -or (Test-Path -LiteralPath $env:TOOLKIT_PUBLIC)) { throw 'Fresh owned toolkit roots required' }
+          New-Item -ItemType Directory -Path $env:TOOLKIT_PUBLIC -ErrorAction Stop | Out-Null
+          $pairResult = Join-Path $env:PAIR_PUBLIC 'public-result.json'
+          $prior = Get-Content -LiteralPath $pairResult -Raw | ConvertFrom-Json
+          if ($prior.status -cne 'PASS' -or $prior.source_commit -cne $env:GITHUB_SHA -or $prior.gui_exit_code -ne 0 -or $prior.native_exit_code -ne 0 -or -not $prior.owned_descriptor_cleanup) { throw 'Prior pair must close normally before toolkit fixture' }
+          $result = Join-Path $env:TOOLKIT_PUBLIC 'public-result.json'
+          $artifacts = Join-Path $env:RUNNER_TEMP 'gui-pair-artifacts'
+          $controllerRoot = Join-Path $env:RUNNER_TEMP ('gui-toolkit-controller-' + $env:GITHUB_RUN_ID + '-' + $env:GITHUB_RUN_ATTEMPT)
+          New-Item -ItemType Directory -Path $controllerRoot -ErrorAction Stop | Out-Null
+          $arguments = '"scripts/qualify-gui-toolkit-mcp.py" --artifacts "{0}" --source "{1}" --run "{2}" --public-result "{3}" --pair-result "{4}" --commit {5}' -f $artifacts, $env:GITHUB_WORKSPACE, $env:TOOLKIT_ROOT, $result, $pairResult, $env:GITHUB_SHA
+          $clock = [Diagnostics.Stopwatch]::StartNew()
+          $process = Start-Process -FilePath (Get-Command python).Source -ArgumentList $arguments -WorkingDirectory $env:GITHUB_WORKSPACE -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $controllerRoot 'stdout.log') -RedirectStandardError (Join-Path $controllerRoot 'stderr.log')
+          if (-not $process.WaitForExit(120000)) {
+            [ordered]@{ schema = 'pim.gui-toolkit.external-deadline.v1'; status = 'FAIL'; source_commit = $env:GITHUB_SHA; timed_out = $true; elapsed_ms = $clock.ElapsedMilliseconds; no_kill_restart_or_retry = $true; full_sdk_complete = $false; release_qualified = $false } | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $env:TOOLKIT_PUBLIC 'external-deadline.json') -Encoding utf8
+            throw 'External toolkit deadline exceeded; private evidence preserved; no kill/restart/retry'
+          }
+          $process.Refresh()
+          if ($process.ExitCode -ne 0 -or -not (Test-Path -LiteralPath $result -PathType Leaf)) { throw 'Toolkit MCP lease fixture failed' }
+          $receipt = Get-Content -LiteralPath $result -Raw | ConvertFrom-Json
+          if ($receipt.status -cne 'PASS' -or $receipt.source_commit -cne $env:GITHUB_SHA -or $receipt.gui_exit_code -ne 0 -or $receipt.mcp_exit_code -ne 0 -or -not $receipt.zero_authority_cleanup -or -not $receipt.actual_gui_revocation_denies_local_access) { throw 'Toolkit MCP lease receipt incomplete' }
+      - name: Upload only sanitized initial pair decisions
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gui-native-wasm-initial-pair-${{ github.sha }}-${{ github.run_attempt }}
+          retention-days: 1
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/gui-pair-public-${{ github.run_id }}-${{ github.run_attempt }}/public-result.json
+            ${{ runner.temp }}/gui-pair-public-${{ github.run_id }}-${{ github.run_attempt }}/external-deadline.json
+            ${{ runner.temp }}/gui-toolkit-public-${{ github.run_id }}-${{ github.run_attempt }}/public-result.json
+            ${{ runner.temp }}/gui-toolkit-public-${{ github.run_id }}-${{ github.run_attempt }}/external-deadline.json
+
+  qualify-gui-owned-window-route:
+    needs: [check, qualify-native-lifecycle, qualify-software-readback, qualify-standalone-host, qualify-gui-native-wasm-initial-pair]
+    runs-on: windows-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.92.0
+      - uses: actions/download-artifact@v4
+        with:
+          name: application-sdk-preview-${{ github.sha }}
+          path: ${{ runner.temp }}/gui-window-artifacts
+      - name: Compile the separate opt-in Rust MCP window consumer
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          cargo test --manifest-path examples/rust-mcp-client/Cargo.toml --test live_event_window --no-run --locked
+          if ($LASTEXITCODE -ne 0) { throw 'Rust MCP window fixture did not compile' }
+          $fixtures = @(Get-ChildItem -LiteralPath examples/rust-mcp-client/target/debug/deps -File -Filter 'live_event_window-*.exe' | Where-Object { $_.Name -cmatch '^live_event_window-[0-9a-f]+\.exe$' })
+          if ($fixtures.Count -ne 1) { throw 'Expected one exact Rust MCP window fixture' }
+          "PIM_MCP_WINDOW_FIXTURE=$($fixtures[0].FullName)" | Out-File -LiteralPath $env:GITHUB_ENV -Encoding utf8 -Append
+      - name: Parse owned-window controller on disposable hosted runner
+        shell: pwsh
+        run: python -c "import ast,pathlib; p=pathlib.Path('scripts/qualify-gui-owned-window.py'); ast.parse(p.read_text(encoding='utf-8'),filename=str(p))"
+      - name: Run single GUI-published native window through Web and agent consumers
+        env:
+          WINDOW_ROOT: ${{ runner.temp }}/gui-window-${{ github.run_id }}-${{ github.run_attempt }}
+          WINDOW_PUBLIC: ${{ runner.temp }}/gui-window-public-${{ github.run_id }}-${{ github.run_attempt }}
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:RUNNER_ENVIRONMENT -cne 'github-hosted') { throw 'Standard disposable hosted runner required' }
+          if ((Test-Path -LiteralPath $env:WINDOW_ROOT) -or (Test-Path -LiteralPath $env:WINDOW_PUBLIC)) { throw 'Fresh owned roots required' }
+          New-Item -ItemType Directory -Path $env:WINDOW_PUBLIC -ErrorAction Stop | Out-Null
+          $result = Join-Path $env:WINDOW_PUBLIC 'public-result.json'
+          $artifacts = Join-Path $env:RUNNER_TEMP 'gui-window-artifacts'
+          $controllerRoot = Join-Path $env:RUNNER_TEMP ('gui-window-controller-' + $env:GITHUB_RUN_ID + '-' + $env:GITHUB_RUN_ATTEMPT)
+          New-Item -ItemType Directory -Path $controllerRoot -ErrorAction Stop | Out-Null
+          $arguments = '"scripts/qualify-gui-owned-window.py" --artifacts "{0}" --source "{1}" --mcp-fixture "{2}" --run "{3}" --public-result "{4}" --commit {5}' -f $artifacts, $env:GITHUB_WORKSPACE, $env:PIM_MCP_WINDOW_FIXTURE, $env:WINDOW_ROOT, $result, $env:GITHUB_SHA
+          # Independent process fence includes GUI, native owner, browser, MCP,
+          # private evidence I/O and all child-side waits. Never terminate/retry.
+          $clock = [Diagnostics.Stopwatch]::StartNew()
+          $process = Start-Process -FilePath (Get-Command python).Source -ArgumentList $arguments -WorkingDirectory $env:GITHUB_WORKSPACE -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $controllerRoot 'stdout.log') -RedirectStandardError (Join-Path $controllerRoot 'stderr.log')
+          if (-not $process.WaitForExit(280000)) {
+            [ordered]@{ schema = 'pim.gui-owned-window.external-deadline.v1'; status = 'FAIL'; source_commit = $env:GITHUB_SHA; timed_out = $true; elapsed_ms = $clock.ElapsedMilliseconds; no_kill_restart_or_retry = $true; full_sdk_complete = $false; release_qualified = $false } | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $env:WINDOW_PUBLIC 'external-deadline.json') -Encoding utf8
+            throw 'External owned-window deadline exceeded; private partial evidence preserved'
+          }
+          $process.Refresh()
+          if ($process.ExitCode -ne 0 -or -not (Test-Path -LiteralPath $result -PathType Leaf)) { throw 'Owned-window route failed; private partial evidence preserved' }
+          $receipt = Get-Content -LiteralPath $result -Raw | ConvertFrom-Json
+          if ($receipt.status -cne 'PASS' -or $receipt.source_commit -cne $env:GITHUB_SHA -or $receipt.native_exit_code -ne 0 -or $receipt.gui_exit_code -ne 0 -or $receipt.positive_owner_actions -ne 3 -or -not $receipt.host_pending_expired -or -not $receipt.uncertain_late_action -or -not $receipt.old_epoch_rejected -or -not $receipt.post_revoke_rejected -or -not $receipt.rust_mcp_fixture_invoked -or -not $receipt.web_query_track_control_untrack) { throw 'Owned-window route receipt incomplete' }
+      - name: Upload only sanitized owned-window decisions
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gui-owned-window-route-${{ github.sha }}-${{ github.run_attempt }}
+          retention-days: 1
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/gui-window-public-${{ github.run_id }}-${{ github.run_attempt }}/public-result.json
+            ${{ runner.temp }}/gui-window-public-${{ github.run_id }}-${{ github.run_attempt }}/external-deadline.json
+
+  qualify-gui-hosted-mode-and-window:
+    needs: [check, qualify-gui-owned-window-route]
+    runs-on: windows-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.92.0
+      - uses: actions/download-artifact@v4
+        with:
+          name: application-sdk-preview-${{ github.sha }}
+          path: ${{ runner.temp }}/gui-hosted-artifacts
+      - name: Parse hosted-mode controller on disposable hosted runner
+        shell: pwsh
+        run: python -c "import ast,pathlib; p=pathlib.Path('scripts/qualify-gui-hosted-mode.py'); ast.parse(p.read_text(encoding='utf-8'),filename=str(p))"
+      - name: Run GUI router modes and viewport through Web and event MCP receivers
+        env:
+          HOSTED_ROOT: ${{ runner.temp }}/gui-hosted-${{ github.run_id }}-${{ github.run_attempt }}
+          HOSTED_PUBLIC: ${{ runner.temp }}/gui-hosted-public-${{ github.run_id }}-${{ github.run_attempt }}
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:RUNNER_ENVIRONMENT -cne 'github-hosted') { throw 'Standard disposable hosted runner required' }
+          if ((Test-Path -LiteralPath $env:HOSTED_ROOT) -or (Test-Path -LiteralPath $env:HOSTED_PUBLIC)) { throw 'Fresh owned roots required' }
+          New-Item -ItemType Directory -Path $env:HOSTED_PUBLIC -ErrorAction Stop | Out-Null
+          $result = Join-Path $env:HOSTED_PUBLIC 'public-result.json'
+          $artifacts = Join-Path $env:RUNNER_TEMP 'gui-hosted-artifacts'
+          $controllerRoot = Join-Path $env:RUNNER_TEMP ('gui-hosted-controller-' + $env:GITHUB_RUN_ID + '-' + $env:GITHUB_RUN_ATTEMPT)
+          New-Item -ItemType Directory -Path $controllerRoot -ErrorAction Stop | Out-Null
+          $arguments = '"scripts/qualify-gui-hosted-mode.py" --artifacts "{0}" --source "{1}" --run "{2}" --public-result "{3}" --commit {4}' -f $artifacts, $env:GITHUB_WORKSPACE, $env:HOSTED_ROOT, $result, $env:GITHUB_SHA
+          # The independent process fence includes GUI, Rust-WASM, MCP and all
+          # child-side waits. Preserve partial evidence; never kill or replay.
+          $clock = [Diagnostics.Stopwatch]::StartNew()
+          $process = Start-Process -FilePath (Get-Command python).Source -ArgumentList $arguments -WorkingDirectory $env:GITHUB_WORKSPACE -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $controllerRoot 'stdout.log') -RedirectStandardError (Join-Path $controllerRoot 'stderr.log')
+          if (-not $process.WaitForExit(270000)) {
+            [ordered]@{ schema = 'pim.gui-hosted-mode.external-deadline.v1'; status = 'FAIL'; source_commit = $env:GITHUB_SHA; timed_out = $true; elapsed_ms = $clock.ElapsedMilliseconds; no_kill_restart_or_retry = $true; full_sdk_complete = $false; release_qualified = $false } | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $env:HOSTED_PUBLIC 'external-deadline.json') -Encoding utf8
+            throw 'External hosted-mode deadline exceeded; private partial evidence preserved'
+          }
+          $process.Refresh()
+          if ($process.ExitCode -ne 0 -or -not (Test-Path -LiteralPath $result -PathType Leaf)) { throw 'Hosted-mode route failed; private partial evidence preserved' }
+          $receipt = Get-Content -LiteralPath $result -Raw | ConvertFrom-Json
+          if ($receipt.status -cne 'PASS' -or $receipt.source_commit -cne $env:GITHUB_SHA -or $receipt.native_viewport_receipts -ne 2 -or -not $receipt.native_completed -or -not $receipt.native_retired -or $receipt.web_mode_worker_receipts -ne 2 -or $receipt.web_viewport_receipts -ne 2 -or $receipt.mcp_mode_worker_receipts -ne 2 -or -not $receipt.old_revision_rejected -or -not $receipt.old_epoch_rejected -or -not $receipt.event_epoch_retained -or -not $receipt.routing_generation_advanced -or -not $receipt.pending_refresh_correlated -or -not $receipt.lost_receipt_deadline -or -not $receipt.fixture_injected_gap -or -not $receipt.browser_no_replay -or -not $receipt.stale_timer_reconnect_isolated -or -not $receipt.deadline_terminal_callback_once -or -not $receipt.ordinary_quit_clean -or -not $receipt.profile_file_unchanged -or -not $receipt.preferences_file_unchanged) { throw 'Hosted-mode receipt incomplete' }
+      - name: Upload only sanitized hosted-mode decisions
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gui-hosted-mode-${{ github.sha }}-${{ github.run_attempt }}
+          retention-days: 1
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/gui-hosted-public-${{ github.run_id }}-${{ github.run_attempt }}/public-result.json
+            ${{ runner.temp }}/gui-hosted-public-${{ github.run_id }}-${{ github.run_attempt }}/external-deadline.json
+
+  qualify-gui-desktop-provider:
+    needs: [check]
+    runs-on: windows-2022
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          submodules: recursive
+      - uses: ilammy/msvc-dev-cmd@v1
+      - name: Verify pinned backend and installed ATL prerequisites
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:RUNNER_ENVIRONMENT -cne 'github-hosted') { throw 'Disposable standard hosted runner required' }
+          if ((& git rev-parse HEAD) -cne $env:GITHUB_SHA) { throw 'Source checkout mismatch' }
+          if ((& git -C vendor/ProtoInput rev-parse HEAD) -cne 'dd29bf8d22349605d0e1950c1c5dc4893d72670e') { throw 'Backend pin mismatch' }
+          if ((& git -C vendor/ProtoInput status --porcelain --untracked-files=all)) { throw 'Clean pinned backend required' }
+          if (Test-Path -LiteralPath runtime) { throw 'Prebuilt backend runtime forbidden' }
+          $vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio/Installer/vswhere.exe'
+          $vsRoot = & $vswhere -latest -products '*' -requires Microsoft.Component.MSBuild -property installationPath
+          if ($LASTEXITCODE -ne 0 -or -not $vsRoot) { throw 'VS 2022/v143 required' }
+          $atl = @(Get-ChildItem -Path (Join-Path $vsRoot 'VC/Tools/MSVC/*/atlmfc/include/atlbase.h'))
+          if (-not $atl.Count) { throw 'Installed C++ ATL required; no download fallback' }
+          $atlRoot = Split-Path -Parent (Split-Path -Parent $atl[0].FullName)
+          if (-not (Test-Path -LiteralPath (Join-Path $atlRoot 'lib/x64'))) { throw 'Installed x64 ATL libraries required' }
+      - name: Build actual x64 backend using existing compatibility sequence
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          ./scripts/build-backend.ps1 -Architecture x64 -Toolset v143
+          if ($LASTEXITCODE -ne 0) { throw 'Actual native backend build failed' }
+          $files = @(Get-ChildItem -LiteralPath runtime -File | Where-Object { $_.Extension -in '.dll','.exe' } | Sort-Object Name | ForEach-Object {
+            @{ file = $_.Name; sha256 = (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant() }
+          })
+          if (-not $files.Count -or -not (Test-Path -LiteralPath runtime/ProtoInputLoader64.dll)) { throw 'Native runtime specimen missing' }
+          $patches = @(Get-ChildItem -LiteralPath patches -Recurse -File -Filter '*.patch' | Sort-Object FullName | ForEach-Object {
+            @{ file = [IO.Path]::GetRelativePath($env:GITHUB_WORKSPACE, $_.FullName).Replace('\','/'); sha256 = (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant() }
+          })
+          [ordered]@{ schema = 'pim.provider-backend.v1'; source_commit = $env:GITHUB_SHA; backend_pin = 'dd29bf8d22349605d0e1950c1c5dc4893d72670e'; architecture = 'x64'; existing_compatibility_patches = $patches; files = $files } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath runtime/provider-backend.json -Encoding utf8
+      - uses: actions/download-artifact@v4
+        with:
+          name: application-sdk-preview-${{ github.sha }}
+          path: ${{ runner.temp }}/gui-provider-artifacts
+      - name: Run one actual production virtual provider group
+        env:
+          PROVIDER_ROOT: ${{ runner.temp }}/gui-provider-${{ github.run_id }}-${{ github.run_attempt }}
+          PROVIDER_PUBLIC: ${{ runner.temp }}/gui-provider-public-${{ github.run_id }}-${{ github.run_attempt }}
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:RUNNER_ENVIRONMENT -cne 'github-hosted') { throw 'Disposable standard hosted runner required' }
+          if ((Test-Path -LiteralPath $env:PROVIDER_ROOT) -or (Test-Path -LiteralPath $env:PROVIDER_PUBLIC)) { throw 'Fresh private/public roots required' }
+          New-Item -ItemType Directory -Path $env:PROVIDER_PUBLIC -ErrorAction Stop | Out-Null
+          $controllerRoot = Join-Path $env:RUNNER_TEMP ('gui-provider-controller-' + $env:GITHUB_RUN_ID + '-' + $env:GITHUB_RUN_ATTEMPT)
+          New-Item -ItemType Directory -Path $controllerRoot -ErrorAction Stop | Out-Null
+          $result = Join-Path $env:PROVIDER_PUBLIC 'public-result.json'
+          $artifacts = Join-Path $env:RUNNER_TEMP 'gui-provider-artifacts'
+          $backend = Join-Path $env:GITHUB_WORKSPACE 'runtime'
+          $arguments = '"scripts/qualify-gui-desktop-provider.py" --artifacts "{0}" --backend "{1}" --source "{2}" --run "{3}" --public-result "{4}" --commit {5}' -f $artifacts, $backend, $env:GITHUB_WORKSPACE, $env:PROVIDER_ROOT, $result, $env:GITHUB_SHA
+          $clock = [Diagnostics.Stopwatch]::StartNew()
+          $process = Start-Process -FilePath (Get-Command python).Source -ArgumentList $arguments -WorkingDirectory $env:GITHUB_WORKSPACE -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $controllerRoot 'stdout.log') -RedirectStandardError (Join-Path $controllerRoot 'stderr.log')
+          if (-not $process.WaitForExit(480000)) {
+            [ordered]@{ schema = 'pim.desktop-provider.external-deadline.v1'; status = 'FAIL'; source_commit = $env:GITHUB_SHA; timed_out = $true; elapsed_ms = $clock.ElapsedMilliseconds; no_kill_restart_or_retry = $true; full_sdk_complete = $false; release_qualified = $false } | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $env:PROVIDER_PUBLIC 'external-deadline.json') -Encoding utf8
+            throw 'Original provider fixture deadline exceeded; private evidence retained; no termination or retry'
+          }
+          $process.Refresh()
+          if ($process.ExitCode -ne 0 -or -not (Test-Path -LiteralPath $result -PathType Leaf)) { throw 'Provider fixture failed; private partial evidence retained' }
+          $receipt = Get-Content -LiteralPath $result -Raw | ConvertFrom-Json
+          if ($receipt.status -cne 'PASS' -or $receipt.source_commit -cne $env:GITHUB_SHA -or $receipt.gui_exit_code -ne 0 -or -not $receipt.ordinary_cleanup -or -not $receipt.native_wasm_exact_same_ids -or -not $receipt.atomic_held_bootstrap -or -not $receipt.shared_key_held_bootstrap -or -not $receipt.independent_two_target_traces_and_third_exclusion -or -not $receipt.wasm_selector_uses_historical_event_point -or -not $receipt.observer_mutation_denial_no_target_effect -or -not $receipt.held_unbind_no_target_effect -or -not $receipt.native_revoke_cleared_and_unloaded -or -not $receipt.stop_cleared_native_web_and_target_holds -or -not $receipt.restart_fresh_ids_stale_denied_no_replay -or -not $receipt.text_consent_native_false_web_false -or -not $receipt.text_consent_native_false_web_true -or -not $receipt.text_consent_native_true_web_true -or -not $receipt.profile_and_preferences_unchanged -or @($receipt.native_exit_codes).Count -ne 2 -or @($receipt.native_exit_codes | Where-Object { $_ -ne 0 }).Count -ne 0 -or @($receipt.target_exit_codes).Count -ne 3 -or @($receipt.target_exit_codes | Where-Object { $_ -ne 0 }).Count -ne 0) { throw 'Provider whole-group receipt incomplete' }
+      - name: Upload only sanitized provider decisions
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gui-desktop-provider-${{ github.sha }}-${{ github.run_attempt }}
+          retention-days: 1
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/gui-provider-public-${{ github.run_id }}-${{ github.run_attempt }}/public-result.json
+            ${{ runner.temp }}/gui-provider-public-${{ github.run_id }}-${{ github.run_attempt }}/external-deadline.json
+
+  diagnose-gui-desktop-provider-private-dump:
+    needs: [check]
+    runs-on: windows-latest
+    timeout-minutes: 75
+    env:
+      CARGO_PROFILE_DEV_DEBUG: '2'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          submodules: recursive
+      - uses: ilammy/msvc-dev-cmd@v1
+      - name: Verify pinned backend and installed ATL prerequisites
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:RUNNER_ENVIRONMENT -cne 'github-hosted') { throw 'Disposable standard hosted runner required' }
+          if ((& git rev-parse HEAD) -cne $env:GITHUB_SHA) { throw 'Source checkout mismatch' }
+          if ((& git -C vendor/ProtoInput rev-parse HEAD) -cne 'dd29bf8d22349605d0e1950c1c5dc4893d72670e') { throw 'Backend pin mismatch' }
+          if ((& git -C vendor/ProtoInput status --porcelain --untracked-files=all)) { throw 'Clean pinned backend required' }
+          if (Test-Path -LiteralPath runtime) { throw 'Prebuilt backend runtime forbidden' }
+          $vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio/Installer/vswhere.exe'
+          $vsRoot = & $vswhere -latest -products '*' -requires Microsoft.Component.MSBuild -property installationPath
+          if ($LASTEXITCODE -ne 0 -or -not $vsRoot) { throw 'VS 2022/v143 required' }
+          $atl = @(Get-ChildItem -Path (Join-Path $vsRoot 'VC/Tools/MSVC/*/atlmfc/include/atlbase.h'))
+          if (-not $atl.Count) { throw 'Installed C++ ATL required; no download fallback' }
+          $atlRoot = Split-Path -Parent (Split-Path -Parent $atl[0].FullName)
+          if (-not (Test-Path -LiteralPath (Join-Path $atlRoot 'lib/x64'))) { throw 'Installed x64 ATL libraries required' }
+      - name: Build actual x64 backend using existing compatibility sequence
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $nativeLogRoot = Join-Path $env:RUNNER_TEMP ('provider-dump-native-' + $env:GITHUB_RUN_ID + '-' + $env:GITHUB_RUN_ATTEMPT)
+          New-Item -ItemType Directory -Path $nativeLogRoot -ErrorAction Stop | Out-Null
+          ./scripts/build-backend.ps1 -Architecture x64 -Toolset v143 *> (Join-Path $nativeLogRoot 'build.private.log')
+          if ($LASTEXITCODE -ne 0) { throw 'Actual native backend build failed' }
+          $files = @(Get-ChildItem -LiteralPath runtime -File | Where-Object { $_.Extension -in '.dll','.exe' } | Sort-Object Name | ForEach-Object {
+            @{ file = $_.Name; sha256 = (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant() }
+          })
+          if (-not $files.Count -or -not (Test-Path -LiteralPath runtime/ProtoInputLoader64.dll)) { throw 'Native runtime specimen missing' }
+          $patches = @(Get-ChildItem -LiteralPath patches -Recurse -File -Filter '*.patch' | Sort-Object FullName | ForEach-Object {
+            @{ file = [IO.Path]::GetRelativePath($env:GITHUB_WORKSPACE, $_.FullName).Replace('\','/'); sha256 = (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant() }
+          })
+          [ordered]@{ schema = 'pim.provider-backend.v1'; source_commit = $env:GITHUB_SHA; backend_pin = 'dd29bf8d22349605d0e1950c1c5dc4893d72670e'; architecture = 'x64'; existing_compatibility_patches = $patches; files = $files } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath runtime/provider-backend.json -Encoding utf8
+      - uses: actions/download-artifact@v4
+        with:
+          name: application-sdk-preview-${{ github.sha }}
+          path: ${{ runner.temp }}/gui-provider-dump-artifacts
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.92.0
+      - name: Build private same-source software probe and prepare exact symbol metadata
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $buildRoot = Join-Path $env:RUNNER_TEMP ('provider-dump-build-' + $env:GITHUB_RUN_ID + '-' + $env:GITHUB_RUN_ATTEMPT)
+          New-Item -ItemType Directory -Path $buildRoot -ErrorAction Stop | Out-Null
+          $buildLog = Join-Path $buildRoot 'cargo.private.log'
+          & cargo build -p protoinputmultiplex --features software-renderer --locked --target-dir $buildRoot --bin protoinputmultiplex --example provider_private_dump *> $buildLog
+          if ($LASTEXITCODE -ne 0) { throw 'Private diagnostic Rust build failed' }
+          python scripts/test-provider-private-dump.py *> (Join-Path $buildRoot 'pure-tests.private.log')
+          if ($LASTEXITCODE -ne 0) { throw 'Private dump boundary regressions failed' }
+          $image = Join-Path $buildRoot 'debug/protoinputmultiplex.exe'
+          $pdb = Join-Path $buildRoot 'debug/protoinputmultiplex.pdb'
+          $helper = Join-Path $buildRoot 'debug/examples/provider_private_dump.exe'
+          foreach ($path in @($image,$pdb,$helper)) { if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { throw 'Private diagnostic build specimen missing' } }
+          $probe = @{ image = $image; image_sha256 = (Get-FileHash -LiteralPath $image -Algorithm SHA256).Hash.ToLowerInvariant(); pdb = $pdb; pdb_sha256 = (Get-FileHash -LiteralPath $pdb -Algorithm SHA256).Hash.ToLowerInvariant() }
+          $modules = @($probe)
+          $runRoot = Join-Path $env:RUNNER_TEMP ('gui-provider-dump-' + $env:GITHUB_RUN_ID + '-' + $env:GITHUB_RUN_ATTEMPT)
+          $nativeOutput = Join-Path $env:GITHUB_WORKSPACE 'vendor/ProtoInput/src/ProtoInput/Release'
+          foreach ($name in @('ProtoInputHooks64.dll','ProtoInputLoader64.dll','EasyHook64.dll','protoinputmultiplex_cursor_observer64.dll')) {
+            $nativeImage = Join-Path $env:GITHUB_WORKSPACE ('runtime/' + $name)
+            if (-not (Test-Path -LiteralPath $nativeImage -PathType Leaf)) { continue }
+            $nativePdb = Join-Path $nativeOutput ([IO.Path]::ChangeExtension($name, '.pdb'))
+            # PDB remains at its original native build output. Never copy it to runtime.
+            $modules += @{ image = (Join-Path $runRoot ('runtime/' + $name)); image_sha256 = (Get-FileHash -LiteralPath $nativeImage -Algorithm SHA256).Hash.ToLowerInvariant(); pdb = $nativePdb; pdb_sha256 = $(if (Test-Path -LiteralPath $nativePdb -PathType Leaf) { (Get-FileHash -LiteralPath $nativePdb -Algorithm SHA256).Hash.ToLowerInvariant() } else { $null }) }
+          }
+          $sourceFiles = @{}
+          foreach ($file in @(& git ls-files '*.rs' '*.cpp' '*.h')) {
+            if (Test-Path -LiteralPath $file -PathType Leaf) { $sourceFiles[$file.Replace('\','/')] = (Get-FileHash -LiteralPath $file -Algorithm SHA256).Hash.ToLowerInvariant() }
+          }
+          foreach ($file in @(& git -C vendor/ProtoInput ls-files '*.c' '*.cc' '*.cxx' '*.cpp' '*.h' '*.hpp')) {
+            $relative = 'vendor/ProtoInput/' + $file.Replace('\','/')
+            if (Test-Path -LiteralPath $relative -PathType Leaf) { $sourceFiles[$relative] = (Get-FileHash -LiteralPath $relative -Algorithm SHA256).Hash.ToLowerInvariant() }
+          }
+          if ($sourceFiles.Count -gt 4096) { throw 'Private source whitelist bound exceeded' }
+          $metadata = Join-Path $buildRoot 'build.private.json'
+          [ordered]@{ schema = 'pim.private-dump-build.v1'; source_commit = $env:GITHUB_SHA; source = $env:GITHUB_WORKSPACE; target = 'x86_64-pc-windows-msvc'; profile = 'debug'; dev_debug = 2; features = @('software-renderer'); probe = $probe; helper = @{ file = $helper; sha256 = (Get-FileHash -LiteralPath $helper -Algorithm SHA256).Hash.ToLowerInvariant() }; modules = $modules; source_files = $sourceFiles } | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $metadata -Encoding utf8
+          "PIM_PRIVATE_DUMP_METADATA=$metadata" | Out-File -LiteralPath $env:GITHUB_ENV -Encoding utf8 -Append
+      - name: Run one private diagnostic production virtual provider group
+        env:
+          PROVIDER_ROOT: ${{ runner.temp }}/gui-provider-dump-${{ github.run_id }}-${{ github.run_attempt }}
+          PROVIDER_PUBLIC: ${{ runner.temp }}/gui-provider-dump-public-${{ github.run_id }}-${{ github.run_attempt }}
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:RUNNER_ENVIRONMENT -cne 'github-hosted') { throw 'Disposable standard hosted runner required' }
+          if ((Test-Path -LiteralPath $env:PROVIDER_ROOT) -or (Test-Path -LiteralPath $env:PROVIDER_PUBLIC)) { throw 'Fresh private/public roots required' }
+          New-Item -ItemType Directory -Path $env:PROVIDER_PUBLIC -ErrorAction Stop | Out-Null
+          $controllerRoot = Join-Path $env:RUNNER_TEMP ('gui-provider-dump-controller-' + $env:GITHUB_RUN_ID + '-' + $env:GITHUB_RUN_ATTEMPT)
+          New-Item -ItemType Directory -Path $controllerRoot -ErrorAction Stop | Out-Null
+          $result = Join-Path $controllerRoot 'original-result.private.json'
+          $decision = Join-Path $env:PROVIDER_PUBLIC 'diagnostic-decision.json'
+          $artifacts = Join-Path $env:RUNNER_TEMP 'gui-provider-dump-artifacts'
+          $backend = Join-Path $env:GITHUB_WORKSPACE 'runtime'
+          $diagnosticRoot = Join-Path $env:RUNNER_TEMP ('provider-dump-tools-' + $env:GITHUB_RUN_ID + '-' + $env:GITHUB_RUN_ATTEMPT)
+          $arguments = '"scripts/qualify-gui-desktop-provider.py" --artifacts "{0}" --backend "{1}" --source "{2}" --run "{3}" --public-result "{4}" --commit {5} --private-dump-root "{6}" --private-dump-metadata "{7}" --private-dump-decision "{8}"' -f $artifacts, $backend, $env:GITHUB_WORKSPACE, $env:PROVIDER_ROOT, $result, $env:GITHUB_SHA, $diagnosticRoot, $env:PIM_PRIVATE_DUMP_METADATA, $decision
+          # Original outer fence; no child/process termination, restart, or replay.
+          $process = Start-Process -FilePath (Get-Command python).Source -ArgumentList $arguments -WorkingDirectory $env:GITHUB_WORKSPACE -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $controllerRoot 'stdout.private.log') -RedirectStandardError (Join-Path $controllerRoot 'stderr.private.log')
+          if (-not $process.WaitForExit(480000)) {
+            if (-not (Test-Path -LiteralPath $decision)) {
+              [ordered]@{ schema = 'pim.private-dump-decision.v1'; diagnostic_only = $true; functional_acceptance = $false; capture_perturbed_timing = $true; target_a = @{ status = 'inconclusive'; reason = 'deadline_exhausted'; frames = @(); capture_perturbed_timing = $true; loaded_module_hash_proved = $false; source_mapping_proves_loaded_bytes = $false }; target_b = @{ status = 'inconclusive'; reason = 'deadline_exhausted'; frames = @(); capture_perturbed_timing = $true; loaded_module_hash_proved = $false; source_mapping_proves_loaded_bytes = $false } } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $decision -Encoding utf8
+            }
+            throw 'Private diagnostic original fixture deadline exceeded'
+          }
+          # Baseline functional FAIL remains FAIL in the private original result.
+          # This isolated job accepts only a diagnostic-only sanitized decision.
+          if (-not (Test-Path -LiteralPath $decision -PathType Leaf)) { throw 'Private diagnostic decision unavailable' }
+          $receipt = Get-Content -LiteralPath $decision -Raw | ConvertFrom-Json
+          if ($receipt.schema -cne 'pim.private-dump-decision.v1' -or -not $receipt.diagnostic_only -or $receipt.functional_acceptance -or -not $receipt.capture_perturbed_timing) { throw 'Diagnostic-only boundary rejected' }
+      - name: Upload one sanitized private dump decision only
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gui-desktop-provider-private-dump-${{ github.sha }}-${{ github.run_attempt }}
+          retention-days: 1
+          if-no-files-found: warn
+          path: ${{ runner.temp }}/gui-provider-dump-public-${{ github.run_id }}-${{ github.run_attempt }}/diagnostic-decision.json
+
+  qualify-standalone-host:
+    needs: [check]
+    runs-on: windows-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: application-sdk-preview-${{ github.sha }}
+          path: ${{ runner.temp }}/standalone-host-artifacts
+      - name: Qualify each standalone Host DLL specimen once
+        shell: pwsh
+        run: >-
+          ./scripts/qualify-standalone-host.ps1
+          -ArtifactsRoot "${{ runner.temp }}/standalone-host-artifacts"
+          -EvidenceRoot "${{ runner.temp }}/standalone-host-${{ github.run_id }}-${{ github.run_attempt }}"
+          -SourceCommit "${{ github.sha }}"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-lifecycle-qualification-${{ github.sha }}-${{ github.run_attempt }}-standalone-host
+          retention-days: 1
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/standalone-host-${{ github.run_id }}-${{ github.run_attempt }}/*.json
+            ${{ runner.temp }}/standalone-host-${{ github.run_id }}-${{ github.run_attempt }}/*.jsonl
+            ${{ runner.temp }}/standalone-host-${{ github.run_id }}-${{ github.run_attempt }}/*.log
+
+  qualify-standalone-window-metadata:
+    needs: [check, qualify-standalone-host]
+    runs-on: windows-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: application-sdk-preview-${{ github.sha }}
+          path: ${{ runner.temp }}/standalone-window-metadata-artifacts
+      - name: Qualify opt-in owned-window metadata on each actual Host DLL specimen
+        shell: pwsh
+        run: >-
+          ./scripts/qualify-standalone-host.ps1
+          -ArtifactsRoot "${{ runner.temp }}/standalone-window-metadata-artifacts"
+          -EvidenceRoot "${{ runner.temp }}/standalone-window-metadata-${{ github.run_id }}-${{ github.run_attempt }}"
+          -SourceCommit "${{ github.sha }}"
+          -WindowMetadataOnly
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-window-metadata-qualification-${{ github.sha }}-${{ github.run_attempt }}
+          retention-days: 1
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/standalone-window-metadata-${{ github.run_id }}-${{ github.run_attempt }}/*.json
+            ${{ runner.temp }}/standalone-window-metadata-${{ github.run_id }}-${{ github.run_attempt }}/*.jsonl
+            ${{ runner.temp }}/standalone-window-metadata-${{ github.run_id }}-${{ github.run_attempt }}/*.log

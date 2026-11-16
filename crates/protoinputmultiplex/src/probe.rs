@@ -41,6 +41,7 @@ pub fn run(report: Option<PathBuf>) -> Result<()> {
     eframe::run_native(
         &format!("ProtoInputMultiPlex Routing Test — PID {pid}"),
         eframe::NativeOptions {
+            renderer: eframe::Renderer::Glow,
             viewport: egui::ViewportBuilder::default().with_inner_size([530.0, 430.0]),
             ..Default::default()
         },

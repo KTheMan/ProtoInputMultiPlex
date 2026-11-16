@@ -4,7 +4,7 @@ Optional [GUI callback activity](gui-activity-contract.md) is available in suppo
 
 GUI startup first displays a responsive initialization window. Wait for the Dashboard before enabling Setup or live Agent Access. A preferences failure shows its path and cause; repair that file and use Retry in the same window. Startup does not grant MCP authority or replace unreadable preferences with defaults. See the [startup contract](gui-bootstrap-contract.md) and [bounded assessment](gui-bootstrap-assessment-2026-10-28.json).
 
-`protoinputmultiplex mcp --runtime <absolute-runtime-directory>` serves MCP over stdio using the official Rust SDK (`rmcp`). It exposes the same Rust routing policy, native delivery worker and overlays as the Ouroboros UI. It owns a separate session; it does not connect to a running GUI session. Routing servers expose 23 tools, including application-preference inspection/configuration under a separate permission boundary.
+`protoinputmultiplex mcp --runtime <absolute-runtime-directory>` serves MCP over stdio using the official Rust SDK (`rmcp`). It exposes the same Rust routing policy, native delivery worker and overlays as the Ouroboros UI. It owns a separate session; it does not connect to a running GUI session. Current development routing servers expose 25 tools, including application-preference inspection/configuration under a separate permission boundary.
 
 The [typed Input Mapper assessment](input-mapper-assessment-2026-10-29.json) accepts
 a bounded private x64 foundation after 657 passing tests, 26 UI actions and 50 SDK
@@ -16,7 +16,66 @@ GUI authoring, native payload magnitudes and on-disk profile reload remain
 unverified here. It does not approve the current Rust port, same-process
 isolation, full Mapper/Ultra parity or a historical GUI-stall P1 fix.
 
-For stopped GUI profiles, choose **Settings → Agent access → Agent Access → Enable setup access** and use its private descriptor with `mcp --gui-connection <descriptor.json>`. This separate connection exposes only `profile_setup`: Inspect, discovery refresh, whole-profile Configure, and Save/Load/Import/Export at GUI-selected paths. Start is GUI-owned and retires Setup authority before controller creation; setup access never grants live routing permissions. Use the current revision and resolve local drafts before mutations. See the [workflow and file-result limits](stopped-setup-contract.md) and [bounded composed assessment](stopped-setup-assessment-2026-10-27.json).
+For stopped GUI profiles, choose **Settings → Agent access → Agent Access → Enable setup access** and use its private descriptor with `mcp --gui-connection <descriptor.json>`. Current development builds expose `profile_setup` plus read-only `application_event_status` on this separate connection. Profile operations include Inspect, discovery refresh, whole-profile Configure, and Save/Load/Import/Export at GUI-selected paths. Start is GUI-owned and retires Setup authority before controller creation; setup access never grants live routing permissions. Use the current revision and resolve local drafts before mutations. See the [workflow and file-result limits](stopped-setup-contract.md) and [bounded composed assessment](stopped-setup-assessment-2026-10-27.json).
+
+For application-event SDK inspection, call `application_event_status` with no
+arguments or `{}`. The stopped connection also accepts
+`profile_setup {"operation":"application_event_status"}`. The direct tool rejects
+extra arguments; the alias rejects mutation/profile fields. Both require the
+existing explicit Setup grant and GUI guard, return only the safe age-masked
+summary, and do not require routing or selected target PIDs. They do not expose
+credentials, user/source/receiver identities, input values or event payloads.
+Unavailable or stale counters are omitted rather than reported as zero.
+A live GUI connection uses its existing admitted authority; there is no automatic
+fallback between authorities. Standalone routing does not own a GUI event host.
+These new paths still require current-source checks and actual GUI/MCP acceptance.
+See [the event SDK guide](application-event-sdk.md).
+
+### GUI-approved native window agent mode (source candidate)
+
+For a live cooperative event session, create a window-only receiver row in the
+GUI with no virtual users or input permissions. The native application first
+receives separate publication approval and reports one of its own windows.
+Select that current window in the GUI, approve observation and optional tracking
+or control
+for a **different** receiver row, Apply, then issue its private event descriptor.
+Launch `protoinputmultiplex mcp --event-connection <descriptor.json>` using that
+grantee descriptor. This separate MCP router exposes `native_windows` and
+`hosted_session`, each under separate current GUI grants. `native_windows`
+provides `inspect`, `refresh`, `query`, `track`, `untrack` and `control`.
+This connection neither uses the stopped
+Setup descriptor nor accepts a routing Agent Access descriptor. It cannot create
+permissions, virtual users, target PIDs or a native handle.
+
+Call `native_windows {"operation":"inspect"}` to read the current event epoch
+and tracked window state. Pass that exact `epoch` and the GUI-copied opaque
+`window_id` for query and track. After Track, explicitly call
+`native_windows {"operation":"refresh"}` to install a new subscription
+snapshot. A stream gap also requires this explicit refresh. Control requires
+its separate GUI approval and a nonstale owner report,
+for example `{"operation":"control","epoch":123,"window_id":456,
+"control":{"kind":"restore"}}`. IDs are JSON integers; retain them as exact
+text in clients that cannot represent all 64-bit integers. The GUI and event
+host recheck the exact window grant, lease, epoch and owner for every action.
+No HWND or other native handle is accepted. A control receipt reports the owner
+thread's observation; a close receipt does not prove destruction. Timeout,
+revocation or lost receipt yields an uncertain result and never triggers replay.
+Refresh/inspect the native owner's later observation before another action.
+Window titles and optional process/thread details are client-reported data, not
+GUI or OS peer attestation. Existing read-only `application_event_status` exposes
+only bounded registered/pending/stale/uncertain counts and sample age.
+
+For host-only access, a receiver needs explicit GUI approval to observe host
+state and separate approval to change routing mode or minimize/restore the GUI;
+no native window, virtual user or input permission is required. Discover
+`hosted_session`, obtain the event epoch through `native_windows` Inspect, then
+call hosted `inspect` with that epoch for the current revision. Actions use that
+exact epoch/revision; `set_mode` chooses Native (clean routing Stop), Switched or
+Concurrent using the configured automatic profile. A hosted Start or Native Stop
+retires other receivers, which need fresh GUI approval. These controls do not
+load/save a profile or change startup-loading/save-on-Quit preferences. See the
+[event SDK guide](application-event-sdk.md) for the typed helper, consent and
+uncertainty contracts. Source support does not establish runtime qualification.
 
 Stopped `profile_setup` also supports `configure_persistence` for the two
 startup-load/save-on-Quit preferences. It requires opt-in Setup authority, the
@@ -68,8 +127,9 @@ Standalone `routing_state.recovery` reports `phase` (`starting`, `running`, `sto
 | `agent_session` | Inspect live GUI-connection status and the current permission policy |
 | `routing_capture` | Capture a PNG from the selected, explicitly permitted target window |
 | `app_preferences` | Inspect or configure application preferences under the current mode's explicit write permission |
+| `application_event_status` | Read safe cooperative event-SDK status through explicit live GUI or stopped Setup admission; no event or credential authority |
 
-Tool schemas are discoverable through MCP. Current source exposes 23 tools; GUI-agent, horizontal-wheel, output-rules and clone evidence retain their historical 20-, 20-, 21- and 18-tool source counts, while Macro Studio and stable-ID graph records retain 16- and 17-tool counts. User indices start at zero. A processed input command returns a subsequent worker state tick; inspect each user's status and PID to distinguish delivery from blocked arbitration. Only app-local virtual identities are generated. No physical device path, OS cursor movement, global keyboard injection or arbitrary backend command is exposed. Window titles are treated as untrusted application data. `routing_displays` remains read-only and needs no active session.
+Tool schemas are discoverable through MCP. Current source exposes 25 tools; GUI-agent, horizontal-wheel, output-rules and clone evidence retain their historical 20-, 20-, 21- and 18-tool source counts, while Macro Studio and stable-ID graph records retain 16- and 17-tool counts. User indices start at zero. A processed input command returns a subsequent worker state tick; inspect each user's status and PID to distinguish delivery from blocked arbitration. Only app-local virtual identities are generated. No physical device path, OS cursor movement, global keyboard injection or arbitrary backend command is exposed. Window titles are treated as untrusted application data. `routing_displays` remains read-only and needs no active session.
 
 ## Assigned release recovery
 
@@ -252,3 +312,60 @@ The accepted private development candidate adds `routing_input` actions `{"actio
 Pause releases the selected user's saved holds and discards their unpublished motion. Other users continue routing. Resume requires completed cleanup and an unpaused session, and does not replay input. Send matching original UPs for sources held before or received during Pause before fresh DOWNs: repeats stay quarantined across Resume. Source grants remain required for UP; a denied UP leaves the marker intact until authorization is restored or that client retires. On uncertainty, inspect instead of replaying DOWN/Text. Failed saved releases remain retryable; EOF alone is not clean-release proof.
 
 The first native scope is Concurrent automatic routing with independent virtual devices. Stop affected mapper, replication, forwarding, synchronized composite or user-program work before pausing; an unrelated independent program may continue. Consult `supported` and its reason instead of assuming every mode/provider is available. Flags are session-local. [Acceptance and limits](per-user-pause-assessment-2026-10-29.json) distinguish automatic native evidence from assigned/failure/EOF/program source-unit evidence. P1, live Rust-port integration and full Ultra parity remain open.
+
+### Explicit selected-user toolkit agent mode (source candidate)
+
+`protoinputmultiplex mcp --toolkit-event-connection <descriptor.json>` selects a
+separate MCP router exposing only `local_user_toolkit` and `refresh_user_toolkit`.
+It is mutually exclusive with the window/host event connection, GUI routing/Setup
+connection, and standalone runtime/preferences/data-directory options. It returns
+before standalone runtime or preferences initialization. The existing
+`--event-connection` window/host-only admission and tools remain separate.
+
+In the cooperative event GUI, create users explicitly, select the exact current
+users in a receiver row, and approve pointer and/or keyboard observation, Apply,
+then issue that row's private descriptor. User views require an existing event
+observation grant; this mode does not manufacture a directory-only grant. Select
+no Host/window capabilities and no controls of any kind. Admission requires a
+nonempty bounded `Only` user scope and rejects `AllOwned`, all control flags,
+Host grants and window grants. GUI authority and its consent redaction apply.
+Neither starting this MCP mode nor assigning local application data creates or
+selects users, grants permissions, discovers physical devices, or emits input.
+
+Pass the shared SDK's version-1 JSON request as **text** in `request_json`:
+
+```json
+{"request_json":"{\"version\":1,\"operation\":{\"kind\":\"list\"}}"}
+```
+
+The tool returns exact SDK JSON text. Preserve unsigned 64-bit user/source
+identities losslessly; do not round them through JavaScript Number. The shared
+[toolkit contract](../crates/mux-application-sdk/USER-TOOLKIT.md) defines user/source
+lookup, `set_data` (`data` field), clearing data, and badge palettes, including all
+bounds. Data and badge colors belong to this one MCP consumer in memory; they
+are not persisted, synchronized to native/Web consumers, or applied to Host
+cursor colors. Local data can appear only in the explicitly requested result;
+do not store credentials there or log tool payloads.
+
+Every local operation holds the same peer mutex while making one current-token
+`Stats` request, folding preceding authenticated stream frames, validating the
+expected response and subscription bounds, and then checking zero backlog, no
+overflow, Live state and no refresh/terminal fence before synchronous execution.
+There is no await between those final checks and the shared helper. The bridge
+checks lease/recipient authority before accepting Stats; GUI grant changes retire
+leases first. Stats alone is not an authority API. The guarantee is at the
+acknowledged server sampling point, not instantaneous knowledge of revocation
+after that point. A queued backlog rejects the operation without a drain loop or
+automatic retry. A gap/overflow clears local data and resets the palette. EOF,
+revocation, malformed responses and terminal failures deny local access.
+
+After a gap, call `refresh_user_toolkit` explicitly, then make a new observation;
+never replay an uncertain mutation automatically. Refresh uses only the current
+subscription's `Resubscribe` acknowledgement. Diagnostic Snapshot queries never
+install authority. A terminal lease cannot refresh or reconnect itself and needs
+fresh GUI approval. Same-epoch refresh preserves data only for exact still-visible
+bindings; data already cleared by a gap cannot return.
+
+This is authored source support. Required Rust checks and actual GUI/MCP lease
+lifecycle acceptance remain separate gates; native/Web toolkit runtime acceptance
+and full SDK/product qualification are not implied.
