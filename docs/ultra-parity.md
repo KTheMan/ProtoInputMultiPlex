@@ -1,5 +1,26 @@
 # Product target: Ultra functional parity
 
+On November 16, 2026, independent review accepted a live Ouroboros workflow on
+VM105 using x64 GUI commit `ef6c93d75b518b2590034b9389afc890fe9dde83` and the
+receipt-matched x64 native runtime from fixture commit
+`fa72725ab5ea5eefdc2a73d77fd4fa442659174c`. The disposable profile allowed only
+two owned x64 automation probe PIDs, each with a distinct virtual mouse and
+keyboard. The 54 sample barriers covered GUI Start, sequential Input Lab
+delivery to both native windows in Concurrent and Switched modes, worker
+acknowledgements for both Home mode changes, keyboard Apply suppressing only
+seat A's keys, and GUI Stop with both original probes still alive and reusable.
+Both probes closed normally, cleanup passed, and Defender stayed active with
+zero alerts or scoped crashes. Home measured 360×360. Keyboard and Input Lab
+used their normal larger viewports.
+
+The evidence archive SHA-256 is
+`8a4699e2a0c1070535d8fbb1f51b46aed83652c809a8293d53173d84b728032f`.
+See the [VM105 validation record](validation.md#live-ouroboros-routing-on-vm105--november-16-2026)
+for the artifact and exact checks. This covers sequential virtual input to
+owned probes. Simultaneous arbitration, hardware, arbitrary apps, desktop-wide
+and same-process isolation, full Ultra/UX parity, and release qualification
+remain open.
+
 Independent startup loading and saving on Quit are available in Ouroboros
 Application preferences and stopped-Setup MCP. Defaults load the selected startup
 profile and leave exit saving off. An unchanged exit save preserves the recovery
@@ -16,8 +37,9 @@ SDK parity. Remaining API families and runtime acceptance stay open.
 
 Following the reported November 7 host display freeze, local builds and
 native/Sandbox/input tests on that workstation are held. Source work and
-GitHub-hosted checks continue. The opt-in CPU/DX12 renderer needs separate
-rendered-frame and normal-close qualification; it is not a proven freeze fix.
+GitHub-hosted checks continue. The November 16 VM105 run covers sampled
+rendered frames and normal close with the opt-in CPU/DX12 renderer. The
+reported workstation freeze remains open.
 The original Sandbox instance is no longer available, so its reboot qualification
 cannot continue. Real logon/reboot validation, signing, public release and the
 whole-product UX review remain pending.

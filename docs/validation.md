@@ -65,6 +65,50 @@ The separate [stopped-GUI assessment](gui-stall-current-assessment-2026-10-29.js
 accepts 12 controls, fresh captures, advancing frames and normal close in 250 ms.
 It did not reproduce or resolve the historical intermittent GUI-stall P1.
 
+## Live Ouroboros routing on VM105 — November 16, 2026
+
+Independent review accepted the v4 run on the disposable VM105 desktop. The
+test used the x64 GUI with the software DX12 renderer from commit
+`ef6c93d75b518b2590034b9389afc890fe9dde83` (executable SHA-256
+`59a338117581cc5cbdb84ad0b7bda07c1d0af172be8aa2b9ce8fc8d4dd33d42e`)
+and the x64 native runtime from fixture commit
+`fa72725ab5ea5eefdc2a73d77fd4fa442659174c`. The staged GUI and each runtime
+member matched their receipts. The disposable automatic desktop profile
+allowed only the two owned x64 automation probes (PIDs 5104 and 7332). Each seat
+had its own virtual mouse and keyboard. Input originated in the guest's
+app-local UI script and Input Lab, with no physical device, workstation, or
+RustDesk input.
+
+The run passed 54 ordered GUI sample barriers. Start and both Home mode changes
+(Concurrent → Switched → Concurrent) were acknowledged by the worker. Both
+probe windows received their own primary button down/up and function-key
+down/up before and after each transition. On seat A's Keyboard tab, the worker
+acknowledged Apply with A disabled and B enabled. On replay, A's F5 produced no
+native events on either probe, while B's F6 and both mice still reached their
+own windows. Across all 24 input barriers, the nonaddressed probe recorded
+zero native events. Home measured 360×360 at Start, both mode changes, and
+Stop. Keyboard settings and Input Lab used their normal 540×520 and 800×640
+viewports, respectively.
+
+After GUI Stop, both original probe processes were still alive and their native
+lifecycle records were identity and build matched, unbound, and reusable. Both
+probes and the GUI closed normally with exit code 0. The final scan found no
+fixture worker or other fixture process, and the scheduled task was removed.
+Defender was active at staging and in all 32 monitoring samples. The event
+audit found zero Defender alerts, protection-off events, or scoped crashes.
+Three earlier incomplete harness attempts were retained separately.
+
+The raw evidence archive is
+`vm105-ouroboros-live-evidence-v4/live-evidence-143530793.zip` in the
+qualification evidence cache, alongside `independent-review.json`.
+Archive SHA-256:
+`8a4699e2a0c1070535d8fbb1f51b46aed83652c809a8293d53173d84b728032f`.
+
+This acceptance covers sequential virtual input to two owned x64 probes on
+VM105. Simultaneous input arbitration, physical devices, i686, third-party
+applications, desktop-wide or same-process isolation, reboot, the historical
+GUI stall, and full Ultra/UX and release qualification remain outside this run.
+
 ## Explicit window selection — October 16
 
 V10 producer checks passed formatting, strict Clippy, 368 workspace tests (0 failed, 3 ignored), and default x64/i686 builds; independent producer review returned GO. Bounded native acceptance passed on x64 only. It recorded 22 GUI control occurrences and 61 tool calls, including 14 `routing_input` calls. Four input denials and one `routing_mode` denial left routing/native signatures unchanged; these are observations, not test counts. Ordinary GUI Stop exited the worker, removed overlays and the connection descriptor, preserved the profile, made both original targets reusable, and reported empty cleanup. See the [contract](explicit-window-selection-contract.md) and [assessment](explicit-window-selection-assessment-2026-10-16.json) for exact evidence, scope, and retained NOT ACCEPTED attempts. Two owned i686 ordinary EDIT targets later passed bounded native virtual-input acceptance under an x64 controller; this does not validate an i686 worker or broader target compatibility. Persistent EDIT focus outside those fixtures, GPU PrintWindow, hardware, broad app compatibility, desktop-wide and same-process isolation remain unverified.
