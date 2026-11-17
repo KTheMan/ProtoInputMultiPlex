@@ -28,7 +28,7 @@ env:
   PYTHONDONTWRITEBYTECODE: '1'
   PYTHONUTF8: '1'
   GIT_TERMINAL_PROMPT: '0'
-  PIM_CANDIDATE_SOURCE_SHA: ${{ github.ref == 'refs/heads/qualification/vm105-ouroboros-home-20261116' && '7f9eb7d7c67796fb4275683b10a85f8734166208' || github.sha }}
+  PIM_CANDIDATE_SOURCE_SHA: ${{ github.ref == 'refs/heads/qualification/vm105-ouroboros-home-20261116' && '03decf187b80ded3ae8836488506bced3516fa7e' || github.sha }}
   PIM_CANDIDATE_GUI_RENDERER: ${{ github.ref == 'refs/heads/qualification/vm105-ouroboros-home-20261116' && 'software-dx12' || inputs.gui_renderer || 'glow' }}
 
 jobs:
