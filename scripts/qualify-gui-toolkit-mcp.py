@@ -156,17 +156,23 @@ class ToolkitPair(base.Pair):
         for index, step in enumerate(self.steps, 1):
             self.checkpoint = index
             self.check = "toolkit_gui_receipt"
-            self.wait(lambda: len(self.receipts()) >= index)
-            rows = self.receipts()
+            def received():
+                rows = self.receipts()
+                return rows if len(rows) >= index else None
+            rows = self.wait(received)
             require(len(rows) == index or not step.get("wait_for_sample"))
             require(rows[index - 1]["button"] == step["button"] and rows[index - 1]["clicked"] is True)
             if step.get("wait_for_sample"):
+                self.check = "toolkit_gui_sample"
                 self.wait(lambda: self.sample(index))
                 # Only observations run inside wait; each MCP action executes once.
                 if index == 18:
+                    self.check = "toolkit_lease_baseline"
                     self.toolkit_baseline()
                 elif index == 19:
+                    self.check = "toolkit_lease_revocation"
                     self.toolkit_revoked()
+                self.check = "toolkit_gui_sample_acknowledgement"
                 self.acknowledge(index)
         self.stage = "toolkit-normal-cleanup"
         self.close_gui_owned_main()
@@ -185,9 +191,11 @@ def main():
     pair = ToolkitPair(args)
     try:
         pair.run()
-    except BaseException:
-        pair.result.update(failure_stage=pair.stage, checkpoint=pair.checkpoint,
-            failure_policy="preserve private evidence; no kill/restart/retry")
+    except BaseException as error:
+        pair.result.update(failure_stage=pair.stage, failure_check=pair.check, checkpoint=pair.checkpoint,
+            read_failure=pair.read_failure(error),
+            failure_policy="preserve private evidence; no kill/restart/replay")
+    pair.result["sample_replace_retries"] = pair.sample_replace_retries
     pair.result["elapsed_ms"] = int((time.monotonic() - pair.start) * 1000)
     require(not args.public_result.exists())
     args.public_result.write_text(json.dumps(pair.result, indent=2), encoding="utf-8")

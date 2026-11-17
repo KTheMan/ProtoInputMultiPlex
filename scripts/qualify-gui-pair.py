@@ -234,6 +234,7 @@ class Pair:
                        "hardware_qualified": False}
         self.gui = None
         self.live_read_retries = 0
+        self.sample_replace_retries = 0
         self.native_milestone = "not_started"
         self.overlap_samples = 0
         self.expected_approvals = None
@@ -261,7 +262,7 @@ class Pair:
                 try:
                     return shared_live_bytes(path, maximum)
                 except OSError as error:
-                    if getattr(error, "winerror", None) not in (32, 33) or attempt == 3 or time.monotonic() + .025 >= end:
+                    if getattr(error, "winerror", None) not in (32, 33, 303) or attempt == 3 or time.monotonic() + .025 >= end:
                         raise
                     self.live_read_retries += 1
                     time.sleep(.025)
@@ -377,7 +378,20 @@ class Pair:
     def acknowledge(self, step):
         temp = self.ui / "prepare.sampled.tmp"
         temp.write_text(str(step), encoding="ascii")
-        temp.replace(self.ui / "prepare.sampled.json")
+        destination = self.ui / "prepare.sampled.json"
+        retry_end = min(self.end, time.monotonic() + .15)
+        # The GUI's sample reader can have the previous acknowledgement open.
+        # Retry only the atomic publication of the same bytes; never replay a UI action.
+        while True:
+            self.deadline()
+            try:
+                temp.replace(destination)
+                return
+            except OSError as error:
+                if getattr(error, "winerror", None) not in (5, 32, 33) or time.monotonic() + .025 >= retry_end:
+                    raise
+                self.sample_replace_retries += 1
+                time.sleep(.025)
 
     def descriptors(self):
         return set(self.preferences.parent.glob(f"protoinputmultiplex.application-events.{self.gui.pid}.*.json"))
