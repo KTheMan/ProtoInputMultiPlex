@@ -52,7 +52,16 @@ fn software_renderer_options() -> eframe::NativeOptions {
     setup.instance_descriptor = wgpu::InstanceDescriptor {
         backends: wgpu::Backends::DX12,
         flags: wgpu::InstanceFlags::empty(),
-        backend_options: Default::default(),
+        backend_options: wgpu::BackendOptions {
+            dx12: wgpu::Dx12BackendOptions {
+                // Frame acquisition runs on the GUI thread. WARP's latency
+                // handle can remain unsignaled on an occluded desktop, so
+                // waiting here would prevent Close and Quit from being polled.
+                latency_waitable_object: wgpu::Dx12UseFrameLatencyWaitableObject::DontWait,
+                ..Default::default()
+            },
+            ..Default::default()
+        },
         memory_budget_thresholds: Default::default(),
         display: None,
     };
@@ -210,6 +219,14 @@ mod renderer_tests {
         };
         assert_eq!(setup.instance_descriptor.backends, wgpu::Backends::DX12);
         assert!(setup.instance_descriptor.flags.is_empty());
+        assert!(matches!(
+            setup
+                .instance_descriptor
+                .backend_options
+                .dx12
+                .latency_waitable_object,
+            wgpu::Dx12UseFrameLatencyWaitableObject::DontWait
+        ));
         assert!(setup.native_adapter_selector.is_some());
         // Neither missing surface nor an empty adapter list may fall back.
         let selector = setup.native_adapter_selector.unwrap();
