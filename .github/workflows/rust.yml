@@ -26,6 +26,16 @@ jobs:
       sdk-artifact-id: ${{ steps.sdk-artifact.outputs.artifact-id }}
     steps:
       - uses: actions/checkout@v5
+      - name: Reserve fresh SDK artifact staging
+        id: sdk-stage
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          # Keep the handoff outside restored Cargo target trees.
+          $stageRoot = Join-Path $env:RUNNER_TEMP ('hosted-sdk-' + $env:GITHUB_RUN_ID + '-' + $env:GITHUB_RUN_ATTEMPT)
+          New-Item -ItemType Directory -Path $stageRoot | Out-Null
+          "HOSTED_SDK_ROOT=$stageRoot" >> $env:GITHUB_ENV
+          "root=$stageRoot" >> $env:GITHUB_OUTPUT
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: 1.92.0
@@ -150,7 +160,7 @@ jobs:
               (Get-FileHash -LiteralPath $_ -Algorithm SHA256).Hash.ToLowerInvariant()
             } | Sort-Object -Unique)
             if ($headerHashes.Count -ne 1) { throw "Conflicting native-client headers for $($architecture.Triple)" }
-            $packageRoot = Join-Path 'target/sdk-preview' $architecture.Name
+            $packageRoot = Join-Path $env:HOSTED_SDK_ROOT ('sdk-preview/' + $architecture.Name)
             New-Item -ItemType Directory -Path $packageRoot -ErrorAction Stop | Out-Null
             $dll = Join-Path $packageRoot 'mux_application_sdk.dll'
             $header = Join-Path $packageRoot 'protoinputmultiplex_application_sdk.h'
@@ -226,7 +236,7 @@ jobs:
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
-          $root = 'target/sdk-preview/renderer'
+          $root = Join-Path $env:HOSTED_SDK_ROOT 'sdk-preview/renderer'
           New-Item -ItemType Directory -Path $root | Out-Null
           $exe = Join-Path $root 'software_renderer_smoke.exe'
           Copy-Item -LiteralPath 'target/x86_64-pc-windows-msvc/debug/examples/software_renderer_smoke.exe' -Destination $exe
@@ -242,7 +252,7 @@ jobs:
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
-          $root = 'target/sdk-preview/gui'
+          $root = Join-Path $env:HOSTED_SDK_ROOT 'sdk-preview/gui'
           New-Item -ItemType Directory -Path $root -ErrorAction Stop | Out-Null
           $exe = Join-Path $root 'protoinputmultiplex.exe'
           Copy-Item -LiteralPath 'target/debug/protoinputmultiplex.exe' -Destination $exe
@@ -270,14 +280,17 @@ jobs:
               (Get-FileHash -LiteralPath $bindgenExe -Algorithm SHA256).Hash.ToLowerInvariant() -cne $env:PIM_WASM_BINDGEN_SHA256) { throw 'Verified binding tool executable digest mismatch' }
           $bindgenVersion = & $bindgenExe --version
           if ($LASTEXITCODE -ne 0 -or $bindgenVersion -cne 'wasm-bindgen 0.2.129') { throw 'Binding tool version mismatch' }
-          & $bindgenExe --target web --out-dir target/application-web/pkg --out-name mux_application_web target/wasm32-unknown-unknown/debug/mux_application_web.wasm
+          $webRoot = Join-Path $env:HOSTED_SDK_ROOT 'application-web'
+          New-Item -ItemType Directory -Path $webRoot | Out-Null
+          $pkg = Join-Path $webRoot 'pkg'
+          & $bindgenExe --target web --out-dir $pkg --out-name mux_application_web target/wasm32-unknown-unknown/debug/mux_application_web.wasm
           if ($LASTEXITCODE -ne 0) { throw 'Browser binding generation failed' }
-          Copy-Item crates/mux-application-web/example/index.html,crates/mux-application-web/example/bootstrap.js target/application-web/
+          Copy-Item crates/mux-application-web/example/index.html,crates/mux-application-web/example/bootstrap.js -Destination $webRoot
       - name: Bind exact Rust WASM distribution hashes
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
-          $root = 'target/application-web'
+          $root = Join-Path $env:HOSTED_SDK_ROOT 'application-web'
           $files = @('index.html', 'bootstrap.js', 'pkg/mux_application_web.js', 'pkg/mux_application_web_bg.wasm')
           [ordered]@{
             source_commit = $env:GITHUB_SHA
@@ -294,17 +307,17 @@ jobs:
           retention-days: 1
           if-no-files-found: error
           path: |
-            target/sdk-preview/
-            target/application-web/
+            ${{ steps.sdk-stage.outputs.root }}/sdk-preview/
+            ${{ steps.sdk-stage.outputs.root }}/application-web/
 
       - name: Preserve partial native SDK artifacts on check failure
         uses: actions/upload-artifact@v6
-        if: failure()
+        if: failure() && steps.sdk-stage.outcome == 'success'
         with:
           name: application-sdk-preview-${{ github.sha }}-${{ github.run_attempt }}-partial
           retention-days: 1
           if-no-files-found: warn
-          path: target/sdk-preview/
+          path: ${{ steps.sdk-stage.outputs.root }}/sdk-preview/
 
   qualify-native-lifecycle:
     needs: [check]
