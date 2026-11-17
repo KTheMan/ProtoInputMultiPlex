@@ -5,6 +5,82 @@ use anyhow::Result;
 #[cfg(feature = "software-renderer")]
 use std::sync::Arc;
 
+#[derive(Default)]
+pub(crate) struct RendererShutdown {
+    #[cfg(feature = "software-renderer")]
+    state: Option<(eframe::wgpu::Device, eframe::wgpu::Queue)>,
+}
+
+impl RendererShutdown {
+    pub(crate) fn new(software_dx12: bool, cc: &eframe::CreationContext<'_>) -> Self {
+        #[cfg(feature = "software-renderer")]
+        {
+            Self {
+                state: cc
+                    .wgpu_render_state
+                    .as_ref()
+                    .filter(|_| software_dx12)
+                    .map(|state| (state.device.clone(), state.queue.clone())),
+            }
+        }
+        #[cfg(not(feature = "software-renderer"))]
+        {
+            let _ = (software_dx12, cc);
+            Self::default()
+        }
+    }
+
+    pub(crate) fn finish(&mut self) -> Result<()> {
+        #[cfg(feature = "software-renderer")]
+        if let Some((device, queue)) = self.state.take() {
+            use std::time::{Duration, Instant};
+            use windows_sys::Win32::UI::WindowsAndMessaging::{
+                MSG, PM_NOREMOVE, PM_QS_SENDMESSAGE, PeekMessageW,
+            };
+
+            let started = Instant::now();
+            eprintln!("GUI software renderer shutdown drain started");
+            // App::on_exit runs after the last Present, while the window still
+            // exists. Fence that work before eframe drops its renderer/window.
+            let submission = queue.submit([]);
+            let worker = std::thread::Builder::new()
+                .name("software-renderer-shutdown".into())
+                .spawn(move || {
+                    device.poll(eframe::wgpu::PollType::Wait {
+                        submission_index: Some(submission),
+                        timeout: Some(Duration::from_secs(5)),
+                    })
+                })
+                .context("Start software renderer shutdown drain")?;
+            while !worker.is_finished() {
+                // DXGI may synchronously send messages to its HWND thread.
+                // Service those messages while the worker waits on the fence.
+                // Sent-only peeking leaves queued input/paint events in place.
+                let mut message = MSG::default();
+                unsafe {
+                    PeekMessageW(
+                        &mut message,
+                        std::ptr::null_mut(),
+                        0,
+                        0,
+                        PM_NOREMOVE | PM_QS_SENDMESSAGE,
+                    );
+                }
+                std::thread::sleep(Duration::from_millis(1));
+            }
+            worker
+                .join()
+                .map_err(|_| anyhow::anyhow!("Software renderer shutdown worker panicked"))?
+                .context("Drain final software renderer submission")?;
+            eprintln!(
+                "GUI software renderer shutdown drained: elapsed_ms={}",
+                started.elapsed().as_millis()
+            );
+        }
+        Ok(())
+    }
+}
+
 pub(crate) fn renderer_options(software_dx12: bool) -> Result<eframe::NativeOptions> {
     if !software_dx12 {
         return Ok(eframe::NativeOptions {

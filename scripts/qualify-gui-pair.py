@@ -32,7 +32,8 @@ def gui_termination_diagnostics(pair):
     result = {"schema": "pim.gui-termination.v1", "state": "not_started", "exit_code": None,
               "stderr_read": "not_attempted", "panic_header": False, "panic_component": "none",
               "panic_file": "none", "panic_line": None, "renderer_error": False,
-              "validation_error": False, "nonunwinding_panic": False, "last_submission_timeout": False}
+              "validation_error": False, "nonunwinding_panic": False, "last_submission_timeout": False,
+              "shutdown_drain_started": False, "shutdown_drain_finished": False, "shutdown_drain_failed": False}
     process = getattr(pair, "gui", None)
     if process is None:
         return result
@@ -55,6 +56,9 @@ def gui_termination_diagnostics(pair):
         result["nonunwinding_panic"] = "non-unwinding panic" in log
         result["last_submission_timeout"] = (
             "We timed out while waiting on the last successful submission to complete!" in log)
+        result["shutdown_drain_started"] = "GUI software renderer shutdown drain started" in log
+        result["shutdown_drain_finished"] = "GUI software renderer shutdown drained: elapsed_ms=" in log
+        result["shutdown_drain_failed"] = "GUI renderer did not drain before teardown" in log
         header = next((line for line in log.splitlines() if "panicked at " in line), "")
         components = ("wgpu-hal", "wgpu-core", "wgpu", "egui-wgpu", "eframe", "egui", "winit")
         component = next((name for name in components
