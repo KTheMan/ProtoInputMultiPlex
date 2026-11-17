@@ -809,6 +809,10 @@ mod fixture {
         // Keep the owner message loop alive with no HWND until ACTUAL thread signal.
         let deadline = Instant::now() + BOUND;
         while unsafe { WaitForSingleObject(completion, 0) } != WAIT_OBJECT_0 {
+            ensure(
+                Instant::now() < deadline,
+                "worker thread termination timed out",
+            )?;
             pump_wait(completion, deadline)?;
         }
         report.record(
@@ -1835,7 +1839,9 @@ mod fixture {
     }
     fn pump_wait(completion: HANDLE, deadline: Instant) -> Check {
         let remaining = deadline.saturating_duration_since(Instant::now());
-        ensure(!remaining.is_zero(), "bounded owner wait timed out")?;
+        if remaining.is_zero() {
+            return Ok(());
+        }
         let result = unsafe {
             MsgWaitForMultipleObjectsEx(
                 1,
@@ -1851,11 +1857,15 @@ mod fixture {
         )?;
         let mut message: MSG = unsafe { std::mem::zeroed() };
         for _ in 0..256 {
-            if unsafe { PeekMessageW(&mut message, null_mut(), 0, 0, PM_REMOVE) } == 0 {
+            // An elapsed polling slice is normal. Leave pending messages queued
+            // and let the caller enforce its separate operation deadline.
+            if Instant::now() >= deadline
+                || unsafe { PeekMessageW(&mut message, null_mut(), 0, 0, PM_REMOVE) } == 0
+            {
                 return Ok(());
             }
             ensure(
-                Instant::now() < deadline && message.message != WM_QUIT,
+                message.message != WM_QUIT,
                 "unexpected owner quit before cleanup",
             )?;
             unsafe {

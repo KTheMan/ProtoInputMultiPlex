@@ -15,16 +15,18 @@ jobs:
     runs-on: windows-latest
     timeout-minutes: 60
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: 1.92.0
           components: rustfmt, clippy
           targets: i686-pc-windows-msvc, wasm32-unknown-unknown
-      - uses: ilammy/msvc-dev-cmd@v1
+      - name: Set up MSVC for x64
+        shell: pwsh
+        run: ./scripts/enter-hosted-msvc.ps1 -Architecture amd64
       - name: Cache pinned browser binding tool archive
         id: pim-wasm-bindgen-cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ${{ runner.temp }}/wasm-bindgen-0.2.129/upstream.tar.gz
           key: wasm-bindgen-0.2.129-x86_64-pc-windows-msvc-79e348c169d0c10c0b287647f1e753d0985353ca96800bc29be8f4261baf13e6
@@ -95,9 +97,9 @@ jobs:
         run: cargo build -p mux-application-sdk --lib --example native_dll_lifecycle --example native_external_consumer --example standalone_host_dll_lifecycle --features native-client --locked --target-dir target/sdk-native-build --target x86_64-pc-windows-msvc
       - name: Build x64 renderer-only example
         run: cargo build -p protoinputmultiplex --example software_renderer_smoke --features software-renderer --locked --target x86_64-pc-windows-msvc
-      - uses: ilammy/msvc-dev-cmd@v1
-        with:
-          arch: x86
+      - name: Set up MSVC for x86
+        shell: pwsh
+        run: ./scripts/enter-hosted-msvc.ps1 -Architecture x86
       - name: Build x86 native lifecycle DLL and example with full default SDK features
         run: cargo build -p mux-application-sdk --lib --example native_dll_lifecycle --example native_external_consumer --example standalone_host_dll_lifecycle --features native-client --locked --target-dir target/sdk-native-build --target i686-pc-windows-msvc
       - name: Build native workspace (x86)
@@ -265,7 +267,7 @@ jobs:
             wasm_bindgen_version = '0.2.129'
             files = @($files | ForEach-Object { @{ file = $_; sha256 = (Get-FileHash -LiteralPath (Join-Path $root $_) -Algorithm SHA256).Hash.ToLowerInvariant() } })
           } | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $root 'metadata.json') -Encoding utf8
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: application-sdk-preview-${{ github.sha }}
           retention-days: 1
@@ -275,7 +277,7 @@ jobs:
             target/application-web/
 
       - name: Preserve partial native SDK artifacts on check failure
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: failure()
         with:
           name: application-sdk-preview-${{ github.sha }}-partial
@@ -296,7 +298,7 @@ jobs:
           $ErrorActionPreference = 'Stop'
           if (Test-Path -LiteralPath $env:QUALIFICATION_ROOT) { throw 'Evidence directory already exists' }
           New-Item -ItemType Directory -Path $env:QUALIFICATION_ROOT | Out-Null
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v7
         with:
           name: application-sdk-preview-${{ github.sha }}
           path: ${{ runner.temp }}/qualification-artifacts
@@ -373,7 +375,7 @@ jobs:
               $controller | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $env:QUALIFICATION_ROOT ($name + '-controller.json')) -Encoding utf8
             }
           }
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         if: always()
         with:
           name: native-lifecycle-qualification-${{ github.sha }}-${{ github.run_attempt }}
@@ -397,7 +399,7 @@ jobs:
           $ErrorActionPreference = 'Stop'
           if (Test-Path -LiteralPath $env:QUALIFICATION_ROOT) { throw 'Evidence directory already exists' }
           New-Item -ItemType Directory -Path $env:QUALIFICATION_ROOT | Out-Null
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v7
         with:
           name: application-sdk-preview-${{ github.sha }}
           path: ${{ runner.temp }}/qualification-artifacts
@@ -497,7 +499,7 @@ jobs:
             $controller.elapsed_ms = $timer.ElapsedMilliseconds
             $controller | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $env:QUALIFICATION_ROOT 'renderer-controller.json') -Encoding utf8
           }
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         if: always()
         with:
           name: software-readback-qualification-${{ github.sha }}-${{ github.run_attempt }}
@@ -514,10 +516,10 @@ jobs:
     runs-on: windows-latest
     timeout-minutes: 7
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           persist-credentials: false
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v7
         with:
           name: application-sdk-preview-${{ github.sha }}
           path: ${{ runner.temp }}/gui-pair-artifacts
@@ -633,7 +635,7 @@ jobs:
           Write-Output "Initial pair=$status stage=$stage check=$check failure=$failure canvas=$canvas gap=$gap"
       - name: Upload only sanitized initial pair decisions
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: gui-native-wasm-initial-pair-${{ github.sha }}-${{ github.run_attempt }}
           retention-days: 14
@@ -649,13 +651,13 @@ jobs:
     runs-on: windows-latest
     timeout-minutes: 12
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           persist-credentials: false
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: 1.92.0
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v7
         with:
           name: application-sdk-preview-${{ github.sha }}
           path: ${{ runner.temp }}/gui-window-artifacts
@@ -700,7 +702,7 @@ jobs:
           if ($receipt.status -cne 'PASS' -or $receipt.source_commit -cne $env:GITHUB_SHA -or $receipt.native_exit_code -ne 0 -or $receipt.gui_exit_code -ne 0 -or $receipt.positive_owner_actions -ne 3 -or -not $receipt.host_pending_expired -or -not $receipt.uncertain_late_action -or -not $receipt.old_epoch_rejected -or -not $receipt.post_revoke_rejected -or -not $receipt.rust_mcp_fixture_invoked -or -not $receipt.web_query_track_control_untrack) { throw 'Owned-window route receipt incomplete' }
       - name: Upload only sanitized owned-window decisions
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: gui-owned-window-route-${{ github.sha }}-${{ github.run_attempt }}
           retention-days: 1
@@ -714,13 +716,13 @@ jobs:
     runs-on: windows-latest
     timeout-minutes: 12
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           persist-credentials: false
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: 1.92.0
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v7
         with:
           name: application-sdk-preview-${{ github.sha }}
           path: ${{ runner.temp }}/gui-hosted-artifacts
@@ -756,7 +758,7 @@ jobs:
           if ($receipt.status -cne 'PASS' -or $receipt.source_commit -cne $env:GITHUB_SHA -or $receipt.native_viewport_receipts -ne 2 -or -not $receipt.native_completed -or -not $receipt.native_retired -or $receipt.web_mode_worker_receipts -ne 2 -or $receipt.web_viewport_receipts -ne 2 -or $receipt.mcp_mode_worker_receipts -ne 2 -or -not $receipt.old_revision_rejected -or -not $receipt.old_epoch_rejected -or -not $receipt.event_epoch_retained -or -not $receipt.routing_generation_advanced -or -not $receipt.pending_refresh_correlated -or -not $receipt.lost_receipt_deadline -or -not $receipt.fixture_injected_gap -or -not $receipt.browser_no_replay -or -not $receipt.stale_timer_reconnect_isolated -or -not $receipt.deadline_terminal_callback_once -or -not $receipt.ordinary_quit_clean -or -not $receipt.profile_file_unchanged -or -not $receipt.preferences_file_unchanged) { throw 'Hosted-mode receipt incomplete' }
       - name: Upload only sanitized hosted-mode decisions
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: gui-hosted-mode-${{ github.sha }}-${{ github.run_attempt }}
           retention-days: 1
@@ -770,11 +772,13 @@ jobs:
     runs-on: windows-2022
     timeout-minutes: 25
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           persist-credentials: false
           submodules: recursive
-      - uses: ilammy/msvc-dev-cmd@v1
+      - name: Set up MSVC for x64
+        shell: pwsh
+        run: ./scripts/enter-hosted-msvc.ps1 -Architecture amd64
       - name: Verify pinned backend and installed ATL prerequisites
         shell: pwsh
         run: |
@@ -805,7 +809,7 @@ jobs:
             @{ file = [IO.Path]::GetRelativePath($env:GITHUB_WORKSPACE, $_.FullName).Replace('\','/'); sha256 = (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant() }
           })
           [ordered]@{ schema = 'pim.provider-backend.v1'; source_commit = $env:GITHUB_SHA; backend_pin = 'dd29bf8d22349605d0e1950c1c5dc4893d72670e'; architecture = 'x64'; existing_compatibility_patches = $patches; files = $files } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath runtime/provider-backend.json -Encoding utf8
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v7
         with:
           name: application-sdk-preview-${{ github.sha }}
           path: ${{ runner.temp }}/gui-provider-artifacts
@@ -837,7 +841,7 @@ jobs:
           if ($receipt.status -cne 'PASS' -or $receipt.source_commit -cne $env:GITHUB_SHA -or $receipt.gui_exit_code -ne 0 -or -not $receipt.ordinary_cleanup -or -not $receipt.native_wasm_exact_same_ids -or -not $receipt.atomic_held_bootstrap -or -not $receipt.shared_key_held_bootstrap -or -not $receipt.independent_two_target_traces_and_third_exclusion -or -not $receipt.wasm_selector_uses_historical_event_point -or -not $receipt.observer_mutation_denial_no_target_effect -or -not $receipt.held_unbind_no_target_effect -or -not $receipt.native_revoke_cleared_and_unloaded -or -not $receipt.stop_cleared_native_web_and_target_holds -or -not $receipt.restart_fresh_ids_stale_denied_no_replay -or -not $receipt.text_consent_native_false_web_false -or -not $receipt.text_consent_native_false_web_true -or -not $receipt.text_consent_native_true_web_true -or -not $receipt.profile_and_preferences_unchanged -or @($receipt.native_exit_codes).Count -ne 2 -or @($receipt.native_exit_codes | Where-Object { $_ -ne 0 }).Count -ne 0 -or @($receipt.target_exit_codes).Count -ne 3 -or @($receipt.target_exit_codes | Where-Object { $_ -ne 0 }).Count -ne 0) { throw 'Provider whole-group receipt incomplete' }
       - name: Upload only sanitized provider decisions
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: gui-desktop-provider-${{ github.sha }}-${{ github.run_attempt }}
           retention-days: 1
@@ -853,11 +857,13 @@ jobs:
     env:
       CARGO_PROFILE_DEV_DEBUG: '2'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           persist-credentials: false
           submodules: recursive
-      - uses: ilammy/msvc-dev-cmd@v1
+      - name: Set up MSVC for x64
+        shell: pwsh
+        run: ./scripts/enter-hosted-msvc.ps1 -Architecture amd64
       - name: Verify pinned backend and installed ATL prerequisites
         shell: pwsh
         run: |
@@ -890,7 +896,7 @@ jobs:
             @{ file = [IO.Path]::GetRelativePath($env:GITHUB_WORKSPACE, $_.FullName).Replace('\','/'); sha256 = (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant() }
           })
           [ordered]@{ schema = 'pim.provider-backend.v1'; source_commit = $env:GITHUB_SHA; backend_pin = 'dd29bf8d22349605d0e1950c1c5dc4893d72670e'; architecture = 'x64'; existing_compatibility_patches = $patches; files = $files } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath runtime/provider-backend.json -Encoding utf8
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v7
         with:
           name: application-sdk-preview-${{ github.sha }}
           path: ${{ runner.temp }}/gui-provider-dump-artifacts
@@ -1021,7 +1027,7 @@ jobs:
           }
       - name: Upload one sanitized private dump decision only
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: gui-desktop-provider-private-dump-${{ github.sha }}-${{ github.run_attempt }}
           retention-days: 14
@@ -1033,10 +1039,10 @@ jobs:
     runs-on: windows-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           persist-credentials: false
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v7
         with:
           name: application-sdk-preview-${{ github.sha }}
           path: ${{ runner.temp }}/standalone-host-artifacts
@@ -1047,7 +1053,7 @@ jobs:
           -ArtifactsRoot "${{ runner.temp }}/standalone-host-artifacts"
           -EvidenceRoot "${{ runner.temp }}/standalone-host-${{ github.run_id }}-${{ github.run_attempt }}"
           -SourceCommit "${{ github.sha }}"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         if: always()
         with:
           name: native-lifecycle-qualification-${{ github.sha }}-${{ github.run_attempt }}-standalone-host
@@ -1063,10 +1069,10 @@ jobs:
     runs-on: windows-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           persist-credentials: false
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v7
         with:
           name: application-sdk-preview-${{ github.sha }}
           path: ${{ runner.temp }}/standalone-window-metadata-artifacts
@@ -1078,7 +1084,7 @@ jobs:
           -EvidenceRoot "${{ runner.temp }}/standalone-window-metadata-${{ github.run_id }}-${{ github.run_attempt }}"
           -SourceCommit "${{ github.sha }}"
           -WindowMetadataOnly
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         if: always()
         with:
           name: native-window-metadata-qualification-${{ github.sha }}-${{ github.run_attempt }}

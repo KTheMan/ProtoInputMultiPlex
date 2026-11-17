@@ -718,7 +718,33 @@ class ProviderPair(base.Pair):
         raw, _ = self.live_bytes("native_report", self.native_report, 4 * 1024 * 1024)
         raw = raw[:raw.rfind(b"\n")+1]
         rows = [json.loads(row) for row in raw.decode("utf-8-sig").splitlines()]
-        require(not any(row["stage"] == "failed" for row in rows))
+        failure = next((row for row in rows if row["stage"] == "failed"), None)
+        if failure is not None:
+            reason = failure["detail"].get("reason")
+            reason = reason if isinstance(reason, str) else ""
+            categories = {
+                "desktop observer original deadline; no retry": "observer_deadline",
+                "desktop observer event bound": "observer_event_bound",
+                "desktop event leaked another user/source": "foreign_user_or_source",
+                "desktop native key schema": "invalid_native_key",
+                "unexpected non-provider event": "unexpected_event",
+                "unexpected desktop observer response or native stream gap": "unexpected_message_or_gap",
+                "desktop model schema": "invalid_native_model",
+                "desktop model leaked identity": "foreign_model_identity",
+                "unplanned desktop terminal": "unplanned_terminal",
+                "unexpected owner quit before cleanup": "owner_quit",
+                "message/completion wait failed": "owner_wait_failed",
+                "invalid retained JSON": "invalid_retained_json_or_report_sync",
+                "fixture I/O or encoding failure": "report_io_or_encoding",
+            }
+            status = re.fullmatch(r"(drain|query|response_read): expected (-?[0-9]{1,2}), got (-?[0-9]{1,2})", reason)
+            self.result["native_desktop_consumer_failure"] = {
+                "class": categories.get(reason, "api_status" if status else "other"),
+                "api": status[1] if status else None,
+                "expected": int(status[2]) if status else None,
+                "actual": int(status[3]) if status else None,
+            }
+            raise base.Rejected()
         return rows
 
     def native_stage(self, stage):
@@ -1056,17 +1082,25 @@ class ProviderPair(base.Pair):
         self.check = "independent_target_traces"
         self.wait(traces)
         def routed_records():
-            for observed in (self.native_events()[start_native:],self.web_events()[start_web:]):
+            missing = {}
+            for consumer, observed in (("native",self.native_events()[start_native:]),("wasm",self.web_events()[start_web:])):
+                missing[consumer] = {}
                 for index,name in enumerate(("Desktop A","Desktop B")):
                     user = self.initial_users[name]["id"]
                     changes = [e["event"]["record"]["change"] for e in observed if e["event"]["kind"] == "desktop_observed" and e["event"]["user"] == user]
-                    wanted = [{"kind":"motion","position":{"x":self.points[index][0]+6,"y":self.points[index][1]+3}},
-                        {"kind":"wheel","axis":"vertical","units":120},{"kind":"wheel","axis":"horizontal","units":-120}]
+                    wanted = {
+                        "motion":{"kind":"motion","position":{"x":self.points[index][0]+6,"y":self.points[index][1]+3}},
+                        "wheel_vertical":{"kind":"wheel","axis":"vertical","units":120},
+                        "wheel_horizontal":{"kind":"wheel","axis":"horizontal","units":-120},
+                    }
                     for transition in ("down","up"):
-                        wanted.append({"kind":"button","button":"x1" if index == 0 else "primary","transition":transition})
-                        wanted.append({"kind":"key","key":{"virtual_key":116,"scan_code":63,"prefix":"none"},"transition":transition})
-                    if not all(change in changes for change in wanted): return None
-            return True
+                        wanted["button_"+transition] = {"kind":"button","button":"x1" if index == 0 else "primary","transition":transition}
+                        wanted["key_"+transition] = {"kind":"key","key":{"virtual_key":116,"scan_code":63,"prefix":"none"},"transition":transition}
+                    missing[consumer]["seat_a" if index == 0 else "seat_b"] = [
+                        category for category, change in wanted.items() if change not in changes
+                    ]
+            self.result["missing_observer_record_families"] = missing
+            return not any(families for seats in missing.values() for families in seats.values())
         self.check = "native_and_wasm_record_families"
         self.wait(routed_records)
         require(all(e["event"]["user"] in [u["id"] for u in self.initial_users.values()] for e in self.native_events()+self.web_events() if e["event"]["kind"] == "desktop_observed"))
