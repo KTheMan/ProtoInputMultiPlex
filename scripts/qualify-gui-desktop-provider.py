@@ -1002,8 +1002,11 @@ class ProviderPair(base.Pair):
             require(self.effects() == self.before_unbind)
             self.result["held_unbind_no_target_effect"] = True
         elif name == "shared_rebound":
+            self.check = "shared_rebound_worker_baseline"
             self.wait(lambda: self.bound(2))
+            self.check = "shared_rebound_no_target_effect"
             require(self.effects() == self.before_unbind)
+            self.result["shared_rebound_no_target_effect"] = True
         elif name == "revoke_native":
             self.check = "native_revocation_lifetime"
             self.native_exit()

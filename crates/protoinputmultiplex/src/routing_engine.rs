@@ -22,6 +22,11 @@ impl UserPauseState {
             ..Self::default()
         }
     }
+    pub(crate) fn release_failed(&self) -> bool {
+        // Unsupported modes use error to explain why Pause is unavailable.
+        self.supported && self.error.is_some()
+    }
+
     pub(crate) fn resume(&mut self, global_paused: bool, pending: usize) -> Result<()> {
         anyhow::ensure!(self.supported, "Per-user Pause is unavailable");
         anyhow::ensure!(!global_paused, "Global Pause must be resumed first");
@@ -552,6 +557,19 @@ mod text_scope_tests {
                 .resume(false, 0)
                 .is_err()
         );
+    }
+    #[test]
+    fn unavailable_pause_is_not_a_release_failure() {
+        let unsupported = UserPauseState::unsupported(0, "Shared keyboard");
+        assert!(!unsupported.release_failed());
+
+        let mut supported = UserPauseState {
+            supported: true,
+            ..Default::default()
+        };
+        assert!(!supported.release_failed());
+        supported.error = Some("saved UP failed".into());
+        assert!(supported.release_failed());
     }
     #[test]
     fn pause_provider_capability_uses_persisted_paths_not_resolved_handle_bits() {

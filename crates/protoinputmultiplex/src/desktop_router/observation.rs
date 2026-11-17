@@ -621,7 +621,7 @@ impl super::DesktopRouter {
         if self.users[user].gesture.is_some() {
             return Err(BindRejection::Gesture);
         }
-        if self.users[user].observation_uncertain || self.user_pauses[user].error.is_some() {
+        if self.users[user].observation_uncertain || self.user_pauses[user].release_failed() {
             return Err(BindRejection::UncertainHoldOrRelease);
         }
         if self
