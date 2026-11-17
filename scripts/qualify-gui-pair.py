@@ -32,7 +32,7 @@ def gui_termination_diagnostics(pair):
     result = {"schema": "pim.gui-termination.v1", "state": "not_started", "exit_code": None,
               "stderr_read": "not_attempted", "panic_header": False, "panic_component": "none",
               "panic_file": "none", "panic_line": None, "renderer_error": False,
-              "validation_error": False, "nonunwinding_panic": False}
+              "validation_error": False, "nonunwinding_panic": False, "last_submission_timeout": False}
     process = getattr(pair, "gui", None)
     if process is None:
         return result
@@ -53,6 +53,8 @@ def gui_termination_diagnostics(pair):
         result["renderer_error"] = "Error: GUI:" in log
         result["validation_error"] = "Validation Error" in log
         result["nonunwinding_panic"] = "non-unwinding panic" in log
+        result["last_submission_timeout"] = (
+            "We timed out while waiting on the last successful submission to complete!" in log)
         header = next((line for line in log.splitlines() if "panicked at " in line), "")
         components = ("wgpu-hal", "wgpu-core", "wgpu", "egui-wgpu", "eframe", "egui", "winit")
         component = next((name for name in components
@@ -64,7 +66,7 @@ def gui_termination_diagnostics(pair):
             result["panic_component"] = component
             site = re.search(r"/([a-z_]+\.rs):([0-9]{1,7}):[0-9]{1,7}", header)
             if site is not None:
-                allowed = {"mod.rs", "lib.rs", "global.rs", "device.rs", "surface.rs",
+                allowed = {"mod.rs", "lib.rs", "global.rs", "device.rs", "surface.rs", "queue.rs",
                            "instance.rs", "backend.rs", "gui.rs", "renderer_config.rs"}
                 result["panic_file"] = site.group(1) if site.group(1) in allowed else "other"
                 result["panic_line"] = int(site.group(2))

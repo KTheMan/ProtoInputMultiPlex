@@ -54,10 +54,9 @@ fn software_renderer_options() -> eframe::NativeOptions {
         flags: wgpu::InstanceFlags::empty(),
         backend_options: wgpu::BackendOptions {
             dx12: wgpu::Dx12BackendOptions {
-                // Frame acquisition runs on the GUI thread. WARP's latency
-                // handle can remain unsignaled on an occluded desktop, so
-                // waiting here would prevent Close and Quit from being polled.
-                latency_waitable_object: wgpu::Dx12UseFrameLatencyWaitableObject::DontWait,
+                // Lifecycle requests are polled between frames. Do not gate
+                // the GUI thread on WARP's frame-latency handle.
+                latency_waitable_object: wgpu::Dx12UseFrameLatencyWaitableObject::None,
                 ..Default::default()
             },
             ..Default::default()
@@ -79,6 +78,9 @@ fn software_renderer_options() -> eframe::NativeOptions {
     eframe::NativeOptions {
         renderer: eframe::Renderer::Wgpu,
         wgpu_options: egui_wgpu::WgpuConfiguration {
+            // DX12 Mailbox presents with interval zero, so queued software
+            // frames do not depend on vertical sync during window teardown.
+            present_mode: wgpu::PresentMode::Mailbox,
             wgpu_setup: setup.into(),
             ..Default::default()
         },
@@ -214,6 +216,10 @@ mod renderer_tests {
         use eframe::{egui_wgpu::WgpuSetup, wgpu};
         let options = renderer_options(true).unwrap();
         assert_eq!(options.renderer, eframe::Renderer::Wgpu);
+        assert_eq!(
+            options.wgpu_options.present_mode,
+            wgpu::PresentMode::Mailbox
+        );
         let WgpuSetup::CreateNew(setup) = options.wgpu_options.wgpu_setup else {
             panic!("strict software mode must install its selector");
         };
@@ -225,7 +231,7 @@ mod renderer_tests {
                 .backend_options
                 .dx12
                 .latency_waitable_object,
-            wgpu::Dx12UseFrameLatencyWaitableObject::DontWait
+            wgpu::Dx12UseFrameLatencyWaitableObject::None
         ));
         assert!(setup.native_adapter_selector.is_some());
         // Neither missing surface nor an empty adapter list may fall back.

@@ -1088,6 +1088,14 @@ class GuiTerminationTests(unittest.TestCase):
         self.assertEqual((result["panic_component"], result["panic_file"], result["panic_line"]),
                          ("wgpu-core", "global.rs", 1732))
 
+    def test_last_submission_timeout_is_a_fixed_label(self):
+        result = self.observe(3221225477, b"thread 'private-secret' panicked at "
+                              b"C:/private-secret/wgpu-core-29.0.4/src/device/queue.rs:208:12:\n"
+                              b"We timed out while waiting on the last successful submission to complete!\n")
+        self.assertTrue(result["last_submission_timeout"])
+        self.assertEqual((result["panic_component"], result["panic_file"], result["panic_line"]),
+                         ("wgpu-core", "queue.rs", 208))
+
     def test_running_zero_native_exit_and_missing_log_remain_distinct(self):
         for code, state in ((None, "running"), (0, "zero"), (-1073741510, "nonzero")):
             result = self.observe(code, error=PermissionError("private-secret-context"))
