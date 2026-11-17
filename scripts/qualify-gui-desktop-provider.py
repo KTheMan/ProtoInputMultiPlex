@@ -1285,23 +1285,53 @@ class ProviderPair(base.Pair):
             if index in self.phase_steps:
                 # Actions execute exactly once. Only each phase's observations wait.
                 self.phase(self.phase_steps[index]); self.acknowledge(index)
-        self.deadline(); self.cdp.call("Browser.close"); require(self.browser.wait(timeout=12) == 0)
-        self.check = "ordinary_owned_process_closure"
-        self.http.shutdown(); self.http.server_close()
-        self.deadline(); self.close_gui_owned_main(); require(self.gui.wait(timeout=20) == 0)
-        for hwnd in self.target_windows:
-            self.deadline(); require(self.user32.PostMessageW(hwnd,0x0010,0,0))
-        require(all(p.wait(timeout=12) == 0 for p in self.targets_processes))
+        self.finish_cleanup()
+
+    def await_clean_exit(self, process, timeout):
+        remaining = min(timeout, self.end - time.monotonic())
+        require(remaining > 0)
+        require(process.wait(timeout=remaining) == 0)
+
+    def finish_cleanup(self):
+        self.stage = "ordinary_cleanup"
+        self.check = "browser_normal_exit"
+        self.deadline()
+        self.cdp.call("Browser.close")
+        self.await_clean_exit(self.browser, 12)
+        self.http.shutdown()
+        self.http.server_close()
+
+        self.check = "gui_owned_window_close"
+        self.deadline()
+        self.close_gui_owned_main()
+        self.check = "gui_normal_exit"
+        self.await_clean_exit(self.gui, 20)
+
+        self.check = "owned_probe_window_close"
+        for hwnd, process in zip(self.target_windows, self.targets_processes, strict=True):
+            require(time.monotonic() < self.end and process.poll() is None)
+            pid = wintypes.DWORD()
+            require(self.user32.GetWindowThreadProcessId(hwnd, ctypes.byref(pid)) != 0)
+            require(pid.value == process.pid)
+            require(self.user32.PostMessageW(hwnd, 0x0010, 0, 0))
+        self.check = "probe_normal_exit"
+        for process in self.targets_processes:
+            self.await_clean_exit(process, 12)
+
+        self.check = "unchanged_profile_and_preferences"
         require(self.profile.read_bytes() == self.profile_initial and self.preferences.read_bytes() == self.preferences_initial)
+        self.check = "no_remaining_descriptors"
         require(not self.descriptors() and not list(self.temp.glob(f"protoinputmultiplex-agent-{self.gui.pid}-*.json")))
+        self.check = "complete_gate_receipts"
         mandatory = ("atomic_held_bootstrap","native_wasm_exact_same_ids","observer_mutation_denial_no_target_effect",
             "independent_two_target_traces_and_third_exclusion","wasm_selector_uses_historical_event_point",
             "text_consent_native_false_web_false","text_consent_native_false_web_true","text_consent_native_true_web_true",
-            "held_unbind_no_target_effect","native_revoke_cleared_and_unloaded","shared_key_held_bootstrap",
+            "held_unbind_no_target_effect","shared_rebound_no_target_effect","native_revoke_cleared_and_unloaded","shared_key_held_bootstrap",
             "stop_cleared_native_web_and_target_holds","restart_fresh_ids_stale_denied_no_replay")
         require(all(self.result.get(flag) is True for flag in mandatory) and len(self.native_runs) == 2)
-        self.deadline()
-        self.result.update(status="PASS",native_exit_codes=[p.returncode for p in self.native_runs],gui_exit_code=0,target_exit_codes=[p.returncode for p in self.targets_processes],ordinary_cleanup=True,profile_and_preferences_unchanged=True)
+        require(time.monotonic() < self.end)
+        self.result.update(status="PASS",native_exit_codes=[p.returncode for p in self.native_runs],gui_exit_code=self.gui.returncode,
+                           target_exit_codes=[p.returncode for p in self.targets_processes],ordinary_cleanup=True,profile_and_preferences_unchanged=True)
 
     def place_targets(self):
         user = ctypes.WinDLL("user32",use_last_error=True); self.user32 = user
