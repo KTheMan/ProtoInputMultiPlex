@@ -28,7 +28,7 @@ env:
   PYTHONDONTWRITEBYTECODE: '1'
   PYTHONUTF8: '1'
   GIT_TERMINAL_PROMPT: '0'
-  PIM_CANDIDATE_SOURCE_SHA: ${{ github.ref == 'refs/heads/qualification/vm105-ouroboros-home-20261116' && 'ef6c93d75b518b2590034b9389afc890fe9dde83' || github.sha }}
+  PIM_CANDIDATE_SOURCE_SHA: ${{ github.ref == 'refs/heads/qualification/vm105-ouroboros-home-20261116' && '7f9eb7d7c67796fb4275683b10a85f8734166208' || github.sha }}
   PIM_CANDIDATE_GUI_RENDERER: ${{ github.ref == 'refs/heads/qualification/vm105-ouroboros-home-20261116' && 'software-dx12' || inputs.gui_renderer || 'glow' }}
 
 jobs:
@@ -36,7 +36,7 @@ jobs:
     runs-on: windows-2022
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           ref: ${{ env.PIM_CANDIDATE_SOURCE_SHA }}
           submodules: recursive
@@ -65,7 +65,7 @@ jobs:
     runs-on: windows-2022
     timeout-minutes: 180
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           ref: ${{ env.PIM_CANDIDATE_SOURCE_SHA }}
           submodules: recursive
@@ -74,9 +74,9 @@ jobs:
         with:
           toolchain: 1.92.0
           targets: i686-pc-windows-msvc, wasm32-unknown-unknown
-      - uses: ilammy/msvc-dev-cmd@v1
-        with:
-          arch: x64
+      - name: Set up MSVC for x64
+        shell: pwsh
+        run: ./scripts/enter-hosted-msvc.ps1 -Architecture amd64
       - name: Check installed build prerequisites and allocate fresh owned output
         shell: pwsh
         run: |
@@ -163,7 +163,7 @@ jobs:
           ConvertTo-Json -InputObject $hashes -Depth 5 | Set-Content -LiteralPath (Join-Path $review 'SHA256.json') -Encoding utf8
       - name: Upload unsigned unreleased artifacts for CI review
         if: github.ref != 'refs/heads/qualification/vm105-ouroboros-home-20261116'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: unsigned-unreleased-candidate-${{ github.sha }}-${{ github.run_attempt }}
           path: ${{ env.PIM_CANDIDATE_ROOT }}/review/*
@@ -258,7 +258,7 @@ jobs:
           Get-Content -LiteralPath (Join-Path $review 'candidate-status.json') -Raw
       - name: Retain encrypted candidate and hash receipt in Actions
         if: github.ref == 'refs/heads/qualification/vm105-ouroboros-home-20261116'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: vm105-x64-software-dx12-review-${{ env.PIM_CANDIDATE_SOURCE_SHA }}-${{ github.run_attempt }}
           path: |
