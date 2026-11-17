@@ -1,5 +1,13 @@
 name: Rust
-on: [push, pull_request, workflow_dispatch]
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      provider_private_dump:
+        description: Run the private desktop-provider diagnostic even if the provider check passes
+        type: boolean
+        default: false
 permissions:
   contents: read
 concurrency:
@@ -14,6 +22,8 @@ jobs:
   check:
     runs-on: windows-latest
     timeout-minutes: 60
+    outputs:
+      sdk-artifact-id: ${{ steps.sdk-artifact.outputs.artifact-id }}
     steps:
       - uses: actions/checkout@v5
       - uses: dtolnay/rust-toolchain@stable
@@ -24,6 +34,16 @@ jobs:
       - name: Set up MSVC for x64
         shell: pwsh
         run: ./scripts/enter-hosted-msvc.ps1 -Architecture amd64
+      - name: Cache Rust dependencies for the hosted check
+        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+        with:
+          key: hosted-check-x64-x86-wasm32-v1-${{ hashFiles('Cargo.lock', '**/Cargo.toml', '.cargo/config.toml') }}
+          env-vars: ImageOS VCToolsVersion VisualStudioVersion WindowsSDKVersion
+          workspaces: |
+            . -> target
+            . -> target/sdk-native-build
+          cache-bin: false
+          save-if: ${{ github.event_name == 'push' && github.ref_type == 'branch' }}
       - name: Cache pinned browser binding tool archive
         id: pim-wasm-bindgen-cache
         uses: actions/cache@v5
@@ -268,8 +288,9 @@ jobs:
             files = @($files | ForEach-Object { @{ file = $_; sha256 = (Get-FileHash -LiteralPath (Join-Path $root $_) -Algorithm SHA256).Hash.ToLowerInvariant() } })
           } | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $root 'metadata.json') -Encoding utf8
       - uses: actions/upload-artifact@v6
+        id: sdk-artifact
         with:
-          name: application-sdk-preview-${{ github.sha }}
+          name: application-sdk-preview-${{ github.sha }}-${{ github.run_attempt }}
           retention-days: 1
           if-no-files-found: error
           path: |
@@ -280,7 +301,7 @@ jobs:
         uses: actions/upload-artifact@v6
         if: failure()
         with:
-          name: application-sdk-preview-${{ github.sha }}-partial
+          name: application-sdk-preview-${{ github.sha }}-${{ github.run_attempt }}-partial
           retention-days: 1
           if-no-files-found: warn
           path: target/sdk-preview/
@@ -300,7 +321,7 @@ jobs:
           New-Item -ItemType Directory -Path $env:QUALIFICATION_ROOT | Out-Null
       - uses: actions/download-artifact@v7
         with:
-          name: application-sdk-preview-${{ github.sha }}
+          artifact-ids: ${{ needs.check.outputs.sdk-artifact-id }}
           path: ${{ runner.temp }}/qualification-artifacts
       - name: Qualify each exact native lifecycle specimen once
         env:
@@ -401,7 +422,7 @@ jobs:
           New-Item -ItemType Directory -Path $env:QUALIFICATION_ROOT | Out-Null
       - uses: actions/download-artifact@v7
         with:
-          name: application-sdk-preview-${{ github.sha }}
+          artifact-ids: ${{ needs.check.outputs.sdk-artifact-id }}
           path: ${{ runner.temp }}/qualification-artifacts
       - name: Qualify only the explicit Cpu DX12 renderer readback fixture once
         env:
@@ -521,7 +542,7 @@ jobs:
           persist-credentials: false
       - uses: actions/download-artifact@v7
         with:
-          name: application-sdk-preview-${{ github.sha }}
+          artifact-ids: ${{ needs.check.outputs.sdk-artifact-id }}
           path: ${{ runner.temp }}/gui-pair-artifacts
       - name: Parse exact controller source on disposable hosted runner
         shell: pwsh
@@ -659,7 +680,7 @@ jobs:
           toolchain: 1.92.0
       - uses: actions/download-artifact@v7
         with:
-          name: application-sdk-preview-${{ github.sha }}
+          artifact-ids: ${{ needs.check.outputs.sdk-artifact-id }}
           path: ${{ runner.temp }}/gui-window-artifacts
       - name: Compile the separate opt-in Rust MCP window consumer
         shell: pwsh
@@ -724,7 +745,7 @@ jobs:
           toolchain: 1.92.0
       - uses: actions/download-artifact@v7
         with:
-          name: application-sdk-preview-${{ github.sha }}
+          artifact-ids: ${{ needs.check.outputs.sdk-artifact-id }}
           path: ${{ runner.temp }}/gui-hosted-artifacts
       - name: Parse hosted-mode controller on disposable hosted runner
         shell: pwsh
@@ -767,10 +788,12 @@ jobs:
             ${{ runner.temp }}/gui-hosted-public-${{ github.run_id }}-${{ github.run_attempt }}/public-result.json
             ${{ runner.temp }}/gui-hosted-public-${{ github.run_id }}-${{ github.run_attempt }}/external-deadline.json
 
-  qualify-gui-desktop-provider:
-    needs: [check]
+  build-provider-backend:
     runs-on: windows-2022
-    timeout-minutes: 25
+    timeout-minutes: 15
+    outputs:
+      artifact-id: ${{ steps.runtime-artifact.outputs.artifact-id }}
+      manifest-sha256: ${{ steps.backend.outputs.manifest-sha256 }}
     steps:
       - uses: actions/checkout@v5
         with:
@@ -796,6 +819,7 @@ jobs:
           $atlRoot = Split-Path -Parent (Split-Path -Parent $atl[0].FullName)
           if (-not (Test-Path -LiteralPath (Join-Path $atlRoot 'lib/x64'))) { throw 'Installed x64 ATL libraries required' }
       - name: Build actual x64 backend using existing compatibility sequence
+        id: backend
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
@@ -809,9 +833,49 @@ jobs:
             @{ file = [IO.Path]::GetRelativePath($env:GITHUB_WORKSPACE, $_.FullName).Replace('\','/'); sha256 = (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant() }
           })
           [ordered]@{ schema = 'pim.provider-backend.v1'; source_commit = $env:GITHUB_SHA; backend_pin = 'dd29bf8d22349605d0e1950c1c5dc4893d72670e'; architecture = 'x64'; existing_compatibility_patches = $patches; files = $files } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath runtime/provider-backend.json -Encoding utf8
+          $manifestHash = (Get-FileHash -LiteralPath runtime/provider-backend.json -Algorithm SHA256).Hash.ToLowerInvariant()
+          "manifest-sha256=$manifestHash" >> $env:GITHUB_OUTPUT
+      - name: Upload native runtime for the provider job
+        id: runtime-artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: provider-runtime-${{ github.sha }}-${{ github.run_attempt }}
+          retention-days: 1
+          if-no-files-found: error
+          path: |
+            runtime/provider-backend.json
+            runtime/ProtoInput-LICENSE.txt
+            runtime/*.dll
+            runtime/*.exe
+
+  qualify-gui-desktop-provider:
+    needs: [check, build-provider-backend]
+    runs-on: windows-2022
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - name: Set up MSVC for x64
+        shell: pwsh
+        run: ./scripts/enter-hosted-msvc.ps1 -Architecture amd64
+      - name: Download the same-run native runtime
+        uses: actions/download-artifact@v7
+        with:
+          artifact-ids: ${{ needs.build-provider-backend.outputs.artifact-id }}
+          path: ${{ runner.temp }}/gui-provider-backend
+      - name: Verify the native runtime manifest
+        shell: pwsh
+        env:
+          BACKEND_MANIFEST_SHA256: ${{ needs.build-provider-backend.outputs.manifest-sha256 }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $manifest = Join-Path $env:RUNNER_TEMP 'gui-provider-backend/provider-backend.json'
+          $actual = (Get-FileHash -LiteralPath $manifest -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($actual -cne $env:BACKEND_MANIFEST_SHA256) { throw 'Native runtime manifest digest mismatch' }
       - uses: actions/download-artifact@v7
         with:
-          name: application-sdk-preview-${{ github.sha }}
+          artifact-ids: ${{ needs.check.outputs.sdk-artifact-id }}
           path: ${{ runner.temp }}/gui-provider-artifacts
       - name: Run one actual production virtual provider group
         env:
@@ -827,7 +891,7 @@ jobs:
           New-Item -ItemType Directory -Path $controllerRoot -ErrorAction Stop | Out-Null
           $result = Join-Path $env:PROVIDER_PUBLIC 'public-result.json'
           $artifacts = Join-Path $env:RUNNER_TEMP 'gui-provider-artifacts'
-          $backend = Join-Path $env:GITHUB_WORKSPACE 'runtime'
+          $backend = Join-Path $env:RUNNER_TEMP 'gui-provider-backend'
           $arguments = '"scripts/qualify-gui-desktop-provider.py" --artifacts "{0}" --backend "{1}" --source "{2}" --run "{3}" --public-result "{4}" --commit {5}' -f $artifacts, $backend, $env:GITHUB_WORKSPACE, $env:PROVIDER_ROOT, $result, $env:GITHUB_SHA
           $clock = [Diagnostics.Stopwatch]::StartNew()
           $process = Start-Process -FilePath (Get-Command python).Source -ArgumentList $arguments -WorkingDirectory $env:GITHUB_WORKSPACE -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $controllerRoot 'stdout.log') -RedirectStandardError (Join-Path $controllerRoot 'stderr.log')
@@ -851,7 +915,9 @@ jobs:
             ${{ runner.temp }}/gui-provider-public-${{ github.run_id }}-${{ github.run_attempt }}/external-deadline.json
 
   diagnose-gui-desktop-provider-private-dump:
-    needs: [check]
+    needs: [check, qualify-gui-desktop-provider]
+    if: ${{ !cancelled() && needs.check.result == 'success' && (needs.qualify-gui-desktop-provider.result == 'failure' || inputs.provider_private_dump) }}
+    # This runner builds its own matching symbols and keeps them private.
     runs-on: windows-latest
     timeout-minutes: 75
     env:
@@ -898,7 +964,7 @@ jobs:
           [ordered]@{ schema = 'pim.provider-backend.v1'; source_commit = $env:GITHUB_SHA; backend_pin = 'dd29bf8d22349605d0e1950c1c5dc4893d72670e'; architecture = 'x64'; existing_compatibility_patches = $patches; files = $files } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath runtime/provider-backend.json -Encoding utf8
       - uses: actions/download-artifact@v7
         with:
-          name: application-sdk-preview-${{ github.sha }}
+          artifact-ids: ${{ needs.check.outputs.sdk-artifact-id }}
           path: ${{ runner.temp }}/gui-provider-dump-artifacts
       - uses: dtolnay/rust-toolchain@stable
         with:
@@ -1044,7 +1110,7 @@ jobs:
           persist-credentials: false
       - uses: actions/download-artifact@v7
         with:
-          name: application-sdk-preview-${{ github.sha }}
+          artifact-ids: ${{ needs.check.outputs.sdk-artifact-id }}
           path: ${{ runner.temp }}/standalone-host-artifacts
       - name: Qualify each standalone Host DLL specimen once
         shell: pwsh
@@ -1074,7 +1140,7 @@ jobs:
           persist-credentials: false
       - uses: actions/download-artifact@v7
         with:
-          name: application-sdk-preview-${{ github.sha }}
+          artifact-ids: ${{ needs.check.outputs.sdk-artifact-id }}
           path: ${{ runner.temp }}/standalone-window-metadata-artifacts
       - name: Qualify opt-in owned-window metadata on each actual Host DLL specimen
         shell: pwsh
