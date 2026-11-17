@@ -27,6 +27,52 @@ import urllib.request
 from urllib.parse import urlsplit
 
 
+def gui_termination_diagnostics(pair):
+    """Observe the owned GUI once, exposing fixed labels and its exit code only."""
+    result = {"schema": "pim.gui-termination.v1", "state": "not_started", "exit_code": None,
+              "stderr_read": "not_attempted", "panic_header": False, "panic_component": "none",
+              "panic_file": "none", "panic_line": None, "renderer_error": False,
+              "validation_error": False, "nonunwinding_panic": False}
+    process = getattr(pair, "gui", None)
+    if process is None:
+        return result
+    try:
+        code = process.poll()
+        if code is not None and (type(code) is not int or not -(2**31) <= code < 2**32):
+            raise ValueError()
+        result.update(state="running" if code is None else "zero" if code == 0 else "nonzero",
+                      exit_code=code)
+    except BaseException:
+        result["state"] = "unobserved"
+        return result
+    try:
+        body, _ = shared_live_bytes(pair.private / "gui-stderr.log", 64 * 1024)
+        log = body.decode("utf-8", errors="replace").replace("\\", "/")
+        result["stderr_read"] = "observed"
+        result["panic_header"] = "panicked at " in log
+        result["renderer_error"] = "Error: GUI:" in log
+        result["validation_error"] = "Validation Error" in log
+        result["nonunwinding_panic"] = "non-unwinding panic" in log
+        header = next((line for line in log.splitlines() if "panicked at " in line), "")
+        components = ("wgpu-hal", "wgpu-core", "wgpu", "egui-wgpu", "eframe", "egui", "winit")
+        component = next((name for name in components
+                          if re.search(r"/" + re.escape(name) + r"-[0-9]+\.[0-9]+\.[0-9]+/", header)), None)
+        if component is None:
+            component = next((name for name in ("protoinputmultiplex", "mux-windows", "mux-application-sdk")
+                              if "/crates/" + name + "/src/" in header), None)
+        if component is not None:
+            result["panic_component"] = component
+            site = re.search(r"/([a-z_]+\.rs):([0-9]{1,7}):[0-9]{1,7}", header)
+            if site is not None:
+                allowed = {"mod.rs", "lib.rs", "global.rs", "device.rs", "surface.rs",
+                           "instance.rs", "backend.rs", "gui.rs", "renderer_config.rs"}
+                result["panic_file"] = site.group(1) if site.group(1) in allowed else "other"
+                result["panic_line"] = int(site.group(2))
+    except BaseException:
+        result["stderr_read"] = "unobserved"
+    return result
+
+
 class Rejected(Exception):
     pass
 
@@ -1692,6 +1738,7 @@ def main():
                    "ConnectionError", "ConnectionResetError", "OSError", "Empty"}
         pair.result["failure_class"] = name if name in allowed else "UnexpectedError"
         pair.result["failure_policy"] = "preserve private partial evidence; no kill/restart/retry"
+    pair.result["gui_termination"] = gui_termination_diagnostics(pair)
     pair.result["live_read_observation_retries"] = min(pair.live_read_retries, 1000000)
     pair.result["elapsed_ms"] = int((time.monotonic() - pair.start) * 1000)
     require(not args.public_result.exists())

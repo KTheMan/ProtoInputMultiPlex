@@ -1066,5 +1066,49 @@ class MainObservationOrderTests(unittest.TestCase):
                     self.assertNotIn("failure_cleanup", result)
 
 
+
+class GuiTerminationTests(unittest.TestCase):
+    def observe(self, code, raw=b"", error=None):
+        gate = SimpleNamespace(gui=FakeGui(code), private=Path("private-secret-path"))
+        with patch.object(provider.base, "shared_live_bytes", side_effect=error,
+                          return_value=(raw, 0)) as read:
+            result = provider.base.gui_termination_diagnostics(gate)
+        self.assertLessEqual(read.call_count, 1)
+        self.assertNotIn("private-secret", json.dumps(result))
+        return result
+
+    def test_exact_exit_code_and_fixed_panic_location_without_private_text(self):
+        raw = (b"thread 'private-secret-user' panicked at "
+               b"C:/private-secret-home/.cargo/registry/src/private-secret-index/"
+               b"wgpu-core-29.0.4/src/device/global.rs:1732:8:\n"
+               b"wgpu error: Validation Error\nprivate-secret-token\n")
+        result = self.observe(101, raw)
+        self.assertEqual((result["state"], result["exit_code"]), ("nonzero", 101))
+        self.assertTrue(result["panic_header"] and result["validation_error"])
+        self.assertEqual((result["panic_component"], result["panic_file"], result["panic_line"]),
+                         ("wgpu-core", "global.rs", 1732))
+
+    def test_running_zero_native_exit_and_missing_log_remain_distinct(self):
+        for code, state in ((None, "running"), (0, "zero"), (-1073741510, "nonzero")):
+            result = self.observe(code, error=PermissionError("private-secret-context"))
+            self.assertEqual((result["state"], result["exit_code"]), (state, code))
+            self.assertEqual(result["stderr_read"], "unobserved")
+            self.assertFalse(result["panic_header"])
+
+    def test_unknown_panic_location_is_never_copied(self):
+        result = self.observe(101, b"thread 'private-secret' panicked at "
+                                   b"C:/private-secret/place/private_secret.rs:4:2:\n")
+        self.assertTrue(result["panic_header"])
+        self.assertEqual(result["panic_component"], "none")
+        self.assertEqual(result["panic_file"], "none")
+        self.assertIsNone(result["panic_line"])
+
+    def test_unlaunched_gui_does_not_read(self):
+        with patch.object(provider.base, "shared_live_bytes") as read:
+            result = provider.base.gui_termination_diagnostics(SimpleNamespace(gui=None))
+        read.assert_not_called()
+        self.assertEqual(result["state"], "not_started")
+
+
 if __name__ == "__main__":
     unittest.main()

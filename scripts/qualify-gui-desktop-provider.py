@@ -1410,6 +1410,7 @@ def main():
             gate.result["functional_acceptance"] = False
             if gate.result.get("status") == "PASS":
                 gate.result["status"] = "DIAGNOSTIC_ONLY"
+    gate.result["gui_termination"] = base.gui_termination_diagnostics(gate)
     require(not args.public_result.exists())
     args.public_result.write_text(json.dumps(gate.result,indent=2)+"\n",encoding="utf-8")
     raise SystemExit(0 if gate.result["status"] == "PASS" else 1)
