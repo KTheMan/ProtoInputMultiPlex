@@ -28,6 +28,43 @@ pub fn selects(grant: &ControlGrant, user: &UserView) -> bool {
             || (grant.delegated_users && matches!(&grant.users, UserScope::Only(_))))
 }
 
+// Fail locally before a rejected mutation can retire the browser's observer
+// connection. The host still authorizes every request independently.
+#[cfg(any(test, target_arch = "wasm32"))]
+pub(crate) fn check_user_mutation(
+    command: &ClientCommand,
+    controls: Option<&ControlGrant>,
+    users: &BTreeMap<UserId, UserView>,
+) -> Result<(), &'static str> {
+    let (user, allowed, error) = match command {
+        ClientCommand::CreateUser { .. } => (
+            None,
+            controls.is_some_and(|grant| grant.user_lifecycle),
+            "User lifecycle is outside the current grant",
+        ),
+        ClientCommand::RenameUser { user, .. } | ClientCommand::DisposeUser { user } => (
+            Some(user),
+            controls.is_some_and(|grant| grant.user_lifecycle),
+            "User lifecycle is outside the current grant",
+        ),
+        ClientCommand::Cursor { user, .. } => (
+            Some(user),
+            controls.is_some_and(|grant| grant.cursor),
+            "Cursor is outside the current grant",
+        ),
+        _ => return Ok(()),
+    };
+    if allowed
+        && user.is_none_or(|id| {
+            controls.is_some_and(|grant| users.get(id).is_some_and(|view| selects(grant, view)))
+        })
+    {
+        Ok(())
+    } else {
+        Err(error)
+    }
+}
+
 impl LocalInput {
     pub fn held_buttons(&self) -> &[(UserId, MouseButton)] {
         &self.buttons
@@ -246,6 +283,47 @@ mod tests {
         assert!(selects(&grant, &user));
         grant.users = UserScope::Only(BTreeSet::new());
         assert!(!selects(&grant, &user));
+    }
+
+    #[test]
+    fn observed_users_do_not_grant_lifecycle_or_cursor_requests() {
+        use mux_core::application_event::CursorControl;
+
+        let id = UserId { epoch: 1, local: 1 };
+        let other = UserId { epoch: 1, local: 2 };
+        let users = BTreeMap::from([(id, view(id, false)), (other, view(other, true))]);
+        let create = ClientCommand::CreateUser { name: "New".into() };
+        let rename = ClientCommand::RenameUser {
+            user: id,
+            name: "Changed".into(),
+        };
+        let dispose = ClientCommand::DisposeUser { user: id };
+        let cursor = ClientCommand::Cursor {
+            user: id,
+            control: CursorControl::Color([1, 2, 3, 255]),
+        };
+        let mut grant = ControlGrant {
+            users: UserScope::Only(BTreeSet::from([id])),
+            ..ControlGrant::default()
+        };
+        for command in [&create, &rename, &dispose, &cursor] {
+            assert!(check_user_mutation(command, None, &users).is_err());
+            assert!(check_user_mutation(command, Some(&grant), &users).is_err());
+        }
+        assert!(check_user_mutation(&ClientCommand::Snapshot, None, &users).is_ok());
+
+        grant.user_lifecycle = true;
+        assert!(check_user_mutation(&create, Some(&grant), &users).is_ok());
+        assert!(check_user_mutation(&rename, Some(&grant), &users).is_err());
+        grant.delegated_users = true;
+        for command in [&rename, &dispose] {
+            assert!(check_user_mutation(command, Some(&grant), &users).is_ok());
+        }
+        assert!(check_user_mutation(&cursor, Some(&grant), &users).is_err());
+        grant.cursor = true;
+        assert!(check_user_mutation(&cursor, Some(&grant), &users).is_ok());
+        grant.users = UserScope::Only(BTreeSet::from([other]));
+        assert!(check_user_mutation(&cursor, Some(&grant), &users).is_err());
     }
 
     #[test]

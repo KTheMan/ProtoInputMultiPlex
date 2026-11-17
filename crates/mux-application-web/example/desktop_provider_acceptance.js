@@ -30,8 +30,17 @@ export function installDesktopAcceptance(client) {
     deny: commandStringsJson => {
       const commands = JSON.parse(commandStringsJson);
       if (!Array.isArray(commands) || commands.length !== 4 || commands.some(x => typeof x !== "string")) throw Error("desktop denial fixture schema");
+      const expected = ["User lifecycle is outside the current grant", "User lifecycle is outside the current grant",
+        "Cursor is outside the current grant", "Input is outside the current grant"];
       let denied = 0;
-      for (const raw of commands) { try { client.request(raw); } catch (_) { denied++; } }
+      for (const [index, raw] of commands.entries()) {
+        try {
+          client.request(raw);
+        } catch (error) {
+          if (error !== expected[index]) throw Error("Unexpected desktop observer rejection");
+          denied++;
+        }
+      }
       return denied;
     }
   };

@@ -3,7 +3,7 @@ use crate::event_hooks::{
     hosted_deadline_pending, validate_snapshot_query_with_desktop,
 };
 use crate::geometry::CanvasGeometry;
-use crate::local_input::{LocalInput, hid_key, mouse_button, selects};
+use crate::local_input::{LocalInput, check_user_mutation, hid_key, mouse_button, selects};
 use mux_application_sdk::*;
 use mux_core::application_event::Event as ApplicationEvent;
 use std::cell::RefCell;
@@ -317,6 +317,12 @@ impl Inner {
         if !self.authenticated {
             return Err("Event connection is not authenticated");
         }
+        let controls = self
+            .ready
+            .as_ref()
+            .filter(|_| self.is_live())
+            .map(|ready| &ready.controls);
+        check_user_mutation(&command, controls, self.state.users())?;
         let socket = self.socket.as_ref().ok_or("Event connection is closed")?;
         if socket.ready_state() != WebSocket::OPEN {
             return Err("Event connection is closed");

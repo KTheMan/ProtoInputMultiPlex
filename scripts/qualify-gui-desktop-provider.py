@@ -956,10 +956,12 @@ class ProviderPair(base.Pair):
             self.result["atomic_held_bootstrap"] = True
             self.result["native_wasm_exact_same_ids"] = True
             self.initial_users = web
-            self.check = "observer_mutation_denial"
+            self.check = "web_observer_local_denials"
             commands = [{"kind": "rename_user", "user": web["Desktop A"]["id"], "name": "Forbidden"}, {"kind": "dispose_user", "user": web["Desktop A"]["id"]}, {"kind": "cursor", "user": web["Desktop A"]["id"], "control": {"kind": "color", "value": [1,2,3,255]}}, {"kind": "input", "user": web["Desktop A"]["id"], "input": {"kind": "motion", "position": {"x": self.points[0][0], "y": self.points[0][1]}}}]
             require(self.web("window.pimDesktop.deny("+json.dumps(json.dumps([json.dumps(c) for c in commands]))+")") == 4)
+            self.check = "native_observer_local_denials"
             require(self.wait(lambda: self.native_stage("desktop_observer_mutation_denied"))["pending_requests"] == 0)
+            self.check = "observer_denials_no_target_effect"
             require(self.effects() == before)
             self.result["observer_mutation_denial_no_target_effect"] = True
             self.input("button", user=0, button="primary", pressed=False); self.input("key", user=1, key="rightctrl", pressed=False)
