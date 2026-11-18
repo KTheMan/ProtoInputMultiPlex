@@ -16,6 +16,14 @@ and support for other applications still need testing.
 
 *The Home screen in the current release.*
 
+https://github.com/user-attachments/assets/b0612af3-7fbf-4056-a4b8-8598f72d97fd
+
+*Two virtual users controlling Mines and Fifteen concurrently through MCP.
+Prepared paths use Camoufox/Cursory's recorded-human movement generator; this is
+scripted replay, not AI game solving. Normal speed. Live window/cursor composition:
+game snapshots at about 1.9 Hz and observed cursor positions at about 30 Hz.
+[Demo method, credits and evidence](docs/media/two-games-demo.md).*
+
 ## Download and start
 
 For **Windows x64**. Both packages use software DX12 for the main interface and
