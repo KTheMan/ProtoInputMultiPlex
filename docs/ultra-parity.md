@@ -1,5 +1,24 @@
 # Product target: Ultra functional parity
 
+The November 17 `v0.1.0-rc.1` packages passed independent bounded VM105
+qualification using x64 software DX12 source
+`9733060d99187d82d6ad7bdc2666d9dce988db15`. Both the self-extracting portable
+EXE and default per-user installer passed exact 761-member inventory, six native
+Close/Quit cases each, and separate 54-barrier two-seat virtual GUI workflows.
+Normal uninstall, data preservation and final cleanup passed with Defender on
+and zero scoped application crashes, Defender alerts or protection-off events.
+The raw installed and portable
+evidence SHA-256 values are
+`bbf5528936616d6347ac0d4dd4cb88d0c3adfeed481bbfaabd457fda7ee7d306`
+and `fb5f92e9d7d3075b9409365755045fb0d86874e4bb761ff1833a398e7ae38031`.
+The [assessment](vm105-rc-assessment-2026-11-17.json) and
+[validation record](validation.md#release-candidate-qualification-on-vm105--november-17-2026)
+describe exact build, target evidence, preserved failures and cleanup.
+This supports an unsigned experimental RC. Hardware, simultaneous arbitration,
+arbitrary applications, desktop-wide/same-process isolation, real logon/reboot,
+historical GUI-stall P1 closure and full Ultra/UX parity remain open. The original
+shutdown control passed and the final renderer uses the base policy.
+
 On November 16, 2026, independent review accepted a live Ouroboros workflow on
 VM105 using x64 GUI commit `ef6c93d75b518b2590034b9389afc890fe9dde83` and the
 receipt-matched x64 native runtime from fixture commit
@@ -41,8 +60,9 @@ GitHub-hosted checks continue. The November 16 VM105 run covers sampled
 rendered frames and normal close with the opt-in CPU/DX12 renderer. The
 reported workstation freeze remains open.
 The original Sandbox instance is no longer available, so its reboot qualification
-cannot continue. Real logon/reboot validation, signing, public release and the
-whole-product UX review remain pending.
+cannot continue. Real logon/reboot validation, trusted signing and the
+whole-product UX review remain pending. The November 17 assessment covers the
+unsigned experimental RC.
 
 Generated clone Stop now keeps the roster revision available for retry if a
 release fails. The worker retires the clone once cleanup succeeds, while

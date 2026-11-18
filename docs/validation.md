@@ -1,5 +1,61 @@
 # Validation record
 
+## Release candidate qualification on VM105 — November 17, 2026
+
+Independent review accepted the exact unsigned x64 software DX12 packages for
+`v0.1.0-rc.1`. The application source is
+`9733060d99187d82d6ad7bdc2666d9dce988db15`; the hosted recipe/carrier is
+`592c5fa80acc7f4d9b65d5fe9fc6fd9f9ba6a5be`. Hosted Rust checks
+[44208870595](https://github.com/KTheMan/ProtoInputMultiPlex/actions/runs/44208870595)
+and candidate build
+[44208870622](https://github.com/KTheMan/ProtoInputMultiPlex/actions/runs/44208870622)
+passed. All 761 payload members, including all ten native runtime members,
+matched the manifest before launch. The [assessment](vm105-rc-assessment-2026-11-17.json)
+records the full EXE, runtime, manifest and evidence SHA-256 values.
+
+The portable self-extracting EXE passed folder selection to a path with spaces,
+extraction, pre-Finish inventory and Finish launch. The installer passed its
+unchanged default per-user location, shell registration and real generated
+application shortcut. Normal registered uninstall exited zero, removed payload
+and shell integration, and preserved a sentinel in the documented data backup.
+The original setup process resumed at Finish after a stale Defender heartbeat
+and two pre-action harness scope-check failures. Its native identity and exit
+were matched across the original attempt and continuation.
+
+Each package passed six native shutdown cases covering ordinary, post-capture
+and startup Close and the existing app-local tray Quit handler. All 12 original
+process handles signaled exit code 0 in 463–1447 ms. Actual captures and
+post-capture response barriers were independently inspected. Correctly targeted
+original-build controls also passed. Experimental Rust renderer/shutdown changes
+were reverted to the base policy; final source adds bounded failure diagnostics.
+Rejected experiments, incomplete harness attempts and reconciled transport
+timeout receipts remain preserved.
+
+Each package separately passed the 54-barrier live GUI workflow with two owned
+x64 probes and a distinct virtual mouse and keyboard per seat. The disposable
+profile allowed only those exact PIDs. Start, Concurrent → Switched → Concurrent,
+and keyboard Apply were acknowledged by both workers. All 24 input barriers and
+30 native input edges per package were verified at the target windows. Seat A's
+disabled keyboard produced no target events; B received its own keys, both mice
+remained routed, and the peer received no crossed input. Stop left both original
+probes alive, identity matched, unbound and reusable before normal closure.
+
+Defender remained enabled in 72 installed and 78 portable monitoring samples.
+The final event audit found zero application crash events, Defender alerts or
+protection-off events. Cleanup retired all owned product/helper processes,
+tasks and credentials and removed the disposable account/profile. Workstation
+input, RustDesk and the vendor tree were preserved. Raw evidence archive SHA-256
+values are `bbf5528936616d6347ac0d4dd4cb88d0c3adfeed481bbfaabd457fda7ee7d306`
+for installed and
+`fb5f92e9d7d3075b9409365755045fb0d86874e4bb761ff1833a398e7ae38031`
+for portable. The private acceptance receipt SHA-256 is
+`0b9f6271a1112742ae7c7087093a3f197c95f4d99b0e4b5014a24929eb952c3d`.
+
+This RC has bounded VM105 virtual-input acceptance. Physical devices,
+simultaneous arbitration, arbitrary applications, desktop-wide or same-process
+isolation, real logon/reboot, i686 controllers, historical intermittent GUI-stall
+P1 closure and full Ultra/UX parity remain open. Trusted signing is pending.
+
 Independent startup loading and saving on Quit are available in Ouroboros
 Application preferences and stopped-Setup MCP. Defaults load the selected startup
 profile and leave exit saving off. An unchanged exit save preserves the recovery

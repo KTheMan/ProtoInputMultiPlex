@@ -1,0 +1,214 @@
+{
+  "schema": "pim.vm105-rc-assessment.v1",
+  "status": "INDEPENDENTLY_ACCEPTED_BOUNDED_RC",
+  "tag": "v0.1.0-rc.1",
+  "source_commit": "9733060d99187d82d6ad7bdc2666d9dce988db15",
+  "workflow_commit": "592c5fa80acc7f4d9b65d5fe9fc6fd9f9ba6a5be",
+  "hosted_ci_run": 44208870595,
+  "hosted_candidate_run": 44208870622,
+  "platform": "windows-x64",
+  "renderer": "software-dx12",
+  "signing": "unsigned",
+  "artifacts": {
+    "portable": {
+      "name": "ProtoInputMultiPlex-0.1.0-windows-x64-portable.exe",
+      "sha256": "4df3f3fcb69367c774569ab8f4a450a32556bcdff5f5dac3964baf9331c3518e",
+      "bytes": 47315082
+    },
+    "installer": {
+      "name": "ProtoInputMultiPlex-0.1.0-windows-x64-setup.exe",
+      "sha256": "62a58157b1db92119cc89850015b170f85f27177f142b42823b585b03ee6890f",
+      "bytes": 53813757
+    }
+  },
+  "inner_executable_sha256": "b61a1047ed57de06745284d254d0e3d082d67dbfc1de4c443e73d37982b640b4",
+  "bundle_manifest_sha256": "b4ca9106f2cf2346a2399b556e7fd69365684859f674a65f3f86730529107bc6",
+  "bundle_members": 761,
+  "runtime_pin": "dd29bf8d22349605d0e1950c1c5dc4893d72670e",
+  "runtime": [
+    {
+      "path": "runtime/ProtoInputHooks32.dll",
+      "bytes": 1091072,
+      "sha256": "b86e6dc5b813e034762450c27f307e3fc742a89cfcf17788964917d4cbdc7cca"
+    },
+    {
+      "path": "runtime/ProtoInputHooks64.dll",
+      "bytes": 1210880,
+      "sha256": "80fca8612784c69dcf0e55311b7b9c3ca98b8ec5fa820f29a649125a30e3a26d"
+    },
+    {
+      "path": "runtime/ProtoInputIJ32.exe",
+      "bytes": 92160,
+      "sha256": "dcd998af05608513e75185218d6fa62349faf3cf0f7898260d2f91713bf1b41a"
+    },
+    {
+      "path": "runtime/ProtoInputIJ64.exe",
+      "bytes": 119296,
+      "sha256": "75550ec7c9d9ca9060be91981fc0700392f1b47b159e0d4f6c267f0596fedf86"
+    },
+    {
+      "path": "runtime/ProtoInputIJP32.dll",
+      "bytes": 259072,
+      "sha256": "018b51008a725ccd6240df13a1e770e0b54bad2ce754fcab2fc40d8196d3cef7"
+    },
+    {
+      "path": "runtime/ProtoInputIJP64.dll",
+      "bytes": 299008,
+      "sha256": "339f6095d15d02cac786dd6f0ac5b7965316a1dcc11b9dff3ec21e4091ae0b70"
+    },
+    {
+      "path": "runtime/ProtoInputLoader32.dll",
+      "bytes": 617472,
+      "sha256": "b781c39a365cfe836064612a83aaa729bd404d9e8b9365ab373e6d3702c4448f"
+    },
+    {
+      "path": "runtime/ProtoInputLoader64.dll",
+      "bytes": 696832,
+      "sha256": "e570ec371850043d4de820fa67e7911b8b07c4002ef9165cee872fdc7f889bff"
+    },
+    {
+      "path": "runtime/protoinputmultiplex_cursor_observer32.dll",
+      "bytes": 247808,
+      "sha256": "773545feef82e1ca4f3140a6a887ebe9047e9912dcc28cf884d5429062d96358"
+    },
+    {
+      "path": "runtime/protoinputmultiplex_cursor_observer64.dll",
+      "bytes": 286720,
+      "sha256": "f2c1ceddd141d2939e935b1f47c15f4e18503145cb9b8ad17cae619b3ab9fb55"
+    }
+  ],
+  "private_acceptance_receipt_sha256": "0b9f6271a1112742ae7c7087093a3f197c95f4d99b0e4b5014a24929eb952c3d",
+  "evidence": {
+    "installer": {
+      "archive_sha256": "bbf5528936616d6347ac0d4dd4cb88d0c3adfeed481bbfaabd457fda7ee7d306",
+      "archive_bytes": 285468,
+      "defender_samples": 72,
+      "shutdown_cases": [
+        {
+          "method": "close",
+          "elapsed_ms": 963,
+          "exit": 0
+        },
+        {
+          "method": "quit",
+          "elapsed_ms": 932,
+          "exit": 0
+        },
+        {
+          "method": "capture-close",
+          "elapsed_ms": 945,
+          "exit": 0
+        },
+        {
+          "method": "capture-quit",
+          "elapsed_ms": 934,
+          "exit": 0
+        },
+        {
+          "method": "startup-close",
+          "elapsed_ms": 463,
+          "exit": 0
+        },
+        {
+          "method": "startup-quit",
+          "elapsed_ms": 797,
+          "exit": 0
+        }
+      ],
+      "routing": {
+        "barriers": 54,
+        "input_barriers": 24,
+        "native_input_edges": 30
+      },
+      "default_flow": "Original no-argument default per-user setup resumed at Finish after fail-closed harness attempts, same native setup process exited zero, all payload members verified, actual generated shortcut launched, registered normal uninstall exited zero, shell integration restored and sentinel data preserved."
+    },
+    "portable": {
+      "archive_sha256": "fb5f92e9d7d3075b9409365755045fb0d86874e4bb761ff1833a398e7ae38031",
+      "archive_bytes": 281560,
+      "defender_samples": 78,
+      "shutdown_cases": [
+        {
+          "method": "close",
+          "elapsed_ms": 1447,
+          "exit": 0
+        },
+        {
+          "method": "quit",
+          "elapsed_ms": 962,
+          "exit": 0
+        },
+        {
+          "method": "capture-close",
+          "elapsed_ms": 944,
+          "exit": 0
+        },
+        {
+          "method": "capture-quit",
+          "elapsed_ms": 953,
+          "exit": 0
+        },
+        {
+          "method": "startup-close",
+          "elapsed_ms": 941,
+          "exit": 0
+        },
+        {
+          "method": "startup-quit",
+          "elapsed_ms": 468,
+          "exit": 0
+        }
+      ],
+      "routing": {
+        "barriers": 54,
+        "input_barriers": 24,
+        "native_input_edges": 30
+      },
+      "default_flow": "Self-extracting EXE selected a destination containing spaces, all payload members verified before Finish, Finish launched the GUI, packaged launcher passed subsequent launches, shell registration/shortcuts/startup preserved."
+    }
+  },
+  "independent_review": {
+    "verdict": "ACCEPT",
+    "material_findings": 0,
+    "reviewed": "Exact artifacts and payload inventories, native process exits, actual GUI captures, routing acknowledgements and target events, preserved failed boundaries and cleanup."
+  },
+  "cleanup": {
+    "owned_product_processes": 0,
+    "owned_automation_helpers": 0,
+    "owned_tasks": 0,
+    "owned_credentials": 0,
+    "disposable_account_removed": true,
+    "disposable_profile_removed": true
+  },
+  "defender": {
+    "enabled": true,
+    "alerts": 0,
+    "protection_off_events": 0,
+    "application_crash_events": 0
+  },
+  "scope": "Sequential virtual input on VM105 to two owned x64 probes, one distinct virtual mouse and keyboard per seat, exact PID allowlist, app-local Start/Stop and Input Lab, Concurrent-Switched-Concurrent worker acknowledgements and delivery, seat A keyboard suppression with B isolated delivery, stopped reusable original probes, ordinary and post-capture and startup Close and existing app-local tray Quit handler.",
+  "qualification_limits": [
+    "Physical devices",
+    "Simultaneous input arbitration",
+    "Arbitrary target applications",
+    "Desktop-wide or same-process isolation",
+    "Real logon or reboot",
+    "i686 controller",
+    "Historical intermittent GUI-stall P1 closure",
+    "Full Ultra or UX parity"
+  ],
+  "shutdown_resolution": "Correctly targeted original control passed. Experimental Rust renderer/shutdown changes were reverted to the base policy. Final source adds bounded failure diagnostics. Rejected renderer experiments and harness attempts remain preserved.",
+  "preserved_harness_failures": [
+    {
+      "sha256": "1c0dd41743028825c6835f1d43d9fd70d5c5b58a6338b9acdd87b5765c249391",
+      "reason": "Defender sample is stale or unprotected"
+    },
+    {
+      "sha256": "48f0d12d82614e261226aa7134f76763491debf359602389c884dac839a073a6",
+      "reason": "Original default installation actions differ"
+    },
+    {
+      "sha256": "09e6d11dba1fc51807f02632ae6c1b0063ab4801bfbdd92cd66233d307ee8418",
+      "reason": "Original default installation actions differ"
+    }
+  ]
+}
