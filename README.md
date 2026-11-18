@@ -78,7 +78,7 @@ See [reporting problems](docs/known-limitations.md#report-a-problem) and the
 
 ## Development
 
-Development is heavily LLM-assisted. The native hooking and injection backend
+Development is LLM-assisted. The native hooking and injection backend
 comes from [Ilyaki's ProtoInput](https://github.com/Ilyaki/ProtoInput). This project
 builds on that work with a Rust application, an Ouroboros-based interface, routing
 controls, and integrations. See [building and contributing](docs/development.md), the
