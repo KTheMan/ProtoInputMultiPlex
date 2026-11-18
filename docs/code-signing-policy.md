@@ -24,3 +24,9 @@ That credit does not describe current builds.
 
 See the [privacy policy](privacy.md), [program terms](https://signpath.org/terms)
 and [release page](https://github.com/KTheMan/ProtoInputMultiPlex/releases).
+
+The [unsigned experimental RC](https://github.com/KTheMan/ProtoInputMultiPlex/releases/tag/v0.1.0-rc.1)
+has independently accepted VM105 evidence. Its [portable wrapper provenance](portable-exe-build.md)
+identifies the exact public packaging inputs and the hosted-packaging work needed
+before signing. The bundled OCR weights use CC-BY-SA-4.0 and are explicitly
+included in the planned provider eligibility request.
