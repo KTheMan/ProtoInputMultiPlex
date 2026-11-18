@@ -1,7 +1,8 @@
 # Code signing policy
 
-ProtoInputMultiPlex is preparing an application to the free SignPath Foundation
-program. Acceptance and trusted release signing are pending. Current development
+ProtoInputMultiPlex submitted an application to the free SignPath Foundation
+program on November 17, 2026. Eligibility review and trusted release signing
+are pending. Current development
 builds are unsigned; a checksum or successful test is not a trusted signature.
 
 The proposed signing scope is the project's Rust application, Rust cursor helpers

@@ -1,14 +1,20 @@
 # Installation, upgrades and recovery
 
-Use a complete distribution built for the current release. The October 14 portable evidence and October 15 distribution-verification record describe their own historical source and artifacts; they do not qualify this release candidate. The current bounded source/build qualification is summarized in [Windows version metadata](windows-version-metadata.md). It covers Rust checks and debug-build metadata only. The launch and distribution details below describe the previously tested staged distribution, not a qualified current release. Packaging, release binaries, installer execution, signing, login startup, reboot behavior and product-runtime acceptance remain separate gates.
-Unsigned Windows x64 builds may produce a Windows reputation warning. The GUI
-also requires a working Windows OpenGL display driver. No development checkout,
-Python, Rust, Visual Studio or separate VC redistributable is needed to launch
-the staged static-CRT distribution on the tested Windows host.
+The current downloadable build is the [unsigned experimental x64 RC](https://github.com/KTheMan/ProtoInputMultiPlex/releases/tag/v0.1.0-rc.1)
+using the software DX12 renderer. The portable EXE passed extraction and Finish
+launch. The installer passed default per-user installation and registered
+uninstall with data preservation. Both packages passed the recorded VM105 GUI
+routing and shutdown checks. See the [qualification summary](https://github.com/KTheMan/ProtoInputMultiPlex/releases/download/v0.1.0-rc.1/qualification.json)
+for exact hashes and scope. Real logon/reboot, general upgrade compatibility,
+physical-device behavior, arbitrary applications and trusted signing remain open.
+
+The prebuilt static-CRT bundle includes its runtime and resources. Keep the
+complete folder together. Unsigned Windows builds may produce a reputation
+warning. Source builds can use a different renderer from the downloadable RC.
 
 ## Windows setup
 
-Run `ProtoInputMultiPlex-0.1.0-setup.exe`. Setup installs for the current Windows user,
+Run `ProtoInputMultiPlex-0.1.0-windows-x64-setup.exe`. Setup installs for the current Windows user,
 defaults to `%LOCALAPPDATA%\Programs\ProtoInputMultiPlex` for a fresh install,
 and adds Start menu and Installed apps entries. Subsequent installs under this
 product identity reuse their registered installation directory during upgrades.
@@ -56,11 +62,13 @@ mode on later upgrades. This test switch never changes startup registration.
 
 ## Portable and relocated launch
 
-Extract the full bundle into a writable directory and use `launch-gui.cmd` or
-`launch-mcp.cmd`. These wrappers select `data/app-preferences.json`; current GUI
-profiles and macros live under `data/profiles` and `data/macros`. Preserve the
-whole `data` directory. Migrate an old bundle explicitly as described below to
-import its historical sibling `profiles` and `macros` directories.
+Run `ProtoInputMultiPlex-0.1.0-windows-x64-portable.exe` and choose a new folder
+inside an existing writable directory. Finish can launch the GUI. For later
+launches use `launch-gui.cmd` or `launch-mcp.cmd` from the extracted folder.
+These wrappers select `data/app-preferences.json`; current GUI profiles and
+macros live under `data/profiles` and `data/macros`. Preserve the whole `data`
+directory. Explicit migration below imports an older bundle's historical
+sibling `profiles` and `macros` directories.
 
 The EXE resolves its bundled native runtime relative to the EXE, independent of
 the caller's working directory. The distribution includes both 32/64-bit
@@ -202,7 +210,7 @@ python .\scripts\freeze-distribution-source.py --output 'E:\Build\Current Frozen
 Set-Location 'E:\Build\Current Frozen Source'
 # Install ATL with scripts/prepare-atl.ps1 if the C++ toolchain lacks it.
 .\scripts\package-portable.ps1 -CargoTargetDir 'E:\Build\Isolated Cargo Target' -OutputDir 'E:\Build\Fresh Portable Bundle'
-.\scripts\package-installer.ps1 -BundleDir 'E:\Build\Fresh Portable Bundle' -OutputFile 'E:\Build\ProtoInputMultiPlex-0.1.0-setup.exe'
+.\scripts\package-installer.ps1 -BundleDir 'E:\Build\Fresh Portable Bundle' -OutputFile 'E:\Build\ProtoInputMultiPlex-0.1.0-windows-x64-setup.exe'
 ```
 
 Use the pinned Rust/Ouroboros/native dependencies and the recorded toolchain.
