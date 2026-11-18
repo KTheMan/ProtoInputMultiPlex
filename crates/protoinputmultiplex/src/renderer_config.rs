@@ -5,82 +5,6 @@ use anyhow::Result;
 #[cfg(feature = "software-renderer")]
 use std::sync::Arc;
 
-#[derive(Default)]
-pub(crate) struct RendererShutdown {
-    #[cfg(feature = "software-renderer")]
-    state: Option<(eframe::wgpu::Device, eframe::wgpu::Queue)>,
-}
-
-impl RendererShutdown {
-    pub(crate) fn new(software_dx12: bool, cc: &eframe::CreationContext<'_>) -> Self {
-        #[cfg(feature = "software-renderer")]
-        {
-            Self {
-                state: cc
-                    .wgpu_render_state
-                    .as_ref()
-                    .filter(|_| software_dx12)
-                    .map(|state| (state.device.clone(), state.queue.clone())),
-            }
-        }
-        #[cfg(not(feature = "software-renderer"))]
-        {
-            let _ = (software_dx12, cc);
-            Self::default()
-        }
-    }
-
-    pub(crate) fn finish(&mut self) -> Result<()> {
-        #[cfg(feature = "software-renderer")]
-        if let Some((device, queue)) = self.state.take() {
-            use std::time::{Duration, Instant};
-            use windows_sys::Win32::UI::WindowsAndMessaging::{
-                MSG, PM_NOREMOVE, PM_QS_SENDMESSAGE, PeekMessageW,
-            };
-
-            let started = Instant::now();
-            eprintln!("GUI software renderer shutdown drain started");
-            // App::on_exit runs after the last Present, while the window still
-            // exists. Fence that work before eframe drops its renderer/window.
-            let submission = queue.submit([]);
-            let worker = std::thread::Builder::new()
-                .name("software-renderer-shutdown".into())
-                .spawn(move || {
-                    device.poll(eframe::wgpu::PollType::Wait {
-                        submission_index: Some(submission),
-                        timeout: Some(Duration::from_secs(5)),
-                    })
-                })
-                .context("Start software renderer shutdown drain")?;
-            while !worker.is_finished() {
-                // DXGI may synchronously send messages to its HWND thread.
-                // Service those messages while the worker waits on the fence.
-                // Sent-only peeking leaves queued input/paint events in place.
-                let mut message = MSG::default();
-                unsafe {
-                    PeekMessageW(
-                        &mut message,
-                        std::ptr::null_mut(),
-                        0,
-                        0,
-                        PM_NOREMOVE | PM_QS_SENDMESSAGE,
-                    );
-                }
-                std::thread::sleep(Duration::from_millis(1));
-            }
-            worker
-                .join()
-                .map_err(|_| anyhow::anyhow!("Software renderer shutdown worker panicked"))?
-                .context("Drain final software renderer submission")?;
-            eprintln!(
-                "GUI software renderer shutdown drained: elapsed_ms={}",
-                started.elapsed().as_millis()
-            );
-        }
-        Ok(())
-    }
-}
-
 pub(crate) fn renderer_options(software_dx12: bool) -> Result<eframe::NativeOptions> {
     if !software_dx12 {
         return Ok(eframe::NativeOptions {
@@ -128,15 +52,7 @@ fn software_renderer_options() -> eframe::NativeOptions {
     setup.instance_descriptor = wgpu::InstanceDescriptor {
         backends: wgpu::Backends::DX12,
         flags: wgpu::InstanceFlags::empty(),
-        backend_options: wgpu::BackendOptions {
-            dx12: wgpu::Dx12BackendOptions {
-                // Lifecycle requests are polled between frames. Do not gate
-                // the GUI thread on WARP's frame-latency handle.
-                latency_waitable_object: wgpu::Dx12UseFrameLatencyWaitableObject::None,
-                ..Default::default()
-            },
-            ..Default::default()
-        },
+        backend_options: Default::default(),
         memory_budget_thresholds: Default::default(),
         display: None,
     };
@@ -154,9 +70,6 @@ fn software_renderer_options() -> eframe::NativeOptions {
     eframe::NativeOptions {
         renderer: eframe::Renderer::Wgpu,
         wgpu_options: egui_wgpu::WgpuConfiguration {
-            // DX12 Mailbox presents with interval zero, so queued software
-            // frames do not depend on vertical sync during window teardown.
-            present_mode: wgpu::PresentMode::Mailbox,
             wgpu_setup: setup.into(),
             ..Default::default()
         },
@@ -292,23 +205,11 @@ mod renderer_tests {
         use eframe::{egui_wgpu::WgpuSetup, wgpu};
         let options = renderer_options(true).unwrap();
         assert_eq!(options.renderer, eframe::Renderer::Wgpu);
-        assert_eq!(
-            options.wgpu_options.present_mode,
-            wgpu::PresentMode::Mailbox
-        );
         let WgpuSetup::CreateNew(setup) = options.wgpu_options.wgpu_setup else {
             panic!("strict software mode must install its selector");
         };
         assert_eq!(setup.instance_descriptor.backends, wgpu::Backends::DX12);
         assert!(setup.instance_descriptor.flags.is_empty());
-        assert!(matches!(
-            setup
-                .instance_descriptor
-                .backend_options
-                .dx12
-                .latency_waitable_object,
-            wgpu::Dx12UseFrameLatencyWaitableObject::None
-        ));
         assert!(setup.native_adapter_selector.is_some());
         // Neither missing surface nor an empty adapter list may fall back.
         let selector = setup.native_adapter_selector.unwrap();

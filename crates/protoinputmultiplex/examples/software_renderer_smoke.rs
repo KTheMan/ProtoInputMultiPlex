@@ -52,7 +52,6 @@ mod smoke {
     }
 
     struct RendererSmoke {
-        renderer_shutdown: super::renderer_config::RendererShutdown,
         evidence: Rc<RefCell<Evidence>>,
         requested: bool,
         request_scale: f32,
@@ -190,12 +189,6 @@ mod smoke {
     }
 
     impl eframe::App for RendererSmoke {
-        fn on_exit(&mut self, _gl: Option<&eframe::glow::Context>) {
-            self.renderer_shutdown
-                .finish()
-                .expect("GUI renderer did not drain before teardown");
-        }
-
         fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
             if let Err(error) = self.step(ui) {
                 eprintln!("renderer smoke evidence/UI error: {error:#}");
@@ -272,7 +265,6 @@ mod smoke {
                 typography::register(&mut fonts);
                 cc.egui_ctx.set_fonts(fonts);
                 Ok(Box::new(RendererSmoke {
-                    renderer_shutdown: super::renderer_config::RendererShutdown::new(true, cc),
                     evidence: app_evidence,
                     requested: false,
                     request_scale: 1.0,

@@ -958,7 +958,6 @@ fn install_gui_fonts(ctx: &egui::Context, fallback: Option<Vec<u8>>) {
 }
 
 struct BootstrapApp {
-    renderer_shutdown: crate::renderer_config::RendererShutdown,
     activity: crate::gui_activity::Probe,
     inputs: BootstrapInputs,
     profile: Option<PathBuf>,
@@ -980,7 +979,6 @@ impl BootstrapApp {
             Err(error) => (None, Some(format!("Start GUI initialization: {error:#}"))),
         };
         Self {
-            renderer_shutdown: crate::renderer_config::RendererShutdown::default(),
             activity: crate::gui_activity::Probe::new(),
             inputs,
             profile,
@@ -1061,12 +1059,6 @@ impl BootstrapApp {
 }
 
 impl eframe::App for BootstrapApp {
-    fn on_exit(&mut self, _gl: Option<&eframe::glow::Context>) {
-        self.renderer_shutdown
-            .finish()
-            .expect("GUI renderer did not drain before teardown");
-    }
-
     fn raw_input_hook(&mut self, ctx: &egui::Context, input: &mut egui::RawInput) {
         let _activity = self.activity.enter(crate::gui_activity::Callback::RawInput);
         if let Some(dashboard) = &mut self.dashboard {
@@ -1230,7 +1222,6 @@ mod activity_callback_tests {
     use super::*;
     fn fixture_app() -> BootstrapApp {
         BootstrapApp {
-            renderer_shutdown: crate::renderer_config::RendererShutdown::default(),
             activity: crate::gui_activity::Probe::new(),
             inputs: BootstrapInputs {
                 data_dir: None,
@@ -1422,12 +1413,7 @@ pub fn run(
             );
             apply_muted_text(&cc.egui_ctx);
             install_gui_fonts(&cc.egui_ctx, None);
-            let mut app = BootstrapApp::new(inputs, profile, delays);
-            app.renderer_shutdown = crate::renderer_config::RendererShutdown::new(
-                renderer == crate::GuiRenderer::SoftwareDx12,
-                cc,
-            );
-            Ok(Box::new(app))
+            Ok(Box::new(BootstrapApp::new(inputs, profile, delays)))
         }),
     )
     .map_err(|error| anyhow::anyhow!("GUI: {error}"))
@@ -1516,7 +1502,6 @@ mod bootstrap_tests {
     fn close_disallows_a_same_frame_retry() {
         let app_inputs = inputs(PathBuf::from("unused-preferences.json"), Duration::ZERO);
         let mut app = BootstrapApp {
-            renderer_shutdown: crate::renderer_config::RendererShutdown::default(),
             activity: crate::gui_activity::Probe::new(),
             inputs: app_inputs,
             profile: None,

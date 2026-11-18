@@ -1096,16 +1096,6 @@ class GuiTerminationTests(unittest.TestCase):
         self.assertEqual((result["panic_component"], result["panic_file"], result["panic_line"]),
                          ("wgpu-core", "queue.rs", 208))
 
-    def test_renderer_shutdown_is_reported_with_fixed_labels(self):
-        result = self.observe(0, b"GUI software renderer shutdown drain started\n"
-                              b"GUI software renderer shutdown drained: elapsed_ms=19\nprivate-secret-token")
-        self.assertTrue(result["shutdown_drain_started"] and result["shutdown_drain_finished"])
-        self.assertFalse(result["shutdown_drain_failed"])
-        failed = self.observe(101, b"GUI software renderer shutdown drain started\n"
-                                   b"GUI renderer did not drain before teardown: private-secret-error")
-        self.assertTrue(failed["shutdown_drain_started"] and failed["shutdown_drain_failed"])
-        self.assertFalse(failed["shutdown_drain_finished"])
-
     def test_running_zero_native_exit_and_missing_log_remain_distinct(self):
         for code, state in ((None, "running"), (0, "zero"), (-1073741510, "nonzero")):
             result = self.observe(code, error=PermissionError("private-secret-context"))
